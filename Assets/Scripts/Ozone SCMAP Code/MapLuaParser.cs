@@ -28,7 +28,7 @@ public class MapLuaParser : MonoBehaviour {
 	public		List<Army>		ARMY_ = new List<Army>();
 	public		List<Marker>	SiMarkers = new List<Marker>();
 
-	[HideInInspector]
+	//[HideInInspector]
 	public		Vector3			MapCenterPoint;
 
 	public		int				ScriptId = 0;

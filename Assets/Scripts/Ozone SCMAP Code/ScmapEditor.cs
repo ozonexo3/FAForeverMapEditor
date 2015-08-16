@@ -207,7 +207,7 @@ public class ScmapEditor : MonoBehaviour {
 				AllProps += map.Props[i].BlueprintPath + "\n";
 			}
 		}
-		Debug.Log(AllProps);
+		Debug.Log("All Props\n" + AllProps);
 		yield return null;
 	}
 

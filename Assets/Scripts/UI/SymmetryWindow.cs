@@ -4,46 +4,59 @@ using System.Collections;
 
 public class SymmetryWindow : MonoBehaviour {
 
+	public		Editing			EditMenu;
 	public		Toggle[]		Toggles;
 	public		Slider			AngleSlider;
 
+	bool Enabling = false;
+
 	void OnEnable(){
+		Enabling = true;
 		foreach(Toggle tog in Toggles){
 			tog.isOn = false;
 		}
-		Toggles[PlayerPrefs.GetInt("Symmetry", 0)].isOn = true;
+		Debug.Log(PlayerPrefs.GetInt("Symmetry", 0));
+		Toggles[ PlayerPrefs.GetInt("Symmetry", 0) ].isOn = true;
+		AngleSlider.value = PlayerPrefs.GetInt("SymmetryAngleCount", 2);
+		Enabling = false;
 	}
 
 	public void SliderChange(){
+		if(Enabling) return;
 		PlayerPrefs.SetInt("SymmetryAngleCount", (int)AngleSlider.value);
 	}
 
 	public void Button(string func){
+		if(Enabling) return;
+		Debug.Log("Change symmetry: " + func);
 		switch(func){
 		case "close":
 			gameObject.SetActive(false);
 			break;
 		case "sym0":
-			PlayerPrefs.SetInt("Symmetry", 0);
+			if(Toggles[0].isOn) PlayerPrefs.SetInt("Symmetry", 0);
 			break;
 		case "sym1":
-			PlayerPrefs.SetInt("Symmetry", 1);
+			if(Toggles[1].isOn) PlayerPrefs.SetInt("Symmetry", 1);
 			break;
 		case "sym2":
-			PlayerPrefs.SetInt("Symmetry", 2);
+			if(Toggles[2].isOn) PlayerPrefs.SetInt("Symmetry", 2);
 			break;
 		case "sym3":
-			PlayerPrefs.SetInt("Symmetry", 3);
+			if(Toggles[3].isOn) PlayerPrefs.SetInt("Symmetry", 3);
 			break;
 		case "sym4":
-			PlayerPrefs.SetInt("Symmetry", 4);
+			if(Toggles[4].isOn) PlayerPrefs.SetInt("Symmetry", 4);
 			break;
 		case "sym5":
-			PlayerPrefs.SetInt("Symmetry", 5);
+			if(Toggles[5].isOn) PlayerPrefs.SetInt("Symmetry", 5);
 			break;
 		case "sym6":
-			PlayerPrefs.SetInt("Symmetry", 6);
+			if(Toggles[6].isOn) PlayerPrefs.SetInt("Symmetry", 6);
 			break;
 		}
+		PlayerPrefs.Save();
+
+		EditMenu.UpdateSelectionRing();
 	}
 }

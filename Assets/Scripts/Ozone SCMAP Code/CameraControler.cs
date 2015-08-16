@@ -8,6 +8,8 @@ public class CameraControler : MonoBehaviour {
 	public			MapLuaParser		MapControler;
 	public			MapHelperGui		HUD;
 	public			Editing				Edit;
+	public			AppMenu				Menu;
+	public			GameObject			LoadingPopup;
 
 	public			Transform			Pivot;
 	public			float				MapSize;
@@ -48,6 +50,8 @@ public class CameraControler : MonoBehaviour {
 	}
 
 	void Update () {
+		if(LoadingPopup.activeSelf) return;
+
 		// Interaction
 		if(Edit.MauseOnGameplay){
 			if(HUD.MapLoaded){
@@ -74,6 +78,12 @@ public class CameraControler : MonoBehaviour {
 			else{
 
 			}
+		}
+
+		if(Menu.MenuOpen) return;
+		if(Input.GetKeyDown(KeyCode.G)){
+			Menu.GridToggle.isOn = !Menu.GridToggle.isOn;
+			Menu.MapHelper.Loader.HeightmapControler.ToogleGrid(Menu.GridToggle.isOn);
 		}
 	}
 
@@ -174,7 +184,10 @@ public class CameraControler : MonoBehaviour {
 					HitPointSnaped2.z -= 0.05f;
 
 					Edit.SelectedMarkerBeginClickPos = Edit.SelectedMarker.position - HitPointSnaped2;
-
+					Edit.SelectedMarkerBeginPos = Edit.SelectedMarker.position;
+					for(int i = 0; i < Edit.SymmetrySelectionList.Length; i++){
+						Edit.SymmetrySelectionList[i].SelectedMarkerBeginClickPos = Edit.SelectedSymmetryMarkers[i].position;
+					}
 				}
 
 			}
@@ -344,8 +357,21 @@ public class CameraControler : MonoBehaviour {
 
 				Edit.SelectedMarker.position = HitPointSnaped + Edit.SelectedMarkerBeginClickPos;
 
+				
 				for(int i = 0; i < Edit.Selected.Count; i++){
 					Edit.Selected[i].transform.position = Edit.SelectedMarker.position + Edit.SelectedStartPos[i];
+				}
+
+
+				Vector3 MovedOffset = Edit.SelectedMarker.position - Edit.SelectedMarkerBeginPos;
+				Debug.Log(MovedOffset);
+				for(int i = 0; i < Edit.SymmetrySelectionList.Length; i++){
+					Vector3 localMoveOffset = new Vector3(MovedOffset.x * Edit.SymmetrySelectionList[i].MoveMultiply.x, MovedOffset.y, MovedOffset.z * Edit.SymmetrySelectionList[i].MoveMultiply.z);
+					Edit.SelectedSymmetryMarkers[i].position = Edit.SymmetrySelectionList[i].SelectedMarkerBeginClickPos + localMoveOffset;
+
+					for(int s = 0; s < Edit.SymmetrySelectionList[i].MirrorSelected.Count; s++){
+						Edit.SymmetrySelectionList[i].MirrorSelected[s].transform.position = Edit.SelectedSymmetryMarkers[i].position + Edit.SymmetrySelectionList[i].SelectedStartPos[s];
+					}
 				}
 
 

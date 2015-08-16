@@ -14,12 +14,17 @@ public class Editing : MonoBehaviour {
 
 	public		List<GameObject>		Selected = new List<GameObject>();
 	public		List<GameObject>		MirrorSelected = new List<GameObject>();
+	public		SymmetrySelection[]		SymmetrySelectionList = new SymmetrySelection[0];
 	public		Vector3[]				SelectedStartPos;
 	public		MarkersList			AllMarkersList;
 
+	public		Transform			HudElements;
 	public		Transform			SelectedMarker;
 	public		Transform			SelectedReflectionMarker;
+	public		List<Transform>		SelectedSymmetryMarkers = new List<Transform>();
 	public		Vector3				SelectedMarkerBeginClickPos;
+	public		Vector3				SelectedMarkerBeginPos;
+	public		GameObject			SelectionSymmetryPrefab;
 
 	public		Texture[]			SelectionSizeTextures;
 	public		List<GameObject>	SelectionsRings = new List<GameObject>();
@@ -32,6 +37,15 @@ public class Editing : MonoBehaviour {
 	public		Toggle				ToogleMirror90;
 	public		Toggle				ToogleMirror270;
 	public		Toggle				ToogleMirror180;
+
+	[System.Serializable]
+	public class SymmetrySelection{
+		public		Vector3					MoveMultiply = Vector3.one;
+		public		float					MoveRotation = 0;
+		public		List<GameObject>		MirrorSelected = new List<GameObject>();
+		public		Vector3[]				SelectedStartPos;
+		public		Vector3					SelectedMarkerBeginClickPos;
+	}
 
 	public enum EditStates{
 		MapStat, TerrainStat, TexturesStat, LightingStat, MarkersStat, DecalsStat, PropsStat, AIStat
@@ -168,17 +182,21 @@ public class Editing : MonoBehaviour {
 		UpdateSelectionRing();
 	}
 	public void UpdateTolerance(){
-		//MirrorTolerance = float.Parse( ToleranceField.text, System.Globalization.CultureInfo.InvariantCulture.NumberFormat);
 		MirrorTolerance = System.Single.Parse(ToolbarTolerance.text);
 		UpdateSelectionRing();
-
-
 	}
 
 	public void UpdateSelectionRing(){
+		MirrorTolerance = 0.3f;
+
 		if(Selected.Count <= 0){
 			SelectedMarker.gameObject.SetActive(false);
-			SelectedReflectionMarker.gameObject.SetActive(false);
+			if(SelectedSymmetryMarkers.Count > 0){
+				foreach(Transform marker in SelectedSymmetryMarkers){
+					marker.gameObject.SetActive(false);
+				}
+			}
+			//SelectedReflectionMarker.gameObject.SetActive(false);
 			foreach(GameObject child in SelectionsRings){
 				Destroy(child.gameObject);
 			}
@@ -190,7 +208,8 @@ public class Editing : MonoBehaviour {
 		}
 		else{
 			SelectedMarker.gameObject.SetActive(true);
-			MirrorSelected = new List<GameObject>();
+			//SymmetrySelectionList = new;
+			//MirrorSelected1 = new List<GameObject>();
 
 			foreach(GameObject child in SelectionsRings){
 				Destroy(child.gameObject);
@@ -218,11 +237,21 @@ public class Editing : MonoBehaviour {
 
 			if(SelectedMarker.localScale.x < 3){
 				SelectedMarker.GetComponent<Renderer>().sharedMaterial.SetTexture("_MainTex", SelectionSizeTextures[0]);
-				SelectedReflectionMarker.GetComponent<Renderer>().sharedMaterial.SetTexture("_MainTex", SelectionSizeTextures[0]);
+				if(SelectedSymmetryMarkers.Count > 0){
+					foreach(Transform marker in SelectedSymmetryMarkers){
+						marker.GetComponent<Renderer>().sharedMaterial.SetTexture("_MainTex", SelectionSizeTextures[0]);
+					}
+				}
+				//SelectedReflectionMarker.GetComponent<Renderer>().sharedMaterial.SetTexture("_MainTex", SelectionSizeTextures[0]);
 			}
 			else{
 				SelectedMarker.GetComponent<Renderer>().sharedMaterial.SetTexture("_MainTex", SelectionSizeTextures[1]);
-				SelectedReflectionMarker.GetComponent<Renderer>().sharedMaterial.SetTexture("_MainTex", SelectionSizeTextures[1]);
+				if(SelectedSymmetryMarkers.Count > 0){
+					foreach(Transform marker in SelectedSymmetryMarkers){
+						marker.GetComponent<Renderer>().sharedMaterial.SetTexture("_MainTex", SelectionSizeTextures[1]);
+					}
+				}
+				//SelectedReflectionMarker.GetComponent<Renderer>().sharedMaterial.SetTexture("_MainTex", SelectionSizeTextures[1]);
 			}
 
 			SelectedStartPos = new Vector3[Selected.Count];
@@ -231,90 +260,32 @@ public class Editing : MonoBehaviour {
 				SelectedStartPos[i] = Selected[i].transform.position - SelectedMarker.position;
 			}
 
-			if(ToogleMirrorX.isOn && ToogleMirrorZ.isOn){
-				SelectedReflectionMarker.gameObject.SetActive(true);
-				SelectedReflectionMarker.localScale = SelectedMarker.localScale;
-				float Xdist = Scenario.MapCenterPoint.x - SelectedMarker.position.x;
-				float Zdist = Scenario.MapCenterPoint.z - SelectedMarker.position.z;
+			int SymmetryCode = PlayerPrefs.GetInt("Symmetry", 0);
 
-				SelectedReflectionMarker.position = new Vector3(SelectedMarker.position.x + Xdist * 2 + 0.2f, SelectedMarker.position.y, SelectedMarker.position.z + Zdist * 2 - 0.2f);
-
-				foreach(GameObject obj in Selected){
-					foreach(GameObject all in KameraKontroler.AllWorkingObjects){
-						Vector3 SelPos = new Vector3(obj.transform.position.x + Xdist * 2 + 0.2f, 0, obj.transform.position.z + Zdist * 2 - 0.2f);
-						Vector3 AllPos = new Vector3(all.transform.position.x, 0, all.transform.position.z);
-
-						if(Vector3.Distance(SelPos, AllPos) < MirrorTolerance){
-							bool AlreadyExist = false;
-							foreach(GameObject MirObj in MirrorSelected){
-								if(MirObj == all){
-									AlreadyExist = true;
-									break;
-								}
-							}
-							if(!AlreadyExist) MirrorSelected.Add(all);
-							continue;
-						}
-					}
-				}
-
+			// Generate Symmetry Selection Rings
+			if(SymmetryCode == 0){
+				RegenerateSymmetryMarkers(0);
 			}
-			else if(ToogleMirrorX.isOn){
-				SelectedReflectionMarker.gameObject.SetActive(true);
-				SelectedReflectionMarker.localScale = SelectedMarker.localScale;
-				float Xdist = Scenario.MapCenterPoint.x - SelectedMarker.position.x;
-
-				SelectedReflectionMarker.position = new Vector3(SelectedMarker.position.x + Xdist * 2 + 0.2f, SelectedMarker.position.y, SelectedMarker.position.z);
-
-				foreach(GameObject obj in Selected){
-					foreach(GameObject all in KameraKontroler.AllWorkingObjects){
-						Xdist = Scenario.MapCenterPoint.x - obj.transform.position.x;
-						Vector3 SelPos = new Vector3(obj.transform.position.x + Xdist * 2 + 0.2f, 0, obj.transform.position.z);
-						Vector3 AllPos = new Vector3(all.transform.position.x, 0, all.transform.position.z);
-						
-						if(Vector3.Distance(SelPos, AllPos) < MirrorTolerance){
-							bool AlreadyExist = false;
-							foreach(GameObject MirObj in MirrorSelected){
-								if(MirObj == all){
-									AlreadyExist = true;
-									break;
-								}
-							}
-							if(!AlreadyExist) MirrorSelected.Add(all);
-							continue;
-						}
-					}
-				}
+			else if(SymmetryCode == 6){
+				RegenerateSymmetryMarkers(PlayerPrefs.GetInt("SymmetryAngleCount", 2) - 1);
 			}
-			else if(ToogleMirrorZ.isOn){
-				SelectedReflectionMarker.gameObject.SetActive(true);
-				SelectedReflectionMarker.localScale = SelectedMarker.localScale;
-				float Zdist = Scenario.MapCenterPoint.z - SelectedMarker.position.z;
-				SelectedReflectionMarker.position = new Vector3(SelectedMarker.position.x, SelectedMarker.position.y, SelectedMarker.position.z + Zdist * 2 - 0.2f);
-
-				foreach(GameObject obj in Selected){
-					foreach(GameObject all in KameraKontroler.AllWorkingObjects){
-						Zdist = Scenario.MapCenterPoint.z - obj.transform.position.z;
-						Vector3 SelPos = new Vector3(obj.transform.position.x, 0, obj.transform.position.z + Zdist * 2 - 0.2f);
-						Vector3 AllPos = new Vector3(all.transform.position.x, 0, all.transform.position.z);
-						
-						if(Vector3.Distance(SelPos, AllPos) < MirrorTolerance ){
-							bool AlreadyExist = false;
-							foreach(GameObject MirObj in MirrorSelected){
-								if(MirObj == all){
-									AlreadyExist = true;
-									break;
-								}
-							}
-							if(!AlreadyExist) MirrorSelected.Add(all);
-							continue;
-						}
-					}
-				}
+			else if(SymmetryCode == 3){
+				RegenerateSymmetryMarkers(3);
 			}
 			else{
-				SelectedReflectionMarker.gameObject.SetActive(false);
+				RegenerateSymmetryMarkers(1);
 			}
+
+			// Do Symmetry Selection
+			if( SymmetryCode == 0){}
+			else if(SymmetryCode == 1) SelectHorizontal();
+			else if(SymmetryCode == 2) SelectVertical();
+			else if(SymmetryCode == 3){
+				SelectHorizontal(0);
+				SelectVertical(1);
+				SelectHorizontalVertical(2);
+			}
+
 			foreach(ListObject list in AllMarkersList.AllFields){
 				list.Unselect();
 			}
@@ -329,11 +300,159 @@ public class Editing : MonoBehaviour {
 					}
 				}
 			}
-			foreach(GameObject obj in MirrorSelected){
-				GameObject newRing = Instantiate(RingSelectionPrefab) as GameObject;
-				newRing.GetComponent<SelectionRing>().SelectedObject = obj.transform;
-				SelectionsRings.Add(newRing);
+			for(int i = 0; i < SymmetrySelectionList.Length; i++){
+				SymmetrySelectionList[i].SelectedStartPos = new Vector3[SymmetrySelectionList[i].MirrorSelected.Count];
+				for(int m = 0; m < SymmetrySelectionList[i].MirrorSelected.Count; m++){
+					GameObject newRing = Instantiate(RingSelectionPrefab) as GameObject;
+					newRing.GetComponent<SelectionRing>().SelectedObject = SymmetrySelectionList[i].MirrorSelected[m].transform;
+					newRing.GetComponent<SelectionRing>().ForceUpdate();
+					SelectionsRings.Add(newRing);
+					SymmetrySelectionList[i].SelectedStartPos[m] = newRing.transform.position - SelectedSymmetryMarkers[i].position;
+				}
 			}
 		}
 	}
+
+	void RegenerateSymmetryMarkers(int count = 0){
+		if(SelectedSymmetryMarkers.Count == count){
+			for(int i = 0; i < SymmetrySelectionList.Length; i++){
+				SymmetrySelectionList[i].MirrorSelected = new List<GameObject>();
+			}
+			return;
+		}
+
+		SymmetrySelectionList = new SymmetrySelection[count];
+		for(int i = 0; i < count; i++){
+			SymmetrySelectionList[i] = new SymmetrySelection();
+			SymmetrySelectionList[i].MirrorSelected = new List<GameObject>();
+		}
+
+		Debug.Log("Regenerate Symmetry Markers");
+
+		foreach(Transform marker in SelectedSymmetryMarkers){
+			DestroyImmediate(marker.gameObject);
+		}
+
+		SelectedSymmetryMarkers = new List<Transform>();
+		for(int i = 0; i < count; i++){
+			GameObject newMarker = Instantiate(SelectionSymmetryPrefab) as GameObject;
+			newMarker.transform.parent = HudElements;
+			SelectedSymmetryMarkers.Add(newMarker.transform);
+		}
+	}
+
+	void SelectHorizontal(int id = 0){
+		if(SelectedSymmetryMarkers.Count < 0) return;
+		SelectedSymmetryMarkers[id].gameObject.SetActive(true);
+		SelectedSymmetryMarkers[id].localScale = SelectedMarker.localScale;
+
+		Vector3 MirroredMarker = SelectedMarker.position - Scenario.MapCenterPoint;
+		MirroredMarker.x = -MirroredMarker.x;
+		MirroredMarker += Scenario.MapCenterPoint;
+		MirroredMarker.y = SelectedMarker.position.y;
+		SelectedSymmetryMarkers[id].position = MirroredMarker;
+		SymmetrySelectionList[id].MoveMultiply = new Vector3(-1, 1, 1);
+		
+		foreach(GameObject obj in Selected){
+			foreach(GameObject all in KameraKontroler.AllWorkingObjects){
+				Vector3 MirroredPos = all.transform.position - Scenario.MapCenterPoint;
+				MirroredPos.x = -MirroredPos.x;
+				MirroredPos += Scenario.MapCenterPoint;
+
+				//Xdist = Scenario.MapCenterPoint.x - obj.transform.position.x;
+				Vector3 SelPos = new Vector3(obj.transform.position.x, 0, obj.transform.position.z);
+				Vector3 AllPos = new Vector3(MirroredPos.x, 0, MirroredPos.z);
+				
+				if(Vector3.Distance(SelPos, AllPos) < MirrorTolerance){ //MirrorTolerance
+					bool AlreadyExist = false;
+					foreach(GameObject MirObj in SymmetrySelectionList[id].MirrorSelected){
+						if(MirObj == all){
+							AlreadyExist = true;
+							break;
+						}
+					}
+					if(!AlreadyExist) SymmetrySelectionList[id].MirrorSelected.Add(all);
+					continue;
+				}
+			}
+		}
+	}
+
+	void SelectVertical(int id = 0){
+		if(SelectedSymmetryMarkers.Count < 0) return;
+		SelectedSymmetryMarkers[id].gameObject.SetActive(true);
+		SelectedSymmetryMarkers[id].localScale = SelectedMarker.localScale;
+		Vector3 MirroredMarker = SelectedMarker.position - Scenario.MapCenterPoint;
+		MirroredMarker.z = -MirroredMarker.z;
+		MirroredMarker += Scenario.MapCenterPoint;
+		MirroredMarker.y = SelectedMarker.position.y;
+		SelectedSymmetryMarkers[id].position = MirroredMarker;
+		SymmetrySelectionList[id].MoveMultiply = new Vector3(1, 1, -1);
+
+		foreach(GameObject obj in Selected){
+			foreach(GameObject all in KameraKontroler.AllWorkingObjects){
+				Vector3 MirroredPos = all.transform.position - Scenario.MapCenterPoint;
+				MirroredPos.z = -MirroredPos.z;
+				MirroredPos += Scenario.MapCenterPoint;
+				
+				//Xdist = Scenario.MapCenterPoint.x - obj.transform.position.x;
+				Vector3 SelPos = new Vector3(obj.transform.position.x, 0, obj.transform.position.z);
+				Vector3 AllPos = new Vector3(MirroredPos.x, 0, MirroredPos.z);
+
+
+				if(Vector3.Distance(SelPos, AllPos) < MirrorTolerance){ //MirrorTolerance
+					bool AlreadyExist = false;
+					foreach(GameObject MirObj in SymmetrySelectionList[id].MirrorSelected){
+						if(MirObj == all){
+							AlreadyExist = true;
+							break;
+						}
+					}
+					if(!AlreadyExist) SymmetrySelectionList[id].MirrorSelected.Add(all);
+					continue;
+				}
+			}
+		}
+	}
+
+	void SelectHorizontalVertical(int id = 0){
+		if(SelectedSymmetryMarkers.Count < 0) return;
+		SelectedSymmetryMarkers[id].gameObject.SetActive(true);
+		SelectedSymmetryMarkers[id].localScale = SelectedMarker.localScale;
+
+		Vector3 MirroredMarker = SelectedMarker.position - Scenario.MapCenterPoint;
+		MirroredMarker.x = -MirroredMarker.x;
+		MirroredMarker.z = -MirroredMarker.z;
+		MirroredMarker += Scenario.MapCenterPoint;
+		MirroredMarker.y = SelectedMarker.position.y;
+		SelectedSymmetryMarkers[id].position = MirroredMarker;
+		SymmetrySelectionList[id].MoveMultiply = new Vector3(-1, 1, -1);
+		
+		foreach(GameObject obj in Selected){
+			foreach(GameObject all in KameraKontroler.AllWorkingObjects){
+				Vector3 MirroredPos = all.transform.position - Scenario.MapCenterPoint;
+				MirroredPos.z = -MirroredPos.z;
+				MirroredPos.x = -MirroredPos.x;
+				MirroredPos += Scenario.MapCenterPoint;
+				
+				//Xdist = Scenario.MapCenterPoint.x - obj.transform.position.x;
+				Vector3 SelPos = new Vector3(obj.transform.position.x, 0, obj.transform.position.z);
+				Vector3 AllPos = new Vector3(MirroredPos.x, 0, MirroredPos.z);
+
+
+				if(Vector3.Distance(SelPos, AllPos) < MirrorTolerance){ //MirrorTolerance
+					bool AlreadyExist = false;
+					foreach(GameObject MirObj in SymmetrySelectionList[id].MirrorSelected){
+						if(MirObj == all){
+							AlreadyExist = true;
+							break;
+						}
+					}
+					if(!AlreadyExist) SymmetrySelectionList[id].MirrorSelected.Add(all);
+					continue;
+				}
+			}
+		}
+	}
+
 }
