@@ -14,6 +14,7 @@ public class ScmapEditor : MonoBehaviour {
 	public		Material			WaterMaterial;
 	public		float			MapHeightScale = 1;
 	public		GetGamedataFile	Gamedata;
+	public		bool			Grid;
 
 	[System.Serializable]
 	public class TerrainTexture{
@@ -29,6 +30,9 @@ public class ScmapEditor : MonoBehaviour {
 	
 	Map map;
 
+	void Start(){
+		ToogleGrid(false);
+	}
 
 	void OnEnable(){
 		heights = new float[10,10];
@@ -266,5 +270,10 @@ public class ScmapEditor : MonoBehaviour {
 		ToReturn.y = MapPos.y * 10;
 		
 		return ToReturn;
+	}
+
+	public void ToogleGrid(bool To){
+		Grid = To;
+		TerrainMaterial.SetInt("_Grid", Grid?1:0);
 	}
 }

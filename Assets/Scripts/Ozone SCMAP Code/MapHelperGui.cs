@@ -49,7 +49,7 @@ public class MapHelperGui : MonoBehaviour {
 		}
 	}
 
-	void OpenComposition(int id){
+	public void OpenComposition(int id){
 		foreach(GameObject obj in Kompositions){
 			if(obj.activeSelf) obj.SetActive(false);
 		}

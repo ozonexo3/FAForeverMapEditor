@@ -173,7 +173,7 @@ public class MapLuaParser : MonoBehaviour {
 		loadedFile = System.IO.File.ReadAllText(loc, encodeType);
 
 		string loadedFileFunctions = "";
-		loadedFileFunctions = System.IO.File.ReadAllText("maps/variable_functions.lua", encodeType);
+		loadedFileFunctions = System.IO.File.ReadAllText("Structure/lua_variable_functions.lua", encodeType);
 		
 		env = new Lua();
 		env.LoadCLRPackage();
@@ -249,10 +249,10 @@ public class MapLuaParser : MonoBehaviour {
 		loadedFileSave = System.IO.File.ReadAllText(locSave, encodeType);
 		
 		string loadedFileFunctions = "";
-		loadedFileFunctions = System.IO.File.ReadAllText("maps/variable_functions.lua", encodeType);
+		loadedFileFunctions = System.IO.File.ReadAllText("Structure/lua_variable_functions.lua", encodeType);
 		
 		string loadedFileEndFunctions = "";
-		loadedFileEndFunctions = System.IO.File.ReadAllText("maps/variable_end_functions.lua", encodeType);
+		loadedFileEndFunctions = System.IO.File.ReadAllText("Structure/lua_variable_end_functions.lua", encodeType);
 		
 		loadedFileSave = loadedFileFunctions + loadedFileSave + loadedFileEndFunctions;
 		

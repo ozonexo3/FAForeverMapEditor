@@ -3,6 +3,7 @@ Properties {
 	_SpecColor ("Specular Color", Color) = (0.5, 0.5, 0.5, 1)
 	_Shininess ("Shininess", Range (0.03, 1)) = 0.078125
 	[MaterialToggle] _Water("Has Water", Int) = 0
+	[MaterialToggle] _Grid("Grid", Int) = 0
 
 	_WaterRam ("Control (RGBA)", 2D) = "blue" {}
 	_WaterLevel ("Water Level", Range (0.03, 5)) = 0.078125
@@ -31,6 +32,10 @@ Properties {
 	_SplatLower ("Layer Lower (R)", 2D) = "white" {}
 	_NormalLower ("Normal Lower (R)", 2D) = "bump" {}
 	_LowerScale ("Abyss Level", Range (0.1, 3)) = 1
+	
+	_GridScale ("Grid Scale", Range (0, 2048)) = 512
+	_GridTexture ("Grid Texture", 2D) = "white" {}
+	_GridCamDist ("Grid Scale", Range (0, 10)) = 5
 }
 	
 SubShader {
@@ -70,11 +75,16 @@ half _LowerScale;
 fixed4 _Abyss;
 fixed4 _Deep;
 int _Water;
+int _Grid;
 
 half _AreaX;
 half _AreaY;
 half _AreaWidht;
 half _AreaHeight;
+
+half _GridScale;
+half _GridCamDist;
+sampler2D _GridTexture;
 
 float3 ApplyWaterColor( float depth, float3  inColor){
 	float4 wcolor = tex2D(_WaterRam, float2(depth,0));
@@ -92,6 +102,23 @@ void surf (Input IN, inout SurfaceOutput o) {
 	col = lerp(col, tex2D (_Splat1, IN.uv_Splat1), splat_control.g);
 	col = lerp(col, tex2D (_Splat2, IN.uv_Splat2), splat_control.b);
 	col = lerp(col, tex2D (_Splat3, IN.uv_Splat3), splat_control.a);
+	
+	
+	if(_Grid > 0){
+		fixed4 GridColor = tex2D (_GridTexture, IN.uv_Control * _GridScale - float2(-0.04, -0.04) * _GridScale);
+		fixed4 GridFinal = fixed4(0,0,0,GridColor.a);
+		if(_GridCamDist < 1){
+			GridFinal.rgb = lerp(GridFinal.rgb, fixed3(1,1,1), GridColor.r * lerp(1, 0, _GridCamDist));
+			GridFinal.rgb = lerp(GridFinal.rgb, fixed3(0,1,0), GridColor.g * lerp(1, 0, _GridCamDist));
+			GridFinal.rgb = lerp(GridFinal.rgb, fixed3(0,1,0), GridColor.b * lerp(0, 1, _GridCamDist));
+		}
+		else{
+		GridFinal.rgb = lerp(GridFinal.rgb, fixed3(0,1,0), GridColor.b);
+		}
+		  
+		col.rgb = lerp(col.rgb, GridFinal.rgb, GridColor.a);
+		o.Emission = GridFinal * GridColor.a;;
+	}
 	
 	if(_Water > 0) o.Albedo = ApplyWaterColor(WaterDepth, col.rgb);	
 	else o.Albedo = col;	
