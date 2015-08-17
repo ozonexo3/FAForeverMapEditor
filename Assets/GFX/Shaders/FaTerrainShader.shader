@@ -105,7 +105,7 @@ void surf (Input IN, inout SurfaceOutput o) {
 	
 	
 	if(_Grid > 0){
-		fixed4 GridColor = tex2D (_GridTexture, IN.uv_Control * _GridScale - float2(-0.04, -0.04) * _GridScale);
+		fixed4 GridColor = tex2D (_GridTexture, IN.uv_Control * _GridScale - float2(-0.05, -0.05));
 		fixed4 GridFinal = fixed4(0,0,0,GridColor.a);
 		if(_GridCamDist < 1){
 			GridFinal.rgb = lerp(GridFinal.rgb, fixed3(1,1,1), GridColor.r * lerp(1, 0, _GridCamDist));

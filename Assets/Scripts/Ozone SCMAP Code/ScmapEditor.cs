@@ -72,19 +72,22 @@ public class ScmapEditor : MonoBehaviour {
 		if(Teren) Teren.gameObject.SetActive(true);
 
 
+
 		Scenario.ScenarioData.MaxHeight = map.Water.Elevation;
 		MapLuaParser.Water = map.Water.HasWater;
 		WaterLevel.gameObject.SetActive(MapLuaParser.Water);
-
-		WaterMaterial.SetTexture("_UtilitySamplerC", map.WatermapTex);
-		//
-
 
 		// Set Variables
 		int xRes = (int)Scenario.ScenarioData.Size.x;
 		int zRes = (int)Scenario.ScenarioData.Size.y;
 		float yRes = (float)map.HeightScale;;
 		float HeightResize = 512 * 40;
+
+		WaterMaterial.SetTexture("_UtilitySamplerC", map.WatermapTex);
+		WaterMaterial.SetFloat("_WaterScale", xRes / -10f);
+		//
+
+		                     
 
 //*****************************************
 // ***** Set Terrain proportives
@@ -150,6 +153,8 @@ public class ScmapEditor : MonoBehaviour {
 		TerrainMaterial.SetFloat("_LowerScale", Textures[0].AlbedoScale / Textures[1].AlbedoScale);
 		TerrainMaterial.SetTexture("_SplatLower", Textures[0].Albedo);
 		TerrainMaterial.SetTexture("_NormalLower", Textures[0].Normal);
+
+		TerrainMaterial.SetFloat("_GridScale", xRes / 10f);
 
 
 		heights = new float[map.Width, map.Height];

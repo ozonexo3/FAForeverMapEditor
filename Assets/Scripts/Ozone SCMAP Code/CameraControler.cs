@@ -364,9 +364,9 @@ public class CameraControler : MonoBehaviour {
 
 
 				Vector3 MovedOffset = Edit.SelectedMarker.position - Edit.SelectedMarkerBeginPos;
-				Debug.Log(MovedOffset);
 				for(int i = 0; i < Edit.SymmetrySelectionList.Length; i++){
-					Vector3 localMoveOffset = new Vector3(MovedOffset.x * Edit.SymmetrySelectionList[i].MoveMultiply.x, MovedOffset.y, MovedOffset.z * Edit.SymmetrySelectionList[i].MoveMultiply.z);
+					Vector3 ThisMovedOffset = Quaternion.Euler(Vector3.up * Edit.SymmetrySelectionList[i].MoveRotation) * MovedOffset;
+					Vector3 localMoveOffset = new Vector3(ThisMovedOffset.x * Edit.SymmetrySelectionList[i].MoveMultiply.x, ThisMovedOffset.y, ThisMovedOffset.z * Edit.SymmetrySelectionList[i].MoveMultiply.z);
 					Edit.SelectedSymmetryMarkers[i].position = Edit.SymmetrySelectionList[i].SelectedMarkerBeginClickPos + localMoveOffset;
 
 					for(int s = 0; s < Edit.SymmetrySelectionList[i].MirrorSelected.Count; s++){

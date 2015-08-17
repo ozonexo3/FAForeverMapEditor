@@ -12,6 +12,7 @@
 		NormalSampler1 ("NormalSampler1", 2D) = "white" {}
 		NormalSampler2 ("NormalSampler2", 2D) = "white" {}
 		NormalSampler3 ("NormalSampler3", 2D) = "white" {}
+		_WaterScale ("Water Scale", Range (-5000, -500)) = -102.4
 	}
     SubShader {
         Pass {
@@ -30,6 +31,7 @@
 
 			//************ Water Params
 			
+			float _WaterScale;
 			float waveCrestThreshold = 1;
 			float3 waveCrestColor = float3( 1, 1, 1);
 			float refractionScale = 0.015;
@@ -42,7 +44,6 @@
 
 			// 3 repeat rate for 3 texture layers
 			float4  normalRepeatRate = float4(0.0009, 0.009, 0.05, 0.5);
-			
 			
 			
 			// 3 vectors of normal movements
@@ -72,17 +73,18 @@
 				float4 mScreenPos	: 	TEXCOORD6;
 				float4 AddVar		: 	TEXCOORD7;
 		    };
+		    
+		    
 
 			// Vertex Shader
 		    fragmentInput vert(vertexInput i){
 		        fragmentInput o;
 		        o.position = mul (UNITY_MATRIX_MVP, i.vertex);
 		        o.mTexUV = i.texcoord0;
-		        float Scale = -51;
-		        o.mLayer0 = (i.vertex.xz * Scale + (float2(5.5, -9.95) * _Time.y)) * 0.0009;
-		        o.mLayer1 = (i.vertex.xz * Scale + (float2(0.05, -0.095) * _Time.y)) * 0.09;
-		        o.mLayer2 = (i.vertex.xz * Scale + (float2(0.01, 0.03) * _Time.y)) * 0.05;
-		        o.mLayer3 = (i.vertex.xz * Scale + (float2(0.0005, 0.0009) * _Time.y)) * 0.5;
+		        o.mLayer0 = (i.vertex.xz * _WaterScale + (float2(5.5, -9.95) * _Time.y)) * 0.0009;
+		        o.mLayer1 = (i.vertex.xz * _WaterScale + (float2(0.05, -0.095) * _Time.y)) * 0.09;
+		        o.mLayer2 = (i.vertex.xz * _WaterScale + (float2(0.01, 0.03) * _Time.y)) * 0.05;
+		        o.mLayer3 = (i.vertex.xz * _WaterScale + (float2(0.0005, 0.0009) * _Time.y)) * 0.5;
 		        o.mScreenPos = ComputeScreenPos(o.position);
 		        o.mViewVec = mul (_Object2World, i.vertex).xyz - _WorldSpaceCameraPos;
 		        o.mViewVec = normalize(o.mViewVec);

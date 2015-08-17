@@ -33,6 +33,7 @@ public class MapLuaParser : MonoBehaviour {
 
 	public		int				ScriptId = 0;
 
+	public		string			BackupPath;
 
 
 	[System.Serializable]
@@ -166,10 +167,12 @@ public class MapLuaParser : MonoBehaviour {
 
 	private void LoadScenarioLua(){
 		System.Text.Encoding encodeType = System.Text.Encoding.ASCII;
-		
+
+		string MapPath = PlayerPrefs.GetString("MapsPath", "maps/");
+
 		string loadedFile = "";
-		Debug.Log("Load file:" + "maps/" + FolderName + "/" + ScenarioFileName + ".lua");
-		string loc = "maps/" + FolderName + "/" + ScenarioFileName + ".lua";
+		Debug.Log("Load file:" + MapPath + FolderName + "/" + ScenarioFileName + ".lua");
+		string loc = MapPath + FolderName + "/" + ScenarioFileName + ".lua";
 		loadedFile = System.IO.File.ReadAllText(loc, encodeType);
 
 		string loadedFileFunctions = "";
@@ -278,6 +281,10 @@ public class MapLuaParser : MonoBehaviour {
 		}
 		else{
 			MapElements.SetActive(false);
+			HeightmapControler.TerrainMaterial.SetFloat("_AreaX", 0);
+			HeightmapControler.TerrainMaterial.SetFloat("_AreaY", 0);
+			HeightmapControler.TerrainMaterial.SetFloat("_AreaWidht", ScenarioData.Size.x / 15f);
+			HeightmapControler.TerrainMaterial.SetFloat("_AreaHeight", ScenarioData.Size.y / 15f);
 		}
 
 		MapCenterPoint = Vector3.zero;
@@ -556,9 +563,21 @@ public class MapLuaParser : MonoBehaviour {
 
 
 	public IEnumerator SaveMap(){
+
 		InfoPopup.Show(true, "Saving map...");
 		yield return null;
 
+		string MapPath = PlayerPrefs.GetString("MapsPath", "maps/");
+		string BackupId = System.DateTime.Now.Month.ToString() +System.DateTime.Now.Day.ToString() + System.DateTime.Now.Hour.ToString() + System.DateTime.Now.Minute.ToString() + System.DateTime.Now.Second.ToString();
+		BackupPath = Application.dataPath + "/" + MapPath + FolderName + "/Backup_" + BackupId;
+
+		#if UNITY_EDITOR
+			BackupPath = BackupPath.Replace("Assets/", "");
+		#endif
+
+		System.IO.Directory.CreateDirectory(BackupPath);
+
+		yield return null;
 		SaveScenarioLua();
 		yield return null;
 		SaveSaveLua();
@@ -617,13 +636,15 @@ public class MapLuaParser : MonoBehaviour {
 			}
 		}
 
-
-		string ScenarioFilePath = "/maps/" + FolderName + "/" + ScenarioFileName + ".lua";
-		string SavePath = Application.dataPath + ScenarioFilePath.Replace(".lua", "_new.lua");
+		string MapPath = PlayerPrefs.GetString("MapsPath", "maps/");
+		string ScenarioFilePath = "/" + MapPath + FolderName + "/" + ScenarioFileName + ".lua";
+		//string SavePath = Application.dataPath + ScenarioFilePath.Replace(".lua", "_new.lua");
+		string SavePath = Application.dataPath + ScenarioFilePath;
 		#if UNITY_EDITOR
 		SavePath = SavePath.Replace("Assets/", "");
 		#endif
-		
+
+		System.IO.File.Move(SavePath, BackupPath + "/" + ScenarioFileName + ".lua");
 		System.IO.File.WriteAllText(SavePath, SaveData);
 	}
 
@@ -745,10 +766,16 @@ public class MapLuaParser : MonoBehaviour {
 				SaveData += line;
 			}
 		}
-		string SavePath = Application.dataPath + ScenarioData.SaveLua.Replace(".lua", "_new.lua");
+		//string SavePath = Application.dataPath + ScenarioData.SaveLua.Replace(".lua", "_new.lua");
+		string SavePath = Application.dataPath + ScenarioData.SaveLua;
 		#if UNITY_EDITOR
 		SavePath = SavePath.Replace("Assets/", "");
 		#endif
+
+		string FileName = ScenarioData.SaveLua;
+		char[] NameSeparator = ("/").ToCharArray();
+		string[] Names = FileName.Split(NameSeparator);
+		System.IO.File.Move(SavePath, BackupPath + "/" + Names[Names.Length - 1]);
 
 		System.IO.File.WriteAllText(SavePath, SaveData);
 	}
@@ -767,10 +794,16 @@ public class MapLuaParser : MonoBehaviour {
 
 		SaveData = loadedFile;
 
-		string SavePath = Application.dataPath + ScenarioData.ScriptLua.Replace(".lua", "_new.lua");
+		//string SavePath = Application.dataPath + ScenarioData.ScriptLua.Replace(".lua", "_new.lua");
+		string SavePath = Application.dataPath + ScenarioData.ScriptLua;
 		#if UNITY_EDITOR
 		SavePath = SavePath.Replace("Assets/", "");
 		#endif
+
+		string FileName = ScenarioData.ScriptLua;
+		char[] NameSeparator = ("/").ToCharArray();
+		string[] Names = FileName.Split(NameSeparator);
+		System.IO.File.Move(SavePath, BackupPath + "/" + Names[Names.Length - 1]);
 		
 		System.IO.File.WriteAllText(SavePath, SaveData);
 	}

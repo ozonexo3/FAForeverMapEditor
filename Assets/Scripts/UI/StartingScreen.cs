@@ -40,7 +40,8 @@ public class StartingScreen : MonoBehaviour {
 	}
 
 	public void LoadPreview(){
-		string path = Application.dataPath + "/" + "maps/" + Scenario.FolderName;
+		string MapPath = PlayerPrefs.GetString("MapsPath", "maps/");
+		string path = Application.dataPath + "/" + MapPath + Scenario.FolderName;
 		#if UNITY_EDITOR
 		path = path.Replace("Assets/", "");
 		#endif

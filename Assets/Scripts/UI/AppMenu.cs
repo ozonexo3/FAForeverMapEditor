@@ -46,6 +46,10 @@ public class AppMenu : MonoBehaviour {
 		case "SaveAs":
 			EditingMenu.ButtonFunction("Save");
 			break;
+		case "Undo":
+			break;
+		case "Redo":
+			break;
 		case "Symmetry":
 			Symmetry.SetActive(true);
 			break;
@@ -72,13 +76,17 @@ public class AppMenu : MonoBehaviour {
 			Popups[0].SetActive(true);
 			Buttons[0].interactable = false;
 			break;
-		case "Tools":
+		case "Edit":
 			Popups[1].SetActive(true);
 			Buttons[1].interactable = false;
 			break;
-		case "Symmetry":
+		case "Tools":
 			Popups[2].SetActive(true);
 			Buttons[2].interactable = false;
+			break;
+		case "Symmetry":
+			Popups[3].SetActive(true);
+			Buttons[3].interactable = false;
 			break;
 		}
 
