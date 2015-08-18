@@ -7,6 +7,7 @@ using NLua;
 public class MapLuaParser : MonoBehaviour {
 
 	[Header("Objects")]
+	public		Undo			History;
 	public		MapHelperGui	HelperGui;
 	public		string			FolderName;
 	public		string			ScenarioFileName;
