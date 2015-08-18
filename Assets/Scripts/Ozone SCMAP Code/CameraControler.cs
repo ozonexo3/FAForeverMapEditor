@@ -5,6 +5,7 @@ using System.Collections.Generic;
 
 public class CameraControler : MonoBehaviour {
 
+	public			Undo				History;
 	public			MapLuaParser		MapControler;
 	public			MapHelperGui		HUD;
 	public			Editing				Edit;
@@ -288,6 +289,9 @@ public class CameraControler : MonoBehaviour {
 	public	void OnBeginDragFunc(){
 		SelectionBox = false;
 		MouseBeginClick = new Vector2(Input.mousePosition.x, Input.mousePosition.y);
+		/*if(ControlerDrag){
+			History.RegisterMarkersMove();
+		}*/
 
 		OnDragFunc();
 	}
@@ -386,6 +390,7 @@ public class CameraControler : MonoBehaviour {
 			else if(diference.magnitude > 5 &&  ControlerBegin){
 
 				ControlerDrag = true;
+				History.RegisterMarkersMove();
 			}
 			else return;
 

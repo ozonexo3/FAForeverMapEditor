@@ -11,12 +11,13 @@ public class Editing : MonoBehaviour {
 	public		GameObject[]		CategorysSelected;
 	public		EditStates			State = EditStates.MapStat;
 	public		bool				MauseOnGameplay;
+	public		MarkersList			AllMarkersList;
+
 
 	public		List<GameObject>		Selected = new List<GameObject>();
 	public		List<GameObject>		MirrorSelected = new List<GameObject>();
 	public		SymmetrySelection[]		SymmetrySelectionList = new SymmetrySelection[0];
 	public		Vector3[]				SelectedStartPos;
-	public		MarkersList			AllMarkersList;
 
 	public		Transform			HudElements;
 	public		Transform			SelectedMarker;

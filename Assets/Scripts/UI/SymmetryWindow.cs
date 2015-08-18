@@ -23,7 +23,9 @@ public class SymmetryWindow : MonoBehaviour {
 
 	public void SliderChange(){
 		if(Enabling) return;
+		if(PlayerPrefs.GetInt("SymmetryAngleCount", 0) == (int)AngleSlider.value) return;
 		PlayerPrefs.SetInt("SymmetryAngleCount", (int)AngleSlider.value);
+		EditMenu.UpdateSelectionRing();
 	}
 
 	public void Button(string func){

@@ -1,13 +1,18 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
   <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Undo\Undo.cs">
     <Files>
-      <File FileName="Assets\Scripts\Undo\Undo.cs" Line="36" Column="31" />
-      <File FileName="Assets\Scripts\Undo\HistoryObject.cs" Line="5" Column="28" />
-      <File FileName="Assets\Scripts\Undo\HistoryClasses.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\Undo\HistoryObjects\HistoryMapInfo.cs" Line="8" Column="26" />
-      <File FileName="Assets\Scripts\Ozone SCMAP Code\MapLuaParser.cs" Line="812" Column="1" />
-      <File FileName="Assets\Scripts\UI\MapInfo.cs" Line="14" Column="15" />
+      <File FileName="Assets\Scripts\Undo\HistoryUndoRegister.cs" Line="7" Column="3" />
+      <File FileName="Assets\Scripts\Undo\Undo.cs" Line="153" Column="32" />
+      <File FileName="Assets\Scripts\Undo\HistoryObject.cs" Line="12" Column="72" />
+      <File FileName="Assets\Scripts\Undo\HistoryClasses.cs" Line="16" Column="1" />
+      <File FileName="Assets\Scripts\Undo\HistoryObjects\HistoryMapInfo.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\Ozone SCMAP Code\MapLuaParser.cs" Line="10" Column="25" />
+      <File FileName="Assets\Scripts\UI\MapInfo.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\UI\SymmetryWindow.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\Undo\HistoryObjects\HistoryMarkersMove.cs" Line="15" Column="23" />
+      <File FileName="Assets\Scripts\UI\Editing.cs" Line="25" Column="50" />
+      <File FileName="Assets\Scripts\Ozone SCMAP Code\CameraControler.cs" Line="294" Column="6" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

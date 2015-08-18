@@ -21,6 +21,13 @@ public class MapInfo : MonoBehaviour {
 		Version.text = Scenario.ScenarioData.Version + "";
 	}
 
+	public void UpdateScriptToggles(int id){
+		for(int i = 0; i < ScriptToggles.Length; i++){
+			if(i == id) ScriptToggles[i].isOn = true;
+			else ScriptToggles[i].isOn = false;
+		}
+	}
+
 	public void EndFieldEdit(){
 		if(HasChanged()) Scenario.History.RegisterMapInfo ();
 		Scenario.ScenarioData.MapName = Name.text;
@@ -30,9 +37,10 @@ public class MapInfo : MonoBehaviour {
 
 	public void ChangeScript(int id = 0){
 		if(Scenario.ScriptId != id) Scenario.History.RegisterMapInfo ();
-
 		Scenario.ScriptId = id;
 	}
+
+
 
 	bool HasChanged(){
 		if(Scenario.ScenarioData.MapName != Name.text) return true;
