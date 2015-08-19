@@ -151,19 +151,6 @@ public class MapLuaParser : MonoBehaviour {
 		HeightmapControler.TerrainMaterial.SetFloat("_AreaY", ScenarioData.Area.y / 15f);
 		HeightmapControler.TerrainMaterial.SetFloat("_AreaWidht", ScenarioData.Area.width / 15f);
 		HeightmapControler.TerrainMaterial.SetFloat("_AreaHeight", ScenarioData.Area.height / 15f);
-
-		/*MapBorders[0].localPosition = Vector3.right * (ScenarioData.Size.x / 20) - Vector3.forward * ((ScenarioData.Size.y - ScenarioData.Area.height) / ScenarioData.Size.y) * (ScenarioData.Size.x / 10);
-		MapBorders[1].localPosition = Vector3.right * (ScenarioData.Size.x / 20) -Vector3.forward * (ScenarioData.Size.y / 10) + Vector3.forward * (ScenarioData.Area.y / ScenarioData.Size.y) * (ScenarioData.Size.y / 10);
-
-		MapBorders[2].localPosition = -Vector3.forward * (ScenarioData.Size.y / 20) + Vector3.zero + Vector3.right * (ScenarioData.Area.x / ScenarioData.Size.x) * (ScenarioData.Size.x / 10);
-		MapBorders[3].localPosition = -Vector3.forward * (ScenarioData.Size.y / 20) + Vector3.right * (ScenarioData.Size.x / 10) - Vector3.right * ((ScenarioData.Size.x - ScenarioData.Area.width) / ScenarioData.Size.x) * (ScenarioData.Size.x / 10);
-
-
-		MapBorders[0].localScale = new Vector3((MapBorders[3].localPosition.x - MapBorders[2].localPosition.x) / 10, 1, 1);
-		MapBorders[1].localScale = new Vector3((MapBorders[3].localPosition.x - MapBorders[2].localPosition.x) / 10, 1, 1);
-
-		MapBorders[2].localScale = new Vector3((MapBorders[1].localPosition.z - MapBorders[0].localPosition.z) / 10, 1, 1);
-		MapBorders[3].localScale = new Vector3((MapBorders[1].localPosition.z - MapBorders[0].localPosition.z) / 10, 1, 1);*/
 	}
 
 	private void LoadScenarioLua(){
@@ -357,16 +344,17 @@ public class MapLuaParser : MonoBehaviour {
 						break;
 					}
 				}
-				GameObject NewMex =  Instantiate(Prefabs[1], Vector3.zero, Quaternion.identity) as GameObject;
-				NewMex.name = Mexes[MassCount].name;
-				Mexes[MassCount].Mark = NewMex.transform;
-				Mexes[MassCount].Mark.parent = MarkersParent;
+				//GameObject NewMex =  Instantiate(Prefabs[1], Vector3.zero, Quaternion.identity) as GameObject;
+				//NewMex.name = Mexes[MassCount].name;
+				//Mexes[MassCount].Mark = NewMex.transform;
+				//Mexes[MassCount].Mark.parent = MarkersParent;
 				Vector3 MexLocPos = HeightmapControler.MapPosInWorld(Mexes[MassCount].position);
-				Mexes[MassCount].Mark.localPosition = MexLocPos;
-				Mexes[MassCount].Script = Mexes[MassCount].Mark.gameObject.GetComponent<MarkerScript>();
-				Mexes[MassCount].Script.Typ = MarkerScript.MarkersTypes.Mex;
-				if(Water) Mexes[MassCount].Script.WaterLevel =  ScenarioData.MaxHeight / 12.8f;
-				else  Mexes[MassCount].Script.WaterLevel = 0;
+				//Mexes[MassCount].Mark.localPosition = MexLocPos;
+				Mexes[MassCount].position = MexLocPos;
+				//Mexes[MassCount].Script = Mexes[MassCount].Mark.gameObject.GetComponent<MarkerScript>();
+				//Mexes[MassCount].Script.Typ = MarkerScript.MarkersTypes.Mex;
+				//if(Water) Mexes[MassCount].Script.WaterLevel =  ScenarioData.MaxHeight / 12.8f;
+				//else  Mexes[MassCount].Script.WaterLevel = 0;
 				MassCount++;
 				
 			}
@@ -419,16 +407,17 @@ public class MapLuaParser : MonoBehaviour {
 						break;
 					}
 				}
-				GameObject NewMex =  Instantiate(Prefabs[2], Vector3.zero, Quaternion.identity) as GameObject;
-				NewMex.name = Hydros[HydroCount].name;
-				Hydros[HydroCount].Mark = NewMex.transform;
-				Hydros[HydroCount].Mark.parent = MarkersParent;
+				//GameObject NewMex =  Instantiate(Prefabs[2], Vector3.zero, Quaternion.identity) as GameObject;
+				//NewMex.name = Hydros[HydroCount].name;
+				//Hydros[HydroCount].Mark = NewMex.transform;
+				//Hydros[HydroCount].Mark.parent = MarkersParent;
 				Vector3 MexLocPos = HeightmapControler.MapPosInWorld(Hydros[HydroCount].position);
-				Hydros[HydroCount].Mark.localPosition = MexLocPos;
-				Hydros[HydroCount].Script = Hydros[HydroCount].Mark.gameObject.GetComponent<MarkerScript>();
-				Hydros[HydroCount].Script.Typ = MarkerScript.MarkersTypes.Mex;
-				if(Water) Hydros[HydroCount].Script.WaterLevel = ScenarioData.MaxHeight / 12.8f;
-				else Hydros[HydroCount].Script.WaterLevel = 0;
+				Hydros[HydroCount].position = MexLocPos;
+				//Hydros[HydroCount].Mark.localPosition = MexLocPos;
+				//Hydros[HydroCount].Script = Hydros[HydroCount].Mark.gameObject.GetComponent<MarkerScript>();
+				//Hydros[HydroCount].Script.Typ = MarkerScript.MarkersTypes.Mex;
+				//if(Water) Hydros[HydroCount].Script.WaterLevel = ScenarioData.MaxHeight / 12.8f;
+				//else Hydros[HydroCount].Script.WaterLevel = 0;
 				
 				HydroCount++;
 			}
@@ -436,11 +425,11 @@ public class MapLuaParser : MonoBehaviour {
 				
 				ARMY_.Add(new Army());
 				ARMY_[SpawnCount].name = save.GetTable("AllKeyMarkers")[m + 1].ToString();
-				GameObject NewSpawn =  Instantiate(Prefabs[0], Vector3.zero, Quaternion.identity) as GameObject;
-				ARMY_[SpawnCount].Mark = NewSpawn.transform;
-				ARMY_[SpawnCount].Mark.parent = MarkersParent;
+				//GameObject NewSpawn =  Instantiate(Prefabs[0], Vector3.zero, Quaternion.identity) as GameObject;
+				//ARMY_[SpawnCount].Mark = NewSpawn.transform;
+				//ARMY_[SpawnCount].Mark.parent = MarkersParent;
 				//Vector3 MexLocPos = Vector3.zero;
-				NewSpawn.name = ARMY_[SpawnCount].name;
+				//NewSpawn.name = ARMY_[SpawnCount].name;
 
 
 				ARMY_[SpawnCount].position.x = float.Parse(MarkerPos[1].ToString(), System.Globalization.CultureInfo.InvariantCulture.NumberFormat);
@@ -450,11 +439,12 @@ public class MapLuaParser : MonoBehaviour {
 				//MexLocPos.x = -1 * (ScenarioData.Size.x / 20) + 1 * (ARMY_[SpawnCount].position.x / ScenarioData.Size.x) * (ScenarioData.Size.x / 10);
 				//MexLocPos.z = -1 * (ScenarioData.Size.y / 20) + 1 * (ARMY_[SpawnCount].position.z / ScenarioData.Size.y) * (ScenarioData.Size.y / 10);
 				Vector3 MexLocPos = HeightmapControler.MapPosInWorld(ARMY_[SpawnCount].position);
-				ARMY_[SpawnCount].Mark.localPosition = MexLocPos;
-				ARMY_[SpawnCount].Script = ARMY_[SpawnCount].Mark.gameObject.GetComponent<MarkerScript>();
-				ARMY_[SpawnCount].Script.Typ = MarkerScript.MarkersTypes.Army;
-				if(Water) ARMY_[SpawnCount].Script.WaterLevel = ScenarioData.MaxHeight / 12.8f;
-				else ARMY_[SpawnCount].Script.WaterLevel = 0;
+				ARMY_[SpawnCount].position = MexLocPos;
+				//ARMY_[SpawnCount].Mark.localPosition = MexLocPos;
+				//ARMY_[SpawnCount].Script = ARMY_[SpawnCount].Mark.gameObject.GetComponent<MarkerScript>();
+				//ARMY_[SpawnCount].Script.Typ = MarkerScript.MarkersTypes.Army;
+				//if(Water) ARMY_[SpawnCount].Script.WaterLevel = ScenarioData.MaxHeight / 12.8f;
+				//else ARMY_[SpawnCount].Script.WaterLevel = 0;
 				SpawnCount++;
 			}
 			else{
@@ -506,54 +496,39 @@ public class MapLuaParser : MonoBehaviour {
 						break;
 					}
 				}
-				GameObject NewMex;
+				//GameObject NewMex;
 
 				switch(MarkerTab["type"].ToString()){
 				case "Rally Point":
-					NewMex = Instantiate(Prefabs[3], Vector3.zero, Quaternion.identity) as GameObject;
+					//NewMex = Instantiate(Prefabs[3], Vector3.zero, Quaternion.identity) as GameObject;
 					break;
 				case "Combat Zone":
-					NewMex = Instantiate(Prefabs[4], Vector3.zero, Quaternion.identity) as GameObject;
+					//NewMex = Instantiate(Prefabs[4], Vector3.zero, Quaternion.identity) as GameObject;
 					break;
 				case "Defensive Point":
-					NewMex = Instantiate(Prefabs[5], Vector3.zero, Quaternion.identity) as GameObject;
+					//NewMex = Instantiate(Prefabs[5], Vector3.zero, Quaternion.identity) as GameObject;
 					break;
 				case "Naval Area":
-					NewMex = Instantiate(Prefabs[6], Vector3.zero, Quaternion.identity) as GameObject;
+					//NewMex = Instantiate(Prefabs[6], Vector3.zero, Quaternion.identity) as GameObject;
 					break;
 				default:
-					NewMex = Instantiate(Prefabs[5], Vector3.zero, Quaternion.identity) as GameObject;
+					//NewMex = Instantiate(Prefabs[5], Vector3.zero, Quaternion.identity) as GameObject;
 					break;
 				}
-
-				/*if(MarkerTab["type"].ToString() == "Rally Point"){
-					NewMex = Instantiate(Prefabs[3], Vector3.zero, Quaternion.identity) as GameObject;
-				}
-				else if(MarkerTab["type"].ToString() == "Combat Zone"){
-					NewMex = Instantiate(Prefabs[4], Vector3.zero, Quaternion.identity) as GameObject;
-				}
-				else if(MarkerTab["type"].ToString() == "Defensive Point"){
-					NewMex = Instantiate(Prefabs[5], Vector3.zero, Quaternion.identity) as GameObject;
-				}
-				else if(MarkerTab["type"].ToString() == "Naval Area"){
-					NewMex = Instantiate(Prefabs[6], Vector3.zero, Quaternion.identity) as GameObject;
-				}
-				else{
-					NewMex = Instantiate(Prefabs[5], Vector3.zero, Quaternion.identity) as GameObject;
-				}*/
 
 				SiMarkers[SiCount].type = MarkerTab["type"].ToString();
 				SiMarkers[SiCount].prop = MarkerTab["prop"].ToString();
 
-				NewMex.name = SiMarkers[SiCount].name;
-				SiMarkers[SiCount].Mark = NewMex.transform;
-				SiMarkers[SiCount].Mark.parent = MarkersParent;
+				//NewMex.name = SiMarkers[SiCount].name;
+				//SiMarkers[SiCount].Mark = NewMex.transform;
+				//SiMarkers[SiCount].Mark.parent = MarkersParent;
 				Vector3 MexLocPos = HeightmapControler.MapPosInWorld(SiMarkers[SiCount].position);
-				SiMarkers[SiCount].Mark.localPosition = MexLocPos;
-				SiMarkers[SiCount].Script = SiMarkers[SiCount].Mark.gameObject.GetComponent<MarkerScript>();
-				SiMarkers[SiCount].Script.Typ = MarkerScript.MarkersTypes.Mex;
-				if(Water) SiMarkers[SiCount].Script.WaterLevel = ScenarioData.MaxHeight / 12.8f;
-				else  SiMarkers[SiCount].Script.WaterLevel = 0;
+				SiMarkers[SiCount].position = MexLocPos;
+				//SiMarkers[SiCount].Mark.localPosition = MexLocPos;
+				//SiMarkers[SiCount].Script = SiMarkers[SiCount].Mark.gameObject.GetComponent<MarkerScript>();
+				//SiMarkers[SiCount].Script.Typ = MarkerScript.MarkersTypes.Mex;
+				//if(Water) SiMarkers[SiCount].Script.WaterLevel = ScenarioData.MaxHeight / 12.8f;
+				//else  SiMarkers[SiCount].Script.WaterLevel = 0;
 				
 				SiCount++;
 			}
