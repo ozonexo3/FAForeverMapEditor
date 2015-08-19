@@ -11,5 +11,6 @@ namespace UndoHistory{
 	public class UndoPrefabs{
 		public		GameObject		MapInfo;
 		public		GameObject		MarkersMove;
+		public		GameObject		MarkersSelection;
 	}
 }

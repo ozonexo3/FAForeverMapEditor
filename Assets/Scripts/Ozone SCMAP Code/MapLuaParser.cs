@@ -7,6 +7,7 @@ using NLua;
 public class MapLuaParser : MonoBehaviour {
 
 	[Header("Objects")]
+	public		MarkersRenderer	MarkerRend;
 	public		Undo			History;
 	public		MapHelperGui	HelperGui;
 	public		string			FolderName;
@@ -782,5 +783,73 @@ public class MapLuaParser : MonoBehaviour {
 		System.IO.File.Move(SavePath, BackupPath + "/" + Names[Names.Length - 1]);
 		
 		System.IO.File.WriteAllText(SavePath, SaveData);
+	}
+
+	public Vector3 GetPosOfMarker(EditMap.EditingMarkers.WorkingElement Element){
+		switch(Element.ListId){
+		case 0:
+			return MarkerRend.Armys[Element.InstanceId].transform.position;
+		case 1:
+			return MarkerRend.Mex[Element.InstanceId].transform.position;
+		case 2:
+			return MarkerRend.Hydro[Element.InstanceId].transform.position;
+		case 3:
+			return MarkerRend.Ai[Element.InstanceId].transform.position;
+		}
+		return Vector3.zero;
+	}
+
+	public void SetPosOfMarker(EditMap.EditingMarkers.WorkingElement Element, Vector3 NewPos){
+		switch(Element.ListId){
+		case 0:
+			ARMY_[Element.InstanceId].position = NewPos;
+			break;
+		case 1:
+			Mexes[Element.InstanceId].position = NewPos;
+			break;
+		case 2:
+			Hydros[Element.InstanceId].position = NewPos;
+			break;
+		case 3:
+			SiMarkers[Element.InstanceId].position = NewPos;
+			break;
+		}
+	}
+
+	public GameObject GetMarkerRenderer(EditMap.EditingMarkers.WorkingElement Element){
+		switch(Element.ListId){
+		case 0:
+			return MarkerRend.Armys[Element.InstanceId];
+		case 1:
+			return MarkerRend.Mex[Element.InstanceId];
+		case 2:
+			return MarkerRend.Hydro[Element.InstanceId];
+		case 3:
+			return MarkerRend.Ai[Element.InstanceId];
+		}
+		return null;
+	}
+
+	public void CreateMarker(int MarkerType, Vector3 position, string name){
+		if(MarkerType == 0){
+			ARMY_.Add(new Army());
+			ARMY_[ARMY_.Count - 1].name = "ARMY_" + ARMY_.Count.ToString();
+			ARMY_[ARMY_.Count - 1].position = position;
+		}
+		else if(MarkerType == 1){
+			Mexes.Add(new Mex());
+			Mexes[Mexes.Count - 1].name = "Mex_" + Mexes.Count.ToString();
+			Mexes[Mexes.Count - 1].position = position;
+		}
+		else if(MarkerType == 2){
+			Hydros.Add(new Hydro());
+			Hydros[Hydros.Count - 1].name = "Hydro_" + Hydros.Count.ToString();
+			Hydros[Hydros.Count - 1].position = position;
+		}
+		else if(MarkerType == 3){
+			SiMarkers.Add(new Marker());
+			SiMarkers[SiMarkers.Count - 1].name = "AI_" + SiMarkers.Count.ToString();
+			SiMarkers[SiMarkers.Count - 1].position = position;
+		}
 	}
 }

@@ -7,8 +7,9 @@ public class ListObject : MonoBehaviour {
 	public		Text 				ObjectName;
 	public		Image				Icon;
 	public		GameObject			Selected;
-	public		GameObject			ConnectedGameObject;
 	public		CameraControler		KameraKontroler;
+	public		int					InstanceId;
+	public		int					ListId;
 
 	public void Unselect(){
 		Selected.SetActive(false);
@@ -19,6 +20,6 @@ public class ListObject : MonoBehaviour {
 	}
 
 	public void Clicked(){
-		KameraKontroler.MarkerList(ConnectedGameObject);
+		//KameraKontroler.MarkerList(ConnectedGameObject);
 	}
 }

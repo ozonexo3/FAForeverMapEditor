@@ -11,6 +11,7 @@ GameObject:
   - 33: {fileID: 3300000}
   - 23: {fileID: 2300000}
   - 65: {fileID: 6500000}
+  - 114: {fileID: 11430140}
   m_Layer: 9
   m_Name: Empty
   m_TagString: Marker
@@ -73,6 +74,20 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: .100000001, y: .25, z: .100000001}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &11430140
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f9d23251b12f214c821014463e4336b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Rend: {fileID: 0}
+  InstanceId: 0
+  ListId: 0
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

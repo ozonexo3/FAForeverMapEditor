@@ -23,6 +23,24 @@ public class MarkersRenderer : MonoBehaviour {
 				Armys[i].transform.position = Scenario.ARMY_[i].position;
 			}
 		}
+
+		if (Mex.Count > 0) {
+			for(int i = 0; i < Mex.Count; i++){
+				Mex[i].transform.position = Scenario.Mexes[i].position;
+			}
+		}
+
+		if (Hydro.Count > 0) {
+			for(int i = 0; i < Hydro.Count; i++){
+				Hydro[i].transform.position = Scenario.Hydros[i].position;
+			}
+		}
+
+		if (Ai.Count > 0) {
+			for(int i = 0; i < Ai.Count; i++){
+				Ai[i].transform.position = Scenario.SiMarkers[i].position;
+			}
+		}
 	}
 
 	public void Regenerate(){
@@ -35,6 +53,9 @@ public class MarkersRenderer : MonoBehaviour {
 			Armys.Add(NewMarker);
 			NewMarker.transform.parent = transform;
 			NewMarker.name = Scenario.ARMY_[i].name;
+			NewMarker.GetComponent<MarkerData>().Rend = this;
+			NewMarker.GetComponent<MarkerData>().InstanceId = i;
+			NewMarker.GetComponent<MarkerData>().ListId = 0;
 		}
 
 		foreach (GameObject obj in Mex) {
@@ -46,6 +67,9 @@ public class MarkersRenderer : MonoBehaviour {
 			Mex.Add(NewMarker);
 			NewMarker.transform.parent = transform;
 			NewMarker.name = Scenario.Mexes[i].name;
+			NewMarker.GetComponent<MarkerData>().Rend = this;
+			NewMarker.GetComponent<MarkerData>().InstanceId = i;
+			NewMarker.GetComponent<MarkerData>().ListId = 1;
 		}
 
 		foreach (GameObject obj in Hydro) {
@@ -57,6 +81,9 @@ public class MarkersRenderer : MonoBehaviour {
 			Hydro.Add(NewMarker);
 			NewMarker.transform.parent = transform;
 			NewMarker.name = Scenario.Hydros[i].name;
+			NewMarker.GetComponent<MarkerData>().Rend = this;
+			NewMarker.GetComponent<MarkerData>().InstanceId = i;
+			NewMarker.GetComponent<MarkerData>().ListId = 2;
 		}
 
 		foreach (GameObject obj in Ai) {
@@ -68,6 +95,9 @@ public class MarkersRenderer : MonoBehaviour {
 			Ai.Add(NewMarker);
 			NewMarker.transform.parent = transform;
 			NewMarker.name = Scenario.SiMarkers[i].name;
+			NewMarker.GetComponent<MarkerData>().Rend = this;
+			NewMarker.GetComponent<MarkerData>().InstanceId = i;
+			NewMarker.GetComponent<MarkerData>().ListId = 3;
 		}
 	}
 }

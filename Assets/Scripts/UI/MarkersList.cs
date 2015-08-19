@@ -36,8 +36,9 @@ public class MarkersList : MonoBehaviour {
 
 			AllFields[count].ObjectName.text = Scenario.ARMY_[i].name;
 			AllFields[count].Icon.sprite = Icons[0];
-			AllFields[count].ConnectedGameObject = Scenario.ARMY_[i].Mark.gameObject;
 			AllFields[count].KameraKontroler = KameraKontroler;
+			AllFields[count].InstanceId = i;
+			AllFields[count].ListId = 0;
 
 			count++;
 		}
@@ -51,8 +52,9 @@ public class MarkersList : MonoBehaviour {
 			AllFields.Add(newList.GetComponent<ListObject>());
 			AllFields[count].ObjectName.text = Scenario.Mexes[i].name;
 			AllFields[count].Icon.sprite = Icons[1];
-			AllFields[count].ConnectedGameObject = Scenario.Mexes[i].Mark.gameObject;
 			AllFields[count].KameraKontroler = KameraKontroler;
+			AllFields[count].InstanceId = i;
+			AllFields[count].ListId = 1;
 
 			count++;
 		}
@@ -65,8 +67,9 @@ public class MarkersList : MonoBehaviour {
 			AllFields.Add(newList.GetComponent<ListObject>());
 			AllFields[count].ObjectName.text = Scenario.Hydros[i].name;
 			AllFields[count].Icon.sprite = Icons[2];
-			AllFields[count].ConnectedGameObject = Scenario.Hydros[i].Mark.gameObject;
 			AllFields[count].KameraKontroler = KameraKontroler;
+			AllFields[count].InstanceId = i;
+			AllFields[count].ListId = 2;
 
 			count++;
 		}
@@ -79,8 +82,9 @@ public class MarkersList : MonoBehaviour {
 			AllFields.Add(newList.GetComponent<ListObject>());
 			AllFields[count].ObjectName.text = Scenario.SiMarkers[i].name;
 			AllFields[count].Icon.sprite = Icons[3];
-			AllFields[count].ConnectedGameObject = Scenario.SiMarkers[i].Mark.gameObject;
 			AllFields[count].KameraKontroler = KameraKontroler;
+			AllFields[count].InstanceId = i;
+			AllFields[count].ListId = 3;
 
 			count++;
 		}

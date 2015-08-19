@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-
+using EditMap;
 
 public class CameraControler : MonoBehaviour {
 
@@ -11,6 +11,7 @@ public class CameraControler : MonoBehaviour {
 	public			Editing				Edit;
 	public			AppMenu				Menu;
 	public			GameObject			LoadingPopup;
+	public			bool				DragStartedGameplay = false;
 
 	public			Transform			Pivot;
 	public			float				MapSize;
@@ -38,10 +39,12 @@ public class CameraControler : MonoBehaviour {
 	public			Transform			DebugCube;
 
 	public			Transform			ReflectionCamera;
-
 	public			Vector3				TerrainClickPos;
 
-	public			List<GameObject>	AllWorkingObjects = new List<GameObject>();
+
+	// Creating Marker;
+	public			Transform			MarkerToCreate;
+	public			Transform[]			MarkerToCreateSymmetry;
 
 	public void RestartCam(){
 		Pos = Vector3.zero + Vector3.right * MapSize / 20.0f - Vector3.forward * MapSize / 20.0f;
@@ -54,8 +57,20 @@ public class CameraControler : MonoBehaviour {
 		if(LoadingPopup.activeSelf) return;
 
 		// Interaction
-		if(Edit.MauseOnGameplay){
-			if(HUD.MapLoaded){
+		if(Edit.MauseOnGameplay || DragStartedGameplay){
+			if(Edit.EditMarkers.CreatingId != 0){
+				CameraMovement();
+				bool MarkerOK = OnCreateMarker();
+				if(Input.GetMouseButtonDown(0) && MarkerOK){
+					// Create marker
+					Edit.Scenario.CreateMarker(Edit.EditMarkers.CreatingId - 1, MarkerToCreate.position, "");
+					for(int i = 0; i < MarkerToCreateSymmetry.Length; i++){
+						Edit.Scenario.CreateMarker(Edit.EditMarkers.CreatingId - 1, MarkerToCreateSymmetry[i].position, "");
+					}
+					Edit.EditMarkers.GenerateAllWorkingElements();
+				}
+			}
+			else if(HUD.MapLoaded){
 				CameraMovement();
 
 				if(Edit.State == Editing.EditStates.MarkersStat){
@@ -63,11 +78,12 @@ public class CameraControler : MonoBehaviour {
 				}
 
 				if(Input.GetMouseButtonDown(0)){
+					DragStartedGameplay = Edit.MauseOnGameplay;
 					OnBeginDragFunc();
 				}
 				else if(Input.GetMouseButtonUp(0)){
 					OnEndDragFunc();
-
+					DragStartedGameplay = false;
 					BeginWithShift = false;
 					BeginWithCtrl = false;
 					BeginWithAlt = false;
@@ -99,17 +115,17 @@ public class CameraControler : MonoBehaviour {
 
 	void CameraMovement(){
 		if(Input.GetAxis("Mouse ScrollWheel") > 0 && zoomIn > 0){
-			zoomIn -= Input.GetAxis("Mouse ScrollWheel") * 0.5f * (MapSize/1024);
+			zoomIn -= Input.GetAxis("Mouse ScrollWheel") * 0.5f * 1;
 			
 			Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 			RaycastHit hit;
 			if (Physics.Raycast(ray, out hit, 1000, Mask)){
-				Pos += (hit.point - Pos) * Mathf.Lerp(0.22f, 0.12f, ZoomCamPos()) * (MapSize/1024);
+				Pos += (hit.point - Pos) * Mathf.Lerp(0.22f, 0.12f, ZoomCamPos()) * 1;
 			}
 			
 		}
 		else if(Input.GetAxis("Mouse ScrollWheel") < 0){
-			zoomIn -= Input.GetAxis("Mouse ScrollWheel") * 0.5f * (MapSize/1024);
+			zoomIn -= Input.GetAxis("Mouse ScrollWheel") * 0.5f * 1;
 		}
 		
 		zoomIn = Mathf.Clamp01(zoomIn);
@@ -184,10 +200,10 @@ public class CameraControler : MonoBehaviour {
 					HitPointSnaped2.x -= 0.05f;
 					HitPointSnaped2.z -= 0.05f;
 
-					Edit.SelectedMarkerBeginClickPos = Edit.SelectedMarker.position - HitPointSnaped2;
-					Edit.SelectedMarkerBeginPos = Edit.SelectedMarker.position;
-					for(int i = 0; i < Edit.SymmetrySelectionList.Length; i++){
-						Edit.SymmetrySelectionList[i].SelectedMarkerBeginClickPos = Edit.SelectedSymmetryMarkers[i].position;
+					Edit.EditMarkers.SelectedMarkerBeginClickPos = Edit.EditMarkers.SelectedMarker.position - HitPointSnaped2;
+					Edit.EditMarkers.SelectedMarkerBeginPos = Edit.EditMarkers.SelectedMarker.position;
+					for(int i = 0; i < Edit.EditMarkers.SymmetrySelectionList.Length; i++){
+						Edit.EditMarkers.SymmetrySelectionList[i].SelectedMarkerBeginClickPos = Edit.EditMarkers.SelectedSymmetryMarkers[i].position;
 					}
 				}
 
@@ -198,17 +214,17 @@ public class CameraControler : MonoBehaviour {
 				List<GameObject> ClickedObjects = new List<GameObject>();
 				ClickedObjects.Add(hit.collider.gameObject);
 				if(Input.GetKey(KeyCode.LeftAlt)){
-					Edit.RemoveFromSelection(ClickedObjects);
+					Edit.EditMarkers.RemoveFromSelection(ClickedObjects);
 				}
 				else if(Input.GetKey(KeyCode.LeftControl)){
-					Edit.AddToSelection(ClickedObjects);
+					Edit.EditMarkers.AddToSelection(ClickedObjects);
 				}
 				else if(Input.GetKey(KeyCode.LeftShift)){
-					Edit.ChangeSelectionState(ClickedObjects);
+					Edit.EditMarkers.ChangeSelectionState(ClickedObjects);
 				}
 				else{
-					Edit.CleanSelection();
-					Edit.AddToSelection(ClickedObjects);
+					Edit.EditMarkers.CleanSelection();
+					Edit.EditMarkers.AddToSelection(ClickedObjects);
 				}
 			}
 			else{
@@ -222,7 +238,7 @@ public class CameraControler : MonoBehaviour {
 					BeginWithShift = true;
 				}
 				else{
-					Edit.CleanSelection();
+					Edit.EditMarkers.CleanSelection();
 				}
 			}
 			
@@ -272,17 +288,17 @@ public class CameraControler : MonoBehaviour {
 		ClickedObjects.Add(obj);
 
 		if(Input.GetKey(KeyCode.LeftAlt)){
-			Edit.RemoveFromSelection(ClickedObjects);
+			Edit.EditMarkers.RemoveFromSelection(ClickedObjects);
 		}
 		else if(Input.GetKey(KeyCode.LeftControl)){
-			Edit.AddToSelection(ClickedObjects);
+			Edit.EditMarkers.AddToSelection(ClickedObjects);
 		}
 		else if(Input.GetKey(KeyCode.LeftShift)){
-			Edit.ChangeSelectionState(ClickedObjects);
+			Edit.EditMarkers.ChangeSelectionState(ClickedObjects);
 		}
 		else{
-			Edit.CleanSelection();
-			Edit.AddToSelection(ClickedObjects);
+			Edit.EditMarkers.CleanSelection();
+			Edit.EditMarkers.AddToSelection(ClickedObjects);
 		}
 	}
 
@@ -312,22 +328,22 @@ public class CameraControler : MonoBehaviour {
 
 			List<GameObject> ClickedObjects = new List<GameObject>();
 
-			foreach(GameObject obj in AllWorkingObjects){
-				if(SelectionBoxArea.Contains(GetComponent<Camera>().WorldToScreenPoint(obj.transform.position))){
-					ClickedObjects.Add(obj);
+			foreach(EditingMarkers.WorkingElement obj in Edit.EditMarkers.AllWorkingElements){
+				if(SelectionBoxArea.Contains(GetComponent<Camera>().WorldToScreenPoint( Edit.Scenario.GetPosOfMarker(obj) ))){
+					ClickedObjects.Add(Edit.Scenario.GetMarkerRenderer(obj));
 				}
 			}
 			if(BeginWithAlt){
-				Edit.RemoveFromSelection(ClickedObjects);
+				Edit.EditMarkers.RemoveFromSelection(ClickedObjects);
 			}
 			else if(BeginWithCtrl){
-				Edit.AddToSelection(ClickedObjects);
+				Edit.EditMarkers.AddToSelection(ClickedObjects);
 			}
 			else if(BeginWithShift){
-				Edit.ChangeSelectionState(ClickedObjects);
+				Edit.EditMarkers.ChangeSelectionState(ClickedObjects);
 			}
 			else{
-				Edit.AddToSelection(ClickedObjects);
+				Edit.EditMarkers.AddToSelection(ClickedObjects);
 			}
 		}
 	}
@@ -359,28 +375,28 @@ public class CameraControler : MonoBehaviour {
 				HitPointSnaped.y = Terrain.activeTerrain.SampleHeight(HitPointSnaped);
 				DebugCube.position = HitPointSnaped;
 
-				Edit.SelectedMarker.position = HitPointSnaped + Edit.SelectedMarkerBeginClickPos;
+				Edit.EditMarkers.SelectedMarker.position = HitPointSnaped + Edit.EditMarkers.SelectedMarkerBeginClickPos;
 
 				
-				for(int i = 0; i < Edit.Selected.Count; i++){
-					Edit.Selected[i].transform.position = Edit.SelectedMarker.position + Edit.SelectedStartPos[i];
+				for(int i = 0; i < Edit.EditMarkers.Selected.Count; i++){
+					Edit.Scenario.SetPosOfMarker(Edit.EditMarkers.Selected[i],Edit.EditMarkers.SelectedMarker.position + Edit.EditMarkers.SelectedStartPos[i]);
 				}
 
 
-				Vector3 MovedOffset = Edit.SelectedMarker.position - Edit.SelectedMarkerBeginPos;
-				for(int i = 0; i < Edit.SymmetrySelectionList.Length; i++){
-					Vector3 ThisMovedOffset = Quaternion.Euler(Vector3.up * Edit.SymmetrySelectionList[i].MoveRotation) * MovedOffset;
-					Vector3 localMoveOffset = new Vector3(ThisMovedOffset.x * Edit.SymmetrySelectionList[i].MoveMultiply.x, ThisMovedOffset.y, ThisMovedOffset.z * Edit.SymmetrySelectionList[i].MoveMultiply.z);
-					Edit.SelectedSymmetryMarkers[i].position = Edit.SymmetrySelectionList[i].SelectedMarkerBeginClickPos + localMoveOffset;
+				Vector3 MovedOffset = Edit.EditMarkers.SelectedMarker.position - Edit.EditMarkers.SelectedMarkerBeginPos;
+				for(int i = 0; i < Edit.EditMarkers.SymmetrySelectionList.Length; i++){
+					Vector3 ThisMovedOffset = Quaternion.Euler(Vector3.up * Edit.EditMarkers.SymmetrySelectionList[i].MoveRotation) * MovedOffset;
+					Vector3 localMoveOffset = new Vector3(ThisMovedOffset.x * Edit.EditMarkers.SymmetrySelectionList[i].MoveMultiply.x, ThisMovedOffset.y, ThisMovedOffset.z * Edit.EditMarkers.SymmetrySelectionList[i].MoveMultiply.z);
+					if(Edit.EditMarkers.SymmetrySelectionList[i].Diagonal){
+						Edit.EditMarkers.SelectedSymmetryMarkers[i].position = Edit.EditMarkers.SymmetrySelectionList[i].SelectedMarkerBeginClickPos + new Vector3(localMoveOffset.z, localMoveOffset.y, localMoveOffset.x);
+					}
+					else Edit.EditMarkers.SelectedSymmetryMarkers[i].position = Edit.EditMarkers.SymmetrySelectionList[i].SelectedMarkerBeginClickPos + localMoveOffset;
 
-					for(int s = 0; s < Edit.SymmetrySelectionList[i].MirrorSelected.Count; s++){
-						Edit.SymmetrySelectionList[i].MirrorSelected[s].transform.position = Edit.SelectedSymmetryMarkers[i].position + Edit.SymmetrySelectionList[i].SelectedStartPos[s];
+					for(int s = 0; s < Edit.EditMarkers.SymmetrySelectionList[i].MirrorSelected.Count; s++){
+						Edit.Scenario.SetPosOfMarker(Edit.EditMarkers.SymmetrySelectionList[i].MirrorSelected[s], Edit.EditMarkers.SelectedSymmetryMarkers[i].position + Edit.EditMarkers.SymmetrySelectionList[i].SelectedStartPos[s]);
 					}
 				}
-
-
 			}
-
 		}
 		else if(!SelectionBox){
 			if(diference.magnitude > 5 && !ControlerBegin){
@@ -393,7 +409,6 @@ public class CameraControler : MonoBehaviour {
 				History.RegisterMarkersMove();
 			}
 			else return;
-
 		}
 
 		SelectionBoxImage.sizeDelta = new Vector2(Mathf.Abs(diference.x), Mathf.Abs(diference.y));
@@ -412,5 +427,89 @@ public class CameraControler : MonoBehaviour {
 			SelectionBoxImage.anchoredPosition = MouseBeginClick;
 		}
 
+	}
+
+	bool OnCreateMarker(){
+		if(!MarkerToCreate) return false;
+		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+		RaycastHit hit2;
+		if (Physics.Raycast(ray, out hit2, 1000, Mask)){
+
+			Vector3 HitPointSnaped = hit2.point;
+			HitPointSnaped.x *= 10;
+			HitPointSnaped.x = (int)(HitPointSnaped.x + 0.0f);
+			HitPointSnaped.x /= 10.0f;
+			
+			HitPointSnaped.z *= 10;
+			HitPointSnaped.z = (int)(HitPointSnaped.z + 0.0f);
+			HitPointSnaped.z /= 10.0f;
+			
+			HitPointSnaped.x += 0.05f;
+			HitPointSnaped.z -= 0.05f;
+
+			HitPointSnaped.y = Terrain.activeTerrain.SampleHeight(HitPointSnaped);
+			MarkerToCreate.position = HitPointSnaped;
+			int SymmetryCode = PlayerPrefs.GetInt("Symmetry", 0);
+
+			if(SymmetryCode > 0){
+				for(int i = 0; i < MarkerToCreateSymmetry.Length; i++){
+					Vector3 FinalPos;
+					if(SymmetryCode == 1 || (SymmetryCode == 4 && i == 0)){
+						FinalPos = HitPointSnaped - Edit.Scenario.MapCenterPoint;
+						FinalPos.x = -FinalPos.x;
+						FinalPos += Edit.Scenario.MapCenterPoint;
+						FinalPos.y = Terrain.activeTerrain.SampleHeight(FinalPos);
+						MarkerToCreateSymmetry[0].position = FinalPos;
+					}
+					else if(SymmetryCode == 2 || (SymmetryCode == 4 && i == 1)){
+						FinalPos = HitPointSnaped - Edit.Scenario.MapCenterPoint;
+						FinalPos.z = -FinalPos.z;
+						FinalPos += Edit.Scenario.MapCenterPoint;
+						FinalPos.y = Terrain.activeTerrain.SampleHeight(FinalPos);
+						MarkerToCreateSymmetry[0].position = FinalPos;
+					}
+					else if(SymmetryCode == 3 || (SymmetryCode == 4 && i == 2)){
+						FinalPos = HitPointSnaped - Edit.Scenario.MapCenterPoint;
+						FinalPos.x = -FinalPos.x;
+						FinalPos.z = -FinalPos.z;
+						FinalPos += Edit.Scenario.MapCenterPoint;
+						FinalPos.y = Terrain.activeTerrain.SampleHeight(FinalPos);
+						MarkerToCreateSymmetry[0].position = FinalPos;
+					}
+					else if(SymmetryCode == 5){
+						Vector3 Origin = new Vector3(0, 0, -Edit.Scenario.ScenarioData.Size.y / 10f);
+						Vector3 Origin2 = new Vector3(Edit.Scenario.ScenarioData.Size.y / 10f, 0, 0);
+						Vector3 Point = new Vector3(HitPointSnaped.x, 0, HitPointSnaped.z);
+
+						Vector3 PointOfMirror = EditingMarkers.ClosestPointToLine(Origin, Origin2, Point);
+						Vector3 FinalDir = PointOfMirror - Point;
+						FinalDir.y = 0;
+						FinalDir.Normalize();
+						float FinalDist = Vector3.Distance(PointOfMirror, Point);
+						Vector3 MirroredMarker = PointOfMirror + FinalDir * FinalDist;
+						MirroredMarker.y = Terrain.activeTerrain.SampleHeight(MirroredMarker);
+						MarkerToCreateSymmetry[0].position = MirroredMarker;
+					}
+					else if(SymmetryCode == 6){
+						Vector3 Origin = new Vector3(0, 0, 0);
+						Vector3 Origin2 = new Vector3(Edit.Scenario.ScenarioData.Size.y / 10f, 0, -Edit.Scenario.ScenarioData.Size.y / 10f);
+						Vector3 Point = new Vector3(HitPointSnaped.x, 0, HitPointSnaped.z);
+						
+						Vector3 PointOfMirror = EditingMarkers.ClosestPointToLine(Origin, Origin2, Point);
+						Vector3 FinalDir = PointOfMirror - Point;
+						FinalDir.y = 0;
+						FinalDir.Normalize();
+						float FinalDist = Vector3.Distance(PointOfMirror, Point);
+						Vector3 MirroredMarker = PointOfMirror + FinalDir * FinalDist;
+						MirroredMarker.y = Terrain.activeTerrain.SampleHeight(MirroredMarker);
+						MarkerToCreateSymmetry[0].position = MirroredMarker;
+					}
+				}
+			}
+
+
+			return true;
+		}
+		return false;
 	}
 }

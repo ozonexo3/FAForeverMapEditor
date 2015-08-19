@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UndoHistory;
+using EditMap;
 
 public class Undo : MonoBehaviour {
 
@@ -62,19 +63,25 @@ public class Undo : MonoBehaviour {
 		case HistoryObject.UndoTypes.MarkersMove:
 			RegisterRedoMarkersMove();
 			HistoryMarkersMove MarkerMoveNew = History [UndoTo].GetComponent<HistoryMarkersMove>();
-
-			EditMenu.SelectedMarker.position = MarkerMoveNew.SelectedMarker;
-			for(int i = 0; i < EditMenu.SelectedSymmetryMarkers.Count; i++){
-				EditMenu.SelectedSymmetryMarkers[i].position = MarkerMoveNew.SelectedSymmetryMarkers[i];
+			EditMenu.EditMarkers.SelectedMarker.position = MarkerMoveNew.SelectedMarker;
+			for(int i = 0; i < EditMenu.EditMarkers.SelectedSymmetryMarkers.Count; i++){
+				EditMenu.EditMarkers.SelectedSymmetryMarkers[i].position = MarkerMoveNew.SelectedSymmetryMarkers[i];
 			}
-			for(int i = 0; i < EditMenu.Selected.Count; i++){
-				EditMenu.Selected[i].transform.position = MarkerMoveNew.MarkersPosSelection[i];
+			for(int i = 0; i < EditMenu.EditMarkers.Selected.Count; i++){
+				Scenario.SetPosOfMarker(EditMenu.EditMarkers.Selected[i], MarkerMoveNew.MarkersPosSelection[i]);
 			}
-			for(int i = 0; i < EditMenu.SymmetrySelectionList.Length; i++){
-				for(int e = 0; e < EditMenu.SymmetrySelectionList[i].MirrorSelected.Count; e++){
-					EditMenu.SymmetrySelectionList[i].MirrorSelected[e].transform.position = MarkerMoveNew.MirrorPos[i].MarkersPosSelection[e];
+			for(int i = 0; i < EditMenu.EditMarkers.SymmetrySelectionList.Length; i++){
+				for(int e = 0; e < EditMenu.EditMarkers.SymmetrySelectionList[i].MirrorSelected.Count; e++){
+					Scenario.SetPosOfMarker(EditMenu.EditMarkers.SymmetrySelectionList[i].MirrorSelected[e], MarkerMoveNew.MirrorPos[i].MarkersPosSelection[e]);
 				}
 			}
+			break;
+		case HistoryObject.UndoTypes.MarkersSelection:
+			RegisterRedoMarkerSelection();
+			HistoryMarkersSelection MarkerSelectionNew = History [UndoTo].GetComponent<HistoryMarkersSelection>();
+			EditMenu.EditMarkers.Selected = MarkerSelectionNew.Selected;
+			EditMenu.EditMarkers.SymmetrySelectionList = MarkerSelectionNew.SymmetrySelectionList;
+			EditMenu.EditMarkers.UpdateSelectionRing();
 			break;
 		}
 
@@ -87,7 +94,7 @@ public class Undo : MonoBehaviour {
 			Debug.LogWarning("Cant redo: current");
 			return;
 		}
-		int RedoTo = MaxHistoryLength - 1 - CurrentStage;
+		int RedoTo = History.Count - 1 - CurrentStage;
 
 		switch (History [RedoTo].UndoType) {
 			case HistoryObject.UndoTypes.MapInfo:
@@ -101,19 +108,26 @@ public class Undo : MonoBehaviour {
 			break;
 		case HistoryObject.UndoTypes.MarkersMove:
 			HistoryMarkersMove MarkerMoveNew = RedoHistory [RedoTo].GetComponent<HistoryMarkersMove>();
-			
-			EditMenu.SelectedMarker.position = MarkerMoveNew.SelectedMarker;
-			for(int i = 0; i < EditMenu.SelectedSymmetryMarkers.Count; i++){
-				EditMenu.SelectedSymmetryMarkers[i].position = MarkerMoveNew.SelectedSymmetryMarkers[i];
+			EditMenu.EditMarkers.SelectedMarker.position = MarkerMoveNew.SelectedMarker;
+			for(int i = 0; i < EditMenu.EditMarkers.SelectedSymmetryMarkers.Count; i++){
+				EditMenu.EditMarkers.SelectedSymmetryMarkers[i].position = MarkerMoveNew.SelectedSymmetryMarkers[i];
 			}
-			for(int i = 0; i < EditMenu.Selected.Count; i++){
-				EditMenu.Selected[i].transform.position = MarkerMoveNew.MarkersPosSelection[i];
+			for(int i = 0; i < EditMenu.EditMarkers.Selected.Count; i++){
+				//EditMenu.EditMarkers.Selected[i].transform.position = MarkerMoveNew.MarkersPosSelection[i];
+				Scenario.SetPosOfMarker(EditMenu.EditMarkers.Selected[i], MarkerMoveNew.MarkersPosSelection[i]);
 			}
-			for(int i = 0; i < EditMenu.SymmetrySelectionList.Length; i++){
-				for(int e = 0; e < EditMenu.SymmetrySelectionList[i].MirrorSelected.Count; e++){
-					EditMenu.SymmetrySelectionList[i].MirrorSelected[e].transform.position = MarkerMoveNew.MirrorPos[i].MarkersPosSelection[e];
+			for(int i = 0; i < EditMenu.EditMarkers.SymmetrySelectionList.Length; i++){
+				for(int e = 0; e < EditMenu.EditMarkers.SymmetrySelectionList[i].MirrorSelected.Count; e++){
+					Scenario.SetPosOfMarker(EditMenu.EditMarkers.SymmetrySelectionList[i].MirrorSelected[e], MarkerMoveNew.MirrorPos[i].MarkersPosSelection[e]);
 				}
 			}
+			break;
+		case HistoryObject.UndoTypes.MarkersSelection:
+			HistoryMarkersSelection MarkerSelectionNew = RedoHistory [RedoTo].GetComponent<HistoryMarkersSelection>();
+			EditMenu.EditMarkers.Selected = MarkerSelectionNew.Selected;
+			EditMenu.EditMarkers.SymmetrySelectionList = MarkerSelectionNew.SymmetrySelectionList;
+			EditMenu.EditMarkers.UpdateSelectionRing();
+
 			break;
 		}
 		CurrentStage++;
@@ -141,29 +155,47 @@ public class Undo : MonoBehaviour {
 		CurrentStage = ListId;
 		HistoryMarkersMove HistoryNew = NewHistoryStep.GetComponent<HistoryMarkersMove>();
 
-		HistoryNew.SelectedMarker = EditMenu.SelectedMarker.position;
-		HistoryNew.SelectedSymmetryMarkers = new Vector3[EditMenu.SelectedSymmetryMarkers.Count];
-		for(int i = 0; i < EditMenu.SelectedSymmetryMarkers.Count; i++){
-			HistoryNew.SelectedSymmetryMarkers[i] = EditMenu.SelectedSymmetryMarkers[i].position;
+		HistoryNew.SelectedMarker = EditMenu.EditMarkers.SelectedMarker.position;
+		HistoryNew.SelectedSymmetryMarkers = new Vector3[EditMenu.EditMarkers.SelectedSymmetryMarkers.Count];
+		for(int i = 0; i < EditMenu.EditMarkers.SelectedSymmetryMarkers.Count; i++){
+			HistoryNew.SelectedSymmetryMarkers[i] = EditMenu.EditMarkers.SelectedSymmetryMarkers[i].position;
 		}
 
-		HistoryNew.MarkersPosSelection = new Vector3[EditMenu.Selected.Count];
-		for(int i = 0; i < EditMenu.Selected.Count; i++){
-			HistoryNew.MarkersPosSelection[i] = EditMenu.Selected[i].transform.position;
+		HistoryNew.MarkersPosSelection = new Vector3[EditMenu.EditMarkers.Selected.Count];
+		for(int i = 0; i < EditMenu.EditMarkers.Selected.Count; i++){
+			HistoryNew.MarkersPosSelection[i] = Scenario.GetPosOfMarker(EditMenu.EditMarkers.Selected[i]);
 		}
 
-		HistoryNew.MirrorPos = new HistoryMarkersMove.MirrorMarkersPos[EditMenu.SymmetrySelectionList.Length];
-		for(int i = 0; i < EditMenu.SymmetrySelectionList.Length; i++){
+		HistoryNew.MirrorPos = new HistoryMarkersMove.MirrorMarkersPos[EditMenu.EditMarkers.SymmetrySelectionList.Length];
+		for(int i = 0; i < EditMenu.EditMarkers.SymmetrySelectionList.Length; i++){
 			HistoryNew.MirrorPos[i] = new HistoryMarkersMove.MirrorMarkersPos();
-			HistoryNew.MirrorPos[i].MarkersPosSelection = new Vector3[EditMenu.SymmetrySelectionList[i].MirrorSelected.Count];
-			for(int e = 0; e < EditMenu.SymmetrySelectionList[i].MirrorSelected.Count; e++){
-				HistoryNew.MirrorPos[i].MarkersPosSelection[e] = EditMenu.SymmetrySelectionList[i].MirrorSelected[e].transform.position;
+			HistoryNew.MirrorPos[i].MarkersPosSelection = new Vector3[EditMenu.EditMarkers.SymmetrySelectionList[i].MirrorSelected.Count];
+			for(int e = 0; e < EditMenu.EditMarkers.SymmetrySelectionList[i].MirrorSelected.Count; e++){
+				HistoryNew.MirrorPos[i].MarkersPosSelection[e] = Scenario.GetPosOfMarker(EditMenu.EditMarkers.SymmetrySelectionList[i].MirrorSelected[e]);
 			}
 		}
 
 		CurrentStage = History.Count;
 	}
 
+	public void RegisterMarkerSelection(){
+		Debug.Log("Register Marker Selection");
+		GameObject NewHistoryStep = Instantiate (Prefabs.MarkersSelection) as GameObject;
+		NewHistoryStep.transform.parent = transform;
+		int ListId = AddToHistory (NewHistoryStep.GetComponent<HistoryObject> ());
+
+		CurrentStage = ListId;
+		HistoryMarkersSelection HistoryNew = NewHistoryStep.GetComponent<HistoryMarkersSelection>();
+
+		Debug.LogWarning("Already in: " + EditMenu.EditMarkers.Selected.Count);
+		HistoryNew.Selected = new List<EditingMarkers.WorkingElement>();
+		for(int i = 0; i < EditMenu.EditMarkers.Selected.Count; i++){
+			HistoryNew.Selected.Add(EditMenu.EditMarkers.Selected[i]);
+		}
+		HistoryNew.SymmetrySelectionList = EditMenu.EditMarkers.SymmetrySelectionList;
+
+		CurrentStage = History.Count;
+	}
 
 //********************************************	REGISTER REDO
 	public void RegisterRedoMapInfo(){
@@ -186,25 +218,36 @@ public class Undo : MonoBehaviour {
 		CurrentStage = ListId;
 		HistoryMarkersMove HistoryNew = NewHistoryStep.GetComponent<HistoryMarkersMove>();
 		
-		HistoryNew.SelectedMarker = EditMenu.SelectedMarker.position;
-		HistoryNew.SelectedSymmetryMarkers = new Vector3[EditMenu.SelectedSymmetryMarkers.Count];
-		for(int i = 0; i < EditMenu.SelectedSymmetryMarkers.Count; i++){
-			HistoryNew.SelectedSymmetryMarkers[i] = EditMenu.SelectedSymmetryMarkers[i].position;
+		HistoryNew.SelectedMarker = EditMenu.EditMarkers.SelectedMarker.position;
+		HistoryNew.SelectedSymmetryMarkers = new Vector3[EditMenu.EditMarkers.SelectedSymmetryMarkers.Count];
+		for(int i = 0; i < EditMenu.EditMarkers.SelectedSymmetryMarkers.Count; i++){
+			HistoryNew.SelectedSymmetryMarkers[i] = EditMenu.EditMarkers.SelectedSymmetryMarkers[i].position;
 		}
 		
-		HistoryNew.MarkersPosSelection = new Vector3[EditMenu.Selected.Count];
-		for(int i = 0; i < EditMenu.Selected.Count; i++){
-			HistoryNew.MarkersPosSelection[i] = EditMenu.Selected[i].transform.position;
+		HistoryNew.MarkersPosSelection = new Vector3[EditMenu.EditMarkers.Selected.Count];
+		for(int i = 0; i < EditMenu.EditMarkers.Selected.Count; i++){
+			HistoryNew.MarkersPosSelection[i] = Scenario.GetPosOfMarker(EditMenu.EditMarkers.Selected[i]);
 		}
 		
-		HistoryNew.MirrorPos = new HistoryMarkersMove.MirrorMarkersPos[EditMenu.SymmetrySelectionList.Length];
-		for(int i = 0; i < EditMenu.SymmetrySelectionList.Length; i++){
+		HistoryNew.MirrorPos = new HistoryMarkersMove.MirrorMarkersPos[EditMenu.EditMarkers.SymmetrySelectionList.Length];
+		for(int i = 0; i < EditMenu.EditMarkers.SymmetrySelectionList.Length; i++){
 			HistoryNew.MirrorPos[i] = new HistoryMarkersMove.MirrorMarkersPos();
-			HistoryNew.MirrorPos[i].MarkersPosSelection = new Vector3[EditMenu.SymmetrySelectionList[i].MirrorSelected.Count];
-			for(int e = 0; e < EditMenu.SymmetrySelectionList[i].MirrorSelected.Count; e++){
-				HistoryNew.MirrorPos[i].MarkersPosSelection[e] = EditMenu.SymmetrySelectionList[i].MirrorSelected[e].transform.position;
+			HistoryNew.MirrorPos[i].MarkersPosSelection = new Vector3[EditMenu.EditMarkers.SymmetrySelectionList[i].MirrorSelected.Count];
+			for(int e = 0; e < EditMenu.EditMarkers.SymmetrySelectionList[i].MirrorSelected.Count; e++){
+				HistoryNew.MirrorPos[i].MarkersPosSelection[e] = Scenario.GetPosOfMarker(EditMenu.EditMarkers.SymmetrySelectionList[i].MirrorSelected[e]);
 			}
 		}
+	}
+
+	public void RegisterRedoMarkerSelection(){
+		GameObject NewHistoryStep = Instantiate (Prefabs.MarkersSelection) as GameObject;
+		NewHistoryStep.transform.parent = transform;
+		int ListId = AddToRedoHistory (NewHistoryStep.GetComponent<HistoryObject> ());
+		
+		HistoryMarkersSelection HistoryNew = NewHistoryStep.GetComponent<HistoryMarkersSelection>();
+		
+		HistoryNew.Selected = EditMenu.EditMarkers.Selected;
+		HistoryNew.SymmetrySelectionList = EditMenu.EditMarkers.SymmetrySelectionList;
 	}
 
 

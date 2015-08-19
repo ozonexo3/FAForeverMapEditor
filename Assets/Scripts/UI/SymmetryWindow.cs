@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using EditMap;
 
 public class SymmetryWindow : MonoBehaviour {
 
@@ -25,7 +26,7 @@ public class SymmetryWindow : MonoBehaviour {
 		if(Enabling) return;
 		if(PlayerPrefs.GetInt("SymmetryAngleCount", 0) == (int)AngleSlider.value) return;
 		PlayerPrefs.SetInt("SymmetryAngleCount", (int)AngleSlider.value);
-		EditMenu.UpdateSelectionRing();
+		EditMenu.EditMarkers.UpdateSelectionRing();
 	}
 
 	public void Button(string func){
@@ -62,6 +63,6 @@ public class SymmetryWindow : MonoBehaviour {
 		}
 		PlayerPrefs.Save();
 
-		EditMenu.UpdateSelectionRing();
+		EditMenu.EditMarkers.UpdateSelectionRing();
 	}
 }
