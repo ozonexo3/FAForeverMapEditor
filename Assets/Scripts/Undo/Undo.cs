@@ -197,6 +197,31 @@ public class Undo : MonoBehaviour {
 		CurrentStage = History.Count;
 	}
 
+
+	public void RegisterMarkerChange(){
+		Debug.Log("Register Marker Selection");
+		GameObject NewHistoryStep = Instantiate (Prefabs.MarkersChange) as GameObject;
+		NewHistoryStep.transform.parent = transform;
+		int ListId = AddToHistory (NewHistoryStep.GetComponent<HistoryObject> ());
+		
+		CurrentStage = ListId;
+		HistoryMarkersChange HistoryNew = NewHistoryStep.GetComponent<HistoryMarkersChange>();
+		
+		Debug.LogWarning("Already in: " + EditMenu.EditMarkers.Selected.Count);
+		HistoryNew.Selected = new List<EditingMarkers.WorkingElement>();
+		for(int i = 0; i < EditMenu.EditMarkers.Selected.Count; i++){
+			HistoryNew.Selected.Add(EditMenu.EditMarkers.Selected[i]);
+		}
+		HistoryNew.SymmetrySelectionList = EditMenu.EditMarkers.SymmetrySelectionList;
+
+		HistoryNew.ARMY_ = Scenario.ARMY_;
+		HistoryNew.Mexes = Scenario.Mexes;
+		HistoryNew.Hydros = Scenario.Hydros;
+		HistoryNew.SiMarkers = Scenario.SiMarkers;
+		
+		CurrentStage = History.Count;
+	}
+
 //********************************************	REGISTER REDO
 	public void RegisterRedoMapInfo(){
 		GameObject NewHistoryStep = Instantiate (Prefabs.MapInfo) as GameObject;
@@ -243,7 +268,7 @@ public class Undo : MonoBehaviour {
 		GameObject NewHistoryStep = Instantiate (Prefabs.MarkersSelection) as GameObject;
 		NewHistoryStep.transform.parent = transform;
 		int ListId = AddToRedoHistory (NewHistoryStep.GetComponent<HistoryObject> ());
-		
+		CurrentStage = ListId;
 		HistoryMarkersSelection HistoryNew = NewHistoryStep.GetComponent<HistoryMarkersSelection>();
 		
 		HistoryNew.Selected = EditMenu.EditMarkers.Selected;

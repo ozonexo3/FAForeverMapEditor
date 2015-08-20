@@ -9,7 +9,7 @@ namespace UndoHistory{
 
 
 		public enum UndoTypes{
-			MapInfo, MarkersMove, MarkersSelection, MarkersCreate, MarkersDelete
+			MapInfo, MarkersMove, MarkersSelection, MarkersChange
 		}
 
 

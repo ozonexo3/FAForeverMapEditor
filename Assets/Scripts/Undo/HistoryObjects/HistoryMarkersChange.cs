@@ -1,15 +1,16 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
+using EditMap;
 
 public class HistoryMarkersChange : MonoBehaviour {
 
-	// Use this for initialization
-	void Start () {
+	public		List<MapLuaParser.Mex>			Mexes = new List<MapLuaParser.Mex>();
+	public		List<MapLuaParser.Hydro>		Hydros = new List<MapLuaParser.Hydro>();
+	public		List<MapLuaParser.Army>			ARMY_ = new List<MapLuaParser.Army>();
+	public		List<MapLuaParser.Marker>		SiMarkers = new List<MapLuaParser.Marker>();
 	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
+	public		List<EditingMarkers.WorkingElement>			Selected = new List<EditingMarkers.WorkingElement>();
+	public		EditingMarkers.SymmetrySelection[]			SymmetrySelectionList = new EditingMarkers.SymmetrySelection[0];
+
 }

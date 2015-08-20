@@ -361,12 +361,12 @@ namespace EditMap{
 					GameObject newRing = Instantiate(RingSelectionPrefab) as GameObject;
 					newRing.GetComponent<SelectionRing>().SelectedObject = Scenario.GetMarkerRenderer(obj).transform;
 					SelectionsRings.Add(newRing);
-					foreach(ListObject list in AllMarkersList.AllFields){
+					//foreach(ListObject list in AllMarkersList.AllFields){
 						/*if(list.ConnectedGameObject == obj){
 							list.Select();
 							break;
 						}*/
-					}
+					//}
 				}
 				for(int i = 0; i < SymmetrySelectionList.Length; i++){
 					SymmetrySelectionList[i].SelectedStartPos = new Vector3[SymmetrySelectionList[i].MirrorSelected.Count];
@@ -428,7 +428,7 @@ namespace EditMap{
 					MirroredPos += Scenario.MapCenterPoint;
 
 					//Xdist = Scenario.MapCenterPoint.x - obj.transform.position.x;
-					Vector3 SelPos = new Vector3( Scenario.GetPosOfMarker(all).x, 0, Scenario.GetPosOfMarker(all).z);
+					Vector3 SelPos = new Vector3( Scenario.GetPosOfMarker(obj).x, 0, Scenario.GetPosOfMarker(obj).z);
 					Vector3 AllPos = new Vector3(MirroredPos.x, 0, MirroredPos.z);
 					
 					if(Vector3.Distance(SelPos, AllPos) < EditMenu.MirrorTolerance){ //MirrorTolerance

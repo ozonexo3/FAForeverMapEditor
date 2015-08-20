@@ -2,9 +2,15 @@
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
   <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Ozone SCMAP Code\CameraControler.cs">
     <Files>
-      <File FileName="Assets\Scripts\UI\EditingMarkers.cs" Line="581" Column="4" />
-      <File FileName="Assets\Scripts\Ozone SCMAP Code\CameraControler.cs" Line="70" Column="52" />
-      <File FileName="Assets\Scripts\Ozone SCMAP Code\MapLuaParser.cs" Line="833" Column="26" />
+      <File FileName="Assets\Scripts\Ozone SCMAP Code\MapLuaParser.cs" Line="909" Column="6" />
+      <File FileName="Assets\Scripts\UI\EditingMarkers.cs" Line="27" Column="17" />
+      <File FileName="Assets\Scripts\Ozone SCMAP Code\CameraControler.cs" Line="183" Column="49" />
+      <File FileName="Assets\Scripts\Undo\Undo.cs" Line="53" Column="25" />
+      <File FileName="Assets\Scripts\Undo\HistoryObjects\HistoryMarkersChange.cs" Line="17" Column="1" />
+      <File FileName="Assets\Scripts\Undo\HistoryObjects\HistoryMarkersSelection.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\Undo\HistoryClasses.cs" Line="18" Column="1" />
+      <File FileName="Assets\Scripts\Undo\HistoryObject.cs" Line="12" Column="57" />
+      <File FileName="Assets\Scripts\UI\MarkersList.cs" Line="104" Column="2" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

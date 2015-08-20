@@ -25,6 +25,14 @@ public class MarkersList : MonoBehaviour {
 		}
 	}
 
+	public void UpdateList(){
+		foreach(RectTransform child in Pivot){
+			AllFields = new List<ListObject>();
+			Destroy(child.gameObject);
+		}
+		GenerateList ();
+	}
+
 	void GenerateList(){
 		int count = 0;
 		for(int i = 0; i < Scenario.ARMY_.Count; i++){

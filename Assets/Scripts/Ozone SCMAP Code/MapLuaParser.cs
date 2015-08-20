@@ -30,6 +30,12 @@ public class MapLuaParser : MonoBehaviour {
 	public		List<Army>		ARMY_ = new List<Army>();
 	public		List<Marker>	SiMarkers = new List<Marker>();
 
+	public		List<int>		MexesTrash;
+	public		List<int>		HydrosTrash;
+	public		List<int>		ArmiesTrash;
+	public		List<int>		AiTrash;
+
+
 	//[HideInInspector]
 	public		Vector3			MapCenterPoint;
 
@@ -232,13 +238,9 @@ public class MapLuaParser : MonoBehaviour {
 	private void LoadSaveLua(){
 		System.Text.Encoding encodeType = System.Text.Encoding.ASCII;
 		string loadedFileSave = "";
-		string locSave = Application.dataPath + ScenarioData.SaveLua;
-#if UNITY_EDITOR
-		locSave = locSave.Replace("Assets/", "");
-#endif
+		string MapPath = PlayerPrefs.GetString("MapsPath", "maps/");
 
-		Debug.Log("Load Save file: " + locSave);
-		loadedFileSave = System.IO.File.ReadAllText(locSave, encodeType);
+		loadedFileSave = System.IO.File.ReadAllText(ScenarioData.SaveLua.Replace("/maps/", MapPath), encodeType);
 		
 		string loadedFileFunctions = "";
 		loadedFileFunctions = System.IO.File.ReadAllText("Structure/lua_variable_functions.lua", encodeType);
@@ -546,11 +548,7 @@ public class MapLuaParser : MonoBehaviour {
 
 		string MapPath = PlayerPrefs.GetString("MapsPath", "maps/");
 		string BackupId = System.DateTime.Now.Month.ToString() +System.DateTime.Now.Day.ToString() + System.DateTime.Now.Hour.ToString() + System.DateTime.Now.Minute.ToString() + System.DateTime.Now.Second.ToString();
-		BackupPath = Application.dataPath + "/" + MapPath + FolderName + "/Backup_" + BackupId;
-
-		#if UNITY_EDITOR
-			BackupPath = BackupPath.Replace("Assets/", "");
-		#endif
+		BackupPath = MapPath + FolderName + "/Backup_" + BackupId;
 
 		System.IO.Directory.CreateDirectory(BackupPath);
 
@@ -614,15 +612,15 @@ public class MapLuaParser : MonoBehaviour {
 		}
 
 		string MapPath = PlayerPrefs.GetString("MapsPath", "maps/");
-		string ScenarioFilePath = "/" + MapPath + FolderName + "/" + ScenarioFileName + ".lua";
+		string ScenarioFilePath = MapPath + FolderName + "/" + ScenarioFileName + ".lua";
 		//string SavePath = Application.dataPath + ScenarioFilePath.Replace(".lua", "_new.lua");
-		string SavePath = Application.dataPath + ScenarioFilePath;
-		#if UNITY_EDITOR
-		SavePath = SavePath.Replace("Assets/", "");
-		#endif
+		//string SavePath = Application.dataPath + ScenarioFilePath;
+		//#if UNITY_EDITOR
+		//SavePath = SavePath.Replace("Assets/", "");
+		//#endif
 
-		System.IO.File.Move(SavePath, BackupPath + "/" + ScenarioFileName + ".lua");
-		System.IO.File.WriteAllText(SavePath, SaveData);
+		System.IO.File.Move(ScenarioFilePath, BackupPath + "/" + ScenarioFileName + ".lua");
+		System.IO.File.WriteAllText(ScenarioFilePath, SaveData);
 	}
 
 
@@ -743,18 +741,16 @@ public class MapLuaParser : MonoBehaviour {
 				SaveData += line;
 			}
 		}
-		//string SavePath = Application.dataPath + ScenarioData.SaveLua.Replace(".lua", "_new.lua");
-		string SavePath = Application.dataPath + ScenarioData.SaveLua;
-		#if UNITY_EDITOR
-		SavePath = SavePath.Replace("Assets/", "");
-		#endif
+
+		string MapPath = PlayerPrefs.GetString("MapsPath", "maps/");
+		string SaveFilePath = ScenarioData.SaveLua.Replace("/maps/", MapPath);
 
 		string FileName = ScenarioData.SaveLua;
 		char[] NameSeparator = ("/").ToCharArray();
 		string[] Names = FileName.Split(NameSeparator);
-		System.IO.File.Move(SavePath, BackupPath + "/" + Names[Names.Length - 1]);
+		System.IO.File.Move(SaveFilePath, BackupPath + "/" + Names[Names.Length - 1]);
 
-		System.IO.File.WriteAllText(SavePath, SaveData);
+		System.IO.File.WriteAllText(SaveFilePath, SaveData);
 	}
 
 	public void SaveScriptLua(int ID = 0){
@@ -771,18 +767,15 @@ public class MapLuaParser : MonoBehaviour {
 
 		SaveData = loadedFile;
 
-		//string SavePath = Application.dataPath + ScenarioData.ScriptLua.Replace(".lua", "_new.lua");
-		string SavePath = Application.dataPath + ScenarioData.ScriptLua;
-		#if UNITY_EDITOR
-		SavePath = SavePath.Replace("Assets/", "");
-		#endif
+		string MapPath = PlayerPrefs.GetString("MapsPath", "maps/");
+		string SaveFilePath = ScenarioData.ScriptLua.Replace("/maps/", MapPath);
 
 		string FileName = ScenarioData.ScriptLua;
 		char[] NameSeparator = ("/").ToCharArray();
 		string[] Names = FileName.Split(NameSeparator);
-		System.IO.File.Move(SavePath, BackupPath + "/" + Names[Names.Length - 1]);
+		System.IO.File.Move(SaveFilePath, BackupPath + "/" + Names[Names.Length - 1]);
 		
-		System.IO.File.WriteAllText(SavePath, SaveData);
+		System.IO.File.WriteAllText(SaveFilePath, SaveData);
 	}
 
 	public Vector3 GetPosOfMarker(EditMap.EditingMarkers.WorkingElement Element){
@@ -850,6 +843,99 @@ public class MapLuaParser : MonoBehaviour {
 			SiMarkers.Add(new Marker());
 			SiMarkers[SiMarkers.Count - 1].name = "AI_" + SiMarkers.Count.ToString();
 			SiMarkers[SiMarkers.Count - 1].position = position;
+		}
+	}
+
+	public void AddMarkerToTrash(EditMap.EditingMarkers.WorkingElement Element){
+		switch (Element.ListId) {
+		case 0:
+			ArmiesTrash.Add(Element.InstanceId);
+			break;
+		case 1:
+			MexesTrash.Add(Element.InstanceId);
+			break;
+		case 2:
+			HydrosTrash.Add(Element.InstanceId);
+			break;
+		case 3:
+			AiTrash.Add(Element.InstanceId);
+			break;
+		}
+	}
+	public void CleanMarkersTrash(){
+		List<Army>	NewArmy_ = new List<Army> ();
+		List<Mex>	NewMexes = new List<Mex> ();
+		List<Hydro> NewHydros = new List<Hydro>();
+		List<Marker> NewAi = new List<Marker>();
+
+		for (int i = 0; i < ARMY_.Count; i++) {
+			bool InTrash = false;
+			for(int t = 0; t < ArmiesTrash.Count; t++){
+				if(ArmiesTrash[t] == i){
+					InTrash = true;
+					break;
+				}
+			}
+			if(!InTrash) NewArmy_.Add( ARMY_[i]);
+		}
+
+		for (int i = 0; i < Mexes.Count; i++) {
+			bool InTrash = false;
+			for(int t = 0; t < MexesTrash.Count; t++){
+				if(MexesTrash[t] == i){
+					InTrash = true;
+					break;
+				}
+			}
+			if(!InTrash) NewMexes.Add( Mexes[i]);
+		}
+
+		for (int i = 0; i < Hydros.Count; i++) {
+			bool InTrash = false;
+			for(int t = 0; t < HydrosTrash.Count; t++){
+				if(HydrosTrash[t] == i){
+					InTrash = true;
+					break;
+				}
+			}
+			if(!InTrash) NewHydros.Add( Hydros[i]);
+		}
+		for (int i = 0; i < SiMarkers.Count; i++) {
+			bool InTrash = false;
+			for(int t = 0; t < AiTrash.Count; t++){
+				if(AiTrash[t] == i){
+					InTrash = true;
+					break;
+				}
+			}
+			if(!InTrash) NewAi.Add( SiMarkers[i]);
+		}
+
+		ARMY_ = NewArmy_;
+		Mexes = NewMexes;
+		Hydros = NewHydros;
+		SiMarkers = NewAi;
+
+		ArmiesTrash = new List<int> ();
+		MexesTrash = new List<int> ();
+		HydrosTrash = new List<int> ();
+		AiTrash = new List<int> ();
+	}
+
+	public void DeleteMarker(EditMap.EditingMarkers.WorkingElement Element){
+		switch (Element.ListId) {
+		case 0:
+			ArmiesTrash.Add(Element.InstanceId);
+			break;
+		case 1:
+			MexesTrash.Add(Element.InstanceId);
+			break;
+		case 2:
+			HydrosTrash.Add(Element.InstanceId);
+			break;
+		case 3:
+			AiTrash.Add(Element.InstanceId);
+			break;
 		}
 	}
 }

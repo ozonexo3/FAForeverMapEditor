@@ -105,7 +105,6 @@ public class CameraControler : MonoBehaviour {
 	}
 
 	void LateUpdate(){
-		//ReflectionCamera.localRotation = Quaternion.Lerp(ReflectionCamera.localRotation, Quaternion.Euler(new Vector3(Mathf.Lerp(-90, 50, Rot.x / -80.0f), 0, 0)), Time.deltaTime * 10);
 		ReflectionCamera.rotation = Quaternion.Euler(Vector3.right * -90);
 	}
 
@@ -164,6 +163,26 @@ public class CameraControler : MonoBehaviour {
 	}
 
 	void MarkersInteraction(){
+		if (Input.GetKeyDown (KeyCode.Delete)) {
+			Edit.Scenario.History.RegisterMarkerChange();
+
+			for(int i = 0; i < Edit.EditMarkers.Selected.Count; i++){
+				Edit.Scenario.AddMarkerToTrash(Edit.EditMarkers.Selected[i]);
+			}
+
+			for(int i = 0; i < Edit.EditMarkers.SymmetrySelectionList.Length; i++){
+				for(int m = 0; m < Edit.EditMarkers.SymmetrySelectionList[i].MirrorSelected.Count; m++){
+					Edit.Scenario.AddMarkerToTrash(Edit.EditMarkers.SymmetrySelectionList[i].MirrorSelected[m]);
+				}
+			}
+
+			Edit.Scenario.CleanMarkersTrash();
+
+			Edit.EditMarkers.CleanSelection();
+			Edit.EditMarkers.GenerateAllWorkingElements();
+			Edit.EditMarkers.AllMarkersList.UpdateList();
+			return;
+		}
 		if(Input.GetMouseButtonDown(0)){
 			MouseBeginClick = Input.mousePosition;
 			Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);

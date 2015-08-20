@@ -135,11 +135,11 @@ Material:
       data:
         first:
           name: _WaterLevel
-        second: 1.75
+        second: 2.46000004
       data:
         first:
           name: _AbyssLevel
-        second: .25
+        second: .899999976
       data:
         first:
           name: _DeepLevel
@@ -151,23 +151,23 @@ Material:
       data:
         first:
           name: _Water
-        second: 0
+        second: 1
       data:
         first:
           name: _AreaX
-        second: 0
+        second: .800000012
       data:
         first:
           name: _AreaY
-        second: 0
+        second: 4.0333333
       data:
         first:
           name: _AreaWidht
-        second: 17.0666676
+        second: 33.3333321
       data:
         first:
           name: _AreaHeight
-        second: 17.0666676
+        second: 30.1333332
       data:
         first:
           name: _Grid
@@ -175,11 +175,11 @@ Material:
       data:
         first:
           name: _GridScale
-        second: 25.6000004
+        second: 51.2000008
       data:
         first:
           name: _GridCamDist
-        second: 1.92857134
+        second: 3.75714302
     m_Colors:
       data:
         first:
