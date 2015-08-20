@@ -202,7 +202,6 @@ namespace EditMap{
 		}
 		
 		public void RemoveFromSelection(List<GameObject> remove){
-			Debug.Log("RemoveToSelection");
 			if(remove.Count > 0) Scenario.History.RegisterMarkerSelection();
 			for(int i = 0; i < remove.Count; i++){
 				foreach(WorkingElement obj in Selected){
@@ -216,7 +215,6 @@ namespace EditMap{
 		}
 
 		public void ChangeSelectionState(List<GameObject> change){
-			Debug.Log("ChangeSelection");
 			if(change.Count > 0) Scenario.History.RegisterMarkerSelection();
 			for(int i = 0; i < change.Count; i++){
 				bool AlreadyExist = false;
@@ -238,7 +236,6 @@ namespace EditMap{
 		}
 		
 		public void CleanSelection(){
-			Debug.Log("CleanSelection");
 			if(Selected.Count > 0) Scenario.History.RegisterMarkerSelection();
 			Selected = new List<WorkingElement>();
 			UpdateSelectionRing();
@@ -255,7 +252,6 @@ namespace EditMap{
 						marker.gameObject.SetActive(false);
 					}
 				}
-				//SelectedReflectionMarker.gameObject.SetActive(false);
 				foreach(GameObject child in SelectionsRings){
 					Destroy(child.gameObject);
 				}

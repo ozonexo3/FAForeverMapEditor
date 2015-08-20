@@ -6556,6 +6556,7 @@ MonoBehaviour:
   MapCenterPoint: {x: 0, y: 0, z: 0}
   ScriptId: 0
   BackupPath: 
+  StructurePath: 
 --- !u!4 &506059845
 Transform:
   m_ObjectHideFlags: 0

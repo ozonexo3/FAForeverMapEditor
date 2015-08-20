@@ -9,6 +9,7 @@ Properties {
 	_WaterLevel ("Water Level", Range (0.03, 5)) = 0.078125
 	_AbyssLevel ("Abyss Level", Range (0.03, 5)) = 0.078125
 	
+	[MaterialToggle] _Area("Area", Int) = 0
 	_AreaX ("Area X", Range (0, 2048)) = 0
 	_AreaY ("Area Y", Range (0, 2048)) = 0
 	_AreaWidht ("Area Widht", Range (0, 2048)) = 0
@@ -76,6 +77,7 @@ fixed4 _Abyss;
 fixed4 _Deep;
 int _Water;
 int _Grid;
+int _Area;
 
 half _AreaX;
 half _AreaY;
@@ -123,24 +125,25 @@ void surf (Input IN, inout SurfaceOutput o) {
 	if(_Water > 0) o.Albedo = ApplyWaterColor(WaterDepth, col.rgb);	
 	else o.Albedo = col;	
 	
-	fixed4 dark = fixed4(0.05, 0.05, 0.05, 1); 
-	if(IN.uv_Splat1.x < _AreaX){
-	 	o.Albedo = fixed4(0,0,0,1);
-	 	o.Emission = dark;
+	if(_Area > 0){
+		fixed4 dark = fixed4(0.05, 0.05, 0.05, 1); 
+		if(IN.uv_Splat1.x < _AreaX){
+		 	o.Albedo = fixed4(0,0,0,1);
+		 	o.Emission = dark;
+		}
+		else if(IN.uv_Splat1.x > _AreaWidht){
+		 	o.Albedo = fixed4(0,0,0,1);
+		 	o.Emission = dark;
+		}
+		else if(IN.uv_Splat1.y < _AreaY){
+		 	o.Albedo = fixed4(0,0,0,1);
+		 	o.Emission = dark;
+		}
+		else if(IN.uv_Splat1.y > _AreaHeight){
+		 	o.Albedo = fixed4(0,0,0,1);
+		 	o.Emission = dark;
+		}
 	}
-	else if(IN.uv_Splat1.x > _AreaWidht){
-	 	o.Albedo = fixed4(0,0,0,1);
-	 	o.Emission = dark;
-	}
-	else if(IN.uv_Splat1.y < _AreaY){
-	 	o.Albedo = fixed4(0,0,0,1);
-	 	o.Emission = dark;
-	}
-	else if(IN.uv_Splat1.y > _AreaHeight){
-	 	o.Albedo = fixed4(0,0,0,1);
-	 	o.Emission = dark;
-	}
-	else{
 
 	half4 nrm;
 	nrm = tex2D (_NormalLower, IN.uv_Splat0 * _LowerScale);
@@ -161,7 +164,6 @@ void surf (Input IN, inout SurfaceOutput o) {
 	o.Specular = 0;
 
 	o.Alpha = 0.0;
-	}
 }
 
 

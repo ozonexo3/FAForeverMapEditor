@@ -190,14 +190,14 @@ public class ScmapEditor : MonoBehaviour {
 		}
 		yield return null;
 		byte[] bytes;
-		string filename = "tex1";
+		string filename = "temfiles/tex1";
 		bytes =  map.TexturemapTex.EncodeToPNG();
 		filename += ".png";
 		System.IO.File.WriteAllBytes(filename, bytes);
 
 
 		bytes = null;
-		filename = "tex2";
+		filename = "temfiles/tex2";
 		bytes =  map.TexturemapTex2.EncodeToPNG();
 		filename += ".png";
 		System.IO.File.WriteAllBytes(filename, bytes);
@@ -255,8 +255,10 @@ public class ScmapEditor : MonoBehaviour {
 		Vector3 ToReturn = MapPos;
 		
 		// Position
-		ToReturn.x =  1 * (MapPos.x / Scenario.ScenarioData.Size.x) * (Scenario.ScenarioData.Size.x / 10);
-		ToReturn.z = - 1 * (MapPos.z / Scenario.ScenarioData.Size.y) * (Scenario.ScenarioData.Size.y / 10);
+		//ToReturn.x =  1 * (MapPos.x / Scenario.ScenarioData.Size.x) * (Scenario.ScenarioData.Size.x / 10);
+		//ToReturn.z = - 1 * (MapPos.z / Scenario.ScenarioData.Size.y) * (Scenario.ScenarioData.Size.y / 10);
+		ToReturn.x = MapPos.x / 10f;
+		ToReturn.z = -MapPos.z / 10f;
 		
 		// Height
 		ToReturn.y =  1 * (MapPos.y / 10);
@@ -268,8 +270,11 @@ public class ScmapEditor : MonoBehaviour {
 		Vector3 ToReturn = MapPos;
 		
 		// Position
-		ToReturn.x = (MapPos.x / 51.2f) * (Scenario.ScenarioData.Size.x) - 0.5f;
-		ToReturn.z = (MapPos.z / -51.2f) * (Scenario.ScenarioData.Size.y) - 0.5f;
+		//ToReturn.x = (MapPos.x / (Scenario.ScenarioData.Size.x / 10)) * (Scenario.ScenarioData.Size.x) - 0.5f;
+		//ToReturn.z = (MapPos.z / -(Scenario.ScenarioData.Size.y / 10)) * (Scenario.ScenarioData.Size.y) - 0.5f;
+
+		ToReturn.x = MapPos.x * 10;
+		ToReturn.z = MapPos.z * -10f;
 		
 		// Height
 		ToReturn.y = MapPos.y * 10;

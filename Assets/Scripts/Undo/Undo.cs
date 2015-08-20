@@ -23,6 +23,8 @@ public class Undo : MonoBehaviour {
 	public		int				CurrentStage;
 	public		bool			CurrentSaved = false;
 
+	bool		RegisterMarkersDelete = false;
+
 	// keys
 	void Update(){
 		if(Input.GetKey(KeyCode.LeftControl)){
@@ -83,6 +85,24 @@ public class Undo : MonoBehaviour {
 			EditMenu.EditMarkers.SymmetrySelectionList = MarkerSelectionNew.SymmetrySelectionList;
 			EditMenu.EditMarkers.UpdateSelectionRing();
 			break;
+		case HistoryObject.UndoTypes.MarkersChange:
+			RegisterRedoMarkerChange();
+			HistoryMarkersChange HistoryNew = History [UndoTo].GetComponent<HistoryMarkersChange>();
+
+			Scenario.ARMY_ = HistoryNew.ARMY_;
+			Scenario.Mexes = HistoryNew.Mexes;
+			Scenario.Hydros = HistoryNew.Hydros;
+			Scenario.SiMarkers = HistoryNew.SiMarkers;
+
+			EditMenu.EditMarkers.GenerateAllWorkingElements();
+			EditMenu.EditMarkers.AllMarkersList.UpdateList();
+			Scenario.MarkerRend.Regenerate();
+			
+			EditMenu.EditMarkers.Selected = HistoryNew.Selected;
+			EditMenu.EditMarkers.SymmetrySelectionList = HistoryNew.SymmetrySelectionList;
+			EditMenu.EditMarkers.UpdateSelectionRing();
+
+			break;
 		}
 
 		CurrentStage = UndoTo;
@@ -113,7 +133,6 @@ public class Undo : MonoBehaviour {
 				EditMenu.EditMarkers.SelectedSymmetryMarkers[i].position = MarkerMoveNew.SelectedSymmetryMarkers[i];
 			}
 			for(int i = 0; i < EditMenu.EditMarkers.Selected.Count; i++){
-				//EditMenu.EditMarkers.Selected[i].transform.position = MarkerMoveNew.MarkersPosSelection[i];
 				Scenario.SetPosOfMarker(EditMenu.EditMarkers.Selected[i], MarkerMoveNew.MarkersPosSelection[i]);
 			}
 			for(int i = 0; i < EditMenu.EditMarkers.SymmetrySelectionList.Length; i++){
@@ -128,6 +147,22 @@ public class Undo : MonoBehaviour {
 			EditMenu.EditMarkers.SymmetrySelectionList = MarkerSelectionNew.SymmetrySelectionList;
 			EditMenu.EditMarkers.UpdateSelectionRing();
 
+			break;
+		case HistoryObject.UndoTypes.MarkersChange:
+			RegisterRedoMarkerChange();
+			HistoryMarkersChange HistoryNew = RedoHistory [RedoTo].GetComponent<HistoryMarkersChange>();
+			
+			Scenario.ARMY_ = HistoryNew.ARMY_;
+			Scenario.Mexes = HistoryNew.Mexes;
+			Scenario.Hydros = HistoryNew.Hydros;
+			Scenario.SiMarkers = HistoryNew.SiMarkers;
+			
+			EditMenu.EditMarkers.GenerateAllWorkingElements();
+			EditMenu.EditMarkers.AllMarkersList.UpdateList();
+			
+			EditMenu.EditMarkers.Selected = HistoryNew.Selected;
+			EditMenu.EditMarkers.SymmetrySelectionList = HistoryNew.SymmetrySelectionList;
+			EditMenu.EditMarkers.UpdateSelectionRing();
 			break;
 		}
 		CurrentStage++;
@@ -179,6 +214,10 @@ public class Undo : MonoBehaviour {
 	}
 
 	public void RegisterMarkerSelection(){
+		if(RegisterMarkersDelete){
+			RegisterMarkersDelete = false;
+			return;
+		}
 		Debug.Log("Register Marker Selection");
 		GameObject NewHistoryStep = Instantiate (Prefabs.MarkersSelection) as GameObject;
 		NewHistoryStep.transform.parent = transform;
@@ -187,7 +226,6 @@ public class Undo : MonoBehaviour {
 		CurrentStage = ListId;
 		HistoryMarkersSelection HistoryNew = NewHistoryStep.GetComponent<HistoryMarkersSelection>();
 
-		Debug.LogWarning("Already in: " + EditMenu.EditMarkers.Selected.Count);
 		HistoryNew.Selected = new List<EditingMarkers.WorkingElement>();
 		for(int i = 0; i < EditMenu.EditMarkers.Selected.Count; i++){
 			HistoryNew.Selected.Add(EditMenu.EditMarkers.Selected[i]);
@@ -199,6 +237,7 @@ public class Undo : MonoBehaviour {
 
 
 	public void RegisterMarkerChange(){
+		RegisterMarkersDelete = true;
 		Debug.Log("Register Marker Selection");
 		GameObject NewHistoryStep = Instantiate (Prefabs.MarkersChange) as GameObject;
 		NewHistoryStep.transform.parent = transform;
@@ -207,7 +246,6 @@ public class Undo : MonoBehaviour {
 		CurrentStage = ListId;
 		HistoryMarkersChange HistoryNew = NewHistoryStep.GetComponent<HistoryMarkersChange>();
 		
-		Debug.LogWarning("Already in: " + EditMenu.EditMarkers.Selected.Count);
 		HistoryNew.Selected = new List<EditingMarkers.WorkingElement>();
 		for(int i = 0; i < EditMenu.EditMarkers.Selected.Count; i++){
 			HistoryNew.Selected.Add(EditMenu.EditMarkers.Selected[i]);
@@ -275,6 +313,24 @@ public class Undo : MonoBehaviour {
 		HistoryNew.SymmetrySelectionList = EditMenu.EditMarkers.SymmetrySelectionList;
 	}
 
+	public void RegisterRedoMarkerChange(){
+		GameObject NewHistoryStep = Instantiate (Prefabs.MarkersChange) as GameObject;
+		NewHistoryStep.transform.parent = transform;
+		int ListId = AddToRedoHistory (NewHistoryStep.GetComponent<HistoryObject> ());
+		
+		CurrentStage = ListId;
+		HistoryMarkersChange HistoryNew = NewHistoryStep.GetComponent<HistoryMarkersChange>();
+		
+		HistoryNew.Selected = EditMenu.EditMarkers.Selected;
+		HistoryNew.SymmetrySelectionList = EditMenu.EditMarkers.SymmetrySelectionList;
+		
+		HistoryNew.ARMY_ = Scenario.ARMY_;
+		HistoryNew.Mexes = Scenario.Mexes;
+		HistoryNew.Hydros = Scenario.Hydros;
+		HistoryNew.SiMarkers = Scenario.SiMarkers;
+		
+		CurrentStage = History.Count;
+	}
 
 //********************************************* FUNCTIONS
 	int AddToHistory(HistoryObject NewHistoryStep){

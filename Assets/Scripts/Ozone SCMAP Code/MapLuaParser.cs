@@ -42,6 +42,7 @@ public class MapLuaParser : MonoBehaviour {
 	public		int				ScriptId = 0;
 
 	public		string			BackupPath;
+	public		string			StructurePath;
 
 
 	[System.Serializable]
@@ -114,6 +115,14 @@ public class MapLuaParser : MonoBehaviour {
 	Lua env;
 	Lua save;
 
+	void Awake(){
+		StructurePath = Application.dataPath + "Structure/";;
+		#if UNITY_EDITOR
+		StructurePath = StructurePath.Replace("Assets", "");
+		#endif
+
+	}
+
 	public void LoadFile(){
 		StartCoroutine("LoadingFile");
 	}
@@ -154,6 +163,11 @@ public class MapLuaParser : MonoBehaviour {
 
 	public void UpdateArea(){
 
+		if(ScenarioData.Area.width == 0 && ScenarioData.Area.height == 0){
+			HeightmapControler.TerrainMaterial.SetInt("_Area", 0);
+			return;
+		}
+		HeightmapControler.TerrainMaterial.SetInt("_Area", 1);
 		HeightmapControler.TerrainMaterial.SetFloat("_AreaX", ScenarioData.Area.x / 15f);
 		HeightmapControler.TerrainMaterial.SetFloat("_AreaY", ScenarioData.Area.y / 15f);
 		HeightmapControler.TerrainMaterial.SetFloat("_AreaWidht", ScenarioData.Area.width / 15f);
@@ -171,7 +185,7 @@ public class MapLuaParser : MonoBehaviour {
 		loadedFile = System.IO.File.ReadAllText(loc, encodeType);
 
 		string loadedFileFunctions = "";
-		loadedFileFunctions = System.IO.File.ReadAllText("Structure/lua_variable_functions.lua", encodeType);
+		loadedFileFunctions = System.IO.File.ReadAllText(StructurePath + "lua_variable_functions.lua", encodeType);
 		
 		env = new Lua();
 		env.LoadCLRPackage();
@@ -243,10 +257,10 @@ public class MapLuaParser : MonoBehaviour {
 		loadedFileSave = System.IO.File.ReadAllText(ScenarioData.SaveLua.Replace("/maps/", MapPath), encodeType);
 		
 		string loadedFileFunctions = "";
-		loadedFileFunctions = System.IO.File.ReadAllText("Structure/lua_variable_functions.lua", encodeType);
+		loadedFileFunctions = System.IO.File.ReadAllText(StructurePath + "lua_variable_functions.lua", encodeType);
 		
 		string loadedFileEndFunctions = "";
-		loadedFileEndFunctions = System.IO.File.ReadAllText("Structure/lua_variable_end_functions.lua", encodeType);
+		loadedFileEndFunctions = System.IO.File.ReadAllText(StructurePath + "lua_variable_end_functions.lua", encodeType);
 		
 		loadedFileSave = loadedFileFunctions + loadedFileSave + loadedFileEndFunctions;
 		
@@ -271,6 +285,7 @@ public class MapLuaParser : MonoBehaviour {
 			UpdateArea();
 		}
 		else{
+			HeightmapControler.TerrainMaterial.SetInt("_Area", 0);
 			MapElements.SetActive(false);
 			HeightmapControler.TerrainMaterial.SetFloat("_AreaX", 0);
 			HeightmapControler.TerrainMaterial.SetFloat("_AreaY", 0);
@@ -569,7 +584,7 @@ public class MapLuaParser : MonoBehaviour {
 		string loadedFile = "";
 		
 		System.Text.Encoding encodeType = System.Text.Encoding.ASCII;
-		string loc = "Structure/scenario_structure.lua";
+		string loc = StructurePath + "scenario_structure.lua";
 		loadedFile = System.IO.File.ReadAllText(loc, encodeType);
 
 		char[] Separator = "\n".ToCharArray();
@@ -629,26 +644,26 @@ public class MapLuaParser : MonoBehaviour {
 		string loadedFile = "";
 
 		System.Text.Encoding encodeType = System.Text.Encoding.ASCII;
-		string loc = "Structure/save_structure.lua";
+		string loc = StructurePath + "save_structure.lua";
 		loadedFile = System.IO.File.ReadAllText(loc, encodeType);
 
 		char[] Separator = "\n".ToCharArray();
 		string[] AllLines = loadedFile.Split(Separator);
 
 		//Mex
-		string MexStructure = System.IO.File.ReadAllText("Structure/save_mex.lua", encodeType);
+		string MexStructure = System.IO.File.ReadAllText(StructurePath + "save_mex.lua", encodeType);
 
 		//Hydro
-		string HydroStructure = System.IO.File.ReadAllText("Structure/save_hydro.lua", encodeType);
+		string HydroStructure = System.IO.File.ReadAllText(StructurePath + "save_hydro.lua", encodeType);
 
 		//Army Marker
-		string ArmyMarkerStructure = System.IO.File.ReadAllText("Structure/save_armymarker.lua", encodeType);
+		string ArmyMarkerStructure = System.IO.File.ReadAllText(StructurePath + "save_armymarker.lua", encodeType);
 
 		//Si
-		string SiStructure = System.IO.File.ReadAllText("Structure/save_marker.lua", encodeType);
+		string SiStructure = System.IO.File.ReadAllText(StructurePath + "save_marker.lua", encodeType);
 
 		//Army
-		string ArmyStructure = System.IO.File.ReadAllText("Structure/save_army.lua", encodeType);
+		string ArmyStructure = System.IO.File.ReadAllText(StructurePath + "save_army.lua", encodeType);
 
 		foreach(string line in AllLines){
 			if(line.Contains("[*AREA*]")){
@@ -662,7 +677,7 @@ public class MapLuaParser : MonoBehaviour {
 					string ArmyName = "                ['" + ARMY_[a].name + "'] = {";
 					NewArmy = NewArmy.Replace("['ARMY_']", ArmyName);
 
-					Vector3 MexPos = HeightmapControler.MapWorldPosInSave( ARMY_[a].Mark.position );
+					Vector3 MexPos = HeightmapControler.MapWorldPosInSave( GetPosOfMarkerId(0, a) );
 					string Position = "                    ['position'] = VECTOR3( "+ MexPos.x.ToString() +", "+ MexPos.y.ToString() +", "+ MexPos.z.ToString() +" ),";
 					NewArmy = NewArmy.Replace("['position']", Position);
 
@@ -679,7 +694,7 @@ public class MapLuaParser : MonoBehaviour {
 					if( Hydros[h].SpawnWithArmy == armys.none) NewHydro = NewHydro.Replace("['SpawnWithArmy']\n", "");
 					else NewHydro = NewHydro.Replace("['SpawnWithArmy']", SpawnWithArmy);
 					
-					Vector3 MexPos = HeightmapControler.MapWorldPosInSave( Hydros[h].Mark.position );
+					Vector3 MexPos = HeightmapControler.MapWorldPosInSave( GetPosOfMarkerId(2, h) );
 					string Position = "                    ['position'] = VECTOR3( "+ MexPos.x.ToString() +", "+ MexPos.y.ToString() +", "+ MexPos.z.ToString() +" ),";
 					NewHydro = NewHydro.Replace("['position']", Position);
 					
@@ -693,10 +708,9 @@ public class MapLuaParser : MonoBehaviour {
 					NewMex = NewMex.Replace("['Mass1']", MexName);
 
 					string SpawnWithArmy = "                    ['SpawnWithArmy'] = STRING( '" + Mexes[m].SpawnWithArmy.ToString() + "' ),";
-					if( Mexes[m].SpawnWithArmy == armys.none) NewMex = NewMex.Replace("['SpawnWithArmy']\n", "");
-					else NewMex = NewMex.Replace("['SpawnWithArmy']", SpawnWithArmy);
+					NewMex = NewMex.Replace("['SpawnWithArmy']", SpawnWithArmy);
 
-					Vector3 MexPos = HeightmapControler.MapWorldPosInSave( Mexes[m].Mark.position );
+					Vector3 MexPos = HeightmapControler.MapWorldPosInSave( GetPosOfMarkerId(1, m) );
 					string Position = "                    ['position'] = VECTOR3( "+ MexPos.x.ToString() +", "+ MexPos.y.ToString() +", "+ MexPos.z.ToString() +" ),";
 					NewMex = NewMex.Replace("['position']", Position);
 
@@ -718,7 +732,7 @@ public class MapLuaParser : MonoBehaviour {
 					NewSi = NewSi.Replace("['prop']", SiProp);
 
 
-					Vector3 MexPos = HeightmapControler.MapWorldPosInSave( SiMarkers[s].Mark.position );
+					Vector3 MexPos = HeightmapControler.MapWorldPosInSave( GetPosOfMarkerId(3, s) );
 					string Position = "                    ['position'] = VECTOR3( "+ MexPos.x.ToString() +", "+ MexPos.y.ToString() +", "+ MexPos.z.ToString() +" ),";
 					NewSi = NewSi.Replace("['position']", Position);
 					
@@ -760,8 +774,8 @@ public class MapLuaParser : MonoBehaviour {
 		System.Text.Encoding encodeType = System.Text.Encoding.ASCII;
 		string loc = "";
 		if(ID == 0) return;
-		else if(ID == 1) loc = "Structure/script_structure1.lua";
-		else if(ID == 2) loc = "Structure/script_structure2.lua";
+		else if(ID == 1) loc = StructurePath + "script_structure1.lua";
+		else if(ID == 2) loc = StructurePath + "script_structure2.lua";
 
 		loadedFile = System.IO.File.ReadAllText(loc, encodeType);
 
@@ -788,6 +802,20 @@ public class MapLuaParser : MonoBehaviour {
 			return MarkerRend.Hydro[Element.InstanceId].transform.position;
 		case 3:
 			return MarkerRend.Ai[Element.InstanceId].transform.position;
+		}
+		return Vector3.zero;
+	}
+
+	public Vector3 GetPosOfMarkerId(int list, int instance){
+		switch(list){
+		case 0:
+			return MarkerRend.Armys[instance].transform.position;
+		case 1:
+			return MarkerRend.Mex[instance].transform.position;
+		case 2:
+			return MarkerRend.Hydro[instance].transform.position;
+		case 3:
+			return MarkerRend.Ai[instance].transform.position;
 		}
 		return Vector3.zero;
 	}
