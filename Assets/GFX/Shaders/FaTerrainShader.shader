@@ -4,6 +4,7 @@ Properties {
 	_Shininess ("Shininess", Range (0.03, 1)) = 0.078125
 	[MaterialToggle] _Water("Has Water", Int) = 0
 	[MaterialToggle] _Grid("Grid", Int) = 0
+	[MaterialToggle] _Slope("Slope", Int) = 0
 
 	_WaterRam ("Control (RGBA)", 2D) = "blue" {}
 	_WaterLevel ("Water Level", Range (0.03, 5)) = 0.078125
@@ -49,21 +50,22 @@ CGPROGRAM
 #pragma surface surf Lambert vertex:vert
 #pragma target 3.0
 
-void vert (inout appdata_full v)
-{
-	v.tangent.xyz = cross(v.normal, float3(0,0,1));
-	v.tangent.w = -1;
-	//v.color = _Abyss;
-}
-
 struct Input {
 	float2 uv_Control : TEXCOORD0;
 	float2 uv_Splat0 : TEXCOORD1;
-	float2 uv_Splat1 : TEXCOORD2;
 	float2 uv_Splat2 : TEXCOORD3;
 	float2 uv_Splat3 : TEXCOORD4;
 	float3 worldPos;
+	float SlopeLerp;
 };
+
+void vert (inout appdata_full v, out Input o){
+	UNITY_INITIALIZE_OUTPUT(Input,o);
+	v.tangent.xyz = cross(v.normal, float3(0,0,1));
+	v.tangent.w = -1;
+	o.SlopeLerp = dot(v.normal, half3(0,1,0));
+	//v.color = _Abyss;
+}
 
 sampler2D _Control;
 sampler2D _Splat0,_Splat1,_Splat2,_Splat3, _SplatLower;
@@ -77,6 +79,7 @@ fixed4 _Abyss;
 fixed4 _Deep;
 int _Water;
 int _Grid;
+int _Slope;
 int _Area;
 
 half _AreaX;
@@ -101,10 +104,30 @@ void surf (Input IN, inout SurfaceOutput o) {
 
 	col = tex2D (_SplatLower, IN.uv_Splat0 * _LowerScale);
 	col = lerp(col, tex2D (_Splat0, IN.uv_Splat0), splat_control.r);
-	col = lerp(col, tex2D (_Splat1, IN.uv_Splat1), splat_control.g);
+	col = lerp(col, tex2D (_Splat1, IN.uv_Splat0), splat_control.g);
 	col = lerp(col, tex2D (_Splat2, IN.uv_Splat2), splat_control.b);
 	col = lerp(col, tex2D (_Splat3, IN.uv_Splat3), splat_control.a);
 	
+		half4 nrm;
+	nrm = tex2D (_NormalLower, IN.uv_Splat0 * _LowerScale);
+	nrm = lerp(nrm, tex2D (_Normal0, IN.uv_Splat0), splat_control.r);
+	nrm =  lerp(nrm, tex2D (_Normal1, IN.uv_Splat0), splat_control.g);
+	nrm =  lerp(nrm, tex2D (_Normal2, IN.uv_Splat2), splat_control.b);
+	nrm =  lerp(nrm, tex2D (_Normal3, IN.uv_Splat3), splat_control.a);
+	
+	
+	nrm.rgb = normalize(nrm.rgb);
+	//nrm = half4(nrm.r, nrm.g, nrm.b, nrm.a);
+	//fixed4 finalnormals;
+	//finalnormals = float4(nrm.rgb * 0.5 + 0.5, nrm.a);
+	
+	o.Normal = UnpackNormal(nrm);
+	
+	if(_Slope > 0){
+		if(IN.SlopeLerp > 0.75) col.rgb = half3(0,1,0);
+		else col.rgb = half3(1,0,0);
+		//col.rgb = lerp(half3(1,0,0), half3(0,1,0), IN.SlopeLerp);
+	}
 	
 	if(_Grid > 0){
 		fixed4 GridColor = tex2D (_GridTexture, IN.uv_Control * _GridScale - float2(-0.05, -0.05));
@@ -127,38 +150,23 @@ void surf (Input IN, inout SurfaceOutput o) {
 	
 	if(_Area > 0){
 		fixed4 dark = fixed4(0.05, 0.05, 0.05, 1); 
-		if(IN.uv_Splat1.x < _AreaX){
+		if(IN.worldPos.x < _AreaX){
 		 	o.Albedo = fixed4(0,0,0,1);
 		 	o.Emission = dark;
 		}
-		else if(IN.uv_Splat1.x > _AreaWidht){
+		else if(IN.worldPos.x > _AreaWidht){
 		 	o.Albedo = fixed4(0,0,0,1);
 		 	o.Emission = dark;
 		}
-		else if(IN.uv_Splat1.y < _AreaY){
+		else if(IN.worldPos.z < _AreaY - 51.2){
 		 	o.Albedo = fixed4(0,0,0,1);
 		 	o.Emission = dark;
 		}
-		else if(IN.uv_Splat1.y > _AreaHeight){
+		else if(IN.worldPos.z > _AreaHeight - 51.2){
 		 	o.Albedo = fixed4(0,0,0,1);
 		 	o.Emission = dark;
 		}
 	}
-
-	half4 nrm;
-	nrm = tex2D (_NormalLower, IN.uv_Splat0 * _LowerScale);
-	nrm = lerp(nrm, tex2D (_Normal0, IN.uv_Splat0), splat_control.r);
-	nrm =  lerp(nrm, tex2D (_Normal1, IN.uv_Splat1), splat_control.g);
-	nrm =  lerp(nrm, tex2D (_Normal2, IN.uv_Splat2), splat_control.b);
-	nrm =  lerp(nrm, tex2D (_Normal3, IN.uv_Splat3), splat_control.a);
-	
-	
-	nrm.rgb = normalize(nrm.rgb);
-	//nrm = half4(nrm.r, nrm.g, nrm.b, nrm.a);
-	//fixed4 finalnormals;
-	//finalnormals = float4(nrm.rgb * 0.5 + 0.5, nrm.a);
-	
-	o.Normal = UnpackNormal(nrm);
 
 	o.Gloss = 0;
 	o.Specular = 0;

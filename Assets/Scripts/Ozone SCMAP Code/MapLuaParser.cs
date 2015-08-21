@@ -103,7 +103,9 @@ public class MapLuaParser : MonoBehaviour {
 		public		string			SaveLua;
 		public		string			ScriptLua;
 		public		string			Scmap;
+		public		bool			DefaultArea;
 		public		Rect			Area;
+		public		Rect[]			Areas;
 	}
 	
 	public	enum armys 
@@ -164,10 +166,11 @@ public class MapLuaParser : MonoBehaviour {
 	public void UpdateArea(){
 
 		if(ScenarioData.Area.width == 0 && ScenarioData.Area.height == 0){
-			HeightmapControler.TerrainMaterial.SetInt("_Area", 0);
+			ScenarioData.DefaultArea = false;
+			HeightmapControler.TerrainMaterial.SetInt("_Area", ScenarioData.DefaultArea?1:0);
 			return;
 		}
-		HeightmapControler.TerrainMaterial.SetInt("_Area", 1);
+		HeightmapControler.TerrainMaterial.SetInt("_Area", ScenarioData.DefaultArea?1:0);
 		HeightmapControler.TerrainMaterial.SetFloat("_AreaX", ScenarioData.Area.x / 15f);
 		HeightmapControler.TerrainMaterial.SetFloat("_AreaY", ScenarioData.Area.y / 15f);
 		HeightmapControler.TerrainMaterial.SetFloat("_AreaWidht", ScenarioData.Area.width / 15f);
@@ -278,6 +281,7 @@ public class MapLuaParser : MonoBehaviour {
 		// LoadArea
 		ScenarioData.Area = new Rect();
 		if(save.GetTable("Scenario.Areas.AREA_1") != null && save.GetTable("Scenario.Areas.AREA_1").ToString() != "null"){
+			ScenarioData.DefaultArea = true;
 			ScenarioData.Area.x = float.Parse(save.GetTable("Scenario.Areas.AREA_1.rectangle")[1].ToString(), System.Globalization.CultureInfo.InvariantCulture.NumberFormat);
 			ScenarioData.Area.y = float.Parse(save.GetTable("Scenario.Areas.AREA_1.rectangle")[2].ToString(), System.Globalization.CultureInfo.InvariantCulture.NumberFormat);
 			ScenarioData.Area.width = float.Parse(save.GetTable("Scenario.Areas.AREA_1.rectangle")[3].ToString(), System.Globalization.CultureInfo.InvariantCulture.NumberFormat);
@@ -285,7 +289,8 @@ public class MapLuaParser : MonoBehaviour {
 			UpdateArea();
 		}
 		else{
-			HeightmapControler.TerrainMaterial.SetInt("_Area", 0);
+			ScenarioData.DefaultArea = false;
+			HeightmapControler.TerrainMaterial.SetInt("_Area", ScenarioData.DefaultArea?1:0);
 			MapElements.SetActive(false);
 			HeightmapControler.TerrainMaterial.SetFloat("_AreaX", 0);
 			HeightmapControler.TerrainMaterial.SetFloat("_AreaY", 0);

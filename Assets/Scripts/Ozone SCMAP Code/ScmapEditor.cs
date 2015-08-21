@@ -15,6 +15,7 @@ public class ScmapEditor : MonoBehaviour {
 	public		float			MapHeightScale = 1;
 	public		GetGamedataFile	Gamedata;
 	public		bool			Grid;
+	public		bool			Slope;
 
 	[System.Serializable]
 	public class TerrainTexture{
@@ -285,5 +286,10 @@ public class ScmapEditor : MonoBehaviour {
 	public void ToogleGrid(bool To){
 		Grid = To;
 		TerrainMaterial.SetInt("_Grid", Grid?1:0);
+	}
+
+	public void ToogleSlope(bool To){
+		Slope = To;
+		TerrainMaterial.SetInt("_Slope", Slope?1:0);
 	}
 }

@@ -87,20 +87,6 @@ Material:
           m_Offset: {x: 0, y: 0}
       data:
         first:
-          name: _Splat4
-        second:
-          m_Texture: {fileID: 0}
-          m_Scale: {x: 1, y: 1}
-          m_Offset: {x: 0, y: 0}
-      data:
-        first:
-          name: _Normal4
-        second:
-          m_Texture: {fileID: 0}
-          m_Scale: {x: 1, y: 1}
-          m_Offset: {x: 0, y: 0}
-      data:
-        first:
           name: _WaterRam
         second:
           m_Texture: {fileID: 2800000, guid: 98cd8e67656329e449bc5d7122271921, type: 3}
@@ -127,6 +113,20 @@ Material:
           m_Texture: {fileID: 2800000, guid: 73e3d60bfbccd0548b778fb57562d7de, type: 3}
           m_Scale: {x: 1, y: 1}
           m_Offset: {x: 0, y: 0}
+      data:
+        first:
+          name: _Splat4
+        second:
+          m_Texture: {fileID: 0}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
+      data:
+        first:
+          name: _Normal4
+        second:
+          m_Texture: {fileID: 0}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
     m_Floats:
       data:
         first:
@@ -134,55 +134,59 @@ Material:
         second: .474808663
       data:
         first:
-          name: _WaterLevel
-        second: 1.75
-      data:
-        first:
-          name: _AbyssLevel
-        second: .25
-      data:
-        first:
-          name: _DeepLevel
-        second: 1.67562497
-      data:
-        first:
-          name: _LowerScale
-        second: NaN
-      data:
-        first:
           name: _Water
-        second: 0
-      data:
-        first:
-          name: _AreaX
-        second: 0
-      data:
-        first:
-          name: _AreaY
-        second: 0
-      data:
-        first:
-          name: _AreaWidht
-        second: 17.0666676
-      data:
-        first:
-          name: _AreaHeight
-        second: 17.0666676
+        second: 1
       data:
         first:
           name: _Grid
         second: 0
       data:
         first:
+          name: _WaterLevel
+        second: 2.46000004
+      data:
+        first:
+          name: _AbyssLevel
+        second: .899999976
+      data:
+        first:
+          name: _AreaX
+        second: .800000012
+      data:
+        first:
+          name: _AreaY
+        second: 4.0333333
+      data:
+        first:
+          name: _AreaWidht
+        second: 33.3333321
+      data:
+        first:
+          name: _AreaHeight
+        second: 30.1333332
+      data:
+        first:
+          name: _LowerScale
+        second: NaN
+      data:
+        first:
           name: _GridScale
-        second: 25.6000004
+        second: 51.2000008
       data:
         first:
           name: _GridCamDist
-        second: 1.9285717
+        second: 3.75714302
       data:
         first:
           name: _Area
+        second: 1
+      data:
+        first:
+          name: _DeepLevel
+        second: 1.67562497
+      data:
+        first:
+          name: _Slope
         second: 0
     m_Colors:
       data:

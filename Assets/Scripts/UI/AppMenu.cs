@@ -14,6 +14,7 @@ public class AppMenu : MonoBehaviour {
 	public		Button[]			Buttons;
 	public		GameObject[]		Popups;
 	public		Toggle				GridToggle;
+	public		Toggle				SlopeToggle;
 
 	void LateUpdate(){
 
@@ -56,6 +57,9 @@ public class AppMenu : MonoBehaviour {
 			break;
 		case "Grid":
 			MapHelper.Loader.HeightmapControler.ToogleGrid(GridToggle.isOn);
+			break;
+		case "Slope":
+			MapHelper.Loader.HeightmapControler.ToogleSlope(SlopeToggle.isOn);
 			break;
 		}
 	}

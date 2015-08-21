@@ -54,50 +54,54 @@ public class CameraControler : MonoBehaviour {
 	}
 
 	void Update () {
-		if(LoadingPopup.activeSelf) return;
+		if (LoadingPopup.activeSelf)
+			return;
 
 		// Interaction
-		if(Edit.MauseOnGameplay || DragStartedGameplay){
-			if(Edit.EditMarkers.CreatingId != 0){
-				CameraMovement();
-				bool MarkerOK = OnCreateMarker();
-				if(Input.GetMouseButtonDown(0) && MarkerOK){
+		if (Edit.MauseOnGameplay || DragStartedGameplay) {
+			if (Edit.EditMarkers.CreatingId != 0) {
+				CameraMovement ();
+				bool MarkerOK = OnCreateMarker ();
+				if (Input.GetMouseButtonDown (0) && MarkerOK) {
 					// Create marker
-					Edit.Scenario.CreateMarker(Edit.EditMarkers.CreatingId - 1, MarkerToCreate.position, "");
-					for(int i = 0; i < MarkerToCreateSymmetry.Length; i++){
-						Edit.Scenario.CreateMarker(Edit.EditMarkers.CreatingId - 1, MarkerToCreateSymmetry[i].position, "");
+					Edit.Scenario.CreateMarker (Edit.EditMarkers.CreatingId - 1, MarkerToCreate.position, "");
+					for (int i = 0; i < MarkerToCreateSymmetry.Length; i++) {
+						Edit.Scenario.CreateMarker (Edit.EditMarkers.CreatingId - 1, MarkerToCreateSymmetry [i].position, "");
 					}
-					Edit.EditMarkers.GenerateAllWorkingElements();
+					Edit.EditMarkers.GenerateAllWorkingElements ();
 				}
-			}
-			else if(HUD.MapLoaded){
-				CameraMovement();
+			} else if (HUD.MapLoaded) {
+				CameraMovement ();
 
-				if(Edit.State == Editing.EditStates.MarkersStat){
-					MarkersInteraction();
+				if (Edit.State == Editing.EditStates.MarkersStat) {
+					MarkersInteraction ();
 				}
 
-				if(Input.GetMouseButtonDown(0)){
+				if (Input.GetMouseButtonDown (0)) {
 					DragStartedGameplay = Edit.MauseOnGameplay;
-					OnBeginDragFunc();
-				}
-				else if(Input.GetMouseButtonUp(0)){
-					OnEndDragFunc();
+					OnBeginDragFunc ();
+				} else if (Input.GetMouseButtonUp (0)) {
+					OnEndDragFunc ();
 					DragStartedGameplay = false;
 					BeginWithShift = false;
 					BeginWithCtrl = false;
 					BeginWithAlt = false;
+				} else if (Input.GetMouseButton (0)) {
+					OnDragFunc ();
 				}
-				else if(Input.GetMouseButton(0)){
-					OnDragFunc();
-				}
-			}
-			else{
+			} else {
 
 			}
 		}
 
-		if(Menu.MenuOpen) return;
+		if (Menu.MenuOpen)
+			return;
+		if (Input.GetKey (KeyCode.LeftControl)) {
+			if(Input.GetKeyDown(KeyCode.G)){
+				Menu.SlopeToggle.isOn = !Menu.SlopeToggle.isOn;
+				Menu.MapHelper.Loader.HeightmapControler.ToogleSlope(Menu.SlopeToggle.isOn);
+			}
+		}
 		if(Input.GetKeyDown(KeyCode.G)){
 			Menu.GridToggle.isOn = !Menu.GridToggle.isOn;
 			Menu.MapHelper.Loader.HeightmapControler.ToogleGrid(Menu.GridToggle.isOn);
