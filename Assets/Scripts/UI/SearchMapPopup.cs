@@ -46,6 +46,8 @@ public class SearchMapPopup : MonoBehaviour {
 			Start.Folder.text = SelectedFolder;
 			Start.Name.text = SelectedScenario;
 
+			Start.InputEnd();
+
 			gameObject.SetActive(false);
 		}
 	}

@@ -171,10 +171,10 @@ public class MapLuaParser : MonoBehaviour {
 			return;
 		}
 		HeightmapControler.TerrainMaterial.SetInt("_Area", ScenarioData.DefaultArea?1:0);
-		HeightmapControler.TerrainMaterial.SetFloat("_AreaX", ScenarioData.Area.x / 15f);
-		HeightmapControler.TerrainMaterial.SetFloat("_AreaY", ScenarioData.Area.y / 15f);
-		HeightmapControler.TerrainMaterial.SetFloat("_AreaWidht", ScenarioData.Area.width / 15f);
-		HeightmapControler.TerrainMaterial.SetFloat("_AreaHeight", ScenarioData.Area.height / 15f);
+		HeightmapControler.TerrainMaterial.SetFloat("_AreaX", ScenarioData.Area.x / 10f);
+		HeightmapControler.TerrainMaterial.SetFloat("_AreaY", ScenarioData.Area.y / 10f);
+		HeightmapControler.TerrainMaterial.SetFloat("_AreaWidht", ScenarioData.Area.width / 10f);
+		HeightmapControler.TerrainMaterial.SetFloat("_AreaHeight", ScenarioData.Area.height / 10f);
 	}
 
 	private void LoadScenarioLua(){
@@ -294,8 +294,8 @@ public class MapLuaParser : MonoBehaviour {
 			MapElements.SetActive(false);
 			HeightmapControler.TerrainMaterial.SetFloat("_AreaX", 0);
 			HeightmapControler.TerrainMaterial.SetFloat("_AreaY", 0);
-			HeightmapControler.TerrainMaterial.SetFloat("_AreaWidht", ScenarioData.Size.x / 15f);
-			HeightmapControler.TerrainMaterial.SetFloat("_AreaHeight", ScenarioData.Size.y / 15f);
+			HeightmapControler.TerrainMaterial.SetFloat("_AreaWidht", ScenarioData.Size.x / 10f);
+			HeightmapControler.TerrainMaterial.SetFloat("_AreaHeight", ScenarioData.Size.y / 10f);
 		}
 
 		MapCenterPoint = Vector3.zero;
@@ -557,7 +557,22 @@ public class MapLuaParser : MonoBehaviour {
 			}
 		}
 
+		SortArmys();
+	}
 
+
+	public void SortArmys(){
+		List<Army> NewArmys = new List<Army>();
+		for(int i = 0; i < ARMY_.Count; i++){
+			for(int a = 0; a < ARMY_.Count; a++){
+				if(ARMY_[a].name == "ARMY_" + (i + 1).ToString()){
+					NewArmys.Add(ARMY_[a]);
+					break;
+				}
+			}
+		}
+
+		ARMY_ = NewArmys;
 	}
 
 

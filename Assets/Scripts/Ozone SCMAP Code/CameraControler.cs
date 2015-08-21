@@ -102,9 +102,11 @@ public class CameraControler : MonoBehaviour {
 				Menu.MapHelper.Loader.HeightmapControler.ToogleSlope(Menu.SlopeToggle.isOn);
 			}
 		}
-		if(Input.GetKeyDown(KeyCode.G)){
-			Menu.GridToggle.isOn = !Menu.GridToggle.isOn;
-			Menu.MapHelper.Loader.HeightmapControler.ToogleGrid(Menu.GridToggle.isOn);
+		else{
+			if(Input.GetKeyDown(KeyCode.G)){
+				Menu.GridToggle.isOn = !Menu.GridToggle.isOn;
+				Menu.MapHelper.Loader.HeightmapControler.ToogleGrid(Menu.GridToggle.isOn);
+			}
 		}
 	}
 

@@ -23,9 +23,9 @@ public class AreasWindow : MonoBehaviour {
 		Scenario.ScenarioData.DefaultArea = DefaultArea.isOn;
 
 		Scenario.ScenarioData.Area.x = float.Parse(DefaultX.text);
-		Scenario.ScenarioData.Area.y = float.Parse(DefaultX.text);
-		Scenario.ScenarioData.Area.width = float.Parse(DefaultX.text);
-		Scenario.ScenarioData.Area.height = float.Parse(DefaultX.text);
+		Scenario.ScenarioData.Area.y = float.Parse(DefaultY.text);
+		Scenario.ScenarioData.Area.width = float.Parse(DefaultW.text);
+		Scenario.ScenarioData.Area.height = float.Parse(DefaultH.text);
 
 		Scenario.UpdateArea ();
 	}

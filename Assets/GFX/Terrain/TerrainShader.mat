@@ -150,20 +150,24 @@ Material:
         second: .899999976
       data:
         first:
+          name: _Area
+        second: 1
+      data:
+        first:
           name: _AreaX
-        second: .800000012
+        second: 1.20000005
       data:
         first:
           name: _AreaY
-        second: 4.0333333
+        second: 6.05000019
       data:
         first:
           name: _AreaWidht
-        second: 33.3333321
+        second: 50
       data:
         first:
           name: _AreaHeight
-        second: 30.1333332
+        second: 45.2000008
       data:
         first:
           name: _LowerScale
@@ -175,19 +179,15 @@ Material:
       data:
         first:
           name: _GridCamDist
-        second: 3.75714302
-      data:
-        first:
-          name: _Area
-        second: 1
-      data:
-        first:
-          name: _DeepLevel
-        second: 1.67562497
+        second: 2.76605654
       data:
         first:
           name: _Slope
         second: 0
+      data:
+        first:
+          name: _DeepLevel
+        second: 1.67562497
     m_Colors:
       data:
         first:

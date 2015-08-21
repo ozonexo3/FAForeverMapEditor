@@ -124,7 +124,12 @@ void surf (Input IN, inout SurfaceOutput o) {
 	o.Normal = UnpackNormal(nrm);
 	
 	if(_Slope > 0){
-		if(IN.SlopeLerp > 0.75) col.rgb = half3(0,1,0);
+		if(IN.worldPos.y < _WaterLevel){
+			if(IN.SlopeLerp > 0.75) col.rgb = half3(0,0.4,1);
+			else col.rgb = half3(0.6,0,1);
+		}
+		else if(IN.SlopeLerp > 0.98) col.rgb = half3(0,0.8,0);
+		else if(IN.SlopeLerp > 0.75) col.rgb = half3(0.5,1,0);
 		else col.rgb = half3(1,0,0);
 		//col.rgb = lerp(half3(1,0,0), half3(0,1,0), IN.SlopeLerp);
 	}
