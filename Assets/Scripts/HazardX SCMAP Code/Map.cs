@@ -73,7 +73,6 @@ public class Map
     public float Bloom;
     public Vector3 FogColor;
     public float FogStart;
-
     public float FogEnd;
     public int Unknown10;
     public int Unknown11;

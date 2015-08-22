@@ -8,6 +8,7 @@ public class SymmetryWindow : MonoBehaviour {
 	public		Editing			EditMenu;
 	public		Toggle[]		Toggles;
 	public		Slider			AngleSlider;
+	public		InputField		ToleranceInput;
 
 	bool Enabling = false;
 
@@ -19,14 +20,24 @@ public class SymmetryWindow : MonoBehaviour {
 		Debug.Log(PlayerPrefs.GetInt("Symmetry", 0));
 		Toggles[ PlayerPrefs.GetInt("Symmetry", 0) ].isOn = true;
 		AngleSlider.value = PlayerPrefs.GetInt("SymmetryAngleCount", 2);
+		ToleranceInput.text =  PlayerPrefs.GetFloat("SymmetryTolerance", 0.4f).ToString();
 		Enabling = false;
 	}
 
 	public void SliderChange(){
 		if(Enabling) return;
-		if(PlayerPrefs.GetInt("SymmetryAngleCount", 0) == (int)AngleSlider.value) return;
-		PlayerPrefs.SetInt("SymmetryAngleCount", (int)AngleSlider.value);
-		EditMenu.EditMarkers.UpdateSelectionRing();
+		bool AnythingChanged = false;
+		if(PlayerPrefs.GetInt("SymmetryAngleCount", 0) != (int)AngleSlider.value){
+			PlayerPrefs.SetInt("SymmetryAngleCount", (int)AngleSlider.value);
+			AnythingChanged = true;
+		}
+		if(float.Parse(ToleranceInput.text) != PlayerPrefs.GetFloat("SymmetryTolerance", 0.4f)){
+			PlayerPrefs.SetFloat("SymmetryTolerance", float.Parse(ToleranceInput.text));
+			EditMenu.MirrorTolerance = float.Parse(ToleranceInput.text);
+			AnythingChanged = true;
+		}
+
+		if(AnythingChanged) EditMenu.EditMarkers.UpdateSelectionRing();
 	}
 
 	public void Button(string func){

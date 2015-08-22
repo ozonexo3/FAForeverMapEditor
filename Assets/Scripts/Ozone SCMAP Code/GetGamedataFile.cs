@@ -101,6 +101,7 @@ public class GetGamedataFile : MonoBehaviour {
 
 					Texture2D texture = new Texture2D(width, height, format, true);
 					int DDS_HEADER_SIZE = 128;
+
 					byte[] dxtBytes = new byte[FinalTextureData.Length - DDS_HEADER_SIZE];
 					Buffer.BlockCopy(FinalTextureData, DDS_HEADER_SIZE, dxtBytes, 0, FinalTextureData.Length - DDS_HEADER_SIZE);
 					//texture.LoadImage(FinalTextureData);
@@ -124,13 +125,13 @@ public class GetGamedataFile : MonoBehaviour {
 						normalTexture.Apply();
 
 						Scmap.Textures[Id].Normal = normalTexture;
-						Scmap.Textures[Id].Normal.mipMapBias = -0.4f;
+						Scmap.Textures[Id].Normal.mipMapBias = -0.0f;
 						Scmap.Textures[Id].Normal.filterMode = FilterMode.Trilinear;
 						Scmap.Textures[Id].Normal.anisoLevel = 6;
 					}
 					else{
 						Scmap.Textures[Id].Albedo = texture;
-						Scmap.Textures[Id].Albedo.mipMapBias = -0.4f;
+						Scmap.Textures[Id].Albedo.mipMapBias = -0.0f;
 						Scmap.Textures[Id].Albedo.filterMode = FilterMode.Trilinear;
 						Scmap.Textures[Id].Albedo.anisoLevel = 6;
 					}

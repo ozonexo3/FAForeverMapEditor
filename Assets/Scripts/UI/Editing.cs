@@ -28,7 +28,7 @@ namespace EditMap{
 		void OnEnable(){
 			ChangeCategory(0);
 			State = EditStates.MapStat;
-			MirrorTolerance = 0.5f;
+			MirrorTolerance = PlayerPrefs.GetFloat("SymmetryTolerance", 0.4f);
 		}
 
 		public void ButtonFunction(string func){
@@ -80,7 +80,7 @@ namespace EditMap{
 		}
 
 
-		void ChangeCategory(int id = 0){
+		public void ChangeCategory(int id = 0){
 			foreach(GameObject obj in Categorys){
 				obj.SetActive(false);
 			}

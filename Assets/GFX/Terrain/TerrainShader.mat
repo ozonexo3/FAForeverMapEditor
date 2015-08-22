@@ -143,31 +143,31 @@ Material:
       data:
         first:
           name: _WaterLevel
-        second: 2.46000004
+        second: 1.75
       data:
         first:
           name: _AbyssLevel
-        second: .899999976
+        second: 1.10000002
       data:
         first:
           name: _Area
-        second: 1
+        second: 0
       data:
         first:
           name: _AreaX
-        second: 1.20000005
+        second: 0
       data:
         first:
           name: _AreaY
-        second: 6.05000019
+        second: 0
       data:
         first:
           name: _AreaWidht
-        second: 50
+        second: 51.2000008
       data:
         first:
           name: _AreaHeight
-        second: 45.2000008
+        second: 51.2000008
       data:
         first:
           name: _LowerScale
@@ -179,7 +179,7 @@ Material:
       data:
         first:
           name: _GridCamDist
-        second: 2.76605654
+        second: 3.75714302
       data:
         first:
           name: _Slope

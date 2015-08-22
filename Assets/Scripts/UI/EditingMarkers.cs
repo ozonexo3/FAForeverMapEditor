@@ -12,6 +12,7 @@ namespace EditMap{
 		public		Editing					EditMenu;
 		public		List<WorkingElement>	AllWorkingElements;
 
+
 		[Header("Creating")]
 		public		int						CreatingId;
 		public		Image[]					ButtonSelected;
@@ -40,6 +41,7 @@ namespace EditMap{
 
 
 
+
 		[System.Serializable]
 		public class SymmetrySelection{
 			public		Vector3					MoveMultiply = Vector3.one;
@@ -55,6 +57,7 @@ namespace EditMap{
 		{
 			public		int		InstanceId;
 			public		int		ListId;
+			public		int		SelectionState;
 		}
 
 		public void ButtonFunction(string func){
@@ -151,24 +154,28 @@ namespace EditMap{
 				WorkingElement NewElement = new WorkingElement();
 				NewElement.InstanceId = i;
 				NewElement.ListId = 0;
+				NewElement.SelectionState = 0;
 				AllWorkingElements.Add(NewElement);
 			}
 			for(int i = 0; i < Scenario.Mexes.Count; i++){
 				WorkingElement NewElement = new WorkingElement();
 				NewElement.InstanceId = i;
 				NewElement.ListId = 1;
+				NewElement.SelectionState = 0;
 				AllWorkingElements.Add(NewElement);
 			}
 			for(int i = 0; i < Scenario.Hydros.Count; i++){
 				WorkingElement NewElement = new WorkingElement();
 				NewElement.InstanceId = i;
 				NewElement.ListId = 2;
+				NewElement.SelectionState = 0;
 				AllWorkingElements.Add(NewElement);
 			}
 			for(int i = 0; i < Scenario.SiMarkers.Count; i++){
 				WorkingElement NewElement = new WorkingElement();
 				NewElement.InstanceId = i;
 				NewElement.ListId = 3;
+				NewElement.SelectionState = 0;
 				AllWorkingElements.Add(NewElement);
 			}
 		}
@@ -196,7 +203,6 @@ namespace EditMap{
 					ToAdd.ListId = add[i].GetComponent<MarkerData>().ListId;
 					Selected.Add(ToAdd);
 				}
-				
 			}
 			UpdateSelectionRing();
 		}
@@ -236,15 +242,35 @@ namespace EditMap{
 		}
 		
 		public void CleanSelection(){
+			AllMarkersList.UnselectAll();
 			if(Selected.Count > 0) Scenario.History.RegisterMarkerSelection();
 			Selected = new List<WorkingElement>();
 			UpdateSelectionRing();
-			
 		}
 
+		public bool IsSelected(int listId, int instanceId){
+			foreach(WorkingElement obj in Selected){
+				if(obj.InstanceId == instanceId && obj.ListId == listId) return true;
+			}
+			return false;
+		}
+
+		public bool IsSymmetrySelected(int listId, int instanceId){
+			for(int i = 0; i < AllWorkingElements.Count; i++){
+				if(AllWorkingElements[i].ListId == listId && AllWorkingElements[i].InstanceId == instanceId){
+					if(AllWorkingElements[i].SelectionState == 2) return true;
+					return false;
+				}
+			}
+			return false;
+		}
+
+
 		public void UpdateSelectionRing(){
-			EditMenu.MirrorTolerance = 0.3f;
-			
+			//EditMenu.MirrorTolerance = 0.3f;
+			foreach(WorkingElement all in AllWorkingElements){
+				all.SelectionState = 0;
+			}
 			if(Selected.Count <= 0){
 				SelectedMarker.gameObject.SetActive(false);
 				if(SelectedSymmetryMarkers.Count > 0){
@@ -257,9 +283,6 @@ namespace EditMap{
 				}
 				SelectionsRings = new List<GameObject>();
 				SelectedStartPos = new Vector3[0];
-				foreach(ListObject list in AllMarkersList.AllFields){
-					list.Unselect();
-				}
 			}
 			else{
 				SelectedMarker.gameObject.SetActive(true);
@@ -349,20 +372,11 @@ namespace EditMap{
 						SelectRotateByCenter(i, angle + angle * i);
 					}
 				}
-				
-				foreach(ListObject list in AllMarkersList.AllFields){
-					list.Unselect();
-				}
+
 				foreach(WorkingElement obj in Selected){
 					GameObject newRing = Instantiate(RingSelectionPrefab) as GameObject;
 					newRing.GetComponent<SelectionRing>().SelectedObject = Scenario.GetMarkerRenderer(obj).transform;
 					SelectionsRings.Add(newRing);
-					//foreach(ListObject list in AllMarkersList.AllFields){
-						/*if(list.ConnectedGameObject == obj){
-							list.Select();
-							break;
-						}*/
-					//}
 				}
 				for(int i = 0; i < SymmetrySelectionList.Length; i++){
 					SymmetrySelectionList[i].SelectedStartPos = new Vector3[SymmetrySelectionList[i].MirrorSelected.Count];
@@ -375,6 +389,7 @@ namespace EditMap{
 					}
 				}
 			}
+			AllMarkersList.UpdateSelection();
 		}
 		
 		void RegenerateSymmetryMarkers(int count = 0){
@@ -428,6 +443,7 @@ namespace EditMap{
 					Vector3 AllPos = new Vector3(MirroredPos.x, 0, MirroredPos.z);
 					
 					if(Vector3.Distance(SelPos, AllPos) < EditMenu.MirrorTolerance){ //MirrorTolerance
+						all.SelectionState = 2;
 						bool AlreadyExist = false;
 						foreach(WorkingElement MirObj in SymmetrySelectionList[id].MirrorSelected){
 							if(MirObj.ListId == all.ListId && MirObj.InstanceId == all.InstanceId){
@@ -465,6 +481,7 @@ namespace EditMap{
 					
 					
 					if(Vector3.Distance(SelPos, AllPos) < EditMenu.MirrorTolerance){ //MirrorTolerance
+						all.SelectionState = 2;
 						bool AlreadyExist = false;
 						foreach(WorkingElement MirObj in SymmetrySelectionList[id].MirrorSelected){
 							if(MirObj.InstanceId == all.InstanceId && MirObj.ListId == all.ListId){
@@ -503,6 +520,7 @@ namespace EditMap{
 					Vector3 AllPos = new Vector3(MirroredPos.x, 0, MirroredPos.z);
 					
 					if(Vector3.Distance(SelPos, AllPos) < EditMenu.MirrorTolerance){ //MirrorTolerance
+						all.SelectionState = 2;
 						bool AlreadyExist = false;
 						foreach(WorkingElement MirObj in SymmetrySelectionList[id].MirrorSelected){
 							if(MirObj.InstanceId == all.InstanceId && MirObj.ListId == all.ListId){
@@ -554,6 +572,7 @@ namespace EditMap{
 					Vector3 AllPos = new Vector3(MirroredPos.x, 0, MirroredPos.z);
 					
 					if(Vector3.Distance(SelPos, AllPos) < EditMenu.MirrorTolerance){ //MirrorTolerance
+						all.SelectionState = 2;
 						bool AlreadyExist = false;
 						foreach(WorkingElement MirObj in SymmetrySelectionList[id].MirrorSelected){
 							if(MirObj.InstanceId == all.InstanceId && MirObj.ListId == all.ListId){
@@ -606,6 +625,7 @@ namespace EditMap{
 					Vector3 AllPos = new Vector3(MirroredPos.x, 0, MirroredPos.z);
 					
 					if(Vector3.Distance(SelPos, AllPos) < EditMenu.MirrorTolerance){ //MirrorTolerance
+						all.SelectionState = 2;
 						bool AlreadyExist = false;
 						foreach(WorkingElement MirObj in SymmetrySelectionList[id].MirrorSelected){
 							if(MirObj.InstanceId == all.InstanceId && MirObj.ListId == all.ListId){
@@ -635,15 +655,13 @@ namespace EditMap{
 			foreach(WorkingElement obj in Selected){
 				foreach(WorkingElement all in AllWorkingElements){
 					Vector3 MirroredPos = Scenario.GetPosOfMarker(all) - Scenario.MapCenterPoint;
-					//MirroredPos.z = -MirroredPos.z;
-					//MirroredPos.x = -MirroredPos.x;
-					//MirroredPos += Scenario.MapCenterPoint;
 					MirroredPos = RotatePointAroundPivot(Scenario.GetPosOfMarker(all), Scenario.MapCenterPoint, angle);
 					
 					Vector3 SelPos = new Vector3(Scenario.GetPosOfMarker(obj).x, 0, Scenario.GetPosOfMarker(obj).z);
 					Vector3 AllPos = new Vector3(MirroredPos.x, 0, MirroredPos.z);
 					
 					if(Vector3.Distance(SelPos, AllPos) < EditMenu.MirrorTolerance){ //MirrorTolerance
+						all.SelectionState = 2;
 						bool AlreadyExist = false;
 						foreach(WorkingElement MirObj in SymmetrySelectionList[id].MirrorSelected){
 							if(MirObj.InstanceId == all.InstanceId && MirObj.ListId == all.ListId){

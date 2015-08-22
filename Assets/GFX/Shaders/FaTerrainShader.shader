@@ -128,14 +128,14 @@ void surf (Input IN, inout SurfaceOutput o) {
 			if(IN.SlopeLerp > 0.75) col.rgb = half3(0,0.4,1);
 			else col.rgb = half3(0.6,0,1);
 		}
-		else if(IN.SlopeLerp > 0.98) col.rgb = half3(0,0.8,0);
-		else if(IN.SlopeLerp > 0.75) col.rgb = half3(0.5,1,0);
+		else if(IN.SlopeLerp > 0.99) col.rgb = half3(0,0.8,0);
+		else if(IN.SlopeLerp > 0.85) col.rgb = half3(0.5,1,0);
 		else col.rgb = half3(1,0,0);
 		//col.rgb = lerp(half3(1,0,0), half3(0,1,0), IN.SlopeLerp);
 	}
 	
 	if(_Grid > 0){
-		fixed4 GridColor = tex2D (_GridTexture, IN.uv_Control * _GridScale - float2(-0.05, -0.05));
+		fixed4 GridColor = tex2D (_GridTexture, IN.uv_Control * _GridScale - float2(-0.00, -0.00));
 		fixed4 GridFinal = fixed4(0,0,0,GridColor.a);
 		if(_GridCamDist < 1){
 			GridFinal.rgb = lerp(GridFinal.rgb, fixed3(1,1,1), GridColor.r * lerp(1, 0, _GridCamDist));

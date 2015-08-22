@@ -39,6 +39,14 @@ public class SearchMapPopup : MonoBehaviour {
 
 
 		} else {
+			if(id < 0){
+				foreach(RectTransform child in Pivot){
+					Destroy(child.gameObject);
+				}
+				AllFields = new List<MapSearchListField>();
+				CreateFolderList();
+				return;
+			}
 			// Finish selection
 			string Path = MapPath + SelectedFolder;
 			SelectedScenario = Directory.GetFiles (Path)[id].Replace("\\", "/").Replace(Path + "/", "").Replace(".lua", "");
@@ -47,6 +55,7 @@ public class SearchMapPopup : MonoBehaviour {
 			Start.Name.text = SelectedScenario;
 
 			Start.InputEnd();
+			Start.UpdateFields();
 
 			gameObject.SetActive(false);
 		}
@@ -84,14 +93,21 @@ public class SearchMapPopup : MonoBehaviour {
 		SelectedScenario = "";
 		gameObject.SetActive (true);
 		string MapPath = PlayerPrefs.GetString("MapsPath", "maps/");
-
-		Debug.Log (MapPath + SelectedFolder);
-
 		string Path = MapPath + SelectedFolder;
-
 		string[] Files = Directory.GetFiles (Path);
 
 		int count = 0;
+		GameObject BackBtn = Instantiate(ListPrefab, Pivot.position, Quaternion.identity) as GameObject;
+		BackBtn.GetComponent<RectTransform>().SetParent(Pivot);
+		BackBtn.GetComponent<RectTransform>().localPosition = Vector3.up * ((Margin * -count));
+		BackBtn.GetComponent<RectTransform>().sizeDelta = new Vector3(1, 45);
+		
+		AllFields.Add(BackBtn.GetComponent<MapSearchListField>());
+		AllFields[count].Controler = this;
+		AllFields[count].Id = -1;
+		AllFields[count].ObjectName.text = "<< back";
+		count++;
+
 		for (int i = 0; i < Files.Length; i++) {
 			if(!Files[i].EndsWith(".lua")) continue;
 			GameObject newList = Instantiate(ListPrefab, Pivot.position, Quaternion.identity) as GameObject;

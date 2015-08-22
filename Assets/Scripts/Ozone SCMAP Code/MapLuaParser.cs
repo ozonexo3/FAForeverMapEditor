@@ -1,13 +1,14 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-
+using EditMap;
 using NLua;
 
 public class MapLuaParser : MonoBehaviour {
 
 	[Header("Objects")]
 	public		MarkersRenderer	MarkerRend;
+	public		Editing			EditMenu;
 	public		Undo			History;
 	public		MapHelperGui	HelperGui;
 	public		string			FolderName;
@@ -118,7 +119,7 @@ public class MapLuaParser : MonoBehaviour {
 	Lua save;
 
 	void Awake(){
-		StructurePath = Application.dataPath + "Structure/";;
+		StructurePath = Application.dataPath + "/Structure/";;
 		#if UNITY_EDITOR
 		StructurePath = StructurePath.Replace("Assets", "");
 		#endif
@@ -892,6 +893,7 @@ public class MapLuaParser : MonoBehaviour {
 			SiMarkers[SiMarkers.Count - 1].name = "AI_" + SiMarkers.Count.ToString();
 			SiMarkers[SiMarkers.Count - 1].position = position;
 		}
+		EditMenu.EditMarkers.AllMarkersList.UpdateList();
 	}
 
 	public void AddMarkerToTrash(EditMap.EditingMarkers.WorkingElement Element){
@@ -968,6 +970,7 @@ public class MapLuaParser : MonoBehaviour {
 		MexesTrash = new List<int> ();
 		HydrosTrash = new List<int> ();
 		AiTrash = new List<int> ();
+		EditMenu.EditMarkers.AllMarkersList.UpdateList();
 	}
 
 	public void DeleteMarker(EditMap.EditingMarkers.WorkingElement Element){

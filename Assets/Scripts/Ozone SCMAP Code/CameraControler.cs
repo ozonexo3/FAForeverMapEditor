@@ -12,6 +12,7 @@ public class CameraControler : MonoBehaviour {
 	public			AppMenu				Menu;
 	public			GameObject			LoadingPopup;
 	public			bool				DragStartedGameplay = false;
+	public			bool				DragStartedOverMenu = false;
 
 	public			Transform			Pivot;
 	public			float				MapSize;
@@ -54,12 +55,26 @@ public class CameraControler : MonoBehaviour {
 	}
 
 	void Update () {
-		if (LoadingPopup.activeSelf)
+		if (LoadingPopup.activeSelf){
+			if(DragStartedOverMenu) DragStartedOverMenu = false;
 			return;
+		}
+		if (Input.GetMouseButtonDown (0)) {
+			DragStartedOverMenu = !Edit.MauseOnGameplay;
+		}
+		else if (Input.GetMouseButtonUp (0)) {
+			DragStartedOverMenu = false;
+		}
+
 
 		// Interaction
-		if (Edit.MauseOnGameplay || DragStartedGameplay) {
+		if ((Edit.MauseOnGameplay || DragStartedGameplay) && !DragStartedOverMenu) {
 			if (Edit.EditMarkers.CreatingId != 0) {
+				if(Input.GetKeyDown(KeyCode.Escape)){
+					Edit.EditMarkers.CreatingId = 0;
+					Edit.EditMarkers.UpdateCreating();
+					return;
+				}
 				CameraMovement ();
 				bool MarkerOK = OnCreateMarker ();
 				if (Input.GetMouseButtonDown (0) && MarkerOK) {
@@ -484,14 +499,14 @@ public class CameraControler : MonoBehaviour {
 						FinalPos.x = -FinalPos.x;
 						FinalPos += Edit.Scenario.MapCenterPoint;
 						FinalPos.y = Terrain.activeTerrain.SampleHeight(FinalPos);
-						MarkerToCreateSymmetry[0].position = FinalPos;
+						MarkerToCreateSymmetry[i].position = FinalPos;
 					}
 					else if(SymmetryCode == 2 || (SymmetryCode == 4 && i == 1)){
 						FinalPos = HitPointSnaped - Edit.Scenario.MapCenterPoint;
 						FinalPos.z = -FinalPos.z;
 						FinalPos += Edit.Scenario.MapCenterPoint;
 						FinalPos.y = Terrain.activeTerrain.SampleHeight(FinalPos);
-						MarkerToCreateSymmetry[0].position = FinalPos;
+						MarkerToCreateSymmetry[i].position = FinalPos;
 					}
 					else if(SymmetryCode == 3 || (SymmetryCode == 4 && i == 2)){
 						FinalPos = HitPointSnaped - Edit.Scenario.MapCenterPoint;
@@ -499,7 +514,7 @@ public class CameraControler : MonoBehaviour {
 						FinalPos.z = -FinalPos.z;
 						FinalPos += Edit.Scenario.MapCenterPoint;
 						FinalPos.y = Terrain.activeTerrain.SampleHeight(FinalPos);
-						MarkerToCreateSymmetry[0].position = FinalPos;
+						MarkerToCreateSymmetry[i].position = FinalPos;
 					}
 					else if(SymmetryCode == 5){
 						Vector3 Origin = new Vector3(0, 0, -Edit.Scenario.ScenarioData.Size.y / 10f);
@@ -513,7 +528,7 @@ public class CameraControler : MonoBehaviour {
 						float FinalDist = Vector3.Distance(PointOfMirror, Point);
 						Vector3 MirroredMarker = PointOfMirror + FinalDir * FinalDist;
 						MirroredMarker.y = Terrain.activeTerrain.SampleHeight(MirroredMarker);
-						MarkerToCreateSymmetry[0].position = MirroredMarker;
+						MarkerToCreateSymmetry[i].position = MirroredMarker;
 					}
 					else if(SymmetryCode == 6){
 						Vector3 Origin = new Vector3(0, 0, 0);
@@ -527,7 +542,14 @@ public class CameraControler : MonoBehaviour {
 						float FinalDist = Vector3.Distance(PointOfMirror, Point);
 						Vector3 MirroredMarker = PointOfMirror + FinalDir * FinalDist;
 						MirroredMarker.y = Terrain.activeTerrain.SampleHeight(MirroredMarker);
-						MarkerToCreateSymmetry[0].position = MirroredMarker;
+						MarkerToCreateSymmetry[i].position = MirroredMarker;
+					}
+					else if(SymmetryCode == 7){
+						int Count = PlayerPrefs.GetInt("SymmetryAngleCount", 2);
+						float angle = 360.0f / (float)Count;
+
+						Vector3 MirroredMarker = EditingMarkers.RotatePointAroundPivot(HitPointSnaped, Edit.Scenario.MapCenterPoint, angle * (i + 1));
+						MarkerToCreateSymmetry[i].position = MirroredMarker;
 					}
 				}
 			}

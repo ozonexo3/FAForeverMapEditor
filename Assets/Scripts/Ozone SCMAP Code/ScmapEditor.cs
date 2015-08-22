@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityStandardAssets.ImageEffects;
 
 public class ScmapEditor : MonoBehaviour {
 
@@ -7,6 +8,7 @@ public class ScmapEditor : MonoBehaviour {
 	public		TerrainData		Data;
 	public		Transform		WaterLevel;
 	public		MapLuaParser	Scenario;
+	public		Camera			Kamera;
 	private		float[,] 		heights = new float[1,1];
 	public		Light			Sun;
 	public		TerrainTexture[]	Textures;
@@ -43,10 +45,14 @@ public class ScmapEditor : MonoBehaviour {
 	public IEnumerator LoadScmapFile(){
 
 		map = new Map();
-		string path = Application.dataPath + Scenario.ScenarioData.Scmap;
+
+		string MapPath = PlayerPrefs.GetString("MapsPath", "maps/");
+		string path = Scenario.ScenarioData.Scmap.Replace("/maps/", MapPath);
+
+	/*	string path = Application.dataPath + Scenario.ScenarioData.Scmap;
 #if UNITY_EDITOR
 		path = path.Replace("Assets/", "");
-#endif
+#endif*/
 		Debug.Log("Load SCMAP file: " + path);
 
 
@@ -54,15 +60,24 @@ public class ScmapEditor : MonoBehaviour {
 			//printMapDebug(map);
 			Sun.transform.rotation = Quaternion.LookRotation( - map.SunDirection);
 			float lightScale = (map.SunColor.x + map.SunColor.y + map.SunColor.z) / 3;
-			Sun.color = new Color(map.SunColor.x / 2, map.SunColor.y / 2 , map.SunColor.z / 2, 1) ;
-			Sun.intensity = map.LightingMultiplier * 1.0f * lightScale;
+			Sun.color = new Color(map.SunColor.x, map.SunColor.y , map.SunColor.z, 1) ;
+			Sun.intensity = map.LightingMultiplier * 1.0f;
 			Debug.Log("Ambient: " + map.SunAmbience);
+			//RenderSettings.ambientLight = new Color(map.SunAmbience.x, map.SunAmbience.y, map.SunAmbience.z, 1);
+			RenderSettings.ambientLight = new Color(map.SunAmbience.x, map.SunAmbience.y, map.SunAmbience.z, 1);
+			Sun.shadowStrength = 1 - (map.ShadowFillColor.x + map.ShadowFillColor.y + map.ShadowFillColor.z) / 3;
 			if(map.SunAmbience.magnitude == 0){
-				RenderSettings.ambientLight = new Color(0.5f, 0.5f, 0.5f, 1);
+				//RenderSettings.ambientLight = new Color(0.5f, 0.5f, 0.5f, 1);
 			}
 			else{
-				RenderSettings.ambientLight = new Color(map.SunAmbience.x, map.SunAmbience.y, map.SunAmbience.z, 1);
+				//RenderSettings.ambientLight = new Color(map.SunAmbience.x, map.SunAmbience.y, map.SunAmbience.z, 1);
 			}
+
+			Kamera.GetComponent<Bloom>().bloomIntensity = map.Bloom * 5;
+
+			RenderSettings.fogColor = new Color(map.FogColor.x, map.FogColor.y, map.FogColor.z, 1);
+			RenderSettings.fogStartDistance = map.FogStart / 10f;
+			RenderSettings.fogEndDistance = map.FogEnd / 10f;
 		}
 		else{
 			Debug.LogError("File not found");

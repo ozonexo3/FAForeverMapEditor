@@ -25,6 +25,10 @@ public class Undo : MonoBehaviour {
 
 	bool		RegisterMarkersDelete = false;
 
+	void Start(){
+		MaxHistoryLength = PlayerPrefs.GetInt("UndoHistry", 5);
+	}
+
 	// keys
 	void Update(){
 		if(Input.GetKey(KeyCode.LeftControl)){
@@ -54,6 +58,7 @@ public class Undo : MonoBehaviour {
 		switch (History [UndoTo].UndoType) {
 		case HistoryObject.UndoTypes.MapInfo:
 			RegisterRedoMapInfo();
+			if(EditMenu.State != Editing.EditStates.MapStat) EditMenu.ButtonFunction("Map");
 			HistoryMapInfo MapInfoNew = History [UndoTo].GetComponent<HistoryMapInfo>();
 			Scenario.ScenarioData.MapName = MapInfoNew.Name;
 			Scenario.ScenarioData.MapDesc = MapInfoNew.Desc;
@@ -80,6 +85,12 @@ public class Undo : MonoBehaviour {
 			break;
 		case HistoryObject.UndoTypes.MarkersSelection:
 			RegisterRedoMarkerSelection();
+
+			if(EditMenu.State != Editing.EditStates.MarkersStat){
+				EditMenu.State = Editing.EditStates.MarkersStat;
+				EditMenu.ChangeCategory(4);
+			}
+
 			HistoryMarkersSelection MarkerSelectionNew = History [UndoTo].GetComponent<HistoryMarkersSelection>();
 			EditMenu.EditMarkers.Selected = MarkerSelectionNew.Selected;
 			EditMenu.EditMarkers.SymmetrySelectionList = MarkerSelectionNew.SymmetrySelectionList;
@@ -87,6 +98,12 @@ public class Undo : MonoBehaviour {
 			break;
 		case HistoryObject.UndoTypes.MarkersChange:
 			RegisterRedoMarkerChange();
+
+			if(EditMenu.State != Editing.EditStates.MarkersStat){
+				EditMenu.State = Editing.EditStates.MarkersStat;
+				EditMenu.ChangeCategory(4);
+			}
+
 			HistoryMarkersChange HistoryNew = History [UndoTo].GetComponent<HistoryMarkersChange>();
 
 			Scenario.ARMY_ = HistoryNew.ARMY_;
@@ -118,6 +135,7 @@ public class Undo : MonoBehaviour {
 
 		switch (History [RedoTo].UndoType) {
 			case HistoryObject.UndoTypes.MapInfo:
+			if(EditMenu.State != Editing.EditStates.MapStat) EditMenu.ButtonFunction("Map");
 			HistoryMapInfo MapInfoNew = RedoHistory [RedoTo].GetComponent<HistoryMapInfo>();
 			Scenario.ScenarioData.MapName = MapInfoNew.Name;
 			Scenario.ScenarioData.MapDesc = MapInfoNew.Desc;
@@ -143,6 +161,12 @@ public class Undo : MonoBehaviour {
 			break;
 		case HistoryObject.UndoTypes.MarkersSelection:
 			HistoryMarkersSelection MarkerSelectionNew = RedoHistory [RedoTo].GetComponent<HistoryMarkersSelection>();
+
+			if(EditMenu.State != Editing.EditStates.MarkersStat){
+				EditMenu.State = Editing.EditStates.MarkersStat;
+				EditMenu.ChangeCategory(4);
+			}
+
 			EditMenu.EditMarkers.Selected = MarkerSelectionNew.Selected;
 			EditMenu.EditMarkers.SymmetrySelectionList = MarkerSelectionNew.SymmetrySelectionList;
 			EditMenu.EditMarkers.UpdateSelectionRing();
@@ -150,6 +174,12 @@ public class Undo : MonoBehaviour {
 			break;
 		case HistoryObject.UndoTypes.MarkersChange:
 			RegisterRedoMarkerChange();
+
+			if(EditMenu.State != Editing.EditStates.MarkersStat){
+				EditMenu.State = Editing.EditStates.MarkersStat;
+				EditMenu.ChangeCategory(4);
+			}
+
 			HistoryMarkersChange HistoryNew = RedoHistory [RedoTo].GetComponent<HistoryMarkersChange>();
 			
 			Scenario.ARMY_ = HistoryNew.ARMY_;

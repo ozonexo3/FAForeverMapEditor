@@ -1,11 +1,13 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using EditMap;
 
 public class MarkersList : MonoBehaviour {
 
 	public			MapLuaParser		Scenario;
 	public			CameraControler		KameraKontroler;
+	public			EditingMarkers		MarkersMenu;
 
 	public			RectTransform		Pivot;
 	public			GameObject			ListPrefab;
@@ -22,6 +24,20 @@ public class MarkersList : MonoBehaviour {
 		foreach(RectTransform child in Pivot){
 			AllFields = new List<ListObject>();
 			Destroy(child.gameObject);
+		}
+	}
+
+	public void UnselectAll(){
+		foreach(ListObject obj in AllFields){
+			obj.Unselect();
+		}
+	}
+
+	public void UpdateSelection(){
+		foreach(ListObject obj in AllFields){
+			if(MarkersMenu.IsSelected(obj.ListId, obj.InstanceId)) obj.SetSelection(1);
+			else if(MarkersMenu.IsSymmetrySelected(obj.ListId, obj.InstanceId)) obj.SetSelection(2);
+			else obj.SetSelection(0);
 		}
 	}
 
@@ -47,6 +63,10 @@ public class MarkersList : MonoBehaviour {
 			AllFields[count].KameraKontroler = KameraKontroler;
 			AllFields[count].InstanceId = i;
 			AllFields[count].ListId = 0;
+			AllFields[count].ConnectedGameObject = Scenario.MarkerRend.Armys[i];
+			if(MarkersMenu.IsSelected(0, i)) AllFields[count].SetSelection(1);
+			else if(MarkersMenu.IsSymmetrySelected(0, i)) AllFields[count].SetSelection(2);
+			else  AllFields[count].SetSelection(0);
 
 			count++;
 		}
@@ -63,6 +83,11 @@ public class MarkersList : MonoBehaviour {
 			AllFields[count].KameraKontroler = KameraKontroler;
 			AllFields[count].InstanceId = i;
 			AllFields[count].ListId = 1;
+			AllFields[count].ConnectedGameObject = Scenario.MarkerRend.Mex[i];
+
+			if(MarkersMenu.IsSelected(1, i)) AllFields[count].SetSelection(1);
+			else if(MarkersMenu.IsSymmetrySelected(1, i)) AllFields[count].SetSelection(2);
+			else  AllFields[count].SetSelection(0);
 
 			count++;
 		}
@@ -78,6 +103,11 @@ public class MarkersList : MonoBehaviour {
 			AllFields[count].KameraKontroler = KameraKontroler;
 			AllFields[count].InstanceId = i;
 			AllFields[count].ListId = 2;
+			AllFields[count].ConnectedGameObject = Scenario.MarkerRend.Hydro[i];
+
+			if(MarkersMenu.IsSelected(2, i)) AllFields[count].SetSelection(1);
+			else if(MarkersMenu.IsSymmetrySelected(2, i)) AllFields[count].SetSelection(2);
+			else  AllFields[count].SetSelection(0);
 
 			count++;
 		}
@@ -93,7 +123,11 @@ public class MarkersList : MonoBehaviour {
 			AllFields[count].KameraKontroler = KameraKontroler;
 			AllFields[count].InstanceId = i;
 			AllFields[count].ListId = 3;
+			AllFields[count].ConnectedGameObject = Scenario.MarkerRend.Ai[i];
 
+			if(MarkersMenu.IsSelected(3, i)) AllFields[count].SetSelection(1);
+			else if(MarkersMenu.IsSymmetrySelected(3, i)) AllFields[count].SetSelection(2);
+			else  AllFields[count].SetSelection(0);
 			count++;
 		}
 
