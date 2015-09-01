@@ -62,32 +62,25 @@ public class ScmapEditor : MonoBehaviour {
 			float lightScale = (map.SunColor.x + map.SunColor.y + map.SunColor.z) / 3;
 			Sun.color = new Color(map.SunColor.x, map.SunColor.y , map.SunColor.z, 1) ;
 			Sun.intensity = map.LightingMultiplier * 1.0f;
-			Debug.Log("Ambient: " + map.SunAmbience);
 			//RenderSettings.ambientLight = new Color(map.SunAmbience.x, map.SunAmbience.y, map.SunAmbience.z, 1);
-			RenderSettings.ambientLight = new Color(map.SunAmbience.x, map.SunAmbience.y, map.SunAmbience.z, 1);
-			Sun.shadowStrength = 1 - (map.ShadowFillColor.x + map.ShadowFillColor.y + map.ShadowFillColor.z) / 3;
-			if(map.SunAmbience.magnitude == 0){
-				//RenderSettings.ambientLight = new Color(0.5f, 0.5f, 0.5f, 1);
-			}
-			else{
-				//RenderSettings.ambientLight = new Color(map.SunAmbience.x, map.SunAmbience.y, map.SunAmbience.z, 1);
-			}
+			RenderSettings.ambientLight = new Color(map.ShadowFillColor.x, map.ShadowFillColor.y, map.ShadowFillColor.z, 1);
+			//Sun.shadowStrength = 1 - (map.ShadowFillColor.x + map.ShadowFillColor.y + map.ShadowFillColor.z) / 3;
 
-			Kamera.GetComponent<Bloom>().bloomIntensity = map.Bloom * 5;
+			Kamera.GetComponent<Bloom>().bloomIntensity = map.Bloom * 4;
 
 			RenderSettings.fogColor = new Color(map.FogColor.x, map.FogColor.y, map.FogColor.z, 1);
-			RenderSettings.fogStartDistance = map.FogStart / 10f;
-			RenderSettings.fogEndDistance = map.FogEnd / 10f;
+			RenderSettings.fogStartDistance = map.FogStart * 2;
+			RenderSettings.fogEndDistance = map.FogEnd * 2;
+
+			TerrainMaterial.SetFloat("_LightingMultiplier", map.LightingMultiplier);
+			TerrainMaterial.SetColor("_SunColor",  new Color(map.SunColor.x, map.SunColor.y, map.SunColor.z, 1));
+			TerrainMaterial.SetColor("_SunAmbience",  new Color(map.SunAmbience.x, map.SunAmbience.y, map.SunAmbience.z, 1));
+			TerrainMaterial.SetColor("_ShadowColor",  new Color(map.ShadowFillColor.x * 0.5f, map.ShadowFillColor.y * 0.5f, map.ShadowFillColor.z * 0.5f, 1));
 		}
 		else{
 			Debug.LogError("File not found");
 			StopCoroutine( "LoadScmapFile" );
 		}
-
-		// Activate objects
-		if(Teren) Teren.gameObject.SetActive(true);
-
-
 
 		Scenario.ScenarioData.MaxHeight = map.Water.Elevation;
 		MapLuaParser.Water = map.Water.HasWater;
@@ -145,6 +138,9 @@ public class ScmapEditor : MonoBehaviour {
 		Teren.materialTemplate = TerrainMaterial;
 		Teren.heightmapPixelError = 1;
 		Teren.basemapDistance = 10000;
+		Teren.castShadows = false;
+		Teren.drawTreesAndFoliage = false;
+		Teren.reflectionProbeUsage = UnityEngine.Rendering.ReflectionProbeUsage.Off;
 
 		Data.heightmapResolution = (int)(xRes + 1);
 		Data.size = new Vector3(
@@ -169,14 +165,14 @@ public class ScmapEditor : MonoBehaviour {
 		TerrainMaterial.SetFloat("_LowerScale", Textures[0].AlbedoScale / Textures[1].AlbedoScale);
 		TerrainMaterial.SetTexture("_SplatLower", Textures[0].Albedo);
 		TerrainMaterial.SetTexture("_NormalLower", Textures[0].Normal);
-
+		TerrainMaterial.SetTexture("_UtilitySamplerC", map.WatermapTex);
 		TerrainMaterial.SetFloat("_GridScale", xRes / 10f);
 
 
-		heights = new float[map.Width, map.Height];
+		heights = new float[map.Width + 1, map.Height + 1];
 		// Modify heights array data
-		for (int y = 0; y < map.Width; y++) {
-			for (int x = 0; x < map.Height; x++) {
+		for (int y = 0; y < map.Width + 1; y++) {
+			for (int x = 0; x < map.Height + 1; x++) {
 				heights[x,y] = map.GetHeight(y, map.Height - x) / HeightResize ;
 			}
 		}

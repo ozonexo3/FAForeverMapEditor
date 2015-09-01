@@ -88,16 +88,18 @@ public class GetGamedataFile : MonoBehaviour {
 					//Debug.LogWarning("Size: " +  FormatFileSize);
 					if(FormatFileSize < 1){
 						format = TextureFormat.DXT1;
-						//Debug.LogWarning(FileName + " is DXT1"); 
+						Debug.LogWarning(FileName + " is DXT1"); 
 					}
 					else if(FormatFileSize > 4){
 						format = TextureFormat.RGB24;
-						//Debug.LogWarning(FileName + " is RGB24"); 
+						Debug.LogWarning(FileName + " is RGB24"); 
 					}
 					else{
 						format = TextureFormat.DXT5;
-						//Debug.LogWarning(FileName + " is DXT5"); 
+						Debug.LogWarning(FileName + " is DXT5"); 
 					}
+
+					format = GetFormatOfDds("temfiles/" + FileName);
 
 					Texture2D texture = new Texture2D(width, height, format, true);
 					int DDS_HEADER_SIZE = 128;
@@ -160,7 +162,6 @@ public class GetGamedataFile : MonoBehaviour {
 		Texture2D texture = null;
 
 		Debug.LogWarning("Load texture: " + GameDataPath + scd + LocalPath);
-
 		ZipFile zf = null;
 		try {
 			FileStream fs = File.OpenRead(GameDataPath + scd);
@@ -212,27 +213,29 @@ public class GetGamedataFile : MonoBehaviour {
 					int width = FinalTextureData[17] * 256 + FinalTextureData[16];
 					
 					TextureFormat format;;
+
 					// Now this is made realy bad. I don't know how to check DDS texture format, so i check texture size and its all bytes length to check if there are 3 or 4 channels and how many bits
 					float FormatFileSize = (float)FinalTextureData.Length / ((float)(width * height));
-					//Debug.LogWarning("Size: " +  FormatFileSize);
 					if(FormatFileSize < 1){
-						format = TextureFormat.DXT1;
-						//Debug.LogWarning(FileName + " is DXT1"); 
+						Debug.Log("Dxt1");
+						//format = TextureFormat.DXT1;
 					}
 					else if(FormatFileSize > 4){
-						format = TextureFormat.RGB24;
-						//Debug.LogWarning(FileName + " is RGB24"); 
+						Debug.Log("rgb24");
+						//format = TextureFormat.RGB24;
 					}
 					else{
-						format = TextureFormat.DXT5;
-						//Debug.LogWarning(FileName + " is DXT5"); 
+						Debug.Log("Dxt5");
+						//format = TextureFormat.DXT5;
 					}
+
+
+					format = GetFormatOfDds("temfiles/" + FileName);
 					
 					texture = new Texture2D(width, height, format, true);
 					int DDS_HEADER_SIZE = 128;
 					byte[] dxtBytes = new byte[FinalTextureData.Length - DDS_HEADER_SIZE];
 					Buffer.BlockCopy(FinalTextureData, DDS_HEADER_SIZE, dxtBytes, 0, FinalTextureData.Length - DDS_HEADER_SIZE);
-					//texture.LoadImage(FinalTextureData);
 					texture.LoadRawTextureData(dxtBytes);
 					texture.Apply();
 					
@@ -277,5 +280,116 @@ public class GetGamedataFile : MonoBehaviour {
 		Debug.LogError("Gamedata path not exist!");
 		return texture;
 	}
+
+	public		HeaderClass			LoadDDsHeader;
 	
+	[System.Serializable]
+	public class HeaderClass{
+		public		uint size;
+		public		uint flags;
+		public		uint height;
+		public		uint width;
+		public		uint sizeorpitch;
+		public		uint depth;
+		public		uint mipmapcount;
+		public		uint alphabitdepth;
+		public		uint[] reserved;
+		
+		public		uint pixelformatSize;
+		public		uint pixelformatflags;
+		public		uint pixelformatFourcc;
+		public		uint pixelformatRgbBitCount;
+		public		uint pixelformatRbitMask;
+		public		uint pixelformatGbitMask;
+		public		uint pixelformatBbitMask;
+		public		uint pixelformatAbitMask;
+	}
+
+	public TextureFormat GetFormatOfDds(string FinalImagePath){
+
+		if(!File.Exists(FinalImagePath)){
+			Debug.LogError("File not exist!");
+			return TextureFormat.DXT5;
+		}
+
+		// Load DDS Header
+		System.IO.FileStream fs = new System.IO.FileStream(FinalImagePath, System.IO.FileMode.Open, System.IO.FileAccess.Read);
+		BinaryReader Stream = new BinaryReader(fs);
+		LoadDDsHeader = new HeaderClass();
+		
+		byte[] signature = Stream.ReadBytes(4);
+		LoadDDsHeader.size = Stream.ReadUInt32();
+		LoadDDsHeader.flags = Stream.ReadUInt32();
+		LoadDDsHeader.height = Stream.ReadUInt32();
+		LoadDDsHeader.width = Stream.ReadUInt32();
+		LoadDDsHeader.sizeorpitch = Stream.ReadUInt32();
+		LoadDDsHeader.depth = Stream.ReadUInt32();
+		LoadDDsHeader.mipmapcount = Stream.ReadUInt32();
+		LoadDDsHeader.alphabitdepth = Stream.ReadUInt32();
+		
+		
+		LoadDDsHeader.reserved = new uint[10];
+		for (int i = 0; i < 10; i++)
+		{
+			LoadDDsHeader.reserved[i] = Stream.ReadUInt32();
+		}
+		
+		LoadDDsHeader.pixelformatSize = Stream.ReadUInt32();
+		LoadDDsHeader.pixelformatflags = Stream.ReadUInt32();
+		LoadDDsHeader.pixelformatFourcc = Stream.ReadUInt32();
+		LoadDDsHeader.pixelformatRgbBitCount = Stream.ReadUInt32();
+		LoadDDsHeader.pixelformatRbitMask = Stream.ReadUInt32();
+		LoadDDsHeader.pixelformatGbitMask = Stream.ReadUInt32();
+		LoadDDsHeader.pixelformatBbitMask = Stream.ReadUInt32();
+		LoadDDsHeader.pixelformatAbitMask = Stream.ReadUInt32();
+
+		return ReadFourcc(LoadDDsHeader.pixelformatFourcc);
+
+	}
+
+
+	public TextureFormat ReadFourcc(uint fourcc){
+		/*
+		uint FOURCC_DXT1 = 0x31545844;
+		uint FOURCC_DXT2 = 0x32545844;
+		uint FOURCC_DXT3 = 0x33545844;
+		uint FOURCC_DXT4 = 0x34545844;
+		uint FOURCC_DXT5 = 0x35545844;
+		uint FOURCC_ATI1 = 0x31495441;
+		uint FOURCC_ATI2 = 0x32495441;
+		uint FOURCC_RXGB = 0x42475852;
+		uint FOURCC_DOLLARNULL = 0x24;
+		uint FOURCC_oNULL = 0x6f;
+		uint FOURCC_pNULL = 0x70;
+		uint FOURCC_qNULL = 0x71;
+		uint FOURCC_rNULL = 0x72;
+		uint FOURCC_sNULL = 0x73;
+		uint FOURCC_tNULL = 0x74;
+		*/
+
+		int mask0 = 0;
+		int mask1 = 255;
+		int mask2 = 65280;
+		int mask3 = 16711680;
+		
+		Debug.Log("Fourcc: " + fourcc + ", Count: " + LoadDDsHeader.pixelformatRgbBitCount + ", Mask: " + LoadDDsHeader.pixelformatRbitMask + ", " + LoadDDsHeader.pixelformatGbitMask + ", " + LoadDDsHeader.pixelformatBbitMask + ", " + LoadDDsHeader.pixelformatAbitMask);
+		
+		switch(fourcc){
+		case 827611204:
+			return TextureFormat.DXT1;
+		case 894720068:
+			return TextureFormat.DXT5;
+		case 64:
+			return TextureFormat.RGB24;
+		case 0:
+			if(LoadDDsHeader.pixelformatRgbBitCount == 24){
+				return TextureFormat.RGB24;
+			}
+			else{
+				return TextureFormat.BGRA32;
+			}
+		}
+		
+		return TextureFormat.DXT5;
+	}
 }

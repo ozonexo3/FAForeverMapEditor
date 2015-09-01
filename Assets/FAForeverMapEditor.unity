@@ -7529,6 +7529,24 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Scmap: {fileID: 506059846}
   EmptyTexture: {fileID: 2800000, guid: ff3c6d8868c51e14fac0fb4144e8aad2, type: 3}
+  LoadDDsHeader:
+    size: 0
+    flags: 0
+    height: 0
+    width: 0
+    sizeorpitch: 0
+    depth: 0
+    mipmapcount: 0
+    alphabitdepth: 0
+    reserved: 
+    pixelformatSize: 0
+    pixelformatflags: 0
+    pixelformatFourcc: 0
+    pixelformatRgbBitCount: 0
+    pixelformatRbitMask: 0
+    pixelformatGbitMask: 0
+    pixelformatBbitMask: 0
+    pixelformatAbitMask: 0
 --- !u!1 &506360243
 GameObject:
   m_ObjectHideFlags: 0
@@ -10723,6 +10741,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Scenario: {fileID: 506059844}
+  GamedataFiles: {fileID: 0}
   Folder: {fileID: 1287067255}
   Name: {fileID: 1819371099}
   Img: {fileID: 47621644}
@@ -18405,7 +18424,7 @@ Camera:
   m_BackGroundColor: {r: .0745098069, g: .0745098069, b: .0745098069, a: .0196078438}
   m_NormalizedViewPortRect:
     serializedVersion: 2
-    x: .100000001
+    x: 0
     y: 0
     width: 1
     height: 1
@@ -18418,11 +18437,11 @@ Camera:
   m_CullingMask:
     serializedVersion: 2
     m_Bits: 256
-  m_RenderingPath: 3
+  m_RenderingPath: 1
   m_TargetTexture: {fileID: 8400000, guid: 9b380a510eb682043a481fadbfce13fd, type: 2}
   m_TargetDisplay: 0
   m_TargetEye: 3
-  m_HDR: 1
+  m_HDR: 0
   m_OcclusionCulling: 0
   m_StereoConvergence: 10
   m_StereoSeparation: .0219999999
@@ -18951,7 +18970,7 @@ Camera:
   m_TargetTexture: {fileID: 8400000, guid: b973ca7cc792dfe4e8f8e660a8bc51f6, type: 2}
   m_TargetDisplay: 0
   m_TargetEye: 3
-  m_HDR: 1
+  m_HDR: 0
   m_OcclusionCulling: 0
   m_StereoConvergence: 10
   m_StereoSeparation: .0219999999
@@ -22888,7 +22907,7 @@ Camera:
   m_BackGroundColor: {r: .0588235296, g: .0588235296, b: .0588235296, a: .0196078438}
   m_NormalizedViewPortRect:
     serializedVersion: 2
-    x: .100000001
+    x: 0
     y: 0
     width: 1
     height: 1
@@ -22901,11 +22920,11 @@ Camera:
   m_CullingMask:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_RenderingPath: 3
+  m_RenderingPath: 1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
   m_TargetEye: 3
-  m_HDR: 1
+  m_HDR: 0
   m_OcclusionCulling: 0
   m_StereoConvergence: 10
   m_StereoSeparation: .0219999999
@@ -22981,13 +23000,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tweakMode: 0
   screenBlendMode: 1
-  hdr: 0
-  sepBlurSpread: 2.5
+  hdr: 2
+  sepBlurSpread: 2
   quality: 1
   bloomIntensity: .5
   bloomThreshold: 0
   bloomThresholdColor: {r: 1, g: 1, b: 1, a: 1}
-  bloomBlurIterations: 2
+  bloomBlurIterations: 1
   hollywoodFlareBlurIterations: 2
   flareRotation: 0
   lensflareMode: 1

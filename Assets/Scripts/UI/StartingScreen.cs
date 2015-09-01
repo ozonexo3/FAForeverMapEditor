@@ -9,6 +9,7 @@ using System.IO.Compression;
 public class StartingScreen : MonoBehaviour {
 
 	public		MapLuaParser		Scenario;
+	public		GetGamedataFile		GamedataFiles;
 	public		InputField			Folder;
 	public		InputField			Name;
 	public		RawImage			Img;
@@ -86,7 +87,7 @@ public class StartingScreen : MonoBehaviour {
 				throw new Exception("Invalid DDS DXTn texture. Unable to read"); //this header byte should be 124 for DDS image files
 
 			// Load DDS Header
-			System.IO.FileStream fs = new System.IO.FileStream(FinalImagePath, System.IO.FileMode.Open, System.IO.FileAccess.Read);
+			/*System.IO.FileStream fs = new System.IO.FileStream(FinalImagePath, System.IO.FileMode.Open, System.IO.FileAccess.Read);
 			BinaryReader Stream = new BinaryReader(fs);
 			LoadDDsHeader = new HeaderClass();
 
@@ -114,28 +115,13 @@ public class StartingScreen : MonoBehaviour {
 			LoadDDsHeader.pixelformatRbitMask = Stream.ReadUInt32();
 			LoadDDsHeader.pixelformatGbitMask = Stream.ReadUInt32();
 			LoadDDsHeader.pixelformatBbitMask = Stream.ReadUInt32();
-			LoadDDsHeader.pixelformatAbitMask = Stream.ReadUInt32();
+			LoadDDsHeader.pixelformatAbitMask = Stream.ReadUInt32();*/
 
 
 			int height = FinalTextureData2[13] * 256 + FinalTextureData2[12];
 			int width = FinalTextureData2[17] * 256 + FinalTextureData2[16];
 
-			TextureFormat format = ReadFourcc(LoadDDsHeader.pixelformatFourcc);
-			/*
-			float FormatFileSize = (float)FinalTextureData2.Length / ((float)(width * height));
-			Debug.Log(FormatFileSize);
-			if(FormatFileSize < 1){
-				format = TextureFormat.DXT1;
-				Debug.Log("DXT1");
-			}
-			else if(FormatFileSize > 4){
-				format = TextureFormat.BGRA32;
-				Debug.Log("RGBA32");
-			}
-			else{
-				format = TextureFormat.DXT5;
-				Debug.Log("DXT5");
-			}*/
+			TextureFormat format = GamedataFiles.GetFormatOfDds(FinalImagePath);
 
 
 			Texture2D textureDds = new Texture2D(width, height, format, false);
@@ -171,37 +157,4 @@ public class StartingScreen : MonoBehaviour {
 		Img.texture = texture;
 	}
 
-
-	public TextureFormat ReadFourcc(uint fourcc){
-		uint FOURCC_DXT1 = 0x31545844;
-		uint FOURCC_DXT2 = 0x32545844;
-		uint FOURCC_DXT3 = 0x33545844;
-		uint FOURCC_DXT4 = 0x34545844;
-		uint FOURCC_DXT5 = 0x35545844;
-		uint FOURCC_ATI1 = 0x31495441;
-		uint FOURCC_ATI2 = 0x32495441;
-		uint FOURCC_RXGB = 0x42475852;
-		uint FOURCC_DOLLARNULL = 0x24;
-		uint FOURCC_oNULL = 0x6f;
-		uint FOURCC_pNULL = 0x70;
-		uint FOURCC_qNULL = 0x71;
-		uint FOURCC_rNULL = 0x72;
-		uint FOURCC_sNULL = 0x73;
-		uint FOURCC_tNULL = 0x74;
-
-		Debug.Log(fourcc);
-
-		switch(fourcc){
-		case 827611204:
-			return TextureFormat.DXT1;
-		case 894720068:
-			return TextureFormat.DXT5;
-		case 64:
-			return TextureFormat.RGB24;
-		case 0:
-			return TextureFormat.BGRA32;
-		}
-
-		return TextureFormat.DXT5;
-	}
 }

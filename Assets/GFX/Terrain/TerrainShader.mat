@@ -8,9 +8,9 @@ Material:
   m_PrefabInternal: {fileID: 0}
   m_Name: TerrainShader
   m_Shader: {fileID: 4800000, guid: a760ca39bde832349bb6ffb0e84caf93, type: 3}
-  m_ShaderKeywords: _GRID_ON _WATER_ON
+  m_ShaderKeywords: _WATER_ON
   m_LightmapFlags: 5
-  m_CustomRenderQueue: -1
+  m_CustomRenderQueue: 1900
   stringTagMap: {}
   m_SavedProperties:
     serializedVersion: 2
@@ -81,6 +81,13 @@ Material:
       data:
         first:
           name: _Normal3
+        second:
+          m_Texture: {fileID: 0}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
+      data:
+        first:
+          name: _UtilitySamplerC
         second:
           m_Texture: {fileID: 0}
           m_Scale: {x: 1, y: 1}
@@ -188,6 +195,26 @@ Material:
         first:
           name: _DeepLevel
         second: 1.67562497
+      data:
+        first:
+          name: _Splat3Scale
+        second: 13.6999998
+      data:
+        first:
+          name: _Splat2Scale
+        second: 14.6999998
+      data:
+        first:
+          name: _Splat1Scale
+        second: 11.6000004
+      data:
+        first:
+          name: _Splat0Scale
+        second: 16.3999996
+      data:
+        first:
+          name: _LightingMultiplier
+        second: 1.69999993
     m_Colors:
       data:
         first:
@@ -205,3 +232,15 @@ Material:
         first:
           name: _Abyss
         second: {r: .00519031612, g: .051962737, b: .235294104, a: 1}
+      data:
+        first:
+          name: _ShadowColor
+        second: {r: .349999994, g: .349999994, b: .375, a: 1}
+      data:
+        first:
+          name: _SunColor
+        second: {r: 1.32999992, g: 1.15999997, b: 1, a: 1}
+      data:
+        first:
+          name: _SunAmbience
+        second: {r: .299999982, g: .200000003, b: .200000003, a: 1}

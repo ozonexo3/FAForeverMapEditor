@@ -74,18 +74,23 @@
 				float4 AddVar		: 	TEXCOORD7;
 		    };
 		    
-		    
-
 			// Vertex Shader
 		    fragmentInput vert(vertexInput i){
 		        fragmentInput o;
 		        o.position = mul (UNITY_MATRIX_MVP, i.vertex);
+		        o.mScreenPos = ComputeScreenPos(o.position);
+		        o.mScreenPos.xy /=  o.mScreenPos.w;
+		        //o.mScreenPos.xy /= _ScreenParams.xy * 0.1;
+		        
 		        o.mTexUV = i.texcoord0;
 		        o.mLayer0 = (i.vertex.xz * _WaterScale + (float2(5.5, -9.95) * _Time.y)) * 0.0009;
 		        o.mLayer1 = (i.vertex.xz * _WaterScale + (float2(0.05, -0.095) * _Time.y)) * 0.09;
 		        o.mLayer2 = (i.vertex.xz * _WaterScale + (float2(0.01, 0.03) * _Time.y)) * 0.05;
 		        o.mLayer3 = (i.vertex.xz * _WaterScale + (float2(0.0005, 0.0009) * _Time.y)) * 0.5;
-		        o.mScreenPos = ComputeScreenPos(o.position);
+
+		        //o.mScreenPos = mul (UNITY_MATRIX_MVP, float4(0,0,0,1));
+		        //o.mScreenPos.xy /= o.mScreenPos.w;
+		        
 		        o.mViewVec = mul (_Object2World, i.vertex).xyz - _WorldSpaceCameraPos;
 		        o.mViewVec = normalize(o.mViewVec);
 		        o.AddVar = float4(length(_WorldSpaceCameraPos - (_Object2World, i.vertex).xyz), 0, 0, 0);
@@ -124,12 +129,8 @@
 		        // calculate the correct viewvector
    				float3 viewVector = normalize(i.mViewVec);
    				
-   				// get perspective correct coordinate for sampling from the other textures
-			    float OneOverW = 1.0 / i.mScreenPos.w;
-			    i.mScreenPos.xyz *= OneOverW;
-			    float2 screenPos = i.mScreenPos.xy;// * ViewportScaleOffset.xy;
-			   // screenPos += ViewportScaleOffset.zw;
-   				
+			    float2 screenPos = UNITY_PROJ_COORD(i.mScreenPos.xy);
+			    
    				// calculate the background pixel
    				float4 backGroundPixels = tex2D( RefractionSampler, screenPos );
     			float mask = saturate(backGroundPixels.a * 255);
@@ -166,7 +167,7 @@
 			    // because the range of the alpha value that we use for the water is very small
 			    // we multiply by a large number and then saturate
 			    // this will also help in the case where we filter to an intermediate value
-			    refractedPixels.xyz = lerp(refractedPixels, backGroundPixels, saturate((i.AddVar.x - 40) / 50 ) ).xyz; //255
+			    refractedPixels.xyz = lerp(refractedPixels, backGroundPixels, saturate((i.AddVar.x - 40) / 30 ) ).xyz; //255
     
     
     			float4 reflectedPixels = tex2D( ReflectionSampler, refractionPos);
@@ -205,6 +206,7 @@
         		float4 returnPixels = refractedPixels;
     			returnPixels.a = waterDepth;
     			return returnPixels;
+    			//return float4(UNITY_PROJ_COORD(screenPos).xy, 0, 1);
     			//return float4((i.AddVar.x - 40) / 50, 0, 0, 1);
 		  		//return float4(sunReflection, 1);
 		    }
