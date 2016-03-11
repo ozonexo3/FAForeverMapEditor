@@ -31,7 +31,7 @@ public class ScmapEditor : MonoBehaviour {
 		public	float		NormalScale;
 	}
 	
-	Map map;
+	public Map map;
 
 	void Start(){
 		ToogleGrid(false);

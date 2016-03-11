@@ -10,7 +10,7 @@ using ICSharpCode.SharpZipLib.BZip2;
 
 public class GetGamedataFile : MonoBehaviour {
 
-	private			string			GameDataPath;
+	public static	string			GameDataPath;
 	public			ScmapEditor		Scmap;
 	public			Texture2D		EmptyTexture;
 
@@ -55,6 +55,8 @@ public class GetGamedataFile : MonoBehaviour {
 					byte[] buffer = new byte[4096]; // 4K is optimum
 					Stream zipStream = zf.GetInputStream(zipEntry);
 					int size = 4096;
+		
+
 					using (FileStream streamWriter = File.Create("temfiles/" + FileName))
 					{
 						while (true)
@@ -69,6 +71,7 @@ public class GetGamedataFile : MonoBehaviour {
 								break;
 							}
 						}
+						streamWriter.Close();
 					}
 
 
@@ -100,10 +103,16 @@ public class GetGamedataFile : MonoBehaviour {
 					}
 
 					format = GetFormatOfDds("temfiles/" + FileName);
+					Debug.Log(width +", " + height +", "+ format);
 
 					Texture2D texture = new Texture2D(width, height, format, true);
-					int DDS_HEADER_SIZE = 128;
 
+					if(FileName == "snow001_normals.dds"){
+						//Debug.Log("Change format");
+						//texture = new Texture2D(width, height, TextureFormat.DXT5, true);
+					}
+
+					int DDS_HEADER_SIZE = 128;
 					byte[] dxtBytes = new byte[FinalTextureData.Length - DDS_HEADER_SIZE];
 					Buffer.BlockCopy(FinalTextureData, DDS_HEADER_SIZE, dxtBytes, 0, FinalTextureData.Length - DDS_HEADER_SIZE);
 					//texture.LoadImage(FinalTextureData);
@@ -372,8 +381,12 @@ public class GetGamedataFile : MonoBehaviour {
 		int mask2 = 65280;
 		int mask3 = 16711680;
 		
-		Debug.Log("Fourcc: " + fourcc + ", Count: " + LoadDDsHeader.pixelformatRgbBitCount + ", Mask: " + LoadDDsHeader.pixelformatRbitMask + ", " + LoadDDsHeader.pixelformatGbitMask + ", " + LoadDDsHeader.pixelformatBbitMask + ", " + LoadDDsHeader.pixelformatAbitMask);
-		
+		Debug.Log("Fourcc: " + fourcc + ", Count: " + LoadDDsHeader.pixelformatRgbBitCount +", Mask:" + LoadDDsHeader.pixelformatRbitMask + ", " + LoadDDsHeader.pixelformatGbitMask + ", " + LoadDDsHeader.pixelformatBbitMask
+			+", AbitMask: "+ LoadDDsHeader.pixelformatAbitMask +", AlphaBitDepth: "+ 	LoadDDsHeader.alphabitdepth
+			+", : "+ 	LoadDDsHeader.depth +", Flags: "+ 	LoadDDsHeader.flags +", : "+ 	LoadDDsHeader.pixelformatFourcc +", : "+ 	LoadDDsHeader.pixelformatSize);
+
+
+
 		switch(fourcc){
 		case 827611204:
 			return TextureFormat.DXT1;
@@ -382,7 +395,10 @@ public class GetGamedataFile : MonoBehaviour {
 		case 64:
 			return TextureFormat.RGB24;
 		case 0:
-			if(LoadDDsHeader.pixelformatRgbBitCount == 24){
+			if(LoadDDsHeader.flags == 528391){
+				return TextureFormat.DXT5;
+			}
+			else if(LoadDDsHeader.pixelformatRgbBitCount == 24){
 				return TextureFormat.RGB24;
 			}
 			else{

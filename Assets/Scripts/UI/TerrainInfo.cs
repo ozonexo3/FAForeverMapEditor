@@ -87,7 +87,6 @@ public class TerrainInfo : MonoBehaviour {
 		//Debug.Log(Vector3.Distance(MouseBeginClick, Input.mousePosition));
 		if(Forced || Vector3.Distance(MouseBeginClick, Input.mousePosition) > 10){}
 		else{
-			Debug.Log(Vector3.Distance(MouseBeginClick, Input.mousePosition));
 			return false;
 		}
 
@@ -121,17 +120,49 @@ public class TerrainInfo : MonoBehaviour {
 		int offset = size / 2;
 		// get the heights of the terrain under this game object
 
-		float[,] heights = Map.Teren.terrainData.GetHeights(posXInTerrain-offset,posYInTerrain-offset,size,size);
-		// we set each sample of the terrain in the size to the desired height
-		for (int i=0; i<size; i++){
-			for (int j=0; j<size; j++){
+		// Horizontal Brush Offsets
+		int OffsetLeft = 0;
+		if(posXInTerrain-offset < 0) OffsetLeft = Mathf.Abs(posXInTerrain-offset);
+		int OffsetRight = 0;
+		if(posXInTerrain-offset + size > Map.Teren.terrainData.heightmapWidth) OffsetRight = posXInTerrain-offset + size - Map.Teren.terrainData.heightmapWidth;
+
+		// Vertical Brush Offsets
+		int OffsetDown = 0;
+		if(posYInTerrain-offset < 0) OffsetDown = Mathf.Abs(posYInTerrain-offset);
+		int OffsetTop = 0;
+		if(posYInTerrain-offset + size > Map.Teren.terrainData.heightmapWidth) OffsetTop = posYInTerrain-offset + size - Map.Teren.terrainData.heightmapWidth;
+
+		float[,] heights = Map.Teren.terrainData.GetHeights(posXInTerrain-offset + OffsetLeft, posYInTerrain-offset + OffsetDown ,(size - OffsetLeft) - OffsetRight, (size - OffsetDown) - OffsetTop);
+		float CenterHeight = 0;
+
+		if(Smooth || SelectedBrush == 2 || SelectedBrush == 3){
+			for (int i=0; i<size; i++){
+				for (int j=0; j<size; j++){
+					CenterHeight += heights[i,j];
+				}
+			}
+			CenterHeight /= size * size;
+		}
+
+		for (int i=0; i<(size - OffsetDown) - OffsetTop; i++){
+			for (int j=0; j<(size - OffsetLeft) - OffsetRight; j++){
 				// Brush strength
-				Color BrushValue =  Brushes[SelectedFalloff].GetPixel((int)((i / (float)size) * Brushes[0].width), (int)((j / (float)size) * Brushes[0].height));
+				Color BrushValue =  Brushes[SelectedFalloff].GetPixel((int)(((i + OffsetDown) / (float)size) * Brushes[0].width), (int)(((j + OffsetLeft) / (float)size) * Brushes[0].height));
 				float SambleBrush = BrushValue.r;
-				heights[i,j] += SambleBrush * BrushStrengthSlider.value * 0.001f * (Invert?(-1):1);
+				if(Smooth || SelectedBrush == 2){
+					float PixelPower = Mathf.Abs( heights[i,j] - CenterHeight);
+					heights[i,j] = Mathf.Lerp(heights[i,j], CenterHeight, BrushStrengthSlider.value * 0.1f * Mathf.Pow(SambleBrush, 2) * PixelPower);
+				}
+				else if(SelectedBrush == 3){
+					float PixelPower = heights[i,j] - CenterHeight;
+					heights[i,j] += Mathf.Lerp(PixelPower, 0, PixelPower * 10) * BrushStrengthSlider.value * 0.01f * Mathf.Pow(SambleBrush, 2);
+				}
+				else{
+					heights[i,j] += SambleBrush * BrushStrengthSlider.value * 0.001f * (Invert?(-1):1);
+				}
 			}
 		}
 		// set the new height
-		Map.Teren.terrainData.SetHeights(posXInTerrain-offset,posYInTerrain-offset,heights);
+		Map.Teren.terrainData.SetHeights(posXInTerrain-offset + OffsetLeft,posYInTerrain-offset + OffsetDown,heights);
 	}
 }

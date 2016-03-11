@@ -49,6 +49,7 @@ public class CameraControler : MonoBehaviour {
 	public			Transform[]			MarkerToCreateSymmetry;
 
 	public void RestartCam(){
+		if(!Terrain.activeTerrain) return;
 		Pos = Vector3.zero + Vector3.right * MapSize / 20.0f - Vector3.forward * MapSize / 20.0f;
 		Pos.y = Terrain.activeTerrain.SampleHeight(Pos);
 		Rot = Vector3.zero;

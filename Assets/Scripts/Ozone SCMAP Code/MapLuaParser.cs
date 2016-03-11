@@ -152,7 +152,14 @@ public class MapLuaParser : MonoBehaviour {
 		// Finish Load
 		yield return null;
 		HelperGui.MapLoaded = true;
+
+		// Load Props
+		PropsReader.LoadProps(HeightmapControler);
+		yield return null;
+
 		InfoPopup.Show(false);
+
+
 	}
 
 	public void SaveFile(){

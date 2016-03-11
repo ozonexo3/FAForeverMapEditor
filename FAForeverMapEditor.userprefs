@@ -1,13 +1,18 @@
 ﻿<Properties StartupItem="Assembly-CSharp.csproj">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Unity.Instance.Unity Editor" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\UI\TerrainInfo.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Common\EditorVersion.cs">
     <Files>
-      <File FileName="Assets\Scripts\UI\TerrainInfo.cs" Line="38" Column="28" />
-      <File FileName="..\..\DMD\TrainMechanic\Assets\Script\Pc\PcWindow.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\UI\MapInfo.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\UI\Windows\AreasWindow.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\Ozone SCMAP Code\PropsReader.cs" Line="117" Column="20" />
+      <File FileName="Assets\Scripts\Ozone SCMAP Code\ScmapEditor.cs" Line="118" Column="37" />
       <File FileName="Assets\Scripts\UI\EditingMarkers.cs" Line="11" Column="18" />
-      <File FileName="Assets\Scripts\Ozone SCMAP Code\CameraControler.cs" Line="103" Column="34" />
+      <File FileName="Assets\Scripts\Ozone SCMAP Code\CameraControler.cs" Line="52" Column="37" />
+      <File FileName="Assets\Scripts\HazardX SCMAP Code\Prop.cs" Line="17" Column="30" />
+      <File FileName="Assets\Scripts\Ozone SCMAP Code\GetGamedataFile.cs" Line="67" Column="45" />
+      <File FileName="Assets\Scripts\Ozone SCMAP Code\GamedataBlueprints.cs" Line="39" Column="6" />
+      <File FileName="Assets\Scripts\Ozone SCMAP Code\MapLuaParser.cs" Line="219" Column="166" />
+      <File FileName="Assets\Scripts\MapEdit\PropData.cs" Line="19" Column="22" />
+      <File FileName="Assets\Scripts\UI\TerrainInfo.cs" Line="142" Column="6" />
+      <File FileName="Assets\Scripts\Common\EditorVersion.cs" Line="8" Column="38" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
