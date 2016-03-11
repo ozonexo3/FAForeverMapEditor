@@ -3,17 +3,18 @@
 --- !u!129 &1
 PlayerSettings:
   m_ObjectHideFlags: 0
-  serializedVersion: 7
+  serializedVersion: 8
   AndroidProfiler: 0
   defaultScreenOrientation: 0
   targetDevice: 2
-  targetResolution: 0
+  useOnDemandResources: 0
   accelerometerFrequency: 60
   companyName: ozonexo3
   productName: FAF Map Editor
   defaultCursor: {fileID: 0}
   cursorHotspot: {x: 0, y: 0}
   m_ShowUnitySplashScreen: 1
+  m_VirtualRealitySplashScreen: {fileID: 0}
   defaultScreenWidth: 1280
   defaultScreenHeight: 768
   defaultScreenWidthWeb: 600
@@ -28,6 +29,7 @@ PlayerSettings:
   androidShowActivityIndicatorOnLoading: -1
   iosAppInBackgroundBehavior: 0
   displayResolutionDialog: 0
+  iosAllowHTTPDownload: 1
   allowedAutorotateToPortrait: 1
   allowedAutorotateToPortraitUpsideDown: 1
   allowedAutorotateToLandscapeRight: 1
@@ -54,17 +56,33 @@ PlayerSettings:
   xboxEnableKinectAutoTracking: 0
   xboxEnableFitness: 0
   visibleInBackground: 1
+  allowFullscreenSwitch: 1
   macFullscreenMode: 1
   d3d9FullscreenMode: 1
   d3d11FullscreenMode: 1
   xboxSpeechDB: 0
   xboxEnableHeadOrientation: 0
   xboxEnableGuest: 0
+  xboxEnablePIXSampling: 0
+  n3dsDisableStereoscopicView: 0
+  n3dsEnableSharedListOpt: 1
+  n3dsEnableVSync: 0
+  uiUse16BitDepthBuffer: 0
+  ignoreAlphaClear: 0
   xboxOneResolution: 0
   ps3SplashScreen: {fileID: 0}
   videoMemoryForVertexBuffers: 0
   psp2PowerMode: 0
   psp2AcquireBGM: 1
+  wiiUTVResolution: 0
+  wiiUGamePadMSAA: 1
+  wiiUSupportsNunchuk: 0
+  wiiUSupportsClassicController: 0
+  wiiUSupportsBalanceBoard: 0
+  wiiUSupportsMotionPlus: 0
+  wiiUSupportsProController: 0
+  wiiUAllowScreenCapture: 1
+  wiiUControllerCount: 0
   m_SupportedAspectRatios:
     4:3: 1
     5:4: 1
@@ -84,8 +102,10 @@ PlayerSettings:
   AndroidPreferredInstallLocation: 1
   aotOptions: 
   apiCompatibilityLevel: 1
+  stripEngineCode: 1
   iPhoneStrippingLevel: 0
   iPhoneScriptCallOptimization: 0
+  iPhoneBuildNumber: 0
   ForceInternetPermission: 0
   ForceSDCardPermission: 0
   CreateWallpaper: 0
@@ -99,6 +119,7 @@ PlayerSettings:
   iPhoneTargetOSVersion: 22
   uIPrerenderedIcon: 0
   uIRequiresPersistentWiFi: 0
+  uIRequiresFullScreen: 1
   uIStatusBarHidden: 1
   uIExitOnSuspend: 0
   uIStatusBarStyle: 0
@@ -112,6 +133,10 @@ PlayerSettings:
   iPadHighResPortraitSplashScreen: {fileID: 0}
   iPadLandscapeSplashScreen: {fileID: 0}
   iPadHighResLandscapeSplashScreen: {fileID: 0}
+  appleTVSplashScreen: {fileID: 0}
+  tvOSSmallIconLayers: []
+  tvOSLargeIconLayers: []
+  tvOSTopShelfImageLayers: []
   iOSLaunchScreenType: 0
   iOSLaunchScreenPortrait: {fileID: 0}
   iOSLaunchScreenLandscape: {fileID: 0}
@@ -121,6 +146,15 @@ PlayerSettings:
   iOSLaunchScreenFillPct: 100
   iOSLaunchScreenSize: 100
   iOSLaunchScreenCustomXibPath: 
+  iOSLaunchScreeniPadType: 0
+  iOSLaunchScreeniPadImage: {fileID: 0}
+  iOSLaunchScreeniPadBackgroundColor:
+    serializedVersion: 2
+    rgba: 0
+  iOSLaunchScreeniPadFillPct: 100
+  iOSLaunchScreeniPadSize: 100
+  iOSLaunchScreeniPadCustomXibPath: 
+  iOSDeviceRequirements: []
   AndroidTargetDevice: 0
   AndroidSplashScreenScale: 0
   androidSplashScreen: {fileID: 0}
@@ -138,24 +172,40 @@ PlayerSettings:
   m_BuildTargetIcons:
   - m_BuildTarget: 
     m_Icons:
-    - m_Icon: {fileID: 2800000, guid: d0942cf835b89ca40b70d92e516d1e8f, type: 3}
-      m_Size: 128
+    - serializedVersion: 2
+      m_Icon: {fileID: 2800000, guid: d0942cf835b89ca40b70d92e516d1e8f, type: 3}
+      m_Width: 128
+      m_Height: 128
   - m_BuildTarget: Standalone
     m_Icons:
-    - m_Icon: {fileID: 2800000, guid: d0942cf835b89ca40b70d92e516d1e8f, type: 3}
-      m_Size: 1024
-    - m_Icon: {fileID: 2800000, guid: d0942cf835b89ca40b70d92e516d1e8f, type: 3}
-      m_Size: 512
-    - m_Icon: {fileID: 2800000, guid: 4135500cc11e9074a8b969b70930648c, type: 3}
-      m_Size: 256
-    - m_Icon: {fileID: 2800000, guid: fcef1aca623e1d447af17b2544efb662, type: 3}
-      m_Size: 128
-    - m_Icon: {fileID: 2800000, guid: 31b7c9e0c17ff70429cca4573235d6a4, type: 3}
-      m_Size: 48
-    - m_Icon: {fileID: 2800000, guid: 9c9617c8bcdbd8d4b9330a8f8cdb1c2b, type: 3}
-      m_Size: 32
-    - m_Icon: {fileID: 2800000, guid: 67a27382701287b42a063ccb935ca0ea, type: 3}
-      m_Size: 16
+    - serializedVersion: 2
+      m_Icon: {fileID: 2800000, guid: d0942cf835b89ca40b70d92e516d1e8f, type: 3}
+      m_Width: 1024
+      m_Height: 1024
+    - serializedVersion: 2
+      m_Icon: {fileID: 2800000, guid: d0942cf835b89ca40b70d92e516d1e8f, type: 3}
+      m_Width: 512
+      m_Height: 512
+    - serializedVersion: 2
+      m_Icon: {fileID: 2800000, guid: 4135500cc11e9074a8b969b70930648c, type: 3}
+      m_Width: 256
+      m_Height: 256
+    - serializedVersion: 2
+      m_Icon: {fileID: 2800000, guid: fcef1aca623e1d447af17b2544efb662, type: 3}
+      m_Width: 128
+      m_Height: 128
+    - serializedVersion: 2
+      m_Icon: {fileID: 2800000, guid: 31b7c9e0c17ff70429cca4573235d6a4, type: 3}
+      m_Width: 48
+      m_Height: 48
+    - serializedVersion: 2
+      m_Icon: {fileID: 2800000, guid: 9c9617c8bcdbd8d4b9330a8f8cdb1c2b, type: 3}
+      m_Width: 32
+      m_Height: 32
+    - serializedVersion: 2
+      m_Icon: {fileID: 2800000, guid: 67a27382701287b42a063ccb935ca0ea, type: 3}
+      m_Width: 16
+      m_Height: 16
   m_BuildTargetBatching:
   - m_BuildTarget: Standalone
     m_StaticBatching: 1
@@ -166,6 +216,23 @@ PlayerSettings:
     m_Automatic: 0
   webPlayerTemplate: APPLICATION:Default
   m_TemplateCustomTags: {}
+  wiiUTitleID: 0005000011000000
+  wiiUGroupID: 00010000
+  wiiUCommonSaveSize: 4096
+  wiiUAccountSaveSize: 2048
+  wiiUOlvAccessKey: 0
+  wiiUTinCode: 0
+  wiiUJoinGameId: 0
+  wiiUJoinGameModeMask: 0000000000000000
+  wiiUCommonBossSize: 0
+  wiiUAccountBossSize: 0
+  wiiUAddOnUniqueIDs: []
+  wiiUMainThreadStackSize: 3072
+  wiiULoaderThreadStackSize: 1024
+  wiiUSystemHeapSize: 128
+  wiiUTVStartupScreen: {fileID: 0}
+  wiiUGamePadStartupScreen: {fileID: 0}
+  wiiUProfilerLibPath: 
   actionOnDotNetUnhandledException: 1
   enableInternalProfiler: 0
   logObjCUncaughtExceptions: 1
@@ -216,17 +283,20 @@ PlayerSettings:
   ps4BackgroundImagePath: 
   ps4StartupImagePath: 
   ps4SaveDataImagePath: 
+  ps4SdkOverride: 
   ps4BGMPath: 
   ps4ShareFilePath: 
   ps4ShareOverlayImagePath: 
   ps4PrivacyGuardImagePath: 
   ps4NPtitleDatPath: 
   ps4RemotePlayKeyAssignment: -1
+  ps4RemotePlayKeyMappingDir: 
   ps4EnterButtonAssignment: 1
   ps4ApplicationParam1: 0
   ps4ApplicationParam2: 0
   ps4ApplicationParam3: 0
   ps4ApplicationParam4: 0
+  ps4DownloadDataSize: 0
   ps4GarlicHeapSize: 2048
   ps4Passcode: eaoEiIgxIX4a2dREbbSqWy6yhKIDCdJO
   ps4pnSessions: 1
@@ -234,6 +304,19 @@ PlayerSettings:
   ps4pnFriends: 1
   ps4pnGameCustomData: 1
   playerPrefsSupport: 0
+  ps4ReprojectionSupport: 0
+  ps4UseAudio3dBackend: 0
+  ps4SocialScreenEnabled: 0
+  ps4Audio3dVirtualSpeakerCount: 14
+  ps4attribCpuUsage: 0
+  ps4PatchPkgPath: 
+  ps4PatchLatestPkgPath: 
+  ps4PatchChangeinfoPath: 
+  ps4attribUserManagement: 0
+  ps4attribMoveSupport: 0
+  ps4attrib3DSupport: 0
+  ps4attribShareSupport: 0
+  ps4IncludedModules: []
   monoEnv: 
   psp2Splashimage: {fileID: 0}
   psp2NPTrophyPackPath: 
@@ -252,7 +335,7 @@ PlayerSettings:
   psp2LiveAreaTrialPath: 
   psp2PatchChangeInfoPath: 
   psp2PatchOriginalPackage: 
-  psp2PackagePassword: 
+  psp2PackagePassword: frAQBc8Wsa1xVPfvJcrgRYwTiizs2trQ
   psp2KeystoneFile: 
   psp2MemoryExpansionMode: 0
   psp2DRMType: 0
@@ -286,10 +369,6 @@ PlayerSettings:
   scriptingDefineSymbols:
     1: UNITY_3D;USE_KOPILUA;LUA_CORE;CATCH_EXCEPTIONS
   metroPackageName: KLITest
-  metroPackageLogo: 
-  metroPackageLogo140: 
-  metroPackageLogo180: 
-  metroPackageLogo240: 
   metroPackageVersion: 
   metroCertificatePath: 
   metroCertificatePassword: 
@@ -297,44 +376,7 @@ PlayerSettings:
   metroCertificateIssuer: 
   metroCertificateNotAfter: 0000000000000000
   metroApplicationDescription: KLITest
-  metroStoreTileLogo80: 
-  metroStoreTileLogo: 
-  metroStoreTileLogo140: 
-  metroStoreTileLogo180: 
-  metroStoreTileWideLogo80: 
-  metroStoreTileWideLogo: 
-  metroStoreTileWideLogo140: 
-  metroStoreTileWideLogo180: 
-  metroStoreTileSmallLogo80: 
-  metroStoreTileSmallLogo: 
-  metroStoreTileSmallLogo140: 
-  metroStoreTileSmallLogo180: 
-  metroStoreSmallTile80: 
-  metroStoreSmallTile: 
-  metroStoreSmallTile140: 
-  metroStoreSmallTile180: 
-  metroStoreLargeTile80: 
-  metroStoreLargeTile: 
-  metroStoreLargeTile140: 
-  metroStoreLargeTile180: 
-  metroStoreSplashScreenImage: 
-  metroStoreSplashScreenImage140: 
-  metroStoreSplashScreenImage180: 
-  metroPhoneAppIcon: 
-  metroPhoneAppIcon140: 
-  metroPhoneAppIcon240: 
-  metroPhoneSmallTile: 
-  metroPhoneSmallTile140: 
-  metroPhoneSmallTile240: 
-  metroPhoneMediumTile: 
-  metroPhoneMediumTile140: 
-  metroPhoneMediumTile240: 
-  metroPhoneWideTile: 
-  metroPhoneWideTile140: 
-  metroPhoneWideTile240: 
-  metroPhoneSplashScreenImage: 
-  metroPhoneSplashScreenImage140: 
-  metroPhoneSplashScreenImage240: 
+  wsaImages: {}
   metroTileShortName: 
   metroCommandLineArgsFile: 
   metroTileShowName: 0
@@ -374,6 +416,17 @@ PlayerSettings:
   tizenSigningProfileName: 
   tizenGPSPermissions: 0
   tizenMicrophonePermissions: 0
+  n3dsUseExtSaveData: 0
+  n3dsCompressStaticMem: 1
+  n3dsExtSaveDataNumber: 0x12345
+  n3dsStackSize: 131072
+  n3dsTargetPlatform: 2
+  n3dsRegion: 7
+  n3dsMediaSize: 0
+  n3dsLogoStyle: 3
+  n3dsTitle: GameName
+  n3dsProductCode: 
+  n3dsApplicationId: 0xFF3FF
   stvDeviceAddress: 
   stvProductDescription: 
   stvProductAuthor: 
@@ -433,9 +486,7 @@ PlayerSettings:
   WebGL::emscriptenArgs: 
   WebGL::template: APPLICATION:Default
   additionalIl2CppArgs::additionalIl2CppArgs: 
-  firstStreamedSceneWithResources: 0
   cloudProjectId: 
-  projectId: 
   projectName: 
   organizationId: 
   cloudEnabled: 0

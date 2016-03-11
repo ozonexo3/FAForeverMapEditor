@@ -1,10 +1,13 @@
-﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Ozone SCMAP Code\GetGamedataFile.cs">
+﻿<Properties StartupItem="Assembly-CSharp.csproj">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Unity.Instance.Unity Editor" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\UI\TerrainInfo.cs">
     <Files>
-      <File FileName="Assets\Scripts\Ozone SCMAP Code\GetGamedataFile.cs" Line="375" Column="12" />
-      <File FileName="Assets\Scripts\UI\StartingScreen.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\Ozone SCMAP Code\ScmapEditor.cs" Line="67" Column="6" />
+      <File FileName="Assets\Scripts\UI\TerrainInfo.cs" Line="38" Column="28" />
+      <File FileName="..\..\DMD\TrainMechanic\Assets\Script\Pc\PcWindow.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\UI\MapInfo.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\UI\Windows\AreasWindow.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\UI\EditingMarkers.cs" Line="11" Column="18" />
+      <File FileName="Assets\Scripts\Ozone SCMAP Code\CameraControler.cs" Line="103" Column="34" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

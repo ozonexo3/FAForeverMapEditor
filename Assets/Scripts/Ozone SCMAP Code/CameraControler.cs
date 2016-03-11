@@ -5,6 +5,7 @@ using EditMap;
 
 public class CameraControler : MonoBehaviour {
 
+
 	public			Undo				History;
 	public			MapLuaParser		MapControler;
 	public			MapHelperGui		HUD;
@@ -55,6 +56,8 @@ public class CameraControler : MonoBehaviour {
 	}
 
 	void Update () {
+
+
 		if (LoadingPopup.activeSelf){
 			if(DragStartedOverMenu) DragStartedOverMenu = false;
 			return;
@@ -94,15 +97,15 @@ public class CameraControler : MonoBehaviour {
 
 				if (Input.GetMouseButtonDown (0)) {
 					DragStartedGameplay = Edit.MauseOnGameplay;
-					OnBeginDragFunc ();
+					if(AllowDrag()) OnBeginDragFunc ();
 				} else if (Input.GetMouseButtonUp (0)) {
-					OnEndDragFunc ();
+					if(AllowDrag()) OnEndDragFunc ();
 					DragStartedGameplay = false;
 					BeginWithShift = false;
 					BeginWithCtrl = false;
 					BeginWithAlt = false;
 				} else if (Input.GetMouseButton (0)) {
-					OnDragFunc ();
+					if(AllowDrag()) OnDragFunc ();
 				}
 			} else {
 
@@ -353,6 +356,15 @@ public class CameraControler : MonoBehaviour {
 	}
 
 	public	void OnEndDragFunc(){
+
+		if(Edit.Categorys[1].activeSelf){
+			if(SelectionBoxImage.gameObject.activeSelf){
+				SelectionBoxImage.gameObject.SetActive(false);
+				SelectionBox = false;
+			}
+
+			return;
+		}
 		ControlerBegin = false;
 
 		if(ControlerDrag){
@@ -389,6 +401,8 @@ public class CameraControler : MonoBehaviour {
 	}
 
 	public	void OnDragFunc(){
+
+
 		Vector2 MouseEndPos = new Vector2(Input.mousePosition.x, Input.mousePosition.y);
 		Vector2 diference = MouseEndPos - MouseBeginClick;
 
@@ -558,5 +572,18 @@ public class CameraControler : MonoBehaviour {
 			return true;
 		}
 		return false;
+	}
+
+	bool AllowDrag(){
+		if(Edit.Categorys[1].activeSelf){
+			if(SelectionBoxImage.gameObject.activeSelf){
+				SelectionBoxImage.gameObject.SetActive(false);
+				SelectionBox = false;
+
+			}
+
+			return false;
+		}
+		return true;
 	}
 }

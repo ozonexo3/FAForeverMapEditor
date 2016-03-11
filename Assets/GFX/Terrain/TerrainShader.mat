@@ -138,7 +138,7 @@ Material:
       data:
         first:
           name: _Shininess
-        second: .474808663
+        second: 0.47480866
       data:
         first:
           name: _Water
@@ -149,32 +149,40 @@ Material:
         second: 0
       data:
         first:
+          name: _Slope
+        second: 0
+      data:
+        first:
+          name: _LightingMultiplier
+        second: 1.3
+      data:
+        first:
           name: _WaterLevel
-        second: 1.75
+        second: 2.46
       data:
         first:
           name: _AbyssLevel
-        second: 1.10000002
+        second: 0.9
       data:
         first:
           name: _Area
-        second: 0
+        second: 1
       data:
         first:
           name: _AreaX
-        second: 0
+        second: 1.2
       data:
         first:
           name: _AreaY
-        second: 0
+        second: 6.05
       data:
         first:
           name: _AreaWidht
-        second: 51.2000008
+        second: 50
       data:
         first:
           name: _AreaHeight
-        second: 51.2000008
+        second: 45.2
       data:
         first:
           name: _LowerScale
@@ -182,39 +190,31 @@ Material:
       data:
         first:
           name: _GridScale
-        second: 51.2000008
+        second: 51.2
       data:
         first:
           name: _GridCamDist
-        second: 3.75714302
-      data:
-        first:
-          name: _Slope
-        second: 0
-      data:
-        first:
-          name: _DeepLevel
-        second: 1.67562497
+        second: 0.33405688
       data:
         first:
           name: _Splat3Scale
-        second: 13.6999998
+        second: 13.7
       data:
         first:
           name: _Splat2Scale
-        second: 14.6999998
+        second: 14.7
       data:
         first:
           name: _Splat1Scale
-        second: 11.6000004
+        second: 11.6
       data:
         first:
           name: _Splat0Scale
-        second: 16.3999996
+        second: 16.4
       data:
         first:
-          name: _LightingMultiplier
-        second: 1.69999993
+          name: _DeepLevel
+        second: 1.675625
     m_Colors:
       data:
         first:
@@ -226,21 +226,21 @@ Material:
         second: {r: 0, g: 0, b: 0, a: 1}
       data:
         first:
-          name: _Deep
-        second: {r: .22577855, g: .459015697, b: .529411793, a: 1}
-      data:
-        first:
-          name: _Abyss
-        second: {r: .00519031612, g: .051962737, b: .235294104, a: 1}
-      data:
-        first:
-          name: _ShadowColor
-        second: {r: .349999994, g: .349999994, b: .375, a: 1}
-      data:
-        first:
           name: _SunColor
-        second: {r: 1.32999992, g: 1.15999997, b: 1, a: 1}
+        second: {r: 1.54, g: 1.25, b: 0.91, a: 1}
       data:
         first:
           name: _SunAmbience
-        second: {r: .299999982, g: .200000003, b: .200000003, a: 1}
+        second: {r: 0.37, g: 0.3, b: 0.22, a: 1}
+      data:
+        first:
+          name: _ShadowColor
+        second: {r: 0, g: 0, b: 0, a: 1}
+      data:
+        first:
+          name: _Deep
+        second: {r: 0.22577855, g: 0.4590157, b: 0.5294118, a: 1}
+      data:
+        first:
+          name: _Abyss
+        second: {r: 0.005190316, g: 0.051962737, b: 0.2352941, a: 1}
