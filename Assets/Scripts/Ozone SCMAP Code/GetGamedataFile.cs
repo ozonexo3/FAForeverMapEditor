@@ -56,7 +56,6 @@ public class GetGamedataFile : MonoBehaviour {
 					Stream zipStream = zf.GetInputStream(zipEntry);
 					int size = 4096;
 		
-
 					using (FileStream streamWriter = File.Create("temfiles/" + FileName))
 					{
 						while (true)
@@ -73,7 +72,6 @@ public class GetGamedataFile : MonoBehaviour {
 						}
 						streamWriter.Close();
 					}
-
 
 
 					byte[] FinalTextureData = System.IO.File.ReadAllBytes("temfiles/" + FileName);
@@ -194,6 +192,7 @@ public class GetGamedataFile : MonoBehaviour {
 					byte[] buffer = new byte[4096]; // 4K is optimum
 					Stream zipStream = zf.GetInputStream(zipEntry);
 					int size = 4096;
+					//File.Create("temfiles/" + FileName).Dispose();
 					using (FileStream streamWriter = File.Create("temfiles/" + FileName))
 					{
 						while (true)
@@ -208,6 +207,7 @@ public class GetGamedataFile : MonoBehaviour {
 								break;
 							}
 						}
+						streamWriter.Close();
 					}
 					
 					

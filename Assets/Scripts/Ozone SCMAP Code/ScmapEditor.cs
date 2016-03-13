@@ -35,9 +35,6 @@ public class ScmapEditor : MonoBehaviour {
 
 	void Start(){
 		ToogleGrid(false);
-	}
-
-	void OnEnable(){
 		heights = new float[10,10];
 		RestartTerrain();
 	}
@@ -116,7 +113,9 @@ public class ScmapEditor : MonoBehaviour {
 				Textures[i].NormalPath = Textures[i].NormalPath.Remove(0, 1);
 			}
 			Gamedata.LoadTextureFromGamedata("env.scd", Textures[i].AlbedoPath, i, false);
+			yield return null;
 			Gamedata.LoadTextureFromGamedata("env.scd", Textures[i].NormalPath, i, true);
+			yield return null;
 		}
 		// LoadTextures
 		SplatPrototype[] tex = new SplatPrototype [Textures.Length - 1];
@@ -216,6 +215,7 @@ public class ScmapEditor : MonoBehaviour {
 
 		Data.SetAlphamaps(0, 0, maps);
 		Teren.gameObject.layer = 8;
+		Teren.heightmapPixelError = 0;
 
 		string AllProps = "";
 
@@ -230,6 +230,10 @@ public class ScmapEditor : MonoBehaviour {
 
 	public void SaveScmapFile(){
 
+		string MapPath = PlayerPrefs.GetString("MapsPath", "maps/");
+		string path = Scenario.ScenarioData.Scmap.Replace("/maps/", MapPath);
+
+		map.Save(path, map.VersionMinor);
 	}
 
 	public void RestartTerrain(){

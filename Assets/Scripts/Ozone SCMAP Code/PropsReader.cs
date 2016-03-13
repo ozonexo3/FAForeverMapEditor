@@ -60,6 +60,8 @@ public class PropsReader : MonoBehaviour {
 		if(Pivot.childCount > 0){
 			foreach(Transform child in Pivot) Destroy(child.gameObject);
 		}
+		TotalMassCount = 0;
+		TotalEnergyCount = 0;
 	}
 
 	void OnDisable(){
@@ -84,13 +86,13 @@ public class PropsReader : MonoBehaviour {
 				for(int l = 0; l < BlueprintData.Length; l++){
 					if(BlueprintData[l].Contains("ReclaimMassMax")){
 						ParseString = BlueprintData[l].Replace(" ", "").Replace("ReclaimMassMax", "").Replace("'", "").Replace("=", "").Replace(",", "").Replace("\n", "");
-						Debug.Log(ParseString);
+						//Debug.Log(ParseString);
 						if(string.IsNullOrEmpty(ParseString)) AllPropsTypes[i].MassReclaim = 0;
 						else AllPropsTypes[i].MassReclaim = float.Parse(ParseString, System.Globalization.CultureInfo.InvariantCulture.NumberFormat);
 					}
 					else if(BlueprintData[l].Contains("ReclaimEnergyMax")){
 						ParseString = BlueprintData[l].Replace(" ", "").Replace("ReclaimEnergyMax", "").Replace("'", "").Replace("=", "").Replace(",", "").Replace("\n", "");
-						Debug.Log(ParseString);
+						//Debug.Log(ParseString);
 						if(string.IsNullOrEmpty(ParseString)) AllPropsTypes[i].EnergyReclaim = 0;
 						else AllPropsTypes[i].EnergyReclaim = float.Parse(ParseString, System.Globalization.CultureInfo.InvariantCulture.NumberFormat);
 					}
@@ -100,7 +102,7 @@ public class PropsReader : MonoBehaviour {
 						AllPropsTypes[i].HelpText = ParseString;
 					}
 				}
-				Debug.Log(BlueprintData.Length + ", " + AllPropsTypes[i].HelpText + ", " + AllPropsTypes[i].MassReclaim + ", " + AllPropsTypes[i].EnergyReclaim );
+				//Debug.Log(BlueprintData.Length + ", " + AllPropsTypes[i].HelpText + ", " + AllPropsTypes[i].MassReclaim + ", " + AllPropsTypes[i].EnergyReclaim );
 
 				GameObject NewListObject = Instantiate(PropGroupObject) as GameObject;
 				NewListObject.transform.SetParent(Pivot, false);

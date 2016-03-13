@@ -35,7 +35,13 @@ Properties {
 	// used in fallback on old cards & base map
 	[HideInInspector] _MainTex ("BaseMap (RGB)", 2D) = "white" {}
 	[HideInInspector] _Color ("Main Color", Color) = (1,1,1,1)
-	
+
+	[MaterialToggle] _Brush ("Brush", Int) = 0
+	_BrushTex ("BaseMap (RGB)", 2D) = "white" {}
+	_BrushSize ("Brush Size", Range (0, 128)) = 0
+	_BrushUvX ("Brush X", Range (0, 1)) = 0
+	_BrushUvY ("Brush Y", Range (0, 1)) = 0
+
 	//Lower Stratum
 	_SplatLower ("Layer Lower (R)", 2D) = "white" {}
 	_NormalLower ("Normal Lower (R)", 2D) = "bump" {}
@@ -96,6 +102,12 @@ SubShader {
 	fixed4 _SunAmbience;
 	fixed4 _ShadowColor;
 
+	int _Brush;
+	sampler2D _BrushTex;
+	half _BrushSize;
+	half _BrushUvX;
+	half _BrushUvY;
+
 	half4 LightingSimpleLambert (SurfaceOutput s, half3 lightDir, half atten) {
 	              half NdotL = dot (s.Normal, lightDir);
 	              
@@ -104,7 +116,7 @@ SubShader {
 	              
 	              float3 light =  _SunColor.rgb * (NdotL) + spec;
 	              light *= atten;
-	              light = _LightingMultiplier * light  + _SunAmbience.rgb + _ShadowColor.rgb * 2 * (1 - light);
+	              light = _LightingMultiplier * light  + _SunAmbience.rgb + _ShadowColor.rgb * (1 - light);
 	              c.rgb = s.Albedo * light;
 	              c.a = s.Alpha;
 	              return c;
@@ -168,7 +180,12 @@ SubShader {
 			col.rgb = lerp(col.rgb, GridFinal.rgb, GridColor.a);
 			o.Emission = GridFinal * GridColor.a;;
 		}
-		
+
+		if(_Brush > 0){
+			fixed4 BrushColor = tex2D (_BrushTex, ((IN.uv_Control - float2(_BrushUvX, _BrushUvY)) * _GridScale) / (_BrushSize * _GridScale * 0.002)  );
+			o.Emission += half3(0, BrushColor.r * 0.3, BrushColor.r * 0.7);
+		}
+
 		if(_Water > 0) o.Albedo = ApplyWaterColor(WaterDepth, col.rgb);	
 		else o.Albedo = col;	
 		

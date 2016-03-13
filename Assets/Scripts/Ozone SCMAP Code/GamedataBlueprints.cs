@@ -20,8 +20,6 @@ public class GamedataBlueprints : MonoBehaviour {
 			return ToReturn;
 		}
 
-		string PatchToLoad = GetGamedataFile.GameDataPath;
-
 		if(!Directory.Exists("temfiles")) Directory.CreateDirectory("temfiles");
 
 		ZipFile zf = null;

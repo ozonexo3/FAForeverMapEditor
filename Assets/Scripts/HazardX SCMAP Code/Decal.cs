@@ -25,6 +25,7 @@ public class Decal
     public void Load(BinaryReader Stream)
     {
         int id = Stream.ReadInt32();
+		if(id > 0){}
         //ID
         Type = (TerrainDecalType)Stream.ReadInt32();
         int TextureCount = Stream.ReadInt32();

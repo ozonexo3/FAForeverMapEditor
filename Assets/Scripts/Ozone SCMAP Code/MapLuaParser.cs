@@ -604,7 +604,32 @@ public class MapLuaParser : MonoBehaviour {
 		SaveScriptLua(ScriptId);
 		yield return null;
 
+		SaveScmap();
+		yield return null;
+
 		InfoPopup.Show(false);
+	}
+
+	public void SaveScmap(){
+
+		string MapPath = PlayerPrefs.GetString("MapsPath", "maps/");
+		string MapFilePath = ScenarioData.Scmap.Replace("/maps/", MapPath);
+		//Debug.Log(MapFilePath);
+		//Debug.Log(ScenarioData.Scmap.Replace("/maps/", BackupPath));
+		//System.IO.File.Move(MapFilePath, ScenarioData.Scmap.Replace("/maps/", BackupPath) );
+
+
+		//string MapPath = PlayerPrefs.GetString("MapsPath", "maps/");
+		string SaveFilePath = ScenarioData.ScriptLua.Replace("/maps/", MapPath);
+
+		string FileName = ScenarioData.Scmap;
+		char[] NameSeparator = ("/").ToCharArray();
+		string[] Names = FileName.Split(NameSeparator);
+		Debug.Log(BackupPath + "/" + Names[Names.Length - 1]);
+		System.IO.File.Move(MapFilePath, BackupPath + "/" + Names[Names.Length - 1]);
+
+
+		HeightmapControler.SaveScmapFile();
 	}
 
 	public void SaveScenarioLua(){

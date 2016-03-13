@@ -204,11 +204,12 @@ public class Map
 		WatermapTex = new Texture2D(0,0);
 		PreviewTex = new Texture2D(0,0);
 
-        byte[] PreviewData = new byte[0];
         byte[] TexturemapData = new byte[0];
         byte[] TexturemapData2 = new byte[0];
         byte[] NormalmapData = new byte[0];
         byte[] WatermapData = new byte[0];
+		byte[] PreviewData = new byte[0];
+
         int Count = 0;
 
         BinaryReader _with1 = Stream;
@@ -235,6 +236,8 @@ public class Map
             VersionMinor = _with1.ReadInt32();
             if (VersionMinor <= 0)
                 VersionMinor = 56;
+
+			Debug.Log("Load map version: " + VersionMinor);
 
             if (VersionMinor > 56)
             {
@@ -594,6 +597,7 @@ public class Map
         if (MapFileVersion != VersionMinor)
             VersionMinor = MapFileVersion;
 
+		Debug.Log("Save file version: " + VersionMinor);
 
         System.IO.FileStream fs = new System.IO.FileStream(Filename, System.IO.FileMode.Create, System.IO.FileAccess.Write);
         BinaryWriter Stream = new BinaryWriter(fs);
@@ -615,8 +619,13 @@ public class Map
         //? always 0
         _with2.Write(Unknown13);
         //? always 0
-        
-        SaveTexture(Stream, PreviewTex);
+		byte[] SaveData = new byte[0];
+
+		//SaveData = PreviewTex.GetRawTextureData();
+		//_with2.Write(SaveData.Length);
+		//_with2.Write(SaveData);
+		//Debug.Log(PreviewTex.GetRawTextureData().Length);
+		SaveTexture(_with2, PreviewTex);
 
         //# Heightmap Section #
         _with2.Write(MapFileVersion);
@@ -624,6 +633,7 @@ public class Map
         _with2.Write(Height);
         _with2.Write(HeightScale);
         //Height Scale, usually 1/128
+		Debug.Log(HeightmapData);
         _with2.Write(HeightmapData);
 
         if (MapFileVersion >= 56)
@@ -763,11 +773,13 @@ public class Map
         //Height again
 
         _with2.Write(1);
+
         SaveTexture(Stream, NormalmapTex);
         //Format.Dxt5
 
         if (VersionMinor < 56)
             _with2.Write(1);
+
         SaveTexture(Stream, TexturemapTex);
 
         if (VersionMinor >= 56)
@@ -776,7 +788,7 @@ public class Map
         }
 
         _with2.Write(1);
-        SaveTexture(Stream, WatermapTex);
+       SaveTexture(Stream, WatermapTex);
 
         _with2.Write(WaterFoamMask);
         _with2.Write(WaterFlatnessMask);
@@ -840,10 +852,11 @@ public class Map
 		//This should probably actually encode to DDS.....
 		System.IO.Stream Data = new MemoryStream();//There is a constructor that takes a byte array directly, but then the stream is not resizable later..
 		byte[] texArray = TextureLoader.SaveTextureDDS(texture);
+		//texArray = texture.GetRawTextureData(texArray);
 		//The unfortunate step where we likely have to convert the png byte array to dds probably goes here... :(
 		Data.Write(texArray,0,texArray.Length);
 		Stream.Write(Convert.ToInt32(Data.Length));
-        CopyStream(Data, Stream.BaseStream);
+       // CopyStream(Data, Stream.BaseStream);
     }
 
   /*  private Bitmap TextureToBitmap(Texture Texture)
