@@ -653,9 +653,9 @@ public class Map
 		//_with2.Write(SaveData.Length);
 		//_with2.Write(SaveData);
 		//Debug.Log(PreviewTex.GetRawTextureData().Length);
-		//SaveTexture(_with2, PreviewTex, PreviewTextHeader);
-		_with2.Write(PreviewData.Length);
-		_with2.Write(PreviewData);
+		SaveTexture(_with2, PreviewTex, PreviewTextHeader);
+		//_with2.Write(PreviewData.Length);
+		//_with2.Write(PreviewData);
 
 
         //# Heightmap Section #

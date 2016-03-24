@@ -1,12 +1,12 @@
 ﻿<Properties StartupItem="Assembly-CSharp.csproj">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Unity.Instance.Unity Editor" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\UI\TerrainInfo.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Ozone SCMAP Code\ScmapEditor.cs">
     <Files>
-      <File FileName="Assets\GFX\Shaders\FaTerrainShader.shader" Line="186" Column="65" />
-      <File FileName="Assets\Scripts\UI\TerrainInfo.cs" Line="252" Column="27" />
-      <File FileName="Assets\Scripts\HazardX SCMAP Code\Map.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\Ozone SCMAP Code\ScmapEditor.cs" Line="46" Column="19" />
+      <File FileName="Assets\GFX\Shaders\FaTerrainShader.shader" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\UI\TerrainInfo.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\HazardX SCMAP Code\Map.cs" Line="505" Column="27" />
       <File FileName="Assets\Trash\TextureLoader.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\Ozone SCMAP Code\ScmapEditor.cs" Line="1" Column="1" />
       <File FileName="Assets\Scripts\Ozone SCMAP Code\MapLuaParser.cs" Line="1" Column="1" />
       <File FileName="Assets\Scripts\HazardX SCMAP Code\Decal.cs" Line="1" Column="1" />
       <File FileName="Assets\Scripts\Ozone SCMAP Code\PropsReader.cs" Line="1" Column="1" />
