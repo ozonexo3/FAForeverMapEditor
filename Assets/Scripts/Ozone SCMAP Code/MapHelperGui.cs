@@ -13,22 +13,65 @@ public class MapHelperGui : MonoBehaviour {
 
 	public		GameObject[]			Kompositions;
 	public		GameObject				BackGround;
+	public		GameObject				LoadingPopup;
 
 	public		StartingScreen			StartScreen;
 	public		LastMapsPopup			LastMapsList;
 
+	static int More = 1;
+
+	static string[] Args;
 	void Start(){
 		OpenComposition(0);
+		Args = System.Environment.GetCommandLineArgs();
+		if(Args.Length > 0)
+		for(int i = 0; i < Args.Length; i++){
+			Debug.Log(Args[i]);
+		}
+
+		if(Args.Length == 3 && Args[1] == "-setGamedataPath"){
+			PlayerPrefs.SetString("GameDataPath", Args[2]);
+			Debug.Log("Success! Gamedata path changed to: " + Args[2]);
+		}
+
+
+		if(Args.Length == 6 + More && Args[1 + More] == "-renderPreviewImage"){
+			foreach(GameObject obj in Kompositions) obj.SetActive(false);
+			BackGround.SetActive(false);
+			LoadingPopup.SetActive(true);
+			Loader.HeightmapControler.WaterLevel.gameObject.SetActive(false);
+			GetGamedataFile.MipmapBias = -0.9f;
+			StartCoroutine("RenderImageAndClose");
+		}
+	}
+
+
+	public IEnumerator RenderImageAndClose(){
+		var LoadScmapFile = Loader.StartCoroutine("ForceLoadMapAtPath", Args[4 + More]);
+		yield return LoadScmapFile;
+
+		foreach(GameObject obj in Kompositions) obj.SetActive(false);
+		BackGround.SetActive(false);
+
+		int Widht = int.Parse(Args[2 + More]);
+		int Height = int.Parse(Args[3 + More] );
+
+		KameraKontroler.RestartCam();
+
+		KameraKontroler.RenderCamera(Widht, Height, Args[5+ More]);
+
+		Debug.Log("Success! Preview rendered to: " + Args[5+ More]);
+
+		Application.Quit();
 	}
 
 	public void ButtonFunction(string func){
-		Debug.Log("Button pressed: " + func);
 		switch(func){
 		case "LoadMap":
 			MoveLastMaps(Loader.ScenarioFileName, Loader.FolderName);
-			Loader.LoadFile();
-			Map = true;
 			OpenComposition(1);
+			Map = true;
+			Loader.LoadFile();
 			break;
 		case "SearchMap":
 

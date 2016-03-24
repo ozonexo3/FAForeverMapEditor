@@ -126,36 +126,69 @@ public class MapLuaParser : MonoBehaviour {
 
 	}
 
+	public IEnumerator ForceLoadMapAtPath(string path){
+		path = path.Replace("\\", "/");
+		Debug.Log("Load from: " + path);
+
+		string LastMapPatch = PlayerPrefs.GetString("MapsPath", "maps/");
+
+		char[] NameSeparator = ("/").ToCharArray();
+		string[] Names = path.Split(NameSeparator);
+
+		FolderName = Names[Names.Length - 2];
+		ScenarioFileName = Names[Names.Length - 1].Replace(".lua", "");
+		string NewMapPatch = path.Replace(FolderName + "/" + ScenarioFileName + ".lua", "");
+
+		Debug.Log("Parsed args: \n"
+			+ FolderName + "\n"
+			+ ScenarioFileName + "\n"
+			+ FolderName);
+
+
+		PlayerPrefs.SetString("MapsPath", NewMapPatch);
+		loadSave = false;
+		LoadProps = false;
+		var LoadFile = StartCoroutine("LoadingFile");
+		yield return LoadFile;
+
+		InfoPopup.Show(false);
+		PlayerPrefs.SetString("MapsPath", LastMapPatch);
+	}
+
 	public void LoadFile(){
 		StartCoroutine("LoadingFile");
 	}
 
+	bool loadSave = true;
+	bool LoadProps = true;
+
 	IEnumerator LoadingFile(){
 		// Begin load
 		InfoPopup.Show(true, "Loading map...");
-
+		yield return null;
 		// Scenario LUA
 		LoadScenarioLua();
 		yield return null;
 
 		// SCMAP
-		//MapElements.SetActive(true);
 		var LoadScmapFile = HeightmapControler.StartCoroutine( "LoadScmapFile");
 		yield return LoadScmapFile;
-		
-		yield return null;
-		// Save LUA
-		LoadSaveLua();
-		yield return null;
 		CamControll.RestartCam();
 
+		if(loadSave){
+		// Save LUA
+			LoadSaveLua();
+			yield return null;
+		}
+
 		// Finish Load
-		yield return null;
 		HelperGui.MapLoaded = true;
 
 		// Load Props
-		PropsReader.LoadProps(HeightmapControler);
-		yield return null;
+		if(LoadProps){
+			PropsReader.LoadProps(HeightmapControler);
+			yield return null;
+		}
 
 		InfoPopup.Show(false);
 
@@ -241,6 +274,7 @@ public class MapLuaParser : MonoBehaviour {
 		ScenarioData.Size.y = float.Parse(height.ToString(), System.Globalization.CultureInfo.InvariantCulture.NumberFormat);
 		ScenarioData.MaxHeight = 128;
 		CamControll.MapSize = Mathf.Max(ScenarioData.Size.x, ScenarioData.Size.y);
+		CamControll.RestartCam();
 		
 		// Load Players
 		LuaTable TeamsTab = env.GetTable("ScenarioInfo.Configurations.standard.teams")[1] as LuaTable;
@@ -614,13 +648,6 @@ public class MapLuaParser : MonoBehaviour {
 
 		string MapPath = PlayerPrefs.GetString("MapsPath", "maps/");
 		string MapFilePath = ScenarioData.Scmap.Replace("/maps/", MapPath);
-		//Debug.Log(MapFilePath);
-		//Debug.Log(ScenarioData.Scmap.Replace("/maps/", BackupPath));
-		//System.IO.File.Move(MapFilePath, ScenarioData.Scmap.Replace("/maps/", BackupPath) );
-
-
-		//string MapPath = PlayerPrefs.GetString("MapsPath", "maps/");
-		string SaveFilePath = ScenarioData.ScriptLua.Replace("/maps/", MapPath);
 
 		string FileName = ScenarioData.Scmap;
 		char[] NameSeparator = ("/").ToCharArray();

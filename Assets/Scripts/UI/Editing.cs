@@ -10,6 +10,7 @@ namespace EditMap{
 		public		MapLuaParser		Scenario;
 		public		CameraControler		KameraKontroler;
 		public		EditingMarkers		EditMarkers;
+		public		TerrainInfo			EditTerrain;
 		public		GameObject[]		Categorys;
 		public		GameObject[]		CategorysSelected;
 		public		MarkersList			AllMarkersList;

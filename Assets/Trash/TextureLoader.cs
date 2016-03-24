@@ -27,7 +27,7 @@ public static class TextureLoader
 		int DDS_HEADER_SIZE = 128;
 		byte[] dxtBytes = new byte[ddsBytes.Length - DDS_HEADER_SIZE];
 		Buffer.BlockCopy(ddsBytes, DDS_HEADER_SIZE, dxtBytes, 0, ddsBytes.Length - DDS_HEADER_SIZE);
-		
+		//Debug.Log("Texture data load size: " + dxtBytes.Length + " , " + width +"x"+ height + ", " + textureFormat);
 		Texture2D texture = new Texture2D(width, height, textureFormat, false);
 		texture.LoadRawTextureData(dxtBytes);
 		texture.Apply();
@@ -171,7 +171,7 @@ public static class TextureLoader
 		//*/
 	}
 
-	public static byte[] SaveTextureDDS(Texture2D texture)
+	public static byte[] SaveTextureDDS(Texture2D texture, GetGamedataFile.HeaderClass header)
 	{
 		//Here we get to write a dds file from scratch! yay lack of unity's dds saving abilities....
 		//DWORD dwMagic = 0x20534444 or 'DDS '
@@ -198,7 +198,7 @@ public static class TextureLoader
 
 		//DDS_HEADER
 		uint dwMagic = 0x2053444;
-		uint dwSize = 124;
+		uint dwSize = header.size;
 		/*
 			DDSD_CAPS	Required in every .dds file.
 			DDSD_HEIGHT	Required in every .dds file.
@@ -209,23 +209,23 @@ public static class TextureLoader
 			DDSD_LINEARSIZE	Required when pitch is provided for a compressed texture.
 			DDSD_DEPTH Required in a depth texture
 		 */
-		uint dwFlags = Convert.ToUInt32("000010111",2);
+		uint dwFlags = header.flags;
 
-		uint dwHeight = (uint)texture.height;
-		uint dwWidth = (uint)texture.width;
-		uint dwPitchOrLinearSize = (dwWidth * 8 + 7)/8;
-		uint dwDepth = 0;
+		uint dwHeight = (uint)header.height;
+		uint dwWidth = (uint)header.width;
+		uint dwPitchOrLinearSize = header.sizeorpitch;
+		uint dwDepth = header.depth;
 		uint dwMipMapCount = (uint)texture.mipmapCount;
 		int[] dwReserved1 = new int[11];
 		//DDS_PIXELFORMAT
-		uint pf_dwSize = 32;
-		uint pf_dwFlags = Convert.ToUInt32("001001",2);
-		uint pf_dwFourCC = 0;
-		uint pf_dwRGBBitCount = 32;
-		uint pf_dwRBitMask = 0x00ff0000;
-		uint pf_dwGBitMask = 0x0000ff00;
-		uint pf_dwBBitMask = 0x000000ff;
-		uint pf_dwABitMask = 0xff000000;
+		uint pf_dwSize = header.pixelformatSize;
+		uint pf_dwFlags = header.pixelformatflags;
+		uint pf_dwFourCC = header.pixelformatFourcc;
+		uint pf_dwRGBBitCount = header.pixelformatRgbBitCount;
+			uint pf_dwRBitMask = header.pixelformatRbitMask;
+		uint pf_dwGBitMask = header.pixelformatGbitMask;
+		uint pf_dwBBitMask = header.pixelformatBbitMask;
+		uint pf_dwABitMask = header.pixelformatAbitMask;
 		//DDCAPS2
 		uint dwCaps1 = 0;
 		uint dwCaps2 = 0;
@@ -238,7 +238,9 @@ public static class TextureLoader
 		//int g = (argb>>8)&0xFF;
 		//int b = (argb>>16)&0xFF;
 		//int a = (argb>>24)&0xFF;
+
 		Color32[] colors = texture.GetPixels32();
+
 		int length = 4 * colors.Length;
 		byte[] bdata = new byte[length];//Main Surface Data
 		IntPtr ptr = Marshal.AllocHGlobal(length);
@@ -246,8 +248,11 @@ public static class TextureLoader
 		Marshal.Copy(ptr, bdata, 0, length);
 		Marshal.FreeHGlobal(ptr);
 
+		bdata = texture.GetRawTextureData();
+
 		byte[] bdata2;
 
+		//Debug.Log(dwMipMapCount);
 		if(dwMipMapCount > 1)
 		{
 			int bdata2Length = 4 * colors.Length * (int)dwMipMapCount;
@@ -268,31 +273,37 @@ public static class TextureLoader
 		}
 
 		byte[] finalByteData = BitConverter.GetBytes(dwMagic);
-		finalByteData.Concat(BitConverter.GetBytes(dwSize));
-		finalByteData.Concat(BitConverter.GetBytes(dwFlags));
-		finalByteData.Concat(BitConverter.GetBytes(dwHeight));
-		finalByteData.Concat(BitConverter.GetBytes(dwWidth));
-		finalByteData.Concat(BitConverter.GetBytes(dwPitchOrLinearSize));
-		finalByteData.Concat(BitConverter.GetBytes(dwDepth));
-		finalByteData.Concat(BitConverter.GetBytes(dwMipMapCount));
-		byte[] dwReserveBytes = new byte[dwReserved1.Length]; //dwReserved is empty... but allocated space for a set number of uints...
-		finalByteData.Concat(dwReserveBytes);
-		finalByteData.Concat(BitConverter.GetBytes(pf_dwSize));
-		finalByteData.Concat(BitConverter.GetBytes(pf_dwFlags));
-		finalByteData.Concat(BitConverter.GetBytes(pf_dwFourCC));
-		finalByteData.Concat(BitConverter.GetBytes(pf_dwRGBBitCount));
-		finalByteData.Concat(BitConverter.GetBytes(pf_dwRBitMask));
-		finalByteData.Concat(BitConverter.GetBytes(pf_dwGBitMask));
-		finalByteData.Concat(BitConverter.GetBytes(pf_dwBBitMask));
-		finalByteData.Concat(BitConverter.GetBytes(pf_dwABitMask));
-		finalByteData.Concat(BitConverter.GetBytes(dwCaps1));
-		finalByteData.Concat(BitConverter.GetBytes(dwCaps2));
-		finalByteData.Concat(BitConverter.GetBytes(dwCaps3));
-		finalByteData.Concat(BitConverter.GetBytes(dwCaps4));
-		finalByteData.Concat(BitConverter.GetBytes(dwReserved2));
-		finalByteData.Concat(bdata);
-		finalByteData.Concat(bdata2);
-
+		finalByteData = finalByteData.Concat(BitConverter.GetBytes(dwSize));
+		finalByteData = finalByteData.Concat(BitConverter.GetBytes(dwFlags));
+		finalByteData = finalByteData.Concat(BitConverter.GetBytes(dwHeight));
+		finalByteData = finalByteData.Concat(BitConverter.GetBytes(dwWidth));
+		finalByteData = finalByteData.Concat(BitConverter.GetBytes(dwPitchOrLinearSize));
+		finalByteData = finalByteData.Concat(BitConverter.GetBytes(dwDepth));
+		finalByteData = finalByteData.Concat(BitConverter.GetBytes(dwMipMapCount));
+		//byte[] dwReserveBytes = new byte[dwReserved1.Length]; //dwReserved is empty... but allocated space for a set number of uints...
+		for(int i = 0; i < 10; i++){
+			finalByteData = finalByteData.Concat(BitConverter.GetBytes((uint)header.reserved[i]));
+		}
+		//finalByteData = finalByteData.Concat(dwReserveBytes);
+		finalByteData = finalByteData.Concat(BitConverter.GetBytes(pf_dwSize));
+		finalByteData = finalByteData.Concat(BitConverter.GetBytes(pf_dwFlags));
+		finalByteData = finalByteData.Concat(BitConverter.GetBytes(pf_dwFourCC));
+		finalByteData = finalByteData.Concat(BitConverter.GetBytes(pf_dwRGBBitCount));
+		finalByteData = finalByteData.Concat(BitConverter.GetBytes(pf_dwRBitMask));
+		finalByteData = finalByteData.Concat(BitConverter.GetBytes(pf_dwGBitMask));
+		finalByteData = finalByteData.Concat(BitConverter.GetBytes(pf_dwBBitMask));
+		finalByteData = finalByteData.Concat(BitConverter.GetBytes(pf_dwABitMask));
+		finalByteData = finalByteData.Concat(BitConverter.GetBytes(dwCaps1));
+		finalByteData = finalByteData.Concat(BitConverter.GetBytes(dwCaps2));
+		finalByteData = finalByteData.Concat(BitConverter.GetBytes(dwCaps3));
+		finalByteData = finalByteData.Concat(BitConverter.GetBytes(dwCaps4));
+		finalByteData = finalByteData.Concat(BitConverter.GetBytes(dwReserved2));
+		Debug.Log("Header size: " + finalByteData.Length);
+		finalByteData = finalByteData.Concat(bdata);
+		//finalByteData = finalByteData.Concat(bdata2);
+		//Debug.Log("Texture data size: " + bdata.Length);
+		//Debug.Log("dds data size: " + finalByteData.Length);
+		//Debug.Log("Load data size: " + header.DebugSize);
 		return finalByteData;
 
 		//To write an actual dds file out

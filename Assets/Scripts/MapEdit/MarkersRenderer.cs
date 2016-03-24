@@ -100,4 +100,32 @@ public class MarkersRenderer : MonoBehaviour {
 			NewMarker.GetComponent<MarkerData>().ListId = 3;
 		}
 	}
+
+
+	public void UpdateMarkersHeights(){
+		Vector3 SampledPos;
+		for(int i = 0; i < Armys.Count; i++){
+			SampledPos = Armys[i].transform.position;
+			SampledPos.y = Scenario.HeightmapControler.Teren.SampleHeight(SampledPos);
+			Scenario.ARMY_[i].position = SampledPos;
+		}
+
+		for(int i = 0; i < Mex.Count; i++){
+			SampledPos = Mex[i].transform.position;
+			SampledPos.y = Scenario.HeightmapControler.Teren.SampleHeight(SampledPos);
+			Scenario.Mexes[i].position = SampledPos;
+		}
+
+		for(int i = 0; i < Hydro.Count; i++){
+			SampledPos = Hydro[i].transform.position;
+			SampledPos.y = Scenario.HeightmapControler.Teren.SampleHeight(SampledPos);
+			Scenario.Hydros[i].position = SampledPos;
+		}
+
+		for(int i = 0; i < Ai.Count; i++){
+			SampledPos = Ai[i].transform.position;
+			SampledPos.y = Scenario.HeightmapControler.Teren.SampleHeight(SampledPos);
+			Scenario.SiMarkers[i].position = SampledPos;
+		}
+	}
 }

@@ -118,6 +118,18 @@ public class Undo : MonoBehaviour {
 			EditMenu.EditMarkers.Selected = HistoryNew.Selected;
 			EditMenu.EditMarkers.SymmetrySelectionList = HistoryNew.SymmetrySelectionList;
 			EditMenu.EditMarkers.UpdateSelectionRing();
+			break;
+		case HistoryObject.UndoTypes.TerrainHeight:
+			RegisterRedoTerrainHeightmapChange();
+
+			if(EditMenu.State != Editing.EditStates.MarkersStat){
+				EditMenu.State = Editing.EditStates.TerrainStat;
+				EditMenu.ChangeCategory(1);
+			}
+			Debug.Log("Undo " + History[UndoTo].GetComponent<HistoryTerrainHeight>().Pixels.Length);
+			float[,] heights = History[UndoTo].GetComponent<HistoryTerrainHeight>().Pixels;
+			Scmap.Teren.terrainData.SetHeights(0, 0, heights);
+			EditMenu.EditTerrain.Markers.UpdateMarkersHeights();
 
 			break;
 		}
@@ -173,7 +185,7 @@ public class Undo : MonoBehaviour {
 
 			break;
 		case HistoryObject.UndoTypes.MarkersChange:
-			RegisterRedoMarkerChange();
+			//RegisterRedoMarkerChange();
 
 			if(EditMenu.State != Editing.EditStates.MarkersStat){
 				EditMenu.State = Editing.EditStates.MarkersStat;
@@ -193,6 +205,17 @@ public class Undo : MonoBehaviour {
 			EditMenu.EditMarkers.Selected = HistoryNew.Selected;
 			EditMenu.EditMarkers.SymmetrySelectionList = HistoryNew.SymmetrySelectionList;
 			EditMenu.EditMarkers.UpdateSelectionRing();
+			break;
+		case HistoryObject.UndoTypes.TerrainHeight:
+			//RegisterRedoTerrainHeightmapChange();
+
+			if(EditMenu.State != Editing.EditStates.MarkersStat){
+				EditMenu.State = Editing.EditStates.TerrainStat;
+				EditMenu.ChangeCategory(1);
+			}
+			float[,] heights = History[RedoTo].GetComponent<HistoryTerrainHeight>().Pixels;
+				Scmap.Teren.terrainData.SetHeights(0, 0, heights);
+			EditMenu.EditTerrain.Markers.UpdateMarkersHeights();
 			break;
 		}
 		CurrentStage++;
@@ -290,6 +313,20 @@ public class Undo : MonoBehaviour {
 		CurrentStage = History.Count;
 	}
 
+	public void RegisterTerrainHeightmapChange(float[,] newheights){
+		RegisterMarkersDelete = true;
+		//Debug.Log("Terrain Heightmap Change");
+		GameObject NewHistoryStep = Instantiate (Prefabs.TerrainHeightChange) as GameObject;
+		NewHistoryStep.transform.parent = transform;
+		int ListId = AddToHistory (NewHistoryStep.GetComponent<HistoryObject> ());
+
+		CurrentStage = ListId;
+		HistoryTerrainHeight HistoryNew = NewHistoryStep.GetComponent<HistoryTerrainHeight>();
+
+		HistoryNew.Pixels = newheights;
+		CurrentStage = History.Count;
+	}
+
 //********************************************	REGISTER REDO
 	public void RegisterRedoMapInfo(){
 		GameObject NewHistoryStep = Instantiate (Prefabs.MapInfo) as GameObject;
@@ -362,6 +399,20 @@ public class Undo : MonoBehaviour {
 		CurrentStage = History.Count;
 	}
 
+
+	public void RegisterRedoTerrainHeightmapChange(){
+		RegisterMarkersDelete = true;
+		GameObject NewHistoryStep = Instantiate (Prefabs.TerrainHeightChange) as GameObject;
+		NewHistoryStep.transform.parent = transform;
+		int ListId = AddToRedoHistory (NewHistoryStep.GetComponent<HistoryObject> ());
+
+		CurrentStage = ListId;
+		HistoryTerrainHeight HistoryNew = NewHistoryStep.GetComponent<HistoryTerrainHeight>();
+
+		HistoryNew.Pixels = Scmap.Teren.terrainData.GetHeights(0,0,Scmap.Teren.terrainData.heightmapWidth,Scmap.Teren.terrainData.heightmapHeight);
+
+		CurrentStage = History.Count;
+	}
 //********************************************* FUNCTIONS
 	int AddToHistory(HistoryObject NewHistoryStep){
 		History.Add (NewHistoryStep);

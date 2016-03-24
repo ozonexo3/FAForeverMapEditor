@@ -71,6 +71,9 @@ public class SymmetryWindow : MonoBehaviour {
 		case "sym7":
 			if(Toggles[7].isOn) PlayerPrefs.SetInt("Symmetry", 7);
 			break;
+		case "sym8":
+			if(Toggles[8].isOn) PlayerPrefs.SetInt("Symmetry", 8);
+			break;
 		}
 		PlayerPrefs.Save();
 

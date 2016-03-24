@@ -8,7 +8,7 @@ Material:
   m_PrefabInternal: {fileID: 0}
   m_Name: TerrainShader
   m_Shader: {fileID: 4800000, guid: a760ca39bde832349bb6ffb0e84caf93, type: 3}
-  m_ShaderKeywords: _BRUSH_ON
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_CustomRenderQueue: 1900
   stringTagMap: {}
@@ -141,15 +141,176 @@ Material:
           m_Texture: {fileID: 0}
           m_Scale: {x: 1, y: 1}
           m_Offset: {x: 0, y: 0}
+      data:
+        first:
+          name: _ControlXP
+        second:
+          m_Texture: {fileID: 0}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
+      data:
+        first:
+          name: _Splat3XP
+        second:
+          m_Texture: {fileID: 0}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
+      data:
+        first:
+          name: _Splat2XP
+        second:
+          m_Texture: {fileID: 0}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
+      data:
+        first:
+          name: _Splat1XP
+        second:
+          m_Texture: {fileID: 0}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
+      data:
+        first:
+          name: _Splat0XP
+        second:
+          m_Texture: {fileID: 0}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
+      data:
+        first:
+          name: _Normal3XP
+        second:
+          m_Texture: {fileID: 0}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
+      data:
+        first:
+          name: _Normal2XP
+        second:
+          m_Texture: {fileID: 0}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
+      data:
+        first:
+          name: _Normal1XP
+        second:
+          m_Texture: {fileID: 0}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
+      data:
+        first:
+          name: _Normal0XP
+        second:
+          m_Texture: {fileID: 0}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
+      data:
+        first:
+          name: _Control2
+        second:
+          m_Texture: {fileID: 0}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
+      data:
+        first:
+          name: _Splat5
+        second:
+          m_Texture: {fileID: 0}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
+      data:
+        first:
+          name: _Splat6
+        second:
+          m_Texture: {fileID: 0}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
+      data:
+        first:
+          name: _Splat7
+        second:
+          m_Texture: {fileID: 0}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
+      data:
+        first:
+          name: _Normal7
+        second:
+          m_Texture: {fileID: 0}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
+      data:
+        first:
+          name: _Normal6
+        second:
+          m_Texture: {fileID: 0}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
+      data:
+        first:
+          name: _Normal5
+        second:
+          m_Texture: {fileID: 0}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
+      data:
+        first:
+          name: _Splat4XP
+        second:
+          m_Texture: {fileID: 0}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
+      data:
+        first:
+          name: _Splat5XP
+        second:
+          m_Texture: {fileID: 0}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
+      data:
+        first:
+          name: _Splat6XP
+        second:
+          m_Texture: {fileID: 0}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
+      data:
+        first:
+          name: _Splat7XP
+        second:
+          m_Texture: {fileID: 0}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
+      data:
+        first:
+          name: _Control2XP
+        second:
+          m_Texture: {fileID: 0}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
+      data:
+        first:
+          name: _SplatUpper
+        second:
+          m_Texture: {fileID: 0}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
+      data:
+        first:
+          name: _NormalUpper
+        second:
+          m_Texture: {fileID: 0}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
     m_Floats:
       data:
         first:
           name: _Shininess
-        second: 0.47480866
+        second: 0.03
       data:
         first:
           name: _Water
-        second: 0
+        second: 1
       data:
         first:
           name: _Grid
@@ -161,15 +322,15 @@ Material:
       data:
         first:
           name: _LightingMultiplier
-        second: 1.8199999
+        second: 1.54
       data:
         first:
           name: _WaterLevel
-        second: 1.75
+        second: 0.875
       data:
         first:
           name: _AbyssLevel
-        second: 0.25
+        second: 0
       data:
         first:
           name: _Area
@@ -193,7 +354,7 @@ Material:
       data:
         first:
           name: _LowerScale
-        second: NaN
+        second: 128
       data:
         first:
           name: _GridScale
@@ -201,23 +362,23 @@ Material:
       data:
         first:
           name: _GridCamDist
-        second: 0.5571426
+        second: 3.757143
       data:
         first:
           name: _Splat3Scale
-        second: 13.7
+        second: 85.333336
       data:
         first:
           name: _Splat2Scale
-        second: 14.7
+        second: 30.476192
       data:
         first:
           name: _Splat1Scale
-        second: 11.6
+        second: 146.28572
       data:
         first:
           name: _Splat0Scale
-        second: 16.4
+        second: 128
       data:
         first:
           name: _DeepLevel
@@ -229,15 +390,75 @@ Material:
       data:
         first:
           name: _BrushUvX
-        second: 0.68167454
+        second: -0.016801395
       data:
         first:
           name: _BrushUvY
-        second: 0.31889668
+        second: 0.2960626
       data:
         first:
           name: _BrushSize
         second: 20
+      data:
+        first:
+          name: _Splat4Scale
+        second: 128
+      data:
+        first:
+          name: _Splat5Scale
+        second: 128
+      data:
+        first:
+          name: _Splat6Scale
+        second: 128
+      data:
+        first:
+          name: _Splat7Scale
+        second: 128
+      data:
+        first:
+          name: _Splat0ScaleNormal
+        second: 128
+      data:
+        first:
+          name: _Splat1ScaleNormal
+        second: 44.52174
+      data:
+        first:
+          name: _Splat2ScaleNormal
+        second: 256
+      data:
+        first:
+          name: _Splat3ScaleNormal
+        second: 128
+      data:
+        first:
+          name: _Splat4ScaleNormal
+        second: 128
+      data:
+        first:
+          name: _Splat5ScaleNormal
+        second: 128
+      data:
+        first:
+          name: _Splat6ScaleNormal
+        second: 128
+      data:
+        first:
+          name: _Splat7ScaleNormal
+        second: 128
+      data:
+        first:
+          name: _LowerScaleNormal
+        second: 58.514286
+      data:
+        first:
+          name: _UpperScale
+        second: 4
+      data:
+        first:
+          name: _UpperScaleNormal
+        second: 512
     m_Colors:
       data:
         first:
@@ -246,19 +467,19 @@ Material:
       data:
         first:
           name: _SpecColor
-        second: {r: 0, g: 0, b: 0, a: 1}
+        second: {r: 0, g: 0, b: 0, a: 0}
       data:
         first:
           name: _SunColor
-        second: {r: 1.29, g: 1.38, b: 1.7, a: 1}
+        second: {r: 0.69, g: 0.645, b: 0.57, a: 1}
       data:
         first:
           name: _SunAmbience
-        second: {r: 0.11, g: 0.18, b: 0.26, a: 1}
+        second: {r: 0, g: 0, b: 0, a: 1}
       data:
         first:
           name: _ShadowColor
-        second: {r: 0.29, g: 0.255, b: 0.11, a: 1}
+        second: {r: 0.26999998, g: 0.26999998, b: 0.35, a: 1}
       data:
         first:
           name: _Deep

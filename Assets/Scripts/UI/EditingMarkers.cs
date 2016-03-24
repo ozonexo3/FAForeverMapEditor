@@ -40,8 +40,6 @@ namespace EditMap{
 
 
 
-
-
 		[System.Serializable]
 		public class SymmetrySelection{
 			public		Vector3					MoveMultiply = Vector3.one;
@@ -366,6 +364,10 @@ namespace EditMap{
 				else if(SymmetryCode == 5) SelectDiagonal1();
 				else if(SymmetryCode == 6) SelectDiagonal2();
 				else if(SymmetryCode == 7){
+					SelectDiagonal1(0);
+					SelectDiagonal2(1);
+				}
+				else if(SymmetryCode == 8){
 					int Count = PlayerPrefs.GetInt("SymmetryAngleCount", 2);
 					float angle = 360.0f / (float)Count;
 					for(int i = 0; i < Count - 1; i++){

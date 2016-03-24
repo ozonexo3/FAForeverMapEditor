@@ -23,21 +23,53 @@ Properties {
 	_AreaHeight ("Area Height", Range (0, 2048)) = 0
 
 	// set by terrain engine
-	[HideInInspector] _Control ("Control (RGBA)", 2D) = "red" {}
-	[HideInInspector] _Splat3 ("Layer 3 (A)", 2D) = "white" {}
-	[HideInInspector] _Splat2 ("Layer 2 (B)", 2D) = "white" {}
-	[HideInInspector] _Splat1 ("Layer 1 (G)", 2D) = "white" {}
-	[HideInInspector] _Splat0 ("Layer 0 (R)", 2D) = "white" {}
-	[HideInInspector] _Normal3 ("Normal 3 (A)", 2D) = "bump" {}
-	[HideInInspector] _Normal2 ("Normal 2 (B)", 2D) = "bump" {}
-	[HideInInspector] _Normal1 ("Normal 1 (G)", 2D) = "bump" {}
-	[HideInInspector] _Normal0 ("Normal 0 (R)", 2D) = "bump" {}
+	_Control ("Control (RGBA)", 2D) = "black" {}
+	_ControlXP ("ControlXP (RGBA)", 2D) = "black" {}
+	_Control2XP ("Control2XP (RGBA)", 2D) = "black" {}
+
+	_Splat0XP ("Layer 1 (R)", 2D) = "black" {}
+	_Splat1XP ("Layer 2 (G)", 2D) = "black" {}
+	_Splat2XP ("Layer 3 (B)", 2D) = "black" {}
+	_Splat3XP ("Layer 4 (A)", 2D) = "black" {}
+	_Splat4XP ("Layer 5 (R)", 2D) = "black" {}
+	_Splat5XP ("Layer 6 (G)", 2D) = "black" {}
+	_Splat6XP ("Layer 7 (B)", 2D) = "black" {}
+	_Splat7XP ("Layer 8 (A)", 2D) = "black" {}
+
+	_Splat0Scale ("Splat1 Level", Range (1, 1024)) = 10
+	_Splat1Scale ("Splat2 Level", Range (1, 1024)) = 10
+	_Splat2Scale ("Splat3 Level", Range (1, 1024)) = 10
+	_Splat3Scale ("Splat4 Level", Range (1, 1024)) = 10
+	_Splat4Scale ("Splat5 Level", Range (1, 1024)) = 10
+	_Splat5Scale ("Splat6 Level", Range (1, 1024)) = 10
+	_Splat6Scale ("Splat7 Level", Range (1, 1024)) = 10
+	_Splat7Scale ("Splat8 Level", Range (1, 1024)) = 10
+
+	// set by terrain engine
+	_Normal0 ("Normal 1 (A)", 2D) = "bump" {}
+	_Normal1 ("Normal 2 (B)", 2D) = "bump" {}
+	_Normal2 ("Normal 3 (G)", 2D) = "bump" {}
+	_Normal3 ("Normal 4 (R)", 2D) = "bump" {}
+	_Normal4 ("Normal 5 (A)", 2D) = "bump" {}
+	_Normal5 ("Normal 6 (B)", 2D) = "bump" {}
+	_Normal6 ("Normal 7 (G)", 2D) = "bump" {}
+	_Normal7 ("Normal 8 (R)", 2D) = "bump" {}
+
+	_Splat0ScaleNormal ("Splat1 Normal Level", Range (1, 1024)) = 10
+	_Splat1ScaleNormal ("Splat2 Normal Level", Range (1, 1024)) = 10
+	_Splat2ScaleNormal ("Splat3 Normal Level", Range (1, 1024)) = 10
+	_Splat3ScaleNormal ("Splat4 Normal Level", Range (1, 1024)) = 10
+	_Splat4ScaleNormal ("Splat5 Normal Level", Range (1, 1024)) = 10
+	_Splat5ScaleNormal ("Splat6 Normal Level", Range (1, 1024)) = 10
+	_Splat6ScaleNormal ("Splat7 Normal Level", Range (1, 1024)) = 10
+	_Splat7ScaleNormal ("Splat8 Normal Level", Range (1, 1024)) = 10
+
 	// used in fallback on old cards & base map
 	[HideInInspector] _MainTex ("BaseMap (RGB)", 2D) = "white" {}
 	[HideInInspector] _Color ("Main Color", Color) = (1,1,1,1)
 
 	[MaterialToggle] _Brush ("Brush", Int) = 0
-	_BrushTex ("BaseMap (RGB)", 2D) = "white" {}
+	_BrushTex ("Brush (RGB)", 2D) = "white" {}
 	_BrushSize ("Brush Size", Range (0, 128)) = 0
 	_BrushUvX ("Brush X", Range (0, 1)) = 0
 	_BrushUvY ("Brush Y", Range (0, 1)) = 0
@@ -45,8 +77,15 @@ Properties {
 	//Lower Stratum
 	_SplatLower ("Layer Lower (R)", 2D) = "white" {}
 	_NormalLower ("Normal Lower (R)", 2D) = "bump" {}
-	_LowerScale ("Abyss Level", Range (0.1, 3)) = 1
-	
+	_LowerScale ("Lower Level", Range (1, 128)) = 1
+	_LowerScaleNormal ("Lower Normal Level", Range (1, 128)) = 1
+
+	//Upper Stratum
+	_SplatUpper ("Layer Lower (R)", 2D) = "white" {}
+	_NormalUpper ("Normal Lower (R)", 2D) = "bump" {}
+	_UpperScale ("Upper Level", Range (1, 128)) = 1
+	_UpperScaleNormal ("Upper Normal Level", Range (1, 128)) = 1
+
 	_GridScale ("Grid Scale", Range (0, 2048)) = 512
 	_GridTexture ("Grid Texture", 2D) = "white" {}
 	_GridCamDist ("Grid Scale", Range (0, 10)) = 5
@@ -54,39 +93,98 @@ Properties {
 	
 SubShader {
 	Tags {
-		"SplatCount" = "4"
-		"Queue" = "Geometry-100"
 		"RenderType" = "Opaque"
 	}
+	Offset 0, 0
 	CGPROGRAM
-	#pragma surface surf SimpleLambert vertex:vert noambient fullforwardshadows addshadow 
+	#pragma surface surf Empty noambient
 	#pragma target 3.0
+
+	sampler2D _ControlXP;
+	sampler2D _Splat0XP,_Splat1XP,_Splat2XP,_Splat3XP, _SplatLower, _SplatUpper;
+	sampler2D _Splat4XP,_Splat5XP,_Splat6XP,_Splat7XP;
+	sampler2D _Control2XP;
+	half _LowerScale, _UpperScale;
+	half _Splat0Scale, _Splat1Scale, _Splat2Scale, _Splat3Scale, _Splat4Scale, _Splat5Scale, _Splat6Scale, _Splat7Scale;
+
+	half4 LightingEmpty (SurfaceOutput s, half3 lightDir, half atten) {
+				half4 c;
+	              c.rgb = s.Albedo;
+	              c.a = 0;
+	              return c;
+	          }
 
 	struct Input {
 		float2 uv_Control : TEXCOORD0;
-		float2 uv_Splat0 : TEXCOORD1;
-		float2 uv_Splat2 : TEXCOORD3;
-		float2 uv_Splat3 : TEXCOORD4;
+	};
+
+	void surf (Input IN, inout SurfaceOutput o) {
+
+		float4 splat_control = saturate(tex2D (_ControlXP, IN.uv_Control * half2(1, -1)) * 2 - 1);
+		float4 splat_control2 = saturate(tex2D (_Control2XP, IN.uv_Control * half2(1, -1)) * 2 - 1);
+		float4 col;
+
+		float2 UV = IN.uv_Control * half2(1, -1);
+
+		col = tex2D (_SplatLower, UV * _LowerScale);
+			
+
+		col = lerp(col, tex2D (_Splat0XP, UV * _Splat0Scale), splat_control.r);
+		col = lerp(col, tex2D (_Splat1XP, UV * _Splat1Scale), splat_control.g);
+		col = lerp(col, tex2D (_Splat2XP, UV * _Splat2Scale), splat_control.b);
+		col = lerp(col, tex2D (_Splat3XP, UV * _Splat3Scale), splat_control.a);
+		//col = tex2D (_Splat3XP, UV * _LowerScale);
+
+		col = lerp(col, tex2D (_Splat4XP, UV * _Splat4Scale), splat_control2.r);
+		col = lerp(col, tex2D (_Splat5XP, UV * _Splat5Scale), splat_control2.g);
+		col = lerp(col, tex2D (_Splat6XP, UV * _Splat6Scale), splat_control2.b);
+		col = lerp(col, tex2D (_Splat7XP, UV * _Splat7Scale), splat_control2.a);
+		float4 UpperAlbedo = tex2D (_SplatUpper, UV * _UpperScale);
+		col = lerp(col, UpperAlbedo, UpperAlbedo.a);
+
+		//col = splat_control.r;
+
+		o.Albedo = col;	
+		//o.Emission = col;
+		o.Gloss = 0;
+		o.Specular = 0;
+		o.Alpha = 0.0;
+	}
+	ENDCG  
+     GrabPass 
+     {
+         "_MyGrabTexture"
+     }   
+          
+	CGPROGRAM
+	#pragma surface surf SimpleLambert vertex:vert noambient fullforwardshadows addshadow nometa noforwardadd
+	//#pragma debug
+	#pragma target 4.0
+	#pragma exclude_renderers gles
+
+	struct Input {
+		float2 uv_Control : TEXCOORD0;
 		float3 worldPos;
 		float SlopeLerp;
+		float4 grabUV;
 	};
 
 	void vert (inout appdata_full v, out Input o){
 		UNITY_INITIALIZE_OUTPUT(Input,o);
 		v.tangent.xyz = cross(v.normal, float3(0,0,1));
 		v.tangent.w = -1;
+		//v.normal = float3(0, 0, 1);
 		o.SlopeLerp = dot(v.normal, half3(0,1,0));
+		 float4 hpos = mul (UNITY_MATRIX_MVP, v.vertex);
+         o.grabUV = ComputeGrabScreenPos(hpos);
 		//v.color = _Abyss;
 	}
 
-	sampler2D _Control;
-	sampler2D _Splat0,_Splat1,_Splat2,_Splat3, _SplatLower;
-	sampler2D _Normal0,_Normal1,_Normal2,_Normal3, _NormalLower;
+	sampler2D _MyGrabTexture;
 	sampler2D _WaterRam;
 	half _Shininess;
 	half _WaterLevel;
 	half _AbyssLevel;
-	half _LowerScale;
 	fixed4 _Abyss;
 	fixed4 _Deep;
 	int _Water;
@@ -102,22 +200,28 @@ SubShader {
 	fixed4 _SunAmbience;
 	fixed4 _ShadowColor;
 
-	int _Brush;
-	sampler2D _BrushTex;
-	half _BrushSize;
-	half _BrushUvX;
-	half _BrushUvY;
+	sampler2D _ControlXP;
+	sampler2D _Control2XP;
+	sampler2D _Normal0,_Normal1,_Normal2,_Normal3, _NormalLower;
+	sampler2D _Normal4,_Normal5,_Normal6,_Normal7;
+	half _Splat0ScaleNormal, _Splat1ScaleNormal, _Splat2ScaleNormal, _Splat3ScaleNormal, _Splat4ScaleNormal, _Splat5ScaleNormal, _Splat6ScaleNormal, _Splat7ScaleNormal;
 
-	half4 LightingSimpleLambert (SurfaceOutput s, half3 lightDir, half atten) {
-	              half NdotL = dot (s.Normal, lightDir);
+	half _LowerScale;
+
+	float4 LightingSimpleLambert (SurfaceOutput s, float3 lightDir, half atten) {
+	              float NdotL = dot (lightDir, s.Normal);
 	              
-	              half4 c;
+	              float4 c;
 	              float3 spec = float3(0,0,0);
-	              
-	              float3 light =  _SunColor.rgb * (NdotL) + spec;
-	              light *= atten;
-	              light = _LightingMultiplier * light  + _SunAmbience.rgb + _ShadowColor.rgb * (1 - light);
-	              c.rgb = s.Albedo * light;
+
+	             // float3 light =  _SunColor.rgb * 2 * saturate(NdotL) + spec;
+				//	light *= atten;
+	             // light = _LightingMultiplier * light  + _SunAmbience.rgb * 2 + _ShadowColor.rgb * 2 * (1 - light);
+	              float3 light =  _SunColor.rgb * 2 * saturate(NdotL) * atten + _SunAmbience.rgb * 2;
+	              light = _LightingMultiplier * light + _ShadowColor.rgb * 2 * (1 - light);
+
+
+	              c.rgb = (s.Albedo + spec) * light;
 	              c.a = s.Alpha;
 	              return c;
 	          }
@@ -129,32 +233,31 @@ SubShader {
 	}
 
 	void surf (Input IN, inout SurfaceOutput o) {
-		fixed4 splat_control = tex2D (_Control, IN.uv_Control);
-		fixed4 col;
-			float WaterDepth = (_WaterLevel - IN.worldPos.y) / (_WaterLevel - _AbyssLevel);
+		float WaterDepth = (_WaterLevel - IN.worldPos.y) / (_WaterLevel - _AbyssLevel);
+		float2 UV = IN.uv_Control * fixed2(1, -1);
+		float4 splat_control = saturate(tex2D (_ControlXP, UV) * 2 - 1);
+		float4 splat_control2 = saturate(tex2D (_Control2XP, UV) * 2 - 1);
+		//fixed4 col = fixed4(0,0,0,0);
+		;
 
-		col = tex2D (_SplatLower, IN.uv_Splat0 * _LowerScale);
-		col = lerp(col, tex2D (_Splat0, IN.uv_Splat0), splat_control.r);
-		col = lerp(col, tex2D (_Splat1, IN.uv_Splat0), splat_control.g);
-		col = lerp(col, tex2D (_Splat2, IN.uv_Splat2), splat_control.b);
-		col = lerp(col, tex2D (_Splat3, IN.uv_Splat3), splat_control.a);
-		
-			half4 nrm;
-		nrm = tex2D (_NormalLower, IN.uv_Splat0 * _LowerScale);
-		nrm = lerp(nrm, tex2D (_Normal0, IN.uv_Splat0), splat_control.r);
-		nrm =  lerp(nrm, tex2D (_Normal1, IN.uv_Splat0), splat_control.g);
-		nrm =  lerp(nrm, tex2D (_Normal2, IN.uv_Splat2), splat_control.b);
-		nrm =  lerp(nrm, tex2D (_Normal3, IN.uv_Splat3), splat_control.a);
-		
-		
-		nrm.rgb = normalize(nrm.rgb);
-		//nrm = half4(nrm.r, nrm.g, nrm.b, nrm.a);
-		//fixed4 finalnormals;
-		//finalnormals = float4(nrm.rgb * 0.5 + 0.5, nrm.a);
-		
+		float4 col = tex2Dproj( _MyGrabTexture, UNITY_PROJ_COORD(IN.grabUV));
+		half4 nrm;
+		nrm = tex2D (_NormalLower, UV * _LowerScale);
+		nrm = lerp(nrm, tex2D (_Normal0, UV * _Splat0ScaleNormal), splat_control.r);
+		nrm =  lerp(nrm, tex2D (_Normal1, UV * _Splat1ScaleNormal), splat_control.g);
+		nrm =  lerp(nrm, tex2D (_Normal2, UV * _Splat2ScaleNormal), splat_control.b);
+		nrm =  lerp(nrm, tex2D (_Normal3, UV * _Splat3ScaleNormal), splat_control.a);
+
+		nrm = lerp(nrm, tex2D (_Normal4, UV * _Splat4ScaleNormal), splat_control2.r);
+		nrm =  lerp(nrm, tex2D (_Normal5, UV * _Splat5ScaleNormal), splat_control2.g);
+		nrm =  lerp(nrm, tex2D (_Normal6, UV * _Splat6ScaleNormal), splat_control2.b);
+		nrm =  lerp(nrm, tex2D (_Normal7, UV * _Splat7ScaleNormal), splat_control2.a);
+
+
+		//nrm = normalize(nrm.rgb);
 		o.Normal = UnpackNormal(nrm);
-		
-		if(_Slope > 0){
+
+				if(_Slope > 0){
 			if(IN.worldPos.y < _WaterLevel){
 				if(IN.SlopeLerp > 0.75) col.rgb = half3(0,0.4,1);
 				else col.rgb = half3(0.6,0,1);
@@ -162,7 +265,7 @@ SubShader {
 			else if(IN.SlopeLerp > 0.99) col.rgb = half3(0,0.8,0);
 			else if(IN.SlopeLerp > 0.85) col.rgb = half3(0.5,1,0);
 			else col.rgb = half3(1,0,0);
-			//col.rgb = lerp(half3(1,0,0), half3(0,1,0), IN.SlopeLerp);
+			col.rgb = lerp(half3(1,0,0), half3(0,1,0), IN.SlopeLerp);
 		}
 		
 		if(_Grid > 0){
@@ -181,23 +284,50 @@ SubShader {
 			o.Emission = GridFinal * GridColor.a;;
 		}
 
-		if(_Brush > 0){
-			fixed4 BrushColor = tex2D (_BrushTex, ((IN.uv_Control - float2(_BrushUvX, _BrushUvY)) * _GridScale) / (_BrushSize * _GridScale * 0.002)  );
-			o.Emission += half3(0, BrushColor.r * 0.3, BrushColor.r * 0.7);
-		}
 
 		if(_Water > 0) o.Albedo = ApplyWaterColor(WaterDepth, col.rgb);	
-		else o.Albedo = col;	
-		
+		else o.Albedo = col;
 
 		o.Gloss = 0;
 		o.Specular = 0;
-
 		o.Alpha = 0.0;
 	}
 
 
 	ENDCG  
+
+	Blend One One
+	CGPROGRAM
+	#pragma surface surf Lambert nofog
+	
+		struct Input {
+			float2 uv_Control : TEXCOORD0;
+		};
+
+
+		int _Brush;
+		sampler2D _BrushTex;
+		half _BrushSize;
+		half _BrushUvX;
+		half _BrushUvY;
+		half _GridScale;
+
+		void surf (Input IN, inout SurfaceOutput o) {
+			o.Albedo = fixed4(0,0,0,1);
+			o.Emission = fixed4(0,0,0,0);
+
+
+			if(_Brush > 0){	
+				fixed4 BrushColor = tex2D (_BrushTex, ((IN.uv_Control - float2(_BrushUvX, _BrushUvY)) * _GridScale) / (_BrushSize * _GridScale * 0.002)  );
+
+				if(BrushColor.r > 0.2f && BrushColor.r < 0.25f){
+					o.Emission += half3(0, BrushColor.r * 0.3, BrushColor.r * 0.7);
+				}
+
+				o.Emission += half3(0, BrushColor.r * 0.1, BrushColor.r * 0.2);
+			}
+		}
+        ENDCG
 	
 	Blend DstColor Zero
 	CGPROGRAM
@@ -234,6 +364,7 @@ SubShader {
 			}
 		}
         ENDCG
+
 }
 
 

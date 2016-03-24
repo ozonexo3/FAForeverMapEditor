@@ -23,8 +23,14 @@ public class Map
 
 //    public Bitmap PreviewBitmap;
 
+	public	GetGamedataFile.HeaderClass		PreviewTextHeader;
+	public	GetGamedataFile.HeaderClass		TextureMapHeader;
+	public	GetGamedataFile.HeaderClass		TextureMap2Header;
+	public	GetGamedataFile.HeaderClass		NormalmapHeader;
+	public	GetGamedataFile.HeaderClass		WatermapHeader;
+
 	public Texture2D PreviewTex = new Texture2D(0,0);
-    private short[] HeightmapData = new short[0];
+	public short[] HeightmapData = new short[0];
     public short HeightMin;
     public short HeightMax;
 
@@ -137,7 +143,8 @@ public class Map
     }
     public void SetHeight(int x, int y, short value)
     {
-       HeightmapData[(y * (Width + 1)) + x] = value;
+		//Debug.Log("change value " + value);
+    	HeightmapData[(y * (Width + 1)) + x] = value;
     }
 
     public byte GetTerrainTypeValue(int x, int y)
@@ -183,7 +190,8 @@ public class Map
 
 
     #region " Load/Save Functions "
-
+	byte[] PreviewData = new byte[0];
+	int PreviewImageLength;
     public bool Load(string Filename)
     {
         if (string.IsNullOrEmpty(Filename))
@@ -208,7 +216,7 @@ public class Map
         byte[] TexturemapData2 = new byte[0];
         byte[] NormalmapData = new byte[0];
         byte[] WatermapData = new byte[0];
-		byte[] PreviewData = new byte[0];
+
 
         int Count = 0;
 
@@ -230,15 +238,13 @@ public class Map
             //? always 0
             Unknown13 = _with1.ReadInt16();
             //? always 0
-            int ImageLength = _with1.ReadInt32();
-            PreviewData = _with1.ReadBytes(ImageLength);
+			int PreviewImageLength = _with1.ReadInt32();
+			PreviewData = _with1.ReadBytes(PreviewImageLength);
 
             VersionMinor = _with1.ReadInt32();
             if (VersionMinor <= 0)
                 VersionMinor = 56;
-
-			Debug.Log("Load map version: " + VersionMinor);
-
+			
             if (VersionMinor > 56)
             {
                 Console.WriteLine("This map uses SCMAP file version" + VersionMinor + " which is not yet supported by this editor. I will try to load it with the newest known version (" + 56 + "), but it is very likely to fail or cause errors.");
@@ -466,26 +472,48 @@ public class Map
         fs.Close();
         fs.Dispose();
 
+		PreviewTextHeader = GetGamedataFile.GetDdsFormat(PreviewData);
+		PreviewTextHeader.DebugSize = PreviewData.Length;
+		PreviewTextHeader.Format = TextureFormat.DXT5;
 		PreviewTex = TextureLoader.LoadTextureDXT(PreviewData,TextureFormat.DXT5);//.LoadImage(PreviewData);// = Texture.FromMemory(Device, PreviewData, 256, 256, 1, Usage.None, Format.A8R8G8B8, Pool.Scratch, Filter.None, Filter.None, 0);
-        PreviewData = new byte[0];
+        //PreviewData = new byte[0];
       //  PreviewBitmap = TextureToBitmap(PreviewTex);
 
-		TexturemapTex = TextureLoader.LoadTextureDXT(TexturemapData,TextureFormat.RGBA32);//.LoadImage(TexturemapData);// = Texture.FromMemory(Device, TexturemapData, Width / 2, Height / 2, 1, Usage.None, Format.A8R8G8B8, Pool.Scratch, Filter.None, Filter.None, 0);
+		TextureMapHeader = GetGamedataFile.GetDdsFormat(TexturemapData);
+		TextureMapHeader.DebugSize = TexturemapData.Length;
+		TextureMapHeader.Format = TextureFormat.BGRA32;
+		TexturemapTex = TextureLoader.LoadTextureDXT(TexturemapData,TextureFormat.BGRA32);//.LoadImage(TexturemapData);// = Texture.FromMemory(Device, TexturemapData, Width / 2, Height / 2, 1, Usage.None, Format.A8R8G8B8, Pool.Scratch, Filter.None, Filter.None, 0);
         TexturemapData = new byte[0];
 
         if (TexturemapData2.Length > 0)
         {
-			TexturemapTex2 = TextureLoader.LoadTextureDXT(TexturemapData2,TextureFormat.ARGB32);//.LoadImage(TexturemapData2);// = Texture.FromMemory(Device, TexturemapData2, Width / 2, Height / 2, 1, Usage.None, Format.A8R8G8B8, Pool.Scratch, Filter.None, Filter.None, 0);
+			TextureMap2Header = GetGamedataFile.GetDdsFormat(TexturemapData2);
+			TextureMap2Header.DebugSize = TexturemapData2.Length;
+			TextureMap2Header.Format = TextureFormat.BGRA32;
+			TexturemapTex2 = TextureLoader.LoadTextureDXT(TexturemapData2,TextureFormat.BGRA32);//.LoadImage(TexturemapData2);// = Texture.FromMemory(Device, TexturemapData2, Width / 2, Height / 2, 1, Usage.None, Format.A8R8G8B8, Pool.Scratch, Filter.None, Filter.None, 0);
             TexturemapData2 = new byte[0];
         }
         else
         {
+			TextureMap2Header = TextureMapHeader;
 			TexturemapTex2 = new Texture2D(Width/2,Height/2);//(Device, Width / 2, Height / 2, 1, Usage.None, Format.A8R8G8B8, Pool.Managed);
+			Color[] Pixels = TexturemapTex2.GetPixels();
+			for(int p = 0; p < Pixels.Length; p++){
+				Pixels[p] = new Color(0,0,0,0);
+			}
+			TexturemapTex2.SetPixels(Pixels);
+			TexturemapTex2.Apply();
         }
 
+		NormalmapHeader = GetGamedataFile.GetDdsFormat(NormalmapData);
+		NormalmapHeader.DebugSize = NormalmapData.Length;
+		NormalmapHeader.Format = TextureFormat.DXT5;
 		NormalmapTex = TextureLoader.LoadTextureDXT(NormalmapData,TextureFormat.DXT5);//.LoadImage(NormalmapData);// = Texture.FromMemory(Device, NormalmapData, Width, Height, 1, Usage.None, Format.Dxt5, Pool.Scratch, Filter.None, Filter.None, 0);
         NormalmapData = new byte[0];
 
+		WatermapHeader = GetGamedataFile.GetDdsFormat(WatermapData);
+		WatermapHeader.DebugSize = WatermapData.Length;
+		WatermapHeader.Format = TextureFormat.DXT5;
 		WatermapTex = TextureLoader.LoadTextureDXT(WatermapData,TextureFormat.DXT5);//.LoadImage(WatermapData);// = Texture.FromMemory(Device, WatermapData, Width / 2, Height / 2,  1, Usage.None, Format.Dxt5, Pool.Scratch, Filter.None, Filter.None, 0);
         WatermapData = new byte[0];
 
@@ -619,13 +647,16 @@ public class Map
         //? always 0
         _with2.Write(Unknown13);
         //? always 0
-		byte[] SaveData = new byte[0];
+		//byte[] SaveData = new byte[0];
 
 		//SaveData = PreviewTex.GetRawTextureData();
 		//_with2.Write(SaveData.Length);
 		//_with2.Write(SaveData);
 		//Debug.Log(PreviewTex.GetRawTextureData().Length);
-		SaveTexture(_with2, PreviewTex);
+		//SaveTexture(_with2, PreviewTex, PreviewTextHeader);
+		_with2.Write(PreviewData.Length);
+		_with2.Write(PreviewData);
+
 
         //# Heightmap Section #
         _with2.Write(MapFileVersion);
@@ -633,7 +664,6 @@ public class Map
         _with2.Write(Height);
         _with2.Write(HeightScale);
         //Height Scale, usually 1/128
-		Debug.Log(HeightmapData);
         _with2.Write(HeightmapData);
 
         if (MapFileVersion >= 56)
@@ -774,21 +804,21 @@ public class Map
 
         _with2.Write(1);
 
-        SaveTexture(Stream, NormalmapTex);
+		SaveTexture(Stream, NormalmapTex, NormalmapHeader);
         //Format.Dxt5
 
         if (VersionMinor < 56)
             _with2.Write(1);
 
-        SaveTexture(Stream, TexturemapTex);
+		SaveTexture(Stream, TexturemapTex, TextureMapHeader);
 
         if (VersionMinor >= 56)
         {
-            SaveTexture(Stream, TexturemapTex2);
+			SaveTexture(Stream, TexturemapTex2, TextureMap2Header);
         }
 
         _with2.Write(1);
-       SaveTexture(Stream, WatermapTex);
+		SaveTexture(Stream, WatermapTex, WatermapHeader);
 
         _with2.Write(WaterFoamMask);
         _with2.Write(WaterFlatnessMask);
@@ -842,7 +872,7 @@ public class Map
         return MapFileVersion;
     }
 
-    private void SaveTexture(BinaryWriter Stream, Texture2D texture)
+	private void SaveTexture(BinaryWriter Stream, Texture2D texture, GetGamedataFile.HeaderClass header)
     {
         //System.IO.Stream Data = BaseTexture.ToStream(texture, ImageFileFormat.Dds);
         //Stream.Write(Convert.ToInt32(Data.Length));
@@ -850,13 +880,17 @@ public class Map
 		//TODO: Potentially fix this when/if it breaks horribly because no clear analog for the directx9 code exists in unity...
 		//This one is hard to replace.. so lets see if I can randomly guess a replacement!
 		//This should probably actually encode to DDS.....
-		System.IO.Stream Data = new MemoryStream();//There is a constructor that takes a byte array directly, but then the stream is not resizable later..
-		byte[] texArray = TextureLoader.SaveTextureDDS(texture);
+		//System.IO.Stream Data = new MemoryStream();//There is a constructor that takes a byte array directly, but then the stream is not resizable later..
+		byte[] texArray = TextureLoader.SaveTextureDDS(texture, header);
 		//texArray = texture.GetRawTextureData(texArray);
 		//The unfortunate step where we likely have to convert the png byte array to dds probably goes here... :(
-		Data.Write(texArray,0,texArray.Length);
-		Stream.Write(Convert.ToInt32(Data.Length));
-       // CopyStream(Data, Stream.BaseStream);
+		//Debug.Log(texArray.Length);
+		Stream.Write(texArray.Length);
+		Stream.Write(texArray,0,texArray.Length);
+
+		//Data.Write(texArray,0,texArray.Length);
+		//Stream.Write(Convert.ToInt32(Data.Length));
+		//CopyStream(Data, Stream.BaseStream);
     }
 
   /*  private Bitmap TextureToBitmap(Texture Texture)

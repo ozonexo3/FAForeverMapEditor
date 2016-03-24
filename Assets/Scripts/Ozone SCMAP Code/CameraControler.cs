@@ -53,11 +53,42 @@ public class CameraControler : MonoBehaviour {
 		Pos = Vector3.zero + Vector3.right * MapSize / 20.0f - Vector3.forward * MapSize / 20.0f;
 		Pos.y = Terrain.activeTerrain.SampleHeight(Pos);
 		Rot = Vector3.zero;
+
 		zoomIn = 1;
+
+		transform.localPosition = new Vector3(transform.localPosition.x, ZoomCamPos() * MapSize / 7 + 2, transform.localPosition.z);
+		Pivot.localRotation = Quaternion.Euler(Rot);
+		Pivot.localPosition = Pos;
+	}
+
+	public void RenderCamera(int resWidth, int resHeight, string path){
+		// Set Camera
+		Camera.main.orthographic = true;
+		Camera.main.orthographicSize = MapSize * 0.05f;
+		Pivot.localPosition = new Vector3(MapSize * 0.05f, 0, -MapSize * 0.05f);
+		Pivot.rotation = Quaternion.identity;
+
+		// Take Screenshoot
+		RenderTexture rt = new RenderTexture(resWidth, resHeight, 24);
+		Camera.main.targetTexture = rt;
+		Texture2D screenShot = new Texture2D(resWidth, resHeight, TextureFormat.RGB24, false);
+		Camera.main.Render();
+		RenderTexture.active = rt;
+		screenShot.ReadPixels(new Rect(0, 0, resWidth, resHeight), 0, 0);
+		Camera.main.targetTexture = null;
+		RenderTexture.active = null; // JC: added to avoid errors
+		Destroy(rt);
+		byte[] bytes;
+		if(path.Contains(".png")) bytes = screenShot.EncodeToPNG();
+		else bytes = screenShot.EncodeToJPG();
+		System.IO.File.WriteAllBytes(path, bytes);
+
+		// Restart Camera
+		Camera.main.orthographic = false;
+		RestartCam();
 	}
 
 	void Update () {
-
 
 		if (LoadingPopup.activeSelf){
 			if(DragStartedOverMenu) DragStartedOverMenu = false;
