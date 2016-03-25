@@ -310,7 +310,7 @@ Material:
       data:
         first:
           name: _Water
-        second: 1
+        second: 0
       data:
         first:
           name: _Grid
@@ -322,15 +322,15 @@ Material:
       data:
         first:
           name: _LightingMultiplier
-        second: 1.54
+        second: 1.8199999
       data:
         first:
           name: _WaterLevel
-        second: 0.875
+        second: 1.75
       data:
         first:
           name: _AbyssLevel
-        second: 0
+        second: 0.25
       data:
         first:
           name: _Area
@@ -354,7 +354,7 @@ Material:
       data:
         first:
           name: _LowerScale
-        second: 128
+        second: 97.52381
       data:
         first:
           name: _GridScale
@@ -370,15 +370,15 @@ Material:
       data:
         first:
           name: _Splat2Scale
-        second: 30.476192
+        second: 128
       data:
         first:
           name: _Splat1Scale
-        second: 146.28572
+        second: 512
       data:
         first:
           name: _Splat0Scale
-        second: 128
+        second: 26.25641
       data:
         first:
           name: _DeepLevel
@@ -390,11 +390,11 @@ Material:
       data:
         first:
           name: _BrushUvX
-        second: -0.016801395
+        second: 0.3201255
       data:
         first:
           name: _BrushUvY
-        second: 0.2960626
+        second: 0.6154568
       data:
         first:
           name: _BrushSize
@@ -402,15 +402,15 @@ Material:
       data:
         first:
           name: _Splat4Scale
-        second: 128
+        second: 44.52174
       data:
         first:
           name: _Splat5Scale
-        second: 128
+        second: 26.25641
       data:
         first:
           name: _Splat6Scale
-        second: 128
+        second: 24.674698
       data:
         first:
           name: _Splat7Scale
@@ -418,15 +418,15 @@ Material:
       data:
         first:
           name: _Splat0ScaleNormal
-        second: 128
+        second: 16.25397
       data:
         first:
           name: _Splat1ScaleNormal
-        second: 44.52174
+        second: 37.236362
       data:
         first:
           name: _Splat2ScaleNormal
-        second: 256
+        second: 128
       data:
         first:
           name: _Splat3ScaleNormal
@@ -450,7 +450,7 @@ Material:
       data:
         first:
           name: _LowerScaleNormal
-        second: 58.514286
+        second: 128
       data:
         first:
           name: _UpperScale
@@ -471,15 +471,15 @@ Material:
       data:
         first:
           name: _SunColor
-        second: {r: 0.69, g: 0.645, b: 0.57, a: 1}
+        second: {r: 0.645, g: 0.69, b: 0.85, a: 1}
       data:
         first:
           name: _SunAmbience
-        second: {r: 0, g: 0, b: 0, a: 1}
+        second: {r: 0.055, g: 0.09, b: 0.13, a: 1}
       data:
         first:
           name: _ShadowColor
-        second: {r: 0.26999998, g: 0.26999998, b: 0.35, a: 1}
+        second: {r: 0.29, g: 0.255, b: 0.11, a: 1}
       data:
         first:
           name: _Deep

@@ -1,11 +1,13 @@
 ﻿<Properties StartupItem="Assembly-CSharp.csproj">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Unity.Instance.Unity Editor" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Ozone SCMAP Code\ScmapEditor.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\UI\StratumInfo.cs">
     <Files>
+      <File FileName="Assets\Scripts\UI\StratumInfo.cs" Line="55" Column="42" />
+      <File FileName="Assets\Scripts\UI\TerrainInfo.cs" Line="457" Column="50" />
+      <File FileName="Assets\Scripts\UI\BrushGenerator.cs" Line="247" Column="2" />
       <File FileName="Assets\Scripts\Ozone SCMAP Code\ScmapEditor.cs" Line="46" Column="19" />
-      <File FileName="Assets\GFX\Shaders\FaTerrainShader.shader" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\UI\TerrainInfo.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\HazardX SCMAP Code\Map.cs" Line="505" Column="27" />
+      <File FileName="Assets\GFX\Shaders\FaTerrainShader.shader" Line="324" Column="65" />
+      <File FileName="Assets\Scripts\HazardX SCMAP Code\Map.cs" Line="1" Column="1" />
       <File FileName="Assets\Trash\TextureLoader.cs" Line="1" Column="1" />
       <File FileName="Assets\Scripts\Ozone SCMAP Code\MapLuaParser.cs" Line="1" Column="1" />
       <File FileName="Assets\Scripts\HazardX SCMAP Code\Decal.cs" Line="1" Column="1" />
@@ -17,7 +19,7 @@
       <File FileName="Assets\Scripts\Ozone SCMAP Code\GamedataBlueprints.cs" Line="1" Column="1" />
       <File FileName="Assets\Scripts\MapEdit\PropData.cs" Line="1" Column="1" />
       <File FileName="Assets\Scripts\UI\Lists\BrushListId.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\Common\EditorVersion.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\Common\EditorVersion.cs" Line="8" Column="38" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

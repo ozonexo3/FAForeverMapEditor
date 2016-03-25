@@ -152,7 +152,7 @@ public class TerrainInfo : MonoBehaviour {
 				if(ChangingSize){
 					BrushSizeSlider.value = Mathf.Clamp(SizeBeginValue - (BeginMousePos.x - Input.mousePosition.x), 1, 256);
 					UpdateMenu(true);
-					//UpdateBrushPosition(true);
+					UpdateBrushPosition(true);
 
 				}
 			}
@@ -178,8 +178,8 @@ public class TerrainInfo : MonoBehaviour {
 			TerainChanged = false;
 		}
 
-		if(PlayerPrefs.GetInt("Symmetry", 0) != LastSym){
-			GeneratePaintBrushesh();
+		if(PlayerPrefs.GetInt("Symmetry", 0) != BrushGenerator.LastSym){
+			BrushGenerator.GeneratePaintBrushesh();
 		}
 	}
 	public float Min = 0;
@@ -211,14 +211,14 @@ public class TerrainInfo : MonoBehaviour {
 		if(LastRotation != int.Parse(BrushRotation.text)){
 			LastRotation = int.Parse( BrushRotation.text);
 			if(LastRotation == 0){
-				RotatedBrush = Brushes[SelectedFalloff];
+				BrushGenerator.RotatedBrush = Brushes[SelectedFalloff];
 			}
 			else{
-				RotatedBrush = rotateTexture(Brushes[SelectedFalloff], LastRotation);
+				BrushGenerator.RotatedBrush = BrushGenerator.rotateTexture(Brushes[SelectedFalloff], LastRotation);
 			}
 
-			TerrainMaterial.SetTexture("_BrushTex", (Texture)RotatedBrush);
-			GeneratePaintBrushesh();
+			TerrainMaterial.SetTexture("_BrushTex", (Texture)BrushGenerator.RotatedBrush);
+			BrushGenerator.GeneratePaintBrushesh();
 		}
 		TerrainMaterial.SetFloat("_BrushSize", BrushSizeSlider.value );
 	}
@@ -393,13 +393,13 @@ public class TerrainInfo : MonoBehaviour {
 		Brushes[SelectedFalloff].mipMapBias = -1f;
 		LastRotation = int.Parse( BrushRotation.text);
 		if(LastRotation == 0){
-			RotatedBrush = Brushes[SelectedFalloff];
+			BrushGenerator.RotatedBrush = Brushes[SelectedFalloff];
 		}
 		else{
-			RotatedBrush = rotateTexture(Brushes[SelectedFalloff], LastRotation);
+			BrushGenerator.RotatedBrush = BrushGenerator.rotateTexture(Brushes[SelectedFalloff], LastRotation);
 		}
-		TerrainMaterial.SetTexture("_BrushTex", (Texture)RotatedBrush);
-		GeneratePaintBrushesh();
+		TerrainMaterial.SetTexture("_BrushTex", (Texture)BrushGenerator.RotatedBrush);
+		BrushGenerator.GeneratePaintBrushesh();
 	}
 
 
@@ -437,192 +437,15 @@ public class TerrainInfo : MonoBehaviour {
 
 
 	void SymmetryPaint(){
-		Paint(BrushPos, 0);
+		BrushGenerator.GenerateSymmetry(BrushPos);
 
-		int SymmetryCode = PlayerPrefs.GetInt("Symmetry", 0);
+		for(int i = 0; i < BrushGenerator.PaintPositions.Length; i++){
+			Paint(BrushGenerator.PaintPositions[i], i);
 
-		if( SymmetryCode == 0){}
-		else if(SymmetryCode == 1) Paint(GetHorizonalSymetry(), 1);
-		else if(SymmetryCode == 2) Paint(GetVerticalSymetry(), 1);
-		else if(SymmetryCode == 3) Paint(GetHorizontalVerticalSymetry(), 1);
-		else if(SymmetryCode == 4){
-			Paint(GetHorizonalSymetry(), 1);
-			Paint(GetVerticalSymetry(), 2);
-			Paint(GetHorizontalVerticalSymetry(), 3);
-		}
-		else if(SymmetryCode == 5) Paint(GetDiagonal1Symetry(), 1);
-		else if(SymmetryCode == 6) Paint(GetDiagonal2Symetry(), 1);
-		else if(SymmetryCode == 7){
-			Paint(GetDiagonal1Symetry(), 1);
-			Paint(GetDiagonal2Symetry(), 2);
-			Paint(GetDiagonal3Symetry(), 3);
-		}
-		else if(SymmetryCode == 8){
-			int Count = PlayerPrefs.GetInt("SymmetryAngleCount", 2);
-			float angle = 360.0f / (float)Count;
-			for(int i = 0; i < Count - 1; i++){
-				Paint(GetRotationSymetry(angle + angle * i), i + 1);
-			}
 		}
 
+
 	}
-
-	Vector3 GetHorizonalSymetry(){
-		Vector3 MirroredPos = BrushPos - Map.Scenario.MapCenterPoint;
-		MirroredPos.x = -MirroredPos.x;
-		MirroredPos += Map.Scenario.MapCenterPoint;
-		return MirroredPos;
-	}
-
-	Vector3 GetVerticalSymetry(){
-		Vector3 MirroredPos = BrushPos - Map.Scenario.MapCenterPoint;
-		MirroredPos.z = -MirroredPos.z;
-		MirroredPos += Map.Scenario.MapCenterPoint;
-		return MirroredPos;
-	}
-
-	Vector3 GetHorizontalVerticalSymetry(){
-		Vector3 MirroredPos = BrushPos - Map.Scenario.MapCenterPoint;
-		MirroredPos.z = -MirroredPos.z;
-		MirroredPos.x = -MirroredPos.x;
-		MirroredPos += Map.Scenario.MapCenterPoint;
-		return MirroredPos;
-	}
-
-	Vector3 GetDiagonal1Symetry(){
-		Vector3 Origin = new Vector3(0, 0, - Map.Scenario.ScenarioData.Size.y / 10f);
-		Vector3 Origin2 = new Vector3( Map.Scenario.ScenarioData.Size.y / 10f, 0, 0);
-		Vector3 Point = new Vector3( BrushPos.x, 0, BrushPos.z);
-
-		Vector3 PointOfMirror = EditingMarkers.ClosestPointToLine(Origin, Origin2, Point);
-		Vector3 FinalDir = PointOfMirror - Point;
-		FinalDir.y = 0;
-		FinalDir.Normalize();
-		float FinalDist = Vector3.Distance(PointOfMirror, Point);
-		Vector3 MirroredPos = PointOfMirror + FinalDir * FinalDist;
-		MirroredPos.y = BrushPos.y;
-		return MirroredPos;
-	}
-
-	Vector3 GetDiagonal2Symetry(){
-		Vector3 Origin = new Vector3(0, 0, 0);
-		Vector3 Origin2 = new Vector3(Map.Scenario.ScenarioData.Size.y / 10f, 0, -Map.Scenario.ScenarioData.Size.y / 10f);
-		Vector3 Point = new Vector3( BrushPos.x, 0, BrushPos.z);
-
-		Vector3 PointOfMirror = EditingMarkers.ClosestPointToLine(Origin, Origin2, Point);
-		Vector3 FinalDir = PointOfMirror - Point;
-		FinalDir.y = 0;
-		FinalDir.Normalize();
-		float FinalDist = Vector3.Distance(PointOfMirror, Point);
-		Vector3 MirroredPos = PointOfMirror + FinalDir * FinalDist;
-		MirroredPos.y = BrushPos.y;
-		return MirroredPos;
-	}
-
-	Vector3 GetDiagonal3Symetry(){
-		Vector3 Origin = new Vector3(0, 0, - Map.Scenario.ScenarioData.Size.y / 10f);
-		Vector3 Origin2 = new Vector3( Map.Scenario.ScenarioData.Size.y / 10f, 0, 0);
-		Vector3 Point = new Vector3( BrushPos.x, 0, BrushPos.z);
-
-		Vector3 PointOfMirror = EditingMarkers.ClosestPointToLine(Origin, Origin2, Point);
-		Vector3 FinalDir = PointOfMirror - Point;
-		FinalDir.y = 0;
-		FinalDir.Normalize();
-		float FinalDist = Vector3.Distance(PointOfMirror, Point);
-		Vector3 MirroredPos = PointOfMirror + FinalDir * FinalDist;
-		MirroredPos.y = BrushPos.y;
-
-
-
-		Origin = new Vector3(0, 0, 0);
-		Origin2 = new Vector3(Map.Scenario.ScenarioData.Size.y / 10f, 0, -Map.Scenario.ScenarioData.Size.y / 10f);
-		Point = new Vector3( MirroredPos.x, 0, MirroredPos.z);
-
-		PointOfMirror = EditingMarkers.ClosestPointToLine(Origin, Origin2, Point);
-		FinalDir = PointOfMirror - Point;
-		FinalDir.y = 0;
-		FinalDir.Normalize();
-		FinalDist = Vector3.Distance(PointOfMirror, Point);
-		MirroredPos = PointOfMirror + FinalDir * FinalDist;
-		MirroredPos.y = BrushPos.y;
-
-		return MirroredPos;
-	}
-
-	Vector3 GetRotationSymetry(float angle){
-		Vector3 MirroredPos = BrushPos - Map.Scenario.MapCenterPoint;
-		MirroredPos = EditingMarkers.RotatePointAroundPivot(BrushPos, Map.Scenario.MapCenterPoint, angle);
-		return MirroredPos;
-	}
-
-	Texture2D RotatedBrush;
-	Texture2D[] PaintImage;
-	int LastSym = 0;
-	void GeneratePaintBrushesh(){
-		int SymmetryCode = PlayerPrefs.GetInt("Symmetry", 0);
-		LastSym = SymmetryCode;
-		switch(SymmetryCode){
-		case 1:
-			PaintImage = new Texture2D[2];
-			PaintImage[0] = RotatedBrush;
-			PaintImage[1] = MirrorTexture(RotatedBrush, true, false);
-			break;
-		case 2:
-			PaintImage = new Texture2D[2];
-			PaintImage[0] = RotatedBrush;
-			PaintImage[1] = MirrorTexture(RotatedBrush, false, true);
-			break;
-		case 3:
-			PaintImage = new Texture2D[2];
-			PaintImage[0] = RotatedBrush;
-			PaintImage[1] = MirrorTexture(RotatedBrush, true, true);
-			break;
-		case 4:
-			PaintImage = new Texture2D[4];
-			PaintImage[0] = RotatedBrush;
-			PaintImage[1] = MirrorTexture(RotatedBrush, true, false);
-			PaintImage[2] = MirrorTexture(RotatedBrush, false, true);
-			PaintImage[3] = MirrorTexture(RotatedBrush, true, true);
-			break;
-		case 5:
-			PaintImage = new Texture2D[2];
-			PaintImage[0] = RotatedBrush;
-			PaintImage[1] = rotateTexture(RotatedBrush, 90);
-			PaintImage[1] = MirrorTexture(PaintImage[1], false, true);
-			break;
-		case 6:
-			PaintImage = new Texture2D[2];
-			PaintImage[0] = RotatedBrush;
-			PaintImage[1] = rotateTexture(RotatedBrush, 90);
-			PaintImage[1] = MirrorTexture(PaintImage[1], true, false);
-			break;
-		case 7:
-			PaintImage = new Texture2D[4];
-			PaintImage[0] = RotatedBrush;
-			PaintImage[1] = rotateTexture(RotatedBrush, 90);
-			PaintImage[1] = MirrorTexture(PaintImage[1], false, true);
-			PaintImage[2] = rotateTexture(RotatedBrush, 90);
-			PaintImage[2] = MirrorTexture(PaintImage[2], true, false);
-
-			PaintImage[3] = MirrorTexture(RotatedBrush, true, true);
-			break;
-		case 8:
-			int Count = PlayerPrefs.GetInt("SymmetryAngleCount", 2);
-			PaintImage = new Texture2D[Count + 1];
-			PaintImage[0] = RotatedBrush;
-			float angle = 360.0f / (float)Count;
-			for(int i = 1; i < Count; i++){
-				PaintImage[i] = rotateTexture(RotatedBrush, angle * i);
-			}
-			break;
-		default:
-			Debug.Log("load");
-			PaintImage = new Texture2D[1];
-			PaintImage[0] = RotatedBrush;
-			break;
-		}
-	}
-
 
 	void Paint(Vector3 AtPosition, int id = 0){
 		int hmWidth = Map.Teren.terrainData.heightmapWidth;
@@ -674,9 +497,9 @@ public class TerrainInfo : MonoBehaviour {
 		for (int i=0; i<(size - OffsetDown) - OffsetTop; i++){
 			for (int j=0; j<(size - OffsetLeft) - OffsetRight; j++){
 				// Brush strength
-				int x = (int)(((i + OffsetDown) / (float)size) * PaintImage[id].width);
-				int y = (int)(((j + OffsetLeft) / (float)size) * PaintImage[id].height);
-				Color BrushValue =  PaintImage[id].GetPixel(y, x);
+				int x = (int)(((i + OffsetDown) / (float)size) * BrushGenerator.PaintImage[id].width);
+				int y = (int)(((j + OffsetLeft) / (float)size) * BrushGenerator.PaintImage[id].height);
+				Color BrushValue =  BrushGenerator.PaintImage[id].GetPixel(y, x);
 				float SambleBrush = BrushValue.r;
 				if(SambleBrush >= 0.02f) {
 					if(Smooth || SelectedBrush == 2){
@@ -703,101 +526,5 @@ public class TerrainInfo : MonoBehaviour {
 
 		Map.Teren.terrainData.SetHeights(posXInTerrain-offset + OffsetLeft, posYInTerrain-offset + OffsetDown,heights);
 		Markers.UpdateMarkersHeights();
-	}
-
-
-
-
-
-
-
-		Texture2D rotateTexture(Texture2D tex, float angle)
-		{
-		Texture2D rotImage = new Texture2D(tex.width, tex.height, tex.format, false);
-		rotImage.wrapMode = TextureWrapMode.Clamp;
-			int  x,y;
-			float x1, y1, x2,y2;
-
-			int w = tex.width;
-			int h = tex.height;
-			float x0 = rot_x (angle, -w/2.0f, -h/2.0f) + w/2.0f;
-			float y0 = rot_y (angle, -w/2.0f, -h/2.0f) + h/2.0f;
-
-			float dx_x = rot_x (angle, 1.0f, 0.0f);
-			float dx_y = rot_y (angle, 1.0f, 0.0f);
-			float dy_x = rot_x (angle, 0.0f, 1.0f);
-			float dy_y = rot_y (angle, 0.0f, 1.0f);
-
-
-			x1 = x0;
-			y1 = y0;
-
-			for (x = 0; x < tex.width; x++) {
-				x2 = x1;
-				y2 = y1;
-				for ( y = 0; y < tex.height; y++) {
-					//rotImage.SetPixel (x1, y1, Color.clear);          
-
-					x2 += dx_x;//rot_x(angle, x1, y1);
-					y2 += dx_y;//rot_y(angle, x1, y1);
-					rotImage.SetPixel ( (int)Mathf.Floor(y), (int)Mathf.Floor(x), getPixel(tex,x2, y2));
-				}
-
-				x1 += dy_x;
-				y1 += dy_y;
-
-			}
-
-			rotImage.Apply();
-			return rotImage;
-		}
-
-		private Color getPixel(Texture2D tex, float x, float y)
-		{
-			Color pix;
-			int x1 = (int) Mathf.Floor(x);
-			int y1 = (int) Mathf.Floor(y);
-
-			if(x1 > tex.width || x1 < 0 ||
-				y1 > tex.height || y1 < 0) {
-				pix = Color.clear;
-			} else {
-				pix = tex.GetPixel(x1,y1);
-			}
-
-			return pix;
-		}
-
-		private float rot_x (float angle, float x, float y) {
-			float cos = Mathf.Cos(angle/180.0f*Mathf.PI);
-			float sin = Mathf.Sin(angle/180.0f*Mathf.PI);
-			return (x * cos + y * (-sin));
-		}
-		private float rot_y (float angle, float x, float y) {
-			float cos = Mathf.Cos(angle/180.0f*Mathf.PI);
-			float sin = Mathf.Sin(angle/180.0f*Mathf.PI);
-			return (x * sin + y * cos);
-		}
-
-		
-	Texture2D MirrorTexture(Texture2D tex, bool horizontal, bool vertical)
-	{
-		Texture2D rotImage = new Texture2D(tex.width, tex.height, tex.format, false);
-		rotImage.wrapMode = TextureWrapMode.Clamp;
-		int  x,y;
-		int x1, y1;
-		for (x = 0; x < tex.width; x++) {
-			for ( y = 0; y < tex.height; y++) {
-				if(horizontal) x1 = tex.width - x - 1;
-				else x1 = x;
-
-				if(vertical) y1 = tex.height - y - 1;
-				else y1 = y;
-
-				rotImage.SetPixel ( x, y, getPixel(tex,x1, y1));
-			}
-		}
-		rotImage.Apply();
-		return rotImage;
 	}
 }

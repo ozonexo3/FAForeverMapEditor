@@ -124,6 +124,8 @@ public class MapLuaParser : MonoBehaviour {
 		StructurePath = StructurePath.Replace("Assets", "");
 		#endif
 
+		BrushGenerator.SetScenario(this);
+
 	}
 
 	public IEnumerator ForceLoadMapAtPath(string path){
