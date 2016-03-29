@@ -1,4 +1,9 @@
-﻿using UnityEngine;
+﻿// ***************************************************************************************
+// * Simple SupCom map LUA parser
+// * TODO : should read all values. Right now it only search for known, hardcoded values
+// ***************************************************************************************
+
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using EditMap;

@@ -1,10 +1,14 @@
-﻿using UnityEngine;
+﻿// ***************************************************************************************
+// * SCmap editor
+// * Set Unity objects and scripts using data loaded from Scm
+// ***************************************************************************************
+using UnityEngine;
 using System.Collections;
 using UnityStandardAssets.ImageEffects;
 
 public class ScmapEditor : MonoBehaviour {
 
-	const bool SaveStratumToPng = false;
+	const bool SaveStratumToPng = false; // Can save stratum masks to debug if everything is ok
 
 	public		Terrain			Teren;
 	public		TerrainData		Data;
@@ -21,6 +25,7 @@ public class ScmapEditor : MonoBehaviour {
 	public		bool			Grid;
 	public		bool			Slope;
 
+	// Stratum Layer
 	[System.Serializable]
 	public class TerrainTexture{
 		public	 Texture2D	Albedo;
@@ -33,7 +38,7 @@ public class ScmapEditor : MonoBehaviour {
 		public	float		NormalScale;
 	}
 	
-	public Map map;
+	public Map map; // Map Object
 
 	void Start(){
 		ToogleGrid(false);
@@ -52,14 +57,11 @@ public class ScmapEditor : MonoBehaviour {
 
 
 		if(map.Load(path)){
-			//printMapDebug(map);
 			Vector3 SunDIr = new Vector3(-map.SunDirection.x, -map.SunDirection.y, -map.SunDirection.z);
 			Sun.transform.rotation = Quaternion.LookRotation( SunDIr);
 			Sun.color = new Color(map.SunColor.x, map.SunColor.y , map.SunColor.z, 1) ;
 			Sun.intensity = map.LightingMultiplier * 1.0f;
-			//RenderSettings.ambientLight = new Color(map.SunAmbience.x, map.SunAmbience.y, map.SunAmbience.z, 1);
 			RenderSettings.ambientLight = new Color(map.ShadowFillColor.x, map.ShadowFillColor.y, map.ShadowFillColor.z, 1);
-			//Sun.shadowStrength = 1 - (map.ShadowFillColor.x + map.ShadowFillColor.y + map.ShadowFillColor.z) / 3;
 
 			Kamera.GetComponent<Bloom>().bloomIntensity = map.Bloom * 4;
 
@@ -89,7 +91,6 @@ public class ScmapEditor : MonoBehaviour {
 
 		WaterMaterial.SetTexture("_UtilitySamplerC", map.WatermapTex);
 		WaterMaterial.SetFloat("_WaterScale", xRes / -10f);
-		//
 
 		                     
 
@@ -116,22 +117,6 @@ public class ScmapEditor : MonoBehaviour {
 			Gamedata.LoadTextureFromGamedata("env.scd", Textures[i].NormalPath, i, true);
 			yield return null;
 		}
-
-
-
-
-		// LoadTextures
-		/*SplatPrototype[] tex = new SplatPrototype [Textures.Length - 2];
-
-		for (int i = 0; i < tex.Length; i++) {
-			tex[i] = new SplatPrototype ();
-			tex[i].texture = Textures[i + 1].Albedo; 
-			tex[i].normalMap = Textures[i + 1].Normal;
-			tex[i].tileSize = Textures[i + 1].Tilling;
-			tex[i].metallic = 0;
-			tex[i].smoothness = 0.5f;
-		}
-		Data.splatPrototypes = tex;*/
 
 		Teren = Terrain.CreateTerrainGameObject( Data ).GetComponent<Terrain>();
 		Teren.gameObject.name = "TERRAIN";
@@ -160,12 +145,7 @@ public class ScmapEditor : MonoBehaviour {
 		WaterLevel.transform.position = Vector3.up * (map.Water.Elevation / 10.0f);
 		TerrainMaterial.SetFloat("_WaterLevel", map.Water.Elevation / 10.0f);
 		TerrainMaterial.SetFloat("_AbyssLevel", map.Water.ElevationAbyss / 10.0f);
-
-
 		TerrainMaterial.SetInt("_Water", MapLuaParser.Water?1:0);
-		//TerrainMaterial.SetFloat("_LowerScale", Textures[0].AlbedoScale / Textures[1].AlbedoScale);
-		TerrainMaterial.SetTexture("_SplatLower", Textures[0].Albedo);
-		TerrainMaterial.SetTexture("_NormalLower", Textures[0].Normal);
 		TerrainMaterial.SetTexture("_UtilitySamplerC", map.WatermapTex);
 		TerrainMaterial.SetFloat("_GridScale", xRes / 10f);
 
@@ -181,35 +161,6 @@ public class ScmapEditor : MonoBehaviour {
 		// Set terrain heights from heights array
 		Data.SetHeights(0, 0, heights);
 
-
-		// Mask textures
-		/*float[,,] maps = new float[Data.alphamapWidth, Data.alphamapHeight, 8];
-		Debug.Log("Load maps: " + Data.alphamapWidth);
-
-		for(int i = 0; i < Data.alphamapWidth; i++){
-			for(int e = 0; e < Data.alphamapHeight; e++){
-
-				float stratum1 = map.TexturemapTex.GetPixel(e, Data.alphamapWidth - i - 1).b;
-				float stratum2 = map.TexturemapTex.GetPixel(e, Data.alphamapWidth - i - 1).g;
-				float stratum3 = map.TexturemapTex.GetPixel(e, Data.alphamapWidth - i - 1).r;
-				float stratum4 = map.TexturemapTex.GetPixel(e, Data.alphamapWidth - i - 1).a;
-				float stratum5 = map.TexturemapTex2.GetPixel(e, Data.alphamapWidth - i - 1).b;
-				float stratum6 = map.TexturemapTex2.GetPixel(e, Data.alphamapWidth - i - 1).g;
-				float stratum7 = map.TexturemapTex2.GetPixel(e, Data.alphamapWidth - i - 1).r;
-				float stratum8 = map.TexturemapTex2.GetPixel(e, Data.alphamapWidth - i - 1).a;
-
-				maps[i, e, 0] = stratum1; // stratum 1
-				maps[i, e, 1] = stratum2; // stratum 2
-				maps[i, e, 2] = stratum3; // stratum 3
-				maps[i, e, 3] = stratum4; // stratum 4
-				maps[i, e, 4] = stratum5; // stratum 5
-				maps[i, e, 5] = stratum6; // stratum 6
-				maps[i, e, 6] = stratum7; // stratum 7
-				maps[i, e, 7] = stratum8; // stratum 8
-			}
-		}
-		yield return null;*/
-
 		// Save stratum mask to files
 		if(SaveStratumToPng){
 			byte[] bytes;
@@ -218,7 +169,6 @@ public class ScmapEditor : MonoBehaviour {
 			filename += ".png";
 			System.IO.File.WriteAllBytes(filename, bytes);
 
-
 			bytes = null;
 			filename = "temfiles/tex2";
 			bytes =  map.TexturemapTex2.EncodeToPNG();
@@ -226,13 +176,15 @@ public class ScmapEditor : MonoBehaviour {
 			System.IO.File.WriteAllBytes(filename, bytes);
 		}
 
-		//Data.SetAlphamaps(0, 0, maps);
+
 		Teren.gameObject.layer = 8;
-		Teren.heightmapPixelError = 0;
+		Teren.heightmapPixelError = 0; // Force terrain pixel error to 0, to get more sharp terrain
 
 
 		TerrainMaterial.SetFloat("_LowerScale", map.Width / Textures[0].AlbedoScale);
 		TerrainMaterial.SetFloat("_LowerScaleNormal", map.Width / Textures[0].NormalScale);
+		TerrainMaterial.SetTexture("_SplatLower", Textures[0].Albedo);
+		TerrainMaterial.SetTexture("_NormalLower", Textures[0].Normal);
 
 		TerrainMaterial.SetTexture("_ControlXP", map.TexturemapTex);
 		if(Textures[5].Albedo || Textures[6].Albedo || Textures[7].Albedo || Textures[8].Albedo) TerrainMaterial.SetTexture("_Control2XP", map.TexturemapTex2);
@@ -278,16 +230,6 @@ public class ScmapEditor : MonoBehaviour {
 		TerrainMaterial.SetFloat("_UpperScaleNormal", map.Width / Textures[9].NormalScale);
 		TerrainMaterial.SetTexture("_SplatUpper", Textures[9].Albedo);
 		TerrainMaterial.SetTexture("_NormalUpper", Textures[9].Normal);
-
-
-		/*string AllProps = "";
-
-		for(int i = 0; i < map.Props.Count; i++){
-			if( !map.Props[i].BlueprintPath.Contains("pine")){
-				AllProps += map.Props[i].BlueprintPath + "\n";
-			}
-		}
-		Debug.Log("All Props\n" + AllProps);*/
 		yield return null;
 	}
 
@@ -305,6 +247,8 @@ public class ScmapEditor : MonoBehaviour {
 		string MapPath = PlayerPrefs.GetString("MapsPath", "maps/");
 		string path = Scenario.ScenarioData.Scmap.Replace("/maps/", MapPath);
 
+		//TODO force values if needed
+
 		map.Save(path, map.VersionMinor);
 	}
 
@@ -321,9 +265,6 @@ public class ScmapEditor : MonoBehaviour {
 			yRes / 10.0f,
 			256 / 10.0f
 			);
-		//Data.SetDetailResolution((int)(256 / 2), 8);
-		//Data.baseMapResolution = (int)(256 / 2);
-		//Data.alphamapResolution = (int)(256 / 2);
 		
 		if(map != null) WaterLevel.transform.localScale = new Vector3(map.Width * 0.1f, Scenario.ScenarioData.WaterLevels.x, map.Height * 0.1f);
 		if(Teren) Teren.transform.localPosition = new Vector3(-xRes / 20.0f, 1, -zRes / 20.0f);
@@ -343,8 +284,6 @@ public class ScmapEditor : MonoBehaviour {
 		Vector3 ToReturn = MapPos;
 		
 		// Position
-		//ToReturn.x =  1 * (MapPos.x / Scenario.ScenarioData.Size.x) * (Scenario.ScenarioData.Size.x / 10);
-		//ToReturn.z = - 1 * (MapPos.z / Scenario.ScenarioData.Size.y) * (Scenario.ScenarioData.Size.y / 10);
 		ToReturn.x = MapPos.x / 10f;
 		ToReturn.z = -MapPos.z / 10f;
 		
@@ -356,11 +295,8 @@ public class ScmapEditor : MonoBehaviour {
 
 	public Vector3 MapWorldPosInSave(Vector3 MapPos){
 		Vector3 ToReturn = MapPos;
-		
-		// Position
-		//ToReturn.x = (MapPos.x / (Scenario.ScenarioData.Size.x / 10)) * (Scenario.ScenarioData.Size.x) - 0.5f;
-		//ToReturn.z = (MapPos.z / -(Scenario.ScenarioData.Size.y / 10)) * (Scenario.ScenarioData.Size.y) - 0.5f;
 
+		//Position
 		ToReturn.x = MapPos.x * 10;
 		ToReturn.z = MapPos.z * -10f;
 		
