@@ -129,7 +129,6 @@ public class Terrain_Heightmap : MonoBehaviour
 			RenderSettings.ambientLight = new Color(map.SunAmbience.x, map.SunAmbience.y, map.SunAmbience.z,255);
 			/*System.IO.FileStream file = new System.IO.FileStream("C:/Users/Vybe/Desktop/test.dds",System.IO.FileMode.Create);
 			BinaryWriter writer = new BinaryWriter(file);
-			TextureLoader.SaveTextureDDSTester(map.TexturemapTex,writer);
 			writer.Close();*/
 		}
 		else

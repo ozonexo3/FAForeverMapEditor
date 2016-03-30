@@ -57,7 +57,7 @@ public class ScmapEditor : MonoBehaviour {
 
 
 		if(map.Load(path)){
-			Vector3 SunDIr = new Vector3(-map.SunDirection.x, -map.SunDirection.y, -map.SunDirection.z);
+			Vector3 SunDIr = new Vector3(-map.SunDirection.x, -map.SunDirection.y, map.SunDirection.z);
 			Sun.transform.rotation = Quaternion.LookRotation( SunDIr);
 			Sun.color = new Color(map.SunColor.x, map.SunColor.y , map.SunColor.z, 1) ;
 			Sun.intensity = map.LightingMultiplier * 1.0f;

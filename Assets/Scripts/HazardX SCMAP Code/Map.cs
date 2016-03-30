@@ -238,7 +238,7 @@ public class Map
             //? always 0
             Unknown13 = _with1.ReadInt16();
             //? always 0
-			int PreviewImageLength = _with1.ReadInt32();
+			PreviewImageLength = _with1.ReadInt32();
 			PreviewData = _with1.ReadBytes(PreviewImageLength);
 
             VersionMinor = _with1.ReadInt32();
@@ -443,6 +443,7 @@ public class Map
                 TexturemapData2 = _with1.ReadBytes(Length);
             }
 
+
             //Watermap
             _with1.ReadInt32();
             //always 1
@@ -473,30 +474,25 @@ public class Map
         fs.Dispose();
 
 		PreviewTextHeader = GetGamedataFile.GetDdsFormat(PreviewData);
-		PreviewTextHeader.DebugSize = PreviewData.Length;
-		PreviewTextHeader.Format = TextureFormat.DXT5;
-		PreviewTex = TextureLoader.LoadTextureDXT(PreviewData,TextureFormat.DXT5);//.LoadImage(PreviewData);// = Texture.FromMemory(Device, PreviewData, 256, 256, 1, Usage.None, Format.A8R8G8B8, Pool.Scratch, Filter.None, Filter.None, 0);
-        //PreviewData = new byte[0];
-      //  PreviewBitmap = TextureToBitmap(PreviewTex);
+		PreviewTextHeader.Format = TextureFormat.RGBA32;
+		PreviewTex = TextureLoader.LoadTextureDXT(PreviewData, PreviewTextHeader);
 
 		TextureMapHeader = GetGamedataFile.GetDdsFormat(TexturemapData);
-		TextureMapHeader.DebugSize = TexturemapData.Length;
 		TextureMapHeader.Format = TextureFormat.BGRA32;
-		TexturemapTex = TextureLoader.LoadTextureDXT(TexturemapData,TextureFormat.BGRA32);//.LoadImage(TexturemapData);// = Texture.FromMemory(Device, TexturemapData, Width / 2, Height / 2, 1, Usage.None, Format.A8R8G8B8, Pool.Scratch, Filter.None, Filter.None, 0);
-        TexturemapData = new byte[0];
+		TexturemapTex = TextureLoader.LoadTextureDXT(TexturemapData, TextureMapHeader);
+		TexturemapData = new byte[0];
 
         if (TexturemapData2.Length > 0)
         {
 			TextureMap2Header = GetGamedataFile.GetDdsFormat(TexturemapData2);
-			TextureMap2Header.DebugSize = TexturemapData2.Length;
 			TextureMap2Header.Format = TextureFormat.BGRA32;
-			TexturemapTex2 = TextureLoader.LoadTextureDXT(TexturemapData2,TextureFormat.BGRA32);//.LoadImage(TexturemapData2);// = Texture.FromMemory(Device, TexturemapData2, Width / 2, Height / 2, 1, Usage.None, Format.A8R8G8B8, Pool.Scratch, Filter.None, Filter.None, 0);
-            TexturemapData2 = new byte[0];
+			TexturemapTex2 = TextureLoader.LoadTextureDXT(TexturemapData2, TextureMap2Header);
+			TexturemapData2 = new byte[0];
         }
         else
         {
 			TextureMap2Header = TextureMapHeader;
-			TexturemapTex2 = new Texture2D(Width/2,Height/2);//(Device, Width / 2, Height / 2, 1, Usage.None, Format.A8R8G8B8, Pool.Managed);
+			TexturemapTex2 = new Texture2D(Width/2,Height/2);
 			Color[] Pixels = TexturemapTex2.GetPixels();
 			for(int p = 0; p < Pixels.Length; p++){
 				Pixels[p] = new Color(0,0,0,0);
@@ -506,16 +502,14 @@ public class Map
         }
 
 		NormalmapHeader = GetGamedataFile.GetDdsFormat(NormalmapData);
-		NormalmapHeader.DebugSize = NormalmapData.Length;
 		NormalmapHeader.Format = TextureFormat.DXT5;
-		NormalmapTex = TextureLoader.LoadTextureDXT(NormalmapData,TextureFormat.DXT5);//.LoadImage(NormalmapData);// = Texture.FromMemory(Device, NormalmapData, Width, Height, 1, Usage.None, Format.Dxt5, Pool.Scratch, Filter.None, Filter.None, 0);
-        NormalmapData = new byte[0];
+		NormalmapTex = TextureLoader.LoadTextureDXT(NormalmapData, NormalmapHeader);
+		NormalmapData = new byte[0];
 
 		WatermapHeader = GetGamedataFile.GetDdsFormat(WatermapData);
-		WatermapHeader.DebugSize = WatermapData.Length;
 		WatermapHeader.Format = TextureFormat.DXT5;
-		WatermapTex = TextureLoader.LoadTextureDXT(WatermapData,TextureFormat.DXT5);//.LoadImage(WatermapData);// = Texture.FromMemory(Device, WatermapData, Width / 2, Height / 2,  1, Usage.None, Format.Dxt5, Pool.Scratch, Filter.None, Filter.None, 0);
-        WatermapData = new byte[0];
+		WatermapTex = TextureLoader.LoadTextureDXT(WatermapData, WatermapHeader);
+		WatermapData = new byte[0];
 
         return true;
     }
@@ -654,9 +648,9 @@ public class Map
 		//_with2.Write(SaveData);
 		//Debug.Log(PreviewTex.GetRawTextureData().Length);
 		SaveTexture(_with2, PreviewTex, PreviewTextHeader);
-		//_with2.Write(PreviewData.Length);
+		//_with2.Write(PreviewImageLength);
 		//_with2.Write(PreviewData);
-
+		Debug.Log( _with2.BaseStream.Length );
 
         //# Heightmap Section #
         _with2.Write(MapFileVersion);
@@ -874,37 +868,13 @@ public class Map
 
 	private void SaveTexture(BinaryWriter Stream, Texture2D texture, GetGamedataFile.HeaderClass header)
     {
-        //System.IO.Stream Data = BaseTexture.ToStream(texture, ImageFileFormat.Dds);
-        //Stream.Write(Convert.ToInt32(Data.Length));
-
-		//TODO: Potentially fix this when/if it breaks horribly because no clear analog for the directx9 code exists in unity...
-		//This one is hard to replace.. so lets see if I can randomly guess a replacement!
-		//This should probably actually encode to DDS.....
-		//System.IO.Stream Data = new MemoryStream();//There is a constructor that takes a byte array directly, but then the stream is not resizable later..
 		byte[] texArray = TextureLoader.SaveTextureDDS(texture, header);
-		//texArray = texture.GetRawTextureData(texArray);
-		//The unfortunate step where we likely have to convert the png byte array to dds probably goes here... :(
-		//Debug.Log(texArray.Length);
+		Debug.Log("L2: " + texArray.Length);
 		Stream.Write(texArray.Length);
 		Stream.Write(texArray,0,texArray.Length);
-
-		//Data.Write(texArray,0,texArray.Length);
-		//Stream.Write(Convert.ToInt32(Data.Length));
-		//CopyStream(Data, Stream.BaseStream);
     }
 
-  /*  private Bitmap TextureToBitmap(Texture Texture)
-    {
-        System.IO.Stream gs = BaseTexture.ToStream(Texture, ImageFileFormat.Bmp);
-        if (gs == null || gs.Length == 0)
-            return null;
-        Bitmap bmp = new Bitmap(gs);
-        gs.Close();
-        gs.Dispose();
-        return bmp;
-    }*/
-
-    private void CopyStream(System.IO.Stream Source, System.IO.Stream Target)
+    /*private void CopyStream(System.IO.Stream Source, System.IO.Stream Target)
     {
         byte[] buffer = new byte[2049];
         int read = 0;
@@ -914,7 +884,7 @@ public class Map
             if (read > 0)
                 Target.Write(buffer, 0, read);
         } while ((read > 0));
-    }
+    }*/
 
     #endregion
 

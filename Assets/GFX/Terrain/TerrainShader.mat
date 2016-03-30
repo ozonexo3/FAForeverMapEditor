@@ -322,7 +322,7 @@ Material:
       data:
         first:
           name: _LightingMultiplier
-        second: 1.8199999
+        second: 1.82
       data:
         first:
           name: _WaterLevel
@@ -362,7 +362,7 @@ Material:
       data:
         first:
           name: _GridCamDist
-        second: 3.757143
+        second: 1.588916
       data:
         first:
           name: _Splat3Scale
@@ -390,11 +390,11 @@ Material:
       data:
         first:
           name: _BrushUvX
-        second: 0.3201255
+        second: 0.4623012
       data:
         first:
           name: _BrushUvY
-        second: 0.6154568
+        second: 0.66322255
       data:
         first:
           name: _BrushSize
