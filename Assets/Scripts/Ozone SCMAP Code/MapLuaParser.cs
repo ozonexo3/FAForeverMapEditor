@@ -199,6 +199,7 @@ public class MapLuaParser : MonoBehaviour {
 
 		InfoPopup.Show(false);
 
+		EditMenu.Categorys[0].GetComponent<MapInfo>().UpdateFields();
 
 	}
 
@@ -959,6 +960,7 @@ public class MapLuaParser : MonoBehaviour {
 			SiMarkers[SiMarkers.Count - 1].name = "AI_" + SiMarkers.Count.ToString();
 			SiMarkers[SiMarkers.Count - 1].position = position;
 		}
+		MarkerRend.Regenerate();
 		EditMenu.EditMarkers.AllMarkersList.UpdateList();
 	}
 

@@ -58,6 +58,10 @@ namespace EditMap{
 			public		int		SelectionState;
 		}
 
+		void OnDisable(){
+			RemoveCreating();
+		}
+
 		public void ButtonFunction(string func){
 			switch(func){
 			case "Army":
@@ -80,6 +84,13 @@ namespace EditMap{
 				else CreatingId = 4;
 				UpdateCreating();
 				break;
+			}
+		}
+
+		public void RemoveCreating(){
+			if(CreatingId > 0){
+				CreatingId = 0;
+				UpdateCreating();
 			}
 		}
 

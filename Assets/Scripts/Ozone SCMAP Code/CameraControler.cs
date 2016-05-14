@@ -562,7 +562,7 @@ public class CameraControler : MonoBehaviour {
 						FinalPos.y = Terrain.activeTerrain.SampleHeight(FinalPos);
 						MarkerToCreateSymmetry[i].position = FinalPos;
 					}
-					else if(SymmetryCode == 5){
+					else if(SymmetryCode == 5 || (SymmetryCode == 7 && i == 0)){
 						Vector3 Origin = new Vector3(0, 0, -Edit.Scenario.ScenarioData.Size.y / 10f);
 						Vector3 Origin2 = new Vector3(Edit.Scenario.ScenarioData.Size.y / 10f, 0, 0);
 						Vector3 Point = new Vector3(HitPointSnaped.x, 0, HitPointSnaped.z);
@@ -576,7 +576,7 @@ public class CameraControler : MonoBehaviour {
 						MirroredMarker.y = Terrain.activeTerrain.SampleHeight(MirroredMarker);
 						MarkerToCreateSymmetry[i].position = MirroredMarker;
 					}
-					else if(SymmetryCode == 6){
+					else if(SymmetryCode == 6 || (SymmetryCode == 7 && i == 1)){
 						Vector3 Origin = new Vector3(0, 0, 0);
 						Vector3 Origin2 = new Vector3(Edit.Scenario.ScenarioData.Size.y / 10f, 0, -Edit.Scenario.ScenarioData.Size.y / 10f);
 						Vector3 Point = new Vector3(HitPointSnaped.x, 0, HitPointSnaped.z);
@@ -590,11 +590,42 @@ public class CameraControler : MonoBehaviour {
 						MirroredMarker.y = Terrain.activeTerrain.SampleHeight(MirroredMarker);
 						MarkerToCreateSymmetry[i].position = MirroredMarker;
 					}
-					else if(SymmetryCode == 7){
+					else if(SymmetryCode == 7 && i == 2){
+						// Step 1
+						Vector3 Origin = new Vector3(0, 0, -Edit.Scenario.ScenarioData.Size.y / 10f);
+						Vector3 Origin2 = new Vector3(Edit.Scenario.ScenarioData.Size.y / 10f, 0, 0);
+						Vector3 Point = new Vector3(HitPointSnaped.x, 0, HitPointSnaped.z);
+
+						Vector3 PointOfMirror = EditingMarkers.ClosestPointToLine(Origin, Origin2, Point);
+						Vector3 FinalDir = PointOfMirror - Point;
+						FinalDir.y = 0;
+						FinalDir.Normalize();
+						float FinalDist = Vector3.Distance(PointOfMirror, Point);
+						Vector3 MirroredMarker = PointOfMirror + FinalDir * FinalDist;
+
+						// Step 2
+						Origin = new Vector3(0, 0, 0);
+						Origin2 = new Vector3(Edit.Scenario.ScenarioData.Size.y / 10f, 0, -Edit.Scenario.ScenarioData.Size.y / 10f);
+						Point = new Vector3(MirroredMarker.x, 0, MirroredMarker.z);
+
+						PointOfMirror = EditingMarkers.ClosestPointToLine(Origin, Origin2, Point);
+						FinalDir = PointOfMirror - Point;
+						FinalDir.y = 0;
+						FinalDir.Normalize();
+						FinalDist = Vector3.Distance(PointOfMirror, Point);
+						MirroredMarker = PointOfMirror + FinalDir * FinalDist;
+
+						// Final
+						MirroredMarker.y = Terrain.activeTerrain.SampleHeight(MirroredMarker);
+						MarkerToCreateSymmetry[i].position = MirroredMarker;
+
+					}
+					else if(SymmetryCode == 8){
 						int Count = PlayerPrefs.GetInt("SymmetryAngleCount", 2);
 						float angle = 360.0f / (float)Count;
 
 						Vector3 MirroredMarker = EditingMarkers.RotatePointAroundPivot(HitPointSnaped, Edit.Scenario.MapCenterPoint, angle * (i + 1));
+						MirroredMarker.y = Terrain.activeTerrain.SampleHeight(MirroredMarker);
 						MarkerToCreateSymmetry[i].position = MirroredMarker;
 					}
 				}

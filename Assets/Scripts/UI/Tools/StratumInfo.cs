@@ -5,6 +5,23 @@ using System.Collections;
 public class StratumInfo : MonoBehaviour {
 
 	public		StratumSettingsUi		StratumSettings;
+	public		ScmapEditor				Scmap;
+
+	public		int						Selected = 0;
+	public		GameObject[]			Stratum_Selections;
+	public		bool[]					StratumHide = new bool[10];
+
+	public		RawImage				Stratum_Albedo;
+	public		RawImage				Stratum_Normal;
+	public		Slider					Stratum_Albedo_Slider;
+	public		InputField				Stratum_Albedo_Input;
+	public		Slider					Stratum_Normal_Slider;
+	public		InputField				Stratum_Normal_Input;
+
+	public		GameObject				Page_Stratum;
+	public		GameObject				Page_StratumSelected;
+	public		GameObject				Page_Paint;
+	public		GameObject				Page_PaintSelected;
 
 	[System.Serializable]
 	public class StratumSettingsUi{
@@ -41,27 +58,108 @@ public class StratumInfo : MonoBehaviour {
 		public		RawImage		Stratum2_Mask;
 		public		RawImage		Stratum1_Mask;
 		public		RawImage		Stratum0_Mask;
-
-		[Header("Visible")]
-		public		bool			Stratum9_Visible = true;
-		public		bool			Stratum8_Visible = true;
-		public		bool			Stratum7_Visible = true;
-		public		bool			Stratum6_Visible = true;
-		public		bool			Stratum5_Visible = true;
-		public		bool			Stratum4_Visible = true;
-		public		bool			Stratum3_Visible = true;
-		public		bool			Stratum2_Visible = true;
-		public		bool			Stratum1_Visible = true;
-		public		bool			Stratum0_Visible = true;
 	}
 
-	// Use this for initialization
-	void Start () {
-	
+
+	void OnEnable () {
+		ReloadStratums();
 	}
-	
-	// Update is called once per frame
-	void Update () {
-	
+
+	void Start(){
+		ChangePageToStratum();
+		SelectStratum(0);
+	}
+
+
+	public void ReloadStratums(){
+		StratumSettings.Stratum0_Albedo.texture = Scmap.Textures[0].Albedo;
+		StratumSettings.Stratum0_Normal.texture = Scmap.Textures[0].Normal;
+
+		StratumSettings.Stratum1_Albedo.texture = Scmap.Textures[1].Albedo;
+		StratumSettings.Stratum1_Normal.texture = Scmap.Textures[1].Normal;
+
+		StratumSettings.Stratum2_Albedo.texture = Scmap.Textures[2].Albedo;
+		StratumSettings.Stratum2_Normal.texture = Scmap.Textures[2].Normal;
+
+		StratumSettings.Stratum3_Albedo.texture = Scmap.Textures[3].Albedo;
+		StratumSettings.Stratum3_Normal.texture = Scmap.Textures[3].Normal;
+
+		StratumSettings.Stratum4_Albedo.texture = Scmap.Textures[4].Albedo;
+		StratumSettings.Stratum4_Normal.texture = Scmap.Textures[4].Normal;
+
+		StratumSettings.Stratum5_Albedo.texture = Scmap.Textures[5].Albedo;
+		StratumSettings.Stratum5_Normal.texture = Scmap.Textures[5].Normal;
+
+		StratumSettings.Stratum6_Albedo.texture = Scmap.Textures[6].Albedo;
+		StratumSettings.Stratum6_Normal.texture = Scmap.Textures[6].Normal;
+
+		StratumSettings.Stratum7_Albedo.texture = Scmap.Textures[7].Albedo;
+		StratumSettings.Stratum7_Normal.texture = Scmap.Textures[7].Normal;
+
+		StratumSettings.Stratum8_Albedo.texture = Scmap.Textures[8].Albedo;
+		StratumSettings.Stratum8_Normal.texture = Scmap.Textures[8].Normal;
+
+		StratumSettings.Stratum9_Albedo.texture = Scmap.Textures[9].Albedo;
+		StratumSettings.Stratum9_Normal.texture = Scmap.Textures[9].Normal;
+
+
+		StratumSettings.Stratum1_Mask.texture = Scmap.map.TexturemapTex;
+		StratumSettings.Stratum2_Mask.texture = Scmap.map.TexturemapTex;
+		StratumSettings.Stratum3_Mask.texture = Scmap.map.TexturemapTex;
+		StratumSettings.Stratum4_Mask.texture = Scmap.map.TexturemapTex;
+
+		StratumSettings.Stratum5_Mask.texture = Scmap.map.TexturemapTex2;
+		StratumSettings.Stratum6_Mask.texture = Scmap.map.TexturemapTex2;
+		StratumSettings.Stratum7_Mask.texture = Scmap.map.TexturemapTex2;
+		StratumSettings.Stratum8_Mask.texture = Scmap.map.TexturemapTex2;
+	}
+
+	public void SelectStratum(int newid){
+		Selected = newid;
+
+		foreach(GameObject obj in Stratum_Selections) obj.SetActive(false);
+
+		Stratum_Selections[Selected].SetActive(true);
+
+		Stratum_Albedo.texture = Scmap.Textures[Selected].Albedo;
+		Stratum_Normal.texture = Scmap.Textures[Selected].Normal;
+
+
+		Stratum_Albedo_Slider.value = Scmap.Textures[Selected].AlbedoScale;
+		Stratum_Albedo_Input.text = Scmap.Textures[Selected].AlbedoScale.ToString();
+
+		Stratum_Normal_Slider.value = Scmap.Textures[Selected].AlbedoScale;
+		Stratum_Normal_Input.text = Scmap.Textures[Selected].AlbedoScale.ToString();
+	}
+
+	public void UpdateStratumMenu(bool slider = false){
+		if(slider){
+
+
+			UpdateStratumMenu(false);
+		}
+		else{
+
+
+		}
+	}
+
+	public void ToggleLayerVisibility(int id){
+		StratumHide[id] = !StratumHide[id];
+		// TODO Update Terrain Shader To Hide Stratum
+	}
+
+	public void ChangePageToStratum(){
+		Page_Stratum.SetActive(true);
+		Page_StratumSelected.SetActive(true);
+		Page_Paint.SetActive(false);
+		Page_PaintSelected.SetActive(false);
+	}
+
+	public void ChangePageToPaint(){
+		Page_Stratum.SetActive(false);
+		Page_StratumSelected.SetActive(false);
+		Page_Paint.SetActive(true);
+		Page_PaintSelected.SetActive(true);
 	}
 }
