@@ -10,7 +10,7 @@ public class ScriptBatch : MonoBehaviour
 		// Get filename
 		string path = EditorUtility.SaveFolderPanel("Choose Location of Built Game", "", "");
 
-		string[] levels = new string[] {"Assets/FAForeverMapEditor.unity"};
+		string[] levels = new string[] {"Assets/MapEditor.unity"};
 
 		BuildPipeline.BuildPlayer(levels, path + "/FAForeverMapEditor.exe", BuildTarget.StandaloneWindows, BuildOptions.None);
 

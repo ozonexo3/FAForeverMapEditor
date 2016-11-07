@@ -416,7 +416,7 @@ public class Map
             int Length = 0;
             int NormalmapCount = _with1.ReadInt32();
             //always 1
-            for (int i = 0; i <= NormalmapCount - 1; i++)
+            for (int i = 0; i < NormalmapCount; i++)
             {
                 Length = _with1.ReadInt32();
                 if (i == 0)
@@ -459,15 +459,39 @@ public class Map
 
             if (VersionMinor <= 52)
                 _with1.ReadInt16();
-            //always 0
 
-            int PropCount = _with1.ReadInt32();
-            for (int i = 0; i <= PropCount - 1; i++)
-            {
-                Prop Prop = new Prop();
-                Prop.Load(Stream);
-                Props.Add(Prop);
-            }
+			//_with1.ReadInt16();
+            //always 0
+			/*_with1.ReadByte();
+			_with1.ReadByte();
+			_with1.ReadByte();
+			_with1.ReadByte();
+			for(int i = 0; i < 50; i++){ //146
+				int PropCount = _with1.ReadInt32();
+				Debug.Log ("PropCount " + PropCount );
+				//Debug.Log(_with1.ReadStringNull());
+				//_with1.ReadByte();
+			}*/
+
+			//_with1.ReadByte();
+
+
+			try{
+	            int PropCount = _with1.ReadInt32();
+				Debug.Log ("PropCount " + PropCount + ", " + VersionMinor );
+	            for (int i = 0; i < 8; i++)
+	            {
+	                Prop Prop = new Prop();
+	                Prop.Load(Stream);
+	                Props.Add(Prop);
+					Debug.Log(Prop.BlueprintPath);
+	            }
+			}
+			catch{
+				Debug.LogError ("Loading props crashed");
+			}
+				
+
         }
         _with1.Close();
         fs.Close();

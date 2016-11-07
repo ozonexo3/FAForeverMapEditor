@@ -18,6 +18,6 @@ function FLOAT(f)
 	return f
 end
 
-function GROUP(x, y, z)
-	return {x, y, z}
+function GROUP(orders, platoon, Units)
+	return {orders, platoon, Units}
 end

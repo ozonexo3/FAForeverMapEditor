@@ -7,7 +7,6 @@ public class CameraControler : MonoBehaviour {
 
 
 	public			Undo				History;
-	public			MapLuaParser		MapControler;
 	public			MapHelperGui		HUD;
 	public			Editing				Edit;
 	public			AppMenu				Menu;
@@ -149,13 +148,13 @@ public class CameraControler : MonoBehaviour {
 		if (Input.GetKey (KeyCode.LeftControl)) {
 			if(Input.GetKeyDown(KeyCode.G)){
 				Menu.SlopeToggle.isOn = !Menu.SlopeToggle.isOn;
-				Menu.MapHelper.Loader.HeightmapControler.ToogleSlope(Menu.SlopeToggle.isOn);
+				MapLuaParser.Current.HeightmapControler.ToogleSlope(Menu.SlopeToggle.isOn);
 			}
 		}
 		else{
 			if(Input.GetKeyDown(KeyCode.G)){
 				Menu.GridToggle.isOn = !Menu.GridToggle.isOn;
-				Menu.MapHelper.Loader.HeightmapControler.ToogleGrid(Menu.GridToggle.isOn);
+				MapLuaParser.Current.HeightmapControler.ToogleGrid(Menu.GridToggle.isOn);
 			}
 		}
 	}
@@ -197,8 +196,9 @@ public class CameraControler : MonoBehaviour {
 			prevMausePos = Input.mousePosition;
 		}
 		if(Input.GetMouseButton(2)){
-			Pos -= transform.right * (Input.mousePosition.x - prevMausePos.x) * 2.0f * (transform.localPosition.y * 0.03f + 0.2f) * Time.deltaTime;
-			Pos -= (transform.forward + transform.up) * (Input.mousePosition.y - prevMausePos.y) * 2.0f * (transform.localPosition.y * 0.03f + 0.2f) * Time.deltaTime;
+			float PanSpeed = Mathf.Lerp (1f, 2f, ZoomCamPos ());
+			Pos -= transform.right * (Input.mousePosition.x - prevMausePos.x) * PanSpeed * (transform.localPosition.y * 0.03f + 0.2f) * Time.deltaTime;
+			Pos -= (transform.forward + transform.up) * (Input.mousePosition.y - prevMausePos.y) * PanSpeed * (transform.localPosition.y * 0.03f + 0.2f) * Time.deltaTime;
 			prevMausePos = Input.mousePosition;
 			
 			Pos.x = Mathf.Clamp(Pos.x, 0, MapSize / 10.0f);
@@ -212,7 +212,7 @@ public class CameraControler : MonoBehaviour {
 		}
 		
 		
-		transform.localPosition = Vector3.Lerp(transform.localPosition, new Vector3(transform.localPosition.x, ZoomCamPos() * MapSize / 7 + 2, transform.localPosition.z), Time.deltaTime * 20);
+		transform.localPosition = Vector3.Lerp(transform.localPosition, new Vector3(transform.localPosition.x, ZoomCamPos() * MapSize / 7 + 1, transform.localPosition.z), Time.deltaTime * 20);
 		
 		Pivot.localRotation = Quaternion.Lerp(Pivot.localRotation, Quaternion.Euler(Rot), Time.deltaTime * 10);
 		Pivot.localPosition = Vector3.Lerp(Pivot.localPosition, Pos,  Time.deltaTime * 18);

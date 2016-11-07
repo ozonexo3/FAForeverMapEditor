@@ -13,7 +13,6 @@ public class ScmapEditor : MonoBehaviour {
 	public		Terrain			Teren;
 	public		TerrainData		Data;
 	public		Transform		WaterLevel;
-	public		MapLuaParser	Scenario;
 	public		Camera			Kamera;
 	private		float[,] 		heights = new float[1,1];
 	public		Light			Sun;
@@ -51,7 +50,7 @@ public class ScmapEditor : MonoBehaviour {
 		map = new Map();
 
 		string MapPath = PlayerPrefs.GetString("MapsPath", "maps/");
-		string path = Scenario.ScenarioData.Scmap.Replace("/maps/", MapPath);
+		string path = MapLuaParser.Current.ScenarioData.Scmap.Replace("/maps/", MapPath);
 
 		Debug.Log("Load SCMAP file: " + path);
 
@@ -79,13 +78,13 @@ public class ScmapEditor : MonoBehaviour {
 			StopCoroutine( "LoadScmapFile" );
 		}
 
-		Scenario.ScenarioData.MaxHeight = map.Water.Elevation;
+		MapLuaParser.Current.ScenarioData.MaxHeight = map.Water.Elevation;
 		MapLuaParser.Water = map.Water.HasWater;
 		WaterLevel.gameObject.SetActive(map.Water.HasWater);
 
 		// Set Variables
-		int xRes = (int)Scenario.ScenarioData.Size.x;
-		int zRes = (int)Scenario.ScenarioData.Size.y;
+		int xRes = (int)MapLuaParser.Current.ScenarioData.Size.x;
+		int zRes = (int)MapLuaParser.Current.ScenarioData.Size.y;
 		float yRes = (float)map.HeightScale;;
 		float HeightResize = 512 * 40;
 
@@ -245,7 +244,7 @@ public class ScmapEditor : MonoBehaviour {
 		Debug.Log("Set Heightmap to map " + map.Width + ", " + map.Height);
 
 		string MapPath = PlayerPrefs.GetString("MapsPath", "maps/");
-		string path = Scenario.ScenarioData.Scmap.Replace("/maps/", MapPath);
+		string path = MapLuaParser.Current.ScenarioData.Scmap.Replace("/maps/", MapPath);
 
 		//TODO force values if needed
 
@@ -266,7 +265,7 @@ public class ScmapEditor : MonoBehaviour {
 			256 / 10.0f
 			);
 		
-		if(map != null) WaterLevel.transform.localScale = new Vector3(map.Width * 0.1f, Scenario.ScenarioData.WaterLevels.x, map.Height * 0.1f);
+		if(map != null) WaterLevel.transform.localScale = new Vector3(map.Width * 0.1f, MapLuaParser.Current.ScenarioData.WaterLevels.x, map.Height * 0.1f);
 		if(Teren) Teren.transform.localPosition = new Vector3(-xRes / 20.0f, 1, -zRes / 20.0f);
 		
 		// Modify heights array data

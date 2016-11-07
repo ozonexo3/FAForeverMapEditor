@@ -52,6 +52,6 @@ Scenario = {
     next_unit_id = '2',
     Armies = 
     {
-[*ARMYS*]
+[ARMYS]
     },
 }

@@ -157,7 +157,7 @@ SubShader {
      }   
           
 	CGPROGRAM
-	#pragma surface surf SimpleLambert vertex:vert noambient fullforwardshadows addshadow nometa noforwardadd
+	#pragma surface surf SimpleLambert vertex:vert noambient fullforwardshadows addshadow nometa
 	//#pragma debug
 	#pragma target 4.0
 	#pragma exclude_renderers gles
@@ -237,11 +237,11 @@ SubShader {
 		float2 UV = IN.uv_Control * fixed2(1, -1);
 		float4 splat_control = saturate(tex2D (_ControlXP, UV) * 2 - 1);
 		float4 splat_control2 = saturate(tex2D (_Control2XP, UV) * 2 - 1);
-		//fixed4 col = fixed4(0,0,0,0);
-		;
+
 
 		float4 col = tex2Dproj( _MyGrabTexture, UNITY_PROJ_COORD(IN.grabUV));
 		half4 nrm;
+		//UV *= 0.01;
 		nrm = tex2D (_NormalLower, UV * _LowerScale);
 		nrm = lerp(nrm, tex2D (_Normal0, UV * _Splat0ScaleNormal), splat_control.r);
 		nrm =  lerp(nrm, tex2D (_Normal1, UV * _Splat1ScaleNormal), splat_control.g);
@@ -254,10 +254,11 @@ SubShader {
 		nrm =  lerp(nrm, tex2D (_Normal7, UV * _Splat7ScaleNormal), splat_control2.a);
 
 
-		//nrm = normalize(nrm.rgb);
-		o.Normal = UnpackNormal(nrm);
+		//nrm = tex2D (_NormalLower, UV * 1000);
+		//nrm.rgb = normalize(nrm.rgb);
+		o.Normal = nrm;
 
-				if(_Slope > 0){
+		if(_Slope > 0){
 			if(IN.worldPos.y < _WaterLevel){
 				if(IN.SlopeLerp > 0.75) col.rgb = half3(0,0.4,1);
 				else col.rgb = half3(0.6,0,1);

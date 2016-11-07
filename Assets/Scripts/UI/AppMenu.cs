@@ -38,7 +38,11 @@ public class AppMenu : MonoBehaviour {
 	public void MenuButton(string func){
 		if(!MenuOpen) return;
 		switch(func){
-			case "NewMap":
+		case "NewMap":
+			MapHelper.Map = false;
+			MapHelper.OpenComposition(0);
+			break;
+		case "Open":
 			MapHelper.Map = false;
 			MapHelper.OpenComposition(0);
 			break;
@@ -56,10 +60,10 @@ public class AppMenu : MonoBehaviour {
 			Symmetry.SetActive(true);
 			break;
 		case "Grid":
-			MapHelper.Loader.HeightmapControler.ToogleGrid(GridToggle.isOn);
+			MapLuaParser.Current.HeightmapControler.ToogleGrid(GridToggle.isOn);
 			break;
 		case "Slope":
-			MapHelper.Loader.HeightmapControler.ToogleSlope(SlopeToggle.isOn);
+			MapLuaParser.Current.HeightmapControler.ToogleSlope(SlopeToggle.isOn);
 			break;
 		}
 	}

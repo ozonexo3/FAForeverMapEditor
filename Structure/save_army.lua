@@ -1,24 +1,20 @@
         {
-            personality = '',
-            plans = '',
-            color = 0,
-            faction = 0,
+            personality = '[personality]',
+            plans = '[plans]',
+            color = '[color]',
+            faction = '[faction]',
             Economy = {
-                mass = 0,
-                energy = 0,
+                mass = '[mass]',
+                energy = '[energy]',
             },
             Alliances = {
+			[Alliances]
             },
             ['Units'] = GROUP {
-                orders = '',
-                platoon = '',
+                orders = '[armyorders]',
+                platoon = '[armyplatoon]',
                 Units = {
-                    ['INITIAL'] = GROUP {
-                        orders = '',
-                        platoon = '',
-                        Units = {
-                        },
-                    },
+[armyunits]
                 },
             },
             PlatoonBuilders = {

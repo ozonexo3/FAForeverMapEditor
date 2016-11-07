@@ -6,6 +6,6 @@
                     ['resource'] = BOOLEAN( true ),
                     ['type'] = STRING( 'Hydrocarbon' ),
                     ['prop'] = STRING( '/env/common/props/markers/M_Hydrocarbon_prop.bp' ),
-                    ['orientation'] = VECTOR3( 0, -0, 0 ),
+['orientation']
 ['position']
                 },

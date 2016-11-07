@@ -5,7 +5,7 @@ using System.Collections;
 public class EditorVersion : MonoBehaviour {
 
 	void Start () {
-		GetComponent<Text>().text = "v0.421 Alpha";
+		GetComponent<Text>().text = "v0.423 Alpha";
 	}
 
 }
