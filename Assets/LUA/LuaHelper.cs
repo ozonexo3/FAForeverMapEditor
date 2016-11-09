@@ -51,6 +51,7 @@ public class LuaHelper : MonoBehaviour {
 			return Data [key].ToString();
 		}
 
+<<<<<<< HEAD
 		public string[] GetStringArrayValue(string key){
 			if (Data [key] == null)
 				return new string[0];
@@ -73,10 +74,14 @@ public class LuaHelper : MonoBehaviour {
 		public int GetIntValue(string key){
 			if (Data [key] == null)
 				return 0;
+=======
+		public int GetIntValue(string key){
+>>>>>>> origin/master
 			return int.Parse(Data [key].ToString());
 		}
 
 		public float GetFloatValue(string key){
+<<<<<<< HEAD
 			if (Data [key] == null)
 				return 0;
 			return float.Parse(Data [key].ToString(), System.Globalization.CultureInfo.InvariantCulture.NumberFormat);
@@ -91,6 +96,11 @@ public class LuaHelper : MonoBehaviour {
 			return MyColor;
 		}
 
+=======
+			return float.Parse(Data [key].ToString(), System.Globalization.CultureInfo.InvariantCulture.NumberFormat);
+		}
+
+>>>>>>> origin/master
 		public void GetVector3Value(string key, out Vector3 TargetVector){
 			LuaTable MarkerPos = Data[key] as LuaTable;
 			TargetVector = Vector3.zero;
@@ -117,12 +127,15 @@ public class LuaHelper : MonoBehaviour {
 	public static void ReadSpawnWithArmy(out MapLuaParser.armys ArmyValue, LHTable ReadTable){
 		string SpawnName = ReadTable.GetStringValue ("SpawnWithArmy");
 
+<<<<<<< HEAD
 		//Debug.Log (SpawnName);
 
 		if (SpawnName.Contains ("ARMY") && !SpawnName.Contains ("ARMY_")) {
 			SpawnName = SpawnName.Replace ("ARMY", "ARMY_");
 		}
 
+=======
+>>>>>>> origin/master
 		switch(SpawnName){
 		case "ARMY_1":
 			ArmyValue = MapLuaParser.armys.ARMY1;
@@ -160,6 +173,7 @@ public class LuaHelper : MonoBehaviour {
 		case "ARMY_12":
 			ArmyValue = MapLuaParser.armys.ARMY12;
 			break;
+<<<<<<< HEAD
 		case "ARMY_13":
 			ArmyValue = MapLuaParser.armys.ARMY13;
 			break;
@@ -172,6 +186,8 @@ public class LuaHelper : MonoBehaviour {
 		case "ARMY_16":
 			ArmyValue = MapLuaParser.armys.ARMY16;
 			break;
+=======
+>>>>>>> origin/master
 		default:
 			ArmyValue = MapLuaParser.armys.none;
 			break;

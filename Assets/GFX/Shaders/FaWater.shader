@@ -21,7 +21,11 @@ Shader "MapEditor/FaWater" {
    		Offset 1000, 0
 	    GrabPass 
 	     {
+<<<<<<< HEAD
 	     "_WaterGrabTexture"
+=======
+	     "_MyGrabTexture2"
+>>>>>>> origin/master
 	     } 
         Pass {
 			Offset 0, 0
@@ -62,7 +66,11 @@ Shader "MapEditor/FaWater" {
 			float2 normal4Movement = float2(0.0005, 0.0009);
 			
 			//*********** End Water Params
+<<<<<<< HEAD
 			sampler2D _WaterGrabTexture;
+=======
+			sampler2D _MyGrabTexture2;
+>>>>>>> origin/master
 
 
 		    struct vertexInput {
@@ -144,7 +152,11 @@ Shader "MapEditor/FaWater" {
 			    float2 screenPos = UNITY_PROJ_COORD(i.mScreenPos.xy);
 			    
    				// calculate the background pixel
+<<<<<<< HEAD
    				float4 backGroundPixels = tex2D( _WaterGrabTexture, UNITY_PROJ_COORD(i.GrabPos) );
+=======
+   				float4 backGroundPixels = tex2D( _MyGrabTexture2, UNITY_PROJ_COORD(i.GrabPos) );
+>>>>>>> origin/master
     			float mask = saturate(backGroundPixels.a * 255);
 		    
 		        // calculate the normal we will be using for the water surface
@@ -175,7 +187,11 @@ Shader "MapEditor/FaWater" {
 			    refractionPos -=  0.015 * N.xz * 10;
 		    	
 		    	// calculate the refract pixel, corrected for fetching a non-refractable pixel
+<<<<<<< HEAD
 			    float4 refractedPixels = tex2D( _WaterGrabTexture, UNITY_PROJ_COORD(i.GrabPos));
+=======
+			    float4 refractedPixels = tex2D( _MyGrabTexture2, UNITY_PROJ_COORD(i.GrabPos));
+>>>>>>> origin/master
 			    // because the range of the alpha value that we use for the water is very small
 			    // we multiply by a large number and then saturate
 			    // this will also help in the case where we filter to an intermediate value

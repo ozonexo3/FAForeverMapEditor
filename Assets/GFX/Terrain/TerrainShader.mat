@@ -244,6 +244,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - first:
+<<<<<<< HEAD
         name: _SplatNormal0
       second:
         m_Texture: {fileID: 0}
@@ -292,6 +293,8 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - first:
+=======
+>>>>>>> origin/master
         name: _SplatUpper
       second:
         m_Texture: {fileID: 0}
@@ -312,6 +315,7 @@ Material:
     m_Floats:
     - first:
         name: _AbyssLevel
+<<<<<<< HEAD
       second: 1.25
     - first:
         name: _Area
@@ -328,6 +332,24 @@ Material:
     - first:
         name: _AreaY
       second: 0.05
+=======
+      second: 0.25
+    - first:
+        name: _Area
+      second: 0
+    - first:
+        name: _AreaHeight
+      second: 102.4
+    - first:
+        name: _AreaWidht
+      second: 102.4
+    - first:
+        name: _AreaX
+      second: 0
+    - first:
+        name: _AreaY
+      second: 0
+>>>>>>> origin/master
     - first:
         name: _Brush
       second: 0
@@ -348,12 +370,17 @@ Material:
       second: 0
     - first:
         name: _GridCamDist
+<<<<<<< HEAD
       second: 7.414286
+=======
+      second: 0.10851415
+>>>>>>> origin/master
     - first:
         name: _GridScale
       second: 102.4
     - first:
         name: _LightingMultiplier
+<<<<<<< HEAD
       second: 1.27
     - first:
         name: _LowerScale
@@ -361,6 +388,15 @@ Material:
     - first:
         name: _LowerScaleNormal
       second: 16.449799
+=======
+      second: 1.43
+    - first:
+        name: _LowerScale
+      second: 256
+    - first:
+        name: _LowerScaleNormal
+      second: 341.33334
+>>>>>>> origin/master
     - first:
         name: _Shininess
       second: 0.03
@@ -369,6 +405,7 @@ Material:
       second: 0
     - first:
         name: _Splat0Scale
+<<<<<<< HEAD
       second: 37.57798
     - first:
         name: _Splat0ScaleNormal
@@ -376,11 +413,21 @@ Material:
     - first:
         name: _Splat1Scale
       second: 585.1429
+=======
+      second: 170.66667
+    - first:
+        name: _Splat0ScaleNormal
+      second: 170.66667
+    - first:
+        name: _Splat1Scale
+      second: 256
+>>>>>>> origin/master
     - first:
         name: _Splat1ScaleNormal
       second: 256
     - first:
         name: _Splat2Scale
+<<<<<<< HEAD
       second: 29.257143
     - first:
         name: _Splat2ScaleNormal
@@ -397,6 +444,24 @@ Material:
     - first:
         name: _Splat4ScaleNormal
       second: 83.591835
+=======
+      second: 102.4
+    - first:
+        name: _Splat2ScaleNormal
+      second: 99.41747
+    - first:
+        name: _Splat3Scale
+      second: 256
+    - first:
+        name: _Splat3ScaleNormal
+      second: 256
+    - first:
+        name: _Splat4Scale
+      second: 256
+    - first:
+        name: _Splat4ScaleNormal
+      second: 256
+>>>>>>> origin/master
     - first:
         name: _Splat5Scale
       second: 256
@@ -417,7 +482,11 @@ Material:
       second: 256
     - first:
         name: _UpperScale
+<<<<<<< HEAD
       second: 8
+=======
+      second: 14.733813
+>>>>>>> origin/master
     - first:
         name: _UpperScaleNormal
       second: 1024
@@ -426,7 +495,11 @@ Material:
       second: 1
     - first:
         name: _WaterLevel
+<<<<<<< HEAD
       second: 2
+=======
+      second: 1.75
+>>>>>>> origin/master
     m_Colors:
     - first:
         name: _Abyss
@@ -439,13 +512,24 @@ Material:
       second: {r: 0.22577855, g: 0.4590157, b: 0.5294118, a: 1}
     - first:
         name: _ShadowColor
+<<<<<<< HEAD
       second: {r: 0.35, g: 0.35, b: 0.375, a: 1}
+=======
+      second: {r: 0.32, g: 0.305, b: 0.225, a: 1}
+>>>>>>> origin/master
     - first:
         name: _SpecColor
       second: {r: 0, g: 0, b: 0, a: 0}
     - first:
         name: _SunAmbience
+<<<<<<< HEAD
       second: {r: 0.2, g: 0.15, b: 0.1, a: 1}
     - first:
         name: _SunColor
       second: {r: 0.65, g: 0.5, b: 0.4, a: 1}
+=======
+      second: {r: 0, g: 0, b: 0, a: 1}
+    - first:
+        name: _SunColor
+      second: {r: 0.915, g: 0.645, b: 0.475, a: 1}
+>>>>>>> origin/master

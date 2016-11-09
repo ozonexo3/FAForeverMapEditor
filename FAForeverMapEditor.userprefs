@@ -2,17 +2,30 @@
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Unity.Instance.Unity Editor" />
   <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Ozone SCMAP Code\MapLuaParser.cs">
     <Files>
+<<<<<<< HEAD
       <File FileName="Assets\Scripts\Ozone SCMAP Code\MapLuaParser.cs" Line="789" Column="101" />
       <File FileName="Assets\LUA\LuaHelper.cs" Line="159" Column="10" />
       <File FileName="Assets\Scripts\Ozone SCMAP Code\ParsingStructureData.cs" Line="44" Column="11" />
+=======
+      <File FileName="Assets\Scripts\Ozone SCMAP Code\MapLuaParser.cs" Line="652" Column="39" />
+      <File FileName="Assets\LUA\LuaHelper.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\Ozone SCMAP Code\ParsingStructureData.cs" Line="1" Column="1" />
+>>>>>>> origin/master
       <File FileName="Assets\Scripts\Ozone SCMAP Code\CameraControler.cs" Line="1" Column="1" />
       <File FileName="Assets\Scripts\Ozone SCMAP Code\ScmapEditor.cs" Line="1" Column="1" />
       <File FileName="Assets\Scripts\UI\Windows\SearchMapPopup.cs" Line="1" Column="1" />
       <File FileName="Assets\Scripts\UI\Lists\MapSearchListField.cs" Line="1" Column="1" />
+<<<<<<< HEAD
+=======
+      <File FileName="Assets\Scripts\HazardX SCMAP Code\Prop.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\HazardX SCMAP Code\Map.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\HazardX SCMAP Code\BinaryReader.cs" Line="1" Column="1" />
+>>>>>>> origin/master
       <File FileName="Assets\Scripts\Common\EditorVersion.cs" Line="1" Column="1" />
       <File FileName="Assets\Editor\BuildSettings.cs" Line="1" Column="1" />
       <File FileName="Assets\Scripts\Ozone SCMAP Code\GamedataBlueprints.cs" Line="1" Column="1" />
       <File FileName="Assets\Scripts\UI\Tools\PropsReader.cs" Line="1" Column="1" />
+<<<<<<< HEAD
       <File FileName="Assets\Scripts\Undo\HistoryObjects\HistoryMarkersChange.cs" Line="1" Column="1" />
       <File FileName="Assets\Scripts\Undo\Undo.cs" Line="1" Column="1" />
       <File FileName="Assets\Scripts\UI\Tools\EditingMarkers.cs" Line="1" Column="1" />
@@ -22,6 +35,8 @@
       <File FileName="Assets\Scripts\Tes\DDSReader.cs" Line="1" Column="1" />
       <File FileName="Assets\Scripts\Tes\Texture2DInfo.cs" Line="1" Column="1" />
       <File FileName="Assets\GFX\Shaders\FaTerrainShader.shader" Line="393" Column="6" />
+=======
+>>>>>>> origin/master
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
