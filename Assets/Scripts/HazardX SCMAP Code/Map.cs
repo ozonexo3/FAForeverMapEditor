@@ -479,20 +479,13 @@ public class Map
 			try{
 	            int PropCount = _with1.ReadInt32();
 				Debug.Log ("PropCount " + PropCount + ", " + VersionMinor );
-<<<<<<< HEAD
 				for (int i = 0; i < PropCount; i++)
-=======
-	            for (int i = 0; i < 8; i++)
->>>>>>> origin/master
 	            {
 	                Prop Prop = new Prop();
 	                Prop.Load(Stream);
 	                Props.Add(Prop);
-<<<<<<< HEAD
 					//Debug.Log(Prop.BlueprintPath);
-=======
-					Debug.Log(Prop.BlueprintPath);
->>>>>>> origin/master
+
 	            }
 			}
 			catch{

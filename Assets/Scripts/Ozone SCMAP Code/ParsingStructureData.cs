@@ -32,13 +32,10 @@ public class ParsingStructureData : MonoBehaviour {
 		return "STRING( '" + value + "' )";
 	}
 
-<<<<<<< HEAD
 	public static string ToLuaFloatVaue(string value){
 		return "FLOAT( " + value + " )";
 	}
-
-=======
->>>>>>> origin/master
+		
 	public static string ToLuaBooleanVaue(bool value){
 		return "BOOLEAN( " + (value?("true"):("false")) + " )";
 	}
@@ -50,7 +47,6 @@ public class ParsingStructureData : MonoBehaviour {
 	public static string ToLuaSimpleVector3Value(Vector3 value){
 		return value.x.ToString () + ", " + value.y.ToString () + ", " + value.z.ToString ();
 	}
-<<<<<<< HEAD
 
 	public static string ToFloatString(float value){
 		return value.ToString ("F6");
@@ -59,6 +55,4 @@ public class ParsingStructureData : MonoBehaviour {
 	public static string ToColorString(Color value){
 		return ColorUtility.ToHtmlStringRGBA (value).ToLower ();
 	}
-=======
->>>>>>> origin/master
 }

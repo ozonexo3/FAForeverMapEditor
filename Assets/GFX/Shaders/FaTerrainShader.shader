@@ -232,11 +232,6 @@ SubShader {
 		float2 UV = IN.uv_Control * fixed2(1, -1);
 		float4 splat_control = saturate(tex2D (_ControlXP, UV) * 2 - 1);
 		float4 splat_control2 = saturate(tex2D (_Control2XP, UV) * 2 - 1);
-<<<<<<< HEAD
-=======
-
->>>>>>> origin/master
-
 
 		float4 col = tex2Dproj( _MyGrabTexture3, UNITY_PROJ_COORD(IN.grabUV));
 		half4 nrm;
@@ -254,7 +249,6 @@ SubShader {
 
 
 		//nrm = tex2D (_NormalLower, UV * 1000);
-<<<<<<< HEAD
 		//nrm.rg *= 1;
 		nrm.b = 1;
 		//nrm.rgb = UnpackNormal(nrm);
@@ -263,37 +257,6 @@ SubShader {
 		nrm.rgb = normalize(nrm.rgb);
 		o.Normal = nrm;
 
-=======
-		//nrm.rgb = normalize(nrm.rgb);
-		o.Normal = nrm;
-
-		if(_Slope > 0){
-			if(IN.worldPos.y < _WaterLevel){
-				if(IN.SlopeLerp > 0.75) col.rgb = half3(0,0.4,1);
-				else col.rgb = half3(0.6,0,1);
-			}
-			else if(IN.SlopeLerp > 0.99) col.rgb = half3(0,0.8,0);
-			else if(IN.SlopeLerp > 0.85) col.rgb = half3(0.5,1,0);
-			else col.rgb = half3(1,0,0);
-			col.rgb = lerp(half3(1,0,0), half3(0,1,0), IN.SlopeLerp);
-		}
-		
-		if(_Grid > 0){
-			fixed4 GridColor = tex2D (_GridTexture, IN.uv_Control * _GridScale - float2(-0.00, -0.00));
-			fixed4 GridFinal = fixed4(0,0,0,GridColor.a);
-			if(_GridCamDist < 1){
-				GridFinal.rgb = lerp(GridFinal.rgb, fixed3(1,1,1), GridColor.r * lerp(1, 0, _GridCamDist));
-				GridFinal.rgb = lerp(GridFinal.rgb, fixed3(0,1,0), GridColor.g * lerp(1, 0, _GridCamDist));
-				GridFinal.rgb = lerp(GridFinal.rgb, fixed3(0,1,0), GridColor.b * lerp(0, 1, _GridCamDist));
-			}
-			else{
-			GridFinal.rgb = lerp(GridFinal.rgb, fixed3(0,1,0), GridColor.b);
-			}
-			  
-			col.rgb = lerp(col.rgb, GridFinal.rgb, GridColor.a);
-			o.Emission = GridFinal * GridColor.a;;
-		}
->>>>>>> origin/master
 
 
 		if(_Water > 0) o.Albedo = ApplyWaterColor(WaterDepth, col.rgb);	

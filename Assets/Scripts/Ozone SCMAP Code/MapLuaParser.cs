@@ -132,17 +132,13 @@ public class MapLuaParser : MonoBehaviour {
 	[System.Serializable]
 	public class SaveArmy{
 		public string Name = "";
-<<<<<<< HEAD
 		public int ArmysOffset = 0;
-=======
->>>>>>> origin/master
 		public string personality = "";
 		public string plans = "";
 		public int color = 0;
 		public int faction = 0;
 		public int EconomyMass = 0;
 		public int EconomyEnergy = 0;
-<<<<<<< HEAD
 		public string[] Alliances = new string[0];
 		public string UnitsOrders = "";
 		public string UnitsPlatoon = "";
@@ -166,14 +162,6 @@ public class MapLuaParser : MonoBehaviour {
 			PlatoonBuilders_NextBuilderId = 0;
 			PlatoonBuilders_Builders = new List<string>();
 		}*/
-=======
-		public string Alliances = "";
-		public string UnitsOrders = "";
-		public string UnitsPlatoon = "";
-		public List<UnitGroup> Units;
-		public int PlatoonBuilders_NextBuilderId = 0;
-		public List<string> PlatoonBuilders_Builders = new List<string>();
->>>>>>> origin/master
 	}
 
 	[System.Serializable]
@@ -222,16 +210,12 @@ public class MapLuaParser : MonoBehaviour {
 	}
 	#endregion
 
-<<<<<<< HEAD
 	[System.Serializable]
 	public class customprop
 	{
 		public string key;
 		public string value;
 	}
-=======
-
->>>>>>> origin/master
 
 	void Awake(){
 		Current = this;
@@ -462,12 +446,6 @@ public class MapLuaParser : MonoBehaviour {
 		// LoadMarkers
 		#region Load Markers
 		//int MarkersCount = save.GetTable("Scenario.MasterChain._MASTERCHAIN_.Markers").Values.Count;
-<<<<<<< HEAD
-=======
-		int MassCount = 0;
-		int HydroCount = 0;
-		int SiCount = 0;
->>>>>>> origin/master
 
 		Mexes = new List<Mex>();
 		Hydros = new List<Hydro>();
@@ -491,11 +469,8 @@ public class MapLuaParser : MonoBehaviour {
 			Vector3 MarkerRotParsed = Vector3.zero;
 			MarkerTable.GetVector3Value("orientation", out MarkerRotParsed);
 
-<<<<<<< HEAD
 			string TypeOfMarker = MarkerTable.GetStringValue("type");
-=======
-			string TypeOfMarker = MarkersTable.GetStringValue("type");
->>>>>>> origin/master
+
 			if(TypeOfMarker == "Mass"){
 				Mex newMex = new Mex();
 				newMex.name = MarkersTable.Keys[m];
@@ -510,7 +485,6 @@ public class MapLuaParser : MonoBehaviour {
 			else if(TypeOfMarker == "Hydrocarbon"){
 				Hydro NewHydro = new Hydro();
 				NewHydro.name = MarkersTable.Keys[m];
-<<<<<<< HEAD
 
 				NewHydro.size = MarkerTable.GetFloatValue("size");
 				NewHydro.amount = MarkerTable.GetFloatValue("amount");
@@ -519,9 +493,6 @@ public class MapLuaParser : MonoBehaviour {
 
 				NewHydro.color = MarkerTable.GetColorValue("color");
 
-=======
-				
->>>>>>> origin/master
 				NewHydro.position = HeightmapControler.MapPosInWorld(MarkerPosParsed);
 				NewHydro.orientation = MarkerRotParsed;
 
@@ -532,12 +503,9 @@ public class MapLuaParser : MonoBehaviour {
 			else if(MarkersTable.Keys[m].Contains("ARMY_")){
 				Army NewArmy = new Army();
 				NewArmy.name = MarkersTable.Keys[m];
-<<<<<<< HEAD
 
 				NewArmy.Id = int.Parse(MarkersTable.Keys[m].Replace("ARMY_", ""));
-=======
->>>>>>> origin/master
-			
+
 				NewArmy.position = HeightmapControler.MapPosInWorld(MarkerPosParsed);
 				NewArmy.orientation = MarkerRotParsed;
 
@@ -554,7 +522,6 @@ public class MapLuaParser : MonoBehaviour {
 
 				// HINT
 				NewMarker.hintValue = MarkerTable.GetStringValue("hint");
-<<<<<<< HEAD
 				NewMarker.hint = MarkerTable.GetBoolValue("hint");
 
 				// GRAPH
@@ -569,22 +536,7 @@ public class MapLuaParser : MonoBehaviour {
 					//Color MyColor = Color.white;
 					//ColorUtility.TryParseHtmlString (MarkerTable.GetStringValue("color"), out MyColor);
 					NewMarker.Kolor = MarkerTable.GetColorValue("color");
-=======
-				NewMarker.hint = (NewMarker.hintValue == "True")?true:false;
 
-				// GRAPH
-				NewMarker.graph = MarkerTable.GetStringValue("graph");
-
-				// adjacentTo
-				NewMarker.adjacentTo = MarkerTable.GetStringValue("adjacentTo");
-
-
-				// Color
-				if (!string.IsNullOrEmpty(MarkerTable.GetStringValue("color"))) {
-					Color MyColor = Color.white;
-					ColorUtility.TryParseHtmlString (MarkerTable.GetStringValue("color"), out MyColor);
-					NewMarker.Kolor = MyColor;
->>>>>>> origin/master
 				} else
 					NewMarker.Kolor = Color.white;
 				
@@ -611,11 +563,8 @@ public class MapLuaParser : MonoBehaviour {
 			SaveArmy NewArmy = new SaveArmy();
 			NewArmy.Name = ArmiesTable.Keys[m];
 
-<<<<<<< HEAD
 			AddSaveArmyMarker(NewArmy.Name);
 
-=======
->>>>>>> origin/master
 			NewArmy.personality = ArmyTable.GetStringValue("personality");
 			NewArmy.plans = ArmyTable.GetStringValue("plans");
 			NewArmy.color = ArmyTable.GetIntValue("color");
@@ -625,11 +574,8 @@ public class MapLuaParser : MonoBehaviour {
 			NewArmy.EconomyMass = EconomyTable.GetIntValue("mass");
 			NewArmy.EconomyEnergy = EconomyTable.GetIntValue("energy");
 
-<<<<<<< HEAD
 			NewArmy.Alliances = ArmyTable.GetStringArrayValue("Alliances");
-=======
-			NewArmy.Alliances = ArmyTable.GetStringValue("Alliances");
->>>>>>> origin/master
+
 
 			// Get units
 
@@ -765,7 +711,6 @@ public class MapLuaParser : MonoBehaviour {
 			}
 		}
 
-<<<<<<< HEAD
 		string CustomPropsCode = "";
 		for (int i = 0; i < ScenarioData.CustomProps.Count; i++) {
 			CustomPropsCode += "\n";
@@ -773,8 +718,6 @@ public class MapLuaParser : MonoBehaviour {
 		}
 
 		SaveData = SaveData.Replace ("[customprops]", CustomPropsCode);
-=======
->>>>>>> origin/master
 
 		string MapPath = PlayerPrefs.GetString("MapsPath", "maps/");
 		string ScenarioFilePath = MapPath + FolderName + "/" + ScenarioFileName + ".lua";
@@ -1083,13 +1026,8 @@ public class MapLuaParser : MonoBehaviour {
 					SaveData += "        ['ARMY_" + (a + 1).ToString() + "'] =  \n";
 					SaveData += ArmyStructure;
 					SaveData += "\n";
-<<<<<<< HEAD
 				}
 				//SaveData += line;
-=======
-				}*/
-				SaveData += line;
->>>>>>> origin/master
 			}
 			else{
 				SaveData += line;
@@ -1158,7 +1096,7 @@ public class MapLuaParser : MonoBehaviour {
 		SaveData = SaveData.Replace ("[ARMYS]", SaveArmysData);
 
 
-
+		/*
 		string ArmyUnitsStructure = LuaHelper.GetStructureText ("save_army.lua");
 		string ArmyUnitGruopStructure = LuaHelper.GetStructureText ("save_armyunits.lua");
 		string ArmyUnitStructure = LuaHelper.GetStructureText ("save_armyunit.lua");
@@ -1211,7 +1149,7 @@ public class MapLuaParser : MonoBehaviour {
 			NewArmySave = NewArmySave.Replace ("[armyunits]", AllUnitGroups);
 		}
 		SaveData = SaveData.Replace ("[armies]", SaveArmysData);
-
+*/
 
 		string MapPath = PlayerPrefs.GetString("MapsPath", "maps/");
 		string SaveFilePath = ScenarioData.SaveLua.Replace("/maps/", MapPath);
@@ -1477,7 +1415,6 @@ public class MapLuaParser : MonoBehaviour {
 		}
 	}
 
-<<<<<<< HEAD
 	public void AddSaveArmyMarker(string name){
 		for (int i = 0; i < ARMY_.Count; i++) {
 			if (ARMY_ [i].name == name)
@@ -1514,8 +1451,6 @@ public class MapLuaParser : MonoBehaviour {
 		}
 		return ToReturn;
 	}
-
-=======
->>>>>>> origin/master
+		
 	#endregion
 }
