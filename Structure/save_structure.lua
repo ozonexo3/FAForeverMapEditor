@@ -15,7 +15,7 @@ Scenario = {
     --[[																				]]--
     Areas = {
         ['AREA_1'] = {
-[*AREA*]
+[AREA]
         },
     },
     --[[																				]]--
@@ -24,12 +24,12 @@ Scenario = {
     MasterChain = {
         ['_MASTERCHAIN_'] = {
             Markers = {
-[*MARKERS*]
+[MARKERS]
             },
         },
     },
     Chains = {
-[*CHAINS*]
+[CHAINS]
     },
     --[[																				]]--
     --[[  Orders																	]]--
@@ -52,6 +52,6 @@ Scenario = {
     next_unit_id = '2',
     Armies = 
     {
-[*ARMYS*]
+[ARMYS]
     },
 }

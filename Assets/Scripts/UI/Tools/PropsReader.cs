@@ -82,6 +82,8 @@ public class PropsReader : MonoBehaviour {
 		for(int i = 0; i < AllPropsTypes.Count; i++){
 			//if(i > 0) return;
 			string[] BlueprintData = GamedataBlueprints.GetBlueprint("env.scd", AllPropsTypes[i].Blueprint);
+			if (BlueprintData == null)
+				continue;
 			if(BlueprintData.Length > 0){
 				for(int l = 0; l < BlueprintData.Length; l++){
 					if(BlueprintData[l].Contains("ReclaimMassMax")){
@@ -107,7 +109,7 @@ public class PropsReader : MonoBehaviour {
 				GameObject NewListObject = Instantiate(PropGroupObject) as GameObject;
 				NewListObject.transform.SetParent(Pivot, false);
 				NewListObject.transform.localScale = Vector3.one;
-				NewListObject.GetComponent<PropData>().SetPropList(AllPropsTypes[i].HelpText, AllPropsTypes[i].MassReclaim, AllPropsTypes[i].EnergyReclaim, AllPropsTypes[i].Props.Count);
+				NewListObject.GetComponent<PropData>().SetPropList(i, AllPropsTypes[i].HelpText, AllPropsTypes[i].MassReclaim, AllPropsTypes[i].EnergyReclaim, AllPropsTypes[i].Props.Count, AllPropsTypes[i].Blueprint);
 				TotalMassCount += AllPropsTypes[i].Props.Count * AllPropsTypes[i].MassReclaim;
 				TotalEnergyCount += AllPropsTypes[i].Props.Count * AllPropsTypes[i].EnergyReclaim;
 			}

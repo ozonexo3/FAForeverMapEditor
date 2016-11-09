@@ -46,14 +46,14 @@ Properties {
 	_Splat7Scale ("Splat8 Level", Range (1, 1024)) = 10
 
 	// set by terrain engine
-	_Normal0 ("Normal 1 (A)", 2D) = "bump" {}
-	_Normal1 ("Normal 2 (B)", 2D) = "bump" {}
-	_Normal2 ("Normal 3 (G)", 2D) = "bump" {}
-	_Normal3 ("Normal 4 (R)", 2D) = "bump" {}
-	_Normal4 ("Normal 5 (A)", 2D) = "bump" {}
-	_Normal5 ("Normal 6 (B)", 2D) = "bump" {}
-	_Normal6 ("Normal 7 (G)", 2D) = "bump" {}
-	_Normal7 ("Normal 8 (R)", 2D) = "bump" {}
+	_SplatNormal0 ("Normal 1 (A)", 2D) = "bump" {}
+	_SplatNormal1 ("Normal 2 (B)", 2D) = "bump" {}
+	_SplatNormal2 ("Normal 3 (G)", 2D) = "bump" {}
+	_SplatNormal3 ("Normal 4 (R)", 2D) = "bump" {}
+	_SplatNormal4 ("Normal 5 (A)", 2D) = "bump" {}
+	_SplatNormal5 ("Normal 6 (B)", 2D) = "bump" {}
+	_SplatNormal6 ("Normal 7 (G)", 2D) = "bump" {}
+	_SplatNormal7 ("Normal 8 (R)", 2D) = "bump" {}
 
 	_Splat0ScaleNormal ("Splat1 Normal Level", Range (1, 1024)) = 10
 	_Splat1ScaleNormal ("Splat2 Normal Level", Range (1, 1024)) = 10
@@ -95,7 +95,6 @@ SubShader {
 	Tags {
 		"RenderType" = "Opaque"
 	}
-	Offset 0, 0
 	CGPROGRAM
 	#pragma surface surf Empty noambient
 	#pragma target 3.0
@@ -153,11 +152,11 @@ SubShader {
 	ENDCG  
      GrabPass 
      {
-         "_MyGrabTexture"
+         "_MyGrabTexture3"
      }   
           
 	CGPROGRAM
-	#pragma surface surf SimpleLambert vertex:vert noambient fullforwardshadows addshadow nometa noforwardadd
+	#pragma surface surf SimpleLambert vertex:vert noambient fullforwardshadows addshadow nometa
 	//#pragma debug
 	#pragma target 4.0
 	#pragma exclude_renderers gles
@@ -173,14 +172,14 @@ SubShader {
 		UNITY_INITIALIZE_OUTPUT(Input,o);
 		v.tangent.xyz = cross(v.normal, float3(0,0,1));
 		v.tangent.w = -1;
-		//v.normal = float3(0, 0, 1);
+		//o.normal = v.normal;
 		o.SlopeLerp = dot(v.normal, half3(0,1,0));
 		 float4 hpos = mul (UNITY_MATRIX_MVP, v.vertex);
          o.grabUV = ComputeGrabScreenPos(hpos);
 		//v.color = _Abyss;
 	}
 
-	sampler2D _MyGrabTexture;
+	sampler2D _MyGrabTexture3;
 	sampler2D _WaterRam;
 	half _Shininess;
 	half _WaterLevel;
@@ -188,12 +187,7 @@ SubShader {
 	fixed4 _Abyss;
 	fixed4 _Deep;
 	int _Water;
-	int _Grid;
-	int _Slope;
 
-	half _GridScale;
-	half _GridCamDist;
-	sampler2D _GridTexture;
 
 	half _LightingMultiplier;
 	fixed4 _SunColor;
@@ -202,8 +196,9 @@ SubShader {
 
 	sampler2D _ControlXP;
 	sampler2D _Control2XP;
-	sampler2D _Normal0,_Normal1,_Normal2,_Normal3, _NormalLower;
-	sampler2D _Normal4,_Normal5,_Normal6,_Normal7;
+	sampler2D _SplatNormal3;
+	sampler2D _SplatNormal0, _SplatNormal1, _SplatNormal2, _NormalLower;
+	sampler2D _SplatNormal4, _SplatNormal5, _SplatNormal6, _SplatNormal7;
 	half _Splat0ScaleNormal, _Splat1ScaleNormal, _Splat2ScaleNormal, _Splat3ScaleNormal, _Splat4ScaleNormal, _Splat5ScaleNormal, _Splat6ScaleNormal, _Splat7ScaleNormal;
 
 	half _LowerScale;
@@ -237,56 +232,40 @@ SubShader {
 		float2 UV = IN.uv_Control * fixed2(1, -1);
 		float4 splat_control = saturate(tex2D (_ControlXP, UV) * 2 - 1);
 		float4 splat_control2 = saturate(tex2D (_Control2XP, UV) * 2 - 1);
-		//fixed4 col = fixed4(0,0,0,0);
-		;
 
-		float4 col = tex2Dproj( _MyGrabTexture, UNITY_PROJ_COORD(IN.grabUV));
+
+		float4 col = tex2Dproj( _MyGrabTexture3, UNITY_PROJ_COORD(IN.grabUV));
 		half4 nrm;
+		//UV *= 0.01;
 		nrm = tex2D (_NormalLower, UV * _LowerScale);
-		nrm = lerp(nrm, tex2D (_Normal0, UV * _Splat0ScaleNormal), splat_control.r);
-		nrm =  lerp(nrm, tex2D (_Normal1, UV * _Splat1ScaleNormal), splat_control.g);
-		nrm =  lerp(nrm, tex2D (_Normal2, UV * _Splat2ScaleNormal), splat_control.b);
-		nrm =  lerp(nrm, tex2D (_Normal3, UV * _Splat3ScaleNormal), splat_control.a);
+		nrm = lerp(nrm, tex2D (_SplatNormal0, UV * _Splat0ScaleNormal), splat_control.r);
+		nrm =  lerp(nrm, tex2D (_SplatNormal1, UV * _Splat1ScaleNormal), splat_control.g);
+		nrm =  lerp(nrm, tex2D (_SplatNormal2, UV * _Splat2ScaleNormal), splat_control.b);
+		nrm =  lerp(nrm, tex2D (_SplatNormal3, UV * _Splat3ScaleNormal), splat_control.a);
 
-		nrm = lerp(nrm, tex2D (_Normal4, UV * _Splat4ScaleNormal), splat_control2.r);
-		nrm =  lerp(nrm, tex2D (_Normal5, UV * _Splat5ScaleNormal), splat_control2.g);
-		nrm =  lerp(nrm, tex2D (_Normal6, UV * _Splat6ScaleNormal), splat_control2.b);
-		nrm =  lerp(nrm, tex2D (_Normal7, UV * _Splat7ScaleNormal), splat_control2.a);
+		nrm = lerp(nrm, tex2D (_SplatNormal4, UV * _Splat4ScaleNormal), splat_control2.r);
+		nrm =  lerp(nrm, tex2D (_SplatNormal5, UV * _Splat5ScaleNormal), splat_control2.g);
+		nrm =  lerp(nrm, tex2D (_SplatNormal6, UV * _Splat6ScaleNormal), splat_control2.b);
+		nrm =  lerp(nrm, tex2D (_SplatNormal7, UV * _Splat7ScaleNormal), splat_control2.a);
 
 
-		//nrm = normalize(nrm.rgb);
-		o.Normal = UnpackNormal(nrm);
+		//nrm = tex2D (_NormalLower, UV * 1000);
+		//nrm.rg *= 1;
+		nrm.b = 1;
+		//nrm.rgb = UnpackNormal(nrm);
+		nrm.rgb = nrm.rgb * 2 - half3(1, 1, 1);
+		//nrm.rg *= 3;
+		nrm.rgb = normalize(nrm.rgb);
+		o.Normal = nrm;
 
-				if(_Slope > 0){
-			if(IN.worldPos.y < _WaterLevel){
-				if(IN.SlopeLerp > 0.75) col.rgb = half3(0,0.4,1);
-				else col.rgb = half3(0.6,0,1);
-			}
-			else if(IN.SlopeLerp > 0.99) col.rgb = half3(0,0.8,0);
-			else if(IN.SlopeLerp > 0.85) col.rgb = half3(0.5,1,0);
-			else col.rgb = half3(1,0,0);
-			col.rgb = lerp(half3(1,0,0), half3(0,1,0), IN.SlopeLerp);
-		}
-		
-		if(_Grid > 0){
-			fixed4 GridColor = tex2D (_GridTexture, IN.uv_Control * _GridScale - float2(-0.00, -0.00));
-			fixed4 GridFinal = fixed4(0,0,0,GridColor.a);
-			if(_GridCamDist < 1){
-				GridFinal.rgb = lerp(GridFinal.rgb, fixed3(1,1,1), GridColor.r * lerp(1, 0, _GridCamDist));
-				GridFinal.rgb = lerp(GridFinal.rgb, fixed3(0,1,0), GridColor.g * lerp(1, 0, _GridCamDist));
-				GridFinal.rgb = lerp(GridFinal.rgb, fixed3(0,1,0), GridColor.b * lerp(0, 1, _GridCamDist));
-			}
-			else{
-			GridFinal.rgb = lerp(GridFinal.rgb, fixed3(0,1,0), GridColor.b);
-			}
-			  
-			col.rgb = lerp(col.rgb, GridFinal.rgb, GridColor.a);
-			o.Emission = GridFinal * GridColor.a;;
-		}
 
 
 		if(_Water > 0) o.Albedo = ApplyWaterColor(WaterDepth, col.rgb);	
 		else o.Albedo = col;
+
+		//o.Albedo = 0.5;
+		//o.Emission = tex2D (_SplatNormal3, UV * 10 );
+		//o.Emission = nrm;
 
 		o.Gloss = 0;
 		o.Specular = 0;
@@ -295,6 +274,65 @@ SubShader {
 
 
 	ENDCG  
+
+	Blend One One
+	CGPROGRAM
+	#pragma surface surf Lambert nofog
+	
+		struct Input {
+			float2 uv_Control : TEXCOORD0;
+			float3 worldPos;
+			float SlopeLerp;
+		};
+
+		void vert (inout appdata_full v, out Input o){
+			UNITY_INITIALIZE_OUTPUT(Input,o);
+			//v.tangent.xyz = cross(v.normal, float3(0,0,1));
+			//v.tangent.w = -1;
+			o.SlopeLerp = dot(v.normal, half3(0,1,0));
+		}
+
+
+		half _GridScale;
+		half _GridCamDist;
+		sampler2D _GridTexture;
+		int _Grid;
+		int _Slope;
+		half _WaterLevel;
+
+		void surf (Input IN, inout SurfaceOutput o) {
+			o.Albedo = fixed4(0,0,0,1);
+			o.Emission = fixed4(0,0,0,0);
+
+			half4 col = half4(0,0,0,1);
+			if(_Slope > 0){
+				if(IN.worldPos.y < _WaterLevel){
+					if(IN.SlopeLerp > 0.75) col.rgb = half3(0,0.4,1);
+					else col.rgb = half3(0.6,0,1);
+				}
+				else if(IN.SlopeLerp > 0.99) col.rgb = half3(0,0.8,0);
+				else if(IN.SlopeLerp > 0.85) col.rgb = half3(0.5,1,0);
+				else col.rgb = half3(1,0,0);
+				col.rgb = lerp(half3(1,0,0), half3(0,1,0), IN.SlopeLerp);
+			}
+			
+			if(_Grid > 0){
+				fixed4 GridColor = tex2D (_GridTexture, IN.uv_Control * _GridScale - float2(-0.00, -0.00));
+				fixed4 GridFinal = fixed4(0,0,0,GridColor.a);
+				if(_GridCamDist < 1){
+					GridFinal.rgb = lerp(GridFinal.rgb, fixed3(1,1,1), GridColor.r * lerp(1, 0, _GridCamDist));
+					GridFinal.rgb = lerp(GridFinal.rgb, fixed3(0,1,0), GridColor.g * lerp(1, 0, _GridCamDist));
+					GridFinal.rgb = lerp(GridFinal.rgb, fixed3(0,1,0), GridColor.b * lerp(0, 1, _GridCamDist));
+				}
+				else{
+				GridFinal.rgb = lerp(GridFinal.rgb, fixed3(0,1,0), GridColor.b);
+				}
+				  
+				col.rgb = lerp(col.rgb, GridFinal.rgb, GridColor.a);
+				o.Emission = GridFinal * GridColor.a;
+			}
+		}
+        ENDCG
 
 	Blend One One
 	CGPROGRAM
@@ -343,6 +381,7 @@ SubShader {
 	half _AreaY;
 	half _AreaWidht;
 	half _AreaHeight;
+	half _GridScale;
 	
 		void surf (Input IN, inout SurfaceOutput o) {
 			o.Albedo = fixed4(0,0,0,1);
@@ -355,10 +394,10 @@ SubShader {
 				else if(IN.worldPos.x > _AreaWidht){
 				 	o.Emission = fixed4(0,0,0,1);
 				}
-				else if(IN.worldPos.z < _AreaY - 51.2){
+				else if(IN.worldPos.z < _AreaY - _GridScale){
 				 	o.Emission = fixed4(0,0,0,1);
 				}
-				else if(IN.worldPos.z > _AreaHeight - 51.2){
+				else if(IN.worldPos.z > _AreaHeight - _GridScale){
 				 	o.Emission = fixed4(0,0,0,1);
 				}
 			}

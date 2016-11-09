@@ -15,7 +15,7 @@ ScenarioInfo = {
 [*armies*]
 				},
             },
-            customprops = {
+            customprops = {[customprops]
             },
         },
     }

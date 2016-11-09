@@ -1,4 +1,4 @@
-['Mass1']
+['MassName']
                     ['size'] = FLOAT( 1.000000 ),
                     ['editorIcon'] = STRING( '/textures/editor/marker_mass.bmp' ),
 ['SpawnWithArmy']
@@ -7,6 +7,6 @@
                     ['resource'] = BOOLEAN( true ),
                     ['type'] = STRING( 'Mass' ),
                     ['prop'] = STRING( '/env/common/props/markers/M_Mass_prop.bp' ),
-                    ['orientation'] = VECTOR3( 0, -0, 0 ),
+['orientation']
 ['position']
                 },

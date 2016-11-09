@@ -4,7 +4,6 @@ using System.Collections;
 public class MapHelperGui : MonoBehaviour {
 
 	public 		bool 					MapLoaded;
-	public 		MapLuaParser 			Loader;
 	public		CameraControler			KameraKontroler;
 
 	public		bool					Map;
@@ -17,12 +16,13 @@ public class MapHelperGui : MonoBehaviour {
 
 	public		StartingScreen			StartScreen;
 	public		LastMapsPopup			LastMapsList;
+	public		SearchMapPopup 			SearchMap;
 
 	static int More = 1;
 
 	static string[] Args;
 	void Start(){
-		OpenComposition(0);
+		//OpenComposition(1);
 		Args = System.Environment.GetCommandLineArgs();
 		if(Args.Length > 0)
 		for(int i = 0; i < Args.Length; i++){
@@ -39,7 +39,7 @@ public class MapHelperGui : MonoBehaviour {
 			foreach(GameObject obj in Kompositions) obj.SetActive(false);
 			BackGround.SetActive(false);
 			LoadingPopup.SetActive(true);
-			Loader.HeightmapControler.WaterLevel.gameObject.SetActive(false);
+			MapLuaParser.Current.HeightmapControler.WaterLevel.gameObject.SetActive(false);
 			GetGamedataFile.MipmapBias = -0.9f;
 			StartCoroutine("RenderImageAndClose");
 		}
@@ -47,7 +47,7 @@ public class MapHelperGui : MonoBehaviour {
 
 
 	public IEnumerator RenderImageAndClose(){
-		var LoadScmapFile = Loader.StartCoroutine("ForceLoadMapAtPath", Args[4 + More]);
+		var LoadScmapFile = MapLuaParser.Current.StartCoroutine("ForceLoadMapAtPath", Args[4 + More]);
 		yield return LoadScmapFile;
 
 		foreach(GameObject obj in Kompositions) obj.SetActive(false);
@@ -68,13 +68,13 @@ public class MapHelperGui : MonoBehaviour {
 	public void ButtonFunction(string func){
 		switch(func){
 		case "LoadMap":
-			MoveLastMaps(Loader.ScenarioFileName, Loader.FolderName);
+			MoveLastMaps(MapLuaParser.Current.ScenarioFileName, MapLuaParser.Current.FolderName);
 			OpenComposition(1);
 			Map = true;
-			Loader.LoadFile();
+			MapLuaParser.Current.LoadFile();
 			break;
 		case "SearchMap":
-
+			SearchMap.CreateFolderList ();
 			break;
 		case "LastMaps":
 			Kompositions[2].SetActive(true);
@@ -85,8 +85,8 @@ public class MapHelperGui : MonoBehaviour {
 		case "LastMapSelect":
 			if(string.IsNullOrEmpty(PlayerPrefs.GetString("MapScenarioFile_" + LastMapsList.Selected, ""))) return;
 			Kompositions[2].SetActive(false);
-			Loader.ScenarioFileName = PlayerPrefs.GetString("MapScenarioFile_" + LastMapsList.Selected, "");  
-			Loader.FolderName = PlayerPrefs.GetString("MapFolder_" + LastMapsList.Selected, ""); 
+			MapLuaParser.Current.ScenarioFileName = PlayerPrefs.GetString("MapScenarioFile_" + LastMapsList.Selected, "");  
+			MapLuaParser.Current.FolderName = PlayerPrefs.GetString("MapFolder_" + LastMapsList.Selected, ""); 
 			StartScreen.UpdateFields();
 			break;
 		}
@@ -94,6 +94,7 @@ public class MapHelperGui : MonoBehaviour {
 
 	public void OpenComposition(int id){
 		foreach(GameObject obj in Kompositions){
+			if(obj)
 			if(obj.activeSelf) obj.SetActive(false);
 		}
 		Kompositions[id].SetActive(true);

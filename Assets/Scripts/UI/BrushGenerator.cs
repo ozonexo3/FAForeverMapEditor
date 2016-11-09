@@ -13,15 +13,9 @@ public class BrushGenerator : MonoBehaviour {
 	public static 		Texture2D 			RotatedBrush;
 	public static 		Texture2D[] 		PaintImage;
 	public static 		Vector3[]			PaintPositions;
-	public static		MapLuaParser		Scenario;
 	static 				Vector3 			BrushPos;
 	public static 		int 				LastSym = 0;
 
-
-	// Set static scenario for this script
-	public static void SetScenario(MapLuaParser NewScenario){
-		Scenario = NewScenario;
-	}
 
 	// Generate positions - need to be done before paint
 	public static void GenerateSymmetry(Vector3 Pos){
@@ -157,30 +151,30 @@ public class BrushGenerator : MonoBehaviour {
 //***************************** MATH
 
 	static Vector3 GetHorizonalSymetry(){
-		Vector3 MirroredPos = BrushPos - Scenario.MapCenterPoint;
+		Vector3 MirroredPos = BrushPos - MapLuaParser.Current.MapCenterPoint;
 		MirroredPos.x = -MirroredPos.x;
-		MirroredPos += Scenario.MapCenterPoint;
+		MirroredPos += MapLuaParser.Current.MapCenterPoint;
 		return MirroredPos;
 	}
 
 	static Vector3 GetVerticalSymetry(){
-		Vector3 MirroredPos = BrushPos - Scenario.MapCenterPoint;
+		Vector3 MirroredPos = BrushPos - MapLuaParser.Current.MapCenterPoint;
 		MirroredPos.z = -MirroredPos.z;
-		MirroredPos += Scenario.MapCenterPoint;
+		MirroredPos += MapLuaParser.Current.MapCenterPoint;
 		return MirroredPos;
 	}
 
 	static Vector3 GetHorizontalVerticalSymetry(){
-		Vector3 MirroredPos = BrushPos - Scenario.MapCenterPoint;
+		Vector3 MirroredPos = BrushPos - MapLuaParser.Current.MapCenterPoint;
 		MirroredPos.z = -MirroredPos.z;
 		MirroredPos.x = -MirroredPos.x;
-		MirroredPos += Scenario.MapCenterPoint;
+		MirroredPos += MapLuaParser.Current.MapCenterPoint;
 		return MirroredPos;
 	}
 
 	static Vector3 GetDiagonal1Symetry(){
-		Vector3 Origin = new Vector3(0, 0, - Scenario.ScenarioData.Size.y / 10f);
-		Vector3 Origin2 = new Vector3( Scenario.ScenarioData.Size.y / 10f, 0, 0);
+		Vector3 Origin = new Vector3(0, 0, - MapLuaParser.Current.ScenarioData.Size.y / 10f);
+		Vector3 Origin2 = new Vector3( MapLuaParser.Current.ScenarioData.Size.y / 10f, 0, 0);
 		Vector3 Point = new Vector3( BrushPos.x, 0, BrushPos.z);
 
 		Vector3 PointOfMirror = EditingMarkers.ClosestPointToLine(Origin, Origin2, Point);
@@ -195,7 +189,7 @@ public class BrushGenerator : MonoBehaviour {
 
 	static Vector3 GetDiagonal2Symetry(){
 		Vector3 Origin = new Vector3(0, 0, 0);
-		Vector3 Origin2 = new Vector3(Scenario.ScenarioData.Size.y / 10f, 0, -Scenario.ScenarioData.Size.y / 10f);
+		Vector3 Origin2 = new Vector3(MapLuaParser.Current.ScenarioData.Size.y / 10f, 0, -MapLuaParser.Current.ScenarioData.Size.y / 10f);
 		Vector3 Point = new Vector3( BrushPos.x, 0, BrushPos.z);
 
 		Vector3 PointOfMirror = EditingMarkers.ClosestPointToLine(Origin, Origin2, Point);
@@ -209,8 +203,8 @@ public class BrushGenerator : MonoBehaviour {
 	}
 
 	static Vector3 GetDiagonal3Symetry(){
-		Vector3 Origin = new Vector3(0, 0, - Scenario.ScenarioData.Size.y / 10f);
-		Vector3 Origin2 = new Vector3( Scenario.ScenarioData.Size.y / 10f, 0, 0);
+		Vector3 Origin = new Vector3(0, 0, - MapLuaParser.Current.ScenarioData.Size.y / 10f);
+		Vector3 Origin2 = new Vector3( MapLuaParser.Current.ScenarioData.Size.y / 10f, 0, 0);
 		Vector3 Point = new Vector3( BrushPos.x, 0, BrushPos.z);
 
 		Vector3 PointOfMirror = EditingMarkers.ClosestPointToLine(Origin, Origin2, Point);
@@ -224,7 +218,7 @@ public class BrushGenerator : MonoBehaviour {
 
 
 		Origin = new Vector3(0, 0, 0);
-		Origin2 = new Vector3(Scenario.ScenarioData.Size.y / 10f, 0, -Scenario.ScenarioData.Size.y / 10f);
+		Origin2 = new Vector3(MapLuaParser.Current.ScenarioData.Size.y / 10f, 0, -MapLuaParser.Current.ScenarioData.Size.y / 10f);
 		Point = new Vector3( MirroredPos.x, 0, MirroredPos.z);
 
 		PointOfMirror = EditingMarkers.ClosestPointToLine(Origin, Origin2, Point);
@@ -239,8 +233,8 @@ public class BrushGenerator : MonoBehaviour {
 	}
 
 	static Vector3 GetRotationSymetry(float angle){
-		Vector3 MirroredPos = BrushPos - Scenario.MapCenterPoint;
-		MirroredPos = EditingMarkers.RotatePointAroundPivot(BrushPos, Scenario.MapCenterPoint, angle);
+		Vector3 MirroredPos = BrushPos - MapLuaParser.Current.MapCenterPoint;
+		MirroredPos = EditingMarkers.RotatePointAroundPivot(BrushPos, MapLuaParser.Current.MapCenterPoint, angle);
 		return MirroredPos;
 	}
 

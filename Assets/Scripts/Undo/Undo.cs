@@ -110,6 +110,7 @@ public class Undo : MonoBehaviour {
 			Scenario.Mexes = HistoryNew.Mexes;
 			Scenario.Hydros = HistoryNew.Hydros;
 			Scenario.SiMarkers = HistoryNew.SiMarkers;
+			Scenario.SaveArmys = HistoryNew.SaveArmys;
 
 			EditMenu.EditMarkers.GenerateAllWorkingElements();
 			EditMenu.EditMarkers.AllMarkersList.UpdateList();
@@ -198,6 +199,7 @@ public class Undo : MonoBehaviour {
 			Scenario.Mexes = HistoryNew.Mexes;
 			Scenario.Hydros = HistoryNew.Hydros;
 			Scenario.SiMarkers = HistoryNew.SiMarkers;
+			Scenario.SaveArmys = HistoryNew.SaveArmys;
 			
 			EditMenu.EditMarkers.GenerateAllWorkingElements();
 			EditMenu.EditMarkers.AllMarkersList.UpdateList();
@@ -309,6 +311,7 @@ public class Undo : MonoBehaviour {
 		HistoryNew.Mexes = Scenario.Mexes;
 		HistoryNew.Hydros = Scenario.Hydros;
 		HistoryNew.SiMarkers = Scenario.SiMarkers;
+		HistoryNew.SaveArmys = Scenario.SaveArmys;
 		
 		CurrentStage = History.Count;
 	}
@@ -395,6 +398,7 @@ public class Undo : MonoBehaviour {
 		HistoryNew.Mexes = Scenario.Mexes;
 		HistoryNew.Hydros = Scenario.Hydros;
 		HistoryNew.SiMarkers = Scenario.SiMarkers;
+		HistoryNew.SaveArmys = Scenario.SaveArmys;
 		
 		CurrentStage = History.Count;
 	}

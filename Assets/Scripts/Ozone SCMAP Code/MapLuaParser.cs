@@ -11,6 +11,9 @@ using NLua;
 
 public class MapLuaParser : MonoBehaviour {
 
+	public static MapLuaParser Current;
+
+	#region Variables
 	[Header("Objects")]
 	public		MarkersRenderer	MarkerRend;
 	public		Editing			EditMenu;
@@ -41,23 +44,34 @@ public class MapLuaParser : MonoBehaviour {
 	public		List<int>		ArmiesTrash;
 	public		List<int>		AiTrash;
 
+	public		List<SaveArmy> 		SaveArmys = new List<SaveArmy>();
+
+	public		int MexTotalCount = 0;
+	public		int HydrosTotalCount = 0;
+	public		int SiTotalCount = 0;
 
 	//[HideInInspector]
 	public		Vector3			MapCenterPoint;
 
 	public		int				ScriptId = 0;
 
-	public		string			BackupPath;
-	public		string			StructurePath;
+	public static string			BackupPath;
+	public static string			StructurePath;
 
+	// LUA
+	Lua env;
+	Lua save;
 
+	#endregion
+
+	#region Classes
 	[System.Serializable]
 	public class Mex{
 		public		string		name;
 		public		Transform	Mark;
 		public		MarkerScript		Script;
 		public		Vector3		position;
-		public		Vector3		Orientation;
+		public		Vector3		orientation;
 		public		armys		SpawnWithArmy;
 	}
 
@@ -66,9 +80,23 @@ public class MapLuaParser : MonoBehaviour {
 		public		string		name;
 		public		Transform	Mark;
 		public		MarkerScript		Script;
+		public		float size = 3;
+		public		float amount = 100;
+		public		bool resource = true;
+		public		string prop = "/env/common/props/markers/M_Hydrocarbon_prop.bp";
+		public		Color color;
 		public		Vector3		position;
-		public		Vector3		Orientation;
+		public		Vector3		orientation;
 		public		armys		SpawnWithArmy;
+
+		public Hydro(){
+			size = 3;
+			amount = 100;
+			resource = true;
+			prop = "/env/common/props/markers/M_Hydrocarbon_prop.bp";
+			color = new Color(1, 0, 0.5f, 0);
+			SpawnWithArmy = armys.none;
+		}
 	}
 
 	[System.Serializable]
@@ -76,21 +104,82 @@ public class MapLuaParser : MonoBehaviour {
 		public		string		name;
 		public		Transform	Mark;
 		public		MarkerScript		Script;
+
+		public		string 		hintValue;
+		public		bool 		hint = true;
+		public		string		graph;
+		public		string 		adjacentTo;
 		public		string		type;
+		public		Color		Kolor;
 		public		string		prop;
+		public		Vector3		orientation;
 		public		Vector3		position;
 		public		armys		SpawnWithArmy;
-		public		float		Size;
-		public		Color		Kolor;
+		//public		float		Size;
 	}
 
 	[System.Serializable]
 	public class Army{
 		public		string		name;
+		public		bool 		Hidden = false;
+		public		int			Id;
 		public		Transform	Mark;
 		public		MarkerScript		Script;
 		public		Vector3		position;
-		public		Vector3		Orientation;
+		public		Vector3		orientation;
+	}
+
+	[System.Serializable]
+	public class SaveArmy{
+		public string Name = "";
+		public int ArmysOffset = 0;
+		public string personality = "";
+		public string plans = "";
+		public int color = 0;
+		public int faction = 0;
+		public int EconomyMass = 0;
+		public int EconomyEnergy = 0;
+		public string[] Alliances = new string[0];
+		public string UnitsOrders = "";
+		public string UnitsPlatoon = "";
+		public List<UnitGroup> Units = new List<UnitGroup>();
+		public int PlatoonBuilders_NextBuilderId = 0;
+		public List<string> PlatoonBuilders_Builders = new List<string>();
+
+		/*public SaveArmy(){
+			Name = "";
+			ArmysOffset = 0;
+			personality = "";
+			plans = "";
+			color = 0;
+			faction = 0;
+			EconomyMass = 0;
+			EconomyEnergy = 0;
+			Alliances = "";
+			UnitsOrders = "";
+			UnitsPlatoon = "";
+			Units = new List<UnitGroup>();
+			PlatoonBuilders_NextBuilderId = 0;
+			PlatoonBuilders_Builders = new List<string>();
+		}*/
+	}
+
+	[System.Serializable]
+	public class UnitGroup{
+		public string Name = "";
+		public string orders = "";
+		public string platoon = "";
+		public List<Unit> Units = new List<Unit>();
+	}
+
+	[System.Serializable]
+	public class Unit{
+		public string Name = "";
+		public string type = "";
+		public string orders = "";
+		public string platoon = "";
+		public Vector3 Position;
+		public Vector3 Orientation;
 	}
 
 	[System.Serializable]
@@ -112,26 +201,33 @@ public class MapLuaParser : MonoBehaviour {
 		public		bool			DefaultArea;
 		public		Rect			Area;
 		public		Rect[]			Areas;
+		public		List<customprop> CustomProps;
 	}
 	
 	public	enum armys 
 	{
-		none, ARMY1, ARMY2, ARMY3, ARMY4, ARMY5, ARMY6, ARMY7, ARMY8, ARMY9, ARMY10, ARMY11, ARMY12
+		none, ARMY1, ARMY2, ARMY3, ARMY4, ARMY5, ARMY6, ARMY7, ARMY8, ARMY9, ARMY10, ARMY11, ARMY12, ARMY13, ARMY14, ARMY15, ARMY16
+	}
+	#endregion
+
+	[System.Serializable]
+	public class customprop
+	{
+		public string key;
+		public string value;
 	}
 
-
-	Lua env;
-	Lua save;
-
 	void Awake(){
+		Current = this;
 		StructurePath = Application.dataPath + "/Structure/";;
 		#if UNITY_EDITOR
 		StructurePath = StructurePath.Replace("Assets", "");
 		#endif
 
-		BrushGenerator.SetScenario(this);
-
+		ParsingStructureData.LoadData ();
 	}
+
+	#region Loading
 
 	public IEnumerator ForceLoadMapAtPath(string path){
 		path = path.Replace("\\", "/");
@@ -203,29 +299,10 @@ public class MapLuaParser : MonoBehaviour {
 
 	}
 
-	public void SaveFile(){
+	#endregion
 
-	}
 
-	public static string FormatException(NLua.Exceptions.LuaException e) {
-		string source = (string.IsNullOrEmpty(e.Source)) ? "<no source>" : e.Source.Substring(0, e.Source.Length - 2);
-		return string.Format("{0}\nLua (at {2})", e.Message, string.Empty, source);
-	}
-
-	public void UpdateArea(){
-
-		if(ScenarioData.Area.width == 0 && ScenarioData.Area.height == 0){
-			ScenarioData.DefaultArea = false;
-			HeightmapControler.TerrainMaterial.SetInt("_Area", ScenarioData.DefaultArea?1:0);
-			return;
-		}
-		HeightmapControler.TerrainMaterial.SetInt("_Area", ScenarioData.DefaultArea?1:0);
-		HeightmapControler.TerrainMaterial.SetFloat("_AreaX", ScenarioData.Area.x / 10f);
-		HeightmapControler.TerrainMaterial.SetFloat("_AreaY", ScenarioData.Area.y / 10f);
-		HeightmapControler.TerrainMaterial.SetFloat("_AreaWidht", ScenarioData.Area.width / 10f);
-		HeightmapControler.TerrainMaterial.SetFloat("_AreaHeight", ScenarioData.Area.height / 10f);
-	}
-
+	#region Load Scenario Lua
 	private void LoadScenarioLua(){
 		System.Text.Encoding encodeType = System.Text.Encoding.ASCII;
 
@@ -245,7 +322,7 @@ public class MapLuaParser : MonoBehaviour {
 		try {
 			env.DoString(loadedFileFunctions + loadedFile);
 		} catch(NLua.Exceptions.LuaException e) {
-			Debug.LogError(FormatException(e), gameObject);
+			Debug.LogError(ParsingStructureData.FormatException(e), gameObject);
 			
 			HelperGui.MapLoaded = false;
 			return;
@@ -300,20 +377,34 @@ public class MapLuaParser : MonoBehaviour {
 			if(env.GetTable("ScenarioInfo").RawGet("norushoffsetY_ARMY_" + (id + 1)) != null)
 				ScenarioData.NoRushARMY[id].y = float.Parse(env.GetTable("ScenarioInfo").RawGet("norushoffsetY_ARMY_" + (id + 1)).ToString(), System.Globalization.CultureInfo.InvariantCulture.NumberFormat);
 		}
-	}
 
+		ScenarioData.CustomProps = new List<customprop> ();
+		LuaHelper.LHTable CustomPropsTable = new LuaHelper.LHTable(env.GetTable("ScenarioInfo.Configurations.standard.customprops"));
+
+		for (int i = 0; i < CustomPropsTable.Count; i++) {
+			customprop NewProp = new customprop ();
+			NewProp.key = CustomPropsTable.Keys [i];
+			NewProp.value = CustomPropsTable.GetStringValue (CustomPropsTable.Keys [i]);
+			ScenarioData.CustomProps.Add (NewProp);
+		}
+
+
+	}
+	#endregion
+
+	#region Load Save Lua
 	private void LoadSaveLua(){
 		System.Text.Encoding encodeType = System.Text.Encoding.ASCII;
 		string loadedFileSave = "";
 		string MapPath = PlayerPrefs.GetString("MapsPath", "maps/");
 
 		loadedFileSave = System.IO.File.ReadAllText(ScenarioData.SaveLua.Replace("/maps/", MapPath), encodeType);
-		
-		string loadedFileFunctions = "";
-		loadedFileFunctions = System.IO.File.ReadAllText(StructurePath + "lua_variable_functions.lua", encodeType);
-		
-		string loadedFileEndFunctions = "";
-		loadedFileEndFunctions = System.IO.File.ReadAllText(StructurePath + "lua_variable_end_functions.lua", encodeType);
+
+		string loadedFileFunctions = LuaHelper.GetStructureText ("lua_variable_functions.lua");
+		//loadedFileFunctions = System.IO.File.ReadAllText(StructurePath + "lua_variable_functions.lua", encodeType);
+
+		string loadedFileEndFunctions = LuaHelper.GetStructureText ("lua_variable_end_functions.lua");
+		//loadedFileEndFunctions = System.IO.File.ReadAllText(StructurePath + "lua_variable_end_functions.lua", encodeType);
 		
 		loadedFileSave = loadedFileFunctions + loadedFileSave + loadedFileEndFunctions;
 		
@@ -323,7 +414,7 @@ public class MapLuaParser : MonoBehaviour {
 		try {
 			save.DoString(loadedFileSave);
 		} catch(NLua.Exceptions.LuaException e) {
-			Debug.LogError(FormatException(e), gameObject);
+			Debug.LogError(ParsingStructureData.FormatException(e), gameObject);
 			
 			HelperGui.MapLoaded = false;
 			return;
@@ -353,278 +444,178 @@ public class MapLuaParser : MonoBehaviour {
 		MapCenterPoint.z = -1 * (ScenarioData.Size.y / 20);
 		
 		// LoadMarkers
-		int MarkersCount = save.GetTable("Scenario.MasterChain._MASTERCHAIN_.Markers").Values.Count;
-		int SpawnCount = 0;
-		int MassCount = 0;
-		int HydroCount = 0;
-		int SiCount = 0;
+		#region Load Markers
+		//int MarkersCount = save.GetTable("Scenario.MasterChain._MASTERCHAIN_.Markers").Values.Count;
 
-		LuaTable MasterChain = save.GetTable("Scenario.MasterChain._MASTERCHAIN_.Markers") as LuaTable;
 		Mexes = new List<Mex>();
 		Hydros = new List<Hydro>();
 		ARMY_ = new List<Army>();
 		SiMarkers = new List<Marker>();
 
-		for(int m = 0; m < MarkersCount; m++){
-			LuaTable MarkerTab = MasterChain[save.GetTable("AllKeyMarkers")[m + 1].ToString()] as LuaTable;
-			LuaTable MarkerPos = MarkerTab["position"] as LuaTable;
-			if(MarkerTab["type"].ToString() == "Mass"){
-				Mexes.Add(new Mex());
-				Mexes[MassCount].name = save.GetTable("AllKeyMarkers")[m + 1].ToString();
-				
-				Mexes[MassCount].position.x = float.Parse(MarkerPos[1].ToString(), System.Globalization.CultureInfo.InvariantCulture.NumberFormat);
-				Mexes[MassCount].position.y = float.Parse(MarkerPos[2].ToString(), System.Globalization.CultureInfo.InvariantCulture.NumberFormat);
-				Mexes[MassCount].position.z = float.Parse(MarkerPos[3].ToString(), System.Globalization.CultureInfo.InvariantCulture.NumberFormat);
-				
-				Mexes[MassCount].SpawnWithArmy = armys.ARMY1;
-				if(MarkerTab["position"].ToString() != null && MarkerTab["position"].ToString() != "null"){
-					switch(MarkerTab["position"].ToString()){
-					case "ARMY_1":
-						Mexes[MassCount].SpawnWithArmy = armys.ARMY1;
-						break;
-					case "ARMY_2":
-						Mexes[MassCount].SpawnWithArmy = armys.ARMY2;
-						break;
-					case "ARMY_3":
-						Mexes[MassCount].SpawnWithArmy = armys.ARMY3;
-						break;
-					case "ARMY_4":
-						Mexes[MassCount].SpawnWithArmy = armys.ARMY4;
-						break;
-					case "ARMY_5":
-						Mexes[MassCount].SpawnWithArmy = armys.ARMY5;
-						break;
-					case "ARMY_6":
-						Mexes[MassCount].SpawnWithArmy = armys.ARMY6;
-						break;
-					case "ARMY_7":
-						Mexes[MassCount].SpawnWithArmy = armys.ARMY7;
-						break;
-					case "ARMY_8":
-						Mexes[MassCount].SpawnWithArmy = armys.ARMY8;
-						break;
-					case "ARMY_9":
-						Mexes[MassCount].SpawnWithArmy = armys.ARMY9;
-						break;
-					case "ARMY_10":
-						Mexes[MassCount].SpawnWithArmy = armys.ARMY10;
-						break;
-					case "ARMY_11":
-						Mexes[MassCount].SpawnWithArmy = armys.ARMY11;
-						break;
-					case "ARMY_12":
-						Mexes[MassCount].SpawnWithArmy = armys.ARMY12;
-						break;
-					}
-				}
-				//GameObject NewMex =  Instantiate(Prefabs[1], Vector3.zero, Quaternion.identity) as GameObject;
-				//NewMex.name = Mexes[MassCount].name;
-				//Mexes[MassCount].Mark = NewMex.transform;
-				//Mexes[MassCount].Mark.parent = MarkersParent;
-				Vector3 MexLocPos = HeightmapControler.MapPosInWorld(Mexes[MassCount].position);
-				//Mexes[MassCount].Mark.localPosition = MexLocPos;
-				Mexes[MassCount].position = MexLocPos;
-				//Mexes[MassCount].Script = Mexes[MassCount].Mark.gameObject.GetComponent<MarkerScript>();
-				//Mexes[MassCount].Script.Typ = MarkerScript.MarkersTypes.Mex;
-				//if(Water) Mexes[MassCount].Script.WaterLevel =  ScenarioData.MaxHeight / 12.8f;
-				//else  Mexes[MassCount].Script.WaterLevel = 0;
-				MassCount++;
-				
-			}
-			else if(MarkerTab["type"].ToString() == "Hydrocarbon"){
-				Hydros.Add(new Hydro());
-				Hydros[HydroCount].name = save.GetTable("AllKeyMarkers")[m + 1].ToString();
-				
-				Hydros[HydroCount].position.x = float.Parse(MarkerPos[1].ToString(), System.Globalization.CultureInfo.InvariantCulture.NumberFormat);
-				Hydros[HydroCount].position.y = float.Parse(MarkerPos[2].ToString(), System.Globalization.CultureInfo.InvariantCulture.NumberFormat);
-				Hydros[HydroCount].position.z = float.Parse(MarkerPos[3].ToString(), System.Globalization.CultureInfo.InvariantCulture.NumberFormat);
-				
-				Hydros[HydroCount].SpawnWithArmy = armys.ARMY1;
-				if(MarkerTab["position"].ToString() != null && MarkerTab["position"].ToString() != "null"){
-					switch(MarkerTab["position"].ToString()){
-					case "ARMY_1":
-						Hydros[HydroCount].SpawnWithArmy = armys.ARMY1;
-						break;
-					case "ARMY_2":
-						Hydros[HydroCount].SpawnWithArmy = armys.ARMY2;
-						break;
-					case "ARMY_3":
-						Hydros[HydroCount].SpawnWithArmy = armys.ARMY3;
-						break;
-					case "ARMY_4":
-						Hydros[HydroCount].SpawnWithArmy = armys.ARMY4;
-						break;
-					case "ARMY_5":
-						Hydros[HydroCount].SpawnWithArmy = armys.ARMY5;
-						break;
-					case "ARMY_6":
-						Hydros[HydroCount].SpawnWithArmy = armys.ARMY6;
-						break;
-					case "ARMY_7":
-						Hydros[HydroCount].SpawnWithArmy = armys.ARMY7;
-						break;
-					case "ARMY_8":
-						Hydros[HydroCount].SpawnWithArmy = armys.ARMY8;
-						break;
-					case "ARMY_9":
-						Hydros[HydroCount].SpawnWithArmy = armys.ARMY9;
-						break;
-					case "ARMY_10":
-						Hydros[HydroCount].SpawnWithArmy = armys.ARMY10;
-						break;
-					case "ARMY_11":
-						Hydros[HydroCount].SpawnWithArmy = armys.ARMY11;
-						break;
-					case "ARMY_12":
-						Hydros[HydroCount].SpawnWithArmy = armys.ARMY12;
-						break;
-					}
-				}
-				//GameObject NewMex =  Instantiate(Prefabs[2], Vector3.zero, Quaternion.identity) as GameObject;
-				//NewMex.name = Hydros[HydroCount].name;
-				//Hydros[HydroCount].Mark = NewMex.transform;
-				//Hydros[HydroCount].Mark.parent = MarkersParent;
-				Vector3 MexLocPos = HeightmapControler.MapPosInWorld(Hydros[HydroCount].position);
-				Hydros[HydroCount].position = MexLocPos;
-				//Hydros[HydroCount].Mark.localPosition = MexLocPos;
-				//Hydros[HydroCount].Script = Hydros[HydroCount].Mark.gameObject.GetComponent<MarkerScript>();
-				//Hydros[HydroCount].Script.Typ = MarkerScript.MarkersTypes.Mex;
-				//if(Water) Hydros[HydroCount].Script.WaterLevel = ScenarioData.MaxHeight / 12.8f;
-				//else Hydros[HydroCount].Script.WaterLevel = 0;
-				
-				HydroCount++;
-			}
-			else if(save.GetTable("AllKeyMarkers")[m + 1].ToString().Contains("ARMY_")){
-				
-				ARMY_.Add(new Army());
-				ARMY_[SpawnCount].name = save.GetTable("AllKeyMarkers")[m + 1].ToString();
-				//GameObject NewSpawn =  Instantiate(Prefabs[0], Vector3.zero, Quaternion.identity) as GameObject;
-				//ARMY_[SpawnCount].Mark = NewSpawn.transform;
-				//ARMY_[SpawnCount].Mark.parent = MarkersParent;
-				//Vector3 MexLocPos = Vector3.zero;
-				//NewSpawn.name = ARMY_[SpawnCount].name;
 
+		//LuaTable MasterChain = save.GetTable("Scenario.MasterChain._MASTERCHAIN_.Markers") as LuaTable;
+		//string[] KeysArray = new string[MarkersCount];
+		//MasterChain.Keys.CopyTo(KeysArray, 0);
 
-				ARMY_[SpawnCount].position.x = float.Parse(MarkerPos[1].ToString(), System.Globalization.CultureInfo.InvariantCulture.NumberFormat);
-				ARMY_[SpawnCount].position.y = float.Parse(MarkerPos[2].ToString(), System.Globalization.CultureInfo.InvariantCulture.NumberFormat);
-				ARMY_[SpawnCount].position.z = float.Parse(MarkerPos[3].ToString(), System.Globalization.CultureInfo.InvariantCulture.NumberFormat);
+		LuaHelper.LHTable MarkersTable = new LuaHelper.LHTable(save.GetTable("Scenario.MasterChain._MASTERCHAIN_.Markers"));
+
+		for(int m = 0; m < MarkersTable.Count; m++){
+			//LuaTable MarkerTab = MasterChain[KeysArray[m]] as LuaTable;
+			LuaHelper.LHTable MarkerTable = new LuaHelper.LHTable(MarkersTable, MarkersTable.Keys[m]);
+
+			Vector3 MarkerPosParsed = Vector3.zero;
+			MarkerTable.GetVector3Value("position", out MarkerPosParsed);
+
+			Vector3 MarkerRotParsed = Vector3.zero;
+			MarkerTable.GetVector3Value("orientation", out MarkerRotParsed);
+
+			string TypeOfMarker = MarkerTable.GetStringValue("type");
+			if(TypeOfMarker == "Mass"){
+				Mex newMex = new Mex();
+				newMex.name = MarkersTable.Keys[m];
 				
-				//MexLocPos.x = -1 * (ScenarioData.Size.x / 20) + 1 * (ARMY_[SpawnCount].position.x / ScenarioData.Size.x) * (ScenarioData.Size.x / 10);
-				//MexLocPos.z = -1 * (ScenarioData.Size.y / 20) + 1 * (ARMY_[SpawnCount].position.z / ScenarioData.Size.y) * (ScenarioData.Size.y / 10);
-				Vector3 MexLocPos = HeightmapControler.MapPosInWorld(ARMY_[SpawnCount].position);
-				ARMY_[SpawnCount].position = MexLocPos;
-				//ARMY_[SpawnCount].Mark.localPosition = MexLocPos;
-				//ARMY_[SpawnCount].Script = ARMY_[SpawnCount].Mark.gameObject.GetComponent<MarkerScript>();
-				//ARMY_[SpawnCount].Script.Typ = MarkerScript.MarkersTypes.Army;
-				//if(Water) ARMY_[SpawnCount].Script.WaterLevel = ScenarioData.MaxHeight / 12.8f;
-				//else ARMY_[SpawnCount].Script.WaterLevel = 0;
-				SpawnCount++;
+				newMex.position = HeightmapControler.MapPosInWorld(MarkerPosParsed);
+				newMex.orientation = MarkerRotParsed;
+				
+				LuaHelper.ReadSpawnWithArmy(out newMex.SpawnWithArmy, MarkerTable);
+
+				Mexes.Add(newMex);
+			}
+			else if(TypeOfMarker == "Hydrocarbon"){
+				Hydro NewHydro = new Hydro();
+				NewHydro.name = MarkersTable.Keys[m];
+
+				NewHydro.size = MarkerTable.GetFloatValue("size");
+				NewHydro.amount = MarkerTable.GetFloatValue("amount");
+				NewHydro.resource = MarkerTable.GetBoolValue("resource");
+				NewHydro.prop = MarkerTable.GetStringValue("prop");
+
+				NewHydro.color = MarkerTable.GetColorValue("color");
+
+				NewHydro.position = HeightmapControler.MapPosInWorld(MarkerPosParsed);
+				NewHydro.orientation = MarkerRotParsed;
+
+				LuaHelper.ReadSpawnWithArmy(out NewHydro.SpawnWithArmy, MarkerTable);
+
+				Hydros.Add(NewHydro);
+			}
+			else if(MarkersTable.Keys[m].Contains("ARMY_")){
+				Army NewArmy = new Army();
+				NewArmy.name = MarkersTable.Keys[m];
+
+				NewArmy.Id = int.Parse(MarkersTable.Keys[m].Replace("ARMY_", ""));
+			
+				NewArmy.position = HeightmapControler.MapPosInWorld(MarkerPosParsed);
+				NewArmy.orientation = MarkerRotParsed;
+
+				ARMY_.Add(NewArmy);
 			}
 			else{
-				SiMarkers.Add(new Marker());
-				SiMarkers[SiCount].name = save.GetTable("AllKeyMarkers")[m + 1].ToString();
-				
-				SiMarkers[SiCount].position.x = float.Parse(MarkerPos[1].ToString(), System.Globalization.CultureInfo.InvariantCulture.NumberFormat);
-				SiMarkers[SiCount].position.y = float.Parse(MarkerPos[2].ToString(), System.Globalization.CultureInfo.InvariantCulture.NumberFormat);
-				SiMarkers[SiCount].position.z = float.Parse(MarkerPos[3].ToString(), System.Globalization.CultureInfo.InvariantCulture.NumberFormat);
-				
-				SiMarkers[SiCount].SpawnWithArmy = armys.ARMY1;
-				if(MarkerTab["position"].ToString() != null && MarkerTab["position"].ToString() != "null"){
-					switch(MarkerTab["position"].ToString()){
-					case "ARMY_1":
-						SiMarkers[SiCount].SpawnWithArmy = armys.ARMY1;
-						break;
-					case "ARMY_2":
-						SiMarkers[SiCount].SpawnWithArmy = armys.ARMY2;
-						break;
-					case "ARMY_3":
-						SiMarkers[SiCount].SpawnWithArmy = armys.ARMY3;
-						break;
-					case "ARMY_4":
-						SiMarkers[SiCount].SpawnWithArmy = armys.ARMY4;
-						break;
-					case "ARMY_5":
-						SiMarkers[SiCount].SpawnWithArmy = armys.ARMY5;
-						break;
-					case "ARMY_6":
-						SiMarkers[SiCount].SpawnWithArmy = armys.ARMY6;
-						break;
-					case "ARMY_7":
-						SiMarkers[SiCount].SpawnWithArmy = armys.ARMY7;
-						break;
-					case "ARMY_8":
-						SiMarkers[SiCount].SpawnWithArmy = armys.ARMY8;
-						break;
-					case "ARMY_9":
-						SiMarkers[SiCount].SpawnWithArmy = armys.ARMY9;
-						break;
-					case "ARMY_10":
-						SiMarkers[SiCount].SpawnWithArmy = armys.ARMY10;
-						break;
-					case "ARMY_11":
-						SiMarkers[SiCount].SpawnWithArmy = armys.ARMY11;
-						break;
-					case "ARMY_12":
-						SiMarkers[SiCount].SpawnWithArmy = armys.ARMY12;
-						break;
-					}
-				}
-				//GameObject NewMex;
+				Marker NewMarker = new Marker();
+				NewMarker.name = MarkersTable.Keys[m];
+				NewMarker.position = HeightmapControler.MapPosInWorld(MarkerPosParsed);
+				NewMarker.orientation = MarkerRotParsed;
 
-				switch(MarkerTab["type"].ToString()){
-				case "Rally Point":
-					//NewMex = Instantiate(Prefabs[3], Vector3.zero, Quaternion.identity) as GameObject;
-					break;
-				case "Combat Zone":
-					//NewMex = Instantiate(Prefabs[4], Vector3.zero, Quaternion.identity) as GameObject;
-					break;
-				case "Defensive Point":
-					//NewMex = Instantiate(Prefabs[5], Vector3.zero, Quaternion.identity) as GameObject;
-					break;
-				case "Naval Area":
-					//NewMex = Instantiate(Prefabs[6], Vector3.zero, Quaternion.identity) as GameObject;
-					break;
-				default:
-					//NewMex = Instantiate(Prefabs[5], Vector3.zero, Quaternion.identity) as GameObject;
-					break;
-				}
+				NewMarker.type = TypeOfMarker;
+				NewMarker.prop = MarkerTable.GetStringValue("prop");
 
-				SiMarkers[SiCount].type = MarkerTab["type"].ToString();
-				SiMarkers[SiCount].prop = MarkerTab["prop"].ToString();
+				// HINT
+				NewMarker.hintValue = MarkerTable.GetStringValue("hint");
+				NewMarker.hint = MarkerTable.GetBoolValue("hint");
 
-				//NewMex.name = SiMarkers[SiCount].name;
-				//SiMarkers[SiCount].Mark = NewMex.transform;
-				//SiMarkers[SiCount].Mark.parent = MarkersParent;
-				Vector3 MexLocPos = HeightmapControler.MapPosInWorld(SiMarkers[SiCount].position);
-				SiMarkers[SiCount].position = MexLocPos;
-				//SiMarkers[SiCount].Mark.localPosition = MexLocPos;
-				//SiMarkers[SiCount].Script = SiMarkers[SiCount].Mark.gameObject.GetComponent<MarkerScript>();
-				//SiMarkers[SiCount].Script.Typ = MarkerScript.MarkersTypes.Mex;
-				//if(Water) SiMarkers[SiCount].Script.WaterLevel = ScenarioData.MaxHeight / 12.8f;
-				//else  SiMarkers[SiCount].Script.WaterLevel = 0;
+				// GRAPH
+				NewMarker.graph = MarkerTable.GetStringValue("graph");
+
+				// adjacentTo
+				NewMarker.adjacentTo = MarkerTable.GetStringValue("adjacentTo");
+
+
+				// Color
+				if (!string.IsNullOrEmpty(MarkerTable.GetStringValue("color"))) {
+					//Color MyColor = Color.white;
+					//ColorUtility.TryParseHtmlString (MarkerTable.GetStringValue("color"), out MyColor);
+					NewMarker.Kolor = MarkerTable.GetColorValue("color");
+				} else
+					NewMarker.Kolor = Color.white;
 				
-				SiCount++;
+
+				LuaHelper.ReadSpawnWithArmy(out NewMarker.SpawnWithArmy, MarkerTable);
+
+				SiMarkers.Add(NewMarker);
 			}
 		}
 
 		SortArmys();
-	}
 
+		MexTotalCount = Mexes.Count;
+		HydrosTotalCount = Hydros.Count;
+		SiTotalCount = SiMarkers.Count;
+		#endregion
 
-	public void SortArmys(){
-		List<Army> NewArmys = new List<Army>();
-		for(int i = 0; i < ARMY_.Count; i++){
-			for(int a = 0; a < ARMY_.Count; a++){
-				if(ARMY_[a].name == "ARMY_" + (i + 1).ToString()){
-					NewArmys.Add(ARMY_[a]);
-					break;
+		#region Load Army Save
+		SaveArmys = new List<SaveArmy> ();
+		LuaHelper.LHTable ArmiesTable = new LuaHelper.LHTable(save.GetTable("Scenario.Armies"));
+
+		for(int m = 0; m < ArmiesTable.Count; m++){
+			LuaHelper.LHTable ArmyTable = new LuaHelper.LHTable(ArmiesTable, ArmiesTable.Keys[m]);
+			SaveArmy NewArmy = new SaveArmy();
+			NewArmy.Name = ArmiesTable.Keys[m];
+
+			AddSaveArmyMarker(NewArmy.Name);
+
+			NewArmy.personality = ArmyTable.GetStringValue("personality");
+			NewArmy.plans = ArmyTable.GetStringValue("plans");
+			NewArmy.color = ArmyTable.GetIntValue("color");
+			NewArmy.faction = ArmyTable.GetIntValue("faction");
+
+			LuaHelper.LHTable EconomyTable = new LuaHelper.LHTable(ArmyTable, "Economy");
+			NewArmy.EconomyMass = EconomyTable.GetIntValue("mass");
+			NewArmy.EconomyEnergy = EconomyTable.GetIntValue("energy");
+
+			NewArmy.Alliances = ArmyTable.GetStringArrayValue("Alliances");
+
+			// Get units
+
+			NewArmy.UnitsOrders = "";
+			NewArmy.UnitsPlatoon = "";
+			NewArmy.Units = new List<UnitGroup>();
+			LuaHelper.LHTable ArmyUnitsTable;
+			ArmyTable.GetLuaArmyGroup("Units", out NewArmy.UnitsOrders, out NewArmy.UnitsPlatoon, out ArmyUnitsTable);
+
+		
+			for(int i = 0; i < ArmyUnitsTable.Count; i++){
+				UnitGroup NewUnitGroup = new UnitGroup();
+				NewUnitGroup.Name = ArmyUnitsTable.Keys[i];
+
+				LuaHelper.LHTable UnitsGroupTable;
+				ArmyUnitsTable.GetLuaArmyGroup(ArmyUnitsTable.Keys[i], out NewUnitGroup.orders, out NewUnitGroup.platoon, out UnitsGroupTable);
+
+				for(int u = 0; u < UnitsGroupTable.Count; u++){
+					Unit NewUnit = new Unit();
+					LuaHelper.LHTable UnitTable = new LuaHelper.LHTable(UnitsGroupTable, UnitsGroupTable.Keys[u]);
+
+					NewUnit.Name = UnitsGroupTable.Keys[u];
+					NewUnit.type = UnitTable.GetStringValue("type");
+					NewUnit.orders = UnitTable.GetStringValue("orders");
+					NewUnit.platoon = UnitTable.GetStringValue("platoon");
+					UnitTable.GetVector3Value("Position", out NewUnit.Position);
+					UnitTable.GetVector3Value("Orientation", out NewUnit.Orientation);
+
+					NewUnitGroup.Units.Add(NewUnit);
 				}
+
+				NewArmy.Units.Add(NewUnitGroup);
 			}
+				
+			SaveArmys.Add(NewArmy);
 		}
 
-		ARMY_ = NewArmys;
+		#endregion
 	}
 
+	#endregion
+
+	#region SaveMap
 
 	public IEnumerator SaveMap(){
 
@@ -682,7 +673,7 @@ public class MapLuaParser : MonoBehaviour {
 				SaveData += "    name = '" + ScenarioData.MapName + "',\n";
 			}
 			else if(line.Contains("[*desc*]")){
-				SaveData += "    description = '" + ScenarioData.MapDesc + "',\n";
+				SaveData += "    description = \"" + ScenarioData.MapDesc.Replace("\"", "'") + "\",\n";
 			}
 			else if(line.Contains("[*size*]")){
 				SaveData += "    size = {" + ScenarioData.Size.x + ", " + ScenarioData.Size.y + "},\n";
@@ -704,15 +695,26 @@ public class MapLuaParser : MonoBehaviour {
 				SaveData += "					armies = {";
 
 				for(int a = 0; a < ARMY_.Count; a++){
+					if (ARMY_ [a].Hidden)
+						continue;
 					SaveData += "'ARMY_" + (a + 1).ToString() + "',";
 				}
 
 				SaveData += "}\n";
+				//SaveData += line;
 			}
 			else{
 				SaveData += line;
 			}
 		}
+
+		string CustomPropsCode = "";
+		for (int i = 0; i < ScenarioData.CustomProps.Count; i++) {
+			CustomPropsCode += "\n";
+			CustomPropsCode += "\t\t\t\t['" + ScenarioData.CustomProps [i].key + "'] = " + ParsingStructureData.ToLuaStringVaue (ScenarioData.CustomProps [i].value);
+		}
+
+		SaveData = SaveData.Replace ("[customprops]", CustomPropsCode);
 
 		string MapPath = PlayerPrefs.GetString("MapsPath", "maps/");
 		string ScenarioFilePath = MapPath + FolderName + "/" + ScenarioFileName + ".lua";
@@ -728,15 +730,15 @@ public class MapLuaParser : MonoBehaviour {
 
 
 	public void SaveSaveLua(){
-		string SaveData = "";
-		string loadedFile = "";
-
 		System.Text.Encoding encodeType = System.Text.Encoding.ASCII;
 		string loc = StructurePath + "save_structure.lua";
-		loadedFile = System.IO.File.ReadAllText(loc, encodeType);
+		string loadedFile = System.IO.File.ReadAllText(loc, encodeType);
 
-		char[] Separator = "\n".ToCharArray();
-		string[] AllLines = loadedFile.Split(Separator);
+		string SaveData = loadedFile;
+
+
+		//char[] Separator = "\n".ToCharArray();
+		//string[] AllLines = loadedFile.Split(Separator);
 
 		//Mex
 		string MexStructure = System.IO.File.ReadAllText(StructurePath + "save_mex.lua", encodeType);
@@ -750,24 +752,163 @@ public class MapLuaParser : MonoBehaviour {
 		//Si
 		string SiStructure = System.IO.File.ReadAllText(StructurePath + "save_marker.lua", encodeType);
 
-		//Army
-		string ArmyStructure = System.IO.File.ReadAllText(StructurePath + "save_army.lua", encodeType);
+		//string ArmyStructure = System.IO.File.ReadAllText(StructurePath + "save_army.lua", encodeType);
 
-		foreach(string line in AllLines){
+		string MarkersData = "";
+
+		for(int a = 0; a < ARMY_.Count; a++){
+			if (ARMY_ [a].Hidden)
+				continue;
+			string NewArmy = ArmyMarkerStructure;
+
+			string ArmyName = "                ['" + ARMY_[a].name + "'] = {";
+			NewArmy = NewArmy.Replace("['ARMY_']", ArmyName);
+
+			Vector3 MexPos = HeightmapControler.MapWorldPosInSave( GetPosOfMarkerId(0, a) );
+			string Position = ParsingStructureData.Save_Position.Replace("#", Vector3ToLua(MexPos));
+			NewArmy = NewArmy.Replace("['position']", Position);
+
+			Position = ParsingStructureData.Save_Rotation.Replace("#", Vector3ToLua(ARMY_[a].orientation));
+			NewArmy = NewArmy.Replace("['orientation']", Position);
+
+			MarkersData += NewArmy + "\n";
+		}
+
+		for(int h = 0; h < Hydros.Count; h++){
+			string NewHydro = HydroStructure;
+
+			//string HydroName = "                ['"+ Hydros[h].name +"'] = {";
+			NewHydro = NewHydro.Replace("[name]", Hydros[h].name);
+
+			string StringValue = ParsingStructureData.LuaMarkerProperty("size", ParsingStructureData.ToLuaFloatVaue(ParsingStructureData.ToFloatString(Hydros[h].size)));
+			NewHydro = NewHydro.Replace("[size]", StringValue);
+
+			StringValue = ParsingStructureData.LuaMarkerProperty("amount", ParsingStructureData.ToLuaFloatVaue(ParsingStructureData.ToFloatString(Hydros[h].amount)));
+			NewHydro = NewHydro.Replace("[amount]", StringValue);
+
+			StringValue = ParsingStructureData.LuaMarkerProperty("prop", ParsingStructureData.ToLuaStringVaue(Hydros[h].prop));
+			NewHydro = NewHydro.Replace("[prop]", StringValue);
+
+			StringValue = ParsingStructureData.LuaMarkerProperty("color", ParsingStructureData.ToLuaStringVaue( ParsingStructureData.ToColorString(Hydros[h].color)));
+			NewHydro = NewHydro.Replace("[color]", StringValue);
+
+
+			// Spawn With Army
+			string SpawnWithArmy = ParsingStructureData.SpawnWithArmy.Replace("#", Hydros[h].SpawnWithArmy.ToString());
+			if( Hydros[h].SpawnWithArmy == armys.none) NewHydro = NewHydro.Replace("[SpawnWithArmy]\r\n", "");
+			else NewHydro = NewHydro.Replace("[SpawnWithArmy]", SpawnWithArmy);
+
+			// Position
+			Vector3 MexPos = HeightmapControler.MapWorldPosInSave( GetPosOfMarkerId(2, h) );
+			string Position = ParsingStructureData.Save_Position.Replace("#", Vector3ToLua(MexPos));
+			NewHydro = NewHydro.Replace("[position]", Position);
+
+			// Orientation
+			Position = ParsingStructureData.Save_Rotation.Replace("#", Vector3ToLua(Hydros[h].orientation));
+			NewHydro = NewHydro.Replace("[orientation]", Position);
+
+			MarkersData += NewHydro + "\n";
+		}
+
+		for(int m = 0; m < Mexes.Count; m++){
+			string NewMex = MexStructure;
+
+			string MexName = "                ['"+ Mexes[m].name +"'] = {";
+			NewMex = NewMex.Replace("['MassName']", MexName);
+
+			string SpawnWithArmy = ParsingStructureData.SpawnWithArmy.Replace("#", Mexes[m].SpawnWithArmy.ToString());
+			if( Mexes[m].SpawnWithArmy == armys.none) NewMex = NewMex.Replace("['SpawnWithArmy']\r\n", "");
+			else NewMex = NewMex.Replace("['SpawnWithArmy']", SpawnWithArmy);
+
+			Vector3 MexPos = HeightmapControler.MapWorldPosInSave( GetPosOfMarkerId(1, m) );
+			string Position = ParsingStructureData.Save_Position.Replace("#", Vector3ToLua(MexPos));
+			NewMex = NewMex.Replace("['position']", Position);
+
+			Position = ParsingStructureData.Save_Rotation.Replace("#", Vector3ToLua(Mexes[m].orientation));
+			NewMex = NewMex.Replace("['orientation']", Position);
+
+			MarkersData += NewMex + "\n";
+		}
+
+		for(int s = 0; s < SiMarkers.Count; s++){
+			string NewSi = SiStructure;
+
+			string SiName = "                ['"+ SiMarkers[s].name +"'] = {";
+			NewSi = NewSi.Replace("['Marker']", SiName);
+
+			string SiType = ParsingStructureData.LuaMarkerProperty ("type", ParsingStructureData.ToLuaStringVaue (SiMarkers [s].type));
+			NewSi = NewSi.Replace("['type']", SiType);
+
+			string SiProp = ParsingStructureData.LuaMarkerProperty ("prop", ParsingStructureData.ToLuaStringVaue (SiMarkers [s].prop));
+			NewSi = NewSi.Replace("['prop']", SiProp);
+
+			// Additional values
+			// * hint
+			if (string.IsNullOrEmpty (SiMarkers [s].hintValue)) {
+				NewSi = NewSi.Replace("['hint']\r\n", "");
+			} else {
+				SiProp = ParsingStructureData.LuaMarkerProperty ("hint", ParsingStructureData.ToLuaBooleanVaue (SiMarkers [s].hint));
+				NewSi = NewSi.Replace("['hint']", SiProp);
+			}
+
+			// * Graph
+			if (string.IsNullOrEmpty (SiMarkers [s].graph)) {
+				NewSi = NewSi.Replace("['graph']\r\n", "");
+			} else {
+				SiProp = ParsingStructureData.LuaMarkerProperty ("graph", ParsingStructureData.ToLuaStringVaue (SiMarkers [s].graph));
+				NewSi = NewSi.Replace("['graph']", SiProp);
+			}
+
+			// * AdjacentTo
+			if (string.IsNullOrEmpty (SiMarkers [s].adjacentTo)) {
+				NewSi = NewSi.Replace("['adjacentTo']\r\n", "");
+			} else {
+				SiProp = ParsingStructureData.LuaMarkerProperty ("adjacentTo", ParsingStructureData.ToLuaStringVaue (SiMarkers [s].adjacentTo));
+				NewSi = NewSi.Replace("['adjacentTo']", SiProp);
+			}
+
+			// * Color
+			SiProp = ParsingStructureData.LuaMarkerProperty ("color", ParsingStructureData.ToLuaStringVaue (ColorUtility.ToHtmlStringRGBA(SiMarkers[s].Kolor).ToLower()));
+			NewSi = NewSi.Replace("['color']", SiProp);
+
+			Vector3 MexPos = HeightmapControler.MapWorldPosInSave( GetPosOfMarkerId(3, s) );
+			string Position = ParsingStructureData.Save_Position.Replace("#", Vector3ToLua(MexPos));
+			NewSi = NewSi.Replace("['position']", Position);
+
+			Position = ParsingStructureData.Save_Rotation.Replace("#", Vector3ToLua(SiMarkers [s].orientation));
+			NewSi = NewSi.Replace("['orientation']", Position);
+
+			MarkersData += NewSi + "\n";
+
+		}
+		SaveData = SaveData.Replace ("[MARKERS]", MarkersData);
+		SaveData = SaveData.Replace ("[CHAINS]", "");
+
+		string AreaData = "";
+		AreaData += "            ['rectangle'] = RECTANGLE( " + ScenarioData.Area.x.ToString() +", "+ ScenarioData.Area.y.ToString() +", "+ ScenarioData.Area.width.ToString() +", "+ ScenarioData.Area.height.ToString() +"),";
+		SaveData = SaveData.Replace ("[AREA]", AreaData);
+
+
+		/*foreach(string line in AllLines){
 			if(line.Contains("[*AREA*]")){
 				SaveData += "            ['rectangle'] = RECTANGLE( " + ScenarioData.Area.x.ToString() +", "+ ScenarioData.Area.y.ToString() +", "+ ScenarioData.Area.width.ToString() +", "+ ScenarioData.Area.height.ToString() +"),";
 				SaveData += "\n";
 			}
 			else if(line.Contains("[*MARKERS*]")){
 				for(int a = 0; a < ARMY_.Count; a++){
+					if (ARMY_ [a].Hidden)
+						continue;
 					string NewArmy = ArmyMarkerStructure;
 
 					string ArmyName = "                ['" + ARMY_[a].name + "'] = {";
 					NewArmy = NewArmy.Replace("['ARMY_']", ArmyName);
 
 					Vector3 MexPos = HeightmapControler.MapWorldPosInSave( GetPosOfMarkerId(0, a) );
-					string Position = "                    ['position'] = VECTOR3( "+ MexPos.x.ToString() +", "+ MexPos.y.ToString() +", "+ MexPos.z.ToString() +" ),";
+					string Position = ParsingStructureData.Save_Position.Replace("#", Vector3ToLua(MexPos));
 					NewArmy = NewArmy.Replace("['position']", Position);
+
+					Position = ParsingStructureData.Save_Rotation.Replace("#", Vector3ToLua(ARMY_[a].orientation));
+					NewArmy = NewArmy.Replace("['orientation']", Position);
 
 					SaveData += NewArmy + "\n";
 				}
@@ -778,13 +919,16 @@ public class MapLuaParser : MonoBehaviour {
 					string HydroName = "                ['"+ Hydros[h].name +"'] = {";
 					NewHydro = NewHydro.Replace("['Hydrocarbon']", HydroName);
 					
-					string SpawnWithArmy = "                    ['SpawnWithArmy'] = STRING( '" + Hydros[h].SpawnWithArmy.ToString() + "' ),";
-					if( Hydros[h].SpawnWithArmy == armys.none) NewHydro = NewHydro.Replace("['SpawnWithArmy']\n", "");
+					string SpawnWithArmy = ParsingStructureData.SpawnWithArmy.Replace("#", Hydros[h].SpawnWithArmy.ToString());
+					if( Hydros[h].SpawnWithArmy == armys.none) NewHydro = NewHydro.Replace("['SpawnWithArmy']\r\n", "");
 					else NewHydro = NewHydro.Replace("['SpawnWithArmy']", SpawnWithArmy);
 					
 					Vector3 MexPos = HeightmapControler.MapWorldPosInSave( GetPosOfMarkerId(2, h) );
-					string Position = "                    ['position'] = VECTOR3( "+ MexPos.x.ToString() +", "+ MexPos.y.ToString() +", "+ MexPos.z.ToString() +" ),";
+					string Position = ParsingStructureData.Save_Position.Replace("#", Vector3ToLua(MexPos));
 					NewHydro = NewHydro.Replace("['position']", Position);
+
+					Position = ParsingStructureData.Save_Rotation.Replace("#", Vector3ToLua(Hydros[h].orientation));
+					NewHydro = NewHydro.Replace("['orientation']", Position);
 					
 					SaveData += NewHydro + "\n";
 				}
@@ -793,14 +937,19 @@ public class MapLuaParser : MonoBehaviour {
 					string NewMex = MexStructure;
 
 					string MexName = "                ['"+ Mexes[m].name +"'] = {";
-					NewMex = NewMex.Replace("['Mass1']", MexName);
+					NewMex = NewMex.Replace("['MassName']", MexName);
 
-					string SpawnWithArmy = "                    ['SpawnWithArmy'] = STRING( '" + Mexes[m].SpawnWithArmy.ToString() + "' ),";
-					NewMex = NewMex.Replace("['SpawnWithArmy']", SpawnWithArmy);
+					string SpawnWithArmy = ParsingStructureData.SpawnWithArmy.Replace("#", Mexes[m].SpawnWithArmy.ToString());
+					//NewMex = NewMex.Replace("['SpawnWithArmy']", SpawnWithArmy);
+					if( Mexes[m].SpawnWithArmy == armys.none) NewMex = NewMex.Replace("['SpawnWithArmy']\r\n", "");
+					else NewMex = NewMex.Replace("['SpawnWithArmy']", SpawnWithArmy);
 
 					Vector3 MexPos = HeightmapControler.MapWorldPosInSave( GetPosOfMarkerId(1, m) );
-					string Position = "                    ['position'] = VECTOR3( "+ MexPos.x.ToString() +", "+ MexPos.y.ToString() +", "+ MexPos.z.ToString() +" ),";
+					string Position = ParsingStructureData.Save_Position.Replace("#", Vector3ToLua(MexPos));
 					NewMex = NewMex.Replace("['position']", Position);
+
+					Position = ParsingStructureData.Save_Rotation.Replace("#", Vector3ToLua(Mexes[m].orientation));
+					NewMex = NewMex.Replace("['orientation']", Position);
 
 					SaveData += NewMex + "\n";
 				}
@@ -813,16 +962,53 @@ public class MapLuaParser : MonoBehaviour {
 					string SiName = "                ['"+ SiMarkers[s].name +"'] = {";
 					NewSi = NewSi.Replace("['Marker']", SiName);
 
-					string SiType = "                    ['type'] = STRING( '" + SiMarkers[s].type + "' ),";
+					//string SiType = "                    ['type'] = STRING( '" + SiMarkers[s].type + "' ),";
+					string SiType = ParsingStructureData.LuaMarkerProperty ("type", ParsingStructureData.ToLuaStringVaue (SiMarkers [s].type));
 					NewSi = NewSi.Replace("['type']", SiType);
 
-					string SiProp = "                    ['prop'] = STRING( '"+ SiMarkers[s].prop + "' ),";
+					//string SiProp = "                    ['prop'] = STRING( '"+ SiMarkers[s].prop + "' ),";
+					string SiProp = ParsingStructureData.LuaMarkerProperty ("prop", ParsingStructureData.ToLuaStringVaue (SiMarkers [s].prop));
 					NewSi = NewSi.Replace("['prop']", SiProp);
 
+					// Additional values
+					// * hint
+					if (string.IsNullOrEmpty (SiMarkers [s].hintValue)) {
+						NewSi = NewSi.Replace("['hint']\r\n", "");
+					} else {
+						//SiProp = "                    ['hint'] = BOOLEAN( '"+ (SiMarkers[s].hint?("true"):("false")) + "' ),";
+						SiProp = ParsingStructureData.LuaMarkerProperty ("hint", ParsingStructureData.ToLuaBooleanVaue (SiMarkers [s].hint));
+						NewSi = NewSi.Replace("['hint']", SiProp);
+					}
+
+					// * Graph
+					if (string.IsNullOrEmpty (SiMarkers [s].graph)) {
+						NewSi = NewSi.Replace("['graph']\r\n", "");
+					} else {
+						SiProp = ParsingStructureData.LuaMarkerProperty ("graph", ParsingStructureData.ToLuaStringVaue (SiMarkers [s].graph));
+						//SiProp = "                    ['graph'] = STRING( '"+ SiMarkers[s].graph + "' ),";
+						NewSi = NewSi.Replace("['graph']", SiProp);
+					}
+
+					// * AdjacentTo
+					if (string.IsNullOrEmpty (SiMarkers [s].adjacentTo)) {
+						NewSi = NewSi.Replace("['adjacentTo']\r\n", "");
+					} else {
+						//SiProp = "                    ['adjacentTo'] = STRING( '"+ SiMarkers[s].adjacentTo + "' ),";
+						SiProp = ParsingStructureData.LuaMarkerProperty ("adjacentTo", ParsingStructureData.ToLuaStringVaue (SiMarkers [s].adjacentTo));
+						NewSi = NewSi.Replace("['adjacentTo']", SiProp);
+					}
+
+					// * Color
+					//SiProp = "                    ['color'] = STRING( '"+ ColorUtility.ToHtmlStringRGBA(SiMarkers[s].Kolor) + "' ),";
+					SiProp = ParsingStructureData.LuaMarkerProperty ("color", ParsingStructureData.ToLuaStringVaue (ColorUtility.ToHtmlStringRGBA(SiMarkers[s].Kolor).ToLower()));
+					NewSi = NewSi.Replace("['color']", SiProp);
 
 					Vector3 MexPos = HeightmapControler.MapWorldPosInSave( GetPosOfMarkerId(3, s) );
-					string Position = "                    ['position'] = VECTOR3( "+ MexPos.x.ToString() +", "+ MexPos.y.ToString() +", "+ MexPos.z.ToString() +" ),";
+					string Position = ParsingStructureData.Save_Position.Replace("#", Vector3ToLua(MexPos));
 					NewSi = NewSi.Replace("['position']", Position);
+
+					Position = ParsingStructureData.Save_Rotation.Replace("#", Vector3ToLua(SiMarkers [s].orientation));
+					NewSi = NewSi.Replace("['orientation']", Position);
 					
 					SaveData += NewSi + "\n";
 
@@ -832,17 +1018,80 @@ public class MapLuaParser : MonoBehaviour {
 				
 			}
 			else if(line.Contains("[*ARMYS*]")){
-				for(int a = 0; a < ARMY_.Count; a++){
+				/*for(int a = 0; a < ARMY_.Count; a++){
 
 					SaveData += "        ['ARMY_" + (a + 1).ToString() + "'] =  \n";
 					SaveData += ArmyStructure;
 					SaveData += "\n";
 				}
+				//SaveData += line;
 			}
 			else{
 				SaveData += line;
 			}
+		}*/
+
+
+		string ArmyUnitsStructure = LuaHelper.GetStructureText ("save_army.lua");
+		string ArmyUnitGruopStructure = LuaHelper.GetStructureText ("save_armyunits.lua");
+		string ArmyUnitStructure = LuaHelper.GetStructureText ("save_armyunit.lua");
+
+		string SaveArmysData = "";
+		for(int a = 0; a < SaveArmys.Count; a++){
+			string NewArmySave = ArmyUnitsStructure;
+
+			NewArmySave = NewArmySave.Replace ("[name]", SaveArmys [a].Name);
+
+			NewArmySave = NewArmySave.Replace ("[Alliances]", "");
+
+			NewArmySave = NewArmySave.Replace ("[personality]", SaveArmys [a].personality);
+			NewArmySave = NewArmySave.Replace ("[plans]", SaveArmys [a].plans);
+			NewArmySave = NewArmySave.Replace ("[color]", SaveArmys [a].color.ToString());
+			NewArmySave = NewArmySave.Replace ("[faction]", SaveArmys [a].faction.ToString());
+
+			NewArmySave = NewArmySave.Replace ("[mass]", SaveArmys [a].EconomyMass.ToString());
+			NewArmySave = NewArmySave.Replace ("[energy]", SaveArmys [a].EconomyEnergy.ToString());
+
+			NewArmySave = NewArmySave.Replace ("[armyorders]", SaveArmys [a].UnitsOrders);
+			NewArmySave = NewArmySave.Replace ("[armyplatoon]", SaveArmys [a].UnitsPlatoon);
+			string AllUnitGroups = "";
+
+			for (int i = 0; i < SaveArmys [a].Units.Count; i++) {
+				string NewUnitsGroup = ArmyUnitGruopStructure;
+
+				NewUnitsGroup = NewUnitsGroup.Replace ("[name]", SaveArmys [a].Units [i].Name);
+				NewUnitsGroup = NewUnitsGroup.Replace ("[orders]", SaveArmys [a].Units [i].orders);
+				NewUnitsGroup = NewUnitsGroup.Replace ("[platoon]", SaveArmys [a].Units [i].platoon);
+
+				string UnitsArray = "";
+				for (int u = 0; u < SaveArmys [a].Units [i].Units.Count; u++) {
+					string NewUnit = ArmyUnitStructure;
+
+					NewUnit = NewUnit.Replace ("[name]", SaveArmys [a].Units [i].Units [u].Name);
+					NewUnit = NewUnit.Replace ("[type]", SaveArmys [a].Units [i].Units [u].type);
+					NewUnit = NewUnit.Replace ("[orders]", SaveArmys [a].Units [i].Units [u].orders);
+					NewUnit = NewUnit.Replace ("[platoon]", SaveArmys [a].Units [i].Units [u].platoon);
+
+					NewUnit = NewUnit.Replace ("[position]", ParsingStructureData.ToLuaSimpleVector3Value( SaveArmys [a].Units [i].Units [u].Position));
+					NewUnit = NewUnit.Replace ("[rotation]", ParsingStructureData.ToLuaSimpleVector3Value( SaveArmys [a].Units [i].Units [u].Orientation));
+
+					//if (u > 0)
+					//	UnitsArray += "\n";
+					UnitsArray += "\n" + NewUnit;
+				}
+				NewUnitsGroup = NewUnitsGroup.Replace ("[UnitsArray]", UnitsArray);
+
+				if (i > 0)
+					AllUnitGroups += "\n";
+				AllUnitGroups += NewUnitsGroup;
+			}
+			NewArmySave = NewArmySave.Replace ("[armyunits]", AllUnitGroups);
+			if (a > 0)
+				SaveArmysData += "\n";
+			SaveArmysData += NewArmySave;
 		}
+		SaveData = SaveData.Replace ("[ARMYS]", SaveArmysData);
+
 
 		string MapPath = PlayerPrefs.GetString("MapsPath", "maps/");
 		string SaveFilePath = ScenarioData.SaveLua.Replace("/maps/", MapPath);
@@ -851,6 +1100,8 @@ public class MapLuaParser : MonoBehaviour {
 		char[] NameSeparator = ("/").ToCharArray();
 		string[] Names = FileName.Split(NameSeparator);
 		System.IO.File.Move(SaveFilePath, BackupPath + "/" + Names[Names.Length - 1]);
+
+		SaveData = SaveData.Replace ("\r", "");
 
 		System.IO.File.WriteAllText(SaveFilePath, SaveData);
 	}
@@ -879,6 +1130,44 @@ public class MapLuaParser : MonoBehaviour {
 		
 		System.IO.File.WriteAllText(SaveFilePath, SaveData);
 	}
+
+	#endregion
+
+	public static string Vector3ToLua(Vector3 vec){
+		return vec.x.ToString() +", "+ vec.y.ToString() +", "+ vec.z.ToString();
+	}
+
+	#region Map functions
+	public void SortArmys(){
+		List<Army> NewArmys = new List<Army>();
+		for(int i = 0; i < ARMY_.Count; i++){
+			for(int a = 0; a < ARMY_.Count; a++){
+				if(ARMY_[a].name == "ARMY_" + (i + 1).ToString()){
+					NewArmys.Add(ARMY_[a]);
+					break;
+				}
+			}
+		}
+
+		ARMY_ = NewArmys;
+	}
+
+	public void UpdateArea(){
+
+		if(ScenarioData.Area.width == 0 && ScenarioData.Area.height == 0){
+			ScenarioData.DefaultArea = false;
+			HeightmapControler.TerrainMaterial.SetInt("_Area", ScenarioData.DefaultArea?1:0);
+			return;
+		}
+		HeightmapControler.TerrainMaterial.SetInt("_Area", ScenarioData.DefaultArea?1:0);
+		HeightmapControler.TerrainMaterial.SetFloat("_AreaX", ScenarioData.Area.x / 10f);
+		HeightmapControler.TerrainMaterial.SetFloat("_AreaY", ScenarioData.Area.y / 10f);
+		HeightmapControler.TerrainMaterial.SetFloat("_AreaWidht", ScenarioData.Area.width / 10f);
+		HeightmapControler.TerrainMaterial.SetFloat("_AreaHeight", ScenarioData.Area.height / 10f);
+	}
+	#endregion
+
+	#region Marker functions
 
 	public Vector3 GetPosOfMarker(EditMap.EditingMarkers.WorkingElement Element){
 		switch(Element.ListId){
@@ -939,25 +1228,32 @@ public class MapLuaParser : MonoBehaviour {
 		return null;
 	}
 
+	#endregion
+
+	#region Marker Create & Destroy
+
 	public void CreateMarker(int MarkerType, Vector3 position, string name){
 		if(MarkerType == 0){
 			ARMY_.Add(new Army());
 			ARMY_[ARMY_.Count - 1].name = "ARMY_" + ARMY_.Count.ToString();
 			ARMY_[ARMY_.Count - 1].position = position;
+			AddSaveArmy (ARMY_ [ARMY_.Count - 1].name);
 		}
 		else if(MarkerType == 1){
+			MexTotalCount++;
 			Mexes.Add(new Mex());
-			Mexes[Mexes.Count - 1].name = "Mex_" + Mexes.Count.ToString();
+			Mexes[Mexes.Count - 1].name = ParsingStructureData.MexName.Replace("#", MexTotalCount.ToString(ParsingStructureData.MarkerIdToString));
 			Mexes[Mexes.Count - 1].position = position;
 		}
 		else if(MarkerType == 2){
+			HydrosTotalCount++;
 			Hydros.Add(new Hydro());
-			Hydros[Hydros.Count - 1].name = "Hydro_" + Hydros.Count.ToString();
+			Hydros[Hydros.Count - 1].name = ParsingStructureData.HydroName.Replace("#", HydrosTotalCount.ToString(ParsingStructureData.MarkerIdToString));
 			Hydros[Hydros.Count - 1].position = position;
 		}
 		else if(MarkerType == 3){
 			SiMarkers.Add(new Marker());
-			SiMarkers[SiMarkers.Count - 1].name = "AI_" + SiMarkers.Count.ToString();
+			SiMarkers[SiMarkers.Count - 1].name = "AI_" + SiTotalCount.ToString(ParsingStructureData.MarkerIdToString);
 			SiMarkers[SiMarkers.Count - 1].position = position;
 		}
 		MarkerRend.Regenerate();
@@ -994,7 +1290,10 @@ public class MapLuaParser : MonoBehaviour {
 					break;
 				}
 			}
-			if(!InTrash) NewArmy_.Add( ARMY_[i]);
+			if (!InTrash) {
+				RemoveSaveArmy (ARMY_ [i].name);
+				NewArmy_.Add (ARMY_ [i]);
+			}
 		}
 
 		for (int i = 0; i < Mexes.Count; i++) {
@@ -1057,4 +1356,43 @@ public class MapLuaParser : MonoBehaviour {
 			break;
 		}
 	}
+
+	public void AddSaveArmyMarker(string name){
+		for (int i = 0; i < ARMY_.Count; i++) {
+			if (ARMY_ [i].name == name)
+				return;
+		}
+
+		ARMY_.Add(new Army());
+		ARMY_[ARMY_.Count - 1].name = name;
+		ARMY_ [ARMY_.Count - 1].Hidden = true;
+		ARMY_[ARMY_.Count - 1].position = Vector3.zero;
+		//AddSaveArmy (ARMY_ [ARMY_.Count - 1].name);
+	}
+
+	public void RemoveSaveArmy(string name){
+		for (int i = 0; i < SaveArmys.Count; i++) {
+			if (SaveArmys [i].Name == name) {
+				SaveArmys.RemoveAt (i);
+				break;
+			}
+		}
+	}
+
+	public void AddSaveArmy(string name){
+		SaveArmy NewArmy = new SaveArmy ();
+		NewArmy.Name = name;
+		SaveArmys.Add (NewArmy);
+	}
+
+	public int GetHigestArmy(){
+		int ToReturn = 0;
+		for (int i = 0; i < ARMY_.Count; i++) {
+			if (ARMY_ [i].Id > ToReturn)
+				ToReturn = ARMY_ [i].Id;
+		}
+		return ToReturn;
+	}
+
+	#endregion
 }

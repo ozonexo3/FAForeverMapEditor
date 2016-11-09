@@ -1,4 +1,6 @@
-﻿Shader "MapEditor/FaWater" {
+﻿// Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
+
+Shader "MapEditor/FaWater" {
 	Properties {
 		waterColor  ("waterColor", Color) = (0.0, 0.7, 1.5, 1)
 		_UtilitySamplerC ("_UtilitySamplerC", 2D) = "white" {}
@@ -15,12 +17,14 @@
 		_WaterScale ("Water Scale", Range (-5000, -500)) = -102.4
 	}
     SubShader {
-    Tags { "Queue"="Transparent+100" "RenderType"="Transparent" }
+    Tags { "Queue"="Transparent" "RenderType"="Transparent" }
+   		Offset 1000, 0
 	    GrabPass 
 	     {
+	     "_WaterGrabTexture"
 	     } 
         Pass {
-			
+			Offset 0, 0
 			LOD 200
 			Blend SrcAlpha OneMinusSrcAlpha
 			
@@ -49,7 +53,7 @@
 			// 3 repeat rate for 3 texture layers
 			float4  normalRepeatRate = float4(0.0009, 0.009, 0.05, 0.5);
 			
-			
+
 			// 3 vectors of normal movements
 			//float2 normal1Movement = float2(0.5, -0.95);
 			float2 normal1Movement = float2(5.5, -9.95);
@@ -58,8 +62,8 @@
 			float2 normal4Movement = float2(0.0005, 0.0009);
 			
 			//*********** End Water Params
-			sampler2D _GrabTexture;
-			
+			sampler2D _WaterGrabTexture;
+
 
 		    struct vertexInput {
 		        float4 vertex : POSITION;
@@ -96,9 +100,9 @@
 		        //o.mScreenPos = mul (UNITY_MATRIX_MVP, float4(0,0,0,1));
 		        //o.mScreenPos.xy /= o.mScreenPos.w;
 		        
-		        o.mViewVec = mul (_Object2World, i.vertex).xyz - _WorldSpaceCameraPos;
+		        o.mViewVec = mul (unity_ObjectToWorld, i.vertex).xyz - _WorldSpaceCameraPos;
 		        o.mViewVec = normalize(o.mViewVec);
-		        o.AddVar = float4(length(_WorldSpaceCameraPos - (_Object2World, i.vertex).xyz), 0, 0, 0);
+		        o.AddVar = float4(length(_WorldSpaceCameraPos - mul(unity_ObjectToWorld, i.vertex).xyz), 0, 0, 0);
 
 		        float4 hpos = mul (UNITY_MATRIX_MVP, i.vertex);
 		        o.GrabPos = ComputeGrabScreenPos(hpos);
@@ -140,7 +144,7 @@
 			    float2 screenPos = UNITY_PROJ_COORD(i.mScreenPos.xy);
 			    
    				// calculate the background pixel
-   				float4 backGroundPixels = tex2D( _GrabTexture, UNITY_PROJ_COORD(i.GrabPos) );
+   				float4 backGroundPixels = tex2D( _WaterGrabTexture, UNITY_PROJ_COORD(i.GrabPos) );
     			float mask = saturate(backGroundPixels.a * 255);
 		    
 		        // calculate the normal we will be using for the water surface
@@ -171,7 +175,7 @@
 			    refractionPos -=  0.015 * N.xz * 10;
 		    	
 		    	// calculate the refract pixel, corrected for fetching a non-refractable pixel
-			    float4 refractedPixels = tex2D( _GrabTexture, UNITY_PROJ_COORD(i.GrabPos));
+			    float4 refractedPixels = tex2D( _WaterGrabTexture, UNITY_PROJ_COORD(i.GrabPos));
 			    // because the range of the alpha value that we use for the water is very small
 			    // we multiply by a large number and then saturate
 			    // this will also help in the case where we filter to an intermediate value

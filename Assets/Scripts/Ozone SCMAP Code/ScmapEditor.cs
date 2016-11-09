@@ -8,12 +8,11 @@ using UnityStandardAssets.ImageEffects;
 
 public class ScmapEditor : MonoBehaviour {
 
-	const bool SaveStratumToPng = false; // Can save stratum masks to debug if everything is ok
+	static bool SaveStratumToPng = false; // Can save stratum masks to debug if everything is ok
 
 	public		Terrain			Teren;
 	public		TerrainData		Data;
 	public		Transform		WaterLevel;
-	public		MapLuaParser	Scenario;
 	public		Camera			Kamera;
 	private		float[,] 		heights = new float[1,1];
 	public		Light			Sun;
@@ -51,7 +50,7 @@ public class ScmapEditor : MonoBehaviour {
 		map = new Map();
 
 		string MapPath = PlayerPrefs.GetString("MapsPath", "maps/");
-		string path = Scenario.ScenarioData.Scmap.Replace("/maps/", MapPath);
+		string path = MapLuaParser.Current.ScenarioData.Scmap.Replace("/maps/", MapPath);
 
 		Debug.Log("Load SCMAP file: " + path);
 
@@ -79,13 +78,13 @@ public class ScmapEditor : MonoBehaviour {
 			StopCoroutine( "LoadScmapFile" );
 		}
 
-		Scenario.ScenarioData.MaxHeight = map.Water.Elevation;
+		MapLuaParser.Current.ScenarioData.MaxHeight = map.Water.Elevation;
 		MapLuaParser.Water = map.Water.HasWater;
 		WaterLevel.gameObject.SetActive(map.Water.HasWater);
 
 		// Set Variables
-		int xRes = (int)Scenario.ScenarioData.Size.x;
-		int zRes = (int)Scenario.ScenarioData.Size.y;
+		int xRes = (int)MapLuaParser.Current.ScenarioData.Size.x;
+		int zRes = (int)MapLuaParser.Current.ScenarioData.Size.y;
 		float yRes = (float)map.HeightScale;;
 		float HeightResize = 512 * 40;
 
@@ -207,14 +206,14 @@ public class ScmapEditor : MonoBehaviour {
 		TerrainMaterial.SetFloat("_Splat6Scale", map.Width /Textures[7].AlbedoScale);
 		TerrainMaterial.SetFloat("_Splat7Scale", map.Width /Textures[8].AlbedoScale);
 
-		TerrainMaterial.SetTexture("_Normal0", Textures[1].Normal);
-		TerrainMaterial.SetTexture("_Normal1", Textures[2].Normal);
-		TerrainMaterial.SetTexture("_Normal2", Textures[3].Normal);
-		TerrainMaterial.SetTexture("_Normal3", Textures[4].Normal);
-		TerrainMaterial.SetTexture("_Normal4", Textures[5].Normal);
-		TerrainMaterial.SetTexture("_Normal5", Textures[6].Normal);
-		TerrainMaterial.SetTexture("_Normal6", Textures[7].Normal);
-		TerrainMaterial.SetTexture("_Normal7", Textures[8].Normal);
+		TerrainMaterial.SetTexture("_SplatNormal0", Textures[1].Normal);
+		TerrainMaterial.SetTexture("_SplatNormal1", Textures[2].Normal);
+		TerrainMaterial.SetTexture("_SplatNormal2", Textures[3].Normal);
+		TerrainMaterial.SetTexture("_SplatNormal3", Textures[4].Normal);
+		TerrainMaterial.SetTexture("_SplatNormal4", Textures[5].Normal);
+		TerrainMaterial.SetTexture("_SplatNormal5", Textures[6].Normal);
+		TerrainMaterial.SetTexture("_SplatNormal6", Textures[7].Normal);
+		TerrainMaterial.SetTexture("_SplatNormal7", Textures[8].Normal);
 
 
 		TerrainMaterial.SetFloat("_Splat0ScaleNormal", map.Width / Textures[1].NormalScale);
@@ -245,7 +244,7 @@ public class ScmapEditor : MonoBehaviour {
 		Debug.Log("Set Heightmap to map " + map.Width + ", " + map.Height);
 
 		string MapPath = PlayerPrefs.GetString("MapsPath", "maps/");
-		string path = Scenario.ScenarioData.Scmap.Replace("/maps/", MapPath);
+		string path = MapLuaParser.Current.ScenarioData.Scmap.Replace("/maps/", MapPath);
 
 		//TODO force values if needed
 
@@ -266,7 +265,7 @@ public class ScmapEditor : MonoBehaviour {
 			256 / 10.0f
 			);
 		
-		if(map != null) WaterLevel.transform.localScale = new Vector3(map.Width * 0.1f, Scenario.ScenarioData.WaterLevels.x, map.Height * 0.1f);
+		if(map != null) WaterLevel.transform.localScale = new Vector3(map.Width * 0.1f, MapLuaParser.Current.ScenarioData.WaterLevels.x, map.Height * 0.1f);
 		if(Teren) Teren.transform.localPosition = new Vector3(-xRes / 20.0f, 1, -zRes / 20.0f);
 		
 		// Modify heights array data

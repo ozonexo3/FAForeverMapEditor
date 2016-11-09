@@ -38,7 +38,7 @@ public class EditorSettings : MonoBehaviour {
 		gameObject.SetActive(false);
 
 		PlayerPrefs.SetInt("UndoHistry", (int)HistorySlider.value);
-		History.MaxHistoryLength = (int)HistorySlider.value;
+		if(History)History.MaxHistoryLength = (int)HistorySlider.value;
 
 		PlayerPrefs.Save();
 	}

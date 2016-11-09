@@ -11,7 +11,7 @@ using ICSharpCode.SharpZipLib.BZip2;
 #pragma warning disable 0162
 
 public class GetGamedataFile : MonoBehaviour {
-	const bool DebugTextureLoad = false;
+	static bool DebugTextureLoad = false;
 
 	public static	string			GameDataPath;
 	public			ScmapEditor		Scmap;
@@ -57,6 +57,8 @@ public class GetGamedataFile : MonoBehaviour {
 				s.Read(FinalTextureData2, 0, FinalTextureData2.Length);
 			}
 
+			//Debug.Log(LocalPath);
+
 			TextureFormat format = GetFormatOfDdsBytes(FinalTextureData2);
 			bool Mipmaps = LoadDDsHeader.mipmapcount > 0;
 			Texture2D texture = new Texture2D((int)LoadDDsHeader.width, (int)LoadDDsHeader.height, format, Mipmaps, true);
@@ -64,8 +66,16 @@ public class GetGamedataFile : MonoBehaviour {
 			int DDS_HEADER_SIZE = 128;
 			byte[] dxtBytes = new byte[FinalTextureData2.Length - DDS_HEADER_SIZE];
 			Buffer.BlockCopy(FinalTextureData2, DDS_HEADER_SIZE, dxtBytes, 0, FinalTextureData2.Length - DDS_HEADER_SIZE);
-			texture.LoadRawTextureData(dxtBytes);
-			texture.Apply(false);
+
+			if(IsDxt3){
+				texture = DDS.DDSReader.LoadDDSTexture( new MemoryStream(FinalTextureData2), false).ToTexture2D();
+				texture.Apply(false);
+			}
+			else{
+				texture.LoadRawTextureData(dxtBytes);
+				texture.Apply(false);
+			}
+
 
 			if(NormalMap){
 				texture.Compress(true);
@@ -149,7 +159,7 @@ public class GetGamedataFile : MonoBehaviour {
 		public		uint caps4;
 	}
 
-
+	bool IsDxt3 = false;
 	public TextureFormat GetFormatOfDdsBytes(byte[] bytes){
 
 		Stream ms = new MemoryStream(bytes);
@@ -217,7 +227,7 @@ public class GetGamedataFile : MonoBehaviour {
 
 
 	public TextureFormat ReadFourcc(uint fourcc){
-
+		IsDxt3 = false;
 		if(DebugTextureLoad) Debug.Log(
 			"Size: " + LoadDDsHeader.size +
 			" flags: " + LoadDDsHeader.flags +
@@ -239,6 +249,9 @@ public class GetGamedataFile : MonoBehaviour {
 
 
 		switch(LoadDDsHeader.pixelformatFourcc){
+		case 861165636:
+			IsDxt3 = true;
+			return TextureFormat.DXT5;
 		case 827611204:
 			return TextureFormat.DXT1;
 		case 894720068:
@@ -259,4 +272,7 @@ public class GetGamedataFile : MonoBehaviour {
 		
 		return TextureFormat.DXT5;
 	}
+
+
+
 }

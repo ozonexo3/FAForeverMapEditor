@@ -1,22 +1,27 @@
 ﻿<Properties StartupItem="Assembly-CSharp.csproj">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Unity.Instance.Unity Editor" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Common\EditorVersion.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Ozone SCMAP Code\MapLuaParser.cs">
     <Files>
-      <File FileName="Assets\Scripts\UI\Lists\MarkersList.cs" Line="44" Column="2" />
-      <File FileName="Assets\Scripts\UI\Tools\StratumInfo.cs" Line="1" Column="1" />
-      <File FileName="Assets\Trash\TextureLoader.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\HazardX SCMAP Code\Map.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\Ozone SCMAP Code\MapLuaParser.cs" Line="789" Column="101" />
+      <File FileName="Assets\LUA\LuaHelper.cs" Line="159" Column="10" />
+      <File FileName="Assets\Scripts\Ozone SCMAP Code\ParsingStructureData.cs" Line="44" Column="11" />
+      <File FileName="Assets\Scripts\Ozone SCMAP Code\CameraControler.cs" Line="1" Column="1" />
       <File FileName="Assets\Scripts\Ozone SCMAP Code\ScmapEditor.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\UI\Windows\SearchMapPopup.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\UI\Lists\MapSearchListField.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\Common\EditorVersion.cs" Line="1" Column="1" />
+      <File FileName="Assets\Editor\BuildSettings.cs" Line="1" Column="1" />
       <File FileName="Assets\Scripts\Ozone SCMAP Code\GamedataBlueprints.cs" Line="1" Column="1" />
-      <File FileName="Assets\Trash\Terrain_Heightmap.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\UI\Tools\LightingInfo.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\Ozone SCMAP Code\MapLuaParser.cs" Line="201" Column="3" />
-      <File FileName="Assets\Scripts\Ozone SCMAP Code\CameraControler.cs" Line="608" Column="82" />
-      <File FileName="Assets\Scripts\UI\MarkersRenderer.cs" Line="46" Column="24" />
-      <File FileName="Assets\Scripts\UI\Tools\MapInfo.cs" Line="18" Column="26" />
-      <File FileName="Assets\Scripts\UI\Windows\SymmetryWindow.cs" Line="19" Column="6" />
-      <File FileName="Assets\Scripts\UI\Tools\EditingMarkers.cs" Line="63" Column="4" />
-      <File FileName="Assets\Scripts\Common\EditorVersion.cs" Line="12" Column="1" />
+      <File FileName="Assets\Scripts\UI\Tools\PropsReader.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\Undo\HistoryObjects\HistoryMarkersChange.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\Undo\Undo.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\UI\Tools\EditingMarkers.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\HazardX SCMAP Code\Map.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\Ozone SCMAP Code\GetGamedataFile.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\Tes\UnityBinaryReader.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\Tes\DDSReader.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\Tes\Texture2DInfo.cs" Line="1" Column="1" />
+      <File FileName="Assets\GFX\Shaders\FaTerrainShader.shader" Line="393" Column="6" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

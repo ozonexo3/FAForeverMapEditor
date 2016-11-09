@@ -11,7 +11,9 @@ using ICSharpCode.SharpZipLib.BZip2;
 public class GamedataBlueprints : MonoBehaviour {
 
 	public static string[] GetBlueprint(string scd, string LocalPath){
-		Debug.Log( LocalPath );
+		if (string.IsNullOrEmpty (LocalPath))
+			return null;
+		//Debug.Log( LocalPath );
 		string[] ToReturn = new string[0];
 
 
@@ -24,7 +26,7 @@ public class GamedataBlueprints : MonoBehaviour {
 
 		ZipFile zf = null;
 		try {
-			Debug.Log("Get gamedata scd: " + GetGamedataFile.GameDataPath + scd);
+			//Debug.Log("Get gamedata scd: " + GetGamedataFile.GameDataPath + scd);
 			FileStream fs = File.OpenRead(GetGamedataFile.GameDataPath + scd);
 			zf = new ZipFile(fs);
 

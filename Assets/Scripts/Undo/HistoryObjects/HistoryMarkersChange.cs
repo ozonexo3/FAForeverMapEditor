@@ -13,4 +13,6 @@ public class HistoryMarkersChange : MonoBehaviour {
 	public		List<EditingMarkers.WorkingElement>			Selected = new List<EditingMarkers.WorkingElement>();
 	public		EditingMarkers.SymmetrySelection[]			SymmetrySelectionList = new EditingMarkers.SymmetrySelection[0];
 
+	public		List<MapLuaParser.SaveArmy> 		SaveArmys = new List<MapLuaParser.SaveArmy>();
+
 }
