@@ -109,7 +109,7 @@ public class SearchMapPopup : MonoBehaviour {
 		count++;
 
 		for (int i = 0; i < Files.Length; i++) {
-			if(!Files[i].EndsWith(".lua")) continue;
+			if(!Files[i].EndsWith(".lua") || !Files[i].Contains("scenario")) continue;
 			GameObject newList = Instantiate(ListPrefab, Pivot.position, Quaternion.identity) as GameObject;
 			newList.GetComponent<RectTransform>().SetParent(Pivot);
 			newList.GetComponent<RectTransform>().localPosition = Vector3.up * ((Margin * -count));

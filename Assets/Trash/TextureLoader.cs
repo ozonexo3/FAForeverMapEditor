@@ -28,8 +28,31 @@ public static class TextureLoader
 		Texture2D texture = new Texture2D((int)header.width, (int)header.height, header.Format, false);
 		texture.LoadRawTextureData(dxtBytes);
 		texture.Apply();
-		
+
 		return texture;
+	}
+
+	public static Texture2D ConvertToRGBA(Texture2D texture){
+		Texture2D texture2 = new Texture2D(texture.width, texture.height, TextureFormat.RGBA32, false);
+		texture2.SetPixels (texture.GetPixels ());
+		texture2.Apply ();
+		return texture2;
+	}
+
+	public static Texture2D ConvertToBGRA(Texture2D texture){
+		Texture2D texture2 = new Texture2D(texture.width, texture.height, TextureFormat.RGBA32, false);
+		//texture2.SetPixels (texture.GetPixels ());
+		//texture2.Apply ();
+		//texture2.LoadRawTextureData (texture.GetRawTextureData);
+		for (int x = 0; x < texture.width; x++) {
+			for (int y = 0; y < texture.width; y++) {
+				Color NewPixel = texture.GetPixel (x, y);
+				texture2.SetPixel(x, y, new Color(NewPixel.b, NewPixel.g, NewPixel.r, NewPixel.a));
+			}
+		}
+		texture2.Apply ();
+
+		return texture2;
 	}
 
 	public static T[] Concat<T>(this T[] x, T[] y)

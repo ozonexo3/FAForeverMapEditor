@@ -11,4 +11,12 @@ public class GenericInfoPopup : MonoBehaviour {
 		InfoText.text = text;
 	}
 
+	public void Hide(){
+		gameObject.SetActive(false);
+	}
+
+	public void InvokeHide(){
+		Invoke("Hide", 4);
+	}
+
 }

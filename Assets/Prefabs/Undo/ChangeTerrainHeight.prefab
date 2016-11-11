@@ -8,7 +8,6 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 447826}
-  - 114: {fileID: 11483930}
   - 114: {fileID: 11443540}
   m_Layer: 0
   m_Name: ChangeTerrainHeight
@@ -26,6 +25,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -38,17 +38,6 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b59087ccd076fa94d8dbbd75a598dfc7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &11483930
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 108316}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 054b9e9d932ee7b4b8d17703b14cba7d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   UndoCommandName: Terrain Heightmap

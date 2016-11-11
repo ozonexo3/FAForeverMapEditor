@@ -17,6 +17,7 @@ public class MapHelperGui : MonoBehaviour {
 	public		StartingScreen			StartScreen;
 	public		LastMapsPopup			LastMapsList;
 	public		SearchMapPopup 			SearchMap;
+	public		GenericInfoPopup ErrorPopup;
 
 	static int More = 1;
 
@@ -90,6 +91,13 @@ public class MapHelperGui : MonoBehaviour {
 			StartScreen.UpdateFields();
 			break;
 		}
+	}
+
+	public void ReturnLoadingWithError(string Error){
+		Map = false;
+		OpenComposition(0);
+		ErrorPopup.Show (true, Error);
+		ErrorPopup.InvokeHide ();
 	}
 
 	public void OpenComposition(int id){

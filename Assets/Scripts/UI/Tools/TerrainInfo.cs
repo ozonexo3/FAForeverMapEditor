@@ -35,7 +35,6 @@ public class TerrainInfo : MonoBehaviour {
 
 
 	public		LayerMask				TerrainMask;
-	public		List<Texture2D>			Brushes;
 	public		List<Toggle>			BrushToggles;
 	public		ToggleGroup				ToogleGroup;
 
@@ -44,19 +43,25 @@ public class TerrainInfo : MonoBehaviour {
 	public bool Smooth;
 
 
+	PaintWithBrush.BrushData TerrainBrush = new PaintWithBrush.BrushData ();
+
 	void OnEnable(){
+		BrushGenerator.LoadBrushesh ();
+
 		if(!BrusheshLoaded) LoadBrushesh();
 		UpdateMenu();
 		TerrainMaterial.SetInt("_Brush", 1);
-		Brushes[SelectedFalloff].wrapMode = TextureWrapMode.Clamp;
-		Brushes[SelectedFalloff].mipMapBias = -1f;
-		TerrainMaterial.SetTexture("_BrushTex", (Texture)Brushes[SelectedFalloff]);
+		BrushGenerator.Brushes[SelectedFalloff].wrapMode = TextureWrapMode.Clamp;
+		BrushGenerator.Brushes[SelectedFalloff].mipMapBias = -1f;
+		TerrainMaterial.SetTexture("_BrushTex", (Texture)BrushGenerator.Brushes[SelectedFalloff]);
 	}
 
 	void OnDisable(){
 		TerrainMaterial.SetInt("_Brush", 0);
 	}
 
+
+	#region Load all brushesh
 	bool BrusheshLoaded = false;
 	string StructurePath;
 	public void LoadBrushesh(){
@@ -73,24 +78,15 @@ public class TerrainInfo : MonoBehaviour {
 			Debug.LogError("Cant find brush folder");
 			return;
 		}
-
-		string[] AllBrushFiles = Directory.GetFiles(StructurePath);
-		//Debug.Log("Found files: " + AllBrushFiles.Length + ", from path: " + StructurePath);
-		Brushes = new List<Texture2D>();
+			
 		BrushToggles = new List<Toggle>();
 
-		for(int i = 0; i < AllBrushFiles.Length; i++){
-			byte[] fileData;
-			fileData = File.ReadAllBytes(AllBrushFiles[i]);
-
-			Brushes.Add(new Texture2D(512, 512, TextureFormat.RGBA32, false));
-			Brushes[Brushes.Count - 1].LoadImage(fileData);
-
+		for(int i = 0; i < BrushGenerator.Brushes.Count; i++){
 			GameObject NewBrush = Instantiate(BrushListObject) as GameObject;
 			NewBrush.transform.SetParent(BrushListPivot, false);
 			NewBrush.transform.localScale = Vector3.one;
-			string ThisName = AllBrushFiles[i].Replace(StructurePath, "").Replace("/", "").Replace("\\", "");
-			BrushToggles.Add( NewBrush.GetComponent<BrushListId>().SetBrushList(ThisName, Brushes[Brushes.Count - 1], Brushes.Count - 1) );
+			string ThisName = BrushGenerator.BrushesNames[i];
+			BrushToggles.Add( NewBrush.GetComponent<BrushListId>().SetBrushList(ThisName, BrushGenerator.Brushes[i], i ));
 			NewBrush.GetComponent<BrushListId>().Controler = this;
 		}
 
@@ -109,6 +105,9 @@ public class TerrainInfo : MonoBehaviour {
 		foreach(Transform child in BrushListPivot) Destroy(child.gameObject);
 	}
 
+	#endregion
+
+	#region Update tool
 	bool TerainChanged = false;
 	float[,] beginHeights;
 
@@ -211,10 +210,10 @@ public class TerrainInfo : MonoBehaviour {
 		if(LastRotation != int.Parse(BrushRotation.text)){
 			LastRotation = int.Parse( BrushRotation.text);
 			if(LastRotation == 0){
-				BrushGenerator.RotatedBrush = Brushes[SelectedFalloff];
+				BrushGenerator.RotatedBrush = BrushGenerator.Brushes[SelectedFalloff];
 			}
 			else{
-				BrushGenerator.RotatedBrush = BrushGenerator.rotateTexture(Brushes[SelectedFalloff], LastRotation);
+				BrushGenerator.RotatedBrush = BrushGenerator.rotateTexture(BrushGenerator.Brushes[SelectedFalloff], LastRotation);
 			}
 
 			TerrainMaterial.SetTexture("_BrushTex", (Texture)BrushGenerator.RotatedBrush);
@@ -222,6 +221,9 @@ public class TerrainInfo : MonoBehaviour {
 		}
 		TerrainMaterial.SetFloat("_BrushSize", BrushSizeSlider.value );
 	}
+	#endregion
+
+	#region Set Heightmap
 
 	public void SetTerrainHeight(){
 		int h = Map.Teren.terrainData.heightmapHeight;
@@ -378,7 +380,9 @@ public class TerrainInfo : MonoBehaviour {
 		}
 		Map.Teren.terrainData.SetHeights(0, 0, data);
 	}
+	#endregion
 
+	#region Brush Update
 	int SelectedBrush = 0;
 	public void ChangeBrush(int id){
 		SelectedBrush = id;
@@ -387,14 +391,14 @@ public class TerrainInfo : MonoBehaviour {
 	int SelectedFalloff = 0;
 	public void ChangeFalloff(int id){
 		SelectedFalloff = id;
-		Brushes[SelectedFalloff].wrapMode = TextureWrapMode.Clamp;
-		Brushes[SelectedFalloff].mipMapBias = -1f;
+		BrushGenerator.Brushes[SelectedFalloff].wrapMode = TextureWrapMode.Clamp;
+		BrushGenerator.Brushes[SelectedFalloff].mipMapBias = -1f;
 		LastRotation = int.Parse( BrushRotation.text);
 		if(LastRotation == 0){
-			BrushGenerator.RotatedBrush = Brushes[SelectedFalloff];
+			BrushGenerator.RotatedBrush = BrushGenerator.Brushes[SelectedFalloff];
 		}
 		else{
-			BrushGenerator.RotatedBrush = BrushGenerator.rotateTexture(Brushes[SelectedFalloff], LastRotation);
+			BrushGenerator.RotatedBrush = BrushGenerator.rotateTexture(BrushGenerator.Brushes[SelectedFalloff], LastRotation);
 		}
 		TerrainMaterial.SetTexture("_BrushTex", (Texture)BrushGenerator.RotatedBrush);
 		BrushGenerator.GeneratePaintBrushesh();
@@ -420,9 +424,9 @@ public class TerrainInfo : MonoBehaviour {
 
 			Vector3 tempCoord = Map.Teren.gameObject.transform.InverseTransformPoint(BrushPos);
 			Vector3 coord  = Vector3.zero;
-			coord.x = (tempCoord.x -  (int)BrushSizeSlider.value * 0.05f) / Map.Teren.terrainData.size.x;
+			coord.x = (tempCoord.x -  (int)BrushSizeSlider.value * MapLuaParser.Current.ScenarioData.Size.x * 0.0001f) / Map.Teren.terrainData.size.x; // TODO 0.05 ?? this should be terrain proportion?
 			//coord.y = tempCoord.y / Map.Teren.terrainData.size.y;
-			coord.z = (tempCoord.z -  (int)BrushSizeSlider.value * 0.05f) / Map.Teren.terrainData.size.z;
+			coord.z = (tempCoord.z -  (int)BrushSizeSlider.value * MapLuaParser.Current.ScenarioData.Size.y * 0.0001f) / Map.Teren.terrainData.size.z;
 
 			TerrainMaterial.SetFloat("_BrushSize", BrushSizeSlider.value );
 			TerrainMaterial.SetFloat("_BrushUvX", coord.x );
@@ -432,19 +436,41 @@ public class TerrainInfo : MonoBehaviour {
 		}
 		return false;
 	}
-
+	#endregion
 
 	void SymmetryPaint(){
 		BrushGenerator.GenerateSymmetry(BrushPos);
+		/*
 
+		float[,] AllHeights = Map.Teren.terrainData.GetHeights (0, 0, Map.Teren.terrainData.heightmapWidth, Map.Teren.terrainData.heightmapHeight);
+
+		TerrainBrush.size = (int)BrushSizeSlider.value;
+		TerrainBrush.strength = BrushStrengthSlider.value;
+		TerrainBrush.Invert = Invert;
+		TerrainBrush.MinMax = new Vector2 (Min, Max);
+
+		if (Smooth || SelectedBrush == 2) {
+			TerrainBrush.BrushType = PaintWithBrush.BrushTypes.Smooth;
+		} else if (SelectedBrush == 3) {
+			TerrainBrush.BrushType = PaintWithBrush.BrushTypes.Sharpen;
+		}
+		else{
+			TerrainBrush.BrushType = PaintWithBrush.BrushTypes.Standard;
+			}
+
+		PaintWithBrush.PaintWithSymmetry (ref AllHeights, TerrainBrush);
+
+		Map.Teren.terrainData.SetHeights (0, 0, AllHeights);
+*/
 		for(int i = 0; i < BrushGenerator.PaintPositions.Length; i++){
 			Paint(BrushGenerator.PaintPositions[i], i);
 
 		}
-
-
+		Map.Teren.ApplyDelayedHeightmapModification ();
 	}
 
+
+	#region Old Painting
 	void Paint(Vector3 AtPosition, int id = 0){
 		int hmWidth = Map.Teren.terrainData.heightmapWidth;
 		int hmHeight = Map.Teren.terrainData.heightmapHeight;
@@ -492,8 +518,8 @@ public class TerrainInfo : MonoBehaviour {
 			CenterHeight /= size * size;
 		}
 
-		for (int i=0; i<(size - OffsetDown) - OffsetTop; i++){
-			for (int j=0; j<(size - OffsetLeft) - OffsetRight; j++){
+		for (int i = 0; i<(size - OffsetDown) - OffsetTop; i++){
+			for (int j = 0; j<(size - OffsetLeft) - OffsetRight; j++){
 				// Brush strength
 				int x = (int)(((i + OffsetDown) / (float)size) * BrushGenerator.PaintImage[id].width);
 				int y = (int)(((j + OffsetLeft) / (float)size) * BrushGenerator.PaintImage[id].height);
@@ -522,7 +548,8 @@ public class TerrainInfo : MonoBehaviour {
 			TerainChanged = true;
 		}
 
-		Map.Teren.terrainData.SetHeights(posXInTerrain-offset + OffsetLeft, posYInTerrain-offset + OffsetDown,heights);
+		Map.Teren.terrainData.SetHeightsDelayLOD(posXInTerrain-offset + OffsetLeft, posYInTerrain-offset + OffsetDown,heights);
 		Markers.UpdateMarkersHeights();
 	}
+	#endregion
 }

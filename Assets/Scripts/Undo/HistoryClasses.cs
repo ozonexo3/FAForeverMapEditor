@@ -14,5 +14,6 @@ namespace UndoHistory{
 		public		GameObject		MarkersSelection;
 		public		GameObject		MarkersChange;
 		public		GameObject		TerrainHeightChange;
+		public		GameObject		StratumPaint;
 	}
 }

@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using System.Runtime.InteropServices;
+using System.Windows.Forms;
 
 public class EditorSettings : MonoBehaviour {
 
@@ -42,4 +44,40 @@ public class EditorSettings : MonoBehaviour {
 
 		PlayerPrefs.Save();
 	}
+
+	[DllImport("user32.dll")]
+	private static extern void SaveFileDialog(); //in your case : OpenFileDialog
+
+	private void myMethod()
+	{
+		System.Windows.Forms.SaveFileDialog sfd = new System.Windows.Forms.SaveFileDialog();
+
+		//your code
+	}
+
+	public void BrowseMapPath(){
+
+		System.Windows.Forms.FolderBrowserDialog FolderDialog = new FolderBrowserDialog ();
+
+		FolderDialog.ShowNewFolderButton = false;
+		FolderDialog.Description = "Select 'Maps' folder.";
+
+		if (FolderDialog.ShowDialog() == DialogResult.OK)
+		{
+			MapsPathField.text = FolderDialog.SelectedPath;
+		}
+	}
+
+	public void BrowseGamedataPath(){
+		System.Windows.Forms.FolderBrowserDialog FolderDialog = new FolderBrowserDialog ();
+
+		FolderDialog.ShowNewFolderButton = false;
+		FolderDialog.Description = "Select 'Gamedata' folder in Supreme Commander Forget Alliance instalation directory.";
+
+		if (FolderDialog.ShowDialog() == DialogResult.OK)
+		{
+			PathField.text = FolderDialog.SelectedPath;
+		}
+	}
+
 }

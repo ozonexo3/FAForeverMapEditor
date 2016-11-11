@@ -266,36 +266,66 @@ public class MapLuaParser : MonoBehaviour {
 	bool LoadProps = true;
 
 	IEnumerator LoadingFile(){
-		// Begin load
-		InfoPopup.Show(true, "Loading map...");
-		yield return null;
-		// Scenario LUA
-		LoadScenarioLua();
-		yield return null;
 
-		// SCMAP
-		var LoadScmapFile = HeightmapControler.StartCoroutine( "LoadScmapFile");
-		yield return LoadScmapFile;
-		CamControll.RestartCam();
-
-		if(loadSave){
-		// Save LUA
-			LoadSaveLua();
-			yield return null;
+		bool AllFilesExists = true;
+		string MapPath = PlayerPrefs.GetString("MapsPath", "maps/");
+		string Error = "";
+		if (!System.IO.Directory.Exists (MapPath)) {
+			Error = "Map folder not exist: " + MapPath;
+			Debug.LogError (Error);
+			AllFilesExists = false;
 		}
 
-		// Finish Load
-		HelperGui.MapLoaded = true;
+		if (AllFilesExists && !System.IO.File.Exists (MapPath + FolderName + "/" + ScenarioFileName + ".lua")) {
+			//Debug.LogError ("Scenario.lua not exist: " + MapPath + FolderName + "/" + ScenarioFileName + ".lua");
+			Error = "Scenario.lua not exist: " + MapPath + FolderName + "/" + ScenarioFileName + ".lua";
+			Debug.LogError (Error);
+			AllFilesExists = false;
+		}
+			
 
-		// Load Props
-		if(LoadProps){
-			PropsReader.LoadProps(HeightmapControler);
-			yield return null;
+		GetGamedataFile.SetPath ();
+		if(AllFilesExists && !System.IO.File.Exists(GetGamedataFile.GameDataPath + "/env.scd")){
+			//Debug.LogError ("No source files in gamedata folder: " + GetGamedataFile.GameDataPath);
+			Error = "No source files in gamedata folder: " + GetGamedataFile.GameDataPath;
+			Debug.LogError (Error);
+			AllFilesExists = false;
 		}
 
-		InfoPopup.Show(false);
+		if (AllFilesExists) {
+			// Begin load
+			InfoPopup.Show (true, "Loading map...");
+			yield return null;
+			// Scenario LUA
+			LoadScenarioLua ();
+			yield return null;
 
-		EditMenu.Categorys[0].GetComponent<MapInfo>().UpdateFields();
+			// SCMAP
+			var LoadScmapFile = HeightmapControler.StartCoroutine ("LoadScmapFile");
+			yield return LoadScmapFile;
+			CamControll.RestartCam ();
+
+			if (loadSave) {
+				// Save LUA
+				LoadSaveLua ();
+				yield return null;
+			}
+
+			// Finish Load
+			HelperGui.MapLoaded = true;
+
+			// Load Props
+			if (LoadProps) {
+				PropsReader.LoadProps (HeightmapControler);
+				yield return null;
+			}
+
+			InfoPopup.Show (false);
+
+			EditMenu.Categorys [0].GetComponent<MapInfo> ().UpdateFields ();
+		} else {
+			HelperGui.ReturnLoadingWithError (Error);
+		}
 
 	}
 

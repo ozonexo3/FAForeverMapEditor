@@ -9,7 +9,7 @@ public class BrushListId : MonoBehaviour {
 	public		Toggle		ThisToggle;
 	public		RawImage	BrushImage;
 	public		TerrainInfo	Controler;
-
+	public		StratumInfo	Controler2;
 
 	public Toggle SetBrushList(string NewName, Texture2D NewTexture, int NewId){
 		Id = NewId;
@@ -19,6 +19,9 @@ public class BrushListId : MonoBehaviour {
 	}
 
 	public void PressToggle(){
-		Controler.ChangeFalloff(Id);
+		if (Controler)
+			Controler.ChangeFalloff (Id);
+		else if (Controler2)
+			Controler2.ChangeFalloff (Id);
 	}
 }

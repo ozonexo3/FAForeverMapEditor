@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 using UnityEngine;
-
+#pragma warning disable 0168
 /// <summary>
 /// An improved BinaryReader for Unity.
 /// </summary>

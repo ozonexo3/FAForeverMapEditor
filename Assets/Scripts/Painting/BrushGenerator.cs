@@ -2,12 +2,16 @@
 using System.Collections;
 using System.Collections.Generic;
 using EditMap;
+using System.IO;
 
 public class BrushGenerator : MonoBehaviour {
 
 
 	// This script generate brush textures for all symmetry options
 	// Generates positions and textures used to paint
+
+	public	static	List<Texture2D>			Brushes;
+	public static List<string> BrushesNames;
 
 
 	public static 		Texture2D 			RotatedBrush;
@@ -17,6 +21,39 @@ public class BrushGenerator : MonoBehaviour {
 	public static 		int 				LastSym = 0;
 
 
+	#region LoadBrushesh
+
+	/// <summary>
+	/// Loads all brush textures from structure brush folder
+	/// </summary>
+	public static void LoadBrushesh(){
+		
+		string StructurePath = MapLuaParser.StructurePath + "brush";
+
+		if(!Directory.Exists(StructurePath)){
+			Debug.LogError("Cant find brush folder");
+			return;
+		}
+
+		string[] AllBrushFiles = Directory.GetFiles(StructurePath);
+		Debug.Log("Found files: " + AllBrushFiles.Length + ", from path: " + StructurePath);
+		Brushes = new List<Texture2D>();
+		BrushesNames = new List<string> ();
+
+		for(int i = 0; i < AllBrushFiles.Length; i++){
+			byte[] fileData;
+			fileData = File.ReadAllBytes(AllBrushFiles[i]);
+
+			Brushes.Add(new Texture2D(512, 512, TextureFormat.RGBA32, false));
+			Brushes[Brushes.Count - 1].LoadImage(fileData);
+			BrushesNames.Add (AllBrushFiles [i].Replace (StructurePath, "").Replace ("/", "").Replace ("\\", ""));
+		}
+	}
+
+
+	#endregion
+
+	#region Symmetry
 	// Generate positions - need to be done before paint
 	public static void GenerateSymmetry(Vector3 Pos){
 		BrushPos = Pos;
@@ -144,11 +181,12 @@ public class BrushGenerator : MonoBehaviour {
 			break;
 		}
 	}
-
+	#endregion
 
 
 
 //***************************** MATH
+	#region Math
 
 	static Vector3 GetHorizonalSymetry(){
 		Vector3 MirroredPos = BrushPos - MapLuaParser.Current.MapCenterPoint;
@@ -239,6 +277,8 @@ public class BrushGenerator : MonoBehaviour {
 	}
 
 
+
+
 	public static Texture2D rotateTexture(Texture2D tex, float angle)
 	{
 		Texture2D rotImage = new Texture2D(tex.width, tex.height, tex.format, false);
@@ -259,7 +299,7 @@ public class BrushGenerator : MonoBehaviour {
 
 		x1 = x0;
 		y1 = y0;
-
+		Color[] AllPixels = new Color[w * h];
 		for (x = 0; x < tex.width; x++) {
 			x2 = x1;
 			y2 = y1;
@@ -268,14 +308,17 @@ public class BrushGenerator : MonoBehaviour {
 
 				x2 += dx_x;//rot_x(angle, x1, y1);
 				y2 += dx_y;//rot_y(angle, x1, y1);
-				rotImage.SetPixel ( (int)Mathf.Floor(y), (int)Mathf.Floor(x), getPixel(tex,x2, y2));
+
+
+				AllPixels [x + y * w] = getPixel (tex, x2, y2);
+				//rotImage.SetPixel ( (int)Mathf.Floor(y), (int)Mathf.Floor(x), getPixel(tex,x2, y2));
 			}
 
 			x1 += dy_x;
 			y1 += dy_y;
 
 		}
-
+		rotImage.SetPixels (AllPixels);
 		rotImage.Apply();
 		return rotImage;
 	}
@@ -328,4 +371,5 @@ public class BrushGenerator : MonoBehaviour {
 		rotImage.Apply();
 		return rotImage;
 	}
+	#endregion
 }

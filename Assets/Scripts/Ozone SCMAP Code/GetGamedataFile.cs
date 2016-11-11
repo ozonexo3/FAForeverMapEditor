@@ -20,7 +20,7 @@ public class GetGamedataFile : MonoBehaviour {
 	public static float MipmapBias = 0.5f;
 	public static int AnisoLevel = 10;
 
-	public void SetPath(){
+	public static void SetPath(){
 		GameDataPath = PlayerPrefs.GetString("GameDataPath", "gamedata/");
 	}
 

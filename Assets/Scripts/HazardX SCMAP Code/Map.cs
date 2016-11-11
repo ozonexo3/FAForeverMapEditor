@@ -504,14 +504,15 @@ public class Map
 
 		TextureMapHeader = GetGamedataFile.GetDdsFormat(TexturemapData);
 		TextureMapHeader.Format = TextureFormat.BGRA32;
-		TexturemapTex = TextureLoader.LoadTextureDXT(TexturemapData, TextureMapHeader);
+		//TexturemapTex = TextureLoader.LoadTextureDXT(TexturemapData, TextureMapHeader);
+		TexturemapTex = TextureLoader.ConvertToRGBA (TextureLoader.LoadTextureDXT (TexturemapData, TextureMapHeader));
 		TexturemapData = new byte[0];
 
         if (TexturemapData2.Length > 0)
         {
 			TextureMap2Header = GetGamedataFile.GetDdsFormat(TexturemapData2);
 			TextureMap2Header.Format = TextureFormat.BGRA32;
-			TexturemapTex2 = TextureLoader.LoadTextureDXT(TexturemapData2, TextureMap2Header);
+			TexturemapTex2 = TextureLoader.ConvertToRGBA (TextureLoader.LoadTextureDXT(TexturemapData2, TextureMap2Header));
 			TexturemapData2 = new byte[0];
         }
         else
@@ -829,11 +830,11 @@ public class Map
         if (VersionMinor < 56)
             _with2.Write(1);
 
-		SaveTexture(Stream, TexturemapTex, TextureMapHeader);
+		SaveTexture(Stream, TextureLoader.ConvertToBGRA(TexturemapTex), TextureMapHeader);
 
         if (VersionMinor >= 56)
         {
-			SaveTexture(Stream, TexturemapTex2, TextureMap2Header);
+			SaveTexture(Stream, TextureLoader.ConvertToBGRA(TexturemapTex2), TextureMap2Header);
         }
 
         _with2.Write(1);

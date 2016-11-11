@@ -94,9 +94,9 @@ public class LightingInfo : MonoBehaviour {
 		if(Slider){
 			LightMultipiler.text = LightMultipilerSlider.value.ToString("n2");
 
-			Debug.Log( RA_Slider.value.ToString("n1") );
+			//Debug.Log( RA_Slider.value.ToString("n1") );
 			RA.text = RA_Slider.value.ToString("n1");
-			Debug.Log(RA.text);
+			//Debug.Log(RA.text);
 			DA.text = DA_Slider.value.ToString("n1");
 
 			LightColorR.text = LightColorR_Slider.value.ToString("n2");
@@ -120,7 +120,7 @@ public class LightingInfo : MonoBehaviour {
 			LightMultipilerSlider.value = Mathf.Clamp (float.Parse (LightMultipiler.text), 0, 2);
 			LightMultipiler.text = LightMultipilerSlider.value.ToString();
 
-			Debug.Log(RA.text);
+			//Debug.Log(RA.text);
 			RA_Slider.value = Mathf.Clamp (float.Parse (RA.text), -180, 180);
 			RA.text = RA_Slider.value.ToString();
 

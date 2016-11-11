@@ -8,7 +8,6 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 494196}
-  - 114: {fileID: 11484596}
   - 114: {fileID: 11439614}
   m_Layer: 0
   m_Name: ChangeMapInfo
@@ -26,6 +25,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -40,23 +40,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 997ec0d57c1bde74586c2822b800bf22, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  UndoCommandName: Map info
+  UndoType: 0
   Name: 
   Desc: 
   Version: 0
   Script: 0
---- !u!114 &11484596
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 103088}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 054b9e9d932ee7b4b8d17703b14cba7d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  UndoCommandName: Map info
-  UndoType: 0
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1
