@@ -8,7 +8,7 @@ using EditMap;
 public class StratumInfo : MonoBehaviour {
 
 	public		StratumSettingsUi		StratumSettings;
-	public		Editing				Edit;
+	public		Editing					Edit;
 	public		ScmapEditor				Map;
 
 	public		int						Selected = 0;
@@ -111,6 +111,10 @@ public class StratumInfo : MonoBehaviour {
 	float SizeBeginValue;
 	bool ChangingSize;
 	void Update () {
+		if (StratumChangeCheck)
+			if (Input.GetMouseButtonUp (0))
+				StratumChangeCheck = false;
+		
 		if (Page_Paint.activeSelf) {
 			Invert = Input.GetKey (KeyCode.LeftAlt);
 			Smooth = Input.GetKey (KeyCode.LeftShift);
@@ -219,7 +223,9 @@ public class StratumInfo : MonoBehaviour {
 		StratumSettings.Stratum8_Mask.texture = Map.map.TexturemapTex2;
 	}
 
+	bool LoadingStratum = false;
 	public void SelectStratum(int newid){
+		LoadingStratum = true;
 		Selected = newid;
 
 		foreach(GameObject obj in Stratum_Selections) obj.SetActive(false);
@@ -235,6 +241,7 @@ public class StratumInfo : MonoBehaviour {
 
 		Stratum_Normal_Slider.value = Map.Textures[Selected].AlbedoScale;
 		Stratum_Normal_Input.text = Map.Textures[Selected].AlbedoScale.ToString();
+		LoadingStratum = false;
 	}
 
 
@@ -275,50 +282,77 @@ public class StratumInfo : MonoBehaviour {
 	public float Min = 0;
 	public float Max = 512;
 	int LastRotation = 0;
+	bool StratumChangeCheck = false;
+
 	public void UpdateStratumMenu(bool Slider = false){
 		if (!gameObject.activeSelf)
 			return;
-		if(Slider){
-			BrushSize.text = BrushSizeSlider.value.ToString();
-			BrushStrength.text = BrushStrengthSlider.value.ToString();
+
+		if (Page_Stratum.activeSelf) {
+			if (Slider) {
+				if (!StratumChangeCheck) {
+					StratumChangeCheck = true;
+					if(!LoadingStratum )
+						Undo.RegisterStratumChange (Selected);
+				}
+				Stratum_Albedo_Input.text = Stratum_Albedo_Slider.value.ToString ();
+				Stratum_Normal_Input.text = Stratum_Normal_Slider.value.ToString ();
+			} else {
+				if(!LoadingStratum )
+					Undo.RegisterStratumChange (Selected);
+				Stratum_Albedo_Slider.value = float.Parse (Stratum_Albedo_Input.text);
+				Stratum_Normal_Slider.value = float.Parse (Stratum_Normal_Input.text);
+			}
+
+			Map.Textures [Selected].AlbedoScale = Stratum_Albedo_Slider.value;
+			Map.Textures [Selected].NormalScale = Stratum_Normal_Slider.value;
+
+			Map.map.Layers [Selected].ScaleTexture = Map.Textures [Selected].AlbedoScale;
+			Map.map.Layers [Selected].ScaleNormalmap = Map.Textures [Selected].NormalScale;
+
+			Map.UpdateScales (Selected);
+
+		} else {
+			if (Slider) {
+				BrushSize.text = BrushSizeSlider.value.ToString ();
+				BrushStrength.text = BrushStrengthSlider.value.ToString ();
+				//BrushRotation.text = BrushRotationSlider.value.ToString();
+			} else {
+				BrushSizeSlider.value = float.Parse (BrushSize.text);
+				BrushStrengthSlider.value = int.Parse (BrushStrength.text);
+				//BrushRotationSlider.value = int.Parse(BrushRotation.text);
+			}
+
+			BrushSizeSlider.value = Mathf.Clamp (BrushSizeSlider.value, 1, 256);
+			BrushStrengthSlider.value = (int)Mathf.Clamp (BrushStrengthSlider.value, 0, 100);
+			//BrushRotationSlider.value = (int)Mathf.Clamp(BrushStrengthSlider.value, -360, 360);
+
+			BrushSize.text = BrushSizeSlider.value.ToString ();
+			BrushStrength.text = BrushStrengthSlider.value.ToString ();
 			//BrushRotation.text = BrushRotationSlider.value.ToString();
-		}
-		else{
-			BrushSizeSlider.value = float.Parse(BrushSize.text);
-			BrushStrengthSlider.value = int.Parse(BrushStrength.text);
-			//BrushRotationSlider.value = int.Parse(BrushRotation.text);
-		}
 
-		BrushSizeSlider.value = Mathf.Clamp(BrushSizeSlider.value, 1, 256);
-		BrushStrengthSlider.value = (int)Mathf.Clamp(BrushStrengthSlider.value, 0, 100);
-		//BrushRotationSlider.value = (int)Mathf.Clamp(BrushStrengthSlider.value, -360, 360);
+			Min = int.Parse (BrushMini.text);
+			Max = int.Parse (BrushMax.text);
 
-		BrushSize.text = BrushSizeSlider.value.ToString();
-		BrushStrength.text = BrushStrengthSlider.value.ToString();
-		//BrushRotation.text = BrushRotationSlider.value.ToString();
+			Min = Mathf.Clamp (Min, 0, Max);
+			Max = Mathf.Clamp (Max, Min, 90);
 
-		Min = int.Parse(BrushMini.text);
-		Max = int.Parse(BrushMax.text);
+			BrushMini.text = Min.ToString ("0");
+			BrushMax.text = Max.ToString ("0");
 
-		Min = Mathf.Clamp (Min, 0, Max);
-		Max = Mathf.Clamp (Max, Min, 90);
+			if (LastRotation != int.Parse (BrushRotation.text)) {
+				LastRotation = int.Parse (BrushRotation.text);
+				if (LastRotation == 0) {
+					BrushGenerator.RotatedBrush = BrushGenerator.Brushes [SelectedFalloff];
+				} else {
+					BrushGenerator.RotatedBrush = BrushGenerator.rotateTexture (BrushGenerator.Brushes [SelectedFalloff], LastRotation);
+				}
 
-		BrushMini.text = Min.ToString ("0");
-		BrushMax.text = Max.ToString ("0");
-
-		if(LastRotation != int.Parse(BrushRotation.text)){
-			LastRotation = int.Parse( BrushRotation.text);
-			if(LastRotation == 0){
-				BrushGenerator.RotatedBrush = BrushGenerator.Brushes[SelectedFalloff];
+				TerrainMaterial.SetTexture ("_BrushTex", (Texture)BrushGenerator.RotatedBrush);
+				BrushGenerator.GeneratePaintBrushesh ();
 			}
-			else{
-				BrushGenerator.RotatedBrush = BrushGenerator.rotateTexture(BrushGenerator.Brushes[SelectedFalloff], LastRotation);
-			}
-
-			TerrainMaterial.SetTexture("_BrushTex", (Texture)BrushGenerator.RotatedBrush);
-			BrushGenerator.GeneratePaintBrushesh();
+			TerrainMaterial.SetFloat ("_BrushSize", BrushSizeSlider.value);
 		}
-		TerrainMaterial.SetFloat("_BrushSize", BrushSizeSlider.value );
 	}
 	#endregion
 
@@ -490,7 +524,7 @@ public class StratumInfo : MonoBehaviour {
 		if(posYInTerrain-offset + size > hmHeight) OffsetTop = posYInTerrain-offset + size - hmHeight;
 
 		float CenterHeight = 0;
-		float BrushStrength = Mathf.Pow( BrushStrengthSlider.value * 0.01f, 2);
+		float BrushStrength = Mathf.Pow( BrushStrengthSlider.value * 0.01f, 1);
 		float inverted = (Invert ? (-1) : 1);
 		float SambleBrush = 0;
 		Color BrushValue;
@@ -512,7 +546,7 @@ public class StratumInfo : MonoBehaviour {
 		for (i = 0; i < (size - OffsetDown) - OffsetTop; i++){
 			for (j = 0; j < (size - OffsetLeft) - OffsetRight; j++){
 				float angle = Vector3.Angle(Vector3.up, Map.Teren.terrainData.GetInterpolatedNormal ((posXInTerrain - offset + OffsetLeft + i) / (float)hmWidth, 1 - (posYInTerrain - offset + OffsetDown + j) / (float)hmHeight));
-				if (angle < Min || angle > Max)
+				if ((angle < Min && Min > 0) || (angle > Max && Max < 90))
 					continue;
 
 				// Brush strength
@@ -574,5 +608,51 @@ public class StratumInfo : MonoBehaviour {
 
 	static int XyToColorId(int x, int y){
 		return x + y * StratumTexSampleHeight;
+	}
+
+	public void SelectAlbedo(){
+		if (!ResourceBrowser.Current.gameObject.activeSelf && ResourceBrowser.DragedObject)
+			return;
+		if (ResourceBrowser.SelectedCategory == 0 || ResourceBrowser.SelectedCategory == 1) {
+			Undo.RegisterStratumChange (Selected);
+			Debug.Log (ResourceBrowser.Current.LoadedPaths [ResourceBrowser.DragedObject.InstanceId]);
+
+			Map.Textures [Selected].Albedo = ResourceBrowser.Current.LoadedTextures [ResourceBrowser.DragedObject.InstanceId];
+			Map.Textures [Selected].AlbedoPath = ResourceBrowser.Current.LoadedPaths [ResourceBrowser.DragedObject.InstanceId];
+
+			Map.map.Layers [Selected].PathTexture = Map.Textures [Selected].AlbedoPath;
+
+
+			Map.SetTextures (Selected);
+			ReloadStratums ();
+			SelectStratum (Selected);
+		}
+	}
+
+	public void SelectNormal(){
+		if (!ResourceBrowser.Current.gameObject.activeSelf)
+			return;
+		if (ResourceBrowser.SelectedCategory == 0 || ResourceBrowser.SelectedCategory == 1) {
+
+			Undo.RegisterStratumChange (Selected);
+			Debug.Log (ResourceBrowser.Current.LoadedPaths [ResourceBrowser.DragedObject.InstanceId]);
+
+			Map.Textures [Selected].Normal = ResourceBrowser.Current.LoadedTextures [ResourceBrowser.DragedObject.InstanceId];
+			Map.Textures [Selected].NormalPath = ResourceBrowser.Current.LoadedPaths [ResourceBrowser.DragedObject.InstanceId];
+
+			Map.map.Layers [Selected].PathNormalmap = Map.Textures [Selected].NormalPath;
+
+			Map.SetTextures (Selected);
+			ReloadStratums ();
+			SelectStratum (Selected);
+		}
+	}
+
+	public void ClickAlbedo(){
+		Map.ResBrowser.LoadStratumTexture (Map.Textures [Selected].AlbedoPath);
+	}
+
+	public void ClickNormal(){
+		Map.ResBrowser.LoadStratumTexture (Map.Textures [Selected].NormalPath);
 	}
 }

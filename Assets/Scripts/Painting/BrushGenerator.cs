@@ -36,7 +36,7 @@ public class BrushGenerator : MonoBehaviour {
 		}
 
 		string[] AllBrushFiles = Directory.GetFiles(StructurePath);
-		Debug.Log("Found files: " + AllBrushFiles.Length + ", from path: " + StructurePath);
+		//Debug.Log("Found files: " + AllBrushFiles.Length + ", from path: " + StructurePath);
 		Brushes = new List<Texture2D>();
 		BrushesNames = new List<string> ();
 

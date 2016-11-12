@@ -116,6 +116,11 @@ public class Undo : MonoBehaviour {
 		HistoryStratumPaint.GenerateUndo (Prefabs.StratumPaint).Register();
 	}
 
+	public static void RegisterStratumChange(int stratum){
+		UndoData_StratumId = stratum;
+		HistoryStratumChange.GenerateUndo (Undo.Current.Prefabs.StratumChange).Register();
+	}
+
 	#endregion
 		
 

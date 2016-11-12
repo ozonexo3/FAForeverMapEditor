@@ -1,17 +1,14 @@
 ﻿<Properties StartupItem="Assembly-CSharp.csproj">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Unity.Instance.Unity Editor" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\UI\EditorSettings.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\UI\Lists\ResourceObject.cs">
     <Files>
-      <File FileName="Assets\LUA\LuaHelper.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\UI\Tools\TerrainInfo.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\Painting\PaintWithBrush.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\Painting\BrushGenerator.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\UI\Tools\StratumInfo.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\Ozone SCMAP Code\MapLuaParser.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\Ozone SCMAP Code\GetGamedataFile.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\Ozone SCMAP Code\MapHelperGui.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\UI\Windows\GenericInfoPopup.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\UI\EditorSettings.cs" Line="53" Column="87" />
+      <File FileName="Assets\Scripts\UI\Tools\TerrainInfo.cs" Line="547" Column="18" />
+      <File FileName="Assets\Trash\TextureLoader.cs" Line="50" Column="86" />
+      <File FileName="Assets\Scripts\Ozone SCMAP Code\GetGamedataFile.cs" Line="126" Column="31" />
+      <File FileName="Assets\Scripts\UI\Windows\ResourceBrowser.cs" Line="104" Column="68" />
+      <File FileName="Assets\Scripts\UI\Lists\ResourceObject.cs" Line="15" Column="19" />
+      <File FileName="Assets\Scripts\UI\Tools\StratumInfo.cs" Line="211" Column="1" />
+      <File FileName="Assets\GFX\Shaders\RawImageNoAlpha.shader" Line="90" Column="7" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

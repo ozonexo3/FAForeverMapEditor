@@ -336,10 +336,10 @@ Material:
       second: 20
     - first:
         name: _BrushUvX
-      second: 0.65080905
+      second: 0.7964661
     - first:
         name: _BrushUvY
-      second: 0.87025845
+      second: 0.5458034
     - first:
         name: _DeepLevel
       second: 1.675625
@@ -348,7 +348,7 @@ Material:
       second: 0
     - first:
         name: _GridCamDist
-      second: 1.2668157
+      second: 2.5587993
     - first:
         name: _GridScale
       second: 102.4
@@ -360,7 +360,7 @@ Material:
       second: 14.84058
     - first:
         name: _LowerScaleNormal
-      second: 16.449799
+      second: 14.84058
     - first:
         name: _Shininess
       second: 0.03
@@ -375,16 +375,16 @@ Material:
       second: 128
     - first:
         name: _Splat1Scale
-      second: 585.1429
+      second: 409.6
     - first:
         name: _Splat1ScaleNormal
-      second: 256
+      second: 29.159128
     - first:
         name: _Splat2Scale
-      second: 29.257143
+      second: 34.133335
     - first:
         name: _Splat2ScaleNormal
-      second: 35.929825
+      second: 27.44077
     - first:
         name: _Splat3Scale
       second: 89.04348

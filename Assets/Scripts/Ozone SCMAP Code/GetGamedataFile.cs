@@ -24,28 +24,26 @@ public class GetGamedataFile : MonoBehaviour {
 		GameDataPath = PlayerPrefs.GetString("GameDataPath", "gamedata/");
 	}
 
-	public void LoadTextureFromGamedata(string scd, string LocalPath, int Id, bool NormalMap = false){
-		if(string.IsNullOrEmpty(LocalPath)) return;
+	public static Texture2D LoadTexture2DFromGamedata(string scd, string LocalPath, bool NormalMap = false){
+		if(string.IsNullOrEmpty(LocalPath)) return null;
 		SetPath();
 
 		if(!Directory.Exists(GameDataPath)){
 			Debug.LogError("Gamedata path not exist!");
-			return;
+			return null;
 		}
-
 		ZipFile zf = null;
-		try {
+		Texture2D texture = null;
+		bool Mipmaps = false;
+		try{
 			FileStream fs = File.OpenRead(GameDataPath + scd);
 			zf = new ZipFile(fs);
 
-			//char[] sep = ("/").ToCharArray();
-			//string[] LocalSepPath = LocalPath.Split(sep);
-			//string FileName = LocalSepPath[LocalSepPath.Length - 1];
 
 			ZipEntry zipEntry2 =  zf.GetEntry(LocalPath);
 			if(zipEntry2 == null){
 				Debug.LogError("Zip Entry is empty for: " + LocalPath);
-				return;
+				return null;
 			}
 
 			byte[] FinalTextureData2 = new byte[4096]; // 4K is optimum
@@ -57,11 +55,9 @@ public class GetGamedataFile : MonoBehaviour {
 				s.Read(FinalTextureData2, 0, FinalTextureData2.Length);
 			}
 
-			//Debug.Log(LocalPath);
-
 			TextureFormat format = GetFormatOfDdsBytes(FinalTextureData2);
-			bool Mipmaps = LoadDDsHeader.mipmapcount > 0;
-			Texture2D texture = new Texture2D((int)LoadDDsHeader.width, (int)LoadDDsHeader.height, format, Mipmaps, true);
+			Mipmaps = LoadDDsHeader.mipmapcount > 0;
+			texture = new Texture2D((int)LoadDDsHeader.width, (int)LoadDDsHeader.height, format, Mipmaps, true);
 
 			int DDS_HEADER_SIZE = 128;
 			byte[] dxtBytes = new byte[FinalTextureData2.Length - DDS_HEADER_SIZE];
@@ -75,49 +71,6 @@ public class GetGamedataFile : MonoBehaviour {
 				texture.LoadRawTextureData(dxtBytes);
 				texture.Apply(false);
 			}
-
-
-			if(NormalMap){
-				texture.Compress(true);
-
-				Texture2D normalTexture = new Texture2D((int)LoadDDsHeader.width, (int)LoadDDsHeader.height, TextureFormat.RGBA32, Mipmaps, true);
-
-				Color theColour = new Color();
-				Color[] Pixels;
-
-				for(int m = 0; m < LoadDDsHeader.mipmapcount + 1; m++){
-					int Texwidth = texture.width;
-					int Texheight = texture.height;
-
-					if(m > 0){
-						Texwidth /= (int)Mathf.Pow(2, m);
-						Texheight /= (int)Mathf.Pow(2, m);
-					}
-					Pixels = texture.GetPixels(0, 0, Texwidth, Texheight, m);
-
-					for(int i = 0; i < Pixels.Length; i++){
-						theColour.r = Pixels[i].r;
-						theColour.g = Pixels[i].g;
-						theColour.b = 1;
-						theColour.a = Pixels[i].g;
-						Pixels[i] = theColour;
-					}
-					normalTexture.SetPixels(0, 0, Texwidth, Texheight, Pixels, m);
-				}
-
-				normalTexture.Apply(false);
-
-				Scmap.Textures[Id].Normal = normalTexture;
-				Scmap.Textures[Id].Normal.mipMapBias = MipmapBias;
-				Scmap.Textures[Id].Normal.filterMode = FilterMode.Bilinear;
-				Scmap.Textures[Id].Normal.anisoLevel = AnisoLevel;
-			}
-			else{
-				Scmap.Textures[Id].Albedo = texture;
-				Scmap.Textures[Id].Albedo.mipMapBias = MipmapBias;
-				Scmap.Textures[Id].Albedo.filterMode = FilterMode.Bilinear;
-				Scmap.Textures[Id].Albedo.anisoLevel = AnisoLevel;
-			}
 		} finally {
 			if (zf != null) {
 				zf.IsStreamOwner = true; // Makes close also shut the underlying stream
@@ -125,9 +78,64 @@ public class GetGamedataFile : MonoBehaviour {
 			}
 		}
 
+		if(NormalMap){
+			texture.Compress(true);
+
+			Texture2D normalTexture = new Texture2D((int)LoadDDsHeader.width, (int)LoadDDsHeader.height, TextureFormat.RGBA32, Mipmaps, true);
+
+			Color theColour = new Color();
+			Color[] Pixels;
+
+			for(int m = 0; m < LoadDDsHeader.mipmapcount + 1; m++){
+				int Texwidth = texture.width;
+				int Texheight = texture.height;
+
+				if(m > 0){
+					Texwidth /= (int)Mathf.Pow(2, m);
+					Texheight /= (int)Mathf.Pow(2, m);
+				}
+				Pixels = texture.GetPixels(0, 0, Texwidth, Texheight, m);
+
+				for(int i = 0; i < Pixels.Length; i++){
+					theColour.r = Pixels[i].r;
+					theColour.g = Pixels[i].g;
+					theColour.b = 1;
+					theColour.a = Pixels[i].g;
+					Pixels[i] = theColour;
+				}
+				normalTexture.SetPixels(0, 0, Texwidth, Texheight, Pixels, m);
+			}
+
+			normalTexture.Apply(false);
+
+			normalTexture.mipMapBias = MipmapBias;
+			normalTexture.filterMode = FilterMode.Bilinear;
+			normalTexture.anisoLevel = AnisoLevel;
+			return normalTexture;
+		}
+		else{
+			texture.mipMapBias = MipmapBias;
+			texture.filterMode = FilterMode.Bilinear;
+			texture.anisoLevel = AnisoLevel;
+		}
+
+		return texture;
 	}
 
-	public		HeaderClass			LoadDDsHeader;
+
+	public void LoadTextureFromGamedata(string scd, string LocalPath, int Id, bool NormalMap = false){
+		if(NormalMap){
+			Scmap.Textures[Id].Normal = LoadTexture2DFromGamedata(scd, LocalPath, NormalMap);
+		}
+		else{
+			Scmap.Textures[Id].Albedo = LoadTexture2DFromGamedata(scd, LocalPath, NormalMap);
+		}
+	}
+
+
+
+
+	public	static	HeaderClass			LoadDDsHeader;
 	
 	[System.Serializable]
 	public class HeaderClass{
@@ -159,8 +167,8 @@ public class GetGamedataFile : MonoBehaviour {
 		public		uint caps4;
 	}
 
-	bool IsDxt3 = false;
-	public TextureFormat GetFormatOfDdsBytes(byte[] bytes){
+	static bool IsDxt3 = false;
+	public static TextureFormat GetFormatOfDdsBytes(byte[] bytes){
 
 		Stream ms = new MemoryStream(bytes);
 		BinaryReader Stream = new BinaryReader(ms);
@@ -226,7 +234,7 @@ public class GetGamedataFile : MonoBehaviour {
 	}
 
 
-	public TextureFormat ReadFourcc(uint fourcc){
+	public static TextureFormat ReadFourcc(uint fourcc){
 		IsDxt3 = false;
 		if(DebugTextureLoad) Debug.Log(
 			"Size: " + LoadDDsHeader.size +

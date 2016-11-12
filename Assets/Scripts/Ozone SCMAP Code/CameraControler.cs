@@ -533,6 +533,15 @@ public class CameraControler : MonoBehaviour {
 
 			return false;
 		}
+		if (Edit.Categorys [2].activeSelf) {
+			if(SelectionBoxImage.gameObject.activeSelf){
+				SelectionBoxImage.gameObject.SetActive(false);
+				SelectionBox = false;
+
+			}
+
+			return false;
+		}
 		return true;
 	}
 	#endregion

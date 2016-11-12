@@ -10,6 +10,7 @@ public class ScmapEditor : MonoBehaviour {
 
 	static bool SaveStratumToPng = false; // Can save stratum masks to debug if everything is ok
 
+	public		ResourceBrowser	ResBrowser;
 	public		Terrain			Teren;
 	public		TerrainData		Data;
 	public		Transform		WaterLevel;
@@ -38,6 +39,10 @@ public class ScmapEditor : MonoBehaviour {
 	}
 	
 	public Map map; // Map Object
+
+	void Awake(){
+		ResBrowser.Instantiate ();
+	}
 
 	void Start(){
 		ToogleGrid(false);
@@ -179,57 +184,94 @@ public class ScmapEditor : MonoBehaviour {
 		Teren.gameObject.layer = 8;
 		Teren.heightmapPixelError = 0; // Force terrain pixel error to 0, to get more sharp terrain
 
-
-		TerrainMaterial.SetFloat("_LowerScale", map.Width / Textures[0].AlbedoScale);
-		TerrainMaterial.SetFloat("_LowerScaleNormal", map.Width / Textures[0].NormalScale);
-		TerrainMaterial.SetTexture("_SplatLower", Textures[0].Albedo);
-		TerrainMaterial.SetTexture("_NormalLower", Textures[0].Normal);
-
-		TerrainMaterial.SetTexture("_ControlXP", map.TexturemapTex);
-		if(Textures[5].Albedo || Textures[6].Albedo || Textures[7].Albedo || Textures[8].Albedo) TerrainMaterial.SetTexture("_Control2XP", map.TexturemapTex2);
-
-		TerrainMaterial.SetTexture("_Splat0XP", Textures[1].Albedo);
-		TerrainMaterial.SetTexture("_Splat1XP", Textures[2].Albedo);
-		TerrainMaterial.SetTexture("_Splat2XP", Textures[3].Albedo);
-		TerrainMaterial.SetTexture("_Splat3XP", Textures[4].Albedo);
-		TerrainMaterial.SetTexture("_Splat4XP", Textures[5].Albedo);
-		TerrainMaterial.SetTexture("_Splat5XP", Textures[6].Albedo);
-		TerrainMaterial.SetTexture("_Splat6XP", Textures[7].Albedo);
-		TerrainMaterial.SetTexture("_Splat7XP", Textures[8].Albedo);
-
-		TerrainMaterial.SetFloat("_Splat0Scale", map.Width /Textures[1].AlbedoScale);
-		TerrainMaterial.SetFloat("_Splat1Scale", map.Width /Textures[2].AlbedoScale);
-		TerrainMaterial.SetFloat("_Splat2Scale", map.Width /Textures[3].AlbedoScale);
-		TerrainMaterial.SetFloat("_Splat3Scale", map.Width /Textures[4].AlbedoScale);
-		TerrainMaterial.SetFloat("_Splat4Scale", map.Width /Textures[5].AlbedoScale);
-		TerrainMaterial.SetFloat("_Splat5Scale", map.Width /Textures[6].AlbedoScale);
-		TerrainMaterial.SetFloat("_Splat6Scale", map.Width /Textures[7].AlbedoScale);
-		TerrainMaterial.SetFloat("_Splat7Scale", map.Width /Textures[8].AlbedoScale);
-
-		TerrainMaterial.SetTexture("_SplatNormal0", Textures[1].Normal);
-		TerrainMaterial.SetTexture("_SplatNormal1", Textures[2].Normal);
-		TerrainMaterial.SetTexture("_SplatNormal2", Textures[3].Normal);
-		TerrainMaterial.SetTexture("_SplatNormal3", Textures[4].Normal);
-		TerrainMaterial.SetTexture("_SplatNormal4", Textures[5].Normal);
-		TerrainMaterial.SetTexture("_SplatNormal5", Textures[6].Normal);
-		TerrainMaterial.SetTexture("_SplatNormal6", Textures[7].Normal);
-		TerrainMaterial.SetTexture("_SplatNormal7", Textures[8].Normal);
-
-
-		TerrainMaterial.SetFloat("_Splat0ScaleNormal", map.Width / Textures[1].NormalScale);
-		TerrainMaterial.SetFloat("_Splat1ScaleNormal", map.Width / Textures[2].NormalScale);
-		TerrainMaterial.SetFloat("_Splat2ScaleNormal", map.Width / Textures[3].NormalScale);
-		TerrainMaterial.SetFloat("_Splat3ScaleNormal", map.Width / Textures[4].NormalScale);
-		TerrainMaterial.SetFloat("_Splat4ScaleNormal", map.Width / Textures[5].NormalScale);
-		TerrainMaterial.SetFloat("_Splat5ScaleNormal", map.Width / Textures[6].NormalScale);
-		TerrainMaterial.SetFloat("_Splat6ScaleNormal", map.Width / Textures[7].NormalScale);
-		TerrainMaterial.SetFloat("_Splat7ScaleNormal", map.Width / Textures[8].NormalScale);
-
-		TerrainMaterial.SetFloat("_UpperScale", map.Width / Textures[9].AlbedoScale);
-		TerrainMaterial.SetFloat("_UpperScaleNormal", map.Width / Textures[9].NormalScale);
-		TerrainMaterial.SetTexture("_SplatUpper", Textures[9].Albedo);
-		TerrainMaterial.SetTexture("_NormalUpper", Textures[9].Normal);
+		SetTextures ();
 		yield return null;
+	}
+
+	public void SetTextures(int OnlyOne = -1){
+
+		if (OnlyOne < 0) {
+			TerrainMaterial.SetTexture ("_ControlXP", map.TexturemapTex);
+			if (Textures [5].Albedo || Textures [6].Albedo || Textures [7].Albedo || Textures [8].Albedo)
+				TerrainMaterial.SetTexture ("_Control2XP", map.TexturemapTex2);
+		}
+
+
+		if (OnlyOne <= 0) {
+			TerrainMaterial.SetFloat("_LowerScale", map.Width / Textures[0].AlbedoScale);
+			TerrainMaterial.SetFloat("_LowerScaleNormal", map.Width / Textures[0].NormalScale);
+			TerrainMaterial.SetTexture("_SplatLower", Textures[0].Albedo);
+			TerrainMaterial.SetTexture("_NormalLower", Textures[0].Normal);
+		}
+
+		if (OnlyOne > 0 && OnlyOne < 9) {
+			string IdStrig = (OnlyOne - 1).ToString ();
+			TerrainMaterial.SetTexture ("_Splat" + IdStrig + "XP", Textures [OnlyOne].Albedo);
+			TerrainMaterial.SetFloat ("_Splat" + IdStrig + "Scale", map.Width / Textures [OnlyOne].AlbedoScale);
+			TerrainMaterial.SetTexture ("_SplatNormal" + IdStrig, Textures [OnlyOne].Normal);
+			TerrainMaterial.SetFloat ("_Splat" + IdStrig + "ScaleNormal", map.Width / Textures [OnlyOne].NormalScale);
+		}else {
+
+			TerrainMaterial.SetTexture ("_Splat0XP", Textures [1].Albedo);
+			TerrainMaterial.SetTexture ("_Splat1XP", Textures [2].Albedo);
+			TerrainMaterial.SetTexture ("_Splat2XP", Textures [3].Albedo);
+			TerrainMaterial.SetTexture ("_Splat3XP", Textures [4].Albedo);
+			TerrainMaterial.SetTexture ("_Splat4XP", Textures [5].Albedo);
+			TerrainMaterial.SetTexture ("_Splat5XP", Textures [6].Albedo);
+			TerrainMaterial.SetTexture ("_Splat6XP", Textures [7].Albedo);
+			TerrainMaterial.SetTexture ("_Splat7XP", Textures [8].Albedo);
+
+			TerrainMaterial.SetFloat ("_Splat0Scale", map.Width / Textures [1].AlbedoScale);
+			TerrainMaterial.SetFloat ("_Splat1Scale", map.Width / Textures [2].AlbedoScale);
+			TerrainMaterial.SetFloat ("_Splat2Scale", map.Width / Textures [3].AlbedoScale);
+			TerrainMaterial.SetFloat ("_Splat3Scale", map.Width / Textures [4].AlbedoScale);
+			TerrainMaterial.SetFloat ("_Splat4Scale", map.Width / Textures [5].AlbedoScale);
+			TerrainMaterial.SetFloat ("_Splat5Scale", map.Width / Textures [6].AlbedoScale);
+			TerrainMaterial.SetFloat ("_Splat6Scale", map.Width / Textures [7].AlbedoScale);
+			TerrainMaterial.SetFloat ("_Splat7Scale", map.Width / Textures [8].AlbedoScale);
+
+			TerrainMaterial.SetTexture ("_SplatNormal0", Textures [1].Normal);
+			TerrainMaterial.SetTexture ("_SplatNormal1", Textures [2].Normal);
+			TerrainMaterial.SetTexture ("_SplatNormal2", Textures [3].Normal);
+			TerrainMaterial.SetTexture ("_SplatNormal3", Textures [4].Normal);
+			TerrainMaterial.SetTexture ("_SplatNormal4", Textures [5].Normal);
+			TerrainMaterial.SetTexture ("_SplatNormal5", Textures [6].Normal);
+			TerrainMaterial.SetTexture ("_SplatNormal6", Textures [7].Normal);
+			TerrainMaterial.SetTexture ("_SplatNormal7", Textures [8].Normal);
+
+
+			TerrainMaterial.SetFloat ("_Splat0ScaleNormal", map.Width / Textures [1].NormalScale);
+			TerrainMaterial.SetFloat ("_Splat1ScaleNormal", map.Width / Textures [2].NormalScale);
+			TerrainMaterial.SetFloat ("_Splat2ScaleNormal", map.Width / Textures [3].NormalScale);
+			TerrainMaterial.SetFloat ("_Splat3ScaleNormal", map.Width / Textures [4].NormalScale);
+			TerrainMaterial.SetFloat ("_Splat4ScaleNormal", map.Width / Textures [5].NormalScale);
+			TerrainMaterial.SetFloat ("_Splat5ScaleNormal", map.Width / Textures [6].NormalScale);
+			TerrainMaterial.SetFloat ("_Splat6ScaleNormal", map.Width / Textures [7].NormalScale);
+			TerrainMaterial.SetFloat ("_Splat7ScaleNormal", map.Width / Textures [8].NormalScale);
+		}
+
+		if (OnlyOne == 9 || OnlyOne < 0) {
+			TerrainMaterial.SetFloat ("_UpperScale", map.Width / Textures [9].AlbedoScale);
+			TerrainMaterial.SetFloat ("_UpperScaleNormal", map.Width / Textures [9].NormalScale);
+			TerrainMaterial.SetTexture ("_SplatUpper", Textures [9].Albedo);
+			TerrainMaterial.SetTexture ("_NormalUpper", Textures [9].Normal);
+		}
+	}
+
+	public void UpdateScales(int id){
+		if (id == 0) {
+			TerrainMaterial.SetFloat ("_LowerScale", map.Width / Textures [0].AlbedoScale);
+			TerrainMaterial.SetFloat ("_LowerScaleNormal", map.Width / Textures [0].NormalScale);
+
+		} else if (id == 9) {
+			TerrainMaterial.SetFloat ("_UpperScale", map.Width / Textures [9].AlbedoScale);
+			TerrainMaterial.SetFloat ("_UpperScaleNormal", map.Width / Textures [9].NormalScale);
+
+		} else {
+			string IdStrig = (id - 1).ToString ();
+			TerrainMaterial.SetFloat ("_Splat" + IdStrig + "Scale", map.Width / Textures [id].AlbedoScale);
+			TerrainMaterial.SetFloat ("_Splat" + IdStrig + "ScaleNormal", map.Width / Textures [id].NormalScale);
+		}
 	}
 
 	public void SaveScmapFile(){
