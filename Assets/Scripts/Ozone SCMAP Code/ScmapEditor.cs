@@ -24,6 +24,7 @@ public class ScmapEditor : MonoBehaviour {
 	public		GetGamedataFile	Gamedata;
 	public		bool			Grid;
 	public		bool			Slope;
+	public		TerrainMesh		TerrainM;
 
 	// Stratum Layer
 	[System.Serializable]
@@ -132,6 +133,7 @@ public class ScmapEditor : MonoBehaviour {
 		Teren.drawTreesAndFoliage = false;
 		Teren.reflectionProbeUsage = UnityEngine.Rendering.ReflectionProbeUsage.Off;
 
+
 		Data.heightmapResolution = (int)(xRes + 1);
 		Data.size = new Vector3(
 			xRes / 10.0f,
@@ -164,6 +166,9 @@ public class ScmapEditor : MonoBehaviour {
 
 		// Set terrain heights from heights array
 		Data.SetHeights(0, 0, heights);
+
+		//TerrainM.Heights = heights;
+		//TerrainM.GenerateMesh ();
 
 		// Save stratum mask to files
 		if(SaveStratumToPng){
@@ -289,6 +294,13 @@ public class ScmapEditor : MonoBehaviour {
 		string path = MapLuaParser.Current.ScenarioData.Scmap.Replace("/maps/", MapPath);
 
 		//TODO force values if needed
+		for (int i = 0; i < map.Layers.Count; i++) {
+			map.Layers [i].PathTexture = Textures [i].AlbedoPath;
+			map.Layers [i].PathNormalmap = Textures [i].NormalPath;
+
+			map.Layers [i].ScaleTexture = Textures [i].AlbedoScale;
+			map.Layers [i].ScaleNormalmap = Textures [i].NormalScale;
+		}
 
 		map.Save(path, map.VersionMinor);
 	}

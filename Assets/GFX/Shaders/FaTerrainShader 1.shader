@@ -1,4 +1,4 @@
-﻿Shader "MapEditor/FaTerrainShader" {
+﻿Shader "MapEditor/FaTerrainShader (backup)" {
 Properties {
 	_SpecColor ("Specular Color", Color) = (0.5, 0.5, 0.5, 1)
 	_Shininess ("Shininess", Range (0.03, 1)) = 0.078125
@@ -93,7 +93,65 @@ Properties {
 	
 	SubShader {
 
-	Tags { "Queue"="Geometry" }
+			CGPROGRAM
+			#pragma surface surf Empty noambient
+			#pragma target 3.0
+
+			sampler2D _ControlXP;
+			sampler2D _Splat0XP, _Splat1XP, _Splat2XP, _Splat3XP, _SplatLower, _SplatUpper;
+			sampler2D _Splat4XP, _Splat5XP, _Splat6XP, _Splat7XP;
+			sampler2D _Control2XP;
+			half _LowerScale, _UpperScale;
+			half _Splat0Scale, _Splat1Scale, _Splat2Scale, _Splat3Scale, _Splat4Scale, _Splat5Scale, _Splat6Scale, _Splat7Scale;
+
+			half4 LightingEmpty (SurfaceOutput s, half3 lightDir, half atten) {
+						half4 c;
+			              c.rgb = s.Albedo;
+			              c.a = 0;
+			              return c;
+			          }
+
+			struct Input {
+				float2 uv_Control : TEXCOORD0;
+			};
+
+			void surf (Input IN, inout SurfaceOutput o) {
+
+				float4 splat_control = saturate(tex2D (_ControlXP, IN.uv_Control * half2(1, -1)) * 2 - 1);
+				float4 splat_control2 = saturate(tex2D (_Control2XP, IN.uv_Control * half2(1, -1)) * 2 - 1);
+				float4 col;
+
+				float2 UV = IN.uv_Control * half2(1, -1);
+
+				col = tex2D (_SplatLower, UV * _LowerScale);
+					
+
+				col = lerp(col, tex2D (_Splat0XP, UV * _Splat0Scale), splat_control.r);
+				col = lerp(col, tex2D (_Splat1XP, UV * _Splat1Scale), splat_control.g);
+				col = lerp(col, tex2D (_Splat2XP, UV * _Splat2Scale), splat_control.b);
+				col = lerp(col, tex2D (_Splat3XP, UV * _Splat3Scale), splat_control.a);
+				//col = tex2D (_Splat3XP, UV * _LowerScale);
+
+				col = lerp(col, tex2D (_Splat4XP, UV * _Splat4Scale), splat_control2.r);
+				col = lerp(col, tex2D (_Splat5XP, UV * _Splat5Scale), splat_control2.g);
+				col = lerp(col, tex2D (_Splat6XP, UV * _Splat6Scale), splat_control2.b);
+				col = lerp(col, tex2D (_Splat7XP, UV * _Splat7Scale), splat_control2.a);
+				float4 UpperAlbedo = tex2D (_SplatUpper, UV * _UpperScale);
+				col = lerp(col, UpperAlbedo, UpperAlbedo.a);
+
+				//col = splat_control.r;
+
+				o.Albedo = col;	
+				o.Emission = 0;
+				o.Gloss = 0;
+				o.Specular = 0;
+				o.Alpha = 0.0;
+			}
+			ENDCG  
+		GrabPass 
+		{
+		 "_MyGrabTexture3"
+		}   
 
 			CGPROGRAM
 			#pragma surface surf SimpleLambert vertex:vert noambient fullforwardshadows addshadow nometa
@@ -130,19 +188,20 @@ Properties {
 
 			int _Slope;
 
+
 			half _LightingMultiplier;
 			fixed4 _SunColor;
 			fixed4 _SunAmbience;
 			fixed4 _ShadowColor;
 
 			sampler2D _ControlXP;
-			//sampler2D _Control2XP;
-			sampler2D _Splat0XP, _Splat1XP, _Splat2XP, _Splat3XP, _SplatLower;
-			half _LowerScale;
-			half _Splat0Scale, _Splat1Scale, _Splat2Scale, _Splat3Scale;
+			sampler2D _Control2XP;
+			sampler2D _SplatNormal3;
+			sampler2D _SplatNormal0, _SplatNormal1, _SplatNormal2, _NormalLower;
+			sampler2D _SplatNormal4, _SplatNormal5, _SplatNormal6, _SplatNormal7;
+			half _Splat0ScaleNormal, _Splat1ScaleNormal, _Splat2ScaleNormal, _Splat3ScaleNormal, _Splat4ScaleNormal, _Splat5ScaleNormal, _Splat6ScaleNormal, _Splat7ScaleNormal;
 
-			sampler2D _SplatNormal0, _SplatNormal1, _SplatNormal2, _SplatNormal3, _NormalLower;
-			half _Splat0ScaleNormal, _Splat1ScaleNormal, _Splat2ScaleNormal, _Splat3ScaleNormal;
+			half _LowerScale;
 
 			float4 LightingSimpleLambert (SurfaceOutput s, float3 lightDir, half atten) {
 			              float NdotL = dot (lightDir, s.Normal);
@@ -150,6 +209,9 @@ Properties {
 			              float4 c;
 			              float3 spec = float3(0,0,0);
 
+			             // float3 light =  _SunColor.rgb * 2 * saturate(NdotL) + spec;
+						//	light *= atten;
+			             // light = _LightingMultiplier * light  + _SunAmbience.rgb * 2 + _ShadowColor.rgb * 2 * (1 - light);
 			              float3 light =  _SunColor.rgb * 2 * saturate(NdotL) * atten + _SunAmbience.rgb * 2;
 			              light = _LightingMultiplier * light + _ShadowColor.rgb * 2 * (1 - light);
 
@@ -162,157 +224,38 @@ Properties {
 			float3 ApplyWaterColor( float depth, float3  inColor){
 				float4 wcolor = tex2D(_WaterRam, float2(depth,0));
 				return lerp( inColor.rgb, wcolor.rgb, wcolor.a );
+				//return inColor;
 			}
 
 			void surf (Input IN, inout SurfaceOutput o) {
 				float WaterDepth = (_WaterLevel - IN.worldPos.y) / (_WaterLevel - _AbyssLevel);
 				float2 UV = IN.uv_Control * fixed2(1, -1);
 				float4 splat_control = saturate(tex2D (_ControlXP, UV) * 2 - 1);
-				//float4 splat_control2 = saturate(tex2D (_Control2XP, UV) * 2 - 1);
+				float4 splat_control2 = saturate(tex2D (_Control2XP, UV) * 2 - 1);
 
+				float4 col = tex2Dproj( _MyGrabTexture3, UNITY_PROJ_COORD(IN.grabUV));
 				half4 nrm;
+				//UV *= 0.01;
 				nrm = tex2D (_NormalLower, UV * _LowerScale);
 				nrm = lerp(nrm, tex2D (_SplatNormal0, UV * _Splat0ScaleNormal), splat_control.r);
 				nrm =  lerp(nrm, tex2D (_SplatNormal1, UV * _Splat1ScaleNormal), splat_control.g);
 				nrm =  lerp(nrm, tex2D (_SplatNormal2, UV * _Splat2ScaleNormal), splat_control.b);
 				nrm =  lerp(nrm, tex2D (_SplatNormal3, UV * _Splat3ScaleNormal), splat_control.a);
 
-
-				nrm.b = 1;
-				nrm.rgb = nrm.rgb * 2 - half3(1, 1, 1);
-				nrm.rgb = normalize(nrm.rgb);
-
-				float4 col = tex2D (_SplatLower, UV * _LowerScale);
-				col = lerp(col, tex2D (_Splat0XP, UV * _Splat0Scale), splat_control.r);
-				col = lerp(col, tex2D (_Splat1XP, UV * _Splat1Scale), splat_control.g);
-				col = lerp(col, tex2D (_Splat2XP, UV * _Splat2Scale), splat_control.b);
-				col = lerp(col, tex2D (_Splat3XP, UV * _Splat3Scale), splat_control.a);
-
-
-				if(_Slope > 0){
-					if(IN.worldPos.y < _WaterLevel){
-						if(IN.SlopeLerp > 0.75) col.rgb = half3(0,0.4,1);
-						else col.rgb = half3(0.6,0,1);
-					}
-					else if(IN.SlopeLerp > 0.99) col.rgb = half3(0,0.8,0);
-					else if(IN.SlopeLerp > 0.85) col.rgb = half3(0.5,1,0);
-					else col.rgb = half3(1,0,0);
-					o.Albedo = col;
-				}
-				else if(_Water > 0) o.Albedo = ApplyWaterColor(WaterDepth, col.rgb);	
-				else o.Albedo = col;
-
-
-				o.Gloss = 0;
-				o.Specular = 0;
-				o.Alpha = 1;
-				//o.Alpha = splat_control.r + splat_control.g + splat_control.b + splat_control.a;
-			}
-			ENDCG  
-
-
-
-			//********************  2
-
-			Blend One OneMinusSrcAlpha
-			CGPROGRAM
-			#pragma surface surf SimpleLambert vertex:vert alpha noambient fullforwardshadows addshadow nometa
-			//#pragma debug
-			#pragma target 4.0
-			#pragma exclude_renderers gles
-
-			struct Input {
-				float2 uv_Control : TEXCOORD0;
-				float3 worldPos;
-				float SlopeLerp;
-				float4 grabUV;
-			};
-
-			void vert (inout appdata_full v, out Input o){
-				UNITY_INITIALIZE_OUTPUT(Input,o);
-				v.tangent.xyz = cross(v.normal, float3(0,0,1));
-				v.tangent.w = -1;
-				//o.normal = v.normal;
-				o.SlopeLerp = dot(v.normal, half3(0,1,0));
-				 float4 hpos = mul (UNITY_MATRIX_MVP, v.vertex);
-		         o.grabUV = ComputeGrabScreenPos(hpos);
-				//v.color = _Abyss;
-			}
-
-			sampler2D _MyGrabTexture3;
-			sampler2D _WaterRam;
-			half _Shininess;
-			half _WaterLevel;
-			half _AbyssLevel;
-			fixed4 _Abyss;
-			fixed4 _Deep;
-			int _Water;
-
-			int _Slope;
-
-
-			half _LightingMultiplier;
-			fixed4 _SunColor;
-			fixed4 _SunAmbience;
-			fixed4 _ShadowColor;
-
-			//sampler2D _ControlXP;
-			sampler2D _Control2XP;
-			sampler2D _Splat4XP, _Splat5XP, _Splat6XP, _Splat7XP, _SplatLower, _SplatUpper;
-			half _LowerScale, _UpperScale;
-			half _Splat0Scale, _Splat1Scale, _Splat2Scale, _Splat3Scale, _Splat4Scale, _Splat5Scale, _Splat6Scale, _Splat7Scale;
-
-			sampler2D _SplatNormal0, _SplatNormal1, _SplatNormal2, _SplatNormal3, _NormalLower;
-			sampler2D _SplatNormal4, _SplatNormal5, _SplatNormal6, _SplatNormal7;
-			half _Splat0ScaleNormal, _Splat1ScaleNormal, _Splat2ScaleNormal, _Splat3ScaleNormal, _Splat4ScaleNormal, _Splat5ScaleNormal, _Splat6ScaleNormal, _Splat7ScaleNormal;
-
-			float4 LightingSimpleLambert (SurfaceOutput s, float3 lightDir, half atten) {
-			              float NdotL = dot (lightDir, s.Normal);
-			              
-			              float4 c;
-			              float3 spec = float3(0,0,0);
-
-			              float3 light =  _SunColor.rgb * 2 * saturate(NdotL) * atten + _SunAmbience.rgb * 2;
-			              light = _LightingMultiplier * light + _ShadowColor.rgb * 2 * (1 - light);
-
-
-			              c.rgb = (s.Albedo + spec) * light;
-			              c.a = s.Alpha;
-			              return c;
-			          }
-
-			float3 ApplyWaterColor( float depth, float3  inColor){
-				float4 wcolor = tex2D(_WaterRam, float2(depth,0));
-				return lerp( inColor.rgb, wcolor.rgb, wcolor.a );
-			}
-
-			void surf (Input IN, inout SurfaceOutput o) {
-				float WaterDepth = (_WaterLevel - IN.worldPos.y) / (_WaterLevel - _AbyssLevel);
-				float2 UV = IN.uv_Control * fixed2(1, -1);
-				//float4 splat_control = saturate(tex2D (_ControlXP, UV) * 2 - 1);
-				float4 splat_control2 = saturate(tex2D (_Control2XP, UV) * 2 - 1);
-
-				half4 nrm;
-				nrm = tex2D (_NormalLower, UV * _LowerScale);
 				nrm = lerp(nrm, tex2D (_SplatNormal4, UV * _Splat4ScaleNormal), splat_control2.r);
 				nrm =  lerp(nrm, tex2D (_SplatNormal5, UV * _Splat5ScaleNormal), splat_control2.g);
 				nrm =  lerp(nrm, tex2D (_SplatNormal6, UV * _Splat6ScaleNormal), splat_control2.b);
 				nrm =  lerp(nrm, tex2D (_SplatNormal7, UV * _Splat7ScaleNormal), splat_control2.a);
 
 
+				//nrm = tex2D (_NormalLower, UV * 1000);
+				//nrm.rg *= 1;
 				nrm.b = 1;
+				//nrm.rgb = UnpackNormal(nrm);
 				nrm.rgb = nrm.rgb * 2 - half3(1, 1, 1);
+				//nrm.rg *= 3;
 				nrm.rgb = normalize(nrm.rgb);
-
-				//float4 col = tex2D (_SplatLower, UV * _LowerScale);
-				float4 col = tex2D (_Splat4XP, UV * _Splat4Scale);
-				//col = lerp(col, tex2D (_Splat4XP, UV * _Splat4Scale), splat_control2.r);
-				col = lerp(col, tex2D (_Splat5XP, UV * _Splat5Scale), splat_control2.g);
-				col = lerp(col, tex2D (_Splat6XP, UV * _Splat6Scale), splat_control2.b);
-				col = lerp(col, tex2D (_Splat7XP, UV * _Splat7Scale), splat_control2.a);
-				float4 UpperAlbedo = tex2D (_SplatUpper, UV * _UpperScale);
-				col = lerp(col, UpperAlbedo, UpperAlbedo.a);
-
+				//o.Normal = nrm;
 
 				if(_Slope > 0){
 					if(IN.worldPos.y < _WaterLevel){
@@ -322,16 +265,21 @@ Properties {
 					else if(IN.SlopeLerp > 0.99) col.rgb = half3(0,0.8,0);
 					else if(IN.SlopeLerp > 0.85) col.rgb = half3(0.5,1,0);
 					else col.rgb = half3(1,0,0);
+					//col.rgb = lerp(half3(1,0,0), half3(0,1,0), IN.SlopeLerp);
 					o.Albedo = col;
 				}
 				else if(_Water > 0) o.Albedo = ApplyWaterColor(WaterDepth, col.rgb);	
 				else o.Albedo = col;
 
 
+
+				//o.Albedo = 0.5;
+				//o.Emission = tex2D (_SplatNormal3, UV * 10 );
+				//o.Emission = nrm;
+
 				o.Gloss = 0;
 				o.Specular = 0;
-				//o.Alpha = 1;
-				o.Alpha = splat_control2.r + splat_control2.g + splat_control2.b + splat_control2.a;
+				o.Alpha = 0.0;
 			}
 			ENDCG  
 

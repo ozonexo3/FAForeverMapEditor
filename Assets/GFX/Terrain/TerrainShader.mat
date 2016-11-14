@@ -348,7 +348,7 @@ Material:
       second: 0
     - first:
         name: _GridCamDist
-      second: 2.5587993
+      second: 3.1357136
     - first:
         name: _GridScale
       second: 102.4

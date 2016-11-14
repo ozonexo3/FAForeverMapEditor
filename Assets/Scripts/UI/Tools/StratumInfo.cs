@@ -307,8 +307,8 @@ public class StratumInfo : MonoBehaviour {
 			Map.Textures [Selected].AlbedoScale = Stratum_Albedo_Slider.value;
 			Map.Textures [Selected].NormalScale = Stratum_Normal_Slider.value;
 
-			Map.map.Layers [Selected].ScaleTexture = Map.Textures [Selected].AlbedoScale;
-			Map.map.Layers [Selected].ScaleNormalmap = Map.Textures [Selected].NormalScale;
+			//Map.map.Layers [Selected].ScaleTexture = Map.Textures [Selected].AlbedoScale;
+			//Map.map.Layers [Selected].ScaleNormalmap = Map.Textures [Selected].NormalScale;
 
 			Map.UpdateScales (Selected);
 
@@ -620,7 +620,7 @@ public class StratumInfo : MonoBehaviour {
 			Map.Textures [Selected].Albedo = ResourceBrowser.Current.LoadedTextures [ResourceBrowser.DragedObject.InstanceId];
 			Map.Textures [Selected].AlbedoPath = ResourceBrowser.Current.LoadedPaths [ResourceBrowser.DragedObject.InstanceId];
 
-			Map.map.Layers [Selected].PathTexture = Map.Textures [Selected].AlbedoPath;
+			//Map.map.Layers [Selected].PathTexture = Map.Textures [Selected].AlbedoPath;
 
 
 			Map.SetTextures (Selected);
@@ -640,7 +640,7 @@ public class StratumInfo : MonoBehaviour {
 			Map.Textures [Selected].Normal = ResourceBrowser.Current.LoadedTextures [ResourceBrowser.DragedObject.InstanceId];
 			Map.Textures [Selected].NormalPath = ResourceBrowser.Current.LoadedPaths [ResourceBrowser.DragedObject.InstanceId];
 
-			Map.map.Layers [Selected].PathNormalmap = Map.Textures [Selected].NormalPath;
+			//Map.map.Layers [Selected].PathNormalmap = Map.Textures [Selected].NormalPath;
 
 			Map.SetTextures (Selected);
 			ReloadStratums ();

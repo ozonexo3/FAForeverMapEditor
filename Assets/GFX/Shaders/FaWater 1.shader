@@ -1,6 +1,6 @@
 ﻿// Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
 
-Shader "MapEditor/FaWater" {
+Shader "MapEditor/FaWater (backup)" {
 	Properties {
 		waterColor  ("waterColor", Color) = (0.0, 0.7, 1.5, 1)
 		_UtilitySamplerC ("_UtilitySamplerC", 2D) = "white" {}
@@ -144,7 +144,7 @@ Shader "MapEditor/FaWater" {
 			    float2 screenPos = UNITY_PROJ_COORD(i.mScreenPos.xy);
 			    
    				// calculate the background pixel
-   				float4 backGroundPixels = tex2Dproj( _WaterGrabTexture, UNITY_PROJ_COORD(i.GrabPos) );
+   				float4 backGroundPixels = tex2D( _WaterGrabTexture, UNITY_PROJ_COORD(i.GrabPos) );
 
     			float mask = saturate(backGroundPixels.a * 255);
 		    
@@ -176,7 +176,7 @@ Shader "MapEditor/FaWater" {
 			    refractionPos -=  0.015 * N.xz * 10;
 		    	
 		    	// calculate the refract pixel, corrected for fetching a non-refractable pixel
-			    float4 refractedPixels = tex2Dproj( _WaterGrabTexture, UNITY_PROJ_COORD(i.GrabPos));
+			    float4 refractedPixels = tex2D( _WaterGrabTexture, UNITY_PROJ_COORD(i.GrabPos));
 
 			    // because the range of the alpha value that we use for the water is very small
 			    // we multiply by a large number and then saturate
