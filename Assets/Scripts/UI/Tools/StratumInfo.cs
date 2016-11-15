@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using EditMap;
+using System.Runtime.InteropServices;
 
 public class StratumInfo : MonoBehaviour {
 
@@ -26,6 +27,8 @@ public class StratumInfo : MonoBehaviour {
 	public		GameObject				Page_StratumSelected;
 	public		GameObject				Page_Paint;
 	public		GameObject				Page_PaintSelected;
+	public		GameObject				Page_Settings;
+	public		GameObject				Page_SettingsSelected;
 
 	// Brush
 	[Header("Brush")]
@@ -258,6 +261,8 @@ public class StratumInfo : MonoBehaviour {
 		Page_StratumSelected.SetActive(true);
 		Page_Paint.SetActive(false);
 		Page_PaintSelected.SetActive(false);
+		Page_Settings.SetActive(false);
+		Page_SettingsSelected.SetActive(false);
 		TerrainMaterial.SetFloat("_BrushSize", 0 );
 	}
 
@@ -266,6 +271,8 @@ public class StratumInfo : MonoBehaviour {
 		Page_StratumSelected.SetActive(false);
 		Page_Paint.SetActive(true);
 		Page_PaintSelected.SetActive(true);
+		Page_Settings.SetActive(false);
+		Page_SettingsSelected.SetActive(false);
 
 		BrushGenerator.LoadBrushesh ();
 
@@ -277,6 +284,15 @@ public class StratumInfo : MonoBehaviour {
 		TerrainMaterial.SetTexture("_BrushTex", (Texture)BrushGenerator.Brushes[SelectedFalloff]);
 	}
 
+	public void ChangePageToSettings(){
+		Page_Stratum.SetActive(false);
+		Page_StratumSelected.SetActive(false);
+		Page_Paint.SetActive(false);
+		Page_PaintSelected.SetActive(false);
+		Page_Settings.SetActive(true);
+		Page_SettingsSelected.SetActive(true);
+		TerrainMaterial.SetFloat("_BrushSize", 0 );
+	}
 
 
 	public float Min = 0;
@@ -654,5 +670,147 @@ public class StratumInfo : MonoBehaviour {
 
 	public void ClickNormal(){
 		Map.ResBrowser.LoadStratumTexture (Map.Textures [Selected].NormalPath);
+	}
+
+	public void ExportStratum(){
+		System.Windows.Forms.SaveFileDialog FolderDialog = new System.Windows.Forms.SaveFileDialog ();
+
+		FolderDialog.Filter = "scmstratum files (*.scmsl)|*.scmsl|All files (*.*)|*.*"  ;
+		FolderDialog.FilterIndex = 0 ;
+		FolderDialog.RestoreDirectory = true ;
+		FolderDialog.InitialDirectory = PlayerPrefs.GetString ("MapsPath", EnvPaths.DefaultMapPath);
+
+		if (FolderDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+		{
+			Debug.Log( FolderDialog.FileName );
+
+			string data = UnityEngine.JsonUtility.ToJson (Map.Textures [Selected]);
+
+			File.WriteAllText (FolderDialog.FileName, data);
+		}
+	}
+
+	public void ImportStratum(){
+		System.Windows.Forms.OpenFileDialog FolderDialog = new System.Windows.Forms.OpenFileDialog ();
+
+		//FolderDialog.DefaultExt = "scmstratum";
+		//FolderDialog.AddExtension = true;
+		FolderDialog.Filter = "scmstratum files (*.scmsl)|*.scmsl|All files (*.*)|*.*"  ;
+		FolderDialog.FilterIndex = 0 ;
+		FolderDialog.RestoreDirectory = true ;
+		FolderDialog.InitialDirectory = PlayerPrefs.GetString ("MapsPath", EnvPaths.DefaultMapPath);
+		//FolderDialog.
+
+		if (FolderDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+		{
+			Debug.Log( FolderDialog.FileName );
+
+			string data = File.ReadAllText (FolderDialog.FileName);
+
+			ScmapEditor.TerrainTexture NewTexture = UnityEngine.JsonUtility.FromJson<ScmapEditor.TerrainTexture> (data);
+
+			Map.Textures [Selected] = NewTexture;
+
+			Map.Gamedata.LoadTextureFromGamedata("env.scd", Map.Textures[Selected].AlbedoPath, Selected, false);
+			Map.Gamedata.LoadTextureFromGamedata("env.scd", Map.Textures[Selected].NormalPath, Selected, true);
+
+			Map.SetTextures (Selected);
+
+			ReloadStratums ();
+		}
+	}
+
+	class StratumTemplate{
+		public ScmapEditor.TerrainTexture Stratum0;
+		public ScmapEditor.TerrainTexture Stratum1;
+		public ScmapEditor.TerrainTexture Stratum2;
+		public ScmapEditor.TerrainTexture Stratum3;
+		public ScmapEditor.TerrainTexture Stratum4;
+		public ScmapEditor.TerrainTexture Stratum5;
+		public ScmapEditor.TerrainTexture Stratum6;
+		public ScmapEditor.TerrainTexture Stratum7;
+		public ScmapEditor.TerrainTexture Stratum8;
+		public ScmapEditor.TerrainTexture Stratum9;
+	}
+
+	public void ExportStratumTemplate(){
+		System.Windows.Forms.SaveFileDialog FolderDialog = new System.Windows.Forms.SaveFileDialog ();
+
+		FolderDialog.Filter = "scmstratum files (*.scmst)|*.scmst|All files (*.*)|*.*"  ;
+		FolderDialog.FilterIndex = 0 ;
+		FolderDialog.RestoreDirectory = true ;
+		FolderDialog.InitialDirectory = PlayerPrefs.GetString ("MapsPath", EnvPaths.DefaultMapPath);
+
+		if (FolderDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+		{
+			Debug.Log( FolderDialog.FileName );
+
+			StratumTemplate NewTemplate = new StratumTemplate ();
+			NewTemplate.Stratum0 = Map.Textures [0];
+			NewTemplate.Stratum1 = Map.Textures [1];
+			NewTemplate.Stratum2 = Map.Textures [2];
+			NewTemplate.Stratum3 = Map.Textures [3];
+			NewTemplate.Stratum4 = Map.Textures [4];
+			NewTemplate.Stratum5 = Map.Textures [5];
+			NewTemplate.Stratum6 = Map.Textures [6];
+			NewTemplate.Stratum7 = Map.Textures [7];
+			NewTemplate.Stratum8 = Map.Textures [8];
+			NewTemplate.Stratum9 = Map.Textures [9];
+
+			string data = UnityEngine.JsonUtility.ToJson (NewTemplate);
+
+			File.WriteAllText (FolderDialog.FileName, data);
+		}
+	}
+
+	public void ImportStratumTemplate(){
+		System.Windows.Forms.OpenFileDialog FolderDialog = new System.Windows.Forms.OpenFileDialog ();
+
+		FolderDialog.Filter = "scmstratum files (*.scmst)|*.scmst|All files (*.*)|*.*"  ;
+		FolderDialog.FilterIndex = 0 ;
+		FolderDialog.RestoreDirectory = true ;
+
+		if (FolderDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+		{
+			Debug.Log( FolderDialog.FileName );
+
+			string data = File.ReadAllText (FolderDialog.FileName);
+
+			StratumTemplate NewTemplate = UnityEngine.JsonUtility.FromJson<StratumTemplate> (data);
+
+			Map.Textures [0] = NewTemplate.Stratum0;
+			Map.Textures [1] = NewTemplate.Stratum1;
+			Map.Textures [2] = NewTemplate.Stratum2;
+			Map.Textures [3] = NewTemplate.Stratum3;
+			Map.Textures [4] = NewTemplate.Stratum4;
+			Map.Textures [5] = NewTemplate.Stratum5;
+			Map.Textures [6] = NewTemplate.Stratum6;
+			Map.Textures [7] = NewTemplate.Stratum7;
+			Map.Textures [8] = NewTemplate.Stratum8;
+			Map.Textures [9] = NewTemplate.Stratum9;
+
+			//Map.Gamedata.LoadTextureFromGamedata("env.scd", Map.Textures[Selected].AlbedoPath, Selected, false);
+			//Map.Gamedata.LoadTextureFromGamedata("env.scd", Map.Textures[Selected].NormalPath, Selected, true);
+
+			for (int i = 0; i < Map.Textures.Length; i++) {
+				Map.Textures[i].AlbedoPath = Map.map.Layers[i].PathTexture;
+				Map.Textures[i].NormalPath = Map.map.Layers[i].PathNormalmap;
+				if(Map.Textures[i].AlbedoPath.StartsWith("/")){
+					Map.Textures[i].AlbedoPath = Map.Textures[i].AlbedoPath.Remove(0, 1);
+				}
+				if(Map.Textures[i].NormalPath.StartsWith("/")){
+					Map.Textures[i].NormalPath = Map.Textures[i].NormalPath.Remove(0, 1);
+				}
+				Map.Textures[i].AlbedoScale = Map.map.Layers[i].ScaleTexture;
+				Map.Textures[i].NormalScale = Map.map.Layers[i].ScaleNormalmap;
+
+				Map.Gamedata.LoadTextureFromGamedata("env.scd", Map.Textures[i].AlbedoPath, i, false);
+				Map.Gamedata.LoadTextureFromGamedata("env.scd", Map.Textures[i].NormalPath, i, true);
+
+				Map.SetTextures (i);
+			}
+
+			ReloadStratums ();
+		}
 	}
 }

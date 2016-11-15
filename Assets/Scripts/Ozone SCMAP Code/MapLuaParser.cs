@@ -233,7 +233,7 @@ public class MapLuaParser : MonoBehaviour {
 		path = path.Replace("\\", "/");
 		Debug.Log("Load from: " + path);
 
-		string LastMapPatch = PlayerPrefs.GetString("MapsPath", "maps/");
+		string LastMapPatch = PlayerPrefs.GetString("MapsPath", EnvPaths.DefaultMapPath);
 
 		char[] NameSeparator = ("/").ToCharArray();
 		string[] Names = path.Split(NameSeparator);
@@ -268,7 +268,7 @@ public class MapLuaParser : MonoBehaviour {
 	IEnumerator LoadingFile(){
 
 		bool AllFilesExists = true;
-		string MapPath = PlayerPrefs.GetString("MapsPath", "maps/");
+		string MapPath = PlayerPrefs.GetString("MapsPath", EnvPaths.DefaultMapPath);
 		string Error = "";
 		if (!System.IO.Directory.Exists (MapPath)) {
 			Error = "Map folder not exist: " + MapPath;
@@ -336,7 +336,7 @@ public class MapLuaParser : MonoBehaviour {
 	private void LoadScenarioLua(){
 		System.Text.Encoding encodeType = System.Text.Encoding.ASCII;
 
-		string MapPath = PlayerPrefs.GetString("MapsPath", "maps/");
+		string MapPath = PlayerPrefs.GetString("MapsPath", EnvPaths.DefaultMapPath);
 
 		string loadedFile = "";
 		Debug.Log("Load file:" + MapPath + FolderName + "/" + ScenarioFileName + ".lua");
@@ -426,7 +426,7 @@ public class MapLuaParser : MonoBehaviour {
 	private void LoadSaveLua(){
 		System.Text.Encoding encodeType = System.Text.Encoding.ASCII;
 		string loadedFileSave = "";
-		string MapPath = PlayerPrefs.GetString("MapsPath", "maps/");
+		string MapPath = PlayerPrefs.GetString("MapsPath", EnvPaths.DefaultMapPath);
 
 		loadedFileSave = System.IO.File.ReadAllText(ScenarioData.SaveLua.Replace("/maps/", MapPath), encodeType);
 
@@ -655,7 +655,7 @@ public class MapLuaParser : MonoBehaviour {
 		InfoPopup.Show(true, "Saving map...");
 		yield return null;
 
-		string MapPath = PlayerPrefs.GetString("MapsPath", "maps/");
+		string MapPath = PlayerPrefs.GetString("MapsPath", EnvPaths.DefaultMapPath);
 		string BackupId = System.DateTime.Now.Month.ToString() +System.DateTime.Now.Day.ToString() + System.DateTime.Now.Hour.ToString() + System.DateTime.Now.Minute.ToString() + System.DateTime.Now.Second.ToString();
 		BackupPath = MapPath + FolderName + "/Backup_" + BackupId;
 
@@ -678,7 +678,7 @@ public class MapLuaParser : MonoBehaviour {
 
 	public void SaveScmap(){
 
-		string MapPath = PlayerPrefs.GetString("MapsPath", "maps/");
+		string MapPath = PlayerPrefs.GetString("MapsPath", EnvPaths.DefaultMapPath);
 		string MapFilePath = ScenarioData.Scmap.Replace("/maps/", MapPath);
 
 		string FileName = ScenarioData.Scmap;
@@ -749,7 +749,7 @@ public class MapLuaParser : MonoBehaviour {
 
 		SaveData = SaveData.Replace ("[customprops]", CustomPropsCode);
 
-		string MapPath = PlayerPrefs.GetString("MapsPath", "maps/");
+		string MapPath = PlayerPrefs.GetString("MapsPath", EnvPaths.DefaultMapPath);
 		string ScenarioFilePath = MapPath + FolderName + "/" + ScenarioFileName + ".lua";
 		//string SavePath = Application.dataPath + ScenarioFilePath.Replace(".lua", "_new.lua");
 		//string SavePath = Application.dataPath + ScenarioFilePath;
@@ -1181,7 +1181,7 @@ public class MapLuaParser : MonoBehaviour {
 		SaveData = SaveData.Replace ("[armies]", SaveArmysData);
 */
 
-		string MapPath = PlayerPrefs.GetString("MapsPath", "maps/");
+		string MapPath = PlayerPrefs.GetString("MapsPath", EnvPaths.DefaultMapPath);
 		string SaveFilePath = ScenarioData.SaveLua.Replace("/maps/", MapPath);
 
 		string FileName = ScenarioData.SaveLua;
@@ -1208,7 +1208,7 @@ public class MapLuaParser : MonoBehaviour {
 
 		SaveData = loadedFile;
 
-		string MapPath = PlayerPrefs.GetString("MapsPath", "maps/");
+		string MapPath = PlayerPrefs.GetString("MapsPath", EnvPaths.DefaultMapPath);
 		string SaveFilePath = ScenarioData.ScriptLua.Replace("/maps/", MapPath);
 
 		string FileName = ScenarioData.ScriptLua;

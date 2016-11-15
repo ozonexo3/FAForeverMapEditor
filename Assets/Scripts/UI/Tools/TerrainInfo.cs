@@ -258,7 +258,7 @@ public class TerrainInfo : MonoBehaviour {
 	}
 
 	public void ExportHeightmap(){
-		string Filename = PlayerPrefs.GetString("MapsPath", "maps/") + MapLuaParser.Current.FolderName + "/heightmap.raw";
+		string Filename = PlayerPrefs.GetString("MapsPath", EnvPaths.DefaultMapPath) + MapLuaParser.Current.FolderName + "/heightmap.raw";
 
 		int h = Map.Teren.terrainData.heightmapHeight;
 		int w = Map.Teren.terrainData.heightmapWidth;
@@ -284,7 +284,7 @@ public class TerrainInfo : MonoBehaviour {
 		int scale =  int.Parse(TerrainScale.text);
 		scale = Mathf.Clamp(scale, 129, 2049);
 
-		string Filename = PlayerPrefs.GetString("MapsPath", "maps/") + MapLuaParser.Current.FolderName + "/heightmap.raw";
+		string Filename = PlayerPrefs.GetString("MapsPath", EnvPaths.DefaultMapPath) + MapLuaParser.Current.FolderName + "/heightmap.raw";
 
 		int h = Map.Teren.terrainData.heightmapWidth;
 		int w = Map.Teren.terrainData.heightmapWidth;
@@ -359,7 +359,7 @@ public class TerrainInfo : MonoBehaviour {
 		beginHeights = Map.Teren.terrainData.GetHeights(0,0, w, h);
 		MapLuaParser.Current.History.RegisterTerrainHeightmapChange(beginHeights);
 
-		string Filename = PlayerPrefs.GetString("MapsPath", "maps/") + MapLuaParser.Current.FolderName + "/heightmap.raw";
+		string Filename = PlayerPrefs.GetString("MapsPath", EnvPaths.DefaultMapPath) + MapLuaParser.Current.FolderName + "/heightmap.raw";
 		if(!File.Exists(Filename)){
 			Debug.Log("File not exist: " + Filename);
 			return;

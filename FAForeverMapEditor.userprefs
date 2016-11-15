@@ -1,22 +1,20 @@
 ﻿<Properties StartupItem="Assembly-CSharp.csproj">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Unity.Instance.Unity Editor" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\GFX\Shaders\FaWater.shader">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Ozone SCMAP Code\EnvPaths.cs">
     <Files>
-      <File FileName="Assets\Scripts\UI\Tools\TerrainInfo.cs" Line="547" Column="18" />
+      <File FileName="Assets\Scripts\Ozone SCMAP Code\MapLuaParser.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\UI\Tools\TerrainInfo.cs" Line="1" Column="1" />
       <File FileName="Assets\Trash\TextureLoader.cs" Line="1" Column="1" />
       <File FileName="Assets\Scripts\Ozone SCMAP Code\GetGamedataFile.cs" Line="1" Column="1" />
       <File FileName="Assets\Scripts\UI\Windows\ResourceBrowser.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\UI\Lists\ResourceObject.cs" Line="16" Column="39" />
-      <File FileName="Assets\Scripts\UI\Tools\StratumInfo.cs" Line="311" Column="6" />
-      <File FileName="Assets\Scripts\Ozone SCMAP Code\ScmapEditor.cs" Line="171" Column="5" />
+      <File FileName="Assets\Scripts\UI\Lists\ResourceObject.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\UI\Tools\StratumInfo.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\Ozone SCMAP Code\ScmapEditor.cs" Line="1" Column="1" />
       <File FileName="Assets\Scripts\Undo\Undo.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\HazardX SCMAP Code\Map.cs" Line="631" Column="19" />
-      <File FileName="Assets\Scripts\HazardX SCMAP Code\Layer.cs" Line="50" Column="5" />
-      <File FileName="Assets\GFX\Shaders\FaWater.shader" Line="35" Column="7" />
-      <File FileName="Assets\GFX\Shaders\FaTerrainShader.shader" Line="105" Column="16" />
-      <File FileName="Assets\GFX\Shaders\FaTerrainShader 1.shader" Line="236" Column="27" />
-      <File FileName="Assets\GFX\Shaders\FaWater 1.shader" Line="138" Column="63" />
-      <File FileName="Assets\GFX\Shaders\FaWater 2.shader" Line="93" Column="20" />
+      <File FileName="Assets\Scripts\HazardX SCMAP Code\Map.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\HazardX SCMAP Code\Layer.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\Ozone SCMAP Code\EnvPaths.cs" Line="17" Column="2" />
+      <File FileName="Assets\Scripts\UI\EditorSettings.cs" Line="1" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

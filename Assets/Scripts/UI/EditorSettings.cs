@@ -12,8 +12,8 @@ public class EditorSettings : MonoBehaviour {
 	public	Undo			History;
 
 	void OnEnable(){
-		PathField.text = PlayerPrefs.GetString("GameDataPath", "gamedata/");
-		MapsPathField.text = PlayerPrefs.GetString("MapsPath", "maps/");
+		PathField.text = PlayerPrefs.GetString("GameDataPath", EnvPaths.DefaultGamedataPath);
+		MapsPathField.text = PlayerPrefs.GetString("MapsPath", EnvPaths.DefaultMapPath);
 	}
 	
 

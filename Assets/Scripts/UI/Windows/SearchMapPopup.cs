@@ -25,7 +25,7 @@ public class SearchMapPopup : MonoBehaviour {
 	}
 
 	public void ClickedField(int id){
-		string MapPath = PlayerPrefs.GetString("MapsPath", "maps/");
+		string MapPath = PlayerPrefs.GetString("MapsPath", EnvPaths.DefaultMapPath);
 
 		if (Folder) {
 			SelectedFolder = Directory.GetDirectories (MapPath)[id].Replace(MapPath, "");
@@ -66,7 +66,7 @@ public class SearchMapPopup : MonoBehaviour {
 		SelectedFolder = "";
 		SelectedScenario = "";
 		gameObject.SetActive (true);
-		string MapPath = PlayerPrefs.GetString("MapsPath", "maps/");
+		string MapPath = PlayerPrefs.GetString("MapsPath", EnvPaths.DefaultMapPath);
 
 		string[] Directories = Directory.GetDirectories (MapPath);
 
@@ -92,7 +92,7 @@ public class SearchMapPopup : MonoBehaviour {
 		Folder = false;
 		SelectedScenario = "";
 		gameObject.SetActive (true);
-		string MapPath = PlayerPrefs.GetString("MapsPath", "maps/");
+		string MapPath = PlayerPrefs.GetString("MapsPath", EnvPaths.DefaultMapPath);
 		string Path = MapPath + SelectedFolder;
 		string[] Files = Directory.GetFiles (Path);
 

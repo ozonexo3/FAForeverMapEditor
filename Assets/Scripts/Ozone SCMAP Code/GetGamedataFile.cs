@@ -21,7 +21,7 @@ public class GetGamedataFile : MonoBehaviour {
 	public static int AnisoLevel = 10;
 
 	public static void SetPath(){
-		GameDataPath = PlayerPrefs.GetString("GameDataPath", "gamedata/");
+		GameDataPath = PlayerPrefs.GetString("GameDataPath", EnvPaths.DefaultGamedataPath);
 	}
 
 	public static Texture2D LoadTexture2DFromGamedata(string scd, string LocalPath, bool NormalMap = false){

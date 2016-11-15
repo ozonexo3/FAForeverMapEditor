@@ -29,7 +29,7 @@ Shader "MapEditor/FaWater (backup2)" {
 
 
 		CGPROGRAM
-		#pragma surface surf Empty noambient
+		#pragma surface surf Empty vertex:vert alpha noambient
 			#pragma target 4.0
 			#pragma exclude_renderers gles
 
@@ -66,7 +66,7 @@ Shader "MapEditor/FaWater (backup2)" {
 			half4 LightingEmpty (SurfaceOutput s, half3 lightDir, half atten) {
 						half4 c;
 			              c.rgb = s.Albedo;
-			              c.a = 0;
+			              c.a = s.Alpha;
 			              return c;
 			          }
 
@@ -118,7 +118,7 @@ Shader "MapEditor/FaWater (backup2)" {
 		samplerCUBE _Reflection;
 		samplerCUBE SkySampler;
 	    
-	   void surf (Input i, inout SurfaceOutput o) {
+	   void surf (Input IN, inout SurfaceOutput o) {
 	    
 	    	float4 ViewportScaleOffset = float4((_ScreenParams.x / _ScreenParams.y) * 1, 1.0, (_ScreenParams.x / _ScreenParams.y) * -0.25, 0);
 	    	float3 SunDirection = normalize(float3( -0.2 , -0.967, -0.453));
@@ -133,24 +133,25 @@ Shader "MapEditor/FaWater (backup2)" {
 	    	// calculate the depth of water at this pixel, we use this to decide
 			// how to shade and it should become lesser as we get shallower
 			// so that we don't have a sharp line
-	    	float4 waterTexture = tex2D( _UtilitySamplerC, i.uv_UtilitySamplerC * float2(-1, 1) );
+	    	float4 waterTexture = tex2D( _UtilitySamplerC, IN.uv_UtilitySamplerC * float2(-1, 1) );
 			float waterDepth = waterTexture.g;
 			
 	        // calculate the correct viewvector
-			float3 viewVector = normalize(i.mViewVec);
+			float3 viewVector = normalize(IN.mViewVec);
 			
-		    float2 screenPos = UNITY_PROJ_COORD(i.mScreenPos.xy);
+		    float2 screenPos = UNITY_PROJ_COORD(IN.mScreenPos.xy);
 
 			// calculate the background pixel
-			float4 backGroundPixels = tex2Dproj( _WaterGrabTexture, UNITY_PROJ_COORD(i.grabUV) );
+			float4 backGroundPixels = tex2Dproj( _WaterGrabTexture, UNITY_PROJ_COORD(IN.grabUV) );
+			//float4 col = tex2Dproj( _MyGrabTexture3, UNITY_PROJ_COORD(IN.grabUV));
 
 			float mask = saturate(backGroundPixels.a * 255);
 	    
 	        // calculate the normal we will be using for the water surface
-		    float4 W0 = tex2D( NormalSampler0, i.mLayer0 );
-			float4 W1 = tex2D( NormalSampler1, i.mLayer1 );
-			float4 W2 = tex2D( NormalSampler2, i.mLayer2 );
-			float4 W3 = tex2D( NormalSampler3, i.mLayer3 );
+		    float4 W0 = tex2D( NormalSampler0, IN.mLayer0 );
+			float4 W1 = tex2D( NormalSampler1, IN.mLayer1 );
+			float4 W2 = tex2D( NormalSampler2, IN.mLayer2 );
+			float4 W3 = tex2D( NormalSampler3, IN.mLayer3 );
 
 		    float4 sum = W0 + W1 + W2 + W3;
 		    float waveCrest = saturate( sum.a - waveCrestThreshold );
@@ -164,7 +165,7 @@ Shader "MapEditor/FaWater (backup2)" {
 		  	N = lerp(up, N, 0.8);
 		    
 		    // calculate the reflection vector
-			float3 R = reflect( i.mViewVec, N );
+			float3 R = reflect( IN.mViewVec, N );
 	    
 	        // calculate the sky reflection color
 			float4 skyReflection = texCUBE( SkySampler, R );
@@ -174,12 +175,12 @@ Shader "MapEditor/FaWater (backup2)" {
 		    refractionPos -=  0.015 * N.xz * 10;
 	    	
 	    	// calculate the refract pixel, corrected for fetching a non-refractable pixel
-		    float4 refractedPixels = tex2Dproj( _WaterGrabTexture, UNITY_PROJ_COORD(i.grabUV));
+		    float4 refractedPixels = tex2Dproj( _WaterGrabTexture, UNITY_PROJ_COORD(IN.grabUV));
 
 		    // because the range of the alpha value that we use for the water is very small
 		    // we multiply by a large number and then saturate
 		    // this will also help in the case where we filter to an intermediate value
-		    refractedPixels.xyz = lerp(refractedPixels, backGroundPixels, saturate((i.AddVar.x - 40) / 30 ) ).xyz; //255
+		    refractedPixels.xyz = lerp(refractedPixels, backGroundPixels, saturate((IN.AddVar.x - 40) / 30 ) ).xyz; //255
 
 
 			float4 reflectedPixels = tex2D( ReflectionSampler, refractionPos);
@@ -215,6 +216,7 @@ Shader "MapEditor/FaWater (backup2)" {
 
     		float4 returnPixels = refractedPixels;
 			returnPixels.a = waterDepth;
+			o.Albedo = 0;
 			o.Emission = returnPixels.rgb;
 			o.Alpha = returnPixels.a;
 	    }
