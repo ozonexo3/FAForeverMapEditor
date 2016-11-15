@@ -218,6 +218,8 @@ public class MapLuaParser : MonoBehaviour {
 	}
 
 	void Awake(){
+		ICSharpCode.SharpZipLib.Zip.ZipConstants.DefaultCodePage = 0;
+
 		#if UNITY_EDITOR
 		//PlayerPrefs.DeleteAll();
 		#endif

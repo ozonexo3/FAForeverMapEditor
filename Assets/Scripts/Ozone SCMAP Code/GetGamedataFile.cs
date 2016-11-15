@@ -19,6 +19,10 @@ public class GetGamedataFile : MonoBehaviour {
 	public static float MipmapBias = 0.5f;
 	public static int AnisoLevel = 10;
 
+	void Awake(){
+		ICSharpCode.SharpZipLib.Zip.ZipConstants.DefaultCodePage = 0;
+	}
+
 	public static Texture2D LoadTexture2DFromGamedata(string scd, string LocalPath, bool NormalMap = false){
 		if(string.IsNullOrEmpty(LocalPath)) return null;
 
@@ -28,6 +32,8 @@ public class GetGamedataFile : MonoBehaviour {
 		}
 		ZipFile zf = null;
 		Texture2D texture = null;
+
+
 		bool Mipmaps = false;
 		try{
 			FileStream fs = File.OpenRead(EnvPaths.GetGamedataPath() + scd);
