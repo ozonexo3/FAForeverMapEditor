@@ -7,7 +7,8 @@ public class EnvPaths : MonoBehaviour {
 	public static string DefaultMapPath;
 	public static string DefaultGamedataPath;
 
-	static RegistryKey regKey = Registry.LocalMachine.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Uninstall");
+	static Microsoft.Win32.RegistryKey regKey = Microsoft.Win32.Registry.LocalMachine.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Uninstall");
+	//static RegistryKey regKey = Registry. .OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Uninstall");
 
 
 	const string InstalationPath = "InstalationPath";
@@ -59,6 +60,9 @@ public class EnvPaths : MonoBehaviour {
 
 	public static void GenerateGamedataPath(){
 		DefaultGamedataPath = FindByDisplayName(regKey, "Supreme Commander: Forged Alliance").Replace("\\", "/");
+
+
+
 		if (!string.IsNullOrEmpty (DefaultGamedataPath)) {
 			if (!DefaultGamedataPath.EndsWith ("/"))
 				DefaultGamedataPath += "/";
@@ -69,25 +73,34 @@ public class EnvPaths : MonoBehaviour {
 			}
 		}
 
+		Debug.Log ("Found: " + DefaultGamedataPath);
+
 		if (string.IsNullOrEmpty (DefaultGamedataPath))
 			DefaultGamedataPath = "gamedata/";
 	}
 
 
-	private static string FindByDisplayName(RegistryKey parentKey, string name)
+	private static string FindByDisplayName(Microsoft.Win32.RegistryKey parentKey, string name)
 	{
+
 		string[] nameList = parentKey.GetSubKeyNames();
 		for (int i = 0; i < nameList.Length; i++)
 		{
-			RegistryKey regKey =  parentKey.OpenSubKey(nameList[i]);
+			Microsoft.Win32.RegistryKey regKey = parentKey.OpenSubKey(nameList[i]);
 			try
 			{
+				
 				if (regKey.GetValue("DisplayName").ToString() == name)
 				{
 					return regKey.GetValue("InstallLocation").ToString();
 				}
+				else{
+					Debug.Log(nameList[i] + ", " + regKey.Name + " : " + regKey.GetValue("InstallLocation").ToString());
+				}
 			}
-			catch { }
+			catch { 
+				//Debug.LogError ("AAA");
+			}
 		}
 		return "";
 	}
