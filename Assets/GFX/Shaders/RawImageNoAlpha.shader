@@ -12,6 +12,7 @@
 		_StencilReadMask ("Stencil Read Mask", Float) = 255
 
 		_ColorMask ("Color Mask", Float) = 15
+		_Mipmap ("Mipmap", int) = 0
 	}
 
 	SubShader
@@ -67,6 +68,7 @@
 			int _Green;
 			int _Blue;
 			int _Alpha;
+			int _Mipmap;
 
 			v2f vert(appdata_t IN)
 			{
@@ -84,7 +86,7 @@
 
 			fixed4 frag(v2f IN) : SV_Target
 			{
-				half4 color = tex2D(_MainTex, IN.texcoord);
+				half4 color = tex2Dlod(_MainTex, fixed4(IN.texcoord, 0, _Mipmap));
 
 				//if(color.a < 0.05)
 				//	color.rgb = half3(0.5,0,0);

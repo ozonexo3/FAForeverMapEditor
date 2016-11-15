@@ -17,7 +17,7 @@ public class GamedataBlueprints : MonoBehaviour {
 		string[] ToReturn = new string[0];
 
 
-		if(!Directory.Exists(GetGamedataFile.GameDataPath)){
+		if(!Directory.Exists(EnvPaths.GetGamedataPath())){
 			Debug.LogError("Gamedata path not exist!");
 			return ToReturn;
 		}
@@ -27,7 +27,7 @@ public class GamedataBlueprints : MonoBehaviour {
 		ZipFile zf = null;
 		try {
 			//Debug.Log("Get gamedata scd: " + GetGamedataFile.GameDataPath + scd);
-			FileStream fs = File.OpenRead(GetGamedataFile.GameDataPath + scd);
+			FileStream fs = File.OpenRead(EnvPaths.GetGamedataPath() + scd);
 			zf = new ZipFile(fs);
 
 

@@ -34,7 +34,6 @@ public class ResourceBrowser : MonoBehaviour {
 
 	public void Instantiate(){
 		Current = this;
-		GetGamedataFile.SetPath ();
 		ReadAllFolders ();
 	}
 
@@ -58,12 +57,12 @@ public class ResourceBrowser : MonoBehaviour {
 		LoadedEnvPaths = new List<string> ();
 		List<Dropdown.OptionData> NewOptions = new List<Dropdown.OptionData> ();
 
-		if(!Directory.Exists(GetGamedataFile.GameDataPath)){
+		if(!Directory.Exists(EnvPaths.GetGamedataPath())){
 			Debug.LogError("Gamedata path not exist!");
 			return;
 		}
 
-		FileStream fs = File.OpenRead(GetGamedataFile.GameDataPath + "env.scd");
+		FileStream fs = File.OpenRead(EnvPaths.GetGamedataPath() + "env.scd");
 		ZipFile zf = new ZipFile(fs);
 
 		foreach (ZipEntry zipEntry in zf) {
@@ -172,7 +171,7 @@ public class ResourceBrowser : MonoBehaviour {
 		} else {
 			ZipFile zf = null;
 			try {
-				FileStream fs = File.OpenRead (GetGamedataFile.GameDataPath + "env.scd");
+				FileStream fs = File.OpenRead (EnvPaths.GetGamedataPath() + "env.scd");
 				zf = new ZipFile (fs);
 
 				yield return null;
@@ -238,8 +237,9 @@ public class ResourceBrowser : MonoBehaviour {
 		Texture2D LoadedTex = GetGamedataFile.LoadTexture2DFromGamedata ("env.scd", localpath, false);
 		GameObject NewButton = Instantiate (Prefab) as GameObject;
 		NewButton.transform.SetParent (Pivot, false);
-		NewButton.GetComponent<RawImage> ().texture = LoadedTex;
-		NewButton.GetComponent<ResourceObject> ().Controler = this;
+		//NewButton.GetComponent<RawImage> ().texture = LoadedTex;
+		//NewButton.GetComponent<ResourceObject> ().Controler = this;
+		NewButton.GetComponent<ResourceObject> ().SetImages (LoadedTex);
 		NewButton.GetComponent<ResourceObject> ().InstanceId = LoadedTextures.Count;
 		NewButton.GetComponent<ResourceObject> ().NameField.text = LocalName.Replace(".dds", "");
 		LoadedTextures.Add(LoadedTex );
@@ -263,7 +263,7 @@ public class ResourceBrowser : MonoBehaviour {
 		GameObject NewButton = Instantiate (Prefab) as GameObject;
 		NewButton.transform.SetParent (Pivot, false);
 		//NewButton.GetComponent<RawImage> ().texture = LoadedTex;
-		NewButton.GetComponent<ResourceObject> ().Controler = this;
+		//NewButton.GetComponent<ResourceObject> ().Controler = this;
 		NewButton.GetComponent<ResourceObject> ().InstanceId = LoadedPaths.Count;
 		NewButton.GetComponent<ResourceObject> ().NameField.text = LocalName.Replace(".blueprint", "");
 		//LoadedTextures.Add(LoadedTex );

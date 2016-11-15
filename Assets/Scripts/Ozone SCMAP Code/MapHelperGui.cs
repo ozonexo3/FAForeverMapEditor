@@ -26,13 +26,14 @@ public class MapHelperGui : MonoBehaviour {
 		//OpenComposition(1);
 		Args = System.Environment.GetCommandLineArgs();
 		if(Args.Length > 0)
-		for(int i = 0; i < Args.Length; i++){
+		/*for(int i = 0; i < Args.Length; i++){
 			Debug.Log(Args[i]);
-		}
+		}*/
 
-		if(Args.Length == 3 && Args[1] == "-setGamedataPath"){
-			PlayerPrefs.SetString("GameDataPath", Args[2]);
-			Debug.Log("Success! Gamedata path changed to: " + Args[2]);
+		if(Args.Length == 3 && Args[1] == "-setInstalationPath"){
+			//PlayerPrefs.SetString("GameDataPath", Args[2]);
+			EnvPaths.SetInstalationPath (Args [2]);
+			Debug.Log("Success! Instalation path changed to: " + Args[2]);
 		}
 
 

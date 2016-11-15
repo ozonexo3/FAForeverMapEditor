@@ -55,7 +55,7 @@ public class ScmapEditor : MonoBehaviour {
 
 		map = new Map();
 
-		string MapPath = PlayerPrefs.GetString("MapsPath", EnvPaths.DefaultMapPath);
+		string MapPath = EnvPaths.GetMapsPath();
 		string path = MapLuaParser.Current.ScenarioData.Scmap.Replace("/maps/", MapPath);
 
 		Debug.Log("Load SCMAP file: " + path);
@@ -290,7 +290,7 @@ public class ScmapEditor : MonoBehaviour {
 		}
 		Debug.Log("Set Heightmap to map " + map.Width + ", " + map.Height);
 
-		string MapPath = PlayerPrefs.GetString("MapsPath", EnvPaths.DefaultMapPath);
+		string MapPath = EnvPaths.GetMapsPath();
 		string path = MapLuaParser.Current.ScenarioData.Scmap.Replace("/maps/", MapPath);
 
 		//TODO force values if needed

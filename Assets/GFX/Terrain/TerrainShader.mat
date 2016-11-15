@@ -312,7 +312,7 @@ Material:
     m_Floats:
     - first:
         name: _AbyssLevel
-      second: 1.25
+      second: 0.9001621
     - first:
         name: _Area
       second: 1
@@ -330,7 +330,7 @@ Material:
       second: 0.05
     - first:
         name: _Brush
-      second: 0
+      second: 1
     - first:
         name: _BrushSize
       second: 0
@@ -348,7 +348,7 @@ Material:
       second: 0
     - first:
         name: _GridCamDist
-      second: 5.3821135
+      second: 7.414286
     - first:
         name: _GridScale
       second: 102.4
@@ -375,22 +375,22 @@ Material:
       second: 128
     - first:
         name: _Splat1Scale
-      second: 585.1429
+      second: 170.66667
     - first:
         name: _Splat1ScaleNormal
-      second: 256
+      second: 56.88889
     - first:
         name: _Splat2Scale
-      second: 29.257143
+      second: 117.02857
     - first:
         name: _Splat2ScaleNormal
       second: 35.929825
     - first:
         name: _Splat3Scale
-      second: 89.04348
+      second: 99.902435
     - first:
         name: _Splat3ScaleNormal
-      second: 24.824242
+      second: 22.140541
     - first:
         name: _Splat4Scale
       second: 99.902435

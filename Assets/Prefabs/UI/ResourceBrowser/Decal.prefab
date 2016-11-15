@@ -199,10 +199,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6ae743af1efa77e48a9e0068a05d574d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Controler: {fileID: 0}
   InstanceId: 0
   NameField: {fileID: 114000013650291784}
   Selected: {fileID: 1000012603821316}
+  RawImages:
+  - {fileID: 114000012781562974}
 --- !u!114 &114000013650291784
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -296,10 +297,10 @@ RectTransform:
   - {fileID: 224000012175396436}
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 334, y: -112}
+  m_SizeDelta: {x: 220, y: 220}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &224000012175396436
 RectTransform:

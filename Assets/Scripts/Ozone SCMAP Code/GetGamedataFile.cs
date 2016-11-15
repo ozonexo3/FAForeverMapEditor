@@ -13,22 +13,16 @@ using ICSharpCode.SharpZipLib.BZip2;
 public class GetGamedataFile : MonoBehaviour {
 	static bool DebugTextureLoad = false;
 
-	public static	string			GameDataPath;
 	public			ScmapEditor		Scmap;
 	public			Texture2D		EmptyTexture;
 
 	public static float MipmapBias = 0.5f;
 	public static int AnisoLevel = 10;
 
-	public static void SetPath(){
-		GameDataPath = PlayerPrefs.GetString("GameDataPath", EnvPaths.DefaultGamedataPath);
-	}
-
 	public static Texture2D LoadTexture2DFromGamedata(string scd, string LocalPath, bool NormalMap = false){
 		if(string.IsNullOrEmpty(LocalPath)) return null;
-		SetPath();
 
-		if(!Directory.Exists(GameDataPath)){
+		if(!Directory.Exists(EnvPaths.GetGamedataPath())){
 			Debug.LogError("Gamedata path not exist!");
 			return null;
 		}
@@ -36,7 +30,7 @@ public class GetGamedataFile : MonoBehaviour {
 		Texture2D texture = null;
 		bool Mipmaps = false;
 		try{
-			FileStream fs = File.OpenRead(GameDataPath + scd);
+			FileStream fs = File.OpenRead(EnvPaths.GetGamedataPath() + scd);
 			zf = new ZipFile(fs);
 
 

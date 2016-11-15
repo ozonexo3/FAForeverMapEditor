@@ -678,7 +678,7 @@ public class StratumInfo : MonoBehaviour {
 		FolderDialog.Filter = "scmstratum files (*.scmsl)|*.scmsl|All files (*.*)|*.*"  ;
 		FolderDialog.FilterIndex = 0 ;
 		FolderDialog.RestoreDirectory = true ;
-		FolderDialog.InitialDirectory = PlayerPrefs.GetString ("MapsPath", EnvPaths.DefaultMapPath);
+		FolderDialog.InitialDirectory = EnvPaths.GetMapsPath();
 
 		if (FolderDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
 		{
@@ -698,7 +698,7 @@ public class StratumInfo : MonoBehaviour {
 		FolderDialog.Filter = "scmstratum files (*.scmsl)|*.scmsl|All files (*.*)|*.*"  ;
 		FolderDialog.FilterIndex = 0 ;
 		FolderDialog.RestoreDirectory = true ;
-		FolderDialog.InitialDirectory = PlayerPrefs.GetString ("MapsPath", EnvPaths.DefaultMapPath);
+		FolderDialog.InitialDirectory = EnvPaths.GetMapsPath();
 		//FolderDialog.
 
 		if (FolderDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
@@ -739,7 +739,7 @@ public class StratumInfo : MonoBehaviour {
 		FolderDialog.Filter = "scmstratum files (*.scmst)|*.scmst|All files (*.*)|*.*"  ;
 		FolderDialog.FilterIndex = 0 ;
 		FolderDialog.RestoreDirectory = true ;
-		FolderDialog.InitialDirectory = PlayerPrefs.GetString ("MapsPath", EnvPaths.DefaultMapPath);
+		FolderDialog.InitialDirectory = EnvPaths.GetMapsPath();
 
 		if (FolderDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
 		{

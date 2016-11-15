@@ -1,20 +1,23 @@
 ﻿<Properties StartupItem="Assembly-CSharp.csproj">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Unity.Instance.Unity Editor" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Ozone SCMAP Code\EnvPaths.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\GFX\Shaders\RawImageNoAlpha.shader">
     <Files>
-      <File FileName="Assets\Scripts\Ozone SCMAP Code\MapLuaParser.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\UI\Tools\TerrainInfo.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\Ozone SCMAP Code\MapLuaParser.cs" Line="222" Column="5" />
+      <File FileName="Assets\Scripts\UI\Tools\TerrainInfo.cs" Line="362" Column="43" />
       <File FileName="Assets\Trash\TextureLoader.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\Ozone SCMAP Code\GetGamedataFile.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\UI\Windows\ResourceBrowser.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\UI\Lists\ResourceObject.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\UI\Tools\StratumInfo.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\Ozone SCMAP Code\ScmapEditor.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\Undo\Undo.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\HazardX SCMAP Code\Map.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\HazardX SCMAP Code\Layer.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\Ozone SCMAP Code\EnvPaths.cs" Line="17" Column="2" />
-      <File FileName="Assets\Scripts\UI\EditorSettings.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\Ozone SCMAP Code\GetGamedataFile.cs" Line="24" Column="1" />
+      <File FileName="Assets\Scripts\UI\Windows\ResourceBrowser.cs" Line="266" Column="5" />
+      <File FileName="Assets\Scripts\UI\Lists\ResourceObject.cs" Line="20" Column="4" />
+      <File FileName="Assets\Scripts\UI\Tools\StratumInfo.cs" Line="732" Column="46" />
+      <File FileName="Assets\Scripts\Ozone SCMAP Code\ScmapEditor.cs" Line="293" Column="42" />
+      <File FileName="Assets\Scripts\Ozone SCMAP Code\EnvPaths.cs" Line="65" Column="1" />
+      <File FileName="Assets\Scripts\UI\EditorSettings.cs" Line="42" Column="19" />
+      <File FileName="Assets\Scripts\Ozone SCMAP Code\GamedataBlueprints.cs" Line="30" Column="34" />
+      <File FileName="Assets\Scripts\UI\StartingScreen.cs" Line="67" Column="42" />
+      <File FileName="Assets\Scripts\Ozone SCMAP Code\MapHelperGui.cs" Line="34" Column="53" />
+      <File FileName="Assets\Scripts\UI\Windows\SearchMapPopup.cs" Line="95" Column="42" />
+      <File FileName="Assets\Scripts\UI\Windows\MoveWindow.cs" Line="31" Column="147" />
+      <File FileName="Assets\GFX\Shaders\RawImageNoAlpha.shader" Line="31" Column="18" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

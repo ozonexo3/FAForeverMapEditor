@@ -12,8 +12,8 @@ public class EditorSettings : MonoBehaviour {
 	public	Undo			History;
 
 	void OnEnable(){
-		PathField.text = PlayerPrefs.GetString("GameDataPath", EnvPaths.DefaultGamedataPath);
-		MapsPathField.text = PlayerPrefs.GetString("MapsPath", EnvPaths.DefaultMapPath);
+		PathField.text = EnvPaths.GetInstalationPath();
+		MapsPathField.text = EnvPaths.GetMapsPath();
 	}
 	
 
@@ -28,21 +28,25 @@ public class EditorSettings : MonoBehaviour {
 
 	public void Save(){
 		string newPath = PathField.text.Replace("\\", "/");
-		if(newPath[newPath.Length - 1].ToString() != "/") newPath += "/";
-		if(newPath[0].ToString() == "/") newPath = newPath.Remove(0,1);
-		PlayerPrefs.SetString("GameDataPath", newPath);
-		gameObject.SetActive(false);
+		//if(newPath[newPath.Length - 1].ToString() != "/") newPath += "/";
+		//if(newPath[0].ToString() == "/") newPath = newPath.Remove(0,1);
+		//PlayerPrefs.SetString("GameDataPath", newPath);
 
-		newPath = MapsPathField.text.Replace("\\", "/");
-		if(newPath[newPath.Length - 1].ToString() != "/") newPath += "/";
-		if(newPath[0].ToString() == "/") newPath = newPath.Remove(0,1);
-		PlayerPrefs.SetString("MapsPath", newPath);
-		gameObject.SetActive(false);
+		EnvPaths.SetInstalationPath (PathField.text);
+
+		//newPath = MapsPathField.text.Replace("\\", "/");
+		//if(newPath[newPath.Length - 1].ToString() != "/") newPath += "/";
+		//if(newPath[0].ToString() == "/") newPath = newPath.Remove(0,1);
+		//PlayerPrefs.SetString("MapsPath", newPath);
+
+		EnvPaths.SetMapsPath (MapsPathField.text);
 
 		PlayerPrefs.SetInt("UndoHistry", (int)HistorySlider.value);
 		if(History)History.MaxHistoryLength = (int)HistorySlider.value;
 
 		PlayerPrefs.Save();
+		gameObject.SetActive(false);
+
 	}
 
 	[DllImport("user32.dll")]
@@ -78,6 +82,18 @@ public class EditorSettings : MonoBehaviour {
 		{
 			PathField.text = FolderDialog.SelectedPath;
 		}
+	}
+
+
+	public void ResetGamedata(){
+		EnvPaths.GenerateGamedataPath ();
+		PathField.text = EnvPaths.DefaultGamedataPath;
+
+	}
+
+	public void ResetMap(){
+		EnvPaths.GenerateMapPath ();
+		MapsPathField.text = EnvPaths.DefaultMapPath;
 	}
 
 }

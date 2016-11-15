@@ -64,10 +64,10 @@ public class StartingScreen : MonoBehaviour {
 	}
 
 	public void LoadPreview(){
-		string MapPath = PlayerPrefs.GetString("MapsPath", EnvPaths.DefaultMapPath);
-		string path = Application.dataPath + "/" + MapPath + Scenario.FolderName;
+		string MapPath = EnvPaths.GetMapsPath();
+		string path = MapPath + Scenario.FolderName;
 		#if UNITY_EDITOR
-		path = path.Replace("Assets/", "");
+		//path = path.Replace("Assets/", "");
 		#endif
 		byte[] FinalTextureData;
 		Vector2	ImageSize = Vector2.one;
@@ -77,8 +77,8 @@ public class StartingScreen : MonoBehaviour {
 			FinalImagePath = path + "/preview.jpg";
 			ImageSize *= 256;
 		}
-		else if(File.Exists(path + "/" + Scenario.FolderName + ".dds")){
-			FinalImagePath = path + "/" + Scenario.FolderName + ".dds";
+		else if(File.Exists(path + "/" + Scenario.FolderName.ToLower() + ".dds")){
+			FinalImagePath = path + "/" + Scenario.FolderName.ToLower() + ".dds";
 			byte[] FinalTextureData2 = System.IO.File.ReadAllBytes(FinalImagePath);
 
 
@@ -134,8 +134,8 @@ public class StartingScreen : MonoBehaviour {
 			Img.texture = textureDds;
 			return;
 		}
-		else if(File.Exists(path + "/" + Scenario.FolderName + ".png")){
-			FinalImagePath = path + "/" + Scenario.FolderName + ".png";
+		else if(File.Exists(path + "/" + Scenario.FolderName.ToLower() + ".png")){
+			FinalImagePath = path + "/" + Scenario.FolderName.ToLower() + ".png";
 			ImageSize *= 256;
 		}
 		else if(File.Exists(path + "/" + Scenario.FolderName + ".small" + ".png")){

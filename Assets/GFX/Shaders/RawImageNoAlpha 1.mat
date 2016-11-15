@@ -6,7 +6,7 @@ Material:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: RawImageNoAlpha
+  m_Name: RawImageNoAlpha 1
   m_Shader: {fileID: 4800000, guid: fbe9fa648c826a444936f3b7662fc8f8, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 5
@@ -27,7 +27,7 @@ Material:
       second: 15
     - first:
         name: _Mipmap
-      second: 1
+      second: 10
     - first:
         name: _Stencil
       second: 0
