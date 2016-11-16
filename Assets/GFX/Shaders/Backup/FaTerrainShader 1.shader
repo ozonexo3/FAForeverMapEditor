@@ -249,13 +249,13 @@ Properties {
 
 
 				//nrm = tex2D (_NormalLower, UV * 1000);
-				//nrm.rg *= 1;
+				//nrm.rg *= 5;
 				nrm.b = 1;
 				//nrm.rgb = UnpackNormal(nrm);
 				nrm.rgb = nrm.rgb * 2 - half3(1, 1, 1);
 				//nrm.rg *= 3;
 				nrm.rgb = normalize(nrm.rgb);
-				//o.Normal = nrm;
+				o.Normal = nrm;
 
 				if(_Slope > 0){
 					if(IN.worldPos.y < _WaterLevel){

@@ -73,7 +73,7 @@ public class EnvPaths : MonoBehaviour {
 			}
 		}
 
-		Debug.Log ("Found: " + DefaultGamedataPath);
+		//Debug.Log ("Found: " + DefaultGamedataPath);
 
 		if (string.IsNullOrEmpty (DefaultGamedataPath))
 			DefaultGamedataPath = "gamedata/";
@@ -95,7 +95,7 @@ public class EnvPaths : MonoBehaviour {
 					return regKey.GetValue("InstallLocation").ToString();
 				}
 				else{
-					Debug.Log(nameList[i] + ", " + regKey.Name + " : " + regKey.GetValue("InstallLocation").ToString());
+					//Debug.Log(nameList[i] + ", " + regKey.Name + " : " + regKey.GetValue("InstallLocation").ToString());
 				}
 			}
 			catch { 

@@ -26,6 +26,8 @@ public class ScmapEditor : MonoBehaviour {
 	public		bool			Slope;
 	public		TerrainMesh		TerrainM;
 
+	public		string			Shader;
+
 	// Stratum Layer
 	[System.Serializable]
 	public class TerrainTexture{
@@ -83,6 +85,8 @@ public class ScmapEditor : MonoBehaviour {
 			Debug.LogError("File not found");
 			StopCoroutine( "LoadScmapFile" );
 		}
+
+		Shader = map.TerrainShader;
 
 		MapLuaParser.Current.ScenarioData.MaxHeight = map.Water.Elevation;
 		MapLuaParser.Water = map.Water.HasWater;
@@ -294,6 +298,8 @@ public class ScmapEditor : MonoBehaviour {
 		string path = MapLuaParser.Current.ScenarioData.Scmap.Replace("/maps/", MapPath);
 
 		//TODO force values if needed
+		map.TerrainShader = Shader;
+
 		for (int i = 0; i < map.Layers.Count; i++) {
 			map.Layers [i].PathTexture = Textures [i].AlbedoPath;
 			map.Layers [i].PathNormalmap = Textures [i].NormalPath;

@@ -97,6 +97,17 @@ public class StratumInfo : MonoBehaviour {
 		BrushGenerator.LoadBrushesh ();
 		ReloadStratums();
 
+		if (Page_Stratum.activeSelf) {
+			ChangePageToStratum ();
+		} else if (Page_Paint.activeSelf) {
+			ChangePageToPaint ();
+		} else {
+			ChangePageToSettings ();
+		}
+	}
+
+	void OnDisable(){
+		TerrainMaterial.SetFloat("_BrushSize", 0 );
 	}
 
 	void Start(){
@@ -122,6 +133,8 @@ public class StratumInfo : MonoBehaviour {
 			Invert = Input.GetKey (KeyCode.LeftAlt);
 			Smooth = Input.GetKey (KeyCode.LeftShift);
 
+
+
 			if (Edit.MauseOnGameplay || ChangingStrength || ChangingSize) {
 				if (!ChangingSize && (Input.GetKey (KeyCode.M) || ChangingStrength)) {
 					// Change Strength
@@ -133,7 +146,7 @@ public class StratumInfo : MonoBehaviour {
 						ChangingStrength = false;
 					}
 					if (ChangingStrength) {
-						BrushStrengthSlider.value = Mathf.Clamp (StrengthBeginValue - (BeginMousePos.x - Input.mousePosition.x), 0, 100);
+						BrushStrengthSlider.value = Mathf.Clamp (StrengthBeginValue - (int)((BeginMousePos.x - Input.mousePosition.x) * 0.1f), 0, 100);
 						UpdateStratumMenu (true);
 						//UpdateBrushPosition(true);
 
@@ -148,23 +161,23 @@ public class StratumInfo : MonoBehaviour {
 						ChangingSize = false;
 					}
 					if (ChangingSize) {
-						BrushSizeSlider.value = Mathf.Clamp (SizeBeginValue - (BeginMousePos.x - Input.mousePosition.x), 1, 256);
+						BrushSizeSlider.value = Mathf.Clamp (SizeBeginValue - (int)((BeginMousePos.x - Input.mousePosition.x) * 0.4f), 1, 256);
 						UpdateStratumMenu (true);
 						UpdateBrushPosition (true);
 
 					}
 				} else {
-					if (Input.GetMouseButtonDown (0)) {
-						if (UpdateBrushPosition (true)) {
-							SymmetryPaint ();
+						if (Input.GetMouseButtonDown (0)) {
+							if (CameraControler.Current.DragStartedGameplay && UpdateBrushPosition (true)) {
+								SymmetryPaint ();
+							}
+						} else if (Input.GetMouseButton (0)) {
+						if (CameraControler.Current.DragStartedGameplay && UpdateBrushPosition (false)) {
+								SymmetryPaint ();
+							}
+						} else {
+							UpdateBrushPosition (true);
 						}
-					} else if (Input.GetMouseButton (0)) {
-						if (UpdateBrushPosition (false)) {
-							SymmetryPaint ();
-						}
-					} else {
-						UpdateBrushPosition (true);
-					}
 				}
 			}
 
@@ -242,8 +255,8 @@ public class StratumInfo : MonoBehaviour {
 		Stratum_Albedo_Slider.value = Map.Textures[Selected].AlbedoScale;
 		Stratum_Albedo_Input.text = Map.Textures[Selected].AlbedoScale.ToString();
 
-		Stratum_Normal_Slider.value = Map.Textures[Selected].AlbedoScale;
-		Stratum_Normal_Input.text = Map.Textures[Selected].AlbedoScale.ToString();
+		Stratum_Normal_Slider.value = Map.Textures[Selected].NormalScale;
+		Stratum_Normal_Input.text = Map.Textures[Selected].NormalScale.ToString();
 		LoadingStratum = false;
 	}
 
@@ -311,24 +324,28 @@ public class StratumInfo : MonoBehaviour {
 					if(!LoadingStratum )
 						Undo.RegisterStratumChange (Selected);
 				}
-				Stratum_Albedo_Input.text = Stratum_Albedo_Slider.value.ToString ();
-				Stratum_Normal_Input.text = Stratum_Normal_Slider.value.ToString ();
+				if (!LoadingStratum) {
+					Stratum_Albedo_Input.text = Stratum_Albedo_Slider.value.ToString ();
+					Stratum_Normal_Input.text = Stratum_Normal_Slider.value.ToString ();
+				}
 			} else {
-				if(!LoadingStratum )
+				if (!LoadingStratum) {
 					Undo.RegisterStratumChange (Selected);
-				Stratum_Albedo_Slider.value = float.Parse (Stratum_Albedo_Input.text);
-				Stratum_Normal_Slider.value = float.Parse (Stratum_Normal_Input.text);
+					Stratum_Albedo_Slider.value = float.Parse (Stratum_Albedo_Input.text);
+					Stratum_Normal_Slider.value = float.Parse (Stratum_Normal_Input.text);
+				}
 			}
-
-			Map.Textures [Selected].AlbedoScale = Stratum_Albedo_Slider.value;
-			Map.Textures [Selected].NormalScale = Stratum_Normal_Slider.value;
+			if (!LoadingStratum) {
+				Map.Textures [Selected].AlbedoScale = Stratum_Albedo_Slider.value;
+				Map.Textures [Selected].NormalScale = Stratum_Normal_Slider.value;
+			}
 
 			//Map.map.Layers [Selected].ScaleTexture = Map.Textures [Selected].AlbedoScale;
 			//Map.map.Layers [Selected].ScaleNormalmap = Map.Textures [Selected].NormalScale;
 
 			Map.UpdateScales (Selected);
 
-		} else {
+		} else if(Page_Paint.activeSelf) {
 			if (Slider) {
 				BrushSize.text = BrushSizeSlider.value.ToString ();
 				BrushStrength.text = BrushStrengthSlider.value.ToString ();
@@ -653,8 +670,10 @@ public class StratumInfo : MonoBehaviour {
 			Undo.RegisterStratumChange (Selected);
 			Debug.Log (ResourceBrowser.Current.LoadedPaths [ResourceBrowser.DragedObject.InstanceId]);
 
-			Map.Textures [Selected].Normal = ResourceBrowser.Current.LoadedTextures [ResourceBrowser.DragedObject.InstanceId];
+			//Map.Textures [Selected].Normal = ResourceBrowser.Current.LoadedTextures [ResourceBrowser.DragedObject.InstanceId];
 			Map.Textures [Selected].NormalPath = ResourceBrowser.Current.LoadedPaths [ResourceBrowser.DragedObject.InstanceId];
+
+			Map.Gamedata.LoadTextureFromGamedata("env.scd", Map.Textures[Selected].NormalPath, Selected, true);
 
 			//Map.map.Layers [Selected].PathNormalmap = Map.Textures [Selected].NormalPath;
 

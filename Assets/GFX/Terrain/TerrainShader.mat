@@ -7,10 +7,10 @@ Material:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_Name: TerrainShader
-  m_Shader: {fileID: 4800000, guid: a760ca39bde832349bb6ffb0e84caf93, type: 3}
-  m_ShaderKeywords: 
+  m_Shader: {fileID: 4800000, guid: 07332981e20e66d40a9ee102d13a9be8, type: 3}
+  m_ShaderKeywords: _AREA_ON _BRUSH_ON _WATER_ON
   m_LightmapFlags: 5
-  m_CustomRenderQueue: 1900
+  m_CustomRenderQueue: -1
   stringTagMap: {}
   m_SavedProperties:
     serializedVersion: 2

@@ -5,7 +5,7 @@ using EditMap;
 
 public class CameraControler : MonoBehaviour {
 
-
+	public static			CameraControler		Current;
 	public			Undo				History;
 	public			MapHelperGui		HUD;
 	public			Editing				Edit;
@@ -46,6 +46,10 @@ public class CameraControler : MonoBehaviour {
 	// Creating Marker;
 	public			Transform			MarkerToCreate;
 	public			Transform[]			MarkerToCreateSymmetry;
+
+	void Awake(){
+		Current = this;
+	}
 
 	public void RestartCam(){
 		if(!Terrain.activeTerrain) return;
