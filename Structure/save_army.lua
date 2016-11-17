@@ -2,11 +2,11 @@
         {
             personality = '[personality]',
             plans = '[plans]',
-            color = '[color]',
-            faction = '[faction]',
+            color = [color],
+            faction = [faction],
             Economy = {
-                mass = '[mass]',
-                energy = '[energy]',
+                mass = [mass],
+                energy = [energy],
             },
             Alliances = {
 			[Alliances]

@@ -300,6 +300,14 @@ public class ScmapEditor : MonoBehaviour {
 		//TODO force values if needed
 		map.TerrainShader = Shader;
 
+		map.MinimapContourColor = new Color32 (0, 0, 0, 255);
+		map.MinimapDeepWaterColor = new Color32 (71, 140, 181, 255);
+		map.MinimapShoreColor = new Color32 (179, 183, 185, 255);
+		map.MinimapLandStartColor = new Color32 (119, 101, 108, 255);
+		map.MinimapLandEndColor = new Color32 (206, 206, 176, 255);
+		//map.MinimapLandEndColor = new Color32 (255, 255, 215, 255);
+		map.MinimapContourInterval = 10;
+
 		for (int i = 0; i < map.Layers.Count; i++) {
 			map.Layers [i].PathTexture = Textures [i].AlbedoPath;
 			map.Layers [i].PathNormalmap = Textures [i].NormalPath;
