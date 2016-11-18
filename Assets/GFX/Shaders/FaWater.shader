@@ -4,6 +4,7 @@ Shader "MapEditor/FaWater" {
 	Properties {
 		waterColor  ("waterColor", Color) = (0.0, 0.7, 1.5, 1)
 		_UtilitySamplerC ("_UtilitySamplerC", 2D) = "white" {}
+		_WaterData ("Water Data", 2D) = "white" {}
 		SkySampler("SkySampler", CUBE) = "" {}
 		ReflectionSampler ("ReflectionSampler", 2D) = "white" {}
 		

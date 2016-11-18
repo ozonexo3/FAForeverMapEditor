@@ -42,6 +42,7 @@ public class Map
 	public Texture2D TexturemapTex2 = new Texture2D(0,0);
 	public Texture2D NormalmapTex = new Texture2D(0,0);
 	public Texture2D WatermapTex = new Texture2D(0,0);
+	public Texture2D WaterDataTexture = new Texture2D(0,0);
     public byte[] WaterFoamMask = new byte[0];
     public byte[] WaterFlatnessMask = new byte[0];
 
@@ -455,6 +456,14 @@ public class Map
             WaterFlatnessMask = _with1.ReadBytes(HalfSize);
             WaterDepthBiasMask = _with1.ReadBytes(HalfSize);
 
+			WaterDataTexture = new Texture2D (Width / 2, Height / 2, TextureFormat.RGB24, false);
+			Color32[] NewColors = new Color32[HalfSize];
+			for (int i = 0; i < HalfSize; i++) {
+				NewColors [i] = new Color32 (WaterFoamMask [i], WaterFlatnessMask [i], WaterDepthBiasMask [i], 0);
+			}
+			WaterDataTexture.SetPixels32 (NewColors);
+			WaterDataTexture.Apply ();
+
             TerrainTypeData = _with1.ReadBytes(Width * Height);
 
             if (VersionMinor <= 52)
@@ -537,8 +546,17 @@ public class Map
 		WatermapTex = TextureLoader.LoadTextureDXT(WatermapData, WatermapHeader);
 		WatermapData = new byte[0];
 
+		UncompressedWatermapTex = new Texture2D (WatermapTex.width, WatermapTex.height, TextureFormat.RGBA32, false);
+		UncompressedWatermapTex.SetPixels (WatermapTex.GetPixels ());
+
+
+		UncompressedWatermapTex.Apply ();
+
         return true;
     }
+
+	public Texture2D UncompressedWatermapTex;
+
     public void SaveMapInformation(string Filename, int randomSeed)
     {
         System.IO.StreamWriter fs = new System.IO.StreamWriter(Filename, false);

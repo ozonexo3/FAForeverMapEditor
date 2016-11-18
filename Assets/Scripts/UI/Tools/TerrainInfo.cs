@@ -169,6 +169,10 @@ public class TerrainInfo : MonoBehaviour {
 				else{
 					UpdateBrushPosition(true);
 				}
+
+				if (Painting && Input.GetMouseButtonUp (0)) {
+					RegenerateMaps ();
+				}
 			}
 		}
 
@@ -382,6 +386,10 @@ public class TerrainInfo : MonoBehaviour {
 	}
 	#endregion
 
+	public void RegenerateMaps(){
+		GenerateWaterTex.Generate (ref Map.map.UncompressedWatermapTex, Map);
+	}
+
 	#region Brush Update
 	int SelectedBrush = 0;
 	public void ChangeBrush(int id){
@@ -438,7 +446,10 @@ public class TerrainInfo : MonoBehaviour {
 	}
 	#endregion
 
+
+	bool Painting = false;
 	void SymmetryPaint(){
+		Painting = true;
 		BrushGenerator.GenerateSymmetry(BrushPos);
 		/*
 
