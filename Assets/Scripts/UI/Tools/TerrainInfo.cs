@@ -108,6 +108,7 @@ public class TerrainInfo : MonoBehaviour {
 	#endregion
 
 	#region Update tool
+	bool PaintStarted = false;
 	bool TerainChanged = false;
 	float[,] beginHeights;
 
@@ -119,6 +120,10 @@ public class TerrainInfo : MonoBehaviour {
 	void Update () {
 		Invert = Input.GetKey(KeyCode.LeftAlt);
 		Smooth = Input.GetKey(KeyCode.LeftShift);
+
+		if (PaintStarted && Input.GetMouseButtonUp (0)) {
+			Map.Teren.ApplyDelayedHeightmapModification ();
+		}
 
 		if(Edit.MauseOnGameplay || ChangingStrength || ChangingSize){
 			if(!ChangingSize && (Input.GetKey(KeyCode.M) || ChangingStrength)){
@@ -158,6 +163,7 @@ public class TerrainInfo : MonoBehaviour {
 			else{
 				if(Input.GetMouseButtonDown(0)){
 					if(UpdateBrushPosition(true)){
+						PaintStarted = true;
 						SymmetryPaint();
 					}
 				}
@@ -243,6 +249,7 @@ public class TerrainInfo : MonoBehaviour {
 			}
 		}
 		Map.Teren.terrainData.SetHeights(0, 0, heights);
+		RegenerateMaps ();
 	}
 
 	public void AddTerrainHeight(){
@@ -259,6 +266,7 @@ public class TerrainInfo : MonoBehaviour {
 			}
 		}
 		Map.Teren.terrainData.SetHeights(0, 0, heights);
+		RegenerateMaps ();
 	}
 
 	public void ExportHeightmap(){
@@ -383,6 +391,7 @@ public class TerrainInfo : MonoBehaviour {
 			}
 		}
 		Map.Teren.terrainData.SetHeights(0, 0, data);
+		RegenerateMaps ();
 	}
 	#endregion
 
@@ -477,7 +486,7 @@ public class TerrainInfo : MonoBehaviour {
 			Paint(BrushGenerator.PaintPositions[i], i);
 
 		}
-		Map.Teren.ApplyDelayedHeightmapModification ();
+
 	}
 
 

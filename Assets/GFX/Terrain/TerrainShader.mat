@@ -330,16 +330,16 @@ Material:
       second: 0.05
     - first:
         name: _Brush
-      second: 0
+      second: 1
     - first:
         name: _BrushSize
       second: 0
     - first:
         name: _BrushUvX
-      second: 0.3981908
+      second: -0.016466754
     - first:
         name: _BrushUvY
-      second: 0.7773769
+      second: 0.34508404
     - first:
         name: _DeepLevel
       second: 1.675625
@@ -348,7 +348,7 @@ Material:
       second: 0
     - first:
         name: _GridCamDist
-      second: 3.1362417
+      second: 7.414286
     - first:
         name: _GridScale
       second: 102.4

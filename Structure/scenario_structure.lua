@@ -2,6 +2,8 @@ version = 3
 ScenarioInfo = {
 [*name*]
 [*desc*]
+[version]
+[AdaptiveMap]
     type = 'skirmish',
     starts = true,
 [*size*]

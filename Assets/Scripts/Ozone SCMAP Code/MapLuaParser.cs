@@ -189,6 +189,7 @@ public class MapLuaParser : MonoBehaviour {
 		public		string			Preview;
 		public		string			Type;
 		public		float			Version;
+		public		bool			AdaptiveMap;
 		public		int				Players;
 		public		Vector2			Size;
 		public		float			MaxHeight;
@@ -375,6 +376,13 @@ public class MapLuaParser : MonoBehaviour {
 		}
 		else{
 			ScenarioData.Version = 1;
+		}
+
+		if(env.GetTable("ScenarioInfo").RawGet("AdaptiveMap") != null && env.GetTable("ScenarioInfo").RawGet("AdaptiveMap").ToString() != "null"){
+			ScenarioData.AdaptiveMap = env.GetTable("ScenarioInfo").RawGet("AdaptiveMap").ToString() == "true";
+		}
+		else{
+			ScenarioData.AdaptiveMap = false;
 		}
 
 		if(env.GetTable("ScenarioInfo").RawGet("preview") != null && env.GetTable("ScenarioInfo").RawGet("preview").ToString() != "null"){
@@ -714,6 +722,12 @@ public class MapLuaParser : MonoBehaviour {
 			}
 			else if(line.Contains("[*desc*]")){
 				SaveData += "    description = \"" + ScenarioData.MapDesc.Replace("\"", "'") + "\",\n";
+			}
+			else if(line.Contains("[version]")){
+				SaveData += "    map_version = " + ((int)ScenarioData.Version).ToString() + ",\n";
+			}
+			else if(line.Contains("[AdaptiveMap]")){
+				SaveData += "    AdaptiveMap = " + (ScenarioData.AdaptiveMap?("true"):("false")) + ",\n";
 			}
 			else if(line.Contains("[*size*]")){
 				SaveData += "    size = {" + ScenarioData.Size.x + ", " + ScenarioData.Size.y + "},\n";

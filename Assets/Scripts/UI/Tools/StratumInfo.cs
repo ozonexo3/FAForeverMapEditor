@@ -30,6 +30,8 @@ public class StratumInfo : MonoBehaviour {
 	public		GameObject				Page_Settings;
 	public		GameObject				Page_SettingsSelected;
 
+	public		AnimationCurve			LinearBrushCurve;
+
 	// Brush
 	[Header("Brush")]
 	public		Slider				BrushSizeSlider;
@@ -41,6 +43,10 @@ public class StratumInfo : MonoBehaviour {
 
 	public		InputField			BrushMini;
 	public		InputField			BrushMax;
+
+	public		InputField			Scatter;
+
+	public		Toggle				LinearBrush;
 
 	public		LayerMask				TerrainMask;
 	public		List<Toggle>			BrushToggles;
@@ -492,8 +498,22 @@ public class StratumInfo : MonoBehaviour {
 	}
 	#endregion
 
-
+	float ScatterValue = 0;
 	void SymmetryPaint(){
+
+		size = (int)BrushSizeSlider.value;
+		ScatterValue = float.Parse (Scatter.text);
+		if (ScatterValue < 0)
+			ScatterValue = 0;
+		else if (ScatterValue > 50)
+			ScatterValue = 50;
+
+		ScatterValue *= size * 0.03f;
+
+		if (ScatterValue > 0) {
+			BrushPos += (Quaternion.Euler (Vector3.up * Random.Range (0, 360)) * Vector3.forward) * Mathf.Lerp(ScatterValue, 0, Mathf.Pow(Random.Range(0f, 1f), 2));
+		}
+
 		BrushGenerator.GenerateSymmetry(BrushPos);
 
 		if (Selected == 1 || Selected == 5)
@@ -521,7 +541,9 @@ public class StratumInfo : MonoBehaviour {
 	static int StratumTexSampleHeight = 0;
 	static Color[] StratumData;
 	static int PaintChannel = 0;
+	int size = 0;
 	void Paint(Vector3 AtPosition, int id = 0){
+
 		int hmWidth = Map.map.TexturemapTex.width;
 		int hmHeight = Map.map.TexturemapTex.height;
 
@@ -540,7 +562,6 @@ public class StratumInfo : MonoBehaviour {
 		int posXInTerrain = (int) (coord.x * hmWidth); 
 		int posYInTerrain = (int) (coord.z * hmHeight);
 		// we set an offset so that all the raising terrain is under this game object
-		int size = (int)BrushSizeSlider.value;
 		int offset = size / 2;
 		// get the heights of the terrain under this game object
 
@@ -602,16 +623,28 @@ public class StratumInfo : MonoBehaviour {
 					else{
 						switch (PaintChannel) {
 						case 0:
-							StratumData[XyToColorId(i,j)].r += SambleBrush * BrushStrength * inverted;
+							if (LinearBrush.isOn)
+								StratumData[XyToColorId(i,j)].r = ConvertToLinear( StratumData[XyToColorId(i,j)].r, SambleBrush * BrushStrength * inverted);
+							else
+								StratumData[XyToColorId(i,j)].r += SambleBrush * BrushStrength * inverted;
 							break;
 						case 1:
-							StratumData[XyToColorId(i,j)].g += SambleBrush * BrushStrength * inverted;
+							if (LinearBrush.isOn)
+								StratumData[XyToColorId(i,j)].g = ConvertToLinear( StratumData[XyToColorId(i,j)].g, SambleBrush * BrushStrength * inverted);
+							else
+								StratumData[XyToColorId(i,j)].g += SambleBrush * BrushStrength * inverted;
 							break;
 						case 2:
-							StratumData[XyToColorId(i,j)].b += SambleBrush * BrushStrength * inverted;
+							if (LinearBrush.isOn)
+								StratumData[XyToColorId(i,j)].b = ConvertToLinear( StratumData[XyToColorId(i,j)].b, SambleBrush * BrushStrength * inverted);
+							else
+								StratumData[XyToColorId(i,j)].b += SambleBrush * BrushStrength * inverted;
 							break;
 						case 3:
-							StratumData[XyToColorId(i,j)].a += SambleBrush * BrushStrength * inverted;
+							if (LinearBrush.isOn)
+								StratumData[XyToColorId(i,j)].a = ConvertToLinear( StratumData[XyToColorId(i,j)].a, SambleBrush * BrushStrength * inverted);
+							else
+								StratumData[XyToColorId(i,j)].a += SambleBrush * BrushStrength * inverted;
 							break;
 						}
 						//heights[i,j] += SambleBrush * BrushStrengthSlider.value * 0.0002f * (Invert?(-1):1);
@@ -643,6 +676,11 @@ public class StratumInfo : MonoBehaviour {
 		return x + y * StratumTexSampleHeight;
 	}
 
+	static float ConvertToLinear(float value, float addValue){
+		return  ( Mathf.Clamp01(value * 2 - 1) + addValue) * 0.5f + 0.5f;
+	}
+
+	#region Select Texture
 	public void SelectAlbedo(){
 		if (!ResourceBrowser.Current.gameObject.activeSelf && ResourceBrowser.DragedObject)
 			return;
@@ -690,6 +728,9 @@ public class StratumInfo : MonoBehaviour {
 	public void ClickNormal(){
 		Map.ResBrowser.LoadStratumTexture (Map.Textures [Selected].NormalPath);
 	}
+	#endregion
+
+	#region Import/Export
 
 	public void ExportStratum(){
 		System.Windows.Forms.SaveFileDialog FolderDialog = new System.Windows.Forms.SaveFileDialog ();
@@ -832,4 +873,5 @@ public class StratumInfo : MonoBehaviour {
 			ReloadStratums ();
 		}
 	}
+	#endregion
 }

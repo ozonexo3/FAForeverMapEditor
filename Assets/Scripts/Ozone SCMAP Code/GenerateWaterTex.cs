@@ -6,19 +6,32 @@ public class GenerateWaterTex : MonoBehaviour {
 	public static void Generate(ref Texture2D WaterTex, ScmapEditor Map){
 		Color[] AllColors = WaterTex.GetPixels ();
 
-		float WaterHeight = Map.map.Water.Elevation;
+		float WaterHeight = Map.map.Water.Elevation * 0.1f;
 		if (WaterHeight == 0)
 			WaterHeight = 1;
-		float WaterDeep = Map.map.Water.ElevationDeep / WaterHeight;
+		float WaterDeep = Map.map.Water.ElevationAbyss * 0.1f;
 
-		for (int x = 0; x < WaterTex.width; x++) {
-			for (int y = 0; y < WaterTex.height; y++) {
-				int i = x + y * WaterTex.width;
+		float DeepDifference = (WaterHeight - WaterDeep) / WaterHeight;
 
-				float WaterDepth = (WaterHeight - Map.Data.GetInterpolatedHeight (1f - x / (float) WaterTex.width, y / (float)WaterTex.height)) / WaterHeight;
-				WaterDepth = Mathf.Clamp01 (WaterDepth - WaterDeep / WaterHeight);
+		float Width = WaterTex.width;
+		float Height = WaterTex.height;
+		int i = 0;
+		int x = 0;
+		int y = 0;
+		float WaterDepth = 0;
 
-				AllColors [i] = new Color (AllColors [i].r, WaterDepth, (1f - Mathf.Clamp01(WaterDepth * 100f)) , 0);
+		for (x = 0; x < WaterTex.width; x++) {
+			for (y = 0; y < WaterTex.height; y++) {
+				//int i = x + y * WaterTex.width;
+				i = x + y * WaterTex.width;
+				//i++;
+
+				WaterDepth = Map.Data.GetInterpolatedHeight (x / Width, 1f - y / Height);
+
+				WaterDepth = (WaterHeight - WaterDepth) / WaterHeight;
+				WaterDepth /= DeepDifference;
+
+				AllColors [i] = new Color (AllColors [i].r, Mathf.Clamp01 (WaterDepth), (1f - Mathf.Clamp01(WaterDepth * 100f)) , 0);
 			}
 		}
 

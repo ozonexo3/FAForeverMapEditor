@@ -95,11 +95,14 @@ public class ScmapEditor : MonoBehaviour {
 		// Set Variables
 		int xRes = (int)MapLuaParser.Current.ScenarioData.Size.x;
 		int zRes = (int)MapLuaParser.Current.ScenarioData.Size.y;
+		float HalfxRes = xRes / 10f;
+		float HalfzRes = zRes / 10f;
+
 		float yRes = (float)map.HeightScale;;
 		float HeightResize = 512 * 40;
 
-		WaterMaterial.SetTexture("_UtilitySamplerC", map.WatermapTex);
-		WaterMaterial.SetFloat("_WaterScale", xRes / -10f);
+		WaterMaterial.SetTexture("_UtilitySamplerC", map.UncompressedWatermapTex);
+		WaterMaterial.SetFloat("_WaterScale", HalfxRes);
 
 		                     
 
@@ -140,24 +143,24 @@ public class ScmapEditor : MonoBehaviour {
 
 		Data.heightmapResolution = (int)(xRes + 1);
 		Data.size = new Vector3(
-			xRes / 10.0f,
+			HalfxRes,
 			yRes * MapHeightScale,
-			zRes / 10.0f
+			HalfzRes
 			);
 		Data.SetDetailResolution((int)(xRes / 2), 8);
 		Data.baseMapResolution = (int)(xRes / 2);
 		Data.alphamapResolution = (int)(xRes / 2);
 
-		Teren.transform.localPosition = new Vector3(0, 0, -zRes / 10.0f);
+		Teren.transform.localPosition = new Vector3(0, 0, -HalfzRes);
 
 
-		WaterLevel.transform.localScale = new Vector3(xRes / 10, 1, zRes / 10);
+		WaterLevel.transform.localScale = new Vector3(HalfxRes, 1, HalfzRes);
 		WaterLevel.transform.position = Vector3.up * (map.Water.Elevation / 10.0f);
 		TerrainMaterial.SetFloat("_WaterLevel", map.Water.Elevation / 10.0f);
 		TerrainMaterial.SetFloat("_AbyssLevel", map.Water.ElevationAbyss / 10.0f);
 		TerrainMaterial.SetInt("_Water", MapLuaParser.Water?1:0);
-		TerrainMaterial.SetTexture("_UtilitySamplerC", map.WatermapTex);
-		TerrainMaterial.SetFloat("_GridScale", xRes / 10f);
+		TerrainMaterial.SetTexture("_UtilitySamplerC", map.UncompressedWatermapTex);
+		TerrainMaterial.SetFloat("_GridScale", HalfxRes);
 
 
 		heights = new float[map.Width + 1, map.Height + 1];
@@ -298,15 +301,23 @@ public class ScmapEditor : MonoBehaviour {
 		string path = MapLuaParser.Current.ScenarioData.Scmap.Replace("/maps/", MapPath);
 
 		//TODO force values if needed
-		map.TerrainShader = Shader;
+		//map.TerrainShader = Shader;
+		map.TerrainShader = "TTerrainXP";
 
 		map.MinimapContourColor = new Color32 (0, 0, 0, 255);
 		map.MinimapDeepWaterColor = new Color32 (71, 140, 181, 255);
-		map.MinimapShoreColor = new Color32 (179, 183, 185, 255);
+		map.MinimapShoreColor = new Color32 (141, 200, 225, 255);
 		map.MinimapLandStartColor = new Color32 (119, 101, 108, 255);
 		map.MinimapLandEndColor = new Color32 (206, 206, 176, 255);
 		//map.MinimapLandEndColor = new Color32 (255, 255, 215, 255);
 		map.MinimapContourInterval = 10;
+
+		map.WatermapTex = new Texture2D (map.UncompressedWatermapTex.width, map.UncompressedWatermapTex.height, map.UncompressedWatermapTex.format, false);
+		map.WatermapTex.SetPixels (map.UncompressedWatermapTex.GetPixels ());
+		map.WatermapTex.Apply ();
+		map.WatermapTex.Compress (true);
+		map.WatermapTex.Apply ();
+
 
 		for (int i = 0; i < map.Layers.Count; i++) {
 			map.Layers [i].PathTexture = Textures [i].AlbedoPath;
