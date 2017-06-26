@@ -67,7 +67,7 @@ public class ScmapEditor : MonoBehaviour {
 			Vector3 SunDIr = new Vector3(-map.SunDirection.x, -map.SunDirection.y, map.SunDirection.z);
 			Sun.transform.rotation = Quaternion.LookRotation( SunDIr);
 			Sun.color = new Color(map.SunColor.x, map.SunColor.y , map.SunColor.z, 1) ;
-			Sun.intensity = map.LightingMultiplier * 1.0f;
+			Sun.intensity = map.LightingMultiplier * 0.5f;
 			RenderSettings.ambientLight = new Color(map.ShadowFillColor.x, map.ShadowFillColor.y, map.ShadowFillColor.z, 1);
 
 			Kamera.GetComponent<Bloom>().bloomIntensity = map.Bloom * 4;
@@ -124,9 +124,25 @@ public class ScmapEditor : MonoBehaviour {
 			Textures[i].AlbedoScale = map.Layers[i].ScaleTexture;
 			Textures[i].NormalScale = map.Layers[i].ScaleNormalmap;
 
-			Gamedata.LoadTextureFromGamedata("env.scd", Textures[i].AlbedoPath, i, false);
+			try
+			{
+				Gamedata.LoadTextureFromGamedata("env.scd", Textures[i].AlbedoPath, i, false);
+			}
+			catch(System.Exception e)
+			{
+				Debug.LogError(i + ", Albedo tex: " + Textures[i].AlbedoPath);
+				Debug.LogError(e);
+			}
 			yield return null;
-			Gamedata.LoadTextureFromGamedata("env.scd", Textures[i].NormalPath, i, true);
+			try
+			{
+				Gamedata.LoadTextureFromGamedata("env.scd", Textures[i].NormalPath, i, true);
+			}
+			catch (System.Exception e)
+			{
+				Debug.LogError(i + ", Normal tex: " + Textures[i].NormalPath);
+				Debug.LogError(e);
+			}
 			yield return null;
 		}
 
@@ -302,7 +318,7 @@ public class ScmapEditor : MonoBehaviour {
 
 		//TODO force values if needed
 		//map.TerrainShader = Shader;
-		map.TerrainShader = "TTerrainXP";
+		map.TerrainShader = MapLuaParser.Current.EditMenu.TexturesMenu.TTerrainXP.isOn?("TTerrainXP"):("TTerrain");
 
 		map.MinimapContourColor = new Color32 (0, 0, 0, 255);
 		map.MinimapDeepWaterColor = new Color32 (71, 140, 181, 255);

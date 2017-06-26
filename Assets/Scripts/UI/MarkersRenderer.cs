@@ -49,13 +49,16 @@ public class MarkersRenderer : MonoBehaviour {
 		}
 		Armys = new List<GameObject> ();
 		for(int i = 0; i < Scenario.ARMY_.Count; i++){
+			if (Scenario.ARMY_ [i].Hidden)
+				continue;
 			GameObject NewMarker = Instantiate(Prefabs[0], Scenario.ARMY_[i].position, Quaternion.identity) as GameObject;
-			Armys.Add(NewMarker);
 			NewMarker.transform.parent = transform;
 			NewMarker.name = Scenario.ARMY_[i].name;
 			NewMarker.GetComponent<MarkerData>().Rend = this;
 			NewMarker.GetComponent<MarkerData>().InstanceId = i;
 			NewMarker.GetComponent<MarkerData>().ListId = 0;
+			Armys.Add(NewMarker);
+
 		}
 
 		foreach (GameObject obj in Mex) {
@@ -64,12 +67,13 @@ public class MarkersRenderer : MonoBehaviour {
 		Mex = new List<GameObject> ();
 		for(int i = 0; i < Scenario.Mexes.Count; i++){
 			GameObject NewMarker = Instantiate(Prefabs[1], Scenario.Mexes[i].position, Quaternion.identity) as GameObject;
-			Mex.Add(NewMarker);
 			NewMarker.transform.parent = transform;
 			NewMarker.name = Scenario.Mexes[i].name;
 			NewMarker.GetComponent<MarkerData>().Rend = this;
 			NewMarker.GetComponent<MarkerData>().InstanceId = i;
 			NewMarker.GetComponent<MarkerData>().ListId = 1;
+			Mex.Add(NewMarker);
+
 		}
 
 		foreach (GameObject obj in Hydro) {
@@ -78,12 +82,13 @@ public class MarkersRenderer : MonoBehaviour {
 		Hydro = new List<GameObject> ();
 		for(int i = 0; i < Scenario.Hydros.Count; i++){
 			GameObject NewMarker = Instantiate(Prefabs[2], Scenario.Hydros[i].position, Quaternion.identity) as GameObject;
-			Hydro.Add(NewMarker);
 			NewMarker.transform.parent = transform;
 			NewMarker.name = Scenario.Hydros[i].name;
 			NewMarker.GetComponent<MarkerData>().Rend = this;
 			NewMarker.GetComponent<MarkerData>().InstanceId = i;
 			NewMarker.GetComponent<MarkerData>().ListId = 2;
+			Hydro.Add(NewMarker);
+
 		}
 
 		foreach (GameObject obj in Ai) {
@@ -92,12 +97,13 @@ public class MarkersRenderer : MonoBehaviour {
 		Ai = new List<GameObject> ();
 		for(int i = 0; i < Scenario.SiMarkers.Count; i++){
 			GameObject NewMarker = Instantiate(Prefabs[3], Scenario.SiMarkers[i].position, Quaternion.identity) as GameObject;
-			Ai.Add(NewMarker);
 			NewMarker.transform.parent = transform;
 			NewMarker.name = Scenario.SiMarkers[i].name;
 			NewMarker.GetComponent<MarkerData>().Rend = this;
 			NewMarker.GetComponent<MarkerData>().InstanceId = i;
 			NewMarker.GetComponent<MarkerData>().ListId = 3;
+			Ai.Add(NewMarker);
+
 		}
 	}
 

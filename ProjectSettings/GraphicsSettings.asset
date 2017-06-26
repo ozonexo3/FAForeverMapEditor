@@ -5,23 +5,23 @@ GraphicsSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 7
   m_Deferred:
-    m_Mode: 0
-    m_Shader: {fileID: 0}
+    m_Mode: 1
+    m_Shader: {fileID: 69, guid: 0000000000000000f000000000000000, type: 0}
   m_DeferredReflections:
-    m_Mode: 0
-    m_Shader: {fileID: 0}
+    m_Mode: 1
+    m_Shader: {fileID: 74, guid: 0000000000000000f000000000000000, type: 0}
   m_ScreenSpaceShadows:
     m_Mode: 1
     m_Shader: {fileID: 64, guid: 0000000000000000f000000000000000, type: 0}
   m_LegacyDeferred:
-    m_Mode: 0
-    m_Shader: {fileID: 0}
+    m_Mode: 1
+    m_Shader: {fileID: 63, guid: 0000000000000000f000000000000000, type: 0}
   m_DepthNormals:
     m_Mode: 1
     m_Shader: {fileID: 62, guid: 0000000000000000f000000000000000, type: 0}
   m_MotionVectors:
-    m_Mode: 0
-    m_Shader: {fileID: 0}
+    m_Mode: 1
+    m_Shader: {fileID: 75, guid: 0000000000000000f000000000000000, type: 0}
   m_LightHalo:
     m_Mode: 1
     m_Shader: {fileID: 105, guid: 0000000000000000f000000000000000, type: 0}
@@ -54,7 +54,7 @@ GraphicsSettings:
     useReflectionProbeBoxProjection: 1
     useReflectionProbeBlending: 1
   m_BuildTargetShaderSettings: []
-  m_LightmapStripping: 1
+  m_LightmapStripping: 0
   m_FogStripping: 0
   m_LightmapKeepPlain: 0
   m_LightmapKeepDirCombined: 0

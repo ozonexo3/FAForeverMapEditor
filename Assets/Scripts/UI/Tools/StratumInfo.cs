@@ -47,6 +47,7 @@ public class StratumInfo : MonoBehaviour {
 	public		InputField			Scatter;
 
 	public		Toggle				LinearBrush;
+	public		Toggle				TTerrainXP;
 
 	public		LayerMask				TerrainMask;
 	public		List<Toggle>			BrushToggles;
@@ -577,7 +578,7 @@ public class StratumInfo : MonoBehaviour {
 		int OffsetTop = 0;
 		if(posYInTerrain-offset + size > hmHeight) OffsetTop = posYInTerrain-offset + size - hmHeight;
 
-		float CenterHeight = 0;
+		//float CenterHeight = 0;
 		float BrushStrength = Mathf.Pow( BrushStrengthSlider.value * 0.01f, 1);
 		float inverted = (Invert ? (-1) : 1);
 		float SambleBrush = 0;

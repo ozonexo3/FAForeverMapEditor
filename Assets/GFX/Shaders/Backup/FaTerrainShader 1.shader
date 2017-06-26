@@ -1,4 +1,6 @@
-﻿Shader "MapEditor/FaTerrainShader (backup)" {
+﻿// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
+
+Shader "MapEditor/FaTerrainShader (backup)" {
 Properties {
 	_SpecColor ("Specular Color", Color) = (0.5, 0.5, 0.5, 1)
 	_Shininess ("Shininess", Range (0.03, 1)) = 0.078125
@@ -172,7 +174,7 @@ Properties {
 				v.tangent.w = -1;
 				//o.normal = v.normal;
 				o.SlopeLerp = dot(v.normal, half3(0,1,0));
-				 float4 hpos = mul (UNITY_MATRIX_MVP, v.vertex);
+				 float4 hpos = UnityObjectToClipPos (v.vertex);
 		         o.grabUV = ComputeGrabScreenPos(hpos);
 				//v.color = _Abyss;
 			}

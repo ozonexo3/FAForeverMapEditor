@@ -10,6 +10,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
 
+#if UNITY_EDITOR
+[System.Serializable]
+#endif
 public class Map
 {
 
@@ -29,7 +32,7 @@ public class Map
 	public	GetGamedataFile.HeaderClass		NormalmapHeader;
 	public	GetGamedataFile.HeaderClass		WatermapHeader;
 
-	public Texture2D PreviewTex = new Texture2D(0,0);
+	public Texture2D PreviewTex;// = new Texture2D(0,0);
 	public short[] HeightmapData = new short[0];
     public short HeightMin;
     public short HeightMax;
@@ -53,10 +56,10 @@ public class Map
     public string TexPathBackground;
     public string TexPathSkyCubemap;
     public string[] EnvCubemapsName;
-
     public string[] EnvCubemapsFile;
+	public SkyboxData AdditionalSkyboxData = new SkyboxData();
 
-    public byte[] TerrainTypeData;
+	public byte[] TerrainTypeData;
 
     public List<WaveGenerator> WaveGenerators = new List<WaveGenerator>();
     public List<Layer> Layers = new List<Layer>();
@@ -342,37 +345,42 @@ public class Map
                 MinimapContourInterval = _with1.ReadInt32();
 
 				int argb = _with1.ReadInt32();
-				int r = (argb)&0xFF;
+				MinimapDeepWaterColor = Int32ToColor(argb);
+				/*int r = (argb)&0xFF;
 				int g = (argb>>8)&0xFF;
 				int b = (argb>>16)&0xFF;
 				int a = (argb>>24)&0xFF;
-                MinimapDeepWaterColor = new Color(r,g,b,a);
+                MinimapDeepWaterColor = new Color(r,g,b,a);*/
 				int argb2 = _with1.ReadInt32();
-				int r2 = (argb2)&0xFF;
+				/*int r2 = (argb2)&0xFF;
 				int g2 = (argb2>>8)&0xFF;
 				int b2 = (argb2>>16)&0xFF;
 				int a2 = (argb2>>24)&0xFF;
-				MinimapContourColor = new Color(r2,g2,b2,a2);
+				MinimapContourColor = new Color(r2,g2,b2,a2);*/
+				MinimapContourColor = Int32ToColor(argb2);
 				int argb3 = _with1.ReadInt32();
-				int r3 = (argb3)&0xFF;
+				/*int r3 = (argb3)&0xFF;
 				int g3 = (argb3>>8)&0xFF;
 				int b3 = (argb3>>16)&0xFF;
 				int a3 = (argb3>>24)&0xFF;
-				MinimapShoreColor = new Color(r3,g3,b3,a3);
+				MinimapShoreColor = new Color(r3,g3,b3,a3);*/
+				MinimapShoreColor = Int32ToColor(argb3);
 				int argb4 = _with1.ReadInt32();
-				int r4 = (argb4)&0xFF;
+				/*int r4 = (argb4)&0xFF;
 				int g4 = (argb4>>8)&0xFF;
 				int b4 = (argb4>>16)&0xFF;
 				int a4 = (argb4>>24)&0xFF;
-				MinimapLandStartColor = new Color(r4,g4,b4,a4);
+				MinimapLandStartColor = new Color(r4,g4,b4,a4);*/
+				MinimapLandStartColor = Int32ToColor(argb4);
 				int argb5 = _with1.ReadInt32();
-				int r5 = (argb5)&0xFF;
+				/*int r5 = (argb5)&0xFF;
 				int g5 = (argb5>>8)&0xFF;
 				int b5 = (argb5>>16)&0xFF;
 				int a5 = (argb5>>24)&0xFF;
-				MinimapLandEndColor = new Color(r5,g5,b5,a5);
-                
-                if (VersionMinor > 56)
+				MinimapLandEndColor = new Color(r5,g5,b5,a5);*/
+				MinimapLandEndColor = Int32ToColor(argb5);
+
+				if (VersionMinor > 56)
                 {
                     Unknown14 = _with1.ReadSingle(); //Not sure what this is.
                 }
@@ -469,37 +477,64 @@ public class Map
             if (VersionMinor <= 52)
                 _with1.ReadInt16();
 
-			//_with1.ReadInt16();
-            //always 0
-			/*_with1.ReadByte();
-			_with1.ReadByte();
-			_with1.ReadByte();
-			_with1.ReadByte();
-			for(int i = 0; i < 50; i++){ //146
-				int PropCount = _with1.ReadInt32();
-				Debug.Log ("PropCount " + PropCount );
-				//Debug.Log(_with1.ReadStringNull());
-				//_with1.ReadByte();
-			}*/
 
-			//_with1.ReadByte();
+			Debug.Log(VersionMinor);
+
+			if (VersionMinor >= 60)
+			{
+				/*string DecodedNewVersionData = "";
+
+				for(int i = 0; i < 32; i++)
+				{
+					DecodedNewVersionData += _with1.ReadInt16() + "\n";
+				}
+
+				DecodedNewVersionData += _with1.ReadStringNull() + "\n";
+				DecodedNewVersionData += _with1.ReadStringNull() + "\n";
+
+				for (int i = 0; i < 11; i++)
+				{
+					DecodedNewVersionData += _with1.ReadInt16() + "\n";
+				}
+
+				DecodedNewVersionData += _with1.ReadByte() + "\n";
+
+				DecodedNewVersionData += _with1.ReadStringNull() + "\n";
+
+				for (int i = 0; i < 32; i++)
+				{
+					DecodedNewVersionData += _with1.ReadInt16() + "\n";
+				}
+
+				for (int i = 0; i < 12; i++)
+				{
+					DecodedNewVersionData += _with1.ReadInt16() + "\n";
+				}
+
+				Debug.Log(DecodedNewVersionData);*/
+				AdditionalSkyboxData.Load(_with1);
+			}
+			else
+			{
+				AdditionalSkyboxData = new SkyboxData();
+			}
 
 
 			try{
 	            int PropCount = _with1.ReadInt32();
-				Debug.Log ("PropCount " + PropCount + ", " + VersionMinor );
+				Debug.Log ("PropCount: " + PropCount + ", v" + VersionMinor );
 				for (int i = 0; i < PropCount; i++)
 	            {
 	                Prop Prop = new Prop();
 	                Prop.Load(Stream);
 	                Props.Add(Prop);
 					//Debug.Log(Prop.BlueprintPath);
-
 	            }
 			}
 			catch{
 				Debug.LogError ("Loading props crashed");
 			}
+
 				
 
         }
@@ -867,6 +902,12 @@ public class Map
         if (MapFileVersion <= 52)
             _with2.Write(Convert.ToInt16(0));
 
+
+		if(MapFileVersion >= 60)
+		{
+			AdditionalSkyboxData.Save(_with2);
+		}
+
         _with2.Write(Props.Count);
         for (int i = 0; i <= Props.Count - 1; i++)
         {
@@ -917,6 +958,18 @@ public class Map
 		Stream.Write(texArray.Length);
 		Stream.Write(texArray,0,texArray.Length);
     }
+
+	public static Color Int32ToColor(int data, bool floatRange = true)
+	{
+		int r = (data) & 0xFF;
+		int g = (data >> 8) & 0xFF;
+		int b = (data >> 16) & 0xFF;
+		int a = (data >> 24) & 0xFF;
+		if(floatRange)
+			return new Color(r, g, b, a);
+		else
+			return new Color(r / 255f, g / 255f, b / 255f, a / 255f);
+	}
 
     /*private void CopyStream(System.IO.Stream Source, System.IO.Stream Target)
     {

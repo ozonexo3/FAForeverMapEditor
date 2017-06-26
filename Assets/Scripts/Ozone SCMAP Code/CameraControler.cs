@@ -205,7 +205,8 @@ public class CameraControler : MonoBehaviour {
 			prevMausePos = Input.mousePosition;
 		}
 		if(Input.GetMouseButton(2)){
-			float PanSpeed = Mathf.Lerp (1f, 2f, ZoomCamPos ());
+			//float PanSpeed = Mathf.Lerp (2f, 3f, Mathf.Pow( ZoomCamPos (), 0.5f));
+			float PanSpeed = 2.5f;
 			Pos -= transform.right * (Input.mousePosition.x - prevMausePos.x) * PanSpeed * (transform.localPosition.y * 0.03f + 0.2f) * Time.deltaTime;
 			Pos -= (transform.forward + transform.up) * (Input.mousePosition.y - prevMausePos.y) * PanSpeed * (transform.localPosition.y * 0.03f + 0.2f) * Time.deltaTime;
 			prevMausePos = Input.mousePosition;

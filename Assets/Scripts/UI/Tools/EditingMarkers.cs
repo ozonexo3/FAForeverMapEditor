@@ -6,6 +6,13 @@ using UnityEngine.UI;
 namespace EditMap{
 	public class EditingMarkers : MonoBehaviour {
 
+		public GameObject SettingMarker;
+		public GameObject SettingAI;
+		public GameObject SettingNonArmy;
+		public GameObject SettingArmy;
+		public GameObject SettingWarning;
+
+		#region Classes
 		[Header("Objects")]
 		public		MapLuaParser			Scenario;
 		public		CameraControler			KameraKontroler;
@@ -57,11 +64,30 @@ namespace EditMap{
 			public		int		ListId;
 			public		int		SelectionState;
 		}
+		#endregion
+
 
 		void OnDisable(){
 			RemoveCreating();
 		}
+			
+		#region MarkerSettings
+		bool IgnoreSettingsInput = false;
+		public void OnInputFinished(){
+			if (IgnoreSettingsInput)
+				return;
 
+
+
+		}
+
+		public void SettingsForSelected(){
+
+		}
+
+		#endregion
+
+		#region Creating
 		public void ButtonFunction(string func){
 			switch(func){
 			case "Army":
@@ -155,11 +181,15 @@ namespace EditMap{
 				KameraKontroler.MarkerToCreateSymmetry[i] = ObjectToCreate.transform;
 			}
 		}
+		#endregion
 
+		#region Generate window
 		public void GenerateAllWorkingElements(){
 			AllWorkingElements = new List<WorkingElement>();
 
 			for(int i = 0; i < Scenario.ARMY_.Count; i++){
+				if (Scenario.ARMY_ [i].Hidden)
+					continue;
 				WorkingElement NewElement = new WorkingElement();
 				NewElement.InstanceId = i;
 				NewElement.ListId = 0;
@@ -193,7 +223,9 @@ namespace EditMap{
 			CleanSelection();
 			AllWorkingElements = new List<WorkingElement>();
 		}
+		#endregion
 
+		#region Selection
 		public void AddToSelection(List<GameObject> add){
 			if(add.Count > 0){
 				Scenario.History.RegisterMarkerSelection();
@@ -273,8 +305,9 @@ namespace EditMap{
 			}
 			return false;
 		}
+		#endregion
 
-
+		#region Selection Rings
 		public void UpdateSelectionRing(){
 			//EditMenu.MirrorTolerance = 0.3f;
 			foreach(WorkingElement all in AllWorkingElements){
@@ -403,8 +436,11 @@ namespace EditMap{
 				}
 			}
 			AllMarkersList.UpdateSelection();
+			SettingsForSelected ();
 		}
-		
+		#endregion
+
+		#region Symmetry
 		void RegenerateSymmetryMarkers(int count = 0){
 			if(SelectedSymmetryMarkers.Count == count){
 				for(int i = 0; i < SymmetrySelectionList.Length; i++){
@@ -705,7 +741,7 @@ namespace EditMap{
 			Vector3 Closest = A + AB * t;
 			return Closest;
 		}
-
+		#endregion
 
 	}
 }

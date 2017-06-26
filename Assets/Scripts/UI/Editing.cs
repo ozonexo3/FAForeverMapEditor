@@ -15,6 +15,8 @@ namespace EditMap{
 		public		GameObject[]		CategorysSelected;
 		public		MarkersList			AllMarkersList;
 		public		Transform			HudElements;
+		public MapInfo MapInfoMenu;
+		public StratumInfo TexturesMenu;
 
 		[Header("State")]
 		public		bool				MauseOnGameplay;

@@ -1,4 +1,6 @@
-﻿// Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
+﻿// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
+
+// Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
 
 Shader "MapEditor/FaWater (backup2)" {
 	Properties {
@@ -85,7 +87,7 @@ Shader "MapEditor/FaWater (backup2)" {
 
 		void vert (inout appdata_full v, out Input o){
 			UNITY_INITIALIZE_OUTPUT(Input,o);
-	        o.position = mul (UNITY_MATRIX_MVP, v.vertex);
+	        o.position = UnityObjectToClipPos (v.vertex);
 	        o.mScreenPos = ComputeScreenPos(o.position);
 	        o.mScreenPos.xy /=  o.mScreenPos.w;
 	        //o.mScreenPos.xy /= _ScreenParams.xy * 0.1;
@@ -102,7 +104,7 @@ Shader "MapEditor/FaWater (backup2)" {
 	        o.mViewVec = mul (unity_ObjectToWorld, v.vertex).xyz - _WorldSpaceCameraPos;
 	        o.mViewVec = normalize(o.mViewVec);
 	        o.AddVar = float4(length(_WorldSpaceCameraPos - mul(unity_ObjectToWorld, v.vertex).xyz), 0, 0, 0);
-			 float4 hpos = mul (UNITY_MATRIX_MVP, v.vertex);
+			 float4 hpos = UnityObjectToClipPos (v.vertex);
 	         o.grabUV = ComputeGrabScreenPos(hpos);
 			//v.color = _Abyss;
 		}

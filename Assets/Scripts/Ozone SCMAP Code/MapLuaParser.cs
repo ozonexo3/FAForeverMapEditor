@@ -313,6 +313,9 @@ public class MapLuaParser : MonoBehaviour {
 			yield return LoadScmapFile;
 			CamControll.RestartCam ();
 
+			EditMenu.MapInfoMenu.SaveAsFa.isOn = HeightmapControler.map.VersionMinor >= 60;
+			EditMenu.TexturesMenu.TTerrainXP.isOn = HeightmapControler.map.TerrainShader == "TTerrainXP";
+
 			if (loadSave) {
 				// Save LUA
 				LoadSaveLua ();
@@ -412,7 +415,13 @@ public class MapLuaParser : MonoBehaviour {
 		
 		ScenarioData.Players = ArmyTab.Values.Count;
 
-		ScenarioData.NoRushRadius = float.Parse(env.GetTable("ScenarioInfo").RawGet("norushradius").ToString(), System.Globalization.CultureInfo.InvariantCulture.NumberFormat);
+		if(env.GetTable("ScenarioInfo") != null && env.GetTable("ScenarioInfo").RawGet("norushradius") != null)
+			ScenarioData.NoRushRadius = float.Parse(env.GetTable("ScenarioInfo").RawGet("norushradius").ToString(), System.Globalization.CultureInfo.InvariantCulture.NumberFormat);
+		else
+		{
+			ScenarioData.NoRushRadius = 0;
+		}
+
 		ScenarioData.NoRushARMY = new Vector2[ScenarioData.Players];
 		
 		for(int id = 0; id < ScenarioData.Players; id++) {

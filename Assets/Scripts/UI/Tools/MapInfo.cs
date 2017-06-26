@@ -9,6 +9,7 @@ public class MapInfo : MonoBehaviour {
 	public		InputField			Desc;
 	public		InputField			Version;
 	public		Toggle[]			ScriptToggles;
+	public		Toggle				SaveAsFa;
 
 	
 	void OnEnable() {

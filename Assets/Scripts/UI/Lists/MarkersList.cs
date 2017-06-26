@@ -51,14 +51,17 @@ public class MarkersList : MonoBehaviour {
 
 	void GenerateList(){
 		int count = 0;
-		for(int i = 0; i < Scenario.ARMY_.Count; i++){
+		for(int i = 0; i < Scenario.MarkerRend.Armys.Count; i++){
+			if (Scenario.ARMY_ [i].Hidden)
+				continue;
 			GameObject newList = Instantiate(ListPrefab, Pivot.position, Quaternion.identity) as GameObject;
 			newList.GetComponent<RectTransform>().SetParent(Pivot);
 			newList.GetComponent<RectTransform>().localPosition = Vector3.up * -30 * count;
 			newList.GetComponent<RectTransform>().sizeDelta = new Vector3(1, 30);
 			AllFields.Add(newList.GetComponent<ListObject>());
 
-			AllFields[count].ObjectName.text = Scenario.ARMY_[i].name;
+			int a = Scenario.MarkerRend.Armys [i].GetComponent<MarkerData> ().InstanceId;
+			AllFields[count].ObjectName.text = Scenario.ARMY_[a].name;
 			AllFields[count].Icon.sprite = Icons[0];
 			AllFields[count].KameraKontroler = KameraKontroler;
 			AllFields[count].InstanceId = i;
