@@ -59,6 +59,7 @@ public class GetGamedataFile : MonoBehaviour {
 			Mipmaps = LoadDDsHeader.mipmapcount > 0;
 			texture = new Texture2D((int)LoadDDsHeader.width, (int)LoadDDsHeader.height, format, Mipmaps, true);
 
+
 			int DDS_HEADER_SIZE = 128;
 			byte[] dxtBytes = new byte[FinalTextureData2.Length - DDS_HEADER_SIZE];
 			Buffer.BlockCopy(FinalTextureData2, DDS_HEADER_SIZE, dxtBytes, 0, FinalTextureData2.Length - DDS_HEADER_SIZE);
@@ -68,7 +69,14 @@ public class GetGamedataFile : MonoBehaviour {
 				texture.Apply(false);
 			}
 			else{
-				texture.LoadRawTextureData(dxtBytes);
+				try
+				{
+					texture.LoadRawTextureData(dxtBytes);
+				}
+				catch
+				{
+					texture = DDS.DDSReader.LoadDDSTexture(new MemoryStream(FinalTextureData2), false).ToTexture2D();
+				}
 				texture.Apply(false);
 			}
 		} finally {

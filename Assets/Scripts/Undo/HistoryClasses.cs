@@ -16,5 +16,6 @@ namespace UndoHistory{
 		public		GameObject		TerrainHeightChange;
 		public		GameObject		StratumPaint;
 		public		GameObject		StratumChange;
+		public		GameObject		LightingChange;
 	}
 }

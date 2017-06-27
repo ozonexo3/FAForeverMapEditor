@@ -32,7 +32,7 @@ public class Map
 	public	GetGamedataFile.HeaderClass		NormalmapHeader;
 	public	GetGamedataFile.HeaderClass		WatermapHeader;
 
-	public Texture2D PreviewTex;// = new Texture2D(0,0);
+	public Texture2D PreviewTex;
 	public short[] HeightmapData = new short[0];
     public short HeightMin;
     public short HeightMax;
@@ -41,11 +41,11 @@ public class Map
 
     public WaterShader Water = new WaterShader();
     //texturemap for the "Strata" layers
-	public Texture2D TexturemapTex = new Texture2D(0,0);
-	public Texture2D TexturemapTex2 = new Texture2D(0,0);
-	public Texture2D NormalmapTex = new Texture2D(0,0);
-	public Texture2D WatermapTex = new Texture2D(0,0);
-	public Texture2D WaterDataTexture = new Texture2D(0,0);
+	public Texture2D TexturemapTex;
+	public Texture2D TexturemapTex2;
+	public Texture2D NormalmapTex;
+	public Texture2D WatermapTex;
+	public Texture2D WaterDataTexture;
     public byte[] WaterFoamMask = new byte[0];
     public byte[] WaterFlatnessMask = new byte[0];
 
@@ -101,11 +101,19 @@ public class Map
     public Color32 MinimapLandStartColor;
     public Color32 MinimapLandEndColor;
     public Color32 MinimapContourColor; //Not sure about this one
-    
-//<Merge Conflict>
-    public void Initialize()
+
+
+	//<Merge Conflict>
+	public void Initialize()
     {
-        TerrainTypeData = new byte[Height * Width];
+		PreviewTex = new Texture2D(0, 0);
+		TexturemapTex = new Texture2D(0, 0);
+		TexturemapTex2 = new Texture2D(0, 0);
+		NormalmapTex = new Texture2D(0, 0);
+		WatermapTex = new Texture2D(0, 0);
+		WaterDataTexture = new Texture2D(0, 0);
+
+		TerrainTypeData = new byte[Height * Width];
         HeightmapData = new short[(Height + 1) * (Width + 1)];
         WaterDepthBiasMask = new byte[(Height * Width) / 4];
         WaterFlatnessMask = new byte[(Height * Width) / 4];
@@ -210,11 +218,12 @@ public class Map
         System.IO.FileStream fs = new System.IO.FileStream(Filename, System.IO.FileMode.Open, System.IO.FileAccess.Read);
         BinaryReader Stream = new BinaryReader(fs);
 
-		TexturemapTex = new Texture2D(0,0);
-		TexturemapTex2 = new Texture2D(0,0);
-		NormalmapTex = new Texture2D(0,0);
-		WatermapTex = new Texture2D(0,0);
-		PreviewTex = new Texture2D(0,0);
+		PreviewTex = new Texture2D(0, 0);
+		TexturemapTex = new Texture2D(0, 0);
+		TexturemapTex2 = new Texture2D(0, 0);
+		NormalmapTex = new Texture2D(0, 0);
+		WatermapTex = new Texture2D(0, 0);
+		WaterDataTexture = new Texture2D(0, 0);
 
         byte[] TexturemapData = new byte[0];
         byte[] TexturemapData2 = new byte[0];
@@ -478,7 +487,7 @@ public class Map
                 _with1.ReadInt16();
 
 
-			Debug.Log(VersionMinor);
+			Debug.Log("Scmap file version: " + VersionMinor);
 
 			if (VersionMinor >= 60)
 			{

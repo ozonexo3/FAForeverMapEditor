@@ -72,8 +72,9 @@ public class Undo : MonoBehaviour {
 			Debug.LogWarning("Cant redo: current");
 			return;
 		}
-		int RedoTo = History.Count - 1 - CurrentStage;
+		int RedoTo = (History.Count - 1) - CurrentStage;
 
+		Debug.Log("Redo to " + RedoTo);
 
 		RedoHistory [RedoTo].DoRedo ();
 		CurrentStage++;
@@ -119,6 +120,13 @@ public class Undo : MonoBehaviour {
 	public static void RegisterStratumChange(int stratum){
 		UndoData_StratumId = stratum;
 		HistoryStratumChange.GenerateUndo (Undo.Current.Prefabs.StratumChange).Register();
+	}
+
+	public static bool Slider = false;
+	public void RegisterLightingChange(bool IsSlider = false)
+	{
+		Slider = IsSlider;
+		HistoryLighting.GenerateUndo(Prefabs.LightingChange).Register();
 	}
 
 	#endregion

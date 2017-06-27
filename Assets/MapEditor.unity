@@ -1513,7 +1513,7 @@ GameObject:
   - component: {fileID: 40553600}
   - component: {fileID: 40553602}
   m_Layer: 5
-  m_Name: AllMArkers (2)
+  m_Name: TotalEnergy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2116,8 +2116,8 @@ RectTransform:
   m_Father: {fileID: 1971840869}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 0.08567089}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 20, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -3705,6 +3705,7 @@ GameObject:
   m_Component:
   - component: {fileID: 96104360}
   - component: {fileID: 96104359}
+  - component: {fileID: 96104361}
   m_Layer: 5
   m_Name: Slider_R
   m_TagString: Untagged
@@ -3792,6 +3793,36 @@ RectTransform:
   m_AnchoredPosition: {x: 134.3, y: -40}
   m_SizeDelta: {x: 269.7, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &96104361
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 96104358}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1862395651, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Delegates:
+  - eventID: 14
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1040494783}
+          m_MethodName: EndSliderDrag
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+      m_TypeName: UnityEngine.EventSystems.EventTrigger+TriggerEvent, UnityEngine.UI,
+        Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+  delegates: []
 --- !u!1 &96878359
 GameObject:
   m_ObjectHideFlags: 0
@@ -8339,7 +8370,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 855.6}
+  m_SizeDelta: {x: 0, y: 782.3}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!1 &205047913
 GameObject:
@@ -10058,7 +10089,7 @@ GameObject:
   - component: {fileID: 250558484}
   - component: {fileID: 250558486}
   m_Layer: 5
-  m_Name: AllMArkers (4)
+  m_Name: M
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -13032,7 +13063,7 @@ RectTransform:
   m_Father: {fileID: 1226726332}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 0.000000059604645}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 20, y: 20}
@@ -14960,7 +14991,7 @@ MonoBehaviour:
   m_ScrollSensitivity: 30
   m_Viewport: {fileID: 0}
   m_HorizontalScrollbar: {fileID: 0}
-  m_VerticalScrollbar: {fileID: 1119176057}
+  m_VerticalScrollbar: {fileID: 0}
   m_HorizontalScrollbarVisibility: 0
   m_VerticalScrollbarVisibility: 0
   m_HorizontalScrollbarSpacing: 0
@@ -19122,6 +19153,7 @@ GameObject:
   m_Component:
   - component: {fileID: 492541295}
   - component: {fileID: 492541294}
+  - component: {fileID: 492541296}
   m_Layer: 5
   m_Name: Slider_G
   m_TagString: Untagged
@@ -19209,6 +19241,36 @@ RectTransform:
   m_AnchoredPosition: {x: 134.3, y: -88.5}
   m_SizeDelta: {x: 269.7, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &492541296
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 492541293}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1862395651, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Delegates:
+  - eventID: 14
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1040494783}
+          m_MethodName: EndSliderDrag
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+      m_TypeName: UnityEngine.EventSystems.EventTrigger+TriggerEvent, UnityEngine.UI,
+        Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+  delegates: []
 --- !u!1 &499475045
 GameObject:
   m_ObjectHideFlags: 0
@@ -21268,6 +21330,7 @@ GameObject:
   m_Component:
   - component: {fileID: 533803738}
   - component: {fileID: 533803737}
+  - component: {fileID: 533803739}
   m_Layer: 5
   m_Name: Slider_G
   m_TagString: Untagged
@@ -21355,6 +21418,36 @@ RectTransform:
   m_AnchoredPosition: {x: 134.3, y: -88.5}
   m_SizeDelta: {x: 269.7, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &533803739
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 533803736}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1862395651, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Delegates:
+  - eventID: 14
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1040494783}
+          m_MethodName: EndSliderDrag
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+      m_TypeName: UnityEngine.EventSystems.EventTrigger+TriggerEvent, UnityEngine.UI,
+        Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+  delegates: []
 --- !u!1 &535796868
 GameObject:
   m_ObjectHideFlags: 0
@@ -24788,6 +24881,7 @@ GameObject:
   m_Component:
   - component: {fileID: 612550900}
   - component: {fileID: 612550899}
+  - component: {fileID: 612550901}
   m_Layer: 5
   m_Name: Slider_R
   m_TagString: Untagged
@@ -24875,6 +24969,36 @@ RectTransform:
   m_AnchoredPosition: {x: 134.3, y: -40}
   m_SizeDelta: {x: 269.7, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &612550901
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 612550898}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1862395651, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Delegates:
+  - eventID: 14
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1040494783}
+          m_MethodName: EndSliderDrag
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+      m_TypeName: UnityEngine.EventSystems.EventTrigger+TriggerEvent, UnityEngine.UI,
+        Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+  delegates: []
 --- !u!1 &617688873
 GameObject:
   m_ObjectHideFlags: 0
@@ -29510,6 +29634,7 @@ GameObject:
   m_Component:
   - component: {fileID: 742954157}
   - component: {fileID: 742954156}
+  - component: {fileID: 742954158}
   m_Layer: 5
   m_Name: Slider_R
   m_TagString: Untagged
@@ -29597,6 +29722,36 @@ RectTransform:
   m_AnchoredPosition: {x: 134.3, y: -65.9}
   m_SizeDelta: {x: 269.7, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &742954158
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 742954155}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1862395651, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Delegates:
+  - eventID: 14
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1040494783}
+          m_MethodName: EndSliderDrag
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+      m_TypeName: UnityEngine.EventSystems.EventTrigger+TriggerEvent, UnityEngine.UI,
+        Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+  delegates: []
 --- !u!1 &747169086
 GameObject:
   m_ObjectHideFlags: 0
@@ -34545,6 +34700,7 @@ GameObject:
   m_Component:
   - component: {fileID: 878446952}
   - component: {fileID: 878446951}
+  - component: {fileID: 878446953}
   m_Layer: 5
   m_Name: Slider_R
   m_TagString: Untagged
@@ -34632,6 +34788,36 @@ RectTransform:
   m_AnchoredPosition: {x: 134.3, y: -40}
   m_SizeDelta: {x: 269.7, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &878446953
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 878446950}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1862395651, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Delegates:
+  - eventID: 14
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1040494783}
+          m_MethodName: EndSliderDrag
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+      m_TypeName: UnityEngine.EventSystems.EventTrigger+TriggerEvent, UnityEngine.UI,
+        Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+  delegates: []
 --- !u!1 &878874032
 GameObject:
   m_ObjectHideFlags: 0
@@ -39813,6 +39999,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1015762219}
   - component: {fileID: 1015762218}
+  - component: {fileID: 1015762220}
   m_Layer: 5
   m_Name: Slider_R
   m_TagString: Untagged
@@ -39900,6 +40087,36 @@ RectTransform:
   m_AnchoredPosition: {x: 134.3, y: -65.9}
   m_SizeDelta: {x: 269.7, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1015762220
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1015762217}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1862395651, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Delegates:
+  - eventID: 14
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1040494783}
+          m_MethodName: EndSliderDrag
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+      m_TypeName: UnityEngine.EventSystems.EventTrigger+TriggerEvent, UnityEngine.UI,
+        Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+  delegates: []
 --- !u!1 &1015915712
 GameObject:
   m_ObjectHideFlags: 0
@@ -41476,6 +41693,7 @@ MonoBehaviour:
   Glow_Slider: {fileID: 0}
   Bloom: {fileID: 0}
   Bloom_Slider: {fileID: 0}
+  SliderDrag: 0
 --- !u!114 &1040494784
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -44433,7 +44651,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 49176799}
   m_Direction: 2
   m_Value: 1
-  m_Size: 0.86640954
+  m_Size: 0.9143291
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -52135,6 +52353,10 @@ MonoBehaviour:
     EnvCubemapsFile: []
     AdditionalSkyboxData:
       BeginValues: 00008043000000000000804366ce0dc29b7292447bd9a03f10000000060000001c822e43eb510e3feb512a3feb51383f285c0f3e14aec73e0ad7233fcdcccc3d
+      beginvectors: []
+      BeginFloats: []
+      BeginInts: 
+      BeginColors: []
       Albedo: /textures/environment/Decal_test_Albedo001.dds
       Glow: /textures/environment/Decal_test_Glow001.dds
       Length: 0
@@ -54590,6 +54812,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1417631559}
   - component: {fileID: 1417631558}
+  - component: {fileID: 1417631560}
   m_Layer: 5
   m_Name: Slider_B
   m_TagString: Untagged
@@ -54677,6 +54900,36 @@ RectTransform:
   m_AnchoredPosition: {x: 134.3, y: -111.1}
   m_SizeDelta: {x: 269.7, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1417631560
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1417631557}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1862395651, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Delegates:
+  - eventID: 14
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1040494783}
+          m_MethodName: EndSliderDrag
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+      m_TypeName: UnityEngine.EventSystems.EventTrigger+TriggerEvent, UnityEngine.UI,
+        Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+  delegates: []
 --- !u!1 &1417870651
 GameObject:
   m_ObjectHideFlags: 0
@@ -54763,7 +55016,7 @@ GameObject:
   - component: {fileID: 1418181974}
   - component: {fileID: 1418181976}
   m_Layer: 5
-  m_Name: AllMArkers (1)
+  m_Name: TotalMass
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -56249,6 +56502,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1475036409}
   - component: {fileID: 1475036408}
+  - component: {fileID: 1475036410}
   m_Layer: 5
   m_Name: Slider_B
   m_TagString: Untagged
@@ -56336,6 +56590,36 @@ RectTransform:
   m_AnchoredPosition: {x: 134.3, y: -111.1}
   m_SizeDelta: {x: 269.7, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1475036410
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1475036407}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1862395651, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Delegates:
+  - eventID: 14
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1040494783}
+          m_MethodName: EndSliderDrag
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+      m_TypeName: UnityEngine.EventSystems.EventTrigger+TriggerEvent, UnityEngine.UI,
+        Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+  delegates: []
 --- !u!1 &1475514690
 GameObject:
   m_ObjectHideFlags: 0
@@ -59408,6 +59692,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1559125746}
   - component: {fileID: 1559125745}
+  - component: {fileID: 1559125747}
   m_Layer: 5
   m_Name: Slider_G
   m_TagString: Untagged
@@ -59495,6 +59780,36 @@ RectTransform:
   m_AnchoredPosition: {x: 134.3, y: -88.5}
   m_SizeDelta: {x: 269.7, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1559125747
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1559125744}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1862395651, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Delegates:
+  - eventID: 14
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1040494783}
+          m_MethodName: EndSliderDrag
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+      m_TypeName: UnityEngine.EventSystems.EventTrigger+TriggerEvent, UnityEngine.UI,
+        Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+  delegates: []
 --- !u!1 &1559365570
 GameObject:
   m_ObjectHideFlags: 0
@@ -61172,7 +61487,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 328752695}
   m_Direction: 2
   m_Value: 1
-  m_Size: 1
+  m_Size: 0.99999994
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -62848,6 +63163,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1647089234}
   - component: {fileID: 1647089235}
+  - component: {fileID: 1647089236}
   m_Layer: 5
   m_Name: Slider_B
   m_TagString: Untagged
@@ -62935,6 +63251,36 @@ MonoBehaviour:
         m_CallState: 2
     m_TypeName: UnityEngine.UI.Slider+SliderEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
+--- !u!114 &1647089236
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1647089233}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1862395651, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Delegates:
+  - eventID: 14
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1040494783}
+          m_MethodName: EndSliderDrag
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+      m_TypeName: UnityEngine.EventSystems.EventTrigger+TriggerEvent, UnityEngine.UI,
+        Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+  delegates: []
 --- !u!1 &1647833927
 GameObject:
   m_ObjectHideFlags: 0
@@ -63725,7 +64071,7 @@ GameObject:
   - component: {fileID: 1673576878}
   - component: {fileID: 1673576877}
   m_Layer: 5
-  m_Name: Text
+  m_Name: Title
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -64672,6 +65018,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1695792667}
   - component: {fileID: 1695792666}
+  - component: {fileID: 1695792668}
   m_Layer: 5
   m_Name: Slider_R
   m_TagString: Untagged
@@ -64759,6 +65106,36 @@ RectTransform:
   m_AnchoredPosition: {x: 134.3, y: -65.9}
   m_SizeDelta: {x: 269.7, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1695792668
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1695792665}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1862395651, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Delegates:
+  - eventID: 14
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1040494783}
+          m_MethodName: EndSliderDrag
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+      m_TypeName: UnityEngine.EventSystems.EventTrigger+TriggerEvent, UnityEngine.UI,
+        Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+  delegates: []
 --- !u!1 &1696435057
 GameObject:
   m_ObjectHideFlags: 0
@@ -73351,6 +73728,7 @@ MonoBehaviour:
       type: 2}
     StratumPaint: {fileID: 108316, guid: e63bba23a97814a4096cbfce91883e87, type: 2}
     StratumChange: {fileID: 108316, guid: 89641b6d2cae32949b00edfa4cd8ed48, type: 2}
+    LightingChange: {fileID: 103088, guid: 255f6ee70b130fa40ba8d1743ce94ab7, type: 2}
   History: []
   RedoHistory: []
   CurrentStage: 0
@@ -76500,7 +76878,7 @@ GameObject:
   - component: {fileID: 2020992851}
   - component: {fileID: 2020992853}
   m_Layer: 5
-  m_Name: AllMArkers (3)
+  m_Name: E
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -78115,7 +78493,7 @@ GameObject:
   - component: {fileID: 2079615090}
   - component: {fileID: 2079615089}
   m_Layer: 5
-  m_Name: field1
+  m_Name: PropsData
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

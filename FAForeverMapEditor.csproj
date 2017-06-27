@@ -178,7 +178,6 @@
     <Compile Include="Assets\LUA\NLua\ObjectTranslator.cs" />
     <Compile Include="Assets\LUA\NLua\ObjectTranslatorPool.cs" />
     <Compile Include="Assets\LUA\NLua\ProxyType.cs" />
-    <Compile Include="Assets\OnlyLocal\Reflection.cs" />
     <Compile Include="Assets\Scripts\Common\EditorVersion.cs" />
     <Compile Include="Assets\Scripts\Common\MassMath.cs" />
     <Compile Include="Assets\Scripts\GFX\GridCamera.cs" />
@@ -257,6 +256,7 @@
     <Compile Include="Assets\Scripts\UI\Windows\SymmetryWindow.cs" />
     <Compile Include="Assets\Scripts\Undo\HistoryClasses.cs" />
     <Compile Include="Assets\Scripts\Undo\HistoryObject.cs" />
+    <Compile Include="Assets\Scripts\Undo\HistoryObjects\HistoryLighting.cs" />
     <Compile Include="Assets\Scripts\Undo\HistoryObjects\HistoryMapInfo.cs" />
     <Compile Include="Assets\Scripts\Undo\HistoryObjects\HistoryMarkersChange.cs" />
     <Compile Include="Assets\Scripts\Undo\HistoryObjects\HistoryMarkersMove.cs" />

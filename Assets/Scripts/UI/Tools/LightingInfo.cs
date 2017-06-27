@@ -41,7 +41,8 @@ public class LightingInfo : MonoBehaviour {
 	public		Slider 				Bloom_Slider;
 
 	// Use this for initialization
-	bool IgnoreUpdate = true;
+	[HideInInspector]
+	public bool IgnoreUpdate = true;
 	void OnEnable () {
 		IgnoreUpdate = true;
 		if(Scmap.map == null) return;
@@ -52,10 +53,10 @@ public class LightingInfo : MonoBehaviour {
 
 
 	public void LoadValues(){
-		Quaternion CheckRot = Quaternion.LookRotation(Scmap.map.SunDirection);
+		//Quaternion CheckRot = Quaternion.LookRotation(Scmap.map.SunDirection);
+		Quaternion CheckRot = Scmap.Sun.transform.rotation;
 
 		Debug.Log(CheckRot.eulerAngles);
-
 
 		float RaHold = CheckRot.eulerAngles.y;
 		if(RaHold > 180) RaHold -= 360;
@@ -66,7 +67,8 @@ public class LightingInfo : MonoBehaviour {
 		RA_Slider.value = RaHold;
 
 
-		float DAHold = 360 - CheckRot.eulerAngles.x;
+		//float DAHold = 360 - CheckRot.eulerAngles.x;
+		float DAHold = CheckRot.eulerAngles.x;
 		DAHold *= 10;
 		DAHold = (int)DAHold;
 		DAHold /= 10f;
@@ -86,12 +88,38 @@ public class LightingInfo : MonoBehaviour {
 		ShadowColorG_Slider.value = Scmap.map.ShadowFillColor.y;
 		ShadowColorB_Slider.value = Scmap.map.ShadowFillColor.z;
 		IgnoreUpdate = false;
-		UpdateMenu(true);
+		//UpdateMenu(true);
+		UndoUpdate();
 	}
-	
+
+	bool UndoChange = false;
+	public void UndoUpdate()
+	{
+		UndoChange = true;
+		UpdateMenu(true);
+		UndoChange = false;
+
+	}
+	[HideInInspector]
+	public bool SliderDrag = false;
+	public void EndSliderDrag()
+	{
+		SliderDrag = false;
+	}
+
 	public void UpdateMenu(bool Slider = false){
-		if(IgnoreUpdate) return;
-		if(Slider){
+		if (IgnoreUpdate) return;
+
+		if (!UndoChange && !SliderDrag)
+		{
+			Debug.Log("Register lighting undo");
+			Undo.Current.RegisterLightingChange(Slider);
+		}
+
+		if (Slider){
+			if(!UndoChange)
+				SliderDrag = true;
+
 			LightMultipiler.text = LightMultipilerSlider.value.ToString("n2");
 
 			//Debug.Log( RA_Slider.value.ToString("n1") );
@@ -113,10 +141,10 @@ public class LightingInfo : MonoBehaviour {
 
 			//Glow.text = Glow_Slider.value.ToString ();
 			//Bloom.text = Bloom_Slider.value.ToString ();
-
 			UpdateMenu (false);
 		}
 		else{
+			IgnoreUpdate = true;
 			LightMultipilerSlider.value = Mathf.Clamp (float.Parse (LightMultipiler.text), 0, 2);
 			LightMultipiler.text = LightMultipilerSlider.value.ToString();
 
@@ -157,6 +185,7 @@ public class LightingInfo : MonoBehaviour {
 			RA_Value =  (int)Mathf.Clamp( float.Parse (RA.text), -180, 180);
 			DA_Value =  (int)Mathf.Clamp( float.Parse (DA.text), 0, 90);
 
+			IgnoreUpdate = false;
 			UpdateLightingData ();
 		}
 	}
@@ -190,7 +219,7 @@ public class LightingInfo : MonoBehaviour {
 		Vector3 SunDIr = new Vector3(-Scmap.map.SunDirection.x, -Scmap.map.SunDirection.y, -Scmap.map.SunDirection.z);
 		Scmap.Sun.transform.rotation = Quaternion.LookRotation( SunDIr);
 		Scmap.Sun.color = new Color(Scmap.map.SunColor.x, Scmap.map.SunColor.y , Scmap.map.SunColor.z, 1) ;
-		Scmap.Sun.intensity = Scmap.map.LightingMultiplier * 1.0f;
+		Scmap.Sun.intensity = Scmap.map.LightingMultiplier * 0.5f;
 
 		// Set terrain lighting data
 		Scmap.TerrainMaterial.SetFloat("_LightingMultiplier", Scmap.map.LightingMultiplier);

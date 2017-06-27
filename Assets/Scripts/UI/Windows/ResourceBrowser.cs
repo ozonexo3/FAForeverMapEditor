@@ -187,30 +187,35 @@ public class ResourceBrowser : MonoBehaviour {
 
 					string LocalName = zipEntry.Name.Remove (0, LocalPath.Length);
 
-					switch (Category.value) {
-					case 0:
-						if (GenerateTextureButton (zipEntry.Name, LocalName, Prefab_Texture))
-							yield return null;
-						else
-							yield return null;
-						break;
-					case 1:
-						if (GenerateTextureButton (zipEntry.Name, LocalName, Prefab_Decal))
-							yield return null;
-						else
-							yield return null;
-						break;
-					case 2:
-						if (GenerateTextureButton (zipEntry.Name, LocalName, Prefab_Decal))
-							yield return null;
-						else
-							yield return null;
-						break;
-					case 3:
-						if (GeneratePropButton (zipEntry.Name, LocalName, Prefab_Prop))
-							yield return null;
-						break;
-					}
+
+						switch (Category.value)
+						{
+							case 0:
+								if (GenerateTextureButton(zipEntry.Name, LocalName, Prefab_Texture))
+									yield return null;
+								else
+									yield return null;
+								break;
+							case 1:
+								if (GenerateTextureButton(zipEntry.Name, LocalName, Prefab_Decal))
+									yield return null;
+								else
+									yield return null;
+								break;
+							case 2:
+								if (GenerateTextureButton(zipEntry.Name, LocalName, Prefab_Decal))
+									yield return null;
+								else
+									yield return null;
+								break;
+							case 3:
+								if (GeneratePropButton(zipEntry.Name, LocalName, Prefab_Prop))
+									yield return null;
+								break;
+						}
+
+
+
 					Counter++;
 					if (Counter >= 6) {
 						Counter = 0;
@@ -231,10 +236,21 @@ public class ResourceBrowser : MonoBehaviour {
 	}
 
 	bool GenerateTextureButton(string localpath, string LocalName, GameObject Prefab){
+
 		if (!LocalName.EndsWith (".dds"))
 			return true;
+		Texture2D LoadedTex;
 
-		Texture2D LoadedTex = GetGamedataFile.LoadTexture2DFromGamedata ("env.scd", localpath, false);
+		try { 
+			LoadedTex = GetGamedataFile.LoadTexture2DFromGamedata ("env.scd", localpath, false);
+		}
+		catch (System.Exception e)
+		{
+			LoadedTex = new Texture2D(128, 128);
+			Debug.LogError("Can't load DDS texture: " + e);
+		}
+
+
 		GameObject NewButton = Instantiate (Prefab) as GameObject;
 		NewButton.transform.SetParent (Pivot, false);
 		//NewButton.GetComponent<RawImage> ().texture = LoadedTex;
