@@ -40,7 +40,8 @@ public class ScmapEditor : MonoBehaviour {
 		public	float		AlbedoScale;
 		public	float		NormalScale;
 	}
-	
+
+	public SkyboxData.SkyboxValues DefaultSkyboxData;
 	public Map map; // Map Object
 
 	void Awake(){
@@ -85,6 +86,36 @@ public class ScmapEditor : MonoBehaviour {
 			Debug.LogError("File not found");
 			StopCoroutine( "LoadScmapFile" );
 		}
+
+
+		if (map.VersionMinor >= 60)
+		{
+			/*
+			// Create Default Values
+			DefaultSkyboxData = new SkyboxData.SkyboxValues();
+			DefaultSkyboxData.BeginBytes = map.AdditionalSkyboxData.Data.BeginBytes;
+			DefaultSkyboxData.Albedo = map.AdditionalSkyboxData.Data.Albedo;
+			DefaultSkyboxData.Glow = map.AdditionalSkyboxData.Data.Glow;
+			DefaultSkyboxData.Length = map.AdditionalSkyboxData.Data.Length;
+			DefaultSkyboxData.MidBytes = map.AdditionalSkyboxData.Data.MidBytes;
+			DefaultSkyboxData.MidBytesStatic = map.AdditionalSkyboxData.Data.MidBytesStatic;
+			DefaultSkyboxData.Clouds = map.AdditionalSkyboxData.Data.Clouds;
+			DefaultSkyboxData.EndBytes = map.AdditionalSkyboxData.Data.EndBytes;*/
+		}
+		else
+		{
+			map.AdditionalSkyboxData.Data = new SkyboxData.SkyboxValues();
+			map.AdditionalSkyboxData.Data.BeginBytes = DefaultSkyboxData.BeginBytes;
+			map.AdditionalSkyboxData.Data.Albedo = DefaultSkyboxData.Albedo;
+			map.AdditionalSkyboxData.Data.Glow = DefaultSkyboxData.Glow;
+			map.AdditionalSkyboxData.Data.Length = DefaultSkyboxData.Length;
+			map.AdditionalSkyboxData.Data.MidBytes = DefaultSkyboxData.MidBytes;
+			map.AdditionalSkyboxData.Data.MidBytesStatic = DefaultSkyboxData.MidBytesStatic;
+			map.AdditionalSkyboxData.Data.Clouds = DefaultSkyboxData.Clouds;
+			map.AdditionalSkyboxData.Data.EndBytes = DefaultSkyboxData.EndBytes;
+
+		}
+
 
 		Shader = map.TerrainShader;
 

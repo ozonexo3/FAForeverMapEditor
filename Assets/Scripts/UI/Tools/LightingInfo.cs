@@ -212,7 +212,7 @@ public class LightingInfo : MonoBehaviour {
 
 
 		// Set light
-		Scmap.Sun.transform.rotation = Quaternion.Euler(new Vector3(DA_Slider.value, 360 - RA_Slider.value, 0));
+		Scmap.Sun.transform.rotation = Quaternion.Euler(new Vector3(DA_Slider.value, -360 + RA_Slider.value, 0));
 
 		Scmap.map.SunDirection = Scmap.Sun.transform.rotation * Vector3.back;
 

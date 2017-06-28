@@ -11,7 +11,7 @@ using UnityEngine;
 using System.IO;
 
 #if UNITY_EDITOR
-[System.Serializable]
+//[System.Serializable]
 #endif
 public class Map
 {
@@ -525,7 +525,7 @@ public class Map
 			}
 			else
 			{
-				AdditionalSkyboxData = new SkyboxData();
+				//AdditionalSkyboxData.LoadDefaults();
 			}
 
 

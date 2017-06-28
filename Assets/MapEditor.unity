@@ -5582,7 +5582,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 10.500008, y: -0.19999999}
+  m_AnchoredPosition: {x: 10.5, y: -0.19999999}
   m_SizeDelta: {x: -28, y: -1}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &141863744
@@ -24225,7 +24225,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 35.199997, y: -26.099998}
+  m_AnchoredPosition: {x: 35.200005, y: -26.099998}
   m_SizeDelta: {x: 263.2, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &595937934
@@ -27103,76 +27103,6 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 683947525}
---- !u!1001 &684305007
-Prefab:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 400086, guid: 61ab83bb624e22f4da53fd894fc20371, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 26.181
-      objectReference: {fileID: 0}
-    - target: {fileID: 400086, guid: 61ab83bb624e22f4da53fd894fc20371, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 2.0112
-      objectReference: {fileID: 0}
-    - target: {fileID: 400086, guid: 61ab83bb624e22f4da53fd894fc20371, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: -28.748
-      objectReference: {fileID: 0}
-    - target: {fileID: 400086, guid: 61ab83bb624e22f4da53fd894fc20371, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 400086, guid: 61ab83bb624e22f4da53fd894fc20371, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 400086, guid: 61ab83bb624e22f4da53fd894fc20371, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 400086, guid: 61ab83bb624e22f4da53fd894fc20371, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 400086, guid: 61ab83bb624e22f4da53fd894fc20371, type: 3}
-      propertyPath: m_RootOrder
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 400084, guid: 61ab83bb624e22f4da53fd894fc20371, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 400084, guid: 61ab83bb624e22f4da53fd894fc20371, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 400084, guid: 61ab83bb624e22f4da53fd894fc20371, type: 3}
-      propertyPath: m_LocalScale.z
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 400086, guid: 61ab83bb624e22f4da53fd894fc20371, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 0.02
-      objectReference: {fileID: 0}
-    - target: {fileID: 400086, guid: 61ab83bb624e22f4da53fd894fc20371, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 0.02
-      objectReference: {fileID: 0}
-    - target: {fileID: 400086, guid: 61ab83bb624e22f4da53fd894fc20371, type: 3}
-      propertyPath: m_LocalScale.z
-      value: 0.02
-      objectReference: {fileID: 0}
-    - target: {fileID: 100086, guid: 61ab83bb624e22f4da53fd894fc20371, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-  m_ParentPrefab: {fileID: 100100000, guid: 61ab83bb624e22f4da53fd894fc20371, type: 3}
-  m_IsPrefabParent: 0
 --- !u!1 &688707059
 GameObject:
   m_ObjectHideFlags: 0
@@ -41693,6 +41623,7 @@ MonoBehaviour:
   Glow_Slider: {fileID: 0}
   Bloom: {fileID: 0}
   Bloom_Slider: {fileID: 0}
+  IgnoreUpdate: 1
   SliderDrag: 0
 --- !u!114 &1040494784
 MonoBehaviour:
@@ -46008,7 +45939,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 35.199997, y: -26.099998}
+  m_AnchoredPosition: {x: 35.200005, y: -26.099998}
   m_SizeDelta: {x: 263.2, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1164515127
@@ -50645,7 +50576,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 10.500008, y: -0.19999999}
+  m_AnchoredPosition: {x: 10.5, y: -0.19999999}
   m_SizeDelta: {x: -28, y: -1}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1295370569
@@ -52135,274 +52066,90 @@ MonoBehaviour:
   - Albedo: {fileID: 0}
     Normal: {fileID: 0}
     Tilling: {x: 0.5, y: 0.5}
-    AlbedoPath: 
-    NormalPath: 
-    AlbedoScale: 0
-    NormalScale: 0
+    AlbedoPath: env/evergreen2/layers/eg_gravel_albedo.dds
+    NormalPath: env/evergreen2/layers/evrock007_normal.dds
+    AlbedoScale: 8
+    NormalScale: 1
   - Albedo: {fileID: 0}
     Normal: {fileID: 0}
     Tilling: {x: 1, y: 1}
-    AlbedoPath: 
-    NormalPath: 
-    AlbedoScale: 0
-    NormalScale: 0
+    AlbedoPath: env/evergreen2/layers/evgrass009_albedo.dds
+    NormalPath: env/evergreen2/layers/evrock007_normal.dds
+    AlbedoScale: 4
+    NormalScale: 21.5
   - Albedo: {fileID: 0}
     Normal: {fileID: 0}
     Tilling: {x: 1.5, y: 1.5}
-    AlbedoPath: 
-    NormalPath: 
-    AlbedoScale: 0
-    NormalScale: 0
+    AlbedoPath: env/evergreen2/layers/evgrass010a_albedo.dds
+    NormalPath: env/evergreen2/layers/evrock007_normal.dds
+    AlbedoScale: 4
+    NormalScale: 6
+  - Albedo: {fileID: 0}
+    Normal: {fileID: 0}
+    Tilling: {x: 0.5, y: 0.5}
+    AlbedoPath: env/evergreen2/layers/evrock007_albedo.dds
+    NormalPath: env/evergreen2/layers/eg_none_normal.dds
+    AlbedoScale: 16.8
+    NormalScale: 4
+  - Albedo: {fileID: 0}
+    Normal: {fileID: 0}
+    Tilling: {x: 0.5, y: 0.5}
+    AlbedoPath: env/evergreen2/layers/evrock006_albedo.dds
+    NormalPath: env/tundra/layers/tund_none_normal.dds
+    AlbedoScale: 13
+    NormalScale: 4
   - Albedo: {fileID: 0}
     Normal: {fileID: 0}
     Tilling: {x: 0.5, y: 0.5}
     AlbedoPath: 
     NormalPath: 
-    AlbedoScale: 0
-    NormalScale: 0
+    AlbedoScale: 4
+    NormalScale: 4
   - Albedo: {fileID: 0}
     Normal: {fileID: 0}
     Tilling: {x: 0.5, y: 0.5}
     AlbedoPath: 
     NormalPath: 
-    AlbedoScale: 0
-    NormalScale: 0
+    AlbedoScale: 4
+    NormalScale: 4
   - Albedo: {fileID: 0}
     Normal: {fileID: 0}
     Tilling: {x: 0.5, y: 0.5}
     AlbedoPath: 
     NormalPath: 
-    AlbedoScale: 0
-    NormalScale: 0
+    AlbedoScale: 4
+    NormalScale: 4
   - Albedo: {fileID: 0}
     Normal: {fileID: 0}
     Tilling: {x: 0.5, y: 0.5}
     AlbedoPath: 
     NormalPath: 
-    AlbedoScale: 0
-    NormalScale: 0
+    AlbedoScale: 4
+    NormalScale: 4
   - Albedo: {fileID: 0}
     Normal: {fileID: 0}
     Tilling: {x: 0.5, y: 0.5}
-    AlbedoPath: 
+    AlbedoPath: env/evergreen/layers/macrotexture000_albedo.dds
     NormalPath: 
-    AlbedoScale: 0
-    NormalScale: 0
-  - Albedo: {fileID: 0}
-    Normal: {fileID: 0}
-    Tilling: {x: 0.5, y: 0.5}
-    AlbedoPath: 
-    NormalPath: 
-    AlbedoScale: 0
-    NormalScale: 0
-  - Albedo: {fileID: 0}
-    Normal: {fileID: 0}
-    Tilling: {x: 0.5, y: 0.5}
-    AlbedoPath: 
-    NormalPath: 
-    AlbedoScale: 0
-    NormalScale: 0
+    AlbedoScale: 128
+    NormalScale: 1
   TerrainMaterial: {fileID: 2100000, guid: 869424636fdf59642bae55582eca31d9, type: 2}
   WaterMaterial: {fileID: 2100000, guid: 9596d04246b657a43abb7394f3101040, type: 2}
-  MapHeightScale: 2050
+  MapHeightScale: 2048
   Gamedata: {fileID: 1334852569}
   Grid: 0
   Slope: 0
   TerrainM: {fileID: 1612778227}
-  Shader: 
-  map:
-    Filename: 
-    PreviewTextHeader:
-      Format: 0
-      Magic: 0
-      size: 0
-      flags: 0
-      height: 0
-      width: 0
-      sizeorpitch: 0
-      depth: 0
-      mipmapcount: 0
-      alphabitdepth: 0
-      reserved: 
-      pixelformatSize: 0
-      pixelformatflags: 0
-      pixelformatFourcc: 0
-      pixelformatRgbBitCount: 0
-      pixelformatRbitMask: 0
-      pixelformatGbitMask: 0
-      pixelformatBbitMask: 0
-      pixelformatAbitMask: 0
-      caps1: 0
-      caps2: 0
-      caps3: 0
-      caps4: 0
-    TextureMapHeader:
-      Format: 0
-      Magic: 0
-      size: 0
-      flags: 0
-      height: 0
-      width: 0
-      sizeorpitch: 0
-      depth: 0
-      mipmapcount: 0
-      alphabitdepth: 0
-      reserved: 
-      pixelformatSize: 0
-      pixelformatflags: 0
-      pixelformatFourcc: 0
-      pixelformatRgbBitCount: 0
-      pixelformatRbitMask: 0
-      pixelformatGbitMask: 0
-      pixelformatBbitMask: 0
-      pixelformatAbitMask: 0
-      caps1: 0
-      caps2: 0
-      caps3: 0
-      caps4: 0
-    TextureMap2Header:
-      Format: 0
-      Magic: 0
-      size: 0
-      flags: 0
-      height: 0
-      width: 0
-      sizeorpitch: 0
-      depth: 0
-      mipmapcount: 0
-      alphabitdepth: 0
-      reserved: 
-      pixelformatSize: 0
-      pixelformatflags: 0
-      pixelformatFourcc: 0
-      pixelformatRgbBitCount: 0
-      pixelformatRbitMask: 0
-      pixelformatGbitMask: 0
-      pixelformatBbitMask: 0
-      pixelformatAbitMask: 0
-      caps1: 0
-      caps2: 0
-      caps3: 0
-      caps4: 0
-    NormalmapHeader:
-      Format: 0
-      Magic: 0
-      size: 0
-      flags: 0
-      height: 0
-      width: 0
-      sizeorpitch: 0
-      depth: 0
-      mipmapcount: 0
-      alphabitdepth: 0
-      reserved: 
-      pixelformatSize: 0
-      pixelformatflags: 0
-      pixelformatFourcc: 0
-      pixelformatRgbBitCount: 0
-      pixelformatRbitMask: 0
-      pixelformatGbitMask: 0
-      pixelformatBbitMask: 0
-      pixelformatAbitMask: 0
-      caps1: 0
-      caps2: 0
-      caps3: 0
-      caps4: 0
-    WatermapHeader:
-      Format: 0
-      Magic: 0
-      size: 0
-      flags: 0
-      height: 0
-      width: 0
-      sizeorpitch: 0
-      depth: 0
-      mipmapcount: 0
-      alphabitdepth: 0
-      reserved: 
-      pixelformatSize: 0
-      pixelformatflags: 0
-      pixelformatFourcc: 0
-      pixelformatRgbBitCount: 0
-      pixelformatRbitMask: 0
-      pixelformatGbitMask: 0
-      pixelformatBbitMask: 0
-      pixelformatAbitMask: 0
-      caps1: 0
-      caps2: 0
-      caps3: 0
-      caps4: 0
-    PreviewTex: {fileID: 0}
-    HeightmapData: 
-    HeightMin: 0
-    HeightMax: 0
-    HeightDiff: 0
-    TexturemapTex: {fileID: 0}
-    TexturemapTex2: {fileID: 0}
-    NormalmapTex: {fileID: 0}
-    WatermapTex: {fileID: 0}
-    WaterDataTexture: {fileID: 0}
-    WaterFoamMask: 
-    WaterFlatnessMask: 
-    WaterDepthBiasMask: 
-    Width: 0
-    Height: 0
-    TexPathBackground: 
-    TexPathSkyCubemap: 
-    EnvCubemapsName: []
-    EnvCubemapsFile: []
-    AdditionalSkyboxData:
-      BeginValues: 00008043000000000000804366ce0dc29b7292447bd9a03f10000000060000001c822e43eb510e3feb512a3feb51383f285c0f3e14aec73e0ad7233fcdcccc3d
-      beginvectors: []
-      BeginFloats: []
-      BeginInts: 
-      BeginColors: []
-      Albedo: /textures/environment/Decal_test_Albedo001.dds
-      Glow: /textures/environment/Decal_test_Glow001.dds
-      Length: 0
-      MidBytes: 
-      MidBytesStatic: 
-      Clouds: textures/environment/cirrus000.dds
-      EndValues: 0400000045f5563a9b36e33acdcc0c3f0000803f0000000045f5563a45f5563a6f12833ac870f73e721e60bf2575273bc92c8c3bcdcc0c3f0978523f4dbc113fbd7f623b88d36e3bc2f5683fb56ecfbe8d0c6a3f00000000
-    TerrainTypeData: 
-    VersionMinor: 0
-    VersionMajor: 0
-    HeightScale: 0
-    TerrainShader: 
-    LightingMultiplier: 0
-    SunDirection: {x: 0, y: 0, z: 0}
-    SunAmbience: {x: 0, y: 0, z: 0}
-    SunColor: {x: 0, y: 0, z: 0}
-    ShadowFillColor: {x: 0, y: 0, z: 0}
-    SpecularColor: {x: 0, y: 0, z: 0, w: 0}
-    Bloom: 0
-    FogColor: {x: 0, y: 0, z: 0}
-    FogStart: 0
-    FogEnd: 0
-    Unknown10: 0
-    Unknown11: 0
-    Unknown12: 0
-    Unknown13: 0
-    Unknown7: 0
-    Unknown8: 0
-    Unknown14: 0
-    MinimapContourInterval: 0
-    MinimapDeepWaterColor:
-      serializedVersion: 2
-      rgba: 0
-    MinimapShoreColor:
-      serializedVersion: 2
-      rgba: 0
-    MinimapLandStartColor:
-      serializedVersion: 2
-      rgba: 0
-    MinimapLandEndColor:
-      serializedVersion: 2
-      rgba: 0
-    MinimapContourColor:
-      serializedVersion: 2
-      rgba: 0
-    UncompressedWatermapTex: {fileID: 0}
+  Shader: TTerrainXP
+  DefaultSkyboxData:
+    BeginBytes: 00008043000000000000804366ce0dc29b7292447bd9a03f10000000060000001c822e43eb510e3feb512a3feb51383f285c0f3e14aec73e0ad7233fcdcccc3d
+    Albedo: /textures/environment/Decal_test_Albedo001.dds
+    Glow: /textures/environment/Decal_test_Glow001.dds
+    Length: 0
+    MidBytes: 
+    MidBytesStatic: 0000006666e63feb51783feb51783feb51783f
+    Clouds: /textures/environment/cirrus000.dds
+    EndBytes: 0400000045f5563a9b36e33acdcc0c3f0000803f0000000045f5563a45f5563a6f12833ac870f73e721e60bf2575273bc92c8c3bcdcc0c3f0978523f4dbc113fbd7f623b88d36e3bc2f5683fb56ecfbe8d0c6a3f00000000
 --- !u!114 &1334852569
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -57649,7 +57396,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 232.49998, y: -24.099998}
+  m_AnchoredPosition: {x: 232.5, y: -24.099998}
   m_SizeDelta: {x: 15, y: 366.7}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &1503418856
@@ -61268,7 +61015,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1592246455
 MonoBehaviour:
@@ -62712,7 +62459,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -81.99997}
+  m_AnchoredPosition: {x: 0, y: -82}
   m_SizeDelta: {x: 590, y: 70}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1624909270
@@ -65203,7 +64950,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 35.199997, y: -25.400002}
+  m_AnchoredPosition: {x: 35.200005, y: -25.400002}
   m_SizeDelta: {x: 263.2, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1697135591
@@ -66196,7 +65943,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 35.199997, y: -25.400002}
+  m_AnchoredPosition: {x: 35.200005, y: -25.400002}
   m_SizeDelta: {x: 263.2, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1729761804
@@ -80101,7 +79848,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 39.000008, y: -26.5}
+  m_AnchoredPosition: {x: 39, y: -26.5}
   m_SizeDelta: {x: 241, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2122435851
@@ -80823,7 +80570,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 39.000008, y: -26.5}
+  m_AnchoredPosition: {x: 39, y: -26.5}
   m_SizeDelta: {x: 241, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2138407350

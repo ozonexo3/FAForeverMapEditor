@@ -8,27 +8,36 @@ public class SkyboxData
 {
 
 	//TODO find what are these values are!
-
+	/*
 	public short[] BeginValues = new short[32];
 	public Vector3[] beginvectors;
 	public float[] BeginFloats;
 	public int[] BeginInts;
 	public Color[] BeginColors;
+	*/
 
-	public string Albedo = "/textures/environment/Decal_test_Albedo001.dds";
-	public string Glow = "/textures/environment/Decal_test_Glow001.dds";
+	public SkyboxValues Data;
 
-	public int Length = 0;
-	public byte[] MidBytes = new byte[0];
-	public byte[] MidBytesStatic = new byte[0];
+	[System.Serializable]
+	public class SkyboxValues
+	{
+		public byte[] BeginBytes = new byte[0];
+		public string Albedo = "/textures/environment/Decal_test_Albedo001.dds";
+		public string Glow = "/textures/environment/Decal_test_Glow001.dds";
 
-	public string Clouds = "/textures/environment/cirrus000.dds";
+		public int Length = 0;
+		public byte[] MidBytes = new byte[0];
+		public byte[] MidBytesStatic = new byte[0];
 
-	public short[] EndValues = new short[44];
+		public string Clouds = "/textures/environment/cirrus000.dds";
+
+		public byte[] EndBytes = new byte[0];
+	}
 
 
 	public void Load(BinaryReader Stream)
 	{
+		/*
 		beginvectors = new Vector3[5];
 		BeginFloats = new float[10];
 		BeginInts = new int[8];
@@ -60,58 +69,51 @@ public class SkyboxData
 		BeginFloats[6] = Stream.ReadSingle(); // 4 bytes
 		BeginFloats[7] = Stream.ReadSingle(); // 4 bytes
 		BeginFloats[8] = Stream.ReadSingle(); // 4 bytes
+		*/
 
+		Data = new SkyboxValues();
+
+		Data.BeginBytes = Stream.ReadBytes(64);
 
 		// Planet and moon textures
-		Albedo = Stream.ReadStringNull();
-		Glow = Stream.ReadStringNull();
+		Data.Albedo = Stream.ReadStringNull();
+		Data.Glow = Stream.ReadStringNull();
 
 
 		// This should be settings for planets and moons on skybox
 
 		//Array
-		Length = Stream.ReadInt32();
-		if(Length > 0)
-			MidBytes = Stream.ReadBytes(Length * 40);
+		Data.Length = Stream.ReadInt32();
+		if(Data.Length > 0)
+			Data.MidBytes = Stream.ReadBytes(Data.Length * 40);
 
 		//Total of 19 bytes
-		MidBytesStatic = Stream.ReadBytes(19);
+		Data.MidBytesStatic = Stream.ReadBytes(19);
 
 
 
 		//Procedural Clouds Texture
-		Clouds = Stream.ReadStringNull();
+		Data.Clouds = Stream.ReadStringNull();
 
 		// Find total of 88 bytes
 		// Animation settings and coordinates for procedural clouds
-		EndValues = new short[44];
-		for (int i = 0; i < EndValues.Length; i++)
-		{
-			EndValues[i] = Stream.ReadInt16();
-		}
+		Data.EndBytes = Stream.ReadBytes(88);
 
 	}
 
 	public void Save(BinaryWriter Stream)
 	{
-		for (int i = 0; i < BeginValues.Length; i++)
-		{
-			Stream.Write(BeginValues[i]);
-		}
+		Stream.Write(Data.BeginBytes);
 
-		Stream.Write(Albedo, true);
-		Stream.Write(Glow, true);
+		Stream.Write(Data.Albedo, true);
+		Stream.Write(Data.Glow, true);
 
-		Stream.Write(Length);
-		Stream.Write(MidBytes);
-		Stream.Write(MidBytesStatic);
+		Stream.Write(Data.Length);
+		Stream.Write(Data.MidBytes);
+		Stream.Write(Data.MidBytesStatic);
 		
-		Stream.Write(Clouds, true);
+		Stream.Write(Data.Clouds, true);
 
-		for (int i = 0; i < EndValues.Length; i++)
-		{
-			Stream.Write(EndValues[i]);
-		}
-
+		Stream.Write(Data.EndBytes);
 	}
 }
