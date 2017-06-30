@@ -204,6 +204,9 @@
     <Compile Include="Assets\Scripts\Ozone SCMAP Code\GamedataProps.cs" />
     <Compile Include="Assets\Scripts\Ozone SCMAP Code\GenerateWaterTex.cs" />
     <Compile Include="Assets\Scripts\Ozone SCMAP Code\GetGamedataFile.cs" />
+    <Compile Include="Assets\Scripts\Ozone SCMAP Code\GetGamedataFile_Bytes.cs" />
+    <Compile Include="Assets\Scripts\Ozone SCMAP Code\GetGamedataFile_Model.cs" />
+    <Compile Include="Assets\Scripts\Ozone SCMAP Code\GetGamedataFile_Prop.cs" />
     <Compile Include="Assets\Scripts\Ozone SCMAP Code\MapHelperGui.cs" />
     <Compile Include="Assets\Scripts\Ozone SCMAP Code\MapLuaParser.cs" />
     <Compile Include="Assets\Scripts\Ozone SCMAP Code\ParsingStructureData.cs" />

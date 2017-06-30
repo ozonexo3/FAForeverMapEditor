@@ -221,13 +221,13 @@ Material:
     - _AreaWidht: 51.2
     - _AreaX: 0
     - _AreaY: 0
-    - _Brush: 1
-    - _BrushSize: 0
+    - _Brush: 0
+    - _BrushSize: 20
     - _BrushUvX: 0.017325025
     - _BrushUvY: 0.5004298
     - _DeepLevel: 1.675625
     - _Grid: 0
-    - _GridCamDist: 1.9224579
+    - _GridCamDist: 2.9618785
     - _GridScale: 51.2
     - _LightingMultiplier: 1.6
     - _LowerScale: 64
@@ -258,7 +258,7 @@ Material:
     - _Abyss: {r: 0.005190316, g: 0.051962737, b: 0.2352941, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _Deep: {r: 0.22577855, g: 0.4590157, b: 0.5294118, a: 1}
-    - _ShadowColor: {r: 0.355, g: 0.355, b: 0.405, a: 1}
+    - _ShadowColor: {r: 0.35500005, g: 0.35500005, b: 0.405, a: 1}
     - _SpecColor: {r: 0, g: 0, b: 0, a: 0}
     - _SunAmbience: {r: 0, g: 0, b: 0, a: 1}
-    - _SunColor: {r: 0.76, g: 0.825, b: 0.74, a: 1}
+    - _SunColor: {r: 0.76, g: 0.82500005, b: 0.74, a: 1}

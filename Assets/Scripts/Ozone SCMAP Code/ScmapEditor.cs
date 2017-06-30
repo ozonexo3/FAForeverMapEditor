@@ -48,10 +48,19 @@ public class ScmapEditor : MonoBehaviour {
 		ResBrowser.Instantiate ();
 	}
 
+	public Mesh LoadedTestModel;
+	public MeshFilter TestFilter;
+
 	void Start(){
 		ToogleGrid(false);
 		heights = new float[10,10];
 		RestartTerrain();
+
+		GetGamedataFile.LoadProp("env.scd", "env/Evergreen/Props/Trees/Groups/Pine07_GroupA_prop.bp");
+		//LoadedTestModel = GetGamedataFile.LoadModel("units.scd", "units/UEL0001/UEL0001_LOD0.scm");
+		LoadedTestModel = GetGamedataFile.LoadModel("env.scd", "env/Evergreen/Props/Trees/Groups/Pine07_groupA_lod0.scm");
+
+		TestFilter.sharedMesh = LoadedTestModel;
 	}
 	
 	public IEnumerator LoadScmapFile(){

@@ -343,6 +343,17 @@ public class MapLuaParser : MonoBehaviour {
 	#endregion
 
 
+	public static string loadedFileFunctions = "";
+
+	public static string GetLoadedFileFunctions()
+	{
+		if (loadedFileFunctions.Length == 0)
+		{
+			loadedFileFunctions = System.IO.File.ReadAllText(StructurePath + "lua_variable_functions.lua", System.Text.Encoding.ASCII);
+		}
+		return loadedFileFunctions;
+	}
+
 	#region Load Scenario Lua
 	private void LoadScenarioLua(){
 		System.Text.Encoding encodeType = System.Text.Encoding.ASCII;
@@ -354,14 +365,13 @@ public class MapLuaParser : MonoBehaviour {
 		string loc = MapPath + FolderName + "/" + ScenarioFileName + ".lua";
 		loadedFile = System.IO.File.ReadAllText(loc, encodeType);
 
-		string loadedFileFunctions = "";
-		loadedFileFunctions = System.IO.File.ReadAllText(StructurePath + "lua_variable_functions.lua", encodeType);
+
 		
 		env = new Lua();
 		env.LoadCLRPackage();
 		
 		try {
-			env.DoString(loadedFileFunctions + loadedFile);
+			env.DoString(GetLoadedFileFunctions() + loadedFile);
 		} catch(NLua.Exceptions.LuaException e) {
 			Debug.LogError(ParsingStructureData.FormatException(e), gameObject);
 			

@@ -1,16 +1,11 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System;
-using System.Text;
 using System.IO;
-using System.IO.Compression;
-using ICSharpCode.SharpZipLib.Core;
-using ICSharpCode.SharpZipLib.Zip;
-using ICSharpCode.SharpZipLib.BZip2;
 
 #pragma warning disable 0162
 
-public class GetGamedataFile : MonoBehaviour {
+public partial class GetGamedataFile : MonoBehaviour {
 	static bool DebugTextureLoad = false;
 
 	public			ScmapEditor		Scmap;
@@ -24,69 +19,42 @@ public class GetGamedataFile : MonoBehaviour {
 	}
 
 	public static Texture2D LoadTexture2DFromGamedata(string scd, string LocalPath, bool NormalMap = false){
-		if(string.IsNullOrEmpty(LocalPath)) return null;
+		byte[] FinalTextureData2 = LoadBytes(scd, LocalPath);
 
-		if(!Directory.Exists(EnvPaths.GetGamedataPath())){
-			Debug.LogError("Gamedata path not exist!");
+		if(FinalTextureData2.Length == 0)
+		{
+			Debug.LogError("Texture file is empty: " + LocalPath);
 			return null;
 		}
-		ZipFile zf = null;
-		Texture2D texture = null;
+
+		TextureFormat format = GetFormatOfDdsBytes(FinalTextureData2);
+		bool Mipmaps = LoadDDsHeader.mipmapcount > 0;
+		Texture2D texture = new Texture2D((int)LoadDDsHeader.width, (int)LoadDDsHeader.height, format, Mipmaps, true);
 
 
-		bool Mipmaps = false;
-		try{
-			FileStream fs = File.OpenRead(EnvPaths.GetGamedataPath() + scd);
-			zf = new ZipFile(fs);
+		int DDS_HEADER_SIZE = 128;
+		byte[] dxtBytes = new byte[FinalTextureData2.Length - DDS_HEADER_SIZE];
+		Buffer.BlockCopy(FinalTextureData2, DDS_HEADER_SIZE, dxtBytes, 0, FinalTextureData2.Length - DDS_HEADER_SIZE);
 
-
-			ZipEntry zipEntry2 =  zf.GetEntry(LocalPath);
-			if(zipEntry2 == null){
-				Debug.LogError("Zip Entry is empty for: " + LocalPath);
-				return null;
-			}
-
-			byte[] FinalTextureData2 = new byte[4096]; // 4K is optimum
-
-			if (zipEntry2 != null)
+		if (IsDxt3)
+		{
+			texture = DDS.DDSReader.LoadDDSTexture(new MemoryStream(FinalTextureData2), false).ToTexture2D();
+			//texture.Apply(false);
+		}
+		else
+		{
+			try
 			{
-				Stream s = zf.GetInputStream(zipEntry2);
-				FinalTextureData2 = new byte[zipEntry2.Size];
-				s.Read(FinalTextureData2, 0, FinalTextureData2.Length);
+				texture.LoadRawTextureData(dxtBytes);
 			}
-
-			TextureFormat format = GetFormatOfDdsBytes(FinalTextureData2);
-			Mipmaps = LoadDDsHeader.mipmapcount > 0;
-			texture = new Texture2D((int)LoadDDsHeader.width, (int)LoadDDsHeader.height, format, Mipmaps, true);
-
-
-			int DDS_HEADER_SIZE = 128;
-			byte[] dxtBytes = new byte[FinalTextureData2.Length - DDS_HEADER_SIZE];
-			Buffer.BlockCopy(FinalTextureData2, DDS_HEADER_SIZE, dxtBytes, 0, FinalTextureData2.Length - DDS_HEADER_SIZE);
-
-			if(IsDxt3){
-				texture = DDS.DDSReader.LoadDDSTexture( new MemoryStream(FinalTextureData2), false).ToTexture2D();
-				texture.Apply(false);
-			}
-			else{
-				try
-				{
-					texture.LoadRawTextureData(dxtBytes);
-				}
-				catch
-				{
-					texture = DDS.DDSReader.LoadDDSTexture(new MemoryStream(FinalTextureData2), false).ToTexture2D();
-				}
-				texture.Apply(false);
-			}
-		} finally {
-			if (zf != null) {
-				zf.IsStreamOwner = true; // Makes close also shut the underlying stream
-				zf.Close(); // Ensure we release resources
+			catch
+			{
+				texture = DDS.DDSReader.LoadDDSTexture(new MemoryStream(FinalTextureData2), false).ToTexture2D();
 			}
 		}
+		texture.Apply(false);
 
-		if(NormalMap){
+		if (NormalMap){
 			texture.Compress(true);
 
 			Texture2D normalTexture = new Texture2D((int)LoadDDsHeader.width, (int)LoadDDsHeader.height, TextureFormat.RGBA32, Mipmaps, true);
