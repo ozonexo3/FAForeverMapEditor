@@ -59,7 +59,6 @@ public partial class GetGamedataFile {
 			}
 
 			// Load Triangles
-			Debug.Log(Stream.BaseStream.Length - Header.IndexOffset + ", " + Header.IndexOffset + ", " + Header.IndexCount);
 			Stream.BaseStream.Seek(Header.IndexOffset, SeekOrigin.Begin);
 			Tris = new Scm_Tris[Header.IndexCount / 3];
 			for(int i = 0; i < Tris.Length; i++)
@@ -195,9 +194,9 @@ public partial class GetGamedataFile {
 			Binormal = Stream.ReadVector3();
 
 			Uv0 = Stream.ReadVector2();
-			Uv0.y = 1 - Uv0.y;
+			//Uv0.y = 1 - Uv0.y;
 			Uv1 = Stream.ReadVector2();
-			Uv1.y = 1 - Uv1.y;
+			//Uv1.y = 1 - Uv1.y;
 			BoneIndex = new byte[4];
 			BoneIndex[0] = Stream.ReadByte();
 			BoneIndex[1] = Stream.ReadByte();

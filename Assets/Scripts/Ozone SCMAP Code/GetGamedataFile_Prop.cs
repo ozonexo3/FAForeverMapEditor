@@ -8,23 +8,49 @@ public partial class GetGamedataFile : MonoBehaviour {
 	public class PropObject
 	{
 		public BluePrint BP;
+
+		public GameObject CreatePropGameObject(Vector3 position, Quaternion rotation)
+		{
+			Type[] Components = new Type[] { typeof( MeshFilter), typeof( MeshRenderer) };
+			GameObject NewProp = new GameObject(BP.Name, Components);
+
+			if (BP.LODs.Length > 0)
+			{
+				NewProp.GetComponent<MeshFilter>().sharedMesh = BP.LODs[0].Mesh;
+				NewProp.GetComponent<MeshRenderer>().sharedMaterial = BP.LODs[0].Mat;
+
+				NewProp.transform.localPosition = position;
+				NewProp.transform.localRotation = rotation;
+				NewProp.transform.localScale = BP.LocalScale;
+			}
+			else
+			{
+				Debug.LogError("Prop is empty! " + BP.Path);
+
+			}
+			return NewProp;
+		}
 	}
 
 	public class BluePrint
 	{
+		public string Path;
+		public string Name = "";
 		public string HelpText = "";
 		//Display
 		public BluePrintLoD[] LODs = new BluePrintLoD[0];
 		public float UniformScale = 0.1f;
 		public float IconFadeInZoom = 4;
 
-		public int ReclaimEnergyMax;
-		public int ReclaimMassMax;
+		public float ReclaimEnergyMax;
+		public float ReclaimMassMax;
 		public float ReclaimTime = 1;
 
 		public float SizeX = 1;
 		public float SizeY = 1;
 		public float SizeZ = 1;
+
+		public Vector3 LocalScale;
 	}
 
 	public class BluePrintLoD
@@ -40,32 +66,49 @@ public partial class GetGamedataFile : MonoBehaviour {
 	}
 
 
-	public static void LoadProp(string scd, string LocalPath)
+	public static PropObject LoadProp(string scd, string LocalPath)
 	{
+		PropObject ToReturn = new PropObject();
+
 		byte[] Bytes = LoadBytes(scd, LocalPath);
 		if (Bytes.Length == 0)
 		{
 			Debug.LogError("Prop not exits: " + LocalPath);
-			return;
+			return ToReturn;
 		}
 		string BluePrintString = System.Text.Encoding.UTF8.GetString(Bytes);
-
-		Debug.Log(BluePrintString);
 
 		if(BluePrintString.Length == 0)
 		{
 			Debug.LogError("Loaded blueprint is empty");
-			return;
+			return ToReturn;
 		}
 
 		BluePrintString = BluePrintString.Replace("PropBlueprint {", "PropBlueprint = {");
 
 		// *** Parse Blueprint
-		PropObject ToReturn = new PropObject();
 		ToReturn.BP = new BluePrint();
 		// Create Lua
 		Lua BP = new Lua();
 		BP.LoadCLRPackage();
+
+		string[] PathSplit = LocalPath.Split(("/").ToCharArray());
+		ToReturn.BP.Name = PathSplit[PathSplit.Length - 1].Replace(".bp", "");
+
+
+		//Fix LUA
+		string[] SplitedBlueprint = BluePrintString.Split("\n".ToCharArray());
+		string NewBlueprintString = "";
+		for(int i = 0; i < SplitedBlueprint.Length; i++)
+		{
+			if(SplitedBlueprint[i].Length > 0 && !SplitedBlueprint[i].Contains("#"))
+			{
+				NewBlueprintString += SplitedBlueprint[i] + "\n";
+			}
+		}
+		BluePrintString = NewBlueprintString;
+
+		ToReturn.BP.Path = LocalPath;
 
 		try
 		{
@@ -73,8 +116,8 @@ public partial class GetGamedataFile : MonoBehaviour {
 		}
 		catch (NLua.Exceptions.LuaException e)
 		{
-			Debug.LogError(ParsingStructureData.FormatException(e));
-			return;
+			Debug.LogError(ParsingStructureData.FormatException(e) + "\n" + LocalPath);
+			return ToReturn;
 		}
 
 		// Economy
@@ -82,17 +125,18 @@ public partial class GetGamedataFile : MonoBehaviour {
 		{
 			LuaTable EconomyTab = BP.GetTable("PropBlueprint.Economy") as LuaTable;
 
-			if(EconomyTab.RawGet("ReclaimEnergyMax") != null)
-				ToReturn.BP.ReclaimEnergyMax = int.Parse(EconomyTab.RawGet("ReclaimEnergyMax").ToString());
+			if (EconomyTab != null)
+			{
+				if (EconomyTab.RawGet("ReclaimEnergyMax") != null)
+					ToReturn.BP.ReclaimEnergyMax = MassMath.StringToFloat(EconomyTab.RawGet("ReclaimEnergyMax").ToString());
 
-			if (EconomyTab.RawGet("ReclaimMassMax") != null)
-				ToReturn.BP.ReclaimMassMax = int.Parse(EconomyTab.RawGet("ReclaimMassMax").ToString());
+				if (EconomyTab.RawGet("ReclaimMassMax") != null)
+					ToReturn.BP.ReclaimMassMax = MassMath.StringToFloat(EconomyTab.RawGet("ReclaimMassMax").ToString());
 
-			if (EconomyTab.RawGet("ReclaimTime") != null)
-				ToReturn.BP.ReclaimTime = MassMath.StringToFloat(EconomyTab.RawGet("ReclaimTime").ToString());
+				if (EconomyTab.RawGet("ReclaimTime") != null)
+					ToReturn.BP.ReclaimTime = MassMath.StringToFloat(EconomyTab.RawGet("ReclaimTime").ToString());
+			}
 		}
-
-		Debug.Log(ToReturn.BP.ReclaimEnergyMax + ", " + ToReturn.BP.ReclaimMassMax + ", " + ToReturn.BP.ReclaimTime);
 
 		//Size
 		if (BP.GetTable("PropBlueprint").RawGet("SizeX") != null)
@@ -141,44 +185,89 @@ public partial class GetGamedataFile : MonoBehaviour {
 						ToReturn.BP.LODs[i].LODCutoff = MassMath.StringToFloat(LodTableValues[i].RawGet("LODCutoff").ToString());
 
 					ToReturn.BP.LODs[i].Scm = LocalPath.Replace("prop.bp", "lod" + i.ToString() + ".scm");
-
-					Debug.Log(ToReturn.BP.LODs[i].AlbedoName + ", " + ToReturn.BP.LODs[i].NormalsName + ", " + ToReturn.BP.LODs[i].ShaderName + ", " + ToReturn.BP.LODs[i].LODCutoff + ", " + ToReturn.BP.LODs[i].Scm);
-
 				}
 			}
 		}
 
-		Debug.Log(ToReturn.BP.UniformScale + ", " + ToReturn.BP.IconFadeInZoom);
-		string ParentDirectory = System.IO.Directory.GetParent(LocalPath).FullName;
-		string Difference = ParentDirectory.Replace("\\", "/").Replace(LocalPath.Replace("\\", "/"), "");
-
-		Debug.Log(ParentDirectory + " , " + Application.persistentDataPath);
+		ToReturn.BP.LocalScale = Vector3.one * (ToReturn.BP.UniformScale * 0.1f);
 
 		for (int i = 0; i < ToReturn.BP.LODs.Length; i++)
 		{
 			ToReturn.BP.LODs[i].Mesh = LoadModel(scd, ToReturn.BP.LODs[i].Scm);
 
-			ToReturn.BP.LODs[i].Mat = new Material(Shader.Find("Standard"));
+			ToReturn.BP.LODs[i].Mat = new Material(Shader.Find("Standard (Specular setup)"));
 
+			ToReturn.BP.LODs[i].Mat.SetOverrideTag("RenderType", "TransparentCutout");
+			ToReturn.BP.LODs[i].Mat.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.One);
+			ToReturn.BP.LODs[i].Mat.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.Zero);
+			ToReturn.BP.LODs[i].Mat.SetInt("_ZWrite", 1);
+			ToReturn.BP.LODs[i].Mat.EnableKeyword("_ALPHATEST_ON");
+			ToReturn.BP.LODs[i].Mat.DisableKeyword("_ALPHABLEND_ON");
+			ToReturn.BP.LODs[i].Mat.DisableKeyword("_ALPHAPREMULTIPLY_ON");
+			ToReturn.BP.LODs[i].Mat.renderQueue = (int)UnityEngine.Rendering.RenderQueue.AlphaTest;
 
-			if (ToReturn.BP.LODs[i].AlbedoName.Length > 0)
+			ToReturn.BP.LODs[i].Mat.SetColor("_SpecColor", Color.black);
+			ToReturn.BP.LODs[i].Mat.SetFloat("_Glossiness", 1);
+
+			if (ToReturn.BP.LODs[i].AlbedoName.Length == 0)
 			{
-				string LocalDirectory = ParentDirectory;
-				while (ToReturn.BP.LODs[i].AlbedoName.StartsWith("../"))
-				{
-					LocalDirectory = System.IO.Directory.GetParent(LocalDirectory).FullName;
-					ToReturn.BP.LODs[i].AlbedoName = ToReturn.BP.LODs[i].AlbedoName.Remove(0, 3);
-				}
-				ToReturn.BP.LODs[i].AlbedoName = LocalDirectory.Replace("\\", "/").Replace(Difference, "") + "/" + ToReturn.BP.LODs[i].AlbedoName;
-
-				Debug.Log(ToReturn.BP.LODs[i].AlbedoName);
-
-				ToReturn.BP.LODs[i].Mat.SetTexture("_MainTex", LoadTexture2DFromGamedata(scd, ToReturn.BP.LODs[i].AlbedoName, false));
+				ToReturn.BP.LODs[i].AlbedoName = LocalPath.Replace("prop.bp", "albedo.dds");
+			}
+			else
+			{
+				ToReturn.BP.LODs[i].AlbedoName = OffsetRelativePath(LocalPath, ToReturn.BP.LODs[i].AlbedoName, true);
+			}
+			ToReturn.BP.LODs[i].Mat.SetTexture("_MainTex", LoadTexture2DFromGamedata(scd, ToReturn.BP.LODs[i].AlbedoName, false));
 
 
+			if (ToReturn.BP.LODs[i].NormalsName.Length == 0)
+			{
+				ToReturn.BP.LODs[i].NormalsName = LocalPath.Replace("prop.bp", "normalsTS.dds");
+			}
+			else
+			{
+				ToReturn.BP.LODs[i].NormalsName = OffsetRelativePath(LocalPath, ToReturn.BP.LODs[i].NormalsName, true);
 			}
 
+			ToReturn.BP.LODs[i].Mat.SetTexture("_BumpMap", LoadTexture2DFromGamedata(scd, ToReturn.BP.LODs[i].NormalsName, false));
+
 		}
+
+		return ToReturn;
+	}
+
+
+
+	public static string OffsetRelativePath(string OriginalPath, string offset, bool File = true)
+	{
+		OriginalPath = OriginalPath.Replace("\\", "/");
+		offset = offset.Replace("\\", "/");
+
+		string[] Folders = OriginalPath.Split("/".ToCharArray());
+
+		int Step = Folders.Length;
+		if (File && Step > 0)
+			Step--;
+
+		while (offset.StartsWith("../"))
+		{
+			offset = offset.Remove(0, 3);
+			Step--;
+		}
+
+
+		string ToReturn = "";
+
+		for(int i = 0; i < Folders.Length; i++)
+		{
+			if (i >= Step)
+				break;
+			else
+				ToReturn += Folders[i] + "/";
+		}
+
+		return ToReturn + offset;
+
 	}
 
 

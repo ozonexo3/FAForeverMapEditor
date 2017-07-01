@@ -13,10 +13,13 @@ public class PropsReader : MonoBehaviour {
 
 	public class PropTypeGroup{
 		public		string 		Blueprint = "";
+		public string LoadBlueprint = "";
 		public		string		HelpText = "";
 		public		float 		MassReclaim = 0;
 		public		float 		EnergyReclaim = 0;
 		public		List<Prop> 	Props = new List<Prop>();
+		public		GetGamedataFile.PropObject PropObject;
+		public	List<GameObject> PropsInstances = new List<GameObject>();
 	}
 
 	public static void LoadProps(ScmapEditor HeightmapControler){
@@ -26,14 +29,18 @@ public class PropsReader : MonoBehaviour {
 
 		Debug.Log("Found props: " + Props.Count);
 
-		for(int i = 0; i < Props.Count; i++){
+		for (int i = 0; i < Props.Count; i++)
+		{
 			bool NewProp = false;
 			int GroupId = 0;
-			if(AllPropsTypes.Count == 0) NewProp = true;
-			else{
+			if (AllPropsTypes.Count == 0) NewProp = true;
+			else
+			{
 				NewProp = true;
-				for(int g = 0; g < AllPropsTypes.Count; g++){
-					if(Props[i].BlueprintPath == AllPropsTypes[g].Blueprint){
+				for (int g = 0; g < AllPropsTypes.Count; g++)
+				{
+					if (Props[i].BlueprintPath == AllPropsTypes[g].Blueprint)
+					{
 						NewProp = false;
 						GroupId = g;
 						break;
@@ -41,19 +48,29 @@ public class PropsReader : MonoBehaviour {
 				}
 			}
 
-			if(NewProp){
+			if (NewProp)
+			{
 				GroupId = AllPropsTypes.Count;
 				AllPropsTypes.Add(new PropTypeGroup());
 				AllPropsTypes[GroupId].Blueprint = Props[i].BlueprintPath;
+				AllPropsTypes[GroupId].LoadBlueprint = Props[i].BlueprintPath.Replace("\\", "/");
+
+				if (AllPropsTypes[GroupId].LoadBlueprint.StartsWith("/"))
+					AllPropsTypes[GroupId].LoadBlueprint = AllPropsTypes[GroupId].LoadBlueprint.Remove(0, 1);
+
+				AllPropsTypes[GroupId].PropObject = GetGamedataFile.LoadProp("env.scd", AllPropsTypes[GroupId].LoadBlueprint);
+
 			}
 
-			AllPropsTypes[GroupId].Props.Add(Props[i]);
+			Quaternion PropRotation = Quaternion.LookRotation(Props[i].RotationZ, Props[i].RotationY);
 
+			GameObject NewPropGameobject = AllPropsTypes[GroupId].PropObject.CreatePropGameObject(ScmapEditor.MapPosInWorld(Props[i].Position), PropRotation);
+			AllPropsTypes[GroupId].PropsInstances.Add(NewPropGameobject);
+
+			AllPropsTypes[GroupId].Props.Add(Props[i]);
 		}
 
-
 		Debug.Log("Props types: " + AllPropsTypes.Count);
-
 	}
 
 	public void Clean(){

@@ -21,9 +21,9 @@ public partial class GetGamedataFile : MonoBehaviour {
 	public static Texture2D LoadTexture2DFromGamedata(string scd, string LocalPath, bool NormalMap = false){
 		byte[] FinalTextureData2 = LoadBytes(scd, LocalPath);
 
-		if(FinalTextureData2.Length == 0)
+		if(FinalTextureData2 == null || FinalTextureData2.Length == 0)
 		{
-			Debug.LogError("Texture file is empty: " + LocalPath);
+			//Debug.LogError("Texture file is empty: " + LocalPath);
 			return null;
 		}
 

@@ -38,7 +38,7 @@ public partial class GetGamedataFile : MonoBehaviour
 			ZipEntry zipEntry2 = zf.GetEntry(LocalPath);
 			if (zipEntry2 == null)
 			{
-				Debug.LogError("Zip Entry is empty for: " + LocalPath);
+				Debug.LogWarning("Zip Entry is empty for: " + LocalPath);
 				return null;
 			}
 

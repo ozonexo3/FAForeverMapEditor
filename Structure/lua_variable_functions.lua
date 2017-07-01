@@ -21,3 +21,7 @@ end
 function GROUP(orders, platoon, Units)
 	return {orders, platoon, Units}
 end
+
+function Sound(Bank, Cue, LodCutoff)
+	return {Bank, Cue, LodCutoff}
+end

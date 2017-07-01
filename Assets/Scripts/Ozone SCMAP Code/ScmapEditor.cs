@@ -56,7 +56,10 @@ public class ScmapEditor : MonoBehaviour {
 		heights = new float[10,10];
 		RestartTerrain();
 
-		GetGamedataFile.LoadProp("env.scd", "env/Evergreen/Props/Trees/Groups/Pine07_GroupA_prop.bp");
+		//GetGamedataFile.PropObject Prop = GetGamedataFile.LoadProp("env.scd", "env/Evergreen/Props/Trees/Groups/Pine07_GroupA_prop.bp");
+		//Prop.CreatePropGameObject(new Vector3(6, 1.529f, -6));
+
+
 		//LoadedTestModel = GetGamedataFile.LoadModel("units.scd", "units/UEL0001/UEL0001_LOD0.scm");
 		LoadedTestModel = GetGamedataFile.LoadModel("env.scd", "env/Evergreen/Props/Trees/Groups/Pine07_groupA_lod0.scm");
 
@@ -414,7 +417,7 @@ public class ScmapEditor : MonoBehaviour {
 		Data.SetHeights(0, 0, heights);
 	}
 
-	public Vector3 MapPosInWorld(Vector3 MapPos){
+	public static Vector3 MapPosInWorld(Vector3 MapPos){
 		Vector3 ToReturn = MapPos;
 		
 		// Position
@@ -427,7 +430,7 @@ public class ScmapEditor : MonoBehaviour {
 		return ToReturn;
 	}
 
-	public Vector3 MapWorldPosInSave(Vector3 MapPos){
+	public static Vector3 MapWorldPosInSave(Vector3 MapPos){
 		Vector3 ToReturn = MapPos;
 
 		//Position

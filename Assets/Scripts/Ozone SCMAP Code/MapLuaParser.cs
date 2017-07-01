@@ -539,7 +539,7 @@ public class MapLuaParser : MonoBehaviour {
 				Mex newMex = new Mex();
 				newMex.name = MarkersTable.Keys[m];
 				
-				newMex.position = HeightmapControler.MapPosInWorld(MarkerPosParsed);
+				newMex.position = ScmapEditor.MapPosInWorld(MarkerPosParsed);
 				newMex.orientation = MarkerRotParsed;
 				
 				LuaHelper.ReadSpawnWithArmy(out newMex.SpawnWithArmy, MarkerTable);
@@ -557,7 +557,7 @@ public class MapLuaParser : MonoBehaviour {
 
 				NewHydro.color = MarkerTable.GetColorValue("color");
 
-				NewHydro.position = HeightmapControler.MapPosInWorld(MarkerPosParsed);
+				NewHydro.position = ScmapEditor.MapPosInWorld(MarkerPosParsed);
 				NewHydro.orientation = MarkerRotParsed;
 
 				LuaHelper.ReadSpawnWithArmy(out NewHydro.SpawnWithArmy, MarkerTable);
@@ -570,7 +570,7 @@ public class MapLuaParser : MonoBehaviour {
 
 				NewArmy.Id = int.Parse(MarkersTable.Keys[m].Replace("ARMY_", ""));
 
-				NewArmy.position = HeightmapControler.MapPosInWorld(MarkerPosParsed);
+				NewArmy.position = ScmapEditor.MapPosInWorld(MarkerPosParsed);
 				NewArmy.orientation = MarkerRotParsed;
 
 				ARMY_.Add(NewArmy);
@@ -578,7 +578,7 @@ public class MapLuaParser : MonoBehaviour {
 			else{
 				Marker NewMarker = new Marker();
 				NewMarker.name = MarkersTable.Keys[m];
-				NewMarker.position = HeightmapControler.MapPosInWorld(MarkerPosParsed);
+				NewMarker.position = ScmapEditor.MapPosInWorld(MarkerPosParsed);
 				NewMarker.orientation = MarkerRotParsed;
 
 				NewMarker.type = TypeOfMarker;
@@ -837,7 +837,7 @@ public class MapLuaParser : MonoBehaviour {
 			string ArmyName = "                ['" + ARMY_[a].name + "'] = {";
 			NewArmy = NewArmy.Replace("['ARMY_']", ArmyName);
 
-			Vector3 MexPos = HeightmapControler.MapWorldPosInSave( GetPosOfMarkerId(0, a) );
+			Vector3 MexPos = ScmapEditor.MapWorldPosInSave( GetPosOfMarkerId(0, a) );
 			string Position = ParsingStructureData.Save_Position.Replace("#", Vector3ToLua(MexPos));
 			NewArmy = NewArmy.Replace("['position']", Position);
 
@@ -872,7 +872,7 @@ public class MapLuaParser : MonoBehaviour {
 			else NewHydro = NewHydro.Replace("[SpawnWithArmy]", SpawnWithArmy);
 
 			// Position
-			Vector3 MexPos = HeightmapControler.MapWorldPosInSave( GetPosOfMarkerId(2, h) );
+			Vector3 MexPos = ScmapEditor.MapWorldPosInSave( GetPosOfMarkerId(2, h) );
 			string Position = ParsingStructureData.Save_Position.Replace("#", Vector3ToLua(MexPos));
 			NewHydro = NewHydro.Replace("[position]", Position);
 
@@ -893,7 +893,7 @@ public class MapLuaParser : MonoBehaviour {
 			if( Mexes[m].SpawnWithArmy == armys.none) NewMex = NewMex.Replace("['SpawnWithArmy']\r\n", "");
 			else NewMex = NewMex.Replace("['SpawnWithArmy']", SpawnWithArmy);
 
-			Vector3 MexPos = HeightmapControler.MapWorldPosInSave( GetPosOfMarkerId(1, m) );
+			Vector3 MexPos = ScmapEditor.MapWorldPosInSave( GetPosOfMarkerId(1, m) );
 			string Position = ParsingStructureData.Save_Position.Replace("#", Vector3ToLua(MexPos));
 			NewMex = NewMex.Replace("['position']", Position);
 
@@ -944,7 +944,7 @@ public class MapLuaParser : MonoBehaviour {
 			SiProp = ParsingStructureData.LuaMarkerProperty ("color", ParsingStructureData.ToLuaStringVaue (ColorUtility.ToHtmlStringRGBA(SiMarkers[s].Kolor).ToLower()));
 			NewSi = NewSi.Replace("['color']", SiProp);
 
-			Vector3 MexPos = HeightmapControler.MapWorldPosInSave( GetPosOfMarkerId(3, s) );
+			Vector3 MexPos = ScmapEditor.MapWorldPosInSave( GetPosOfMarkerId(3, s) );
 			string Position = ParsingStructureData.Save_Position.Replace("#", Vector3ToLua(MexPos));
 			NewSi = NewSi.Replace("['position']", Position);
 
