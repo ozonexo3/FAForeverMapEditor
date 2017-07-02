@@ -8,6 +8,7 @@ using UnityStandardAssets.ImageEffects;
 
 public class ScmapEditor : MonoBehaviour {
 
+	public static ScmapEditor Current;
 	static bool SaveStratumToPng = false; // Can save stratum masks to debug if everything is ok
 
 	public		ResourceBrowser	ResBrowser;
@@ -45,11 +46,9 @@ public class ScmapEditor : MonoBehaviour {
 	public Map map; // Map Object
 
 	void Awake(){
+		Current = this;
 		ResBrowser.Instantiate ();
 	}
-
-	public Mesh LoadedTestModel;
-	public MeshFilter TestFilter;
 
 	void Start(){
 		ToogleGrid(false);
@@ -61,9 +60,8 @@ public class ScmapEditor : MonoBehaviour {
 
 
 		//LoadedTestModel = GetGamedataFile.LoadModel("units.scd", "units/UEL0001/UEL0001_LOD0.scm");
-		LoadedTestModel = GetGamedataFile.LoadModel("env.scd", "env/Evergreen/Props/Trees/Groups/Pine07_groupA_lod0.scm");
+		//LoadedTestModel = GetGamedataFile.LoadModel("env.scd", "env/Evergreen/Props/Trees/Groups/Pine07_groupA_lod0.scm");
 
-		TestFilter.sharedMesh = LoadedTestModel;
 	}
 	
 	public IEnumerator LoadScmapFile(){

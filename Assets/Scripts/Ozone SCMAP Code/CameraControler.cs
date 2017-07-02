@@ -55,6 +55,7 @@ public class CameraControler : MonoBehaviour {
 		if(!Terrain.activeTerrain) return;
 		Pos = Vector3.zero + Vector3.right * MapSize / 20.0f - Vector3.forward * MapSize / 20.0f;
 		Pos.y = Terrain.activeTerrain.SampleHeight(Pos);
+		ClampPosY();
 		Rot = Vector3.zero;
 
 		zoomIn = 1;
@@ -184,6 +185,7 @@ public class CameraControler : MonoBehaviour {
 			RaycastHit hit;
 			if (Physics.Raycast(ray, out hit, 1000, Mask)){
 				Pos += (hit.point - Pos) * Mathf.Lerp(0.22f, 0.12f, ZoomCamPos()) * 1;
+				ClampPosY();
 			}
 			
 		}
@@ -214,7 +216,7 @@ public class CameraControler : MonoBehaviour {
 			Pos.x = Mathf.Clamp(Pos.x, 0, MapSize / 10.0f);
 			Pos.z = Mathf.Clamp(Pos.z, MapSize / -10.0f, 0);
 			Pos.y = Terrain.activeTerrain.SampleHeight(Pos);
-			
+			ClampPosY();
 		}
 		
 		if(Input.GetKeyDown(KeyCode.Keypad0)){
@@ -227,6 +229,12 @@ public class CameraControler : MonoBehaviour {
 		Pivot.localRotation = Quaternion.Lerp(Pivot.localRotation, Quaternion.Euler(Rot), Time.deltaTime * 10);
 		Pivot.localPosition = Vector3.Lerp(Pivot.localPosition, Pos,  Time.deltaTime * 18);
 	}
+
+	void ClampPosY()
+	{
+		Pos.y = Mathf.Clamp(Pos.y, MapLuaParser.Current.HeightmapControler.WaterLevel.transform.localPosition.y, 2048);
+	}
+
 	#region Markers
 	void MarkersInteraction(){
 		if (Input.GetKeyDown (KeyCode.Delete)) {
@@ -680,6 +688,7 @@ public class CameraControler : MonoBehaviour {
 		if (Edit.State == Editing.EditStates.MarkersStat) {
 			if (Edit.EditMarkers.SelectionsRings.Count > 0) {
 				Pos = Edit.EditMarkers.SelectedMarker.transform.position;
+				ClampPosY();
 				//Pivot.position = Edit.EditMarkers.SelectionsRings[0].transform.position;
 				float size = Mathf.Max (Edit.EditMarkers.SelectedMarker.GetComponent<MeshRenderer> ().bounds.size.x, Edit.EditMarkers.SelectedMarker.GetComponent<MeshRenderer> ().bounds.size.z);
 				//Debug.Log (size + ", " + MapSize);

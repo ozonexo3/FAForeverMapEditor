@@ -30,6 +30,7 @@ public class MapLuaParser : MonoBehaviour {
 	public		ScmapEditor		HeightmapControler;
 	public		GetGamedataFile	Gamedata;
 	public		GenericInfoPopup	InfoPopup;
+	public PropsReader PropsMenu;
 	public static		bool			Water;
 
 
@@ -327,8 +328,11 @@ public class MapLuaParser : MonoBehaviour {
 
 			// Load Props
 			if (LoadProps) {
-				PropsReader.LoadProps (HeightmapControler);
-				yield return null;
+				PropsMenu.gameObject.SetActive(true);
+
+				yield return PropsMenu.StartCoroutine(PropsMenu.LoadProps());
+
+				PropsMenu.gameObject.SetActive(false);
 			}
 
 			InfoPopup.Show (false);

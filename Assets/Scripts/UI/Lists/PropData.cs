@@ -25,4 +25,25 @@ public class PropData : MonoBehaviour {
 		TotalMassField.text = (mass * count).ToString();
 		TotalEnergyField.text = (energy * count).ToString();
 	}
+
+	public void SetPropPaint(int _ID, string name)
+	{
+		ID = _ID;
+		NameField.text = name;
+	}
+
+	public void RemoveProp()
+	{
+		PropsReader.Current.RemoveProp(ID);
+	}
+
+	public void OverPropEnter()
+	{
+		PropsReader.Current.ShowPreview(ID, gameObject);
+	}
+
+	public void OverPropExit()
+	{
+		PropsReader.Current.Preview.Hide(gameObject);
+	}
 }

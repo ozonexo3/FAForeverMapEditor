@@ -23,8 +23,7 @@ public partial class GetGamedataFile : MonoBehaviour {
 
 		if(FinalTextureData2 == null || FinalTextureData2.Length == 0)
 		{
-			//Debug.LogError("Texture file is empty: " + LocalPath);
-			return null;
+			return new Texture2D(32, 32, TextureFormat.RGBA32, false);
 		}
 
 		TextureFormat format = GetFormatOfDdsBytes(FinalTextureData2);
@@ -59,12 +58,17 @@ public partial class GetGamedataFile : MonoBehaviour {
 
 			Texture2D normalTexture = new Texture2D((int)LoadDDsHeader.width, (int)LoadDDsHeader.height, TextureFormat.RGBA32, Mipmaps, true);
 
-			Color theColour = new Color();
+			//Color theColour = new Color();
 			Color[] Pixels;
 
-			for(int m = 0; m < LoadDDsHeader.mipmapcount + 1; m++){
-				int Texwidth = texture.width;
-				int Texheight = texture.height;
+			int m = 0;
+			int i = 0;
+			int Texwidth = 0;
+			int Texheight = 0;
+
+			for (m = 0; m < LoadDDsHeader.mipmapcount + 1; m++){
+				Texwidth = texture.width;
+				Texheight = texture.height;
 
 				if(m > 0){
 					Texwidth /= (int)Mathf.Pow(2, m);
@@ -72,12 +76,14 @@ public partial class GetGamedataFile : MonoBehaviour {
 				}
 				Pixels = texture.GetPixels(0, 0, Texwidth, Texheight, m);
 
-				for(int i = 0; i < Pixels.Length; i++){
-					theColour.r = Pixels[i].r;
+				for(i = 0; i < Pixels.Length; i++){
+					/*theColour.r = Pixels[i].r;
 					theColour.g = Pixels[i].g;
 					theColour.b = 1;
 					theColour.a = Pixels[i].g;
-					Pixels[i] = theColour;
+					Pixels[i] = theColour;*/
+					Pixels[i].b = 1;
+					Pixels[i].a = Pixels[i].g;
 				}
 				normalTexture.SetPixels(0, 0, Texwidth, Texheight, Pixels, m);
 			}
@@ -89,11 +95,11 @@ public partial class GetGamedataFile : MonoBehaviour {
 			normalTexture.anisoLevel = AnisoLevel;
 			return normalTexture;
 		}
-		else{
-			texture.mipMapBias = MipmapBias;
-			texture.filterMode = FilterMode.Bilinear;
-			texture.anisoLevel = AnisoLevel;
-		}
+
+
+		texture.mipMapBias = MipmapBias;
+		texture.filterMode = FilterMode.Bilinear;
+		texture.anisoLevel = AnisoLevel;
 
 		return texture;
 	}

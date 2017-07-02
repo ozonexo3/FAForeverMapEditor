@@ -29,6 +29,7 @@ public class ResourceBrowser : MonoBehaviour {
 
 	public List<Texture2D> LoadedTextures = new List<Texture2D>();
 	public List<string> LoadedPaths = new List<string>();
+	public List<GetGamedataFile.PropObject> LoadedProps = new List<GetGamedataFile.PropObject>();
 
 	public List<string> LoadedEnvPaths = new List<string>();
 
@@ -157,6 +158,16 @@ public class ResourceBrowser : MonoBehaviour {
 		StartCoroutine ("GenerateList");
 	}
 
+	public void LoadPropBlueprint()
+	{
+		Category.value = 3;
+
+		gameObject.SetActive(true);
+		StopCoroutine("GenerateList");
+		CustomLoading = false;
+		StartCoroutine("GenerateList");
+	}
+
 	IEnumerator GenerateList(){
 		SelectedCategory = Category.value;
 		Clean ();
@@ -275,15 +286,28 @@ public class ResourceBrowser : MonoBehaviour {
 		if (!LocalName.EndsWith (".bp"))
 			return false;
 
+		string PropPath = LocalName.Replace(".bp", "");
+
+		GetGamedataFile.PropObject LoadedProp = GetGamedataFile.LoadProp("env.scd", localpath);
+
 		//Texture2D LoadedTex = GetGamedataFile.LoadTexture2DFromGamedata ("env.scd", localpath, false);
 		GameObject NewButton = Instantiate (Prefab) as GameObject;
 		NewButton.transform.SetParent (Pivot, false);
-		//NewButton.GetComponent<RawImage> ().texture = LoadedTex;
+
+		if(LoadedProp.BP.LODs.Length > 0 && LoadedProp.BP.LODs[0].Albedo)
+			NewButton.GetComponent<RawImage> ().texture = LoadedProp.BP.LODs[0].Albedo;
+
 		//NewButton.GetComponent<ResourceObject> ().Controler = this;
 		NewButton.GetComponent<ResourceObject> ().InstanceId = LoadedPaths.Count;
-		NewButton.GetComponent<ResourceObject> ().NameField.text = LocalName.Replace(".blueprint", "");
+		NewButton.GetComponent<ResourceObject>().NameField.text = LoadedProp.BP.Name;
+		PropPath = PropPath.Replace(LoadedProp.BP.Name, "");
+		NewButton.GetComponent<ResourceObject>().CustomTexts[2].text = PropPath;
+
+		NewButton.GetComponent<ResourceObject>().CustomTexts[0].text = LoadedProp.BP.ReclaimMassMax.ToString();
+		NewButton.GetComponent<ResourceObject>().CustomTexts[1].text = LoadedProp.BP.ReclaimEnergyMax.ToString();
 		//LoadedTextures.Add(LoadedTex );
 		LoadedPaths.Add (localpath);
+		LoadedProps.Add(LoadedProp);
 
 		if (localpath.ToLower () == SelectedObject.ToLower ()) {
 			NewButton.GetComponent<ResourceObject> ().Selected.SetActive (true);
@@ -302,6 +326,7 @@ public class ResourceBrowser : MonoBehaviour {
 
 		LoadedTextures = new List<Texture2D>();
 		LoadedPaths = new List<string>();
+		LoadedProps = new List<GetGamedataFile.PropObject>();
 	}
 
 	public void OnDropdownChanged(){

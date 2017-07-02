@@ -90,18 +90,24 @@ public static class Utils
 		Debug.Assert((bitCount <= 64) && ((bitOffset + bitCount) <= (8 * bytes.Length)));
 
 		ulong bits = 0;
-		var remainingBitCount = bitCount;
-		var byteIndex = bitOffset / 8;
-		var bitIndex = bitOffset - (8 * byteIndex);
+		uint remainingBitCount = bitCount;
+		uint byteIndex = bitOffset / 8;
+		uint bitIndex = bitOffset - (8 * byteIndex);
 
-		while(remainingBitCount > 0)
+		uint numBitsLeftInByte = 0;
+		uint numBitsReadNow = 0;
+		uint unmaskedBits = 0;
+		uint bitMask = 0;
+		uint bitsReadNow = 0;
+
+		while (remainingBitCount > 0)
 		{
 			// Read bits from the byte array.
-			var numBitsLeftInByte = 8 - bitIndex;
-			var numBitsReadNow = Math.Min(remainingBitCount, numBitsLeftInByte);
-			var unmaskedBits = (uint)bytes[byteIndex] >> (int)(8 - (bitIndex + numBitsReadNow));
-			var bitMask = 0xFFu >> (int)(8 - numBitsReadNow);
-			uint bitsReadNow = unmaskedBits & bitMask;
+			numBitsLeftInByte = 8 - bitIndex;
+			numBitsReadNow = Math.Min(remainingBitCount, numBitsLeftInByte);
+			unmaskedBits = (uint)bytes[byteIndex] >> (int)(8 - (bitIndex + numBitsReadNow));
+			bitMask = 0xFFu >> (int)(8 - numBitsReadNow);
+			bitsReadNow = unmaskedBits & bitMask;
 
 			// Store the bits we read.
 			bits <<= (int)numBitsReadNow;

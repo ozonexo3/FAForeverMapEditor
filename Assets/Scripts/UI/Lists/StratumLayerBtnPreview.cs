@@ -19,6 +19,17 @@ public class StratumLayerBtnPreview : MonoBehaviour {
 
 		LastParent = BtnPrev.transform.parent.gameObject;
 	}
+
+	public void Show(Texture2D Image, GameObject Parent, float offset = 26f)
+	{
+		Img.texture = Image;
+		gameObject.SetActive(true);
+
+		transform.localPosition = Vector3.right * transform.localPosition.x + Vector3.up * (transform.parent.InverseTransformPoint(Parent.transform.position).y - offset);
+
+		LastParent = Parent;
+
+	}
 	
 	// Update is called once per frame
 	public void Hide (GameObject Parent) {

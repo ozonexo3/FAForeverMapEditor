@@ -28,13 +28,14 @@ public partial class GetGamedataFile {
 			}
 
 			//Stream.ReadBytes(64);
+			int i = 0;
 
 			//Debug.Log(Header.BoneOffset);
 			Stream.BaseStream.Seek(64, SeekOrigin.Begin);
 
 			// Load BoneNames
 			BoneNames = new string[Header.wBoneCount];
-			for (int i = 0; i < Header.wBoneCount; i++)
+			for (i = 0; i < Header.wBoneCount; i++)
 			{
 				BoneNames[i] = Stream.ReadStringNull();
 			}
@@ -42,7 +43,7 @@ public partial class GetGamedataFile {
 			// Load Bones
 			Stream.BaseStream.Seek(Header.BoneOffset, SeekOrigin.Begin);
 			Bones = new Scm_Bone[Header.wBoneCount];
-			for(int i = 0; i < Bones.Length; i++)
+			for(i = 0; i < Bones.Length; i++)
 			{
 				Bones[i] = new Scm_Bone();
 				Bones[i].LoadFromStream(Stream);
@@ -52,7 +53,7 @@ public partial class GetGamedataFile {
 			Stream.BaseStream.Seek(Header.VertOffset, SeekOrigin.Begin);
 
 			Verts = new Scm_Vert[Header.VertCount];
-			for (int i = 0; i < Header.VertCount; i++)
+			for (i = 0; i < Header.VertCount; i++)
 			{
 				Verts[i] = new Scm_Vert();
 				Verts[i].LoadFromStream(Stream);
@@ -61,7 +62,7 @@ public partial class GetGamedataFile {
 			// Load Triangles
 			Stream.BaseStream.Seek(Header.IndexOffset, SeekOrigin.Begin);
 			Tris = new Scm_Tris[Header.IndexCount / 3];
-			for(int i = 0; i < Tris.Length; i++)
+			for(i = 0; i < Tris.Length; i++)
 			{
 				Tris[i] = new Scm_Tris();
 				Tris[i].LoadFromStream(Stream);
@@ -186,6 +187,11 @@ public partial class GetGamedataFile {
 		public int NewIndex;
 		public int OldInxed;
 
+		public Scm_Vert()
+		{
+			BoneIndex = new byte[4];
+		}
+
 		public void LoadFromStream(BinaryReader Stream)
 		{
 			Position = Stream.ReadVector3();
@@ -197,7 +203,7 @@ public partial class GetGamedataFile {
 			//Uv0.y = 1 - Uv0.y;
 			Uv1 = Stream.ReadVector2();
 			//Uv1.y = 1 - Uv1.y;
-			BoneIndex = new byte[4];
+			//BoneIndex = new byte[4];
 			BoneIndex[0] = Stream.ReadByte();
 			BoneIndex[1] = Stream.ReadByte();
 			BoneIndex[2] = Stream.ReadByte();
@@ -264,14 +270,13 @@ public partial class GetGamedataFile {
 	{
 		byte[] FinalMeshBytes = LoadBytes(scd, LocalPath);
 
-		if (FinalMeshBytes.Length == 0)
+		if (FinalMeshBytes == null || FinalMeshBytes.Length == 0)
 			return null; // File is empty
 
 		Mesh ToReturn = new Mesh();
 
 		// Create stream from bytes, to read it as binary file
-		Stream MemStream = new MemoryStream(FinalMeshBytes);
-		BinaryReader Stream = new BinaryReader(MemStream);
+		BinaryReader Stream = new BinaryReader(new MemoryStream(FinalMeshBytes));
 
 		Scm NewScmModel = new Scm();
 		NewScmModel.LoadFromStream(Stream);

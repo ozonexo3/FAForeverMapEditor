@@ -63,6 +63,8 @@ public partial class GetGamedataFile : MonoBehaviour {
 
 		public Mesh Mesh;
 		public Material Mat;
+		public Texture2D Albedo;
+		public Texture2D Normal;
 	}
 
 
@@ -217,7 +219,9 @@ public partial class GetGamedataFile : MonoBehaviour {
 			{
 				ToReturn.BP.LODs[i].AlbedoName = OffsetRelativePath(LocalPath, ToReturn.BP.LODs[i].AlbedoName, true);
 			}
-			ToReturn.BP.LODs[i].Mat.SetTexture("_MainTex", LoadTexture2DFromGamedata(scd, ToReturn.BP.LODs[i].AlbedoName, false));
+
+			ToReturn.BP.LODs[i].Albedo = LoadTexture2DFromGamedata(scd, ToReturn.BP.LODs[i].AlbedoName, false);
+			ToReturn.BP.LODs[i].Mat.SetTexture("_MainTex", ToReturn.BP.LODs[i].Albedo);
 
 
 			if (ToReturn.BP.LODs[i].NormalsName.Length == 0)
@@ -229,7 +233,8 @@ public partial class GetGamedataFile : MonoBehaviour {
 				ToReturn.BP.LODs[i].NormalsName = OffsetRelativePath(LocalPath, ToReturn.BP.LODs[i].NormalsName, true);
 			}
 
-			ToReturn.BP.LODs[i].Mat.SetTexture("_BumpMap", LoadTexture2DFromGamedata(scd, ToReturn.BP.LODs[i].NormalsName, false));
+			ToReturn.BP.LODs[i].Normal = LoadTexture2DFromGamedata(scd, ToReturn.BP.LODs[i].NormalsName, true);
+			ToReturn.BP.LODs[i].Mat.SetTexture("_BumpMap", ToReturn.BP.LODs[i].Normal);
 
 		}
 

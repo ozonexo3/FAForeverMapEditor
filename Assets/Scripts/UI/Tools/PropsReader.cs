@@ -5,29 +5,56 @@ using System.Collections.Generic;
 
 public class PropsReader : MonoBehaviour {
 
+	public static PropsReader Current;
+
 	public static List<PropTypeGroup> AllPropsTypes;
 	public	Transform	Pivot;
 	public	GameObject	PropGroupObject;
 	public	Text		TotalMass;
 	public	Text		TotalEnergy;
+	public	Text		TotalTime;
 
 	public class PropTypeGroup{
 		public		string 		Blueprint = "";
 		public string LoadBlueprint = "";
 		public		string		HelpText = "";
-		public		float 		MassReclaim = 0;
-		public		float 		EnergyReclaim = 0;
 		public		List<Prop> 	Props = new List<Prop>();
 		public		GetGamedataFile.PropObject PropObject;
-		public	List<GameObject> PropsInstances = new List<GameObject>();
+		public		List<GameObject> PropsInstances = new List<GameObject>();
 	}
 
-	public static void LoadProps(ScmapEditor HeightmapControler){
+	void Awake()
+	{
+		Current = this;
+	}
+
+	#region Loading Assets
+	public void UnloadProps()
+	{
+		if(AllPropsTypes != null && AllPropsTypes.Count > 0)
+		for (int i = 0; i < AllPropsTypes.Count; i++)
+		{
+			for (int p = 0; p < AllPropsTypes[i].PropsInstances.Count; p++)
+			{
+				Destroy(AllPropsTypes[i].PropsInstances[p]);
+			}
+		}
 
 		AllPropsTypes = new List<PropTypeGroup>();
-		List<Prop> Props = HeightmapControler.map.Props;
+		TotalMassCount = 0;
+		TotalEnergyCount = 0;
+		TotalReclaimTime = 0;
+	}
 
-		Debug.Log("Found props: " + Props.Count);
+	public IEnumerator LoadProps(){
+		UnloadProps();
+
+		List<Prop> Props = ScmapEditor.Current.map.Props;
+
+		//Debug.Log("Found props: " + Props.Count);
+
+		const int YieldStep = 100;
+		int LoadCounter = YieldStep;
 
 		for (int i = 0; i < Props.Count; i++)
 		{
@@ -59,27 +86,38 @@ public class PropsReader : MonoBehaviour {
 					AllPropsTypes[GroupId].LoadBlueprint = AllPropsTypes[GroupId].LoadBlueprint.Remove(0, 1);
 
 				AllPropsTypes[GroupId].PropObject = GetGamedataFile.LoadProp("env.scd", AllPropsTypes[GroupId].LoadBlueprint);
-
+				LoadCounter = YieldStep;
+				yield return null;
 			}
 
-			Quaternion PropRotation = Quaternion.LookRotation(Props[i].RotationZ, Props[i].RotationY);
-
-			GameObject NewPropGameobject = AllPropsTypes[GroupId].PropObject.CreatePropGameObject(ScmapEditor.MapPosInWorld(Props[i].Position), PropRotation);
+			//TODO store props as instances
+			GameObject NewPropGameobject = AllPropsTypes[GroupId].PropObject.CreatePropGameObject(ScmapEditor.MapPosInWorld(Props[i].Position), Quaternion.LookRotation(Props[i].RotationZ, Props[i].RotationY));
 			AllPropsTypes[GroupId].PropsInstances.Add(NewPropGameobject);
+			LoadCounter--;
+			if(LoadCounter <= 0)
+			{
+				LoadCounter = YieldStep;
+				yield return null;
+			}
 
 			AllPropsTypes[GroupId].Props.Add(Props[i]);
+
+
+			TotalMassCount += AllPropsTypes[GroupId].PropObject.BP.ReclaimMassMax;
+			TotalEnergyCount += AllPropsTypes[GroupId].PropObject.BP.ReclaimEnergyMax;
+			TotalReclaimTime += AllPropsTypes[GroupId].PropObject.BP.ReclaimTime;
+
+			TotalMass.text = TotalMassCount.ToString();
+			TotalEnergy.text = TotalEnergyCount.ToString();
+			TotalTime.text = TotalReclaimTime.ToString();
 		}
 
-		Debug.Log("Props types: " + AllPropsTypes.Count);
+		yield return null;
+
+		//Debug.Log("Props types: " + AllPropsTypes.Count);
 	}
 
-	public void Clean(){
-		if(Pivot.childCount > 0){
-			foreach(Transform child in Pivot) Destroy(child.gameObject);
-		}
-		TotalMassCount = 0;
-		TotalEnergyCount = 0;
-	}
+	#endregion
 
 	void OnDisable(){
 		Clean();
@@ -88,6 +126,10 @@ public class PropsReader : MonoBehaviour {
 	string ParseString;
 	float TotalMassCount;
 	float TotalEnergyCount;
+	float TotalReclaimTime;
+
+	#region Current Reclaims
+
 	public void CalculateReclaim(){
 		Clean();
 
@@ -97,48 +139,100 @@ public class PropsReader : MonoBehaviour {
 		}
 
 		for(int i = 0; i < AllPropsTypes.Count; i++){
-			//if(i > 0) return;
-			string[] BlueprintData = GamedataBlueprints.GetBlueprint("env.scd", AllPropsTypes[i].Blueprint);
-			if (BlueprintData == null)
-				continue;
-			if(BlueprintData.Length > 0){
-				for(int l = 0; l < BlueprintData.Length; l++){
-					if(BlueprintData[l].Contains("ReclaimMassMax")){
-						ParseString = BlueprintData[l].Replace(" ", "").Replace("ReclaimMassMax", "").Replace("'", "").Replace("=", "").Replace(",", "").Replace("\n", "");
-						//Debug.Log(ParseString);
-						if(string.IsNullOrEmpty(ParseString)) AllPropsTypes[i].MassReclaim = 0;
-						else AllPropsTypes[i].MassReclaim = float.Parse(ParseString, System.Globalization.CultureInfo.InvariantCulture.NumberFormat);
-					}
-					else if(BlueprintData[l].Contains("ReclaimEnergyMax")){
-						ParseString = BlueprintData[l].Replace(" ", "").Replace("ReclaimEnergyMax", "").Replace("'", "").Replace("=", "").Replace(",", "").Replace("\n", "");
-						//Debug.Log(ParseString);
-						if(string.IsNullOrEmpty(ParseString)) AllPropsTypes[i].EnergyReclaim = 0;
-						else AllPropsTypes[i].EnergyReclaim = float.Parse(ParseString, System.Globalization.CultureInfo.InvariantCulture.NumberFormat);
-					}
-					else if(BlueprintData[l].Contains("HelpText")){
-						ParseString = BlueprintData[l].Replace(" ", "").Replace("HelpText", "").Replace("=", "").Replace("'", "").Replace(",", "").Replace("\n", "");
-						//Debug.Log(ParseString);
-						AllPropsTypes[i].HelpText = ParseString;
-					}
-				}
-				//Debug.Log(BlueprintData.Length + ", " + AllPropsTypes[i].HelpText + ", " + AllPropsTypes[i].MassReclaim + ", " + AllPropsTypes[i].EnergyReclaim );
 
-				GameObject NewListObject = Instantiate(PropGroupObject) as GameObject;
-				NewListObject.transform.SetParent(Pivot, false);
-				NewListObject.transform.localScale = Vector3.one;
-				NewListObject.GetComponent<PropData>().SetPropList(i, AllPropsTypes[i].HelpText, AllPropsTypes[i].MassReclaim, AllPropsTypes[i].EnergyReclaim, AllPropsTypes[i].Props.Count, AllPropsTypes[i].Blueprint);
-				TotalMassCount += AllPropsTypes[i].Props.Count * AllPropsTypes[i].MassReclaim;
-				TotalEnergyCount += AllPropsTypes[i].Props.Count * AllPropsTypes[i].EnergyReclaim;
-			}
-			else{
-				AllPropsTypes[i].HelpText = "Warning: Can't find prop in env.scd";
-			}
+			GameObject NewListObject = Instantiate(PropGroupObject) as GameObject;
+			NewListObject.transform.SetParent(Pivot, false);
+			NewListObject.transform.localScale = Vector3.one;
+			NewListObject.GetComponent<PropData>().SetPropList(i, AllPropsTypes[i].HelpText, AllPropsTypes[i].PropObject.BP.ReclaimMassMax, AllPropsTypes[i].PropObject.BP.ReclaimEnergyMax, AllPropsTypes[i].Props.Count, AllPropsTypes[i].Blueprint);
+			TotalMassCount += AllPropsTypes[i].Props.Count * AllPropsTypes[i].PropObject.BP.ReclaimMassMax;
+			TotalEnergyCount += AllPropsTypes[i].Props.Count * AllPropsTypes[i].PropObject.BP.ReclaimEnergyMax;
+			TotalReclaimTime += AllPropsTypes[i].Props.Count * AllPropsTypes[i].PropObject.BP.ReclaimTime;
 
 			TotalMass.text = TotalMassCount.ToString();
 			TotalEnergy.text = TotalEnergyCount.ToString();
+			TotalTime.text = TotalReclaimTime.ToString();
+		}
+	}
 
+	public void Clean()
+	{
+		if (Pivot.childCount > 0)
+		{
+			foreach (Transform child in Pivot) Destroy(child.gameObject);
+		}
+		CleanPaintList();
+
+		TotalMassCount = 0;
+		TotalEnergyCount = 0;
+		TotalReclaimTime = 0;
+		PaintPropObjects = new List<GetGamedataFile.PropObject>();
+	}
+
+	public void CleanPaintList()
+	{
+		if (PaintPropPivot.childCount > 0)
+		{
+			foreach (Transform child in PaintPropPivot) Destroy(child.gameObject);
+		}
+	}
+
+	#endregion
+
+	#region UI
+	List<GetGamedataFile.PropObject> PaintPropObjects = new List<GetGamedataFile.PropObject>();
+
+	public GameObject PaintPropListObject;
+	public Transform PaintPropPivot;
+	public StratumLayerBtnPreview Preview;
+
+	public void OpenResorceBrowser()
+	{
+		ResourceBrowser.Current.LoadPropBlueprint();
+	}
+
+	public void DropProp()
+	{
+		if (!ResourceBrowser.Current.gameObject.activeSelf && ResourceBrowser.DragedObject)
+			return;
+		if (ResourceBrowser.SelectedCategory == 3)
+		{
+			//Undo.RegisterStratumChange(Selected);
+
+			if (!PaintPropObjects.Contains(ResourceBrowser.Current.LoadedProps[ResourceBrowser.DragedObject.InstanceId]))
+			{
+				Debug.Log(ResourceBrowser.Current.LoadedPaths[ResourceBrowser.DragedObject.InstanceId]);
+
+				PaintPropObjects.Add(ResourceBrowser.Current.LoadedProps[ResourceBrowser.DragedObject.InstanceId]);
+
+				GameObject NewPropListObject = Instantiate(PaintPropListObject, PaintPropPivot) as GameObject;
+				NewPropListObject.GetComponent<PropData>().SetPropPaint(PaintPropObjects.Count - 1, ResourceBrowser.Current.LoadedProps[ResourceBrowser.DragedObject.InstanceId].BP.Name);
+			}
+
+			//Map.Textures[Selected].Albedo = ResourceBrowser.Current.LoadedTextures[ResourceBrowser.DragedObject.InstanceId];
+			//Map.Textures[Selected].AlbedoPath = ResourceBrowser.Current.LoadedPaths[ResourceBrowser.DragedObject.InstanceId];
+		}
+	}
+
+	public void RemoveProp(int ID)
+	{
+		CleanPaintList();
+		Preview.Hide(PaintPropPivot.GetChild(ID).gameObject);
+		PaintPropObjects.RemoveAt(ID);
+
+		for(int i = 0; i < PaintPropObjects.Count; i++)
+		{
+			GameObject NewPropListObject = Instantiate(PaintPropListObject, PaintPropPivot) as GameObject;
+			NewPropListObject.GetComponent<PropData>().SetPropPaint(PaintPropObjects.Count - 1, PaintPropObjects[i].BP.Name);
 
 		}
-
 	}
+
+	public void ShowPreview(int ID, GameObject Parent)
+	{
+		Preview.Show(PaintPropObjects[ID].BP.LODs[0].Albedo, Parent, 14f);
+	}
+
+
+	#endregion
+
 }

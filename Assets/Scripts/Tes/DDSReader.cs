@@ -172,6 +172,10 @@ namespace DDS
 			}
 		}
 
+		static Color32[] Dxt1Colors = new Color32[16];
+		static uint[] Dxt1colorIndices = new uint[16];
+		static byte[] Dxt1colorIndexBytes = new byte[4];
+
 		/// <summary>
 		/// Decodes a DXT1-compressed 4x4 block of texels using a prebuilt 4-color color table.
 		/// </summary>
@@ -181,36 +185,42 @@ namespace DDS
 			Debug.Assert(colorTable.Length == 4);
 
 			// Read pixel color indices.
-			var colorIndices = new uint[16];
+			//uint[] colorIndices = new uint[16];
 
-			var colorIndexBytes = new byte[4];
-			reader.Read(colorIndexBytes, 0, colorIndexBytes.Length);
+			//byte[] colorIndexBytes = new byte[4];
+			reader.Read(Dxt1colorIndexBytes, 0, Dxt1colorIndexBytes.Length);
 
 			const uint bitsPerColorIndex = 2;
 
-			for(uint rowIndex = 0; rowIndex < 4; rowIndex++)
-			{
-				var rowBaseColorIndexIndex = 4 * rowIndex;
-				var rowBaseBitOffset = 8 * rowIndex;
+			uint rowIndex = 0;
+			uint columnIndex = 0;
+			uint rowBaseColorIndexIndex = 0;
+			uint rowBaseBitOffset = 0;
+			uint bitOffset = 0;
 
-				for(uint columnIndex = 0; columnIndex < 4; columnIndex++)
+			for (rowIndex = 0; rowIndex < 4; rowIndex++)
+			{
+				rowBaseColorIndexIndex = 4 * rowIndex;
+				rowBaseBitOffset = 8 * rowIndex;
+
+				for(columnIndex = 0; columnIndex < 4; columnIndex++)
 				{
 					// Color indices are arranged from right to left.
-					var bitOffset = rowBaseBitOffset + (bitsPerColorIndex * (3 - columnIndex));
+					bitOffset = rowBaseBitOffset + (bitsPerColorIndex * (3 - columnIndex));
 
-					colorIndices[rowBaseColorIndexIndex + columnIndex] = (uint)Utils.GetBits(bitOffset, bitsPerColorIndex, colorIndexBytes);
+					Dxt1colorIndices[rowBaseColorIndexIndex + columnIndex] = (uint)Utils.GetBits(bitOffset, bitsPerColorIndex, Dxt1colorIndexBytes);
 				}
 			}
 
 			// Calculate pixel colors.
-			var colors = new Color32[16];
+			//var colors = new Color32[16];
 
-			for(int i = 0; i < 16; i++)
+			for(rowIndex = 0; rowIndex < 16; rowIndex++)
 			{
-				colors[i] = colorTable[colorIndices[i]];
+				Dxt1Colors[rowIndex] = colorTable[Dxt1colorIndices[rowIndex]];
 			}
 
-			return colors;
+			return Dxt1Colors;
 		}
 
 		/// <summary>
@@ -239,6 +249,10 @@ namespace DDS
 			return DecodeDXT1TexelBlock(reader, colorTable);
 		}
 
+		static Color[] Dxt3_colorTable = new Color[4];
+		static byte[] Dxt3_Alphas = new byte[16];
+		static byte[] Dxt3_compressedAlphas = new byte[16];
+
 		/// <summary>
 		/// Decodes a DXT3-compressed 4x4 block of texels.
 		/// </summary>
@@ -246,41 +260,45 @@ namespace DDS
 		private static Color32[] DecodeDXT3TexelBlock(UnityBinaryReader reader)
 		{
 			// Read compressed pixel alphas.
-			var compressedAlphas = new byte[16];
+			//var compressedAlphas = new byte[16];
+			int rowIndex = 0;
+			int columnIndex = 0;
+			ushort compressedAlphaRow = 0;
 
-			for(int rowIndex = 0; rowIndex < 4; rowIndex++)
+			for (rowIndex = 0; rowIndex < 4; rowIndex++)
 			{
-				var compressedAlphaRow = reader.ReadLEUInt16();
+				compressedAlphaRow = reader.ReadLEUInt16();
 
-				for(int columnIndex = 0; columnIndex < 4; columnIndex++)
+				for(columnIndex = 0; columnIndex < 4; columnIndex++)
 				{
 					// Each compressed alpha is 4 bits.
-					compressedAlphas[(4 * rowIndex) + columnIndex] = (byte)((compressedAlphaRow >> (columnIndex * 4)) & 0xF);
+					Dxt3_compressedAlphas[(4 * rowIndex) + columnIndex] = (byte)((compressedAlphaRow >> (columnIndex * 4)) & 0xF);
 				}
 			}
 
 			// Calculate pixel alphas.
-			var alphas = new byte[16];
-
-			for(int i = 0; i < 16; i++)
+			//var Dxt3_Alphas = new byte[16];
+			int i = 0;
+			for(i = 0; i < 16; i++)
 			{
-				var alphaPercent = (float)compressedAlphas[i] / 15;
-				alphas[i] = (byte)Mathf.RoundToInt(alphaPercent * 255);
+				Dxt3_Alphas[i] = (byte)Mathf.RoundToInt(
+					((float)Dxt3_compressedAlphas[i] / 15)
+					* 255);
 			}
 
 			// Create the color table.
-			var colorTable = new Color[4];
-			colorTable[0] = ColorUtils.R5G6B5ToColor(reader.ReadLEUInt16());
-			colorTable[1] = ColorUtils.R5G6B5ToColor(reader.ReadLEUInt16());
-			colorTable[2] = Color.Lerp(colorTable[0], colorTable[1], 1.0f / 3);
-			colorTable[3] = Color.Lerp(colorTable[0], colorTable[1], 2.0f / 3);
+			//var colorTable = new Color[4];
+			Dxt3_colorTable[0] = ColorUtils.R5G6B5ToColor(reader.ReadLEUInt16());
+			Dxt3_colorTable[1] = ColorUtils.R5G6B5ToColor(reader.ReadLEUInt16());
+			Dxt3_colorTable[2] = Color.Lerp(Dxt3_colorTable[0], Dxt3_colorTable[1], 1.0f / 3);
+			Dxt3_colorTable[3] = Color.Lerp(Dxt3_colorTable[0], Dxt3_colorTable[1], 2.0f / 3);
 
 			// Calculate pixel colors.
-			var colors = DecodeDXT1TexelBlock(reader, colorTable);
+			Color32[] colors = DecodeDXT1TexelBlock(reader, Dxt3_colorTable);
 
-			for(int i = 0; i < 16; i++)
+			for(i = 0; i < 16; i++)
 			{
-				colors[i].a = alphas[i];
+				colors[i].a = Dxt3_Alphas[i];
 			}
 
 			return colors;
