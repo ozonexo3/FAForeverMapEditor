@@ -504,7 +504,7 @@ public class StratumInfo : MonoBehaviour {
 
 		size = (int)BrushSizeSlider.value;
 		ScatterValue = float.Parse (Scatter.text);
-		if (ScatterValue < 0)
+		/*if (ScatterValue < 0)
 			ScatterValue = 0;
 		else if (ScatterValue > 50)
 			ScatterValue = 50;
@@ -513,9 +513,9 @@ public class StratumInfo : MonoBehaviour {
 
 		if (ScatterValue > 0) {
 			BrushPos += (Quaternion.Euler (Vector3.up * Random.Range (0, 360)) * Vector3.forward) * Mathf.Lerp(ScatterValue, 0, Mathf.Pow(Random.Range(0f, 1f), 2));
-		}
+		}*/
 
-		BrushGenerator.GenerateSymmetry(BrushPos);
+		BrushGenerator.GenerateSymmetry(BrushPos, 0, ScatterValue, BrushSizeSlider.value * 0.03f);
 
 		if (Selected == 1 || Selected == 5)
 			PaintChannel = 0;
@@ -528,7 +528,6 @@ public class StratumInfo : MonoBehaviour {
 
 		for(int i = 0; i < BrushGenerator.PaintPositions.Length; i++){
 			Paint(BrushGenerator.PaintPositions[i], i);
-
 		}
 
 		if (Selected > 0 && Selected < 5) {

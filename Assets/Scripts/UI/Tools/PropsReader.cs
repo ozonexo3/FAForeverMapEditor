@@ -2,10 +2,14 @@
 using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
+using EditMap;
 
 public class PropsReader : MonoBehaviour {
 
 	public static PropsReader Current;
+
+	public Editing Edit;
+
 
 	public static List<PropTypeGroup> AllPropsTypes;
 	public	Transform	Pivot;
@@ -13,6 +17,23 @@ public class PropsReader : MonoBehaviour {
 	public	Text		TotalMass;
 	public	Text		TotalEnergy;
 	public	Text		TotalTime;
+	public GameObject[]	Tabs;
+	public GameObject[]	TabSelected;
+
+	[Header("Brush")]
+	public Slider BrushSizeSlider;
+	public InputField BrushSize;
+	public Slider BrushStrengthSlider;
+	public InputField BrushStrength;
+	public InputField BrushMini;
+	public InputField BrushMax;
+	public InputField Scatter;
+	public LayerMask TerrainMask;
+	public Material TerrainMaterial;
+
+
+	[Header("State")]
+	public bool Invert;
 
 	public class PropTypeGroup{
 		public		string 		Blueprint = "";
@@ -23,9 +44,39 @@ public class PropsReader : MonoBehaviour {
 		public		List<GameObject> PropsInstances = new List<GameObject>();
 	}
 
+	float TotalMassCount = 0;
+	float TotalEnergyCount = 0;
+	float TotalReclaimTime = 0;
+
 	void Awake()
 	{
 		Current = this;
+		ShowTab(0);
+	}
+
+	const int SelectedFalloff = 0;
+
+	void OnEnable()
+	{
+		BrushGenerator.LoadBrushesh();
+		BrushGenerator.Brushes[SelectedFalloff].wrapMode = TextureWrapMode.Clamp;
+		BrushGenerator.Brushes[SelectedFalloff].mipMapBias = -1f;
+		TerrainMaterial.SetTexture("_BrushTex", (Texture)BrushGenerator.Brushes[SelectedFalloff]);
+		AllowBrushUpdate = true;
+	}
+
+	void OnDisable()
+	{
+		CleanSettingsList();
+		TerrainMaterial.SetFloat("_BrushSize", 0);
+	}
+
+	void Update()
+	{
+		if (Tabs[0].activeSelf && AllowBrushUpdate)
+		{
+			BrushUpdate();
+		}
 	}
 
 	#region Loading Assets
@@ -119,21 +170,13 @@ public class PropsReader : MonoBehaviour {
 
 	#endregion
 
-	void OnDisable(){
-		Clean();
-	}
-
-	string ParseString;
-	float TotalMassCount;
-	float TotalEnergyCount;
-	float TotalReclaimTime;
 
 	#region Current Reclaims
 
-	public void CalculateReclaim(){
-		Clean();
+	public void ShowReclaimGroups(){
+		CleanSettingsList();
 
-		if(AllPropsTypes.Count == 0){
+		if (AllPropsTypes.Count == 0){
 			Debug.LogWarning("Props count is 0");
 			return;
 		}
@@ -143,23 +186,22 @@ public class PropsReader : MonoBehaviour {
 			GameObject NewListObject = Instantiate(PropGroupObject) as GameObject;
 			NewListObject.transform.SetParent(Pivot, false);
 			NewListObject.transform.localScale = Vector3.one;
-			NewListObject.GetComponent<PropData>().SetPropList(i, AllPropsTypes[i].HelpText, AllPropsTypes[i].PropObject.BP.ReclaimMassMax, AllPropsTypes[i].PropObject.BP.ReclaimEnergyMax, AllPropsTypes[i].Props.Count, AllPropsTypes[i].Blueprint);
+			NewListObject.GetComponent<PropData>().SetPropList(i, AllPropsTypes[i].PropObject.BP.Name, AllPropsTypes[i].PropObject.BP.ReclaimMassMax, AllPropsTypes[i].PropObject.BP.ReclaimEnergyMax, AllPropsTypes[i].Props.Count, AllPropsTypes[i].Blueprint);
+
+			/*
 			TotalMassCount += AllPropsTypes[i].Props.Count * AllPropsTypes[i].PropObject.BP.ReclaimMassMax;
 			TotalEnergyCount += AllPropsTypes[i].Props.Count * AllPropsTypes[i].PropObject.BP.ReclaimEnergyMax;
 			TotalReclaimTime += AllPropsTypes[i].Props.Count * AllPropsTypes[i].PropObject.BP.ReclaimTime;
 
 			TotalMass.text = TotalMassCount.ToString();
 			TotalEnergy.text = TotalEnergyCount.ToString();
-			TotalTime.text = TotalReclaimTime.ToString();
+			TotalTime.text = TotalReclaimTime.ToString();*/
 		}
 	}
 
 	public void Clean()
 	{
-		if (Pivot.childCount > 0)
-		{
-			foreach (Transform child in Pivot) Destroy(child.gameObject);
-		}
+		CleanSettingsList();
 		CleanPaintList();
 
 		TotalMassCount = 0;
@@ -173,6 +215,14 @@ public class PropsReader : MonoBehaviour {
 		if (PaintPropPivot.childCount > 0)
 		{
 			foreach (Transform child in PaintPropPivot) Destroy(child.gameObject);
+		}
+	}
+
+	public void CleanSettingsList()
+	{
+		if (Pivot.childCount > 0)
+		{
+			foreach (Transform child in Pivot) Destroy(child.gameObject);
 		}
 	}
 
@@ -200,7 +250,7 @@ public class PropsReader : MonoBehaviour {
 
 			if (!PaintPropObjects.Contains(ResourceBrowser.Current.LoadedProps[ResourceBrowser.DragedObject.InstanceId]))
 			{
-				Debug.Log(ResourceBrowser.Current.LoadedPaths[ResourceBrowser.DragedObject.InstanceId]);
+				//Debug.Log(ResourceBrowser.Current.LoadedPaths[ResourceBrowser.DragedObject.InstanceId]);
 
 				PaintPropObjects.Add(ResourceBrowser.Current.LoadedProps[ResourceBrowser.DragedObject.InstanceId]);
 
@@ -222,7 +272,7 @@ public class PropsReader : MonoBehaviour {
 		for(int i = 0; i < PaintPropObjects.Count; i++)
 		{
 			GameObject NewPropListObject = Instantiate(PaintPropListObject, PaintPropPivot) as GameObject;
-			NewPropListObject.GetComponent<PropData>().SetPropPaint(PaintPropObjects.Count - 1, PaintPropObjects[i].BP.Name);
+			NewPropListObject.GetComponent<PropData>().SetPropPaint(i, PaintPropObjects[i].BP.Name);
 
 		}
 	}
@@ -232,7 +282,183 @@ public class PropsReader : MonoBehaviour {
 		Preview.Show(PaintPropObjects[ID].BP.LODs[0].Albedo, Parent, 14f);
 	}
 
+	public void ShowTab(int id)
+	{
+		for(int i = 0; i < Tabs.Length; i++)
+		{
+			Tabs[i].SetActive(i == id);
+			TabSelected[i].SetActive(i == id);
+		}
+
+
+		if (id == 1)
+			ShowReclaimGroups();
+	}
+
+	public void UpdateBrushMenu(bool Slider)
+	{
+
+
+	}
+
 
 	#endregion
 
+	#region Brush Update
+	Vector3 BrushPos;
+	Vector3 MouseBeginClick;
+	Vector3 BeginMousePos;
+	bool PropsChanged = false;
+	public bool AllowBrushUpdate = false;
+	float StrengthBeginValue;
+	bool ChangingStrength;
+	float SizeBeginValue;
+	bool ChangingSize;
+
+	void BrushUpdate()
+	{
+		Invert = Input.GetKey(KeyCode.LeftAlt);
+
+		if (Edit.MauseOnGameplay || ChangingStrength || ChangingSize)
+		{
+			if (!ChangingSize && (Input.GetKey(KeyCode.M) || ChangingStrength))
+			{
+				// Change Strength
+				if (Input.GetMouseButtonDown(0))
+				{
+					ChangingStrength = true;
+					BeginMousePos = Input.mousePosition;
+					StrengthBeginValue = BrushStrengthSlider.value;
+				}
+				else if (Input.GetMouseButtonUp(0))
+				{
+					ChangingStrength = false;
+				}
+				if (ChangingStrength)
+				{
+					BrushStrengthSlider.value = Mathf.Clamp(StrengthBeginValue - (int)((BeginMousePos.x - Input.mousePosition.x) * 0.1f), 0, 100);
+					UpdateBrushMenu(true);
+
+				}
+			}
+			else if (Input.GetKey(KeyCode.B) || ChangingSize)
+			{
+				// Change Size
+				if (Input.GetMouseButtonDown(0))
+				{
+					ChangingSize = true;
+					BeginMousePos = Input.mousePosition;
+					SizeBeginValue = BrushSizeSlider.value;
+				}
+				else if (Input.GetMouseButtonUp(0))
+				{
+					ChangingSize = false;
+				}
+				if (ChangingSize)
+				{
+					BrushSizeSlider.value = Mathf.Clamp(SizeBeginValue - (int)((BeginMousePos.x - Input.mousePosition.x) * 0.4f), 1, 256);
+					UpdateBrushMenu(true);
+					UpdateBrushPosition(true);
+
+				}
+			}
+			else
+			{
+				if (Input.GetMouseButtonDown(0))
+				{
+					BrushGenerator.UpdateSymmetryType();
+
+					if (CameraControler.Current.DragStartedGameplay && UpdateBrushPosition(true))
+					{
+						SymmetryPaint();
+					}
+				}
+				else if (Input.GetMouseButton(0))
+				{
+					if (CameraControler.Current.DragStartedGameplay && UpdateBrushPosition(false))
+					{
+						SymmetryPaint();
+					}
+				}
+				else
+				{
+					UpdateBrushPosition(true);
+				}
+			}
+		}
+	}
+
+	bool UpdateBrushPosition(bool Forced = false)
+	{
+		//Debug.Log(Vector3.Distance(MouseBeginClick, Input.mousePosition));
+		if (Forced || Vector3.Distance(MouseBeginClick, Input.mousePosition) > 1) { }
+		else
+		{
+			return false;
+		}
+
+
+		MouseBeginClick = Input.mousePosition;
+		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+		RaycastHit hit;
+		if (Physics.Raycast(ray, out hit, 2000, TerrainMask))
+		{
+			BrushPos = hit.point;
+			BrushPos.y = ScmapEditor.Current.Teren.SampleHeight(BrushPos);
+
+			Vector3 tempCoord = ScmapEditor.Current.Teren.gameObject.transform.InverseTransformPoint(BrushPos);
+			Vector3 coord = Vector3.zero;
+			coord.x = (tempCoord.x - (int)BrushSizeSlider.value * MapLuaParser.Current.ScenarioData.Size.x * 0.0001f) / ScmapEditor.Current.Teren.terrainData.size.x; // TODO 0.05 ?? this should be terrain proportion?
+																																					  //coord.y = tempCoord.y / Map.Teren.terrainData.size.y;
+			coord.z = (tempCoord.z - (int)BrushSizeSlider.value * MapLuaParser.Current.ScenarioData.Size.y * 0.0001f) / ScmapEditor.Current.Teren.terrainData.size.z;
+
+			TerrainMaterial.SetFloat("_BrushSize", BrushSizeSlider.value);
+			TerrainMaterial.SetFloat("_BrushUvX", coord.x);
+			TerrainMaterial.SetFloat("_BrushUvY", coord.z);
+
+			return true;
+		}
+		return false;
+	}
+
+	#endregion
+
+	#region Painting
+	float size = 0;
+	int RandomProp = 0;
+	public void SymmetryPaint()
+	{
+		int Count = PaintPropObjects.Count;
+
+		if (Count <= 0)
+			return;
+		if (Random.Range(0, 100) > BrushStrengthSlider.value)
+			return;
+
+		size = BrushSizeSlider.value * 0.03f;
+		BrushGenerator.GenerateSymmetry(BrushPos, size, float.Parse(Scatter.text), size);
+		BrushGenerator.GenerateRotationSymmetry(Quaternion.Euler(Vector3.up * Random.Range(0, 360)));
+
+		RandomProp = Random.Range(0, Count);
+
+		for (int i = 0; i < BrushGenerator.PaintPositions.Length; i++)
+		{
+			if (Invert)
+			{ }
+			else
+				Paint(BrushGenerator.PaintPositions[i], BrushGenerator.PaintRotations[i]);
+		}
+	}
+
+	void Paint(Vector3 AtPosition, Quaternion Rotation)
+	{
+
+		AtPosition.y = ScmapEditor.Current.Teren.SampleHeight(AtPosition);
+
+		PaintPropObjects[RandomProp].CreatePropGameObject(AtPosition, Rotation);
+
+
+	}
+
+	#endregion
 }

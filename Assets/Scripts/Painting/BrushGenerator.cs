@@ -17,6 +17,7 @@ public class BrushGenerator : MonoBehaviour {
 	public static 		Texture2D 			RotatedBrush;
 	public static 		Texture2D[] 		PaintImage;
 	public static 		Vector3[]			PaintPositions;
+	public static		Quaternion[]		PaintRotations;
 	static 				Vector3 			BrushPos;
 	public static 		int 				LastSym = 0;
 
@@ -27,7 +28,10 @@ public class BrushGenerator : MonoBehaviour {
 	/// Loads all brush textures from structure brush folder
 	/// </summary>
 	public static void LoadBrushesh(){
-		
+
+		if (!(Brushes == null || Brushes.Count == 0))
+			return;
+
 		string StructurePath = MapLuaParser.StructurePath + "brush";
 
 		if(!Directory.Exists(StructurePath)){
@@ -55,8 +59,25 @@ public class BrushGenerator : MonoBehaviour {
 
 	#region Symmetry
 	// Generate positions - need to be done before paint
-	public static void GenerateSymmetry(Vector3 Pos){
+	public static void GenerateSymmetry(Vector3 Pos, float Size = 0, float Scatter = 0, float ScatterSize = 0){
 		BrushPos = Pos;
+
+		if(Scatter > 0)
+		{
+			if (Scatter > 50)
+				Scatter = 50;
+
+			Scatter *= ScatterSize;
+			BrushPos += (Quaternion.Euler(Vector3.up * Random.Range(0, 360)) * Vector3.forward) * Mathf.Lerp(Scatter, 0, Mathf.Pow(Random.Range(0f, 1f), 2));
+		}
+
+		if (Size > 0) {
+			BrushPos += (Quaternion.Euler(Vector3.up * Random.Range(0, 360)) * Vector3.forward * 
+				(Size * Mathf.Lerp(1, 0, Mathf.Pow(Random.Range(0f, 1f), 2f))) 
+				);
+
+		}
+
 		switch(LastSym){
 		case 1:
 			PaintPositions = new Vector3[2];
@@ -111,6 +132,72 @@ public class BrushGenerator : MonoBehaviour {
 			PaintPositions[0] = BrushPos;
 			break;
 		}
+	}
+
+	public static void GenerateRotationSymmetry(Quaternion Rotation)
+	{
+		switch (LastSym)
+		{
+			case 1:
+				PaintRotations = new Quaternion[2];
+				PaintRotations[0] = Rotation;
+				PaintRotations[1] = Rotation;  //GetHorizonalSymetry();
+				break;
+			case 2:
+				PaintRotations = new Quaternion[2];
+				PaintRotations[0] = Rotation;
+				PaintRotations[1] = Quaternion.Euler(Vector3.up * 180) * Rotation;  //GetVerticalSymetry();
+				break;
+			case 3:
+				PaintRotations = new Quaternion[2];
+				PaintRotations[0] = Rotation;
+				PaintRotations[1] = Quaternion.Euler(Vector3.up * 180) * Rotation;  //GetHorizontalVerticalSymetry();
+				break;
+			case 4:
+				PaintRotations = new Quaternion[4];
+				PaintRotations[0] = Rotation;
+				PaintRotations[1] = Quaternion.Euler(Vector3.up * 180) * Rotation;  //GetHorizonalSymetry();
+				PaintRotations[2] = Quaternion.Euler(Vector3.up * 180) * Rotation;  //GetVerticalSymetry();
+				PaintRotations[3] = Rotation;  //GetHorizontalVerticalSymetry();
+				break;
+			case 5:
+				PaintRotations = new Quaternion[2];
+				PaintRotations[0] = Rotation;
+				PaintRotations[1] = Quaternion.Euler(Vector3.up * 180) * Rotation;  //GetDiagonal1Symetry();
+				break;
+			case 6:
+				PaintRotations = new Quaternion[2];
+				PaintRotations[0] = Rotation;
+				PaintRotations[1] = Quaternion.Euler(Vector3.up * 180) * Rotation;  //GetDiagonal2Symetry();
+				break;
+			case 7:
+				PaintRotations = new Quaternion[4];
+				PaintRotations[0] = Rotation;
+				PaintRotations[1] = Quaternion.Euler(Vector3.up * 180) * Rotation;  //GetDiagonal1Symetry();
+				PaintRotations[2] = Quaternion.Euler(Vector3.up * 180) * Rotation;  //GetDiagonal2Symetry();
+				PaintRotations[3] = Rotation;  //GetDiagonal3Symetry();
+				break;
+			case 8:
+				int Count = PlayerPrefs.GetInt("SymmetryAngleCount", 2);
+				PaintRotations = new Quaternion[Count];
+				PaintRotations[0] = Rotation;
+				float angle = 360.0f / (float)Count;
+				for (int i = 1; i < Count; i++)
+				{
+					PaintRotations[i] = Quaternion.Euler(Vector3.up * (angle * i)) * Rotation;
+				}
+				break;
+			default:
+				PaintRotations = new Quaternion[1];
+				PaintRotations[0] = Rotation;
+				break;
+		}
+	}
+
+	public static void UpdateSymmetryType()
+	{
+		int SymmetryCode = PlayerPrefs.GetInt("Symmetry", 0);
+		LastSym = SymmetryCode;
 	}
 
 

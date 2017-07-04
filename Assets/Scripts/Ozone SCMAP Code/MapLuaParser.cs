@@ -330,6 +330,7 @@ public class MapLuaParser : MonoBehaviour {
 			if (LoadProps) {
 				PropsMenu.gameObject.SetActive(true);
 
+				PropsMenu.AllowBrushUpdate = false;
 				yield return PropsMenu.StartCoroutine(PropsMenu.LoadProps());
 
 				PropsMenu.gameObject.SetActive(false);

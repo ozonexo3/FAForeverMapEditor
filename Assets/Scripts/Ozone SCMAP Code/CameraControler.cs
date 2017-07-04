@@ -537,20 +537,10 @@ public class CameraControler : MonoBehaviour {
 	}
 
 	bool AllowDrag(){
-		if(Edit.Categorys[1].activeSelf){
+		if (Edit.Categorys[1].activeSelf || Edit.Categorys [2].activeSelf || Edit.Categorys[6].activeSelf) {
 			if(SelectionBoxImage.gameObject.activeSelf){
 				SelectionBoxImage.gameObject.SetActive(false);
 				SelectionBox = false;
-
-			}
-
-			return false;
-		}
-		if (Edit.Categorys [2].activeSelf) {
-			if(SelectionBoxImage.gameObject.activeSelf){
-				SelectionBoxImage.gameObject.SetActive(false);
-				SelectionBox = false;
-
 			}
 
 			return false;

@@ -199,17 +199,20 @@ public partial class GetGamedataFile : MonoBehaviour {
 
 			ToReturn.BP.LODs[i].Mat = new Material(Shader.Find("Standard (Specular setup)"));
 
-			ToReturn.BP.LODs[i].Mat.SetOverrideTag("RenderType", "TransparentCutout");
-			ToReturn.BP.LODs[i].Mat.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.One);
-			ToReturn.BP.LODs[i].Mat.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.Zero);
-			ToReturn.BP.LODs[i].Mat.SetInt("_ZWrite", 1);
-			ToReturn.BP.LODs[i].Mat.EnableKeyword("_ALPHATEST_ON");
-			ToReturn.BP.LODs[i].Mat.DisableKeyword("_ALPHABLEND_ON");
-			ToReturn.BP.LODs[i].Mat.DisableKeyword("_ALPHAPREMULTIPLY_ON");
-			ToReturn.BP.LODs[i].Mat.renderQueue = (int)UnityEngine.Rendering.RenderQueue.AlphaTest;
+			{ // Set AlphaTest standard shader
+				ToReturn.BP.LODs[i].Mat.SetFloat("_Mode", 1);
+				ToReturn.BP.LODs[i].Mat.SetOverrideTag("RenderType", "TransparentCutout");
+				ToReturn.BP.LODs[i].Mat.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.One);
+				ToReturn.BP.LODs[i].Mat.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.Zero);
+				ToReturn.BP.LODs[i].Mat.SetInt("_ZWrite", 1);
+				ToReturn.BP.LODs[i].Mat.EnableKeyword("_ALPHATEST_ON");
+				ToReturn.BP.LODs[i].Mat.DisableKeyword("_ALPHABLEND_ON");
+				ToReturn.BP.LODs[i].Mat.DisableKeyword("_ALPHAPREMULTIPLY_ON");
+				ToReturn.BP.LODs[i].Mat.renderQueue = (int)UnityEngine.Rendering.RenderQueue.AlphaTest;
 
-			ToReturn.BP.LODs[i].Mat.SetColor("_SpecColor", Color.black);
-			ToReturn.BP.LODs[i].Mat.SetFloat("_Glossiness", 1);
+				ToReturn.BP.LODs[i].Mat.SetColor("_SpecColor", Color.black);
+				ToReturn.BP.LODs[i].Mat.SetFloat("_Glossiness", 1);
+			}
 
 			if (ToReturn.BP.LODs[i].AlbedoName.Length == 0)
 			{
