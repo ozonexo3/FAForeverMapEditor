@@ -184,7 +184,6 @@
     <Compile Include="Assets\Scripts\GFX\GridCamera.cs" />
     <Compile Include="Assets\Scripts\GFX\SelectionRing.cs" />
     <Compile Include="Assets\Scripts\GFX\TerrainMesh.cs" />
-    <Compile Include="Assets\Scripts\GFX\TextureScale.cs" />
     <Compile Include="Assets\Scripts\HazardX SCMAP Code\BinaryReader.cs" />
     <Compile Include="Assets\Scripts\HazardX SCMAP Code\BinaryWriter.cs" />
     <Compile Include="Assets\Scripts\HazardX SCMAP Code\Decal.cs" />
@@ -199,18 +198,17 @@
     <Compile Include="Assets\Scripts\HazardX SCMAP Code\WaveTexture.cs" />
     <Compile Include="Assets\Scripts\Ozone SCMAP Code\CameraControler.cs" />
     <Compile Include="Assets\Scripts\Ozone SCMAP Code\EnvPaths.cs" />
-    <Compile Include="Assets\Scripts\Ozone SCMAP Code\FileBrowser.cs" />
-    <Compile Include="Assets\Scripts\Ozone SCMAP Code\GamedataBlueprints.cs" />
-    <Compile Include="Assets\Scripts\Ozone SCMAP Code\GamedataProps.cs" />
-    <Compile Include="Assets\Scripts\Ozone SCMAP Code\GenerateWaterTex.cs" />
-    <Compile Include="Assets\Scripts\Ozone SCMAP Code\GetGamedataFile.cs" />
-    <Compile Include="Assets\Scripts\Ozone SCMAP Code\GetGamedataFile_Bytes.cs" />
-    <Compile Include="Assets\Scripts\Ozone SCMAP Code\GetGamedataFile_Model.cs" />
-    <Compile Include="Assets\Scripts\Ozone SCMAP Code\GetGamedataFile_Prop.cs" />
+    <Compile Include="Assets\Scripts\Ozone SCMAP Code\GetGamedataFile\GetGamedataFile.cs" />
+    <Compile Include="Assets\Scripts\Ozone SCMAP Code\GetGamedataFile\GetGamedataFile_Bytes.cs" />
+    <Compile Include="Assets\Scripts\Ozone SCMAP Code\GetGamedataFile\GetGamedataFile_Model.cs" />
+    <Compile Include="Assets\Scripts\Ozone SCMAP Code\GetGamedataFile\GetGamedataFile_Prop.cs" />
     <Compile Include="Assets\Scripts\Ozone SCMAP Code\MapHelperGui.cs" />
     <Compile Include="Assets\Scripts\Ozone SCMAP Code\MapLuaParser.cs" />
     <Compile Include="Assets\Scripts\Ozone SCMAP Code\ParsingStructureData.cs" />
     <Compile Include="Assets\Scripts\Ozone SCMAP Code\ScmapEditor.cs" />
+    <Compile Include="Assets\Scripts\Ozone SCMAP Code\Texture\GenerateWaterTex.cs" />
+    <Compile Include="Assets\Scripts\Ozone SCMAP Code\Texture\TextureLoader.cs" />
+    <Compile Include="Assets\Scripts\Ozone SCMAP Code\Texture\TextureScale.cs" />
     <Compile Include="Assets\Scripts\Painting\BrushGenerator.cs" />
     <Compile Include="Assets\Scripts\Painting\PaintWithBrush.cs" />
     <Compile Include="Assets\Scripts\Tes\ArrayRange.cs" />
@@ -240,14 +238,14 @@
     <Compile Include="Assets\Scripts\UI\Lists\SliderLabel.cs" />
     <Compile Include="Assets\Scripts\UI\Lists\StratumLayerBtnPreview.cs" />
     <Compile Include="Assets\Scripts\UI\Loading\SimpleLoadingWheel.cs" />
-    <Compile Include="Assets\Scripts\UI\MarkerData.cs" />
-    <Compile Include="Assets\Scripts\UI\MarkerScript.cs" />
-    <Compile Include="Assets\Scripts\UI\MarkersRenderer.cs" />
+    <Compile Include="Assets\Scripts\UI\Marker\MarkerData.cs" />
+    <Compile Include="Assets\Scripts\UI\Marker\MarkerScript.cs" />
+    <Compile Include="Assets\Scripts\UI\Marker\MarkersRenderer.cs" />
     <Compile Include="Assets\Scripts\UI\StartingScreen.cs" />
-    <Compile Include="Assets\Scripts\UI\Tools\EditingMarkers.cs" />
     <Compile Include="Assets\Scripts\UI\Tools\LightingInfo.cs" />
     <Compile Include="Assets\Scripts\UI\Tools\MapInfo.cs" />
-    <Compile Include="Assets\Scripts\UI\Tools\PropsReader.cs" />
+    <Compile Include="Assets\Scripts\UI\Tools\MarkersInfo.cs" />
+    <Compile Include="Assets\Scripts\UI\Tools\PropsInfo.cs" />
     <Compile Include="Assets\Scripts\UI\Tools\StratumInfo.cs" />
     <Compile Include="Assets\Scripts\UI\Tools\TerrainInfo.cs" />
     <Compile Include="Assets\Scripts\UI\Windows\AreasWindow.cs" />
@@ -271,11 +269,6 @@
     <Compile Include="Assets\Scripts\Undo\HistoryObjects\HistoryTerrainHeight.cs" />
     <Compile Include="Assets\Scripts\Undo\HistoryUndoRegister.cs" />
     <Compile Include="Assets\Scripts\Undo\Undo.cs" />
-    <Compile Include="Assets\Trash\CameraController.cs" />
-    <Compile Include="Assets\Trash\Example\ExampleBehaviour.cs" />
-    <Compile Include="Assets\Trash\Example\TestBehaviour.cs" />
-    <Compile Include="Assets\Trash\Terrain_Heightmap.cs" />
-    <Compile Include="Assets\Trash\TextureLoader.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\GFX\Shaders\Backup\FaTerrainShader 1.shader" />

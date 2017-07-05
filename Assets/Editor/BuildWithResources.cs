@@ -2,7 +2,7 @@
 using UnityEditor;
 using System.Diagnostics;
 
-public class ScriptBatch : MonoBehaviour 
+public class BuildWithResources : MonoBehaviour 
 {
 	[MenuItem("Build/Windows with resources")]
 	public static void BuildSettings ()

@@ -5,23 +5,21 @@ using System.IO;
 
 #pragma warning disable 0162
 
-public partial class GetGamedataFile : MonoBehaviour {
-	static bool DebugTextureLoad = false;
+public partial struct GetGamedataFile
+{
 
-	public			ScmapEditor		Scmap;
-	public			Texture2D		EmptyTexture;
+
+	static bool DebugTextureLoad = false;
+	static bool IsDxt3 = false;
 
 	public static float MipmapBias = 0.5f;
 	public static int AnisoLevel = 10;
 
-	void Awake(){
-		ICSharpCode.SharpZipLib.Zip.ZipConstants.DefaultCodePage = 0;
-	}
-
-	public static Texture2D LoadTexture2DFromGamedata(string scd, string LocalPath, bool NormalMap = false){
+	public static Texture2D LoadTexture2DFromGamedata(string scd, string LocalPath, bool NormalMap = false)
+	{
 		byte[] FinalTextureData2 = LoadBytes(scd, LocalPath);
 
-		if(FinalTextureData2 == null || FinalTextureData2.Length == 0)
+		if (FinalTextureData2 == null || FinalTextureData2.Length == 0)
 		{
 			return new Texture2D(32, 32, TextureFormat.RGBA32, false);
 		}
@@ -53,7 +51,8 @@ public partial class GetGamedataFile : MonoBehaviour {
 		}
 		texture.Apply(false);
 
-		if (NormalMap){
+		if (NormalMap)
+		{
 			texture.Compress(true);
 
 			Texture2D normalTexture = new Texture2D((int)LoadDDsHeader.width, (int)LoadDDsHeader.height, TextureFormat.RGBA32, Mipmaps, true);
@@ -66,17 +65,20 @@ public partial class GetGamedataFile : MonoBehaviour {
 			int Texwidth = 0;
 			int Texheight = 0;
 
-			for (m = 0; m < LoadDDsHeader.mipmapcount + 1; m++){
+			for (m = 0; m < LoadDDsHeader.mipmapcount + 1; m++)
+			{
 				Texwidth = texture.width;
 				Texheight = texture.height;
 
-				if(m > 0){
+				if (m > 0)
+				{
 					Texwidth /= (int)Mathf.Pow(2, m);
 					Texheight /= (int)Mathf.Pow(2, m);
 				}
 				Pixels = texture.GetPixels(0, 0, Texwidth, Texheight, m);
 
-				for(i = 0; i < Pixels.Length; i++){
+				for (i = 0; i < Pixels.Length; i++)
+				{
 					/*theColour.r = Pixels[i].r;
 					theColour.g = Pixels[i].g;
 					theColour.b = 1;
@@ -105,52 +107,54 @@ public partial class GetGamedataFile : MonoBehaviour {
 	}
 
 
-	public void LoadTextureFromGamedata(string scd, string LocalPath, int Id, bool NormalMap = false){
-		if(NormalMap){
-			Scmap.Textures[Id].Normal = LoadTexture2DFromGamedata(scd, LocalPath, NormalMap);
+	public static void LoadTextureFromGamedata(string scd, string LocalPath, int Id, bool NormalMap = false)
+	{
+		if (NormalMap)
+		{
+			ScmapEditor.Current.Textures[Id].Normal = LoadTexture2DFromGamedata(scd, LocalPath, NormalMap);
 		}
-		else{
-			Scmap.Textures[Id].Albedo = LoadTexture2DFromGamedata(scd, LocalPath, NormalMap);
+		else
+		{
+			ScmapEditor.Current.Textures[Id].Albedo = LoadTexture2DFromGamedata(scd, LocalPath, NormalMap);
 		}
 	}
 
 
+	static HeaderClass LoadDDsHeader;
 
-
-	public	static	HeaderClass			LoadDDsHeader;
-	
 	[System.Serializable]
-	public class HeaderClass{
-		public		TextureFormat		Format;
-		public		uint Magic;
+	public class HeaderClass
+	{
+		public TextureFormat Format;
+		public uint Magic;
 
-		public		uint size;
-		public		uint flags;
-		public		uint height;
-		public		uint width;
-		public		uint sizeorpitch;
-		public		uint depth;
-		public		uint mipmapcount;
-		public		uint alphabitdepth;
-		public		uint[] reserved;
-		
-		public		uint pixelformatSize;
-		public		uint pixelformatflags;
-		public		uint pixelformatFourcc;
-		public		uint pixelformatRgbBitCount;
-		public		uint pixelformatRbitMask;
-		public		uint pixelformatGbitMask;
-		public		uint pixelformatBbitMask;
-		public		uint pixelformatAbitMask;
+		public uint size;
+		public uint flags;
+		public uint height;
+		public uint width;
+		public uint sizeorpitch;
+		public uint depth;
+		public uint mipmapcount;
+		public uint alphabitdepth;
+		public uint[] reserved;
 
-		public		uint caps1;
-		public		uint caps2;
-		public		uint caps3;
-		public		uint caps4;
+		public uint pixelformatSize;
+		public uint pixelformatflags;
+		public uint pixelformatFourcc;
+		public uint pixelformatRgbBitCount;
+		public uint pixelformatRbitMask;
+		public uint pixelformatGbitMask;
+		public uint pixelformatBbitMask;
+		public uint pixelformatAbitMask;
+
+		public uint caps1;
+		public uint caps2;
+		public uint caps3;
+		public uint caps4;
 	}
 
-	static bool IsDxt3 = false;
-	public static TextureFormat GetFormatOfDdsBytes(byte[] bytes){
+	static TextureFormat GetFormatOfDdsBytes(byte[] bytes)
+	{
 
 		Stream ms = new MemoryStream(bytes);
 		BinaryReader Stream = new BinaryReader(ms);
@@ -159,13 +163,15 @@ public partial class GetGamedataFile : MonoBehaviour {
 		return ReadFourcc(LoadDDsHeader.pixelformatFourcc);
 	}
 
-	public TextureFormat GetFormatOfDds(string FinalImagePath){
+	public static TextureFormat GetFormatOfDds(string FinalImagePath)
+	{
 
-		if(!File.Exists(FinalImagePath)){
+		if (!File.Exists(FinalImagePath))
+		{
 			Debug.LogError("File not exist!");
 			return TextureFormat.DXT5;
 		}
-			
+
 		System.IO.FileStream fs = new System.IO.FileStream(FinalImagePath, System.IO.FileMode.Open, System.IO.FileAccess.Read);
 		BinaryReader Stream = new BinaryReader(fs);
 		LoadDDsHeader = BinaryStreamDdsHeader(Stream);
@@ -173,16 +179,18 @@ public partial class GetGamedataFile : MonoBehaviour {
 		return ReadFourcc(LoadDDsHeader.pixelformatFourcc);
 	}
 
-	public static HeaderClass GetDdsFormat(byte[] Bytes){
+	public static HeaderClass GetDdsFormat(byte[] Bytes)
+	{
 		Stream fs = new MemoryStream(Bytes);
 		BinaryReader Stream = new BinaryReader(fs);
 		return BinaryStreamDdsHeader(Stream);
 	}
 
-	public static HeaderClass BinaryStreamDdsHeader(BinaryReader Stream){
+	static HeaderClass BinaryStreamDdsHeader(BinaryReader Stream)
+	{
 		HeaderClass DDsHeader = new HeaderClass();
 
-		DDsHeader.Magic = Stream.ReadUInt32();				
+		DDsHeader.Magic = Stream.ReadUInt32();
 		DDsHeader.size = Stream.ReadUInt32();
 		DDsHeader.flags = Stream.ReadUInt32();
 		DDsHeader.height = Stream.ReadUInt32();
@@ -216,50 +224,55 @@ public partial class GetGamedataFile : MonoBehaviour {
 	}
 
 
-	public static TextureFormat ReadFourcc(uint fourcc){
+	static TextureFormat ReadFourcc(uint fourcc)
+	{
 		IsDxt3 = false;
-		if(DebugTextureLoad) Debug.Log(
-			"Size: " + LoadDDsHeader.size +
-			" flags: " + LoadDDsHeader.flags +
-			" height: " + LoadDDsHeader.height +
-			" width: " + LoadDDsHeader.width +
-			" sizeorpitch: " + LoadDDsHeader.sizeorpitch +
-			" depth: " + LoadDDsHeader.depth +
-			" mipmapcount: " + LoadDDsHeader.mipmapcount +
-			" alphabitdepth: " + LoadDDsHeader.alphabitdepth +
-			" pixelformatSize: " + LoadDDsHeader.pixelformatSize +
-			" pixelformatflags: " + LoadDDsHeader.pixelformatflags +
-			" pixelformatFourcc: " + LoadDDsHeader.pixelformatFourcc +
-			" pixelformatRgbBitCount: " + LoadDDsHeader.pixelformatRgbBitCount +
-			" pixelformatRbitMask: " + LoadDDsHeader.pixelformatRbitMask +
-			" pixelformatGbitMask: " + LoadDDsHeader.pixelformatGbitMask +
-			" pixelformatBbitMask: " + LoadDDsHeader.pixelformatBbitMask +
-			" pixelformatAbitMask: " + LoadDDsHeader.pixelformatAbitMask
-		);
+		if (DebugTextureLoad) Debug.Log(
+			 "Size: " + LoadDDsHeader.size +
+			 " flags: " + LoadDDsHeader.flags +
+			 " height: " + LoadDDsHeader.height +
+			 " width: " + LoadDDsHeader.width +
+			 " sizeorpitch: " + LoadDDsHeader.sizeorpitch +
+			 " depth: " + LoadDDsHeader.depth +
+			 " mipmapcount: " + LoadDDsHeader.mipmapcount +
+			 " alphabitdepth: " + LoadDDsHeader.alphabitdepth +
+			 " pixelformatSize: " + LoadDDsHeader.pixelformatSize +
+			 " pixelformatflags: " + LoadDDsHeader.pixelformatflags +
+			 " pixelformatFourcc: " + LoadDDsHeader.pixelformatFourcc +
+			 " pixelformatRgbBitCount: " + LoadDDsHeader.pixelformatRgbBitCount +
+			 " pixelformatRbitMask: " + LoadDDsHeader.pixelformatRbitMask +
+			 " pixelformatGbitMask: " + LoadDDsHeader.pixelformatGbitMask +
+			 " pixelformatBbitMask: " + LoadDDsHeader.pixelformatBbitMask +
+			 " pixelformatAbitMask: " + LoadDDsHeader.pixelformatAbitMask
+		 );
 
 
-		switch(LoadDDsHeader.pixelformatFourcc){
-		case 861165636:
-			IsDxt3 = true;
-			return TextureFormat.DXT5;
-		case 827611204:
-			return TextureFormat.DXT1;
-		case 894720068:
-			return TextureFormat.DXT5;
-		case 64:
-			return TextureFormat.RGB24;
-		case 0:
-			if(LoadDDsHeader.pixelformatflags == 528391){
-				return TextureFormat.BGRA32;
-			}
-			else if(LoadDDsHeader.pixelformatRgbBitCount == 24){
+		switch (LoadDDsHeader.pixelformatFourcc)
+		{
+			case 861165636:
+				IsDxt3 = true;
+				return TextureFormat.DXT5;
+			case 827611204:
+				return TextureFormat.DXT1;
+			case 894720068:
+				return TextureFormat.DXT5;
+			case 64:
 				return TextureFormat.RGB24;
-			}
-			else{
-				return TextureFormat.BGRA32;
-			}
+			case 0:
+				if (LoadDDsHeader.pixelformatflags == 528391)
+				{
+					return TextureFormat.BGRA32;
+				}
+				else if (LoadDDsHeader.pixelformatRgbBitCount == 24)
+				{
+					return TextureFormat.RGB24;
+				}
+				else
+				{
+					return TextureFormat.BGRA32;
+				}
 		}
-		
+
 		return TextureFormat.DXT5;
 	}
 

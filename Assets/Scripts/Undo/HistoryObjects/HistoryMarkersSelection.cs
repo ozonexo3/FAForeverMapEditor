@@ -4,30 +4,36 @@ using System.Collections.Generic;
 using UndoHistory;
 using EditMap;
 
-public class HistoryMarkersSelection : HistoryObject {
+public class HistoryMarkersSelection : HistoryObject
+{
 
-	public		List<EditingMarkers.WorkingElement>			Selected = new List<EditingMarkers.WorkingElement>();
-	public		EditingMarkers.SymmetrySelection[]			SymmetrySelectionList = new EditingMarkers.SymmetrySelection[0];
+	public List<MarkersInfo.WorkingElement> Selected = new List<MarkersInfo.WorkingElement>();
+	public MarkersInfo.SymmetrySelection[] SymmetrySelectionList = new MarkersInfo.SymmetrySelection[0];
 
 
-	public override void Register(){
-		Selected = new List<EditingMarkers.WorkingElement>();
-		for(int i = 0; i < Undo.Current.EditMenu.EditMarkers.Selected.Count; i++){
+	public override void Register()
+	{
+		Selected = new List<MarkersInfo.WorkingElement>();
+		for (int i = 0; i < Undo.Current.EditMenu.EditMarkers.Selected.Count; i++)
+		{
 			Selected.Add(Undo.Current.EditMenu.EditMarkers.Selected[i]);
 		}
 		SymmetrySelectionList = Undo.Current.EditMenu.EditMarkers.SymmetrySelectionList;
 	}
 
 
-	public override void DoUndo(){
+	public override void DoUndo()
+	{
 		//Undo.Current.RegisterRedoMarkerSelection();
-		HistoryMarkersSelection.GenerateRedo (Undo.Current.Prefabs.MarkersSelection).Register();
-		DoRedo ();
+		HistoryMarkersSelection.GenerateRedo(Undo.Current.Prefabs.MarkersSelection).Register();
+		DoRedo();
 	}
 
-	public override void DoRedo(){
+	public override void DoRedo()
+	{
 
-		if(Undo.Current.EditMenu.State != Editing.EditStates.MarkersStat){
+		if (Undo.Current.EditMenu.State != Editing.EditStates.MarkersStat)
+		{
 			Undo.Current.EditMenu.State = Editing.EditStates.MarkersStat;
 			Undo.Current.EditMenu.ChangeCategory(4);
 		}

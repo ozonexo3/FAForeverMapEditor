@@ -10,49 +10,67 @@ using ICSharpCode.SharpZipLib.BZip2;
 
 public class ResourceBrowser : MonoBehaviour {
 
-	public MapLuaParser LuaParser;
 	public static ResourceBrowser Current;
+
+	// Drag data
 	public static ResourceObject DragedObject;
 	public static int SelectedCategory = 0;
 
+	[Header("UI")]
 	public GameObject Prefab_Texture;
 	public GameObject Prefab_Decal;
 	public GameObject Prefab_Prop;
 	public Transform Pivot;
 	public ScrollRect SRect;
-
 	public Dropdown EnvType;
 	public Dropdown Category;
 	public GameObject Loading;
 
-	public static bool Generating = false;
 
+	[Header("Loaded assets")]
 	public List<Texture2D> LoadedTextures = new List<Texture2D>();
 	public List<string> LoadedPaths = new List<string>();
 	public List<GetGamedataFile.PropObject> LoadedProps = new List<GetGamedataFile.PropObject>();
 
-	public List<string> LoadedEnvPaths = new List<string>();
+	//Local
+	bool Generating = false;
+	List<string> LoadedEnvPaths = new List<string>();
+	const string LocalPath = "env/";
+	static string[] CategoryPaths = new string[] { "layers/", "splats/", "decals/", "Props/" };
+	string SelectedObject = "";
+	bool CustomLoading = false;
 
-	public void Instantiate(){
-		Current = this;
-		ReadAllFolders ();
-	}
 
-	void OnEnable () {
-	//	StartCoroutine ("GenerateList");
-	}
-
-	void Update(){
-		if (Input.GetMouseButtonUp (0)) {
-			if(DragedObject)
-				Cursor.SetCursor (null, Vector2.zero, CursorMode.Auto);
+	#region UI
+	void Update()
+	{
+		if (Input.GetMouseButtonUp(0))
+		{
+			if (DragedObject)
+				Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
 		}
 	}
 
-	const string LocalPath = "env/";
-	static string[] CategoryPaths = new string[]{"layers/", "splats/", "decals/", "Props/"};
+	public void OnDropdownChanged()
+	{
+		if (!gameObject.activeSelf || CustomLoading)
+			return;
+		SelectedObject = "";
+		StopCoroutine("GenerateList");
+		Pivot.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
+		StartCoroutine("GenerateList");
+	}
+	#endregion
 
-	public void ReadAllFolders(){
+
+	#region Init
+	public void Instantiate()
+	{
+		Current = this;
+		ReadAllFolders();
+	}
+
+	void ReadAllFolders(){
 		EnvType.ClearOptions ();
 
 		LoadedEnvPaths = new List<string> ();
@@ -102,9 +120,9 @@ public class ResourceBrowser : MonoBehaviour {
 		EnvType.AddOptions (NewOptions);
 
 	}
+	#endregion
 
-	static string SelectedObject = "";
-	bool CustomLoading = false;
+
 	public void LoadStratumTexture(string path){
 		CustomLoading = true;
 		StopCoroutine ("GenerateList");
@@ -166,6 +184,20 @@ public class ResourceBrowser : MonoBehaviour {
 		StopCoroutine("GenerateList");
 		CustomLoading = false;
 		StartCoroutine("GenerateList");
+	}
+
+	#region Generate List of Assets
+
+	void Clean()
+	{
+		foreach (Transform child in Pivot)
+		{
+			Destroy(child.gameObject);
+		}
+
+		LoadedTextures = new List<Texture2D>();
+		LoadedPaths = new List<string>();
+		LoadedProps = new List<GetGamedataFile.PropObject>();
 	}
 
 	IEnumerator GenerateList(){
@@ -246,6 +278,9 @@ public class ResourceBrowser : MonoBehaviour {
 		Loading.SetActive (false);
 	}
 
+	#endregion
+
+	#region Buttons
 	bool GenerateTextureButton(string localpath, string LocalName, GameObject Prefab){
 
 		if (!LocalName.EndsWith (".dds"))
@@ -317,26 +352,7 @@ public class ResourceBrowser : MonoBehaviour {
 		}
 		return true;
 	}
+	#endregion
 
-
-	public void Clean(){
-		foreach (Transform child in Pivot) {
-			Destroy (child.gameObject);
-		}
-
-		LoadedTextures = new List<Texture2D>();
-		LoadedPaths = new List<string>();
-		LoadedProps = new List<GetGamedataFile.PropObject>();
-	}
-
-	public void OnDropdownChanged(){
-		if (!gameObject.activeSelf || CustomLoading)
-			return;
-		SelectedObject = "";
-		StopCoroutine ("GenerateList");
-		Pivot.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
-		StartCoroutine ("GenerateList");
-
-	}
 
 }

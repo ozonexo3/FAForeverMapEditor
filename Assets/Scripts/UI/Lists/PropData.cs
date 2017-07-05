@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using EditMap;
 
 public class PropData : MonoBehaviour {
 
@@ -34,16 +35,16 @@ public class PropData : MonoBehaviour {
 
 	public void RemoveProp()
 	{
-		PropsReader.Current.RemoveProp(ID);
+		PropsInfo.Current.RemoveProp(ID);
 	}
 
 	public void OverPropEnter()
 	{
-		PropsReader.Current.ShowPreview(ID, gameObject);
+		PropsInfo.Current.ShowPreview(ID, gameObject);
 	}
 
 	public void OverPropExit()
 	{
-		PropsReader.Current.Preview.Hide(gameObject);
+		PropsInfo.Current.Preview.Hide(gameObject);
 	}
 }

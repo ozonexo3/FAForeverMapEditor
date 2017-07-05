@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class GenerateWaterTex : MonoBehaviour {
+public struct GenerateWaterTex {
 
 	public static void Generate(ref Texture2D WaterTex, ScmapEditor Map){
 		Color[] AllColors = WaterTex.GetPixels ();

@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using EditMap;
 
 public class BrushListId : MonoBehaviour {
 

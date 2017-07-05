@@ -3,10 +3,11 @@ using System.Collections;
 using System;
 using System.IO;
 
-public partial class GetGamedataFile {
+public partial struct GetGamedataFile
+{
 
 	#region Scm Objects
-	public class Scm
+	class Scm
 	{
 		public ScmHeader Header;
 		public Scm_Bone[] Bones;
@@ -43,7 +44,7 @@ public partial class GetGamedataFile {
 			// Load Bones
 			Stream.BaseStream.Seek(Header.BoneOffset, SeekOrigin.Begin);
 			Bones = new Scm_Bone[Header.wBoneCount];
-			for(i = 0; i < Bones.Length; i++)
+			for (i = 0; i < Bones.Length; i++)
 			{
 				Bones[i] = new Scm_Bone();
 				Bones[i].LoadFromStream(Stream);
@@ -62,7 +63,7 @@ public partial class GetGamedataFile {
 			// Load Triangles
 			Stream.BaseStream.Seek(Header.IndexOffset, SeekOrigin.Begin);
 			Tris = new Scm_Tris[Header.IndexCount / 3];
-			for(i = 0; i < Tris.Length; i++)
+			for (i = 0; i < Tris.Length; i++)
 			{
 				Tris[i] = new Scm_Tris();
 				Tris[i].LoadFromStream(Stream);
@@ -73,7 +74,7 @@ public partial class GetGamedataFile {
 		{
 			Vector3[] VertsArray = new Vector3[Verts.Length];
 
-			for(int i = 0; i < VertsArray.Length; i++)
+			for (int i = 0; i < VertsArray.Length; i++)
 			{
 				VertsArray[i] = Verts[i].Position;
 			}
@@ -129,7 +130,7 @@ public partial class GetGamedataFile {
 	}
 
 
-	public class ScmHeader
+	class ScmHeader
 	{
 		public string fourcc; // "MODL"
 		public int Version; // "5"
@@ -164,7 +165,7 @@ public partial class GetGamedataFile {
 		public bool IsValid()
 		{
 			if (fourcc != "MODL") return false;
-			if(Version != 5)
+			if (Version != 5)
 			{
 				Debug.LogError("Wrong SCM file format! Found " + Version + ", but should be 5");
 				return false;
@@ -173,7 +174,7 @@ public partial class GetGamedataFile {
 		}
 	}
 
-	public class Scm_Vert
+	class Scm_Vert
 	{
 		public Vector3 Position;
 		// Tangent space
@@ -211,7 +212,7 @@ public partial class GetGamedataFile {
 		}
 	}
 
-	public class Scm_Tris
+	class Scm_Tris
 	{
 		public short Vert0;
 		public short Vert1;
@@ -225,7 +226,7 @@ public partial class GetGamedataFile {
 		}
 	}
 
-	public class Scm_Bone
+	class Scm_Bone
 	{
 		public Matrix4x4 InverseBindPose;
 		public Vector3 Position;
@@ -259,7 +260,7 @@ public partial class GetGamedataFile {
 		}
 	}
 
-	public class Sca_Frame
+	class Sca_Frame
 	{
 		//TO DO Import animation
 	}

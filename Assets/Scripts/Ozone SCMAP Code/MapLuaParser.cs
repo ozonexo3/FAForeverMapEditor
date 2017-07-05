@@ -30,7 +30,7 @@ public class MapLuaParser : MonoBehaviour {
 	public		ScmapEditor		HeightmapControler;
 	public		GetGamedataFile	Gamedata;
 	public		GenericInfoPopup	InfoPopup;
-	public PropsReader PropsMenu;
+	public PropsInfo PropsMenu;
 	public static		bool			Water;
 
 
@@ -1105,7 +1105,7 @@ public class MapLuaParser : MonoBehaviour {
 
 	#region Marker functions
 
-	public Vector3 GetPosOfMarker(EditMap.EditingMarkers.WorkingElement Element){
+	public Vector3 GetPosOfMarker(EditMap.MarkersInfo.WorkingElement Element){
 		switch(Element.ListId){
 		case 0:
 			return MarkerRend.Armys[Element.InstanceId].transform.position;
@@ -1133,7 +1133,7 @@ public class MapLuaParser : MonoBehaviour {
 		return Vector3.zero;
 	}
 
-	public void SetPosOfMarker(EditMap.EditingMarkers.WorkingElement Element, Vector3 NewPos){
+	public void SetPosOfMarker(EditMap.MarkersInfo.WorkingElement Element, Vector3 NewPos){
 		switch(Element.ListId){
 		case 0:
 			ARMY_[Element.InstanceId].position = NewPos;
@@ -1150,7 +1150,7 @@ public class MapLuaParser : MonoBehaviour {
 		}
 	}
 
-	public GameObject GetMarkerRenderer(EditMap.EditingMarkers.WorkingElement Element){
+	public GameObject GetMarkerRenderer(EditMap.MarkersInfo.WorkingElement Element){
 		switch(Element.ListId){
 		case 0:
 			return MarkerRend.Armys[Element.InstanceId];
@@ -1196,7 +1196,7 @@ public class MapLuaParser : MonoBehaviour {
 		EditMenu.EditMarkers.AllMarkersList.UpdateList();
 	}
 
-	public void AddMarkerToTrash(EditMap.EditingMarkers.WorkingElement Element){
+	public void AddMarkerToTrash(EditMap.MarkersInfo.WorkingElement Element){
 		switch (Element.ListId) {
 		case 0:
 			ArmiesTrash.Add(Element.InstanceId);
@@ -1276,7 +1276,7 @@ public class MapLuaParser : MonoBehaviour {
 		EditMenu.EditMarkers.AllMarkersList.UpdateList();
 	}
 
-	public void DeleteMarker(EditMap.EditingMarkers.WorkingElement Element){
+	public void DeleteMarker(EditMap.MarkersInfo.WorkingElement Element){
 		switch (Element.ListId) {
 		case 0:
 			ArmiesTrash.Add(Element.InstanceId);

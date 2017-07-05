@@ -3,7 +3,8 @@ using System.Collections;
 using System;
 using NLua;
 
-public partial class GetGamedataFile : MonoBehaviour {
+public partial struct GetGamedataFile
+{
 
 	public class PropObject
 	{
@@ -11,7 +12,7 @@ public partial class GetGamedataFile : MonoBehaviour {
 
 		public GameObject CreatePropGameObject(Vector3 position, Quaternion rotation)
 		{
-			Type[] Components = new Type[] { typeof( MeshFilter), typeof( MeshRenderer) };
+			Type[] Components = new Type[] { typeof(MeshFilter), typeof(MeshRenderer) };
 			GameObject NewProp = new GameObject(BP.Name, Components);
 
 			if (BP.LODs.Length > 0)
@@ -80,7 +81,7 @@ public partial class GetGamedataFile : MonoBehaviour {
 		}
 		string BluePrintString = System.Text.Encoding.UTF8.GetString(Bytes);
 
-		if(BluePrintString.Length == 0)
+		if (BluePrintString.Length == 0)
 		{
 			Debug.LogError("Loaded blueprint is empty");
 			return ToReturn;
@@ -101,9 +102,9 @@ public partial class GetGamedataFile : MonoBehaviour {
 		//Fix LUA
 		string[] SplitedBlueprint = BluePrintString.Split("\n".ToCharArray());
 		string NewBlueprintString = "";
-		for(int i = 0; i < SplitedBlueprint.Length; i++)
+		for (int i = 0; i < SplitedBlueprint.Length; i++)
 		{
-			if(SplitedBlueprint[i].Length > 0 && !SplitedBlueprint[i].Contains("#"))
+			if (SplitedBlueprint[i].Length > 0 && !SplitedBlueprint[i].Contains("#"))
 			{
 				NewBlueprintString += SplitedBlueprint[i] + "\n";
 			}
@@ -154,7 +155,7 @@ public partial class GetGamedataFile : MonoBehaviour {
 		//Display
 		if (BP.GetTable("PropBlueprint.Display") != null)
 		{
-			if(BP.GetTable("PropBlueprint.Display").RawGet("UniformScale") != null)
+			if (BP.GetTable("PropBlueprint.Display").RawGet("UniformScale") != null)
 				ToReturn.BP.UniformScale = MassMath.StringToFloat(BP.GetTable("PropBlueprint.Display").RawGet("UniformScale").ToString());
 
 			// Mesh
@@ -246,7 +247,7 @@ public partial class GetGamedataFile : MonoBehaviour {
 
 
 
-	public static string OffsetRelativePath(string OriginalPath, string offset, bool File = true)
+	static string OffsetRelativePath(string OriginalPath, string offset, bool File = true)
 	{
 		OriginalPath = OriginalPath.Replace("\\", "/");
 		offset = offset.Replace("\\", "/");
@@ -266,7 +267,7 @@ public partial class GetGamedataFile : MonoBehaviour {
 
 		string ToReturn = "";
 
-		for(int i = 0; i < Folders.Length; i++)
+		for (int i = 0; i < Folders.Length; i++)
 		{
 			if (i >= Step)
 				break;

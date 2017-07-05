@@ -10,7 +10,7 @@ using ICSharpCode.SharpZipLib.Zip;
 using ICSharpCode.SharpZipLib.BZip2;
 
 
-public partial class GetGamedataFile : MonoBehaviour
+public partial struct GetGamedataFile
 {
 
 	static List<ScdZipFile> ScdFiles = new List<ScdZipFile>();
@@ -21,13 +21,24 @@ public partial class GetGamedataFile : MonoBehaviour
 		public ZipFile zf;
 	}
 
+
+	static bool Init = false;
+
 	/// <summary>
 	/// Loads bytes from *.scd files from game gamedata folder. Returns decompressed bytes of that file.
 	/// </summary>
 	/// <param name="scd"></param>
 	/// <param name="LocalPath"></param>
 	/// <returns></returns>
-	public static byte[] LoadBytes(string scd, string LocalPath){
+	public static byte[] LoadBytes(string scd, string LocalPath)
+	{
+		if (Init)
+		{
+			ICSharpCode.SharpZipLib.Zip.ZipConstants.DefaultCodePage = 0;
+			Init = true;
+		}
+
+
 		if (string.IsNullOrEmpty(LocalPath)) return null;
 
 		if (!Directory.Exists(EnvPaths.GetGamedataPath()))
@@ -38,7 +49,7 @@ public partial class GetGamedataFile : MonoBehaviour
 		//byte[] FinalBytes = new byte[0];
 		int ScdId = -1;
 
-		for(int i = 0; i < ScdFiles.Count; i++)
+		for (int i = 0; i < ScdFiles.Count; i++)
 		{
 			if (ScdFiles[i].scd == scd)
 			{
@@ -47,7 +58,7 @@ public partial class GetGamedataFile : MonoBehaviour
 			}
 		}
 
-		if(ScdId < 0)
+		if (ScdId < 0)
 		{
 			ScdId = ScdFiles.Count;
 			ScdZipFile NewScd = new ScdZipFile();

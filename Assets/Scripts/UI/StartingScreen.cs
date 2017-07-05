@@ -121,7 +121,7 @@ public class StartingScreen : MonoBehaviour {
 			int height = FinalTextureData2[13] * 256 + FinalTextureData2[12];
 			int width = FinalTextureData2[17] * 256 + FinalTextureData2[16];
 
-			TextureFormat format = GamedataFiles.GetFormatOfDds(FinalImagePath);
+			TextureFormat format = GetGamedataFile.GetFormatOfDds(FinalImagePath);
 
 
 			Texture2D textureDds = new Texture2D(width, height, format, false);

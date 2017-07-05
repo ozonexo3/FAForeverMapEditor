@@ -148,7 +148,7 @@ public class CameraControler : MonoBehaviour {
 			}
 		}
 
-		if (Menu.MenuOpen)
+		if (Menu.IsMenuOpen())
 			return;
 		if (Input.GetKey (KeyCode.LeftControl)) {
 			if(Input.GetKeyDown(KeyCode.G)){
@@ -433,7 +433,7 @@ public class CameraControler : MonoBehaviour {
 
 			List<GameObject> ClickedObjects = new List<GameObject>();
 
-			foreach(EditingMarkers.WorkingElement obj in Edit.EditMarkers.AllWorkingElements){
+			foreach(MarkersInfo.WorkingElement obj in Edit.EditMarkers.AllWorkingElements){
 				if(SelectionBoxArea.Contains(GetComponent<Camera>().WorldToScreenPoint( Edit.Scenario.GetPosOfMarker(obj) ))){
 					ClickedObjects.Add(Edit.Scenario.GetMarkerRenderer(obj));
 				}
@@ -602,7 +602,7 @@ public class CameraControler : MonoBehaviour {
 						Vector3 Origin2 = new Vector3(Edit.Scenario.ScenarioData.Size.y / 10f, 0, 0);
 						Vector3 Point = new Vector3(HitPointSnaped.x, 0, HitPointSnaped.z);
 
-						Vector3 PointOfMirror = EditingMarkers.ClosestPointToLine(Origin, Origin2, Point);
+						Vector3 PointOfMirror = MarkersInfo.ClosestPointToLine(Origin, Origin2, Point);
 						Vector3 FinalDir = PointOfMirror - Point;
 						FinalDir.y = 0;
 						FinalDir.Normalize();
@@ -616,7 +616,7 @@ public class CameraControler : MonoBehaviour {
 						Vector3 Origin2 = new Vector3(Edit.Scenario.ScenarioData.Size.y / 10f, 0, -Edit.Scenario.ScenarioData.Size.y / 10f);
 						Vector3 Point = new Vector3(HitPointSnaped.x, 0, HitPointSnaped.z);
 						
-						Vector3 PointOfMirror = EditingMarkers.ClosestPointToLine(Origin, Origin2, Point);
+						Vector3 PointOfMirror = MarkersInfo.ClosestPointToLine(Origin, Origin2, Point);
 						Vector3 FinalDir = PointOfMirror - Point;
 						FinalDir.y = 0;
 						FinalDir.Normalize();
@@ -631,7 +631,7 @@ public class CameraControler : MonoBehaviour {
 						Vector3 Origin2 = new Vector3(Edit.Scenario.ScenarioData.Size.y / 10f, 0, 0);
 						Vector3 Point = new Vector3(HitPointSnaped.x, 0, HitPointSnaped.z);
 
-						Vector3 PointOfMirror = EditingMarkers.ClosestPointToLine(Origin, Origin2, Point);
+						Vector3 PointOfMirror = MarkersInfo.ClosestPointToLine(Origin, Origin2, Point);
 						Vector3 FinalDir = PointOfMirror - Point;
 						FinalDir.y = 0;
 						FinalDir.Normalize();
@@ -643,7 +643,7 @@ public class CameraControler : MonoBehaviour {
 						Origin2 = new Vector3(Edit.Scenario.ScenarioData.Size.y / 10f, 0, -Edit.Scenario.ScenarioData.Size.y / 10f);
 						Point = new Vector3(MirroredMarker.x, 0, MirroredMarker.z);
 
-						PointOfMirror = EditingMarkers.ClosestPointToLine(Origin, Origin2, Point);
+						PointOfMirror = MarkersInfo.ClosestPointToLine(Origin, Origin2, Point);
 						FinalDir = PointOfMirror - Point;
 						FinalDir.y = 0;
 						FinalDir.Normalize();
@@ -659,7 +659,7 @@ public class CameraControler : MonoBehaviour {
 						int Count = PlayerPrefs.GetInt("SymmetryAngleCount", 2);
 						float angle = 360.0f / (float)Count;
 
-						Vector3 MirroredMarker = EditingMarkers.RotatePointAroundPivot(HitPointSnaped, Edit.Scenario.MapCenterPoint, angle * (i + 1));
+						Vector3 MirroredMarker = MarkersInfo.RotatePointAroundPivot(HitPointSnaped, Edit.Scenario.MapCenterPoint, angle * (i + 1));
 						MirroredMarker.y = Terrain.activeTerrain.SampleHeight(MirroredMarker);
 						MarkerToCreateSymmetry[i].position = MirroredMarker;
 					}

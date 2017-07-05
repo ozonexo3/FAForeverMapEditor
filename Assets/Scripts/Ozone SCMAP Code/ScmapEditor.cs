@@ -9,25 +9,30 @@ using UnityStandardAssets.ImageEffects;
 public class ScmapEditor : MonoBehaviour {
 
 	public static ScmapEditor Current;
-	static bool SaveStratumToPng = false; // Can save stratum masks to debug if everything is ok
 
-	public		ResourceBrowser	ResBrowser;
-	public		Terrain			Teren;
-	public		TerrainData		Data;
-	public		Transform		WaterLevel;
-	public		Camera			Kamera;
-	private		float[,] 		heights = new float[1,1];
-	public		Light			Sun;
-	public		TerrainTexture[]	Textures;
-	public		Material			TerrainMaterial;
-	public		Material			WaterMaterial;
-	public		float			MapHeightScale = 1;
-	public		GetGamedataFile	Gamedata;
-	public		bool			Grid;
-	public		bool			Slope;
-	public		TerrainMesh		TerrainM;
+	[Header("Connections")]
+	public Camera			Cam;
+	public Terrain			Teren;
+	public TerrainData		Data;
+	public Transform		WaterLevel;
+	public ResourceBrowser	ResBrowser;
+	public Light			Sun;
+	public Material			TerrainMaterial;
+	public Material			WaterMaterial;
 
-	public		string			Shader;
+	[Header("Loaded variables")]
+	public TerrainTexture[] Textures; // Loaded textures
+	public Map map; // Loaded Scmap data
+	SkyboxData.SkyboxValues DefaultSkyboxData;
+
+	float[,] heights = new float[1, 1];
+	bool Grid;
+	bool			Slope;
+	string			Shader;
+	//public		TerrainMesh		TerrainM;
+
+	const float MapHeightScale = 1;
+
 
 	// Stratum Layer
 	[System.Serializable]
@@ -42,8 +47,6 @@ public class ScmapEditor : MonoBehaviour {
 		public	float		NormalScale;
 	}
 
-	public SkyboxData.SkyboxValues DefaultSkyboxData;
-	public Map map; // Map Object
 
 	void Awake(){
 		Current = this;
@@ -54,14 +57,6 @@ public class ScmapEditor : MonoBehaviour {
 		ToogleGrid(false);
 		heights = new float[10,10];
 		RestartTerrain();
-
-		//GetGamedataFile.PropObject Prop = GetGamedataFile.LoadProp("env.scd", "env/Evergreen/Props/Trees/Groups/Pine07_GroupA_prop.bp");
-		//Prop.CreatePropGameObject(new Vector3(6, 1.529f, -6));
-
-
-		//LoadedTestModel = GetGamedataFile.LoadModel("units.scd", "units/UEL0001/UEL0001_LOD0.scm");
-		//LoadedTestModel = GetGamedataFile.LoadModel("env.scd", "env/Evergreen/Props/Trees/Groups/Pine07_groupA_lod0.scm");
-
 	}
 	
 	public IEnumerator LoadScmapFile(){
@@ -81,7 +76,7 @@ public class ScmapEditor : MonoBehaviour {
 			Sun.intensity = map.LightingMultiplier * 0.5f;
 			RenderSettings.ambientLight = new Color(map.ShadowFillColor.x, map.ShadowFillColor.y, map.ShadowFillColor.z, 1);
 
-			Kamera.GetComponent<Bloom>().bloomIntensity = map.Bloom * 4;
+			Cam.GetComponent<Bloom>().bloomIntensity = map.Bloom * 4;
 
 			RenderSettings.fogColor = new Color(map.FogColor.x, map.FogColor.y, map.FogColor.z, 1);
 			RenderSettings.fogStartDistance = map.FogStart * 2;
@@ -167,7 +162,7 @@ public class ScmapEditor : MonoBehaviour {
 
 			try
 			{
-				Gamedata.LoadTextureFromGamedata("env.scd", Textures[i].AlbedoPath, i, false);
+				GetGamedataFile.LoadTextureFromGamedata("env.scd", Textures[i].AlbedoPath, i, false);
 			}
 			catch(System.Exception e)
 			{
@@ -177,7 +172,7 @@ public class ScmapEditor : MonoBehaviour {
 			yield return null;
 			try
 			{
-				Gamedata.LoadTextureFromGamedata("env.scd", Textures[i].NormalPath, i, true);
+				GetGamedataFile.LoadTextureFromGamedata("env.scd", Textures[i].NormalPath, i, true);
 			}
 			catch (System.Exception e)
 			{
@@ -230,24 +225,6 @@ public class ScmapEditor : MonoBehaviour {
 
 		// Set terrain heights from heights array
 		Data.SetHeights(0, 0, heights);
-
-		//TerrainM.Heights = heights;
-		//TerrainM.GenerateMesh ();
-
-		// Save stratum mask to files
-		if(SaveStratumToPng){
-			byte[] bytes;
-			string filename = "temfiles/tex1";
-			bytes =  map.TexturemapTex.EncodeToPNG();
-			filename += ".png";
-			System.IO.File.WriteAllBytes(filename, bytes);
-
-			bytes = null;
-			filename = "temfiles/tex2";
-			bytes =  map.TexturemapTex2.EncodeToPNG();
-			filename += ".png";
-			System.IO.File.WriteAllBytes(filename, bytes);
-		}
 
 
 		Teren.gameObject.layer = 8;
