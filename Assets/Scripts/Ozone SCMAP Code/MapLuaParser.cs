@@ -315,7 +315,6 @@ public class MapLuaParser : MonoBehaviour {
 			CamControll.RestartCam ();
 
 			EditMenu.MapInfoMenu.SaveAsFa.isOn = HeightmapControler.map.VersionMinor >= 60;
-			EditMenu.TexturesMenu.TTerrainXP.isOn = HeightmapControler.map.TerrainShader == "TTerrainXP";
 
 			if (loadSave) {
 				// Save LUA

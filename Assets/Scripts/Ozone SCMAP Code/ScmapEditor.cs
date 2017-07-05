@@ -23,7 +23,7 @@ public class ScmapEditor : MonoBehaviour {
 	[Header("Loaded variables")]
 	public TerrainTexture[] Textures; // Loaded textures
 	public Map map; // Loaded Scmap data
-	SkyboxData.SkyboxValues DefaultSkyboxData;
+	public SkyboxData.SkyboxValues DefaultSkyboxData;
 
 	float[,] heights = new float[1, 1];
 	bool Grid;
@@ -31,7 +31,7 @@ public class ScmapEditor : MonoBehaviour {
 	string			Shader;
 	//public		TerrainMesh		TerrainM;
 
-	const float MapHeightScale = 1;
+	const float MapHeightScale = 2048;
 
 
 	// Stratum Layer
@@ -123,6 +123,9 @@ public class ScmapEditor : MonoBehaviour {
 
 
 		Shader = map.TerrainShader;
+		MapLuaParser.Current.EditMenu.TexturesMenu.TTerrainXP.isOn = map.TerrainShader == "TTerrainXP";
+		ToogleShader();
+
 
 		MapLuaParser.Current.ScenarioData.MaxHeight = map.Water.Elevation;
 		MapLuaParser.Water = map.Water.HasWater;
@@ -426,5 +429,10 @@ public class ScmapEditor : MonoBehaviour {
 	public void ToogleSlope(bool To){
 		Slope = To;
 		TerrainMaterial.SetInt("_Slope", Slope?1:0);
+	}
+
+	public void ToogleShader()
+	{
+		TerrainMaterial.SetInt("_TTerrainXP", (MapLuaParser.Current.EditMenu.TexturesMenu.TTerrainXP.isOn) ? 1 : 0);
 	}
 }
