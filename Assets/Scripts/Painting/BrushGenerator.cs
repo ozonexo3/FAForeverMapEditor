@@ -68,26 +68,31 @@ public class BrushGenerator : MonoBehaviour
 	#endregion
 
 	#region Symmetry
-	// Generate positions - need to be done before paint
-	public void GenerateSymmetry(Vector3 Pos, float Size = 0, float Scatter = 0, float ScatterSize = 0)
+	public void AddScatter(ref Vector3 Pos, float Scatter = 0, float ScatterSize = 0)
 	{
-		BrushPos = Pos;
-
 		if (Scatter > 0)
 		{
 			if (Scatter > 50)
 				Scatter = 50;
 
 			Scatter *= ScatterSize;
-			BrushPos += (Quaternion.Euler(Vector3.up * Random.Range(0, 360)) * Vector3.forward) * Mathf.Lerp(Scatter, 0, Mathf.Pow(Random.Range(0f, 1f), 2));
+			Pos += (Quaternion.Euler(Vector3.up * Random.Range(0, 360)) * Vector3.forward) * Mathf.Lerp(Scatter, 0, Mathf.Pow(Random.Range(0f, 1f), 2));
 		}
+	}
+
+
+	// Generate positions - need to be done before paint
+	public void GenerateSymmetry(Vector3 Pos, float Size = 0, float Scatter = 0, float ScatterSize = 0)
+	{
+		BrushPos = Pos;
+
+		AddScatter(ref BrushPos, Scatter, ScatterSize);
 
 		if (Size > 0)
 		{
 			BrushPos += (Quaternion.Euler(Vector3.up * Random.Range(0, 360)) * Vector3.forward *
 				(Size * Mathf.Lerp(1, 0, Mathf.Pow(Random.Range(0f, 1f), 2f)))
 				);
-
 		}
 
 		switch (LastSym)

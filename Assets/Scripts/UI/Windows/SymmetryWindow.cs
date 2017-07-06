@@ -27,7 +27,7 @@ public class SymmetryWindow : MonoBehaviour {
 	public void SliderChange(){
 		if(Enabling) return;
 		bool AnythingChanged = false;
-		if(PlayerPrefs.GetInt("SymmetryAngleCount", 0) != (int)AngleSlider.value){
+		if(GetTolerance() != (int)AngleSlider.value){
 			PlayerPrefs.SetInt("SymmetryAngleCount", (int)AngleSlider.value);
 			AnythingChanged = true;
 		}
@@ -78,5 +78,12 @@ public class SymmetryWindow : MonoBehaviour {
 		PlayerPrefs.Save();
 
 		EditMenu.EditMarkers.UpdateSelectionRing();
+	}
+
+
+
+	public static float GetTolerance()
+	{
+		return PlayerPrefs.GetInt("SymmetryAngleCount", 0);
 	}
 }

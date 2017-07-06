@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class MassMath : MonoBehaviour {
+public struct MassMath {
 
 	public static float EasyInOut(float lerp){
 		return 0;

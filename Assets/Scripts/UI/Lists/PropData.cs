@@ -14,6 +14,9 @@ public class PropData : MonoBehaviour {
 	public		Text		TotalMassField;
 	public		Text		TotalEnergyField;
 
+	public InputField ScaleMin;
+	public InputField ScaleMax;
+
 	public void SetPropList(int _ID, string name, float mass, float energy, int count, string path){
 		ID = _ID;
 		NameField.text = name;

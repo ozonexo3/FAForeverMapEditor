@@ -53,6 +53,22 @@ namespace EditMap
 			public List<Prop> Props = new List<Prop>();
 			public GetGamedataFile.PropObject PropObject;
 			public List<GameObject> PropsInstances = new List<GameObject>();
+
+			public PropTypeGroup()
+			{
+				Props = new List<Prop>();
+				PropsInstances = new List<GameObject>();
+			}
+
+			public PropTypeGroup(GetGamedataFile.PropObject FromPropObject)
+			{
+				PropObject = FromPropObject;
+				Blueprint = PropObject.BP.Path;
+				HelpText = PropObject.BP.HelpText;
+
+				Props = new List<Prop>();
+				PropsInstances = new List<GameObject>();
+			}
 		}
 		#endregion
 
@@ -219,6 +235,7 @@ namespace EditMap
 			TotalEnergyCount = 0;
 			TotalReclaimTime = 0;
 			PaintPropObjects = new List<GetGamedataFile.PropObject>();
+			PaintButtons = new List<PropData>();
 		}
 
 		public void CleanPaintList()
@@ -241,6 +258,7 @@ namespace EditMap
 
 		#region UI
 		List<GetGamedataFile.PropObject> PaintPropObjects = new List<GetGamedataFile.PropObject>();
+		List<PropData> PaintButtons = new List<PropData>();
 
 		public GameObject PaintPropListObject;
 		public Transform PaintPropPivot;
@@ -267,6 +285,7 @@ namespace EditMap
 
 					GameObject NewPropListObject = Instantiate(PaintPropListObject, PaintPropPivot) as GameObject;
 					NewPropListObject.GetComponent<PropData>().SetPropPaint(PaintPropObjects.Count - 1, ResourceBrowser.Current.LoadedProps[ResourceBrowser.DragedObject.InstanceId].BP.Name);
+					PaintButtons.Add(NewPropListObject.GetComponent<PropData>());
 				}
 
 				//Map.Textures[Selected].Albedo = ResourceBrowser.Current.LoadedTextures[ResourceBrowser.DragedObject.InstanceId];
@@ -279,6 +298,7 @@ namespace EditMap
 			CleanPaintList();
 			Preview.Hide(PaintPropPivot.GetChild(ID).gameObject);
 			PaintPropObjects.RemoveAt(ID);
+			PaintButtons.RemoveAt(ID);
 
 			for (int i = 0; i < PaintPropObjects.Count; i++)
 			{
@@ -437,27 +457,85 @@ namespace EditMap
 		#region Painting
 		float size = 0;
 		int RandomProp = 0;
+		int RandomPropGroup = 0;
+		float RandomScale = 1f;
 		public void SymmetryPaint()
 		{
 			int Count = PaintPropObjects.Count;
 
-			if (Count <= 0)
+			if (Count <= 0 && !Invert)
 				return;
 			if (Random.Range(0, 100) > BrushStrengthSlider.value)
 				return;
 
 			size = BrushSizeSlider.value * 0.03f;
-			BrushGenerator.Current.GenerateSymmetry(BrushPos, size, float.Parse(Scatter.text), size);
-			BrushGenerator.Current.GenerateRotationSymmetry(Quaternion.Euler(Vector3.up * Random.Range(0, 360)));
 
-			RandomProp = Random.Range(0, Count);
-
-			for (int i = 0; i < BrushGenerator.Current.PaintPositions.Length; i++)
+			if (Invert)
 			{
-				if (Invert)
-				{ }
-				else
+				float Tolerance = SymmetryWindow.GetTolerance();
+
+				BrushGenerator.Current.GenerateSymmetry(BrushPos, 0, float.Parse(Scatter.text), size);
+
+				// Search props by grid
+				int ClosestG = -1;
+				int ClosestP = -1;
+				SearchClosestProp(BrushGenerator.Current.PaintPositions[0], out ClosestG, out ClosestP);
+
+				if (ClosestG < 0 || ClosestP < 0)
+					return; // No props found
+
+				BrushPos = AllPropsTypes[ClosestG].PropsInstances[ClosestP].transform.position;
+				BrushGenerator.Current.GenerateSymmetry(BrushPos, 0, 0, 0);
+
+				for (int i = 0; i < BrushGenerator.Current.PaintPositions.Length; i++)
+				{
+					if(i == 0)
+					{
+						Destroy(AllPropsTypes[ClosestG].PropsInstances[ClosestP].gameObject);
+						AllPropsTypes[ClosestG].PropsInstances.RemoveAt(ClosestP);
+					}
+					else
+					{
+						SearchClosestProp(BrushGenerator.Current.PaintPositions[i], out ClosestG, out ClosestP);
+						if (ClosestG >= 0 && ClosestP >= 0)
+						{
+							Destroy(AllPropsTypes[ClosestG].PropsInstances[ClosestP].gameObject);
+							AllPropsTypes[ClosestG].PropsInstances.RemoveAt(ClosestP);
+						}
+					}
+				}
+
+			}
+			else
+			{
+				BrushGenerator.Current.GenerateSymmetry(BrushPos, size, float.Parse(Scatter.text), size);
+				BrushGenerator.Current.GenerateRotationSymmetry(Quaternion.Euler(Vector3.up * Random.Range(0, 360)));
+
+				RandomProp = Random.Range(0, Count);
+				RandomScale = Random.Range(MassMath.StringToFloat(PaintButtons[RandomProp].ScaleMin.text), MassMath.StringToFloat(PaintButtons[RandomProp].ScaleMax.text));
+
+				// Search group id
+				RandomPropGroup = -1;
+				for (int i = 0; i < AllPropsTypes.Count; i++)
+				{
+					if (AllPropsTypes[i].Blueprint == PaintPropObjects[RandomProp].BP.Path)
+					{
+						RandomPropGroup = i;
+						break;
+					}
+				}
+				if(RandomPropGroup < 0) // Create new group
+				{
+					PropTypeGroup NewGroup = new PropTypeGroup(PaintPropObjects[RandomProp]);
+					RandomPropGroup = AllPropsTypes.Count;
+					AllPropsTypes.Add(NewGroup);
+				}
+
+
+				for (int i = 0; i < BrushGenerator.Current.PaintPositions.Length; i++)
+				{
 					Paint(BrushGenerator.Current.PaintPositions[i], BrushGenerator.Current.PaintRotations[i]);
+				}
 			}
 		}
 
@@ -466,9 +544,40 @@ namespace EditMap
 
 			AtPosition.y = ScmapEditor.Current.Teren.SampleHeight(AtPosition);
 
-			PaintPropObjects[RandomProp].CreatePropGameObject(AtPosition, Rotation);
+			AllPropsTypes[RandomPropGroup].PropsInstances.Add(PaintPropObjects[RandomProp].CreatePropGameObject(AtPosition, Rotation, RandomScale));
+
+		}
 
 
+
+		void SearchClosestProp(Vector3 Pos, out int ClosestG, out int ClosestP)
+		{
+			int GroupsCount = AllPropsTypes.Count;
+			int PropsCount = 0;
+
+			int g = 0;
+			int p = 0;
+			float dist = 0;
+
+			ClosestG = -1;
+			ClosestP = -1;
+			float ClosestDist = 1000000f;
+
+			for (g = 0; g < AllPropsTypes.Count; g++)
+			{
+				PropsCount = AllPropsTypes[g].PropsInstances.Count;
+
+				for (p = 0; p < PropsCount; p++)
+				{
+					dist = Vector3.Distance(Pos, AllPropsTypes[g].PropsInstances[p].transform.position);
+					if (dist < ClosestDist && dist < size)
+					{
+						ClosestG = g;
+						ClosestP = p;
+						ClosestDist = dist;
+					}
+				}
+			}
 		}
 
 		#endregion

@@ -10,7 +10,7 @@ public partial struct GetGamedataFile
 	{
 		public BluePrint BP;
 
-		public GameObject CreatePropGameObject(Vector3 position, Quaternion rotation)
+		public GameObject CreatePropGameObject(Vector3 position, Quaternion rotation, float scale = 1f)
 		{
 			Type[] Components = new Type[] { typeof(MeshFilter), typeof(MeshRenderer) };
 			GameObject NewProp = new GameObject(BP.Name, Components);
@@ -22,15 +22,20 @@ public partial struct GetGamedataFile
 
 				NewProp.transform.localPosition = position;
 				NewProp.transform.localRotation = rotation;
-				NewProp.transform.localScale = BP.LocalScale;
+				NewProp.transform.localScale = BP.LocalScale * scale;
+
+				//Assign Prop To Grid
 			}
 			else
 			{
 				Debug.LogError("Prop is empty! " + BP.Path);
-
 			}
+
+			ScmapEditor.MapWorldPosInSave(position);
+
 			return NewProp;
 		}
+
 	}
 
 	public class BluePrint
