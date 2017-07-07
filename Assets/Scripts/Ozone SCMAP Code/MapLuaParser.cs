@@ -39,6 +39,7 @@ public class MapLuaParser : MonoBehaviour {
 	public		List<Hydro>		Hydros = new List<Hydro>();
 	public		List<Army>		ARMY_ = new List<Army>();
 	public		List<Marker>	SiMarkers = new List<Marker>();
+	public int ArmyHidenCount = 0;
 
 	public		List<int>		MexesTrash;
 	public		List<int>		HydrosTrash;

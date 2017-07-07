@@ -121,6 +121,7 @@ public class ScmapEditor : MonoBehaviour {
 
 		}
 
+		EnvPaths.CurrentGamedataPath = EnvPaths.GetGamedataPath();
 
 		Shader = map.TerrainShader;
 		MapLuaParser.Current.EditMenu.TexturesMenu.TTerrainXP.isOn = map.TerrainShader == "TTerrainXP";

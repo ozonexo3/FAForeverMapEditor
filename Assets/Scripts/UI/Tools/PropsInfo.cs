@@ -21,6 +21,8 @@ namespace EditMap
 		public Text TotalTime;
 		public GameObject[] Tabs;
 		public GameObject[] TabSelected;
+		public GameObject PropObjectPrefab;
+		public Transform PropsParent;
 
 		[Header("Brush")]
 		public Slider BrushSizeSlider;
@@ -52,12 +54,12 @@ namespace EditMap
 			public string HelpText = "";
 			public List<Prop> Props = new List<Prop>();
 			public GetGamedataFile.PropObject PropObject;
-			public List<GameObject> PropsInstances = new List<GameObject>();
+			public List<PropGameObject> PropsInstances = new List<PropGameObject>();
 
 			public PropTypeGroup()
 			{
 				Props = new List<Prop>();
-				PropsInstances = new List<GameObject>();
+				PropsInstances = new List<PropGameObject>();
 			}
 
 			public PropTypeGroup(GetGamedataFile.PropObject FromPropObject)
@@ -67,7 +69,7 @@ namespace EditMap
 				HelpText = PropObject.BP.HelpText;
 
 				Props = new List<Prop>();
-				PropsInstances = new List<GameObject>();
+				PropsInstances = new List<PropGameObject>();
 			}
 		}
 		#endregion
@@ -110,7 +112,7 @@ namespace EditMap
 				{
 					for (int p = 0; p < AllPropsTypes[i].PropsInstances.Count; p++)
 					{
-						Destroy(AllPropsTypes[i].PropsInstances[p]);
+						Destroy(AllPropsTypes[i].PropsInstances[p].gameObject);
 					}
 				}
 
@@ -128,10 +130,11 @@ namespace EditMap
 
 			//Debug.Log("Found props: " + Props.Count);
 
-			const int YieldStep = 100;
+			const int YieldStep = 1000;
 			int LoadCounter = YieldStep;
+			int Count = Props.Count;
 
-			for (int i = 0; i < Props.Count; i++)
+			for (int i = 0; i < Count; i++)
 			{
 				bool NewProp = false;
 				int GroupId = 0;
@@ -166,8 +169,10 @@ namespace EditMap
 				}
 
 				//TODO store props as instances
-				GameObject NewPropGameobject = AllPropsTypes[GroupId].PropObject.CreatePropGameObject(ScmapEditor.MapPosInWorld(Props[i].Position), Quaternion.LookRotation(Props[i].RotationZ, Props[i].RotationY));
-				AllPropsTypes[GroupId].PropsInstances.Add(NewPropGameobject);
+				//GameObject NewPropGameobject = AllPropsTypes[GroupId].PropObject.CreatePropGameObject(ScmapEditor.MapPosInWorld(Props[i].Position), Quaternion.LookRotation(Props[i].RotationZ, Props[i].RotationY));
+				AllPropsTypes[GroupId].PropsInstances.Add(
+					AllPropsTypes[GroupId].PropObject.CreatePropGameObject(ScmapEditor.MapPosInWorld(Props[i].Position), Quaternion.LookRotation(Props[i].RotationZ, Props[i].RotationY))
+					);
 				LoadCounter--;
 				if (LoadCounter <= 0)
 				{
@@ -181,11 +186,11 @@ namespace EditMap
 				TotalMassCount += AllPropsTypes[GroupId].PropObject.BP.ReclaimMassMax;
 				TotalEnergyCount += AllPropsTypes[GroupId].PropObject.BP.ReclaimEnergyMax;
 				TotalReclaimTime += AllPropsTypes[GroupId].PropObject.BP.ReclaimTime;
-
-				TotalMass.text = TotalMassCount.ToString();
-				TotalEnergy.text = TotalEnergyCount.ToString();
-				TotalTime.text = TotalReclaimTime.ToString();
 			}
+
+			TotalMass.text = TotalMassCount.ToString();
+			TotalEnergy.text = TotalEnergyCount.ToString();
+			TotalTime.text = TotalReclaimTime.ToString();
 
 			yield return null;
 
@@ -541,11 +546,9 @@ namespace EditMap
 
 		void Paint(Vector3 AtPosition, Quaternion Rotation)
 		{
-
 			AtPosition.y = ScmapEditor.Current.Teren.SampleHeight(AtPosition);
 
 			AllPropsTypes[RandomPropGroup].PropsInstances.Add(PaintPropObjects[RandomProp].CreatePropGameObject(AtPosition, Rotation, RandomScale));
-
 		}
 
 
@@ -581,5 +584,12 @@ namespace EditMap
 		}
 
 		#endregion
+
+
+		public void UpdatePropsHeight()
+		{
+
+		}
+
 	}
 }

@@ -194,6 +194,7 @@ namespace EditMap
 						if (UpdateBrushPosition(false))
 						{
 							SymmetryPaint();
+							PropsRenderer.Current.UpdatePropsHeights();
 						}
 					}
 					else
@@ -204,6 +205,7 @@ namespace EditMap
 					if (Painting && Input.GetMouseButtonUp(0))
 					{
 						RegenerateMaps();
+						PropsRenderer.Current.UpdatePropsHeights();
 					}
 				}
 			}

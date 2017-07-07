@@ -31,6 +31,8 @@ public class EnvPaths : MonoBehaviour {
 		return GetInstalationPath() + InstalationGamedata;
 	}
 
+	public static string CurrentGamedataPath = "";
+
 	public static void SetMapsPath(string value){
 		value = value.Replace("\\", "/");
 		if(value[value.Length - 1].ToString() != "/") value += "/";

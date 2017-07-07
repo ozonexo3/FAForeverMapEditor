@@ -2,27 +2,43 @@
 using System.Collections;
 using System;
 using NLua;
+using EditMap;
 
 public partial struct GetGamedataFile
 {
+
+	static LOD[] Lods;
 
 	public class PropObject
 	{
 		public BluePrint BP;
 
-		public GameObject CreatePropGameObject(Vector3 position, Quaternion rotation, float scale = 1f)
+		public PropGameObject CreatePropGameObject(Vector3 position, Quaternion rotation, float scale = 1f)
 		{
-			Type[] Components = new Type[] { typeof(MeshFilter), typeof(MeshRenderer) };
-			GameObject NewProp = new GameObject(BP.Name, Components);
+			//Type[] Components = new Type[] { typeof(MeshFilter), typeof(MeshRenderer), typeof(LODGroup) };
+			//GameObject NewProp = new GameObject(BP.Name, Components);
+
+			PropGameObject NewProp = GameObject.Instantiate(PropsInfo.Current.PropObjectPrefab, PropsInfo.Current.PropsParent).GetComponent<PropGameObject>();
 
 			if (BP.LODs.Length > 0)
 			{
-				NewProp.GetComponent<MeshFilter>().sharedMesh = BP.LODs[0].Mesh;
-				NewProp.GetComponent<MeshRenderer>().sharedMaterial = BP.LODs[0].Mat;
+				NewProp.Mf.sharedMesh = BP.LODs[0].Mesh;
+				NewProp.Mr.sharedMaterial = BP.LODs[0].Mat;
+				//LOD[] Lods = new LOD[1];
 
-				NewProp.transform.localPosition = position;
-				NewProp.transform.localRotation = rotation;
-				NewProp.transform.localScale = BP.LocalScale * scale;
+				float DeltaSize = Mathf.Max(BP.LODs[0].Mesh.bounds.size.x, BP.LODs[0].Mesh.bounds.size.y);
+				DeltaSize = Mathf.Max(DeltaSize, BP.LODs[0].Mesh.bounds.size.z);
+
+				//Lods[0] = new LOD(Mathf.Lerp(0.02f, 0.22f, Mathf.Pow((DeltaSize - 2f) / 190f, 2f)), new Renderer[] { (Renderer)NewProp.GetComponent<MeshRenderer>() });
+				//NewProp.Lodg.SetLODs(Lods);
+				Lods = NewProp.Lodg.GetLODs();
+				Lods[0].screenRelativeTransitionHeight = Mathf.Lerp(0.02f, 0.22f, Mathf.Pow((DeltaSize - 2f) / 190f, 2f));
+				NewProp.Lodg.SetLODs(Lods);
+				//NewProp.Lodg.
+
+				NewProp.Tr.localPosition = position;
+				NewProp.Tr.localRotation = rotation;
+				NewProp.Tr.localScale = BP.LocalScale * scale;
 
 				//Assign Prop To Grid
 			}
@@ -31,7 +47,7 @@ public partial struct GetGamedataFile
 				Debug.LogError("Prop is empty! " + BP.Path);
 			}
 
-			ScmapEditor.MapWorldPosInSave(position);
+			//ScmapEditor.MapWorldPosInSave(position);
 
 			return NewProp;
 		}

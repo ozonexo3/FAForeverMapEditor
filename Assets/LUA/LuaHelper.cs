@@ -85,9 +85,19 @@ public class LuaHelper : MonoBehaviour {
 
 		public Color GetColorValue(string key){
 			Color MyColor = Color.white;
-			if (ColorUtility.TryParseHtmlString ("#"+GetStringValue ("color"), out MyColor)) {
-			} else {
-				Debug.LogError ("Cant parse color value: " + GetStringValue ("color"));
+			string StringColorValue = GetStringValue("color");
+
+			if (ColorUtility.TryParseHtmlString ("#" + StringColorValue, out MyColor))
+			{
+			}
+			else if (ColorUtility.TryParseHtmlString("#" + StringColorValue.Substring(0, 8), out MyColor))
+			{
+			}
+			else if (ColorUtility.TryParseHtmlString("#" + StringColorValue.Substring(0, 6), out MyColor))
+			{
+			}
+			else {
+				Debug.LogError ("Cant parse color value: " + StringColorValue);
 			}
 			return MyColor;
 		}

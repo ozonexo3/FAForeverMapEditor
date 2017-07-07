@@ -90,11 +90,13 @@ public partial struct GetGamedataFile
 				normalTexture.SetPixels(0, 0, Texwidth, Texheight, Pixels, m);
 			}
 
-			normalTexture.Apply(false);
-
 			normalTexture.mipMapBias = MipmapBias;
 			normalTexture.filterMode = FilterMode.Bilinear;
 			normalTexture.anisoLevel = AnisoLevel;
+
+			normalTexture.Apply(false);
+
+
 			return normalTexture;
 		}
 
@@ -136,7 +138,18 @@ public partial struct GetGamedataFile
 		public uint depth;
 		public uint mipmapcount;
 		public uint alphabitdepth;
-		public uint[] reserved;
+		//public uint[] reserved;
+
+		public uint reserved0;
+		public uint reserved1;
+		public uint reserved2;
+		public uint reserved3;
+		public uint reserved4;
+		public uint reserved5;
+		public uint reserved6;
+		public uint reserved7;
+		public uint reserved8;
+		public uint reserved9;
 
 		public uint pixelformatSize;
 		public uint pixelformatflags;
@@ -200,11 +213,22 @@ public partial struct GetGamedataFile
 		DDsHeader.mipmapcount = Stream.ReadUInt32();
 
 		DDsHeader.alphabitdepth = Stream.ReadUInt32();
-		DDsHeader.reserved = new uint[10];
+		/*DDsHeader.reserved = new uint[10];
 		for (int i = 0; i < 10; i++)
 		{
 			DDsHeader.reserved[i] = Stream.ReadUInt32();
-		}
+		}*/
+
+		DDsHeader.reserved0 = Stream.ReadUInt32();
+		DDsHeader.reserved1 = Stream.ReadUInt32();
+		DDsHeader.reserved2 = Stream.ReadUInt32();
+		DDsHeader.reserved3 = Stream.ReadUInt32();
+		DDsHeader.reserved4 = Stream.ReadUInt32();
+		DDsHeader.reserved5 = Stream.ReadUInt32();
+		DDsHeader.reserved6 = Stream.ReadUInt32();
+		DDsHeader.reserved7 = Stream.ReadUInt32();
+		DDsHeader.reserved8 = Stream.ReadUInt32();
+		DDsHeader.reserved9 = Stream.ReadUInt32();
 
 		DDsHeader.pixelformatSize = Stream.ReadUInt32();
 		DDsHeader.pixelformatflags = Stream.ReadUInt32();

@@ -32,7 +32,7 @@ public partial struct GetGamedataFile
 	/// <returns></returns>
 	public static byte[] LoadBytes(string scd, string LocalPath)
 	{
-		if (Init)
+		if (!Init)
 		{
 			ICSharpCode.SharpZipLib.Zip.ZipConstants.DefaultCodePage = 0;
 			Init = true;
@@ -41,11 +41,12 @@ public partial struct GetGamedataFile
 
 		if (string.IsNullOrEmpty(LocalPath)) return null;
 
-		if (!Directory.Exists(EnvPaths.GetGamedataPath()))
+		if (!Directory.Exists(EnvPaths.CurrentGamedataPath))
 		{
 			Debug.LogError("Gamedata path not exist!");
 			return null;
 		}
+
 		//byte[] FinalBytes = new byte[0];
 		int ScdId = -1;
 
@@ -69,8 +70,8 @@ public partial struct GetGamedataFile
 			ScdFiles[ScdId].zf = new ZipFile(fs);
 		}
 
-
 		ZipEntry zipEntry2 = ScdFiles[ScdId].zf.GetEntry(LocalPath);
+
 		if (zipEntry2 == null)
 		{
 			//Debug.LogWarning("Zip Entry is empty for: " + LocalPath);

@@ -84,9 +84,22 @@ public static class TextureLoader
 
 		// Reserved x11
 		finalByteData = finalByteData.Concat(BitConverter.GetBytes(header.alphabitdepth));
-		for(int i = 0; i < header.reserved.Length; i++){
+
+		/*for (int i = 0; i < header.reserved.Length; i++){
 			finalByteData = finalByteData.Concat(BitConverter.GetBytes(header.reserved[i]));
-		}
+		}*/
+
+		finalByteData = finalByteData.Concat(BitConverter.GetBytes(header.reserved0));
+		finalByteData = finalByteData.Concat(BitConverter.GetBytes(header.reserved1));
+		finalByteData = finalByteData.Concat(BitConverter.GetBytes(header.reserved2));
+		finalByteData = finalByteData.Concat(BitConverter.GetBytes(header.reserved3));
+		finalByteData = finalByteData.Concat(BitConverter.GetBytes(header.reserved4));
+		finalByteData = finalByteData.Concat(BitConverter.GetBytes(header.reserved5));
+		finalByteData = finalByteData.Concat(BitConverter.GetBytes(header.reserved6));
+		finalByteData = finalByteData.Concat(BitConverter.GetBytes(header.reserved7));
+		finalByteData = finalByteData.Concat(BitConverter.GetBytes(header.reserved8));
+		finalByteData = finalByteData.Concat(BitConverter.GetBytes(header.reserved9));
+
 
 		// Pixel Format
 		finalByteData = finalByteData.Concat(BitConverter.GetBytes(header.pixelformatSize));
