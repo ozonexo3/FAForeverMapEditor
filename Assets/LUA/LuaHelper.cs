@@ -41,6 +41,12 @@ public class LuaHelper : MonoBehaviour {
 			return false;
 		}
 
+		public static string CleanString(string value)
+		{
+			//return value;
+			return value.Replace("' ),", "");
+		}
+
 		public object GetValue(string key){
 			return Data [key];
 		}
@@ -48,7 +54,7 @@ public class LuaHelper : MonoBehaviour {
 		public string GetStringValue(string key){
 			if (Data [key] == null)
 				return "";
-			return Data [key].ToString();
+			return CleanString(Data[key].ToString());
 		}
 
 		public string[] GetStringArrayValue(string key){
@@ -74,13 +80,13 @@ public class LuaHelper : MonoBehaviour {
 		public int GetIntValue(string key){
 			if (Data [key] == null)
 				return 0;
-			return int.Parse(Data [key].ToString());
+			return int.Parse(CleanString(Data [key].ToString()));
 		}
 
 		public float GetFloatValue(string key){
 			if (Data [key] == null)
 				return 0;
-			return float.Parse(Data [key].ToString(), System.Globalization.CultureInfo.InvariantCulture.NumberFormat);
+			return float.Parse(CleanString(Data [key].ToString()), System.Globalization.CultureInfo.InvariantCulture.NumberFormat);
 		}
 
 		public Color GetColorValue(string key){

@@ -32,6 +32,7 @@ namespace EditMap
 		public InputField BrushMini;
 		public InputField BrushMax;
 		public InputField Scatter;
+		public Toggle AllowWaterLevel;
 		public LayerMask TerrainMask;
 		public Material TerrainMaterial;
 
@@ -52,13 +53,12 @@ namespace EditMap
 			public string Blueprint = "";
 			public string LoadBlueprint = "";
 			public string HelpText = "";
-			public List<Prop> Props = new List<Prop>();
+			//public Prop[] Props = new Prop[0];
 			public GetGamedataFile.PropObject PropObject;
 			public List<PropGameObject> PropsInstances = new List<PropGameObject>();
 
 			public PropTypeGroup()
 			{
-				Props = new List<Prop>();
 				PropsInstances = new List<PropGameObject>();
 			}
 
@@ -68,8 +68,35 @@ namespace EditMap
 				Blueprint = PropObject.BP.Path;
 				HelpText = PropObject.BP.HelpText;
 
-				Props = new List<Prop>();
 				PropsInstances = new List<PropGameObject>();
+			}
+
+			public Prop[] GenerateSupComProps()
+			{
+				int count = PropsInstances.Count;
+				Prop[] Props = new Prop[count];
+
+				for (int i = 0; i < count; i++)
+				{
+					Props[i] = new Prop();
+					if (!Blueprint.StartsWith("/"))
+						Blueprint = "/" + Blueprint;
+
+					Props[i].BlueprintPath = Blueprint;
+					Props[i].Position = ScmapEditor.MapWorldPosInSave(PropsInstances[i].Tr.position);
+					Props[i].RotationX = Vector3.zero;
+					Props[i].RotationY = Vector3.zero;
+					Props[i].RotationZ = Vector3.zero;
+					MassMath.QuaternionToRotationMatrix(PropsInstances[i].Tr.localRotation, ref Props[i].RotationX, ref Props[i].RotationY, ref Props[i].RotationZ);
+
+					Vector3 Scale = PropsInstances[i].Tr.localScale;
+					Scale.x /= PropObject.BP.LocalScale.x;
+					Scale.y /= PropObject.BP.LocalScale.y;
+					Scale.z /= PropObject.BP.LocalScale.z;
+
+					Props[i].Scale = Scale;
+				}
+				return Props;
 			}
 		}
 		#endregion
@@ -83,7 +110,10 @@ namespace EditMap
 
 		void OnEnable()
 		{
+
 			BrushGenerator.Current.LoadBrushes();
+			TerrainMaterial.SetInt("_Brush", 1);
+
 			BrushGenerator.Current.Brushes[SelectedFalloff].wrapMode = TextureWrapMode.Clamp;
 			BrushGenerator.Current.Brushes[SelectedFalloff].mipMapBias = -1f;
 			TerrainMaterial.SetTexture("_BrushTex", (Texture)BrushGenerator.Current.Brushes[SelectedFalloff]);
@@ -93,6 +123,7 @@ namespace EditMap
 		void OnDisable()
 		{
 			CleanSettingsList();
+			TerrainMaterial.SetInt("_Brush", 0);
 			TerrainMaterial.SetFloat("_BrushSize", 0);
 		}
 
@@ -170,8 +201,13 @@ namespace EditMap
 
 				//TODO store props as instances
 				//GameObject NewPropGameobject = AllPropsTypes[GroupId].PropObject.CreatePropGameObject(ScmapEditor.MapPosInWorld(Props[i].Position), Quaternion.LookRotation(Props[i].RotationZ, Props[i].RotationY));
+
 				AllPropsTypes[GroupId].PropsInstances.Add(
-					AllPropsTypes[GroupId].PropObject.CreatePropGameObject(ScmapEditor.MapPosInWorld(Props[i].Position), Quaternion.LookRotation(Props[i].RotationZ, Props[i].RotationY))
+					AllPropsTypes[GroupId].PropObject.CreatePropGameObject(
+						ScmapEditor.MapPosInWorld(Props[i].Position),
+						MassMath.QuaternionFromRotationMatrix(Props[i].RotationX, Props[i].RotationY, Props[i].RotationZ), 
+						Props[i].Scale
+						)
 					);
 				LoadCounter--;
 				if (LoadCounter <= 0)
@@ -180,7 +216,7 @@ namespace EditMap
 					yield return null;
 				}
 
-				AllPropsTypes[GroupId].Props.Add(Props[i]);
+				//AllPropsTypes[GroupId].Props.Add(Props[i]);
 
 
 				TotalMassCount += AllPropsTypes[GroupId].PropObject.BP.ReclaimMassMax;
@@ -218,7 +254,7 @@ namespace EditMap
 				GameObject NewListObject = Instantiate(PropGroupObject) as GameObject;
 				NewListObject.transform.SetParent(Pivot, false);
 				NewListObject.transform.localScale = Vector3.one;
-				NewListObject.GetComponent<PropData>().SetPropList(i, AllPropsTypes[i].PropObject.BP.Name, AllPropsTypes[i].PropObject.BP.ReclaimMassMax, AllPropsTypes[i].PropObject.BP.ReclaimEnergyMax, AllPropsTypes[i].Props.Count, AllPropsTypes[i].Blueprint);
+				NewListObject.GetComponent<PropData>().SetPropList(i, AllPropsTypes[i].PropObject.BP.Name, AllPropsTypes[i].PropObject.BP.ReclaimMassMax, AllPropsTypes[i].PropObject.BP.ReclaimEnergyMax, AllPropsTypes[i].PropsInstances.Count, AllPropsTypes[i].Blueprint);
 
 				/*
 				TotalMassCount += AllPropsTypes[i].Props.Count * AllPropsTypes[i].PropObject.BP.ReclaimMassMax;
@@ -331,9 +367,33 @@ namespace EditMap
 				ShowReclaimGroups();
 		}
 
+
+		bool InforeUpdate = false;
 		public void UpdateBrushMenu(bool Slider)
 		{
+			if (InforeUpdate)
+				return;
 
+			if (Slider)
+			{
+				InforeUpdate = true;
+				UpdateBrushPosition(true);
+
+				BrushSize.text = BrushSizeSlider.value.ToString();
+				BrushStrength.text = BrushStrengthSlider.value.ToString();
+
+				InforeUpdate = false;
+			}
+			else
+			{
+				InforeUpdate = true;
+
+				BrushSizeSlider.value = int.Parse(BrushSize.text);
+				BrushStrengthSlider.value = int.Parse(BrushStrength.text);
+
+				InforeUpdate = false;
+				UpdateBrushMenu(true);
+			}
 
 		}
 
@@ -394,7 +454,7 @@ namespace EditMap
 					{
 						BrushSizeSlider.value = Mathf.Clamp(SizeBeginValue - (int)((BeginMousePos.x - Input.mousePosition.x) * 0.4f), 1, 256);
 						UpdateBrushMenu(true);
-						UpdateBrushPosition(true);
+						
 
 					}
 				}
@@ -406,14 +466,14 @@ namespace EditMap
 
 						if (CameraControler.Current.DragStartedGameplay && UpdateBrushPosition(true))
 						{
-							SymmetryPaint();
+							SymmetryPaint(true);
 						}
 					}
 					else if (Input.GetMouseButton(0))
 					{
 						if (CameraControler.Current.DragStartedGameplay && UpdateBrushPosition(false))
 						{
-							SymmetryPaint();
+							SymmetryPaint(false);
 						}
 					}
 					else
@@ -464,16 +524,34 @@ namespace EditMap
 		int RandomProp = 0;
 		int RandomPropGroup = 0;
 		float RandomScale = 1f;
-		public void SymmetryPaint()
+		float StepCount = 100;
+		public void SymmetryPaint(bool forced = false)
 		{
 			int Count = PaintPropObjects.Count;
-
 			if (Count <= 0 && !Invert)
+			{
+#if UNITY_EDITOR
+				Debug.Log("No props selected");
+
+#endif
 				return;
-			if (Random.Range(0, 100) > BrushStrengthSlider.value)
+			}
+
+			size = BrushSizeSlider.value * 0.07f;
+
+			//float BrushField = Mathf.PI * (size * size);
+			//BrushField /= 16f;
+
+			//Debug.Log(size + ", " + BrushField);
+
+			// Check if paint
+			StepCount --;
+			if (StepCount >= Mathf.Lerp(BrushStrengthSlider.value, 100, Mathf.Sqrt(size / 7f)) && !forced)
 				return;
 
-			size = BrushSizeSlider.value * 0.03f;
+			StepCount = 100;
+
+			//Real brush size
 
 			if (Invert)
 			{
@@ -484,7 +562,7 @@ namespace EditMap
 				// Search props by grid
 				int ClosestG = -1;
 				int ClosestP = -1;
-				SearchClosestProp(BrushGenerator.Current.PaintPositions[0], out ClosestG, out ClosestP);
+				SearchClosestProp(BrushGenerator.Current.PaintPositions[0], size, out ClosestG, out ClosestP);
 
 				if (ClosestG < 0 || ClosestP < 0)
 					return; // No props found
@@ -501,7 +579,7 @@ namespace EditMap
 					}
 					else
 					{
-						SearchClosestProp(BrushGenerator.Current.PaintPositions[i], out ClosestG, out ClosestP);
+						SearchClosestProp(BrushGenerator.Current.PaintPositions[i], Tolerance, out ClosestG, out ClosestP);
 						if (ClosestG >= 0 && ClosestP >= 0)
 						{
 							Destroy(AllPropsTypes[ClosestG].PropsInstances[ClosestP].gameObject);
@@ -536,6 +614,24 @@ namespace EditMap
 					AllPropsTypes.Add(NewGroup);
 				}
 
+				//float BrushSlope = ScmapEditor.Current.Teren.
+				int Min = int.Parse( BrushMini.text);
+				int Max = int.Parse(BrushMax.text);
+
+				if (Min > 0 || Max < 90)
+				{
+
+					Vector3 LocalPos = ScmapEditor.Current.Teren.transform.InverseTransformPoint(BrushGenerator.Current.PaintPositions[0]);
+					LocalPos.x /= ScmapEditor.Current.Teren.terrainData.size.x;
+					LocalPos.z /= ScmapEditor.Current.Teren.terrainData.size.z;
+
+					float angle = Vector3.Angle(Vector3.up, ScmapEditor.Current.Teren.terrainData.GetInterpolatedNormal(LocalPos.x, LocalPos.z));
+					if ((angle < Min && Min > 0) || (angle > Max && Max < 90))
+						return;
+				}
+
+				if (!AllowWaterLevel.isOn && ScmapEditor.Current.Teren.SampleHeight(BrushGenerator.Current.PaintPositions[0]) <= ScmapEditor.Current.WaterLevel.position.y)
+					return;
 
 				for (int i = 0; i < BrushGenerator.Current.PaintPositions.Length; i++)
 				{
@@ -548,12 +644,12 @@ namespace EditMap
 		{
 			AtPosition.y = ScmapEditor.Current.Teren.SampleHeight(AtPosition);
 
-			AllPropsTypes[RandomPropGroup].PropsInstances.Add(PaintPropObjects[RandomProp].CreatePropGameObject(AtPosition, Rotation, RandomScale));
+			AllPropsTypes[RandomPropGroup].PropsInstances.Add(PaintPropObjects[RandomProp].CreatePropGameObject(AtPosition, Rotation, Vector3.one * RandomScale));
 		}
 
 
 
-		void SearchClosestProp(Vector3 Pos, out int ClosestG, out int ClosestP)
+		void SearchClosestProp(Vector3 Pos, float tolerance, out int ClosestG, out int ClosestP)
 		{
 			int GroupsCount = AllPropsTypes.Count;
 			int PropsCount = 0;
@@ -573,7 +669,7 @@ namespace EditMap
 				for (p = 0; p < PropsCount; p++)
 				{
 					dist = Vector3.Distance(Pos, AllPropsTypes[g].PropsInstances[p].transform.position);
-					if (dist < ClosestDist && dist < size)
+					if (dist < ClosestDist && dist < size && dist < tolerance)
 					{
 						ClosestG = g;
 						ClosestP = p;

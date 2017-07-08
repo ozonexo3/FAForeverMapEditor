@@ -7,13 +7,16 @@ using EditMap;
 public partial struct GetGamedataFile
 {
 
+	const float PropTexturesMipMapBias = 0.0f;
+
 	static LOD[] Lods;
 
 	public class PropObject
 	{
 		public BluePrint BP;
 
-		public PropGameObject CreatePropGameObject(Vector3 position, Quaternion rotation, float scale = 1f)
+
+		public PropGameObject CreatePropGameObject(Vector3 position, Quaternion rotation, Vector3 scale)
 		{
 			//Type[] Components = new Type[] { typeof(MeshFilter), typeof(MeshRenderer), typeof(LODGroup) };
 			//GameObject NewProp = new GameObject(BP.Name, Components);
@@ -38,7 +41,10 @@ public partial struct GetGamedataFile
 
 				NewProp.Tr.localPosition = position;
 				NewProp.Tr.localRotation = rotation;
-				NewProp.Tr.localScale = BP.LocalScale * scale;
+				scale.x *= BP.LocalScale.x;
+				scale.y *= BP.LocalScale.y;
+				scale.z *= BP.LocalScale.z;
+				NewProp.Tr.localScale = scale;
 
 				//Assign Prop To Grid
 			}
@@ -246,6 +252,8 @@ public partial struct GetGamedataFile
 			}
 
 			ToReturn.BP.LODs[i].Albedo = LoadTexture2DFromGamedata(scd, ToReturn.BP.LODs[i].AlbedoName, false);
+			if(ToReturn.BP.LODs[i].Albedo != null)
+				ToReturn.BP.LODs[i].Albedo.mipMapBias = PropTexturesMipMapBias;
 			ToReturn.BP.LODs[i].Mat.SetTexture("_MainTex", ToReturn.BP.LODs[i].Albedo);
 
 
@@ -259,6 +267,8 @@ public partial struct GetGamedataFile
 			}
 
 			ToReturn.BP.LODs[i].Normal = LoadTexture2DFromGamedata(scd, ToReturn.BP.LODs[i].NormalsName, true);
+			if (ToReturn.BP.LODs[i].Normal != null)
+				ToReturn.BP.LODs[i].Normal.mipMapBias = PropTexturesMipMapBias;
 			ToReturn.BP.LODs[i].Mat.SetTexture("_BumpMap", ToReturn.BP.LODs[i].Normal);
 
 		}
@@ -267,8 +277,7 @@ public partial struct GetGamedataFile
 	}
 
 
-
-	static string OffsetRelativePath(string OriginalPath, string offset, bool File = true)
+static string OffsetRelativePath(string OriginalPath, string offset, bool File = true)
 	{
 		OriginalPath = OriginalPath.Replace("\\", "/");
 		offset = offset.Replace("\\", "/");

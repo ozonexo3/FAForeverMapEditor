@@ -58,6 +58,7 @@ public partial struct GetGamedataFile
 			{
 				Verts[i] = new Scm_Vert();
 				Verts[i].LoadFromStream(Stream);
+				//Verts[i].Position.z *= -1;
 			}
 
 			// Load Triangles
@@ -120,9 +121,9 @@ public partial struct GetGamedataFile
 
 			for (int i = 0; i < Tris.Length; i++)
 			{
-				TrisArray[i * 3] = Tris[i].Vert0;
+				TrisArray[i * 3 + 2] = Tris[i].Vert0;
 				TrisArray[i * 3 + 1] = Tris[i].Vert1;
-				TrisArray[i * 3 + 2] = Tris[i].Vert2;
+				TrisArray[i * 3] = Tris[i].Vert2;
 			}
 			return TrisArray;
 
@@ -196,7 +197,14 @@ public partial struct GetGamedataFile
 		public void LoadFromStream(BinaryReader Stream)
 		{
 			Position = Stream.ReadVector3();
+			//float x = Position.x;
+			//Position.x = Position.z;
+			//Position.z = x;
+			Position.z *= -1;
+			//Position.x *= -1;
+
 			Normal = Stream.ReadVector3();
+			Normal.y *= -1f;
 			Tangent = Stream.ReadVector3();
 			Binormal = Stream.ReadVector3();
 
@@ -286,7 +294,7 @@ public partial struct GetGamedataFile
 		ToReturn.name = NewScmModel.BoneNames[0];
 
 		ToReturn.vertices = NewScmModel.GetVerts();
-		ToReturn.normals = NewScmModel.GetNormals();
+		//ToReturn.normals = NewScmModel.GetNormals();
 		ToReturn.uv = NewScmModel.GetUv0();
 		ToReturn.uv2 = NewScmModel.GetUv1();
 

@@ -224,7 +224,7 @@ public class CameraControler : MonoBehaviour {
 		}
 		
 		
-		transform.localPosition = Vector3.Lerp(transform.localPosition, new Vector3(transform.localPosition.x, ZoomCamPos() * MapSize / 7 + 1, transform.localPosition.z), Time.deltaTime * 20);
+		transform.localPosition = Vector3.Lerp(transform.localPosition, new Vector3(transform.localPosition.x, ZoomCamPos() * MapSize / 7 + 0.5f, transform.localPosition.z), Time.deltaTime * 20);
 		
 		Pivot.localRotation = Quaternion.Lerp(Pivot.localRotation, Quaternion.Euler(Rot), Time.deltaTime * 10);
 		Pivot.localPosition = Vector3.Lerp(Pivot.localPosition, Pos,  Time.deltaTime * 18);

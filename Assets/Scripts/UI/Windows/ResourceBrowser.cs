@@ -8,7 +8,8 @@ using ICSharpCode.SharpZipLib.Core;
 using ICSharpCode.SharpZipLib.Zip;
 using ICSharpCode.SharpZipLib.BZip2;
 
-public class ResourceBrowser : MonoBehaviour {
+public class ResourceBrowser : MonoBehaviour
+{
 
 	public static ResourceBrowser Current;
 
@@ -40,6 +41,10 @@ public class ResourceBrowser : MonoBehaviour {
 	string SelectedObject = "";
 	bool CustomLoading = false;
 
+	const string CurrentMapPath = "current";
+	const string CurrentMapFolderPath = "maps/";
+	const int PauseEveryLoadedAsset = 1;
+
 
 	#region UI
 	void Update()
@@ -70,13 +75,15 @@ public class ResourceBrowser : MonoBehaviour {
 		ReadAllFolders();
 	}
 
-	void ReadAllFolders(){
-		EnvType.ClearOptions ();
+	void ReadAllFolders()
+	{
+		EnvType.ClearOptions();
 
-		LoadedEnvPaths = new List<string> ();
-		List<Dropdown.OptionData> NewOptions = new List<Dropdown.OptionData> ();
+		LoadedEnvPaths = new List<string>();
+		List<Dropdown.OptionData> NewOptions = new List<Dropdown.OptionData>();
 
-		if(!Directory.Exists(EnvPaths.GetGamedataPath())){
+		if (!Directory.Exists(EnvPaths.GetGamedataPath()))
+		{
 			Debug.LogError("Gamedata path not exist!");
 			return;
 		}
@@ -84,8 +91,10 @@ public class ResourceBrowser : MonoBehaviour {
 		FileStream fs = File.OpenRead(EnvPaths.GetGamedataPath() + "env.scd");
 		ZipFile zf = new ZipFile(fs);
 
-		foreach (ZipEntry zipEntry in zf) {
-			if (!zipEntry.IsDirectory) {
+		foreach (ZipEntry zipEntry in zf)
+		{
+			if (!zipEntry.IsDirectory)
+			{
 				continue;
 			}
 
@@ -96,8 +105,10 @@ public class ResourceBrowser : MonoBehaviour {
 
 			int ContSeparators = 0;
 			char Separator = ("/")[0];
-			for (int i = 0; i < LocalName.Length; i++) {
-				if (LocalName [i] == Separator) {
+			for (int i = 0; i < LocalName.Length; i++)
+			{
+				if (LocalName[i] == Separator)
+				{
 					ContSeparators++;
 					if (ContSeparators > 1)
 						break;
@@ -106,62 +117,75 @@ public class ResourceBrowser : MonoBehaviour {
 			if (ContSeparators > 1)
 				continue;
 
-			LocalName = LocalName.Replace ("/", "");
+			LocalName = LocalName.Replace("/", "");
 
-			LoadedEnvPaths.Add (LocalName);
-			Dropdown.OptionData NewOptionInstance = new Dropdown.OptionData (LocalName);
-			NewOptions.Add (NewOptionInstance);
+			LoadedEnvPaths.Add(LocalName);
+			Dropdown.OptionData NewOptionInstance = new Dropdown.OptionData(LocalName);
+			NewOptions.Add(NewOptionInstance);
 		}
 
-		LoadedEnvPaths.Add ("maps/");
-		Dropdown.OptionData NewOptionInstance2 = new Dropdown.OptionData ("Map folder" );
-		NewOptions.Add (NewOptionInstance2);
+		LoadedEnvPaths.Add(CurrentMapFolderPath);
+		Dropdown.OptionData NewOptionInstance2 = new Dropdown.OptionData("Map folder");
+		NewOptions.Add(NewOptionInstance2);
 
-		EnvType.AddOptions (NewOptions);
+		LoadedEnvPaths.Add(CurrentMapPath);
+		Dropdown.OptionData NewOptionInstance3 = new Dropdown.OptionData("On map");
+		NewOptions.Add(NewOptionInstance3);
+
+		EnvType.AddOptions(NewOptions);
 
 	}
 	#endregion
 
 
-	public void LoadStratumTexture(string path){
+	public void LoadStratumTexture(string path)
+	{
 		CustomLoading = true;
-		StopCoroutine ("GenerateList");
+		StopCoroutine("GenerateList");
 		//Debug.Log ("Load browser for: " + path);
 		string BeginPath = path;
 		//SRect.normalizedPosition = Vector2.zero;
 		Pivot.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
 
-		path = path.Replace ("env/", "");
+		path = path.Replace("env/", "");
 
 		string EnvTypeFolder = "";
 
-		while (EnvTypeFolder.Length < path.Length) {
-			if (path [EnvTypeFolder.Length] == "/"[0]) {
-				path = path.Replace (EnvTypeFolder + "/", "");
+		while (EnvTypeFolder.Length < path.Length)
+		{
+			if (path[EnvTypeFolder.Length] == "/"[0])
+			{
+				path = path.Replace(EnvTypeFolder + "/", "");
 				break;
 			}
 			EnvTypeFolder += path[EnvTypeFolder.Length];
 		}
 
-		for (int i = 0; i < EnvType.options.Count; i++) {
-			if (EnvType.options [i].text.ToLower() == EnvTypeFolder.ToLower()) {
+		for (int i = 0; i < EnvType.options.Count; i++)
+		{
+			if (EnvType.options[i].text.ToLower() == EnvTypeFolder.ToLower())
+			{
 				EnvType.value = i;
 				break;
 			}
 		}
 
 		string CategoryFolder = "";
-		while (CategoryFolder.Length < path.Length) {
-			if (path [CategoryFolder.Length] == "/"[0]) {
+		while (CategoryFolder.Length < path.Length)
+		{
+			if (path[CategoryFolder.Length] == "/"[0])
+			{
 				CategoryFolder += "/";
-				path = path.Replace (CategoryFolder, "");
+				path = path.Replace(CategoryFolder, "");
 				break;
 			}
 			CategoryFolder += path[CategoryFolder.Length];
 		}
-			
-		for (int i = 0; i < Category.options.Count; i++) {
-			if (CategoryPaths[i].ToLower() == CategoryFolder.ToLower()) {
+
+		for (int i = 0; i < Category.options.Count; i++)
+		{
+			if (CategoryPaths[i].ToLower() == CategoryFolder.ToLower())
+			{
 				Category.value = i;
 				break;
 			}
@@ -170,10 +194,10 @@ public class ResourceBrowser : MonoBehaviour {
 		SelectedObject = BeginPath;
 
 
-		gameObject.SetActive (true);
-		StopCoroutine ("GenerateList");
+		gameObject.SetActive(true);
+		StopCoroutine("GenerateList");
 		CustomLoading = false;
-		StartCoroutine ("GenerateList");
+		StartCoroutine("GenerateList");
 	}
 
 	public void LoadPropBlueprint()
@@ -200,95 +224,134 @@ public class ResourceBrowser : MonoBehaviour {
 		LoadedProps = new List<GetGamedataFile.PropObject>();
 	}
 
-	IEnumerator GenerateList(){
+	IEnumerator GenerateList()
+	{
 		SelectedCategory = Category.value;
-		Clean ();
+		Clean();
 		Generating = true;
-		Loading.SetActive (true);
+		Loading.SetActive(true);
 
+		int Counter = 0;
 
-		if (LoadedEnvPaths [EnvType.value] == "maps/") {
+		if (LoadedEnvPaths[EnvType.value] == CurrentMapFolderPath)
+		{
 
+			yield return null;
+			yield return null;
 
+		}
+		else if (LoadedEnvPaths[EnvType.value] == CurrentMapPath)
+		{
+			if (Category.value == 3)
+			{
+				int Count = EditMap.PropsInfo.AllPropsTypes.Count;
+				Debug.Log("Found props: " + Count);
 
-		} else {
+				for (int i = 0; i < Count; i++)
+				{
+					LoadAtPath(EditMap.PropsInfo.AllPropsTypes[i].LoadBlueprint, EditMap.PropsInfo.AllPropsTypes[i].PropObject.BP.Name);
+
+					Counter++;
+					if (Counter >= PauseEveryLoadedAsset)
+					{
+						Counter = 0;
+						yield return null;
+					}
+				}
+			}
+			else
+			{
+				yield return null;
+				yield return null;
+			}
+
+		}
+		else
+		{
 			ZipFile zf = null;
-			try {
-				FileStream fs = File.OpenRead (EnvPaths.GetGamedataPath() + "env.scd");
-				zf = new ZipFile (fs);
+			try
+			{
+				FileStream fs = File.OpenRead(EnvPaths.GetGamedataPath() + "env.scd");
+				zf = new ZipFile(fs);
 
 				yield return null;
-				int Counter = 0;
+				
 
-				foreach (ZipEntry zipEntry in zf) {
-					if (!zipEntry.IsFile) {
+				foreach (ZipEntry zipEntry in zf)
+				{
+					if (!zipEntry.IsFile)
+					{
 						continue;
 					}
-					string LocalPath = "env/" + EnvType.options [EnvType.value].text + "/" + CategoryPaths [Category.value];
-					if (!zipEntry.Name.ToLower ().StartsWith (LocalPath.ToLower ()))
+					string LocalPath = "env/" + EnvType.options[EnvType.value].text + "/" + CategoryPaths[Category.value];
+					if (!zipEntry.Name.ToLower().StartsWith(LocalPath.ToLower()))
 						continue;
 
-					string LocalName = zipEntry.Name.Remove (0, LocalPath.Length);
+					string LocalName = zipEntry.Name.Remove(0, LocalPath.Length);
 
-
-						switch (Category.value)
-						{
-							case 0:
-								if (GenerateTextureButton(zipEntry.Name, LocalName, Prefab_Texture))
-									yield return null;
-								else
-									yield return null;
-								break;
-							case 1:
-								if (GenerateTextureButton(zipEntry.Name, LocalName, Prefab_Decal))
-									yield return null;
-								else
-									yield return null;
-								break;
-							case 2:
-								if (GenerateTextureButton(zipEntry.Name, LocalName, Prefab_Decal))
-									yield return null;
-								else
-									yield return null;
-								break;
-							case 3:
-								if (GeneratePropButton(zipEntry.Name, LocalName, Prefab_Prop))
-									yield return null;
-								break;
-						}
-
+					LoadAtPath(zipEntry.Name, LocalName);
 
 
 					Counter++;
-					if (Counter >= 6) {
+					if (Counter >= PauseEveryLoadedAsset)
+					{
 						Counter = 0;
 						yield return null;
 					}
 
 				}
-			} finally {
-				if (zf != null) {
+			}
+			finally
+			{
+				if (zf != null)
+				{
 					zf.IsStreamOwner = true; // Makes close also shut the underlying stream
-					zf.Close (); // Ensure we release resources
+					zf.Close(); // Ensure we release resources
 				}
 			}
 		}
 		yield return null;
 		Generating = false;
-		Loading.SetActive (false);
+		Loading.SetActive(false);
 	}
+
+	void LoadAtPath(string localPath, string LocalName)
+	{
+		switch (Category.value)
+		{
+			case 0:
+				if (GenerateTextureButton(localPath, LocalName, Prefab_Texture))
+				{ }
+				break;
+			case 1:
+				if (GenerateTextureButton(localPath, LocalName, Prefab_Decal))
+				{ }
+				break;
+			case 2:
+				if (GenerateTextureButton(localPath, LocalName, Prefab_Decal))
+				{ }
+				break;
+			case 3:
+				if (GeneratePropButton(localPath, LocalName, Prefab_Prop))
+				{ }
+				break;
+		}
+	}
+
 
 	#endregion
 
 	#region Buttons
-	bool GenerateTextureButton(string localpath, string LocalName, GameObject Prefab){
+	bool GenerateTextureButton(string localpath, string LocalName, GameObject Prefab)
+	{
 
-		if (!LocalName.EndsWith (".dds"))
+		if (!LocalName.EndsWith(".dds"))
 			return true;
 		Texture2D LoadedTex;
 
-		try { 
-			LoadedTex = GetGamedataFile.LoadTexture2DFromGamedata ("env.scd", localpath, false);
+		try
+		{
+			LoadedTex = GetGamedataFile.LoadTexture2DFromGamedata("env.scd", localpath, false);
 		}
 		catch (System.Exception e)
 		{
@@ -297,18 +360,19 @@ public class ResourceBrowser : MonoBehaviour {
 		}
 
 
-		GameObject NewButton = Instantiate (Prefab) as GameObject;
-		NewButton.transform.SetParent (Pivot, false);
+		GameObject NewButton = Instantiate(Prefab) as GameObject;
+		NewButton.transform.SetParent(Pivot, false);
 		//NewButton.GetComponent<RawImage> ().texture = LoadedTex;
 		//NewButton.GetComponent<ResourceObject> ().Controler = this;
-		NewButton.GetComponent<ResourceObject> ().SetImages (LoadedTex);
-		NewButton.GetComponent<ResourceObject> ().InstanceId = LoadedTextures.Count;
-		NewButton.GetComponent<ResourceObject> ().NameField.text = LocalName.Replace(".dds", "");
-		LoadedTextures.Add(LoadedTex );
-		LoadedPaths.Add (localpath);
+		NewButton.GetComponent<ResourceObject>().SetImages(LoadedTex);
+		NewButton.GetComponent<ResourceObject>().InstanceId = LoadedTextures.Count;
+		NewButton.GetComponent<ResourceObject>().NameField.text = LocalName.Replace(".dds", "");
+		LoadedTextures.Add(LoadedTex);
+		LoadedPaths.Add(localpath);
 
-		if (localpath.ToLower () == SelectedObject.ToLower ()) {
-			NewButton.GetComponent<ResourceObject> ().Selected.SetActive (true);
+		if (localpath.ToLower() == SelectedObject.ToLower())
+		{
+			NewButton.GetComponent<ResourceObject>().Selected.SetActive(true);
 			//Pivot.localPosition = Vector3.up * (Mathf.Clamp(Pivot.GetComponent<RectTransform>().sizeDelta.y - 350, 0, 1000000) - 350) + Vector3.right * Pivot.localPosition.x;
 			Pivot.GetComponent<RectTransform>().anchoredPosition = Vector2.up * 250 * Mathf.FloorToInt(LoadedPaths.Count / 5f);
 			//SRect.normalizedPosition = Vector2.up;
@@ -316,9 +380,9 @@ public class ResourceBrowser : MonoBehaviour {
 		return false;
 	}
 
-	bool GeneratePropButton(string localpath, string LocalName, GameObject Prefab){
-		//Debug.Log (LocalName);
-		if (!LocalName.EndsWith (".bp"))
+	bool GeneratePropButton(string localpath, string LocalName, GameObject Prefab)
+	{
+		if (!localpath.EndsWith(".bp"))
 			return false;
 
 		string PropPath = LocalName.Replace(".bp", "");
@@ -326,14 +390,14 @@ public class ResourceBrowser : MonoBehaviour {
 		GetGamedataFile.PropObject LoadedProp = GetGamedataFile.LoadProp("env.scd", localpath);
 
 		//Texture2D LoadedTex = GetGamedataFile.LoadTexture2DFromGamedata ("env.scd", localpath, false);
-		GameObject NewButton = Instantiate (Prefab) as GameObject;
-		NewButton.transform.SetParent (Pivot, false);
+		GameObject NewButton = Instantiate(Prefab) as GameObject;
+		NewButton.transform.SetParent(Pivot, false);
 
-		if(LoadedProp.BP.LODs.Length > 0 && LoadedProp.BP.LODs[0].Albedo)
-			NewButton.GetComponent<RawImage> ().texture = LoadedProp.BP.LODs[0].Albedo;
+		if (LoadedProp.BP.LODs.Length > 0 && LoadedProp.BP.LODs[0].Albedo)
+			NewButton.GetComponent<RawImage>().texture = LoadedProp.BP.LODs[0].Albedo;
 
 		//NewButton.GetComponent<ResourceObject> ().Controler = this;
-		NewButton.GetComponent<ResourceObject> ().InstanceId = LoadedPaths.Count;
+		NewButton.GetComponent<ResourceObject>().InstanceId = LoadedPaths.Count;
 		NewButton.GetComponent<ResourceObject>().NameField.text = LoadedProp.BP.Name;
 		PropPath = PropPath.Replace(LoadedProp.BP.Name, "");
 		NewButton.GetComponent<ResourceObject>().CustomTexts[2].text = PropPath;
@@ -341,11 +405,12 @@ public class ResourceBrowser : MonoBehaviour {
 		NewButton.GetComponent<ResourceObject>().CustomTexts[0].text = LoadedProp.BP.ReclaimMassMax.ToString();
 		NewButton.GetComponent<ResourceObject>().CustomTexts[1].text = LoadedProp.BP.ReclaimEnergyMax.ToString();
 		//LoadedTextures.Add(LoadedTex );
-		LoadedPaths.Add (localpath);
+		LoadedPaths.Add(localpath);
 		LoadedProps.Add(LoadedProp);
 
-		if (localpath.ToLower () == SelectedObject.ToLower ()) {
-			NewButton.GetComponent<ResourceObject> ().Selected.SetActive (true);
+		if (localpath.ToLower() == SelectedObject.ToLower())
+		{
+			NewButton.GetComponent<ResourceObject>().Selected.SetActive(true);
 			//Pivot.localPosition = Vector3.up * (Mathf.Clamp(Pivot.GetComponent<RectTransform>().sizeDelta.y - 350, 0, 1000000) - 350) + Vector3.right * Pivot.localPosition.x;
 			Pivot.GetComponent<RectTransform>().anchoredPosition = Vector2.up * 250 * Mathf.FloorToInt(LoadedPaths.Count / 5f);
 			//SRect.normalizedPosition = Vector2.up;

@@ -155,46 +155,50 @@ public class BrushGenerator : MonoBehaviour
 
 	public void GenerateRotationSymmetry(Quaternion Rotation)
 	{
+		Vector3 Euler = Rotation.eulerAngles;
+
 		switch (LastSym)
 		{
 			case 1:
 				PaintRotations = new Quaternion[2];
 				PaintRotations[0] = Rotation;
-				PaintRotations[1] = Rotation;  //GetHorizonalSymetry();
+				PaintRotations[1] = Quaternion.Euler(new Vector3(Euler.x, 180-Euler.y, Euler.z)) * Quaternion.Euler(Vector3.up * 180);  //GetHorizonalSymetry();
+				//PaintRotations[1] = MassMath.MirrorQuaternionZ(Rotation) * Quaternion.Euler(Vector3.up * 180);  //GetHorizonalSymetry();
 				break;
 			case 2:
 				PaintRotations = new Quaternion[2];
 				PaintRotations[0] = Rotation;
-				PaintRotations[1] = Quaternion.Euler(Vector3.up * 180) * Rotation;  //GetVerticalSymetry();
+				//PaintRotations[1] = MassMath.MirrorQuaternionZ(Rotation);  //GetVerticalSymetry();
+				PaintRotations[1] = Quaternion.Euler(new Vector3(Euler.x, 180 - Euler.y, Euler.z));  //GetHorizonalSymetry();
 				break;
 			case 3:
 				PaintRotations = new Quaternion[2];
 				PaintRotations[0] = Rotation;
-				PaintRotations[1] = Quaternion.Euler(Vector3.up * 180) * Rotation;  //GetHorizontalVerticalSymetry();
+				PaintRotations[1] = Quaternion.Euler(new Vector3(Euler.x, 180 + Euler.y, Euler.z));  //GetHorizontalVerticalSymetry();
 				break;
 			case 4:
 				PaintRotations = new Quaternion[4];
 				PaintRotations[0] = Rotation;
-				PaintRotations[1] = Quaternion.Euler(Vector3.up * 180) * Rotation;  //GetHorizonalSymetry();
-				PaintRotations[2] = Quaternion.Euler(Vector3.up * 180) * Rotation;  //GetVerticalSymetry();
-				PaintRotations[3] = Rotation;  //GetHorizontalVerticalSymetry();
+				PaintRotations[1] = Quaternion.Euler(new Vector3(Euler.x, 180 - Euler.y, Euler.z)) * Quaternion.Euler(Vector3.up * 180);  //GetHorizonalSymetry();
+				PaintRotations[2] = Quaternion.Euler(new Vector3(Euler.x, 180 - Euler.y, Euler.z));  //GetVerticalSymetry();
+				PaintRotations[3] = Quaternion.Euler(new Vector3(Euler.x, 180 + Euler.y, Euler.z));  //GetHorizontalVerticalSymetry();
 				break;
 			case 5:
 				PaintRotations = new Quaternion[2];
 				PaintRotations[0] = Rotation;
-				PaintRotations[1] = Quaternion.Euler(Vector3.up * 180) * Rotation;  //GetDiagonal1Symetry();
+				PaintRotations[1] = Quaternion.Euler(new Vector3(Euler.x, 180 - Euler.y, Euler.z)) * Quaternion.Euler(Vector3.up * 180);  //GetHorizonalSymetry();
 				break;
 			case 6:
 				PaintRotations = new Quaternion[2];
 				PaintRotations[0] = Rotation;
-				PaintRotations[1] = Quaternion.Euler(Vector3.up * 180) * Rotation;  //GetDiagonal2Symetry();
+				PaintRotations[1] = Quaternion.Euler(new Vector3(Euler.x, 180 - Euler.y, Euler.z));  //GetHorizonalSymetry();
 				break;
 			case 7:
 				PaintRotations = new Quaternion[4];
 				PaintRotations[0] = Rotation;
-				PaintRotations[1] = Quaternion.Euler(Vector3.up * 180) * Rotation;  //GetDiagonal1Symetry();
-				PaintRotations[2] = Quaternion.Euler(Vector3.up * 180) * Rotation;  //GetDiagonal2Symetry();
-				PaintRotations[3] = Rotation;  //GetDiagonal3Symetry();
+				PaintRotations[1] = Quaternion.Euler(new Vector3(Euler.x, 180 - Euler.y, Euler.z)) * Quaternion.Euler(Vector3.up * 180);  //GetHorizonalSymetry();
+				PaintRotations[2] = Quaternion.Euler(new Vector3(Euler.x, 180 - Euler.y, Euler.z));  //GetVerticalSymetry();
+				PaintRotations[3] = Quaternion.Euler(new Vector3(Euler.x, 180 + Euler.y, Euler.z));  //GetHorizontalVerticalSymetry();
 				break;
 			case 8:
 				int Count = PlayerPrefs.GetInt("SymmetryAngleCount", 2);
