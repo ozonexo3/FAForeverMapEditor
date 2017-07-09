@@ -202,6 +202,8 @@
     <Compile Include="Assets\Scripts\Ozone SCMAP Code\GetGamedataFile\GetGamedataFile_Bytes.cs" />
     <Compile Include="Assets\Scripts\Ozone SCMAP Code\GetGamedataFile\GetGamedataFile_Model.cs" />
     <Compile Include="Assets\Scripts\Ozone SCMAP Code\GetGamedataFile\GetGamedataFile_Prop.cs" />
+    <Compile Include="Assets\Scripts\Ozone SCMAP Code\Lua\SaveLua.cs" />
+    <Compile Include="Assets\Scripts\Ozone SCMAP Code\Lua\ScenarioLua.cs" />
     <Compile Include="Assets\Scripts\Ozone SCMAP Code\MapHelperGui.cs" />
     <Compile Include="Assets\Scripts\Ozone SCMAP Code\MapLuaParser.cs" />
     <Compile Include="Assets\Scripts\Ozone SCMAP Code\ParsingStructureData.cs" />
@@ -276,6 +278,9 @@
     <None Include="Assets\GFX\Shaders\Backup\FaTerrainShader 1.shader" />
     <None Include="Assets\GFX\Shaders\Backup\FaWater 1.shader" />
     <None Include="Assets\GFX\Shaders\Backup\FaWater 2.shader" />
+    <None Include="Assets\GFX\Shaders\DecalShader.shader" />
+    <None Include="Assets\GFX\Shaders\Decals\Projector Decal Normal.shader" />
+    <None Include="Assets\GFX\Shaders\Decals\Projector Decal.shader" />
     <None Include="Assets\GFX\Shaders\FaTerrainShader.shader" />
     <None Include="Assets\GFX\Shaders\FaWater.shader" />
     <None Include="Assets\GFX\Shaders\RawImageChannel.shader" />
@@ -373,6 +378,7 @@
     <None Include="Assets\Standard Assets\Projectors\Guidelines.txt" />
     <None Include="Assets\Standard Assets\Projectors\Sources\Shaders\Projector Light.shader" />
     <None Include="Assets\Standard Assets\Projectors\Sources\Shaders\Projector Multiply.shader" />
+    <None Include="Assets\Standard Assets\Projectors\Sources\Shaders\SurfaceShaderProjector.shader" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="GenerateTargetFrameworkMonikerAttribute" />

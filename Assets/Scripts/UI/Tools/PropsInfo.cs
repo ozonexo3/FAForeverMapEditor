@@ -200,8 +200,6 @@ namespace EditMap
 				}
 
 				//TODO store props as instances
-				//GameObject NewPropGameobject = AllPropsTypes[GroupId].PropObject.CreatePropGameObject(ScmapEditor.MapPosInWorld(Props[i].Position), Quaternion.LookRotation(Props[i].RotationZ, Props[i].RotationY));
-
 				AllPropsTypes[GroupId].PropsInstances.Add(
 					AllPropsTypes[GroupId].PropObject.CreatePropGameObject(
 						ScmapEditor.MapPosInWorld(Props[i].Position),
@@ -215,8 +213,6 @@ namespace EditMap
 					LoadCounter = YieldStep;
 					yield return null;
 				}
-
-				//AllPropsTypes[GroupId].Props.Add(Props[i]);
 
 
 				TotalMassCount += AllPropsTypes[GroupId].PropObject.BP.ReclaimMassMax;
@@ -379,7 +375,7 @@ namespace EditMap
 				InforeUpdate = true;
 				UpdateBrushPosition(true);
 
-				BrushSize.text = BrushSizeSlider.value.ToString();
+				BrushSize.text =  BrushSizeSlider.value.ToString();
 				BrushStrength.text = BrushStrengthSlider.value.ToString();
 
 				InforeUpdate = false;
@@ -387,9 +383,9 @@ namespace EditMap
 			else
 			{
 				InforeUpdate = true;
-
-				BrushSizeSlider.value = int.Parse(BrushSize.text);
-				BrushStrengthSlider.value = int.Parse(BrushStrength.text);
+				
+				BrushSizeSlider.value = MassMath.StringToFloat(BrushSize.text);
+				BrushStrengthSlider.value = MassMath.StringToFloat(BrushStrength.text);
 
 				InforeUpdate = false;
 				UpdateBrushMenu(true);
@@ -452,7 +448,7 @@ namespace EditMap
 					}
 					if (ChangingSize)
 					{
-						BrushSizeSlider.value = Mathf.Clamp(SizeBeginValue - (int)((BeginMousePos.x - Input.mousePosition.x) * 0.4f), 1, 256);
+						BrushSizeSlider.value = Mathf.Clamp(SizeBeginValue - (int)((BeginMousePos.x - Input.mousePosition.x) * 4f) * 0.1f, 0.0f, 256);
 						UpdateBrushMenu(true);
 						
 
@@ -504,11 +500,14 @@ namespace EditMap
 
 				Vector3 tempCoord = ScmapEditor.Current.Teren.gameObject.transform.InverseTransformPoint(BrushPos);
 				Vector3 coord = Vector3.zero;
-				coord.x = (tempCoord.x - (int)BrushSizeSlider.value * MapLuaParser.Current.ScenarioData.Size.x * 0.0001f) / ScmapEditor.Current.Teren.terrainData.size.x; // TODO 0.05 ?? this should be terrain proportion?
-																																										  //coord.y = tempCoord.y / Map.Teren.terrainData.size.y;
-				coord.z = (tempCoord.z - (int)BrushSizeSlider.value * MapLuaParser.Current.ScenarioData.Size.y * 0.0001f) / ScmapEditor.Current.Teren.terrainData.size.z;
 
-				TerrainMaterial.SetFloat("_BrushSize", BrushSizeSlider.value);
+				float SizeValue = (int)BrushSizeSlider.value;
+
+				coord.x = (tempCoord.x - SizeValue * MapLuaParser.Current.ScenarioData.Size.x * 0.0001f) / ScmapEditor.Current.Teren.terrainData.size.x; // TODO 0.05 ?? this should be terrain proportion?
+																																										  //coord.y = tempCoord.y / Map.Teren.terrainData.size.y;
+				coord.z = (tempCoord.z - SizeValue * MapLuaParser.Current.ScenarioData.Size.y * 0.0001f) / ScmapEditor.Current.Teren.terrainData.size.z;
+
+				TerrainMaterial.SetFloat("_BrushSize", SizeValue);
 				TerrainMaterial.SetFloat("_BrushUvX", coord.x);
 				TerrainMaterial.SetFloat("_BrushUvY", coord.z);
 
@@ -537,7 +536,7 @@ namespace EditMap
 				return;
 			}
 
-			size = BrushSizeSlider.value * 0.07f;
+			size = BrushSizeSlider.value * MapLuaParser.Current.ScenarioData.Size.x * 0.0001f;
 
 			//float BrushField = Mathf.PI * (size * size);
 			//BrushField /= 16f;
@@ -591,11 +590,18 @@ namespace EditMap
 			}
 			else
 			{
-				BrushGenerator.Current.GenerateSymmetry(BrushPos, size, float.Parse(Scatter.text), size);
-				BrushGenerator.Current.GenerateRotationSymmetry(Quaternion.Euler(Vector3.up * Random.Range(0, 360)));
 
 				RandomProp = Random.Range(0, Count);
 				RandomScale = Random.Range(MassMath.StringToFloat(PaintButtons[RandomProp].ScaleMin.text), MassMath.StringToFloat(PaintButtons[RandomProp].ScaleMax.text));
+
+				BrushGenerator.Current.GenerateSymmetry(BrushPos, size, float.Parse(Scatter.text), size);
+
+				float RotMin = MassMath.StringToFloat(PaintButtons[RandomProp].RotationMin.text);
+				float RotMax = MassMath.StringToFloat(PaintButtons[RandomProp].RotationMax.text);
+
+				BrushGenerator.Current.GenerateRotationSymmetry(Quaternion.Euler(Vector3.up * Random.Range(RotMin, RotMax)));
+
+
 
 				// Search group id
 				RandomPropGroup = -1;

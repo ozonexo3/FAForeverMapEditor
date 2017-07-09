@@ -110,7 +110,7 @@ Material:
     - _Parallax: 0.02
     - _SrcBlend: 1
     - _UVSec: 0
-    - _WaterScale: 25.6
+    - _WaterScale: 102.4
     - _ZWrite: 1
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}

@@ -149,14 +149,19 @@ public class Map
 		MinimapLandEndColor = new Color(206, 206, 176);
     }
 
+	public int HeightmapId(int x, int y)
+	{
+		return (x + y * (Width + 1));
+	}
+
     public short GetHeight(int x, int y)
     {
-        return HeightmapData[(y * (Width + 1)) + x];
+        return HeightmapData[HeightmapId(x, y)];
     }
     public void SetHeight(int x, int y, short value)
     {
 		//Debug.Log("change value " + value);
-    	HeightmapData[(y * (Width + 1)) + x] = value;
+    	HeightmapData[HeightmapId(x, y)] = value;
     }
 
     public byte GetTerrainTypeValue(int x, int y)

@@ -20,7 +20,7 @@ public class SymmetryWindow : MonoBehaviour {
 		Debug.Log(PlayerPrefs.GetInt("Symmetry", 0));
 		Toggles[ PlayerPrefs.GetInt("Symmetry", 0) ].isOn = true;
 		AngleSlider.value = PlayerPrefs.GetInt("SymmetryAngleCount", 2);
-		ToleranceInput.text =  PlayerPrefs.GetFloat("SymmetryTolerance", 0.4f).ToString();
+		ToleranceInput.text = GetTolerance().ToString();
 		Enabling = false;
 	}
 
@@ -84,6 +84,6 @@ public class SymmetryWindow : MonoBehaviour {
 
 	public static float GetTolerance()
 	{
-		return PlayerPrefs.GetInt("SymmetryAngleCount", 0);
+		return PlayerPrefs.GetFloat("SymmetryTolerance", 0.4f);
 	}
 }

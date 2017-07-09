@@ -230,13 +230,30 @@ public class ScmapEditor : MonoBehaviour
 		TerrainMaterial.SetFloat("_GridScale", HalfxRes);
 
 
-		heights = new float[map.Width + 1, map.Height + 1];
+		int Max = (int)Mathf.Max((map.Height + 1), (map.Width + 1));
+		heights = new float[Max, Max];
+		Debug.Log(map.Width + " / " + map.Height);
+
+		float HeightWidthMultiply = (map.Height / (float)map.Width);
+		Debug.Log(HeightWidthMultiply);
+
 		// Modify heights array data
-		for (int y = 0; y < map.Width + 1; y++)
+		int y = 0;
+		int x = 0;
+		int localY = 0;
+
+		for (y = 0; y < Max; y++)
 		{
-			for (int x = 0; x < map.Height + 1; x++)
+			for (x = 0; x < Max; x++)
 			{
-				heights[x, y] = map.GetHeight(y, map.Height - x) / HeightResize;
+				localY = (int)(((Max - 1) - y) * HeightWidthMultiply);
+
+				heights[y, x] = map.GetHeight(x, localY) / HeightResize;
+
+				if (HeightWidthMultiply == 0.5f && y > 0 && y%2f == 0)
+				{
+					heights[y-1, x] = Mathf.Lerp(heights[y, x], heights[y - 2, x], 0.5f);
+				}
 			}
 		}
 

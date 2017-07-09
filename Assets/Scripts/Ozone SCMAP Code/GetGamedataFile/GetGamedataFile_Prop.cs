@@ -18,26 +18,21 @@ public partial struct GetGamedataFile
 
 		public PropGameObject CreatePropGameObject(Vector3 position, Quaternion rotation, Vector3 scale)
 		{
-			//Type[] Components = new Type[] { typeof(MeshFilter), typeof(MeshRenderer), typeof(LODGroup) };
-			//GameObject NewProp = new GameObject(BP.Name, Components);
 
 			PropGameObject NewProp = GameObject.Instantiate(PropsInfo.Current.PropObjectPrefab, PropsInfo.Current.PropsParent).GetComponent<PropGameObject>();
+			NewProp.gameObject.name = BP.Name;
 
 			if (BP.LODs.Length > 0)
 			{
 				NewProp.Mf.sharedMesh = BP.LODs[0].Mesh;
 				NewProp.Mr.sharedMaterial = BP.LODs[0].Mat;
-				//LOD[] Lods = new LOD[1];
 
 				float DeltaSize = Mathf.Max(BP.LODs[0].Mesh.bounds.size.x, BP.LODs[0].Mesh.bounds.size.y);
 				DeltaSize = Mathf.Max(DeltaSize, BP.LODs[0].Mesh.bounds.size.z);
 
-				//Lods[0] = new LOD(Mathf.Lerp(0.02f, 0.22f, Mathf.Pow((DeltaSize - 2f) / 190f, 2f)), new Renderer[] { (Renderer)NewProp.GetComponent<MeshRenderer>() });
-				//NewProp.Lodg.SetLODs(Lods);
 				Lods = NewProp.Lodg.GetLODs();
-				Lods[0].screenRelativeTransitionHeight = Mathf.Lerp(0.02f, 0.22f, Mathf.Pow((DeltaSize - 2f) / 190f, 2f));
+				Lods[0].screenRelativeTransitionHeight = Mathf.Lerp(0.018f, 0.20f, Mathf.Pow((DeltaSize - 1.9f) / 190f, 2f));
 				NewProp.Lodg.SetLODs(Lods);
-				//NewProp.Lodg.
 
 				NewProp.Tr.localPosition = position;
 				NewProp.Tr.localRotation = rotation;
@@ -46,14 +41,11 @@ public partial struct GetGamedataFile
 				scale.z *= BP.LocalScale.z;
 				NewProp.Tr.localScale = scale;
 
-				//Assign Prop To Grid
 			}
 			else
 			{
 				Debug.LogError("Prop is empty! " + BP.Path);
 			}
-
-			//ScmapEditor.MapWorldPosInSave(position);
 
 			return NewProp;
 		}
@@ -227,6 +219,8 @@ public partial struct GetGamedataFile
 
 			ToReturn.BP.LODs[i].Mat = new Material(Shader.Find("Standard (Specular setup)"));
 
+			ToReturn.BP.LODs[i].Mat.name = ToReturn.BP.Name + " mat";
+
 			{ // Set AlphaTest standard shader
 				ToReturn.BP.LODs[i].Mat.SetFloat("_Mode", 1);
 				ToReturn.BP.LODs[i].Mat.SetOverrideTag("RenderType", "TransparentCutout");
@@ -240,6 +234,7 @@ public partial struct GetGamedataFile
 
 				ToReturn.BP.LODs[i].Mat.SetColor("_SpecColor", Color.black);
 				ToReturn.BP.LODs[i].Mat.SetFloat("_Glossiness", 1);
+				ToReturn.BP.LODs[i].Mat.enableInstancing = true;
 			}
 
 			if (ToReturn.BP.LODs[i].AlbedoName.Length == 0)

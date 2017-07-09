@@ -51,6 +51,8 @@ public class CameraControler : MonoBehaviour {
 		Current = this;
 	}
 
+	const float CameraMinOffset = 0.5f;
+
 	public void RestartCam(){
 		if(!Terrain.activeTerrain) return;
 		Pos = Vector3.zero + Vector3.right * MapSize / 20.0f - Vector3.forward * MapSize / 20.0f;
@@ -60,7 +62,7 @@ public class CameraControler : MonoBehaviour {
 
 		zoomIn = 1;
 
-		transform.localPosition = new Vector3(transform.localPosition.x, ZoomCamPos() * MapSize / 7 + 2, transform.localPosition.z);
+		transform.localPosition = new Vector3(transform.localPosition.x, ZoomCamPos() * MapSize / 7 + CameraMinOffset, transform.localPosition.z);
 		Pivot.localRotation = Quaternion.Euler(Rot);
 		Pivot.localPosition = Pos;
 	}
@@ -219,12 +221,12 @@ public class CameraControler : MonoBehaviour {
 			ClampPosY();
 		}
 		
-		if(Input.GetKeyDown(KeyCode.Keypad0)){
+		if(Input.GetKeyDown(KeyCode.Home)){
 			RestartCam();
 		}
 		
 		
-		transform.localPosition = Vector3.Lerp(transform.localPosition, new Vector3(transform.localPosition.x, ZoomCamPos() * MapSize / 7 + 0.5f, transform.localPosition.z), Time.deltaTime * 20);
+		transform.localPosition = Vector3.Lerp(transform.localPosition, new Vector3(transform.localPosition.x, ZoomCamPos() * MapSize / 7 + CameraMinOffset, transform.localPosition.z), Time.deltaTime * 20);
 		
 		Pivot.localRotation = Quaternion.Lerp(Pivot.localRotation, Quaternion.Euler(Rot), Time.deltaTime * 10);
 		Pivot.localPosition = Vector3.Lerp(Pivot.localPosition, Pos,  Time.deltaTime * 18);

@@ -17,6 +17,9 @@ public class PropData : MonoBehaviour {
 	public InputField ScaleMin;
 	public InputField ScaleMax;
 
+	public InputField RotationMin;
+	public InputField RotationMax;
+
 	public void SetPropList(int _ID, string name, float mass, float energy, int count, string path){
 		ID = _ID;
 		NameField.text = name;
@@ -49,5 +52,14 @@ public class PropData : MonoBehaviour {
 	public void OverPropExit()
 	{
 		PropsInfo.Current.Preview.Hide(gameObject);
+	}
+
+	public void ClampRotations()
+	{
+		float RotMin = MassMath.StringToFloat(RotationMin.text);
+		float RotMax = MassMath.StringToFloat(RotationMax.text);
+
+		RotationMin.text = Mathf.Clamp(RotMin, 0, RotMax).ToString();
+		RotationMax.text = Mathf.Clamp(RotMax, RotMin, 360).ToString();
 	}
 }

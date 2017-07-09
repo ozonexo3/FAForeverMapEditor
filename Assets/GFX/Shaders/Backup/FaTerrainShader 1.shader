@@ -367,8 +367,23 @@ Properties {
 					if(_Brush > 0){	
 						fixed4 BrushColor = tex2D (_BrushTex, ((IN.uv_Control - float2(_BrushUvX, _BrushUvY)) * _GridScale) / (_BrushSize * _GridScale * 0.002)  );
 
-						if(BrushColor.r > 0.1f && BrushColor.r < 0.12f){
-							o.Emission += half3(0, BrushColor.r * 1.2, BrushColor.r * 4);
+						half LerpValue = clamp(_BrushSize / 20, 0, 1);
+
+						half From = 0.1f;
+						half To = lerp(0.2f, 0.13f, LerpValue);
+						half Range = lerp(0.015f, 0.008f, LerpValue);
+
+						if(BrushColor.r >= From && BrushColor.r <= To){
+							half AA = 1;
+
+							if (BrushColor.r < From + Range)
+								AA = (BrushColor.r - From) / Range;
+							else if(BrushColor.r > To - Range)
+								AA = 1 - (BrushColor.r - (To - Range)) / Range;
+
+							AA = clamp(AA, 0, 1);
+
+							o.Emission += half3(0, 0.3, 1) * (AA * 0.8);
 						}
 
 						o.Emission += half3(0, BrushColor.r * 0.1, BrushColor.r * 0.2);
