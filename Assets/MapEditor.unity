@@ -422,6 +422,50 @@ RectTransform:
   m_AnchoredPosition: {x: -5, y: 0}
   m_SizeDelta: {x: -20, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1 &6279903
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 6279904}
+  - component: {fileID: 6279905}
+  m_Layer: 0
+  m_Name: MapData
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6279904
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 6279903}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1334852570}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6279905
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 6279903}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 31812cc01ff3fdb41bd95f442cd1a1ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Decals:
+    DecalLayers: []
+  Markers:
+    MarkerGroups: []
 --- !u!224 &6938712 stripped
 RectTransform:
   m_PrefabParentObject: {fileID: 224000012294610816, guid: 46de6141c0ad21e4caf929da16dea956,
@@ -55704,6 +55748,7 @@ Transform:
   - {fileID: 1257878087}
   - {fileID: 1835274045}
   - {fileID: 1834432995}
+  - {fileID: 6279904}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -55718,6 +55763,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bf6057a0b770fe74da65b41d15c61bcc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ScenarioLuaFile:
+    ScenarioInfoData:
+      name: 
+      description: 
+      type: 
+      starts: 0
+      map_version: 0
+      AdaptiveMap: 0
+      preview: 
+      save: 
+      map: 
+      script: 
+      Size: 
+      MaxHeight: 128
+      norushradius: 40
+      NoRushOffsets: []
+      Configurations: []
   MarkerRend: {fileID: 394412733}
   EditMenu: {fileID: 1559365572}
   History: {fileID: 1917036355}

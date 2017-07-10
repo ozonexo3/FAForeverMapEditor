@@ -8,10 +8,14 @@ using System.Collections;
 using System.Collections.Generic;
 using EditMap;
 using NLua;
+using MapLua;
 
 public class MapLuaParser : MonoBehaviour {
 
 	public static MapLuaParser Current;
+
+
+	public ScenarioLua ScenarioLuaFile;
 
 	#region Variables
 	[Header("Objects")]
@@ -288,7 +292,6 @@ public class MapLuaParser : MonoBehaviour {
 		}
 
 		if (AllFilesExists && !System.IO.File.Exists (MapPath + FolderName + "/" + ScenarioFileName + ".lua")) {
-			//Debug.LogError ("Scenario.lua not exist: " + MapPath + FolderName + "/" + ScenarioFileName + ".lua");
 			Error = "Scenario.lua not exist: " + MapPath + FolderName + "/" + ScenarioFileName + ".lua";
 			Debug.LogError (Error);
 			AllFilesExists = false;
@@ -296,7 +299,6 @@ public class MapLuaParser : MonoBehaviour {
 			
 
 		if(AllFilesExists && !System.IO.File.Exists(EnvPaths.GetGamedataPath() + "/env.scd")){
-			//Debug.LogError ("No source files in gamedata folder: " + GetGamedataFile.GameDataPath);
 			Error = "No source files in gamedata folder: " + EnvPaths.GetGamedataPath();
 			Debug.LogError (Error);
 			AllFilesExists = false;
@@ -308,6 +310,8 @@ public class MapLuaParser : MonoBehaviour {
 			yield return null;
 			// Scenario LUA
 			LoadScenarioLua ();
+			// NewLoading
+			ScenarioLuaFile.Load_ScenarioLua(FolderName, ScenarioFileName);
 			yield return null;
 
 			// SCMAP
@@ -361,6 +365,10 @@ public class MapLuaParser : MonoBehaviour {
 
 	#region Load Scenario Lua
 	private void LoadScenarioLua(){
+
+		
+
+
 		System.Text.Encoding encodeType = System.Text.Encoding.ASCII;
 
 		string MapPath = EnvPaths.GetMapsPath();
@@ -804,6 +812,9 @@ public class MapLuaParser : MonoBehaviour {
 
 		System.IO.File.Move(ScenarioFilePath, BackupPath + "/" + ScenarioFileName + ".lua");
 		System.IO.File.WriteAllText(ScenarioFilePath, SaveData);
+
+		ScenarioLuaFile.Save_ScenarioLua(ScenarioFilePath.Replace(".lua", "_new.lua"));
+
 	}
 
 

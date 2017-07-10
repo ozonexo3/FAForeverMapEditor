@@ -2,15 +2,23 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SaveLua : MonoBehaviour {
+namespace MapLua
+{
+	[System.Serializable]
+	public class SaveLua
+	{
 
-	// Use this for initialization
-	void Start () {
+		public void Load_SaveLua(string Path)
+		{
+
+
+		}
 		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
+		public void Save_SaveLua(string Path)
+		{
+
+
+		}
+
 	}
 }

@@ -202,8 +202,12 @@
     <Compile Include="Assets\Scripts\Ozone SCMAP Code\GetGamedataFile\GetGamedataFile_Bytes.cs" />
     <Compile Include="Assets\Scripts\Ozone SCMAP Code\GetGamedataFile\GetGamedataFile_Model.cs" />
     <Compile Include="Assets\Scripts\Ozone SCMAP Code\GetGamedataFile\GetGamedataFile_Prop.cs" />
+    <Compile Include="Assets\Scripts\Ozone SCMAP Code\Lua\Parser\LuaParser_Read.cs" />
+    <Compile Include="Assets\Scripts\Ozone SCMAP Code\Lua\Parser\LuaParser_Write.cs" />
     <Compile Include="Assets\Scripts\Ozone SCMAP Code\Lua\SaveLua.cs" />
     <Compile Include="Assets\Scripts\Ozone SCMAP Code\Lua\ScenarioLua.cs" />
+    <Compile Include="Assets\Scripts\Ozone SCMAP Code\Map\MapData.cs" />
+    <Compile Include="Assets\Scripts\Ozone SCMAP Code\Map\MapData_Class.cs" />
     <Compile Include="Assets\Scripts\Ozone SCMAP Code\MapHelperGui.cs" />
     <Compile Include="Assets\Scripts\Ozone SCMAP Code\MapLuaParser.cs" />
     <Compile Include="Assets\Scripts\Ozone SCMAP Code\ParsingStructureData.cs" />

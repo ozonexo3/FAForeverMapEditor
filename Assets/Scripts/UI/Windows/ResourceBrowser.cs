@@ -138,14 +138,19 @@ public class ResourceBrowser : MonoBehaviour
 	#endregion
 
 
+	bool DontReload = false;
+
 	public void LoadStratumTexture(string path)
 	{
+		int LastCategory = Category.value;
+		int LastEnvType = EnvType.value;
+
 		CustomLoading = true;
-		StopCoroutine("GenerateList");
+		//StopCoroutine("GenerateList");
 		//Debug.Log ("Load browser for: " + path);
 		string BeginPath = path;
 		//SRect.normalizedPosition = Vector2.zero;
-		Pivot.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
+
 
 		path = path.Replace("env/", "");
 
@@ -195,6 +200,13 @@ public class ResourceBrowser : MonoBehaviour
 
 
 		gameObject.SetActive(true);
+
+		DontReload = LastCategory == Category.value && LastEnvType == EnvType.value && !Generating;
+
+		if(!DontReload)
+			Pivot.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
+
+
 		StopCoroutine("GenerateList");
 		CustomLoading = false;
 		StartCoroutine("GenerateList");
@@ -202,12 +214,17 @@ public class ResourceBrowser : MonoBehaviour
 
 	public void LoadPropBlueprint()
 	{
-		Category.value = 3;
+		if (Category.value != 3)
+		{
+			Category.value = 3;
 
-		gameObject.SetActive(true);
-		StopCoroutine("GenerateList");
-		CustomLoading = false;
-		StartCoroutine("GenerateList");
+			gameObject.SetActive(true);
+			StopCoroutine("GenerateList");
+			CustomLoading = false;
+			StartCoroutine("GenerateList");
+		}
+		else
+			gameObject.SetActive(true);
 	}
 
 	#region Generate List of Assets
@@ -227,11 +244,15 @@ public class ResourceBrowser : MonoBehaviour
 	IEnumerator GenerateList()
 	{
 		SelectedCategory = Category.value;
-		Clean();
+		if (!DontReload)
+			Clean();
+		else if (LastSelection)
+			LastSelection.SetActive(false);
 		Generating = true;
 		Loading.SetActive(true);
 
 		int Counter = 0;
+		int Id = 0;
 
 		if (LoadedEnvPaths[EnvType.value] == CurrentMapFolderPath)
 		{
@@ -287,11 +308,26 @@ public class ResourceBrowser : MonoBehaviour
 					if (!zipEntry.Name.ToLower().StartsWith(LocalPath.ToLower()))
 						continue;
 
-					string LocalName = zipEntry.Name.Remove(0, LocalPath.Length);
 
-					LoadAtPath(zipEntry.Name, LocalName);
+					if (DontReload)
+					{
+						if (zipEntry.Name.ToLower() == SelectedObject.ToLower())
+						{
+							LastSelection = Pivot.GetChild(Id).GetComponent<ResourceObject>().Selected;
+							LastSelection.SetActive(true);
+							Pivot.GetComponent<RectTransform>().anchoredPosition = Vector2.up * 250 * Mathf.FloorToInt(Id / 5f);
+							break;
+						}
+					}
+					else
+					{
+						string LocalName = zipEntry.Name.Remove(0, LocalPath.Length);
 
 
+						LoadAtPath(zipEntry.Name, LocalName);
+					}
+
+					Id++;
 					Counter++;
 					if (Counter >= PauseEveryLoadedAsset)
 					{
@@ -313,6 +349,12 @@ public class ResourceBrowser : MonoBehaviour
 		yield return null;
 		Generating = false;
 		Loading.SetActive(false);
+	}
+
+	public void FastFocus()
+	{
+
+
 	}
 
 	void LoadAtPath(string localPath, string LocalName)
@@ -342,6 +384,7 @@ public class ResourceBrowser : MonoBehaviour
 	#endregion
 
 	#region Buttons
+	GameObject LastSelection;
 	bool GenerateTextureButton(string localpath, string LocalName, GameObject Prefab)
 	{
 
@@ -372,7 +415,8 @@ public class ResourceBrowser : MonoBehaviour
 
 		if (localpath.ToLower() == SelectedObject.ToLower())
 		{
-			NewButton.GetComponent<ResourceObject>().Selected.SetActive(true);
+			LastSelection = NewButton.GetComponent<ResourceObject>().Selected;
+			LastSelection.SetActive(true);
 			//Pivot.localPosition = Vector3.up * (Mathf.Clamp(Pivot.GetComponent<RectTransform>().sizeDelta.y - 350, 0, 1000000) - 350) + Vector3.right * Pivot.localPosition.x;
 			Pivot.GetComponent<RectTransform>().anchoredPosition = Vector2.up * 250 * Mathf.FloorToInt(LoadedPaths.Count / 5f);
 			//SRect.normalizedPosition = Vector2.up;

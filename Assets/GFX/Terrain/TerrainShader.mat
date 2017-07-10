@@ -215,51 +215,51 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
-    - _AbyssLevel: 2.8205078
-    - _Area: 1
+    - _AbyssLevel: 2.250405
+    - _Area: 0
     - _AreaHeight: 82.05
     - _AreaWidht: 101.85
     - _AreaX: 0.45
     - _AreaY: 20.05
     - _Brush: 0
     - _BrushSize: 0
-    - _BrushUvX: 0.4899073
-    - _BrushUvY: 0.48425856
+    - _BrushUvX: 0.55420184
+    - _BrushUvY: 0.7434115
     - _DeepLevel: 1.675625
     - _Grid: 0
-    - _GridCamDist: 0.2224853
-    - _GridScale: 102.4
-    - _LightingMultiplier: 1.56
-    - _LowerScale: 117.02857
-    - _LowerScaleNormal: 78.76923
+    - _GridCamDist: 3.682143
+    - _GridScale: 51.2
+    - _LightingMultiplier: 1.3299999
+    - _LowerScale: 53.894737
+    - _LowerScaleNormal: 128
     - _Shininess: 0.03
     - _Slope: 0
-    - _Splat0Scale: 128
-    - _Splat0ScaleNormal: 256
-    - _Splat1Scale: 85.333336
-    - _Splat1ScaleNormal: 256
-    - _Splat2Scale: 128
-    - _Splat2ScaleNormal: 256
-    - _Splat3Scale: 85.333336
-    - _Splat3ScaleNormal: 256
-    - _Splat4Scale: 128
-    - _Splat4ScaleNormal: 256
-    - _Splat5Scale: 128
-    - _Splat5ScaleNormal: 256
-    - _Splat6Scale: 85.333336
-    - _Splat6ScaleNormal: 256
-    - _Splat7Scale: 64
-    - _Splat7ScaleNormal: 256
+    - _Splat0Scale: 58.514286
+    - _Splat0ScaleNormal: 128
+    - _Splat1Scale: 31.030304
+    - _Splat1ScaleNormal: 128
+    - _Splat2Scale: 64
+    - _Splat2ScaleNormal: 64
+    - _Splat3Scale: 58.514286
+    - _Splat3ScaleNormal: 58.514286
+    - _Splat4Scale: 70.62069
+    - _Splat4ScaleNormal: 33.57377
+    - _Splat5Scale: 35.310345
+    - _Splat5ScaleNormal: 33.57377
+    - _Splat6Scale: 64
+    - _Splat6ScaleNormal: 33.57377
+    - _Splat7Scale: 53.894737
+    - _Splat7ScaleNormal: 39.384617
     - _TTerrainXP: 1
-    - _UpperScale: 8
-    - _UpperScaleNormal: 1024
+    - _UpperScale: 4
+    - _UpperScaleNormal: 512
     - _Water: 1
-    - _WaterLevel: 6.3
+    - _WaterLevel: 4.32
     m_Colors:
     - _Abyss: {r: 0.005190316, g: 0.051962737, b: 0.2352941, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _Deep: {r: 0.22577855, g: 0.4590157, b: 0.5294118, a: 1}
     - _ShadowColor: {r: 0.35, g: 0.35, b: 0.375, a: 1}
     - _SpecColor: {r: 0, g: 0, b: 0, a: 0}
-    - _SunAmbience: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-    - _SunColor: {r: 1, g: 1, b: 0.96999997, a: 1}
+    - _SunAmbience: {r: 0.11, g: 0.1, b: 0.1, a: 1}
+    - _SunColor: {r: 0.5, g: 0.515, b: 0.515, a: 1}
