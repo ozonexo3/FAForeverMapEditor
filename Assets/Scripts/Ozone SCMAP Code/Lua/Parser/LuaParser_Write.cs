@@ -43,6 +43,22 @@ namespace LuaParser
 			return ToReturn;
 		}
 
+		public static string StringArrayToLua(string[] value, bool NextLine = true)
+		{
+			string ToReturn = OpenBracket;
+			for (int i = 0; i < value.Length; i++)
+			{
+				if (i > 0)
+					ToReturn += NextValue + " ";
+				ToReturn += Coma + value[i] + Coma;
+
+			}
+			ToReturn += EndBracket;
+			if (NextLine)
+				ToReturn += NextValue;
+			return ToReturn;
+		}
+
 		public static string FloatArrayToLua(string key, float[] value, bool NextLine = true)
 		{
 			string ToReturn = key + OpenBracketValue;

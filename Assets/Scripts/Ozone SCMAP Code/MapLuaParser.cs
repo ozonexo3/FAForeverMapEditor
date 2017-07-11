@@ -16,6 +16,7 @@ public class MapLuaParser : MonoBehaviour {
 
 
 	public ScenarioLua ScenarioLuaFile;
+	public SaveLua SaveLuaFile;
 
 	#region Variables
 	[Header("Objects")]
@@ -321,6 +322,9 @@ public class MapLuaParser : MonoBehaviour {
 
 			EditMenu.MapInfoMenu.SaveAsFa.isOn = HeightmapControler.map.VersionMinor >= 60;
 
+
+			SaveLuaFile.Load_SaveLua();
+
 			if (loadSave) {
 				// Save LUA
 				LoadSaveLua ();
@@ -378,8 +382,6 @@ public class MapLuaParser : MonoBehaviour {
 		string loc = MapPath + FolderName + "/" + ScenarioFileName + ".lua";
 		loadedFile = System.IO.File.ReadAllText(loc, encodeType);
 
-
-		
 		env = new Lua();
 		env.LoadCLRPackage();
 		
@@ -490,12 +492,16 @@ public class MapLuaParser : MonoBehaviour {
 		
 		try {
 			save.DoString(loadedFileSave);
-		} catch(NLua.Exceptions.LuaException e) {
+		}
+		catch (NLua.Exceptions.LuaException e) {
 			Debug.LogError(ParsingStructureData.FormatException(e), gameObject);
 			
 			HelperGui.MapLoaded = false;
 			return;
 		}
+
+
+
 		// LoadArea
 		ScenarioData.Area = new Rect();
 		if(save.GetTable("Scenario.Areas.AREA_1") != null && save.GetTable("Scenario.Areas.AREA_1").ToString() != "null"){

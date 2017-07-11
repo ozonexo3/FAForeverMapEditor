@@ -25,3 +25,10 @@ end
 function Sound(Bank, Cue, LodCutoff)
 	return {Bank, Cue, LodCutoff}
 end
+
+categories = {
+	['LAND'] = STRING('categories.LAND'),
+	['NAVAL'] = STRING('categories.NAVAL'),
+	['AIR'] = STRING('categories.AIR'),
+	['ENGINEER'] = STRING('categories.ENGINEER'),
+}

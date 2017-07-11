@@ -32,6 +32,19 @@ namespace MapLua
 			public float norushradius = 40;
 			public NoRusnOffset[] NoRushOffsets = new NoRusnOffset[0];
 			public Configuration[] Configurations = new Configuration[0];
+
+			public const string KEY_NAME = "name";
+			public const string KEY_DESCRIPTION = "description";
+			public const string KEY_TYPE = "type";
+			public const string KEY_STARTS = "starts";
+			public const string KEY_MAPVERSION = "map_version";
+			public const string KEY_ADAPTIVEMAP = "AdaptiveMap";
+			public const string KEY_PREVIEW = "preview";
+			public const string KEY_SAVE = "save";
+			public const string KEY_MAP = "map";
+			public const string KEY_SCRIPT = "script";
+			public const string KEY_SIZE = "size";
+			public const string KEY_CONFIGURATIONS = "Configurations";
 		}
 
 		[System.Serializable]
@@ -40,9 +53,11 @@ namespace MapLua
 			public string name;
 			public Team[] Teams = new Team[0];
 			public CustomProps[] customprops = new CustomProps[0];
+			public Factions[] factions = new Factions[0];
 
-			public const string VALUE_TEAMS = "teams";
-			public const string VALUE_CUSTOMPROPS = "customprops";
+			public const string KEY_TEAMS = "teams";
+			public const string KEY_CUSTOMPROPS = "customprops";
+			public const string KEY_FACTIONS = "factions";
 			// TODO customprops
 		}
 
@@ -52,8 +67,8 @@ namespace MapLua
 			public string name = "";
 			public string[] Armys = new string[0];
 
-			public const string VALUE_NAME = "name";
-			public const string VALUE_ARMIES = "armies";
+			public const string KEY_NAME = "name";
+			public const string KEY_ARMIES = "armies";
 
 		}
 
@@ -62,6 +77,12 @@ namespace MapLua
 		{
 			public string key;
 			public string value;
+		}
+
+		[System.Serializable]
+		public class Factions
+		{
+			public string[] Values;
 		}
 
 		[System.Serializable]
@@ -92,18 +113,7 @@ namespace MapLua
 
 		#region Keys
 		const string TABLE_SCENARIOINFO = "ScenarioInfo";
-		const string TABLE_SCENARIOINFO_NAME = "name";
-		const string TABLE_SCENARIOINFO_DESCRIPTION = "description";
-		const string TABLE_SCENARIOINFO_TYPE = "type";
-		const string TABLE_SCENARIOINFO_STARTS = "starts";
-		const string TABLE_SCENARIOINFO_MAPVERSION = "map_version";
-		const string TABLE_SCENARIOINFO_ADAPTIVEMAP = "AdaptiveMap";
-		const string TABLE_SCENARIOINFO_PREVIEW = "preview";
-		const string TABLE_SCENARIOINFO_SAVE = "save";
-		const string TABLE_SCENARIOINFO_MAP = "map";
-		const string TABLE_SCENARIOINFO_SCRIPT = "script";
-		const string TABLE_SCENARIOINFO_SIZE = "size";
-		const string TABLE_CONFIGURATIONS = "Configurations";
+
 		#endregion
 
 
@@ -135,20 +145,20 @@ namespace MapLua
 			// Load Map Prop
 			LuaTable ScenarioInfoTab = LuaFile.GetTable(TABLE_SCENARIOINFO);
 
-			ScenarioInfoData.name = LuaParser.Read.StringFromTable(ScenarioInfoTab, TABLE_SCENARIOINFO_NAME);
-			ScenarioInfoData.description = LuaParser.Read.StringFromTable(ScenarioInfoTab, TABLE_SCENARIOINFO_DESCRIPTION);
-			ScenarioInfoData.type = LuaParser.Read.StringFromTable(ScenarioInfoTab, TABLE_SCENARIOINFO_TYPE);
-			ScenarioInfoData.starts = LuaParser.Read.BoolFromTable(ScenarioInfoTab, TABLE_SCENARIOINFO_STARTS, true);
+			ScenarioInfoData.name = LuaParser.Read.StringFromTable(ScenarioInfoTab, ScenarioInfo.KEY_NAME);
+			ScenarioInfoData.description = LuaParser.Read.StringFromTable(ScenarioInfoTab, ScenarioInfo.KEY_DESCRIPTION);
+			ScenarioInfoData.type = LuaParser.Read.StringFromTable(ScenarioInfoTab, ScenarioInfo.KEY_TYPE);
+			ScenarioInfoData.starts = LuaParser.Read.BoolFromTable(ScenarioInfoTab, ScenarioInfo.KEY_STARTS, true);
 
-			ScenarioInfoData.map_version = LuaParser.Read.FloatFromTable(ScenarioInfoTab, TABLE_SCENARIOINFO_MAPVERSION, 1);
+			ScenarioInfoData.map_version = LuaParser.Read.FloatFromTable(ScenarioInfoTab, ScenarioInfo.KEY_MAPVERSION, 1);
 
-			ScenarioInfoData.AdaptiveMap = LuaParser.Read.BoolFromTable(ScenarioInfoTab, TABLE_SCENARIOINFO_ADAPTIVEMAP, false);
+			ScenarioInfoData.AdaptiveMap = LuaParser.Read.BoolFromTable(ScenarioInfoTab, ScenarioInfo.KEY_ADAPTIVEMAP, false);
 
-			ScenarioInfoData.preview = LuaParser.Read.StringFromTable(ScenarioInfoTab, TABLE_SCENARIOINFO_PREVIEW, "");
-			ScenarioInfoData.save = LuaParser.Read.StringFromTable(ScenarioInfoTab, TABLE_SCENARIOINFO_SAVE, "");
-			ScenarioInfoData.map = LuaParser.Read.StringFromTable(ScenarioInfoTab, TABLE_SCENARIOINFO_MAP, "");
-			ScenarioInfoData.script = LuaParser.Read.StringFromTable(ScenarioInfoTab, TABLE_SCENARIOINFO_SCRIPT, "");
-			ScenarioInfoData.Size = LuaParser.Read.IntArrayFromTable((LuaTable)ScenarioInfoTab.RawGet(TABLE_SCENARIOINFO_SIZE), 512);
+			ScenarioInfoData.preview = LuaParser.Read.StringFromTable(ScenarioInfoTab, ScenarioInfo.KEY_PREVIEW, "");
+			ScenarioInfoData.save = LuaParser.Read.StringFromTable(ScenarioInfoTab, ScenarioInfo.KEY_SAVE, "");
+			ScenarioInfoData.map = LuaParser.Read.StringFromTable(ScenarioInfoTab, ScenarioInfo.KEY_MAP, "");
+			ScenarioInfoData.script = LuaParser.Read.StringFromTable(ScenarioInfoTab, ScenarioInfo.KEY_SCRIPT, "");
+			ScenarioInfoData.Size = LuaParser.Read.IntArrayFromTable((LuaTable)ScenarioInfoTab.RawGet(ScenarioInfo.KEY_SIZE), 512);
 
 			ScenarioInfoData.MaxHeight = 128;
 			//CamControll.MapSize = Mathf.Max(ScenarioData.Size.x, ScenarioData.Size.y);
@@ -156,7 +166,7 @@ namespace MapLua
 
 			List<string> AllArmys = new List<string>();
 
-			LuaTable ConfigurationsTable = LuaFile.GetTable(TABLE_SCENARIOINFO + "." + TABLE_CONFIGURATIONS) ;
+			LuaTable ConfigurationsTable = LuaFile.GetTable(TABLE_SCENARIOINFO + "." + ScenarioInfo.KEY_CONFIGURATIONS) ;
 
 
 			string[] ConfKeys = LuaParser.Read.GetTableKeys(ConfigurationsTable);
@@ -168,21 +178,20 @@ namespace MapLua
 
 				// Teams
 				LuaTable[] TeamsTables = LuaParser.Read.TableArrayFromTable(
-					LuaFile.GetTable(TABLE_SCENARIOINFO +"."+ TABLE_CONFIGURATIONS + "." + ConfKeys[Ct] + "." + Configuration.VALUE_TEAMS)
+					LuaFile.GetTable(TABLE_SCENARIOINFO +"."+ ScenarioInfo.KEY_CONFIGURATIONS + "." + ConfKeys[Ct] + "." + Configuration.KEY_TEAMS)
 					);
-
 
 				ScenarioInfoData.Configurations[Ct].Teams = new Team[TeamsTables.Length];
 				for (int T = 0; T < ScenarioInfoData.Configurations[Ct].Teams.Length; T++)
 				{
 					ScenarioInfoData.Configurations[Ct].Teams[T] = new Team();
-					ScenarioInfoData.Configurations[Ct].Teams[T].name = LuaParser.Read.StringFromTable(TeamsTables[T], Team.VALUE_NAME, "FFA");
-					ScenarioInfoData.Configurations[Ct].Teams[T].Armys = LuaParser.Read.StringArrayFromTable(TeamsTables[T], Team.VALUE_ARMIES);
+					ScenarioInfoData.Configurations[Ct].Teams[T].name = LuaParser.Read.StringFromTable(TeamsTables[T], Team.KEY_NAME, "FFA");
+					ScenarioInfoData.Configurations[Ct].Teams[T].Armys = LuaParser.Read.StringArrayFromTable(TeamsTables[T], Team.KEY_ARMIES);
 					AllArmys.AddRange(ScenarioInfoData.Configurations[Ct].Teams[T].Armys);
 				}
 
 				// Custom Props
-				LuaTable CustomPropsTable = LuaFile.GetTable(TABLE_SCENARIOINFO + "." + TABLE_CONFIGURATIONS + "." + ConfKeys[Ct] + "." + Configuration.VALUE_CUSTOMPROPS);
+				LuaTable CustomPropsTable = LuaFile.GetTable(TABLE_SCENARIOINFO + "." + ScenarioInfo.KEY_CONFIGURATIONS + "." + ConfKeys[Ct] + "." + Configuration.KEY_CUSTOMPROPS);
 
 				string[] CustomPropsKeys = LuaParser.Read.GetTableKeys(CustomPropsTable);
 				string[] CustomPropsValues = LuaParser.Read.GetTableValues(CustomPropsTable);
@@ -192,8 +201,21 @@ namespace MapLua
 					ScenarioInfoData.Configurations[Ct].customprops[cp] = new CustomProps();
 					ScenarioInfoData.Configurations[Ct].customprops[cp].key = CustomPropsKeys[cp];
 					ScenarioInfoData.Configurations[Ct].customprops[cp].value = CustomPropsValues[cp];
+				}
+
+				// Factions
+				LuaTable[] FactionsTables = LuaParser.Read.TableArrayFromTable(
+					LuaFile.GetTable(TABLE_SCENARIOINFO + "." + ScenarioInfo.KEY_CONFIGURATIONS + "." + ConfKeys[Ct] + "." + Configuration.KEY_FACTIONS)
+					);
+				Debug.Log("factions: " + FactionsTables.Length);
+				ScenarioInfoData.Configurations[Ct].factions = new Factions[FactionsTables.Length];
+				for(int i = 0; i < ScenarioInfoData.Configurations[Ct].factions.Length; i++)
+				{
+					ScenarioInfoData.Configurations[Ct].factions[i] = new Factions();
+					ScenarioInfoData.Configurations[Ct].factions[i].Values = LuaParser.Read.StringArrayFromTable(FactionsTables[i]);
 
 				}
+
 			}
 
 
@@ -216,98 +238,119 @@ namespace MapLua
 		#region Save
 		public void Save_ScenarioLua(string Path)
 		{
-			string LuaFile = "version = 3";
-			int Tabs = 0;
+			LuaParser.Creator LuaFile = new LuaParser.Creator();
+			LuaFile.AddLine("version = 3");
 
-			LuaParser.Write.AddLine(TABLE_SCENARIOINFO + LuaParser.Write.OpenBracketValue, Tabs, ref LuaFile);
+
+			LuaFile.AddLine(TABLE_SCENARIOINFO + LuaParser.Write.OpenBracketValue);
 			{
-				Tabs ++;
-				LuaParser.Write.AddLine(LuaParser.Write.StringToLua(TABLE_SCENARIOINFO_NAME, ScenarioInfoData.name), Tabs, ref LuaFile);
-				LuaParser.Write.AddLine(LuaParser.Write.StringToLua(TABLE_SCENARIOINFO_DESCRIPTION, ScenarioInfoData.description), Tabs, ref LuaFile);
-				LuaParser.Write.AddLine(LuaParser.Write.FloatToLua(TABLE_SCENARIOINFO_MAPVERSION, ScenarioInfoData.map_version), Tabs, ref LuaFile);
-				LuaParser.Write.AddLine(LuaParser.Write.BoolToLua(TABLE_SCENARIOINFO_ADAPTIVEMAP, ScenarioInfoData.AdaptiveMap), Tabs, ref LuaFile);
-				LuaParser.Write.AddLine(LuaParser.Write.StringToLua(TABLE_SCENARIOINFO_TYPE, ScenarioInfoData.type), Tabs, ref LuaFile);
-				LuaParser.Write.AddLine(LuaParser.Write.BoolToLua(TABLE_SCENARIOINFO_STARTS, ScenarioInfoData.starts), Tabs, ref LuaFile);
+				LuaFile.OpenTab();
+				LuaFile.AddLine(LuaParser.Write.StringToLua(ScenarioInfo.KEY_NAME, ScenarioInfoData.name));
+				LuaFile.AddLine(LuaParser.Write.StringToLua(ScenarioInfo.KEY_DESCRIPTION, ScenarioInfoData.description.Replace("\n", "\\n")));
+				LuaFile.AddLine(LuaParser.Write.StringToLua(ScenarioInfo.KEY_PREVIEW, ScenarioInfoData.preview));
 
-				LuaParser.Write.AddLine(LuaParser.Write.IntArrayToLua(TABLE_SCENARIOINFO_SIZE, ScenarioInfoData.Size), Tabs, ref LuaFile);
+				LuaFile.AddLine(LuaParser.Write.FloatToLua(ScenarioInfo.KEY_MAPVERSION, ScenarioInfoData.map_version));
+				if(ScenarioInfoData.AdaptiveMap)
+					LuaFile.AddLine(LuaParser.Write.BoolToLua(ScenarioInfo.KEY_ADAPTIVEMAP, ScenarioInfoData.AdaptiveMap));
+				LuaFile.AddLine(LuaParser.Write.StringToLua(ScenarioInfo.KEY_TYPE, ScenarioInfoData.type));
+				LuaFile.AddLine(LuaParser.Write.BoolToLua(ScenarioInfo.KEY_STARTS, ScenarioInfoData.starts));
 
-				LuaParser.Write.AddLine(LuaParser.Write.StringToLua(TABLE_SCENARIOINFO_MAP, ScenarioInfoData.map), Tabs, ref LuaFile);
-				LuaParser.Write.AddLine(LuaParser.Write.StringToLua(TABLE_SCENARIOINFO_SAVE, ScenarioInfoData.save), Tabs, ref LuaFile);
-				LuaParser.Write.AddLine(LuaParser.Write.StringToLua(TABLE_SCENARIOINFO_SCRIPT, ScenarioInfoData.script), Tabs, ref LuaFile);
-				LuaParser.Write.AddLine(LuaParser.Write.StringToLua(TABLE_SCENARIOINFO_PREVIEW, ScenarioInfoData.preview), Tabs, ref LuaFile);
+				LuaFile.AddLine(LuaParser.Write.IntArrayToLua(ScenarioInfo.KEY_SIZE, ScenarioInfoData.Size));
 
-				LuaParser.Write.AddLine(LuaParser.Write.FloatToLua(NoRusnOffset.VALUE_RADIUS, ScenarioInfoData.norushradius), Tabs, ref LuaFile);
+				LuaFile.AddLine(LuaParser.Write.StringToLua(ScenarioInfo.KEY_MAP, ScenarioInfoData.map));
+				LuaFile.AddLine(LuaParser.Write.StringToLua(ScenarioInfo.KEY_SAVE, ScenarioInfoData.save));
+				LuaFile.AddLine(LuaParser.Write.StringToLua(ScenarioInfo.KEY_SCRIPT, ScenarioInfoData.script));
+				LuaFile.AddLine(LuaParser.Write.FloatToLua(NoRusnOffset.VALUE_RADIUS, ScenarioInfoData.norushradius));
 
 				for(int i = 0; i < ScenarioInfoData.NoRushOffsets.Length; i++)
 				{
-					LuaParser.Write.AddLine(LuaParser.Write.FloatToLua(ScenarioInfoData.NoRushOffsets[i].GetXKey(), ScenarioInfoData.NoRushOffsets[i].X), Tabs, ref LuaFile);
-					LuaParser.Write.AddLine(LuaParser.Write.FloatToLua(ScenarioInfoData.NoRushOffsets[i].GetYKey(), ScenarioInfoData.NoRushOffsets[i].Y), Tabs, ref LuaFile);
+					if(ScenarioInfoData.NoRushOffsets[i].X > 0)
+						LuaFile.AddLine(LuaParser.Write.FloatToLua(ScenarioInfoData.NoRushOffsets[i].GetXKey(), ScenarioInfoData.NoRushOffsets[i].X));
+					if(ScenarioInfoData.NoRushOffsets[i].Y > 0)
+						LuaFile.AddLine(LuaParser.Write.FloatToLua(ScenarioInfoData.NoRushOffsets[i].GetYKey(), ScenarioInfoData.NoRushOffsets[i].Y));
 				}
 
 
-				LuaParser.Write.AddLine(TABLE_CONFIGURATIONS + LuaParser.Write.OpenBracketValue, Tabs, ref LuaFile);
+				LuaFile.AddLine(ScenarioInfo.KEY_CONFIGURATIONS + LuaParser.Write.OpenBracketValue);
 				{// Configurations
-					Tabs++;
-					for(int Cf = 0; Cf < ScenarioInfoData.Configurations.Length; Cf++)
+					LuaFile.OpenTab();
+					for (int Cf = 0; Cf < ScenarioInfoData.Configurations.Length; Cf++)
 					{
-						LuaParser.Write.AddLine(LuaParser.Write.PropertiveToLua(ScenarioInfoData.Configurations[Cf].name) + LuaParser.Write.OpenBracketValue, Tabs, ref LuaFile);
+						LuaFile.AddLine(LuaParser.Write.PropertiveToLua(ScenarioInfoData.Configurations[Cf].name) + LuaParser.Write.OpenBracketValue);
 						{// Configuration Tab
-							Tabs++;
+							LuaFile.OpenTab();
 
-							LuaParser.Write.AddLine(Configuration.VALUE_TEAMS + LuaParser.Write.OpenBracketValue, Tabs, ref LuaFile);
+							LuaFile.AddLine(Configuration.KEY_TEAMS + LuaParser.Write.OpenBracketValue);
 							{//Teams
-								Tabs++;
+								LuaFile.OpenTab();
 
 								for (int T = 0; T < ScenarioInfoData.Configurations[Cf].Teams.Length; T++)
 								{
-									LuaParser.Write.AddLine(LuaParser.Write.OpenBracket, Tabs, ref LuaFile);
+									LuaFile.AddLine(LuaParser.Write.OpenBracket);
 									{// Team Tab
-										Tabs++;
-										LuaParser.Write.AddLine(LuaParser.Write.StringToLua(Team.VALUE_NAME, ScenarioInfoData.Configurations[Cf].Teams[T].name), Tabs, ref LuaFile);
-										LuaParser.Write.AddLine(LuaParser.Write.StringArrayToLua(Team.VALUE_ARMIES, ScenarioInfoData.Configurations[Cf].Teams[T].Armys, false), Tabs, ref LuaFile);
+										LuaFile.OpenTab();
+										LuaFile.AddLine(LuaParser.Write.StringToLua(Team.KEY_NAME, ScenarioInfoData.Configurations[Cf].Teams[T].name));
+										LuaFile.AddLine(LuaParser.Write.StringArrayToLua(Team.KEY_ARMIES, ScenarioInfoData.Configurations[Cf].Teams[T].Armys, false));
 
-										Tabs--;
+										LuaFile.CloseTab();
 									}
-									LuaParser.Write.AddLine(LuaParser.Write.EndBracketNext, Tabs, ref LuaFile);
+									LuaFile.AddLine(LuaParser.Write.EndBracketNext);
 								}
 
 
-								Tabs--;
+								LuaFile.CloseTab();
 							}
-							LuaParser.Write.AddLine(LuaParser.Write.EndBracketNext, Tabs, ref LuaFile);
+							LuaFile.AddLine(LuaParser.Write.EndBracketNext);
 
-							LuaParser.Write.AddLine(Configuration.VALUE_CUSTOMPROPS + LuaParser.Write.OpenBracketValue, Tabs, ref LuaFile);
+							LuaFile.AddLine(Configuration.KEY_CUSTOMPROPS + LuaParser.Write.OpenBracketValue);
 							{ // Custom Props
-								Tabs++;
+								LuaFile.OpenTab();
 								for (int i = 0; i < ScenarioInfoData.Configurations[Cf].customprops.Length; i++)
 								{
-									LuaParser.Write.AddLine(
+									LuaFile.AddLine(
 										LuaParser.Write.ValueToLua(LuaParser.Write.PropertiveToLua(ScenarioInfoData.Configurations[Cf].customprops[i].key), 
 										LuaParser.Write.StringFunction(ScenarioInfoData.Configurations[Cf].customprops[i].value), 
-										(i < ScenarioInfoData.Configurations[Cf].customprops.Length - 1))
-										, Tabs, ref LuaFile);
+										(i < ScenarioInfoData.Configurations[Cf].customprops.Length - 1)));
 
 								}
-								Tabs--;
+								LuaFile.CloseTab();
 							}
-							LuaParser.Write.AddLine(LuaParser.Write.EndBracketNext, Tabs, ref LuaFile);
+							LuaFile.AddLine(LuaParser.Write.EndBracketNext);
 
-							Tabs--;
+
+							if(ScenarioInfoData.Configurations[Cf].factions.Length > 0)
+							{
+								LuaFile.AddLine(Configuration.KEY_FACTIONS + LuaParser.Write.OpenBracketValue);
+								LuaFile.OpenTab();
+
+								for(int i = 0; i < ScenarioInfoData.Configurations[Cf].factions.Length; i++)
+								{
+									bool NotLast = i + 1 < ScenarioInfoData.Configurations[Cf].factions.Length;
+									LuaFile.AddLine(LuaParser.Write.StringArrayToLua(ScenarioInfoData.Configurations[Cf].factions[i].Values, NotLast));
+
+								}
+
+								LuaFile.CloseTab();
+								LuaFile.AddLine(LuaParser.Write.EndBracketNext);
+							}
+
+
+							LuaFile.CloseTab();
 						}
-						LuaParser.Write.AddLine(LuaParser.Write.EndBracketNext, Tabs, ref LuaFile);
+						LuaFile.AddLine(LuaParser.Write.EndBracketNext);
 					}
-					Tabs--;
+					LuaFile.CloseTab();
 				}
-				LuaParser.Write.AddLine(LuaParser.Write.EndBracketNext, Tabs, ref LuaFile);
+				LuaFile.AddLine(LuaParser.Write.EndBracketNext);
 
 
 
-				Tabs--;
+				LuaFile.CloseTab();
 			}
-			LuaParser.Write.AddLine(LuaParser.Write.EndBracket, Tabs, ref LuaFile);
+			LuaFile.AddLine(LuaParser.Write.EndBracket);
 
 
-			System.IO.File.WriteAllText(Path, LuaFile);
+			System.IO.File.WriteAllText(Path, LuaFile.GetFileString());
 		}
 		#endregion
 	}

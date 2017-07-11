@@ -27,6 +27,20 @@ namespace LuaParser
 			Table.Values.CopyTo(ToReturn, 0);
 			return ToReturn;
 		}
+
+		public static object[] GetTableObjects(LuaTable Table)
+		{
+			object[] ToReturn = new object[Table.Values.Count];
+			Table.Values.CopyTo(ToReturn, 0);
+			return ToReturn;
+		}
+
+		public static LuaTable[] GetTableTables(LuaTable Table)
+		{
+			LuaTable[] ToReturn = new LuaTable[Table.Values.Count];
+			Table.Values.CopyTo(ToReturn, 0);
+			return ToReturn;
+		}
 		#endregion
 
 
@@ -64,6 +78,43 @@ namespace LuaParser
 			else
 				return empty;
 		}
+
+		public static Rect RectFromTable(LuaTable Table, string key)
+		{
+
+			if (ValueExist(Table, key))
+			{
+				LuaTable RectTable = (LuaTable)Table.RawGet(key);
+				object[] RectValues = GetTableObjects(RectTable);
+				return new Rect(
+					StringToFloat(RectValues[0].ToString(), 0),
+					StringToFloat(RectValues[1].ToString(), 0),
+					StringToFloat(RectValues[2].ToString(), 0),
+					StringToFloat(RectValues[3].ToString(), 0)
+					);
+
+			}
+			else
+				return new Rect(0, 0, 0, 0);
+		}
+
+		public static Vector3 Vector3FromTable(LuaTable Table, string key)
+		{
+
+			if (ValueExist(Table, key))
+			{
+				LuaTable RectTable = (LuaTable)Table.RawGet(key);
+				object[] RectValues = GetTableObjects(RectTable);
+				return new Vector3(
+					StringToFloat(RectValues[0].ToString(), 0),
+					StringToFloat(RectValues[1].ToString(), 0),
+					StringToFloat(RectValues[2].ToString(), 0)
+					);
+
+			}
+			else
+				return Vector3.zero;
+		}
 		#endregion
 
 
@@ -72,13 +123,15 @@ namespace LuaParser
 
 		public static LuaTable[] TableArrayFromTable(LuaTable Table)
 		{
+			if (Table == null)
+				return new LuaTable[0];
+
 			LuaTable[] ToReturn = new LuaTable[Table.Values.Count];
 
 			for (int i = 0; i < ToReturn.Length; i++)
 				ToReturn[i] = (LuaTable)Table[i + 1];
 
 			return ToReturn;
-
 		}
 
 		public static string[] StringArrayFromTable(LuaTable Table, string key)
