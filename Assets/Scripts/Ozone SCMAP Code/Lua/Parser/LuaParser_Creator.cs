@@ -31,6 +31,20 @@ namespace LuaParser
 			LuaParser.Write.AddLine(line, tabs, ref FileString);
 		}
 
+
+		const int MinimumComentCharacters = 75;
+		const string CommentSaveBegin = "--[[";
+		const string CommentSaveEnd = "]]--";
+		public void AddSaveComent(string coment)
+		{
+			coment = "  " + coment;
+
+			while (coment.Length < MinimumComentCharacters)
+				coment += " ";
+
+			LuaParser.Write.AddLine(CommentSaveBegin + coment + CommentSaveEnd, tabs, ref FileString);
+		}
+
 		public string GetFileString()
 		{
 			return FileString;
@@ -40,7 +54,7 @@ namespace LuaParser
 		public Creator()
 		{
 			FileString = "";
-			int tabs = 0;
+			tabs = 0;
 		}
 	}
 }

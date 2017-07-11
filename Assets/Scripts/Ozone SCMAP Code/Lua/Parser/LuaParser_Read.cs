@@ -9,13 +9,15 @@ namespace LuaParser
 	{
 		// Table
 		#region Table
-		static bool ValueExist(LuaTable Table, string key)
+		public static bool ValueExist(LuaTable Table, string key)
 		{
 			return Table.RawGet(key) != null && Table.RawGet(key).ToString() != "null";
 		}
 
 		public static string[] GetTableKeys(LuaTable Table)
 		{
+			if (Table == null)
+				return new string[0];
 			string[] ToReturn = new string[Table.Keys.Count];
 			Table.Keys.CopyTo(ToReturn, 0);
 			return ToReturn;
@@ -23,6 +25,8 @@ namespace LuaParser
 
 		public static string[] GetTableValues(LuaTable Table)
 		{
+			if (Table == null)
+				return new string[0];
 			string[] ToReturn = new string[Table.Values.Count];
 			Table.Values.CopyTo(ToReturn, 0);
 			return ToReturn;
@@ -30,6 +34,8 @@ namespace LuaParser
 
 		public static object[] GetTableObjects(LuaTable Table)
 		{
+			if (Table == null)
+				return new object[0];
 			object[] ToReturn = new object[Table.Values.Count];
 			Table.Values.CopyTo(ToReturn, 0);
 			return ToReturn;
@@ -37,6 +43,8 @@ namespace LuaParser
 
 		public static LuaTable[] GetTableTables(LuaTable Table)
 		{
+			if (Table == null)
+				return new LuaTable[0];
 			LuaTable[] ToReturn = new LuaTable[Table.Values.Count];
 			Table.Values.CopyTo(ToReturn, 0);
 			return ToReturn;

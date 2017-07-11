@@ -33,6 +33,7 @@ namespace EditMap
 		public InputField BrushMax;
 		public InputField Scatter;
 		public Toggle AllowWaterLevel;
+		public Toggle SnapToGround;
 		public LayerMask TerrainMask;
 		public Material TerrainMaterial;
 
@@ -347,7 +348,7 @@ namespace EditMap
 
 		public void ShowPreview(int ID, GameObject Parent)
 		{
-			Preview.Show(PaintPropObjects[ID].BP.LODs[0].Albedo, Parent, 14f);
+			Preview.Show(PaintPropObjects[ID].BP.LODs[0].Albedo, Parent, 35f);
 		}
 
 		public void ShowTab(int id)
@@ -384,8 +385,8 @@ namespace EditMap
 			{
 				InforeUpdate = true;
 				
-				BrushSizeSlider.value = MassMath.StringToFloat(BrushSize.text);
-				BrushStrengthSlider.value = MassMath.StringToFloat(BrushStrength.text);
+				BrushSizeSlider.value = Mathf.Clamp( MassMath.StringToFloat(BrushSize.text), MinimumBrushSize, MaximumBrushSize);
+				BrushStrengthSlider.value = Mathf.Clamp(MassMath.StringToFloat(BrushStrength.text), 0, 100);
 
 				InforeUpdate = false;
 				UpdateBrushMenu(true);
@@ -448,7 +449,7 @@ namespace EditMap
 					}
 					if (ChangingSize)
 					{
-						BrushSizeSlider.value = Mathf.Clamp(SizeBeginValue - (int)((BeginMousePos.x - Input.mousePosition.x) * 4f) * 0.1f, 0.0f, 256);
+						BrushSizeSlider.value = Mathf.Clamp(SizeBeginValue - (int)((BeginMousePos.x - Input.mousePosition.x) * 4f) * 0.025f, MinimumBrushSize, MaximumBrushSize);
 						UpdateBrushMenu(true);
 						
 
@@ -480,6 +481,9 @@ namespace EditMap
 			}
 		}
 
+		const float MinimumRenderBrushSize = 0.1f;
+		const float MinimumBrushSize = 0.0f;
+		const float MaximumBrushSize = 256;
 		bool UpdateBrushPosition(bool Forced = false)
 		{
 			//Debug.Log(Vector3.Distance(MouseBeginClick, Input.mousePosition));
@@ -496,12 +500,14 @@ namespace EditMap
 			if (Physics.Raycast(ray, out hit, 2000, TerrainMask))
 			{
 				BrushPos = hit.point;
+				if (SnapToGround.isOn && BrushSizeSlider.value < 1.5f)
+					BrushPos = Vector3.Lerp(ScmapEditor.SnapToSmallGrid(BrushPos), BrushPos, (BrushSizeSlider.value - 0.2f) / 1.5f);
 				BrushPos.y = ScmapEditor.Current.Teren.SampleHeight(BrushPos);
 
 				Vector3 tempCoord = ScmapEditor.Current.Teren.gameObject.transform.InverseTransformPoint(BrushPos);
 				Vector3 coord = Vector3.zero;
 
-				float SizeValue = (int)BrushSizeSlider.value;
+				float SizeValue = Mathf.Clamp(BrushSizeSlider.value, MinimumRenderBrushSize * 2, MaximumBrushSize);
 
 				coord.x = (tempCoord.x - SizeValue * MapLuaParser.Current.ScenarioData.Size.x * 0.0001f) / ScmapEditor.Current.Teren.terrainData.size.x; // TODO 0.05 ?? this should be terrain proportion?
 																																										  //coord.y = tempCoord.y / Map.Teren.terrainData.size.y;
@@ -552,16 +558,25 @@ namespace EditMap
 
 			//Real brush size
 
+			if (SnapToGround.isOn)
+			{
+				BrushPos = ScmapEditor.SnapToSmallGrid(BrushPos);
+
+			}
+
+
 			if (Invert)
 			{
 				float Tolerance = SymmetryWindow.GetTolerance();
 
 				BrushGenerator.Current.GenerateSymmetry(BrushPos, 0, float.Parse(Scatter.text), size);
 
+				float SearchSize = Mathf.Clamp(size, MinimumRenderBrushSize, MaximumBrushSize);
+
 				// Search props by grid
 				int ClosestG = -1;
 				int ClosestP = -1;
-				SearchClosestProp(BrushGenerator.Current.PaintPositions[0], size, out ClosestG, out ClosestP);
+				SearchClosestProp(BrushGenerator.Current.PaintPositions[0], SearchSize, out ClosestG, out ClosestP);
 
 				if (ClosestG < 0 || ClosestP < 0)
 					return; // No props found
@@ -675,7 +690,7 @@ namespace EditMap
 				for (p = 0; p < PropsCount; p++)
 				{
 					dist = Vector3.Distance(Pos, AllPropsTypes[g].PropsInstances[p].transform.position);
-					if (dist < ClosestDist && dist < size && dist < tolerance)
+					if (dist < ClosestDist && dist < tolerance)
 					{
 						ClosestG = g;
 						ClosestP = p;
