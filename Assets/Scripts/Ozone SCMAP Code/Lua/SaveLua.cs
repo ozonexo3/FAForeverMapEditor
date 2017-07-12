@@ -96,6 +96,7 @@ namespace MapLua
 		{
 			public string Name = "";
 			public MarkerTypes MarkerType;
+			public Markers.MarkerObject MarkerObj;
 			public float size = 1f;
 			public bool resource = false;
 			public float amount = 100;
@@ -106,6 +107,9 @@ namespace MapLua
 			public Vector3 position = Vector3.zero;
 			public string editorIcon = "";
 			public bool hint;
+
+			public string graph = "";
+			public string adjacentTo = "";
 
 			public float zoom = 30;
 			public bool canSetCamera = true;
@@ -128,9 +132,52 @@ namespace MapLua
 			public const string KEY_CANSETCAMERA = "canSetCamera";
 			public const string KEY_CANSYNCCAMERA = "canSyncCamera";
 
+			public const string KEY_GRAPH = "graph";
+			public const string KEY_ADJACENTTO = "adjacentTo";
+
 			public enum MarkerTypes
 			{
-				Mass, Hydrocarbon, BlankMarker, CameraInfo, RallyPoint
+				None,
+				Mass, Hydrocarbon, BlankMarker, CameraInfo,
+				CombatZone,
+				DefensivePoint, NavalDefensivePoint,
+				ProtectedExperimentalConstruction,
+				ExpansionArea, LargeExpansionArea, NavalArea,
+				RallyPoint, NavalRallyPoint,
+				LandPathNode, AirPathNode, WaterPathNode, AmphibiousPathNode,
+				NavalLink,
+				TransportMarker
+			}
+
+			string MarkerTypeToString(MarkerTypes MType)
+			{
+				string str1 = MType.ToString();
+				string newstring = "";
+				for (int i = 0; i < str1.Length; i++)
+				{
+					if (char.IsUpper(str1[i]))
+						newstring += " ";
+					newstring += str1[i].ToString();
+				}
+				return newstring;
+			}
+
+			bool AllowByType(string Key)
+			{
+				if (MarkerType == MarkerTypes.Mass)
+					return Key == KEY_SIZE || Key == KEY_RESOURCE || Key == KEY_AMOUNT || Key == KEY_EDITORICON;
+				else if (MarkerType == MarkerTypes.Hydrocarbon)
+					return Key == KEY_SIZE || Key == KEY_RESOURCE || Key == KEY_AMOUNT;
+				else if (MarkerType == MarkerTypes.BlankMarker)
+					return false;
+				else if(MarkerType == MarkerTypes.LandPathNode || MarkerType == MarkerTypes.AirPathNode || MarkerType == MarkerTypes.WaterPathNode || MarkerType == MarkerTypes.AmphibiousPathNode)
+					return Key == KEY_HINT || Key == KEY_GRAPH || Key == KEY_ADJACENTTO;
+				else if(MarkerType == MarkerTypes.NavalLink)
+					return false;
+				else if (MarkerType == MarkerTypes.CameraInfo)
+					return Key == KEY_ZOOM || Key == KEY_CANSETCAMERA || Key == KEY_CANSYNCCAMERA;
+				else //Unknown
+					return Key == KEY_HINT;
 			}
 
 			public Marker()
@@ -208,18 +255,17 @@ namespace MapLua
 					LuaFile.AddLine(LuaParser.Write.BoolToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_RESOURCE), resource));
 				if (AllowByType(KEY_AMOUNT))
 					LuaFile.AddLine(LuaParser.Write.FloatToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_AMOUNT), amount));
-				if (AllowByType(KEY_COLOR))
-					LuaFile.AddLine(LuaParser.Write.StringToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_COLOR), color));
+
+				LuaFile.AddLine(LuaParser.Write.StringToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_COLOR), color));
+
 				if (AllowByType(KEY_EDITORICON))
 					LuaFile.AddLine(LuaParser.Write.StringToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_EDITORICON), editorIcon));
 				if (AllowByType(KEY_HINT))
 					LuaFile.AddLine(LuaParser.Write.BoolToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_HINT), hint));
 
 				//Type
-				LuaFile.AddLine(LuaParser.Write.StringToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_TYPE), type));
-
-				if (AllowByType(KEY_PROP))
-					LuaFile.AddLine(LuaParser.Write.StringToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_PROP), prop));
+				LuaFile.AddLine(LuaParser.Write.StringToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_TYPE), MarkerTypeToString(MarkerType)));
+				LuaFile.AddLine(LuaParser.Write.StringToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_PROP), prop));
 
 				if (AllowByType(KEY_ZOOM))
 					LuaFile.AddLine(LuaParser.Write.FloatToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_ZOOM), zoom));
@@ -233,20 +279,7 @@ namespace MapLua
 				LuaFile.AddLine(LuaParser.Write.Vector3ToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_ORIENTATION), orientation));
 			}
 
-			bool AllowByType(string Key)
-			{
-				if(MarkerType == MarkerTypes.Mass)
-					return Key == KEY_SIZE || Key == KEY_RESOURCE || Key == KEY_AMOUNT || Key == KEY_COLOR || Key == KEY_EDITORICON || Key == KEY_PROP;
-				else if (MarkerType == MarkerTypes.Hydrocarbon)
-					return Key == KEY_SIZE || Key == KEY_RESOURCE || Key == KEY_AMOUNT || Key == KEY_COLOR || Key == KEY_EDITORICON || Key == KEY_PROP;
-				else if (MarkerType == MarkerTypes.BlankMarker)
-					return Key == KEY_COLOR || Key == KEY_PROP;
-				else if (MarkerType == MarkerTypes.CameraInfo)
-					return Key == KEY_COLOR || Key == KEY_PROP || Key == KEY_ZOOM || Key == KEY_CANSETCAMERA || Key == KEY_CANSYNCCAMERA;
-				else if (MarkerType == MarkerTypes.RallyPoint)
-					return Key == KEY_COLOR || Key == KEY_PROP;
-				return false;
-			}
+
 		}
 		#endregion
 
@@ -581,6 +614,8 @@ namespace MapLua
 					Data.MasterChains[mc].Markers[m] = new Marker(MarkersNames[m], MarkersTabs[m]);
 				}
 			}
+
+			Markers.MarkersControler.LoadMarkers();
 
 			// Chains
 			LuaTable ChainsTable = (LuaTable)ScenarioInfoTab.RawGet(Scenario.KEY_CHAINS);
