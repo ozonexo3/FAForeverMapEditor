@@ -22,9 +22,9 @@ namespace EditMap
 
 		public void UpdateFields()
 		{
-			Name.text = Scenario.ScenarioData.MapName;
-			Desc.text = Scenario.ScenarioData.MapDesc;
-			Version.text = Scenario.ScenarioData.Version + "";
+			Name.text = Scenario.ScenarioLuaFile.Data.name;
+			Desc.text = Scenario.ScenarioLuaFile.Data.description;
+			Version.text = Scenario.ScenarioLuaFile.Data.map_version.ToString();
 		}
 
 		public void UpdateScriptToggles(int id)
@@ -39,9 +39,9 @@ namespace EditMap
 		public void EndFieldEdit()
 		{
 			if (HasChanged()) Scenario.History.RegisterMapInfo();
-			Scenario.ScenarioData.MapName = Name.text;
-			Scenario.ScenarioData.MapDesc = Desc.text;
-			Scenario.ScenarioData.Version = int.Parse(Version.text);
+			Scenario.ScenarioLuaFile.Data.name = Name.text;
+			Scenario.ScenarioLuaFile.Data.description = Desc.text;
+			Scenario.ScenarioLuaFile.Data.map_version = float.Parse(Version.text);
 		}
 
 		public void ChangeScript(int id = 0)
@@ -54,9 +54,9 @@ namespace EditMap
 
 		bool HasChanged()
 		{
-			if (Scenario.ScenarioData.MapName != Name.text) return true;
-			if (Scenario.ScenarioData.MapDesc != Desc.text) return true;
-			if (Scenario.ScenarioData.Version != int.Parse(Version.text)) return true;
+			if (Scenario.ScenarioLuaFile.Data.name != Name.text) return true;
+			if (Scenario.ScenarioLuaFile.Data.description != Desc.text) return true;
+			if (Scenario.ScenarioLuaFile.Data.map_version != float.Parse(Version.text)) return true;
 			return false;
 		}
 	}

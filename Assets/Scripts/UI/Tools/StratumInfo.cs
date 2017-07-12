@@ -557,9 +557,9 @@ namespace EditMap
 
 				Vector3 tempCoord = Map.Teren.gameObject.transform.InverseTransformPoint(BrushPos);
 				Vector3 coord = Vector3.zero;
-				coord.x = (tempCoord.x - (int)BrushSizeSlider.value * MapLuaParser.Current.ScenarioData.Size.x * 0.0001f) / Map.Teren.terrainData.size.x; // TODO 0.05 ?? this should be terrain proportion?
+				coord.x = (tempCoord.x - (int)BrushSizeSlider.value * MapLuaParser.GetMapSizeX() * 0.0001f) / Map.Teren.terrainData.size.x; // TODO 0.05 ?? this should be terrain proportion?
 																																						  //coord.y = tempCoord.y / Map.Teren.terrainData.size.y;
-				coord.z = (tempCoord.z - (int)BrushSizeSlider.value * MapLuaParser.Current.ScenarioData.Size.y * 0.0001f) / Map.Teren.terrainData.size.z;
+				coord.z = (tempCoord.z - (int)BrushSizeSlider.value * MapLuaParser.GetMapSizeY() * 0.0001f) / Map.Teren.terrainData.size.z;
 
 				TerrainMaterial.SetFloat("_BrushSize", BrushSizeSlider.value);
 				TerrainMaterial.SetFloat("_BrushUvX", coord.x);

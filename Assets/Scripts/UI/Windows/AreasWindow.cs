@@ -12,14 +12,17 @@ public class AreasWindow : MonoBehaviour {
 	public		InputField			DefaultH;
 	
 	void OnEnable () {
+		/*
 		DefaultArea.isOn = Scenario.ScenarioData.DefaultArea;
 		DefaultX.text = Scenario.ScenarioData.Area.x.ToString ();
 		DefaultY.text = Scenario.ScenarioData.Area.y.ToString ();
 		DefaultW.text = Scenario.ScenarioData.Area.width.ToString ();
 		DefaultH.text = Scenario.ScenarioData.Area.height.ToString ();
+		*/
 	}
 
 	public void ValueChange(){
+		/*
 		Scenario.ScenarioData.DefaultArea = DefaultArea.isOn;
 
 		Scenario.ScenarioData.Area.x = float.Parse(DefaultX.text);
@@ -28,5 +31,6 @@ public class AreasWindow : MonoBehaviour {
 		Scenario.ScenarioData.Area.height = float.Parse(DefaultH.text);
 
 		Scenario.UpdateArea ();
+		*/
 	}
 }

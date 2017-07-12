@@ -32,23 +32,24 @@ public class ArmysWindow : MonoBehaviour {
 	}
 
 	void UpdateArea(){
-		if(Scenario.ScenarioData.DefaultArea){
-			float X = (Scenario.ScenarioData.Area.x / Scenario.ScenarioData.Size.x) * ImageSize;
-			float Y = (Scenario.ScenarioData.Area.y / Scenario.ScenarioData.Size.y) * ImageSize;
-			float W = ((Scenario.ScenarioData.Size.x - Scenario.ScenarioData.Area.width) / Scenario.ScenarioData.Size.x) * ImageSize;
-			float H = ((Scenario.ScenarioData.Size.y - Scenario.ScenarioData.Area.height) / Scenario.ScenarioData.Size.y) * ImageSize;
+		//if(Scenario.ScenarioData.DefaultArea){
+			//float X = (Scenario.ScenarioData.Area.x / Scenario.ScenarioData.Size.x) * ImageSize;
+			//float Y = (Scenario.ScenarioData.Area.y / Scenario.ScenarioData.Size.y) * ImageSize;
+			//float W = ((Scenario.ScenarioData.Size.x - Scenario.ScenarioData.Area.width) / Scenario.ScenarioData.Size.x) * ImageSize;
+			//float H = ((Scenario.ScenarioData.Size.y - Scenario.ScenarioData.Area.height) / Scenario.ScenarioData.Size.y) * ImageSize;
 
-			AreaImages[0].sizeDelta = new Vector2(Mathf.Clamp(X, 0, ImageSize), 0);
-			AreaImages[1].sizeDelta = new Vector2(0, Mathf.Clamp(Y, 0, ImageSize));
-			AreaImages[2].sizeDelta = new Vector2(Mathf.Clamp(W, 0, ImageSize), 0);
-			AreaImages[3].sizeDelta = new Vector2(0, Mathf.Clamp(H, 0, ImageSize));
-		}
-		else{
+
+			//AreaImages[0].sizeDelta = new Vector2(Mathf.Clamp(X, 0, ImageSize), 0);
+			//AreaImages[1].sizeDelta = new Vector2(0, Mathf.Clamp(Y, 0, ImageSize));
+			//AreaImages[2].sizeDelta = new Vector2(Mathf.Clamp(W, 0, ImageSize), 0);
+			//AreaImages[3].sizeDelta = new Vector2(0, Mathf.Clamp(H, 0, ImageSize));
+		//}
+		//else{
 			AreaImages[0].sizeDelta = new Vector2(1, 0);
 			AreaImages[1].sizeDelta = new Vector2(0, 1);
 			AreaImages[2].sizeDelta = new Vector2(1, 0);
 			AreaImages[3].sizeDelta = new Vector2(0, 1);
-		}
+		//}
 	}
 
 	public void Clean(){
@@ -70,8 +71,8 @@ public class ArmysWindow : MonoBehaviour {
 			ArmyButtons[i].Name.text = (i + 1).ToString();
 
 			Vector3 IconPos = new Vector3(Scenario.ARMY_[i].position.x, Scenario.ARMY_[i].position.z, 0);
-			IconPos.x /= Scenario.ScenarioData.Size.x / 10f;
-			IconPos.y /= Scenario.ScenarioData.Size.y / 10f;
+			IconPos.x /= MapLuaParser.GetMapSizeX() / 10f;
+			IconPos.y /= MapLuaParser.GetMapSizeY() / 10f;
 
 			IconPos.x *= ImageSize;
 			IconPos.y *= ImageSize;

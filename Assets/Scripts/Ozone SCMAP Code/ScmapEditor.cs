@@ -72,7 +72,7 @@ public class ScmapEditor : MonoBehaviour
 		map = new Map();
 
 		string MapPath = EnvPaths.GetMapsPath();
-		string path = MapLuaParser.Current.ScenarioData.Scmap.Replace("/maps/", MapPath);
+		string path = MapLuaParser.Current.ScenarioLuaFile.Data.map.Replace("/maps/", MapPath);
 
 		Debug.Log("Load SCMAP file: " + path);
 
@@ -82,7 +82,7 @@ public class ScmapEditor : MonoBehaviour
 			Vector3 SunDIr = new Vector3(-map.SunDirection.x, -map.SunDirection.y, map.SunDirection.z);
 			Sun.transform.rotation = Quaternion.LookRotation(SunDIr);
 			Sun.color = new Color(map.SunColor.x, map.SunColor.y, map.SunColor.z, 1);
-			Sun.intensity = map.LightingMultiplier * 0.5f;
+			Sun.intensity = map.LightingMultiplier * EditMap.LightingInfo.SunMultipiler;
 			RenderSettings.ambientLight = new Color(map.ShadowFillColor.x, map.ShadowFillColor.y, map.ShadowFillColor.z, 1);
 
 			//Cam.GetComponent<Bloom>().bloomIntensity = map.Bloom * 4;
@@ -142,13 +142,13 @@ public class ScmapEditor : MonoBehaviour
 		ToogleShader();
 
 
-		MapLuaParser.Current.ScenarioData.MaxHeight = map.Water.Elevation;
+		//MapLuaParser.Current.ScenarioData.MaxHeight = map.Water.Elevation;
 		MapLuaParser.Water = map.Water.HasWater;
 		WaterLevel.gameObject.SetActive(map.Water.HasWater);
 
 		// Set Variables
-		int xRes = (int)MapLuaParser.Current.ScenarioData.Size.x;
-		int zRes = (int)MapLuaParser.Current.ScenarioData.Size.y;
+		int xRes = MapLuaParser.Current.ScenarioLuaFile.Data.Size[0];
+		int zRes = MapLuaParser.Current.ScenarioLuaFile.Data.Size[1];
 		float HalfxRes = xRes / 10f;
 		float HalfzRes = zRes / 10f;
 
@@ -388,7 +388,7 @@ public class ScmapEditor : MonoBehaviour
 		Debug.Log("Set Heightmap to map " + map.Width + ", " + map.Height);
 
 		string MapPath = EnvPaths.GetMapsPath();
-		string path = MapLuaParser.Current.ScenarioData.Scmap.Replace("/maps/", MapPath);
+		string path = MapLuaParser.Current.ScenarioLuaFile.Data.map.Replace("/maps/", MapPath);
 
 		//TODO force values if needed
 		//map.TerrainShader = Shader;
@@ -448,7 +448,7 @@ public class ScmapEditor : MonoBehaviour
 			256 / 10.0f
 			);
 
-		if (map != null) WaterLevel.transform.localScale = new Vector3(map.Width * 0.1f, MapLuaParser.Current.ScenarioData.WaterLevels.x, map.Height * 0.1f);
+		if (map != null) WaterLevel.transform.localScale = new Vector3(map.Width * 0.1f, 1f, map.Height * 0.1f);
 		if (Teren) Teren.transform.localPosition = new Vector3(-xRes / 20.0f, 1, -zRes / 20.0f);
 
 		// Modify heights array data

@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace LuaParser
 {
-	public class Creator : MonoBehaviour
+	public class Creator
 	{
 
 		string FileString;
@@ -24,6 +24,18 @@ namespace LuaParser
 		public void CloseTab()
 		{
 			tabs--;
+		}
+
+		public void OpenTab(string line)
+		{
+			AddLine(line);
+			tabs++;
+		}
+
+		public void CloseTab(string line)
+		{
+			tabs--;
+			AddLine(line);
 		}
 
 		public void AddLine(string line)

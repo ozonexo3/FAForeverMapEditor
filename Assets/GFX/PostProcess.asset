@@ -33,7 +33,7 @@ MonoBehaviour:
     m_Settings:
       method: 0
       fxaaSettings:
-        preset: 3
+        preset: 2
       taaSettings:
         jitterSpread: 0.75
         sharpen: 0.3
@@ -100,10 +100,10 @@ MonoBehaviour:
     m_Enabled: 1
     m_Settings:
       bloom:
-        intensity: 0.2
-        threshold: 0.1
+        intensity: 0.32
+        threshold: 0
         softKnee: 0
-        radius: 3
+        radius: 1
         antiFlicker: 0
       lensDirt:
         texture: {fileID: 0}

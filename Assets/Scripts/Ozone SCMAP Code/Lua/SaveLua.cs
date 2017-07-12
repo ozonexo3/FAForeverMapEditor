@@ -9,9 +9,22 @@ namespace MapLua
 	public class SaveLua
 	{
 
-		public Scenario ScenarioInfoData = new Scenario();
+		public Scenario Data = new Scenario();
 		Lua LuaFile;
 
+		#region Area controls
+		public int DisplayAreaId = 0;
+
+		public bool HasAreas()
+		{
+			return Data.areas.Length > 0;
+		}
+
+		public Rect GetAreaSize()
+		{
+			return Data.areas[DisplayAreaId].rectangle;
+		}
+		#endregion
 
 		#region Structure Objects
 		const string KEY_Scenario = "Scenario";
@@ -71,6 +84,7 @@ namespace MapLua
 		[System.Serializable]
 		public class Chain
 		{
+			public string Name;
 			public string[] Markers;
 			public const string KEY_MARKERS = "Markers";
 		}
@@ -81,7 +95,7 @@ namespace MapLua
 		public class Marker
 		{
 			public string Name = "";
-
+			public MarkerTypes MarkerType;
 			public float size = 1f;
 			public bool resource = false;
 			public float amount = 100;
@@ -114,7 +128,7 @@ namespace MapLua
 			public const string KEY_CANSETCAMERA = "canSetCamera";
 			public const string KEY_CANSYNCCAMERA = "canSyncCamera";
 
-			public enum MarkerType
+			public enum MarkerTypes
 			{
 				Mass, Hydrocarbon, BlankMarker, CameraInfo, RallyPoint
 			}
@@ -175,6 +189,63 @@ namespace MapLua
 					}
 				}
 
+				if (string.IsNullOrEmpty(type))
+					MarkerType = MarkerTypes.BlankMarker;
+				else
+				{
+					MarkerType = (MarkerTypes)System.Enum.Parse(typeof(MarkerTypes), type.Replace(" ", ""));
+
+				}
+
+
+			}
+
+			public void SaveMarkerValues(LuaParser.Creator LuaFile)
+			{
+				if (AllowByType(KEY_SIZE))
+					LuaFile.AddLine(LuaParser.Write.FloatToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_SIZE), size));
+				if (AllowByType(KEY_RESOURCE))
+					LuaFile.AddLine(LuaParser.Write.BoolToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_RESOURCE), resource));
+				if (AllowByType(KEY_AMOUNT))
+					LuaFile.AddLine(LuaParser.Write.FloatToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_AMOUNT), amount));
+				if (AllowByType(KEY_COLOR))
+					LuaFile.AddLine(LuaParser.Write.StringToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_COLOR), color));
+				if (AllowByType(KEY_EDITORICON))
+					LuaFile.AddLine(LuaParser.Write.StringToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_EDITORICON), editorIcon));
+				if (AllowByType(KEY_HINT))
+					LuaFile.AddLine(LuaParser.Write.BoolToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_HINT), hint));
+
+				//Type
+				LuaFile.AddLine(LuaParser.Write.StringToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_TYPE), type));
+
+				if (AllowByType(KEY_PROP))
+					LuaFile.AddLine(LuaParser.Write.StringToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_PROP), prop));
+
+				if (AllowByType(KEY_ZOOM))
+					LuaFile.AddLine(LuaParser.Write.FloatToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_ZOOM), zoom));
+				if (AllowByType(KEY_CANSETCAMERA))
+					LuaFile.AddLine(LuaParser.Write.BoolToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_CANSETCAMERA), canSetCamera));
+				if (AllowByType(KEY_CANSYNCCAMERA))
+					LuaFile.AddLine(LuaParser.Write.BoolToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_CANSYNCCAMERA), canSyncCamera));
+
+				//Transform
+				LuaFile.AddLine(LuaParser.Write.Vector3ToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_POSITION), position));
+				LuaFile.AddLine(LuaParser.Write.Vector3ToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_ORIENTATION), orientation));
+			}
+
+			bool AllowByType(string Key)
+			{
+				if(MarkerType == MarkerTypes.Mass)
+					return Key == KEY_SIZE || Key == KEY_RESOURCE || Key == KEY_AMOUNT || Key == KEY_COLOR || Key == KEY_EDITORICON || Key == KEY_PROP;
+				else if (MarkerType == MarkerTypes.Hydrocarbon)
+					return Key == KEY_SIZE || Key == KEY_RESOURCE || Key == KEY_AMOUNT || Key == KEY_COLOR || Key == KEY_EDITORICON || Key == KEY_PROP;
+				else if (MarkerType == MarkerTypes.BlankMarker)
+					return Key == KEY_COLOR || Key == KEY_PROP;
+				else if (MarkerType == MarkerTypes.CameraInfo)
+					return Key == KEY_COLOR || Key == KEY_PROP || Key == KEY_ZOOM || Key == KEY_CANSETCAMERA || Key == KEY_CANSYNCCAMERA;
+				else if (MarkerType == MarkerTypes.RallyPoint)
+					return Key == KEY_COLOR || Key == KEY_PROP;
+				return false;
 			}
 		}
 		#endregion
@@ -337,6 +408,23 @@ namespace MapLua
 					}
 				}
 
+				public void SaveUnitsGroup(LuaParser.Creator LuaFile)
+				{
+					LuaFile.OpenTab(LuaParser.Write.PropertiveToLua(Name) + LuaParser.Write.SetValue + "GROUP " + LuaParser.Write.OpenBracket);
+
+					LuaFile.AddLine(LuaParser.Write.StringToLua(KEY_ORDERS, orders));
+					LuaFile.AddLine(LuaParser.Write.StringToLua(KEY_PLATOON, platoon));
+
+					for (int g = 0; g < UnitGroups.Length; g++)
+					{
+						UnitGroups[g].SaveUnitsGroup(LuaFile);
+					}
+					for (int u = 0; u < UnitGroups.Length; u++)
+					{
+						Units[u].SaveUnit(LuaFile);
+					}
+					LuaFile.CloseTab(LuaParser.Write.EndBracketNext);
+				}
 			}
 
 			[System.Serializable]
@@ -348,6 +436,20 @@ namespace MapLua
 				public string platoon;
 				public Vector3 Position;
 				public Vector3 Orientation;
+
+				public void SaveUnit(LuaParser.Creator LuaFile)
+				{
+					LuaFile.OpenTab(LuaParser.Write.PropertiveToLua(Name) + LuaParser.Write.OpenBracketValue);
+
+					LuaFile.AddLine(LuaParser.Write.StringToLua(UnitsGroup.KEY_TYPE, type));
+					LuaFile.AddLine(LuaParser.Write.StringToLua(UnitsGroup.KEY_ORDERS, orders));
+					LuaFile.AddLine(LuaParser.Write.StringToLua(UnitsGroup.KEY_PLATOON, platoon));
+					LuaFile.AddLine(LuaParser.Write.Vector3ToLua(UnitsGroup.KEY_POSITION, Position));
+					LuaFile.AddLine(LuaParser.Write.Vector3ToLua(UnitsGroup.KEY_ORIENTATION, Orientation));
+
+					LuaFile.CloseTab(LuaParser.Write.EndBracketNext);
+
+				}
 			}
 			#endregion
 
@@ -383,22 +485,45 @@ namespace MapLua
 
 				LuaTable UnitsTable = (LuaTable)Table.RawGet(KEY_UNITS);
 				Units = new UnitsGroup(KEY_UNITS, UnitsTable);
+			}
 
+			public void SaveArmy(LuaParser.Creator LuaFile)
+			{
+				LuaFile.AddLine(LuaParser.Write.StringToLua(KEY_PERSONALITY, personality));
+				LuaFile.AddLine(LuaParser.Write.StringToLua(KEY_PLANS, plans));
+				LuaFile.AddLine(LuaParser.Write.IntToLua(KEY_COLOR, color));
+				LuaFile.AddLine(LuaParser.Write.IntToLua(KEY_FACTION, faction));
+
+				// Economy
+				LuaFile.OpenTab(KEY_ECONOMY + LuaParser.Write.OpenBracketValue);
+				LuaFile.AddLine(LuaParser.Write.FloatToLua(EconomyTab.KEY_MASS, Economy.mass));
+				LuaFile.AddLine(LuaParser.Write.FloatToLua(EconomyTab.KEY_ENERGY, Economy.energy));
+				LuaFile.CloseTab(LuaParser.Write.EndBracketNext);
+
+				// Aliances
+				LuaFile.OpenTab(KEY_ALLIANCES + LuaParser.Write.OpenBracketValue);
+				for(int a = 0; a < Alliances.Length; a++)
+				{
+					LuaFile.AddLine(LuaParser.Write.StringToLua(LuaParser.Write.PropertiveToLua(Alliances[a].Army), Alliances[a].AllianceType));
+				}
+				LuaFile.CloseTab(LuaParser.Write.EndBracketNext);
+
+				// Units
+				Units.SaveUnitsGroup(LuaFile);
+				
 			}
 		}
 		#endregion
 
 		#endregion
 
-
-
-		public bool Load_SaveLua()
+		public bool Load()
 		{
 			System.Text.Encoding encodeType = System.Text.Encoding.ASCII;
 			string loadedFileSave = "";
 			string MapPath = EnvPaths.GetMapsPath();
 
-			loadedFileSave = System.IO.File.ReadAllText(MapLuaParser.Current.ScenarioLuaFile.ScenarioInfoData.save.Replace("/maps/", MapPath), encodeType);
+			loadedFileSave = System.IO.File.ReadAllText(MapLuaParser.Current.ScenarioLuaFile.Data.save.Replace("/maps/", MapPath), encodeType);
 
 			string loadedFileFunctions = LuaHelper.GetStructureText("lua_variable_functions.lua");
 			string loadedFileEndFunctions = LuaHelper.GetStructureText("lua_variable_end_functions.lua");
@@ -418,10 +543,10 @@ namespace MapLua
 				return false;
 			}
 
-			ScenarioInfoData = new Scenario();
+			Data = new Scenario();
 			LuaTable ScenarioInfoTab = LuaFile.GetTable(KEY_Scenario);
 
-			ScenarioInfoData.next_area_id = LuaParser.Read.IntFromTable(ScenarioInfoTab, Scenario.KEY_NEXTAREAID);
+			Data.next_area_id = LuaParser.Read.IntFromTable(ScenarioInfoTab, Scenario.KEY_NEXTAREAID);
 
 
 			// Areas
@@ -429,31 +554,31 @@ namespace MapLua
 			LuaTable[] AreaTabs = LuaParser.Read.GetTableTables(AreasTable);
 			string[] AreaNames = LuaParser.Read.GetTableKeys(AreasTable);
 
-			ScenarioInfoData.areas = new Areas[AreaTabs.Length];
+			Data.areas = new Areas[AreaTabs.Length];
 			for (int i = 0; i < AreaTabs.Length; i++)
 			{
-				ScenarioInfoData.areas[i] = new Areas();
-				ScenarioInfoData.areas[i].Name = AreaNames[i];
-				ScenarioInfoData.areas[i].rectangle = LuaParser.Read.RectFromTable(AreaTabs[i], Areas.KEY_RECTANGLE);
+				Data.areas[i] = new Areas();
+				Data.areas[i].Name = AreaNames[i];
+				Data.areas[i].rectangle = LuaParser.Read.RectFromTable(AreaTabs[i], Areas.KEY_RECTANGLE);
 			}
 
 			// Master Chains
 			LuaTable MasterChainTable = (LuaTable)ScenarioInfoTab.RawGet(Scenario.KEY_MASTERCHAIN);
 			LuaTable[] MasterChainTabs = LuaParser.Read.GetTableTables(MasterChainTable);
 			string[] MasterChainNames = LuaParser.Read.GetTableKeys(MasterChainTable);
-			ScenarioInfoData.MasterChains = new MasterChain[MasterChainNames.Length];
+			Data.MasterChains = new MasterChain[MasterChainNames.Length];
 			for (int mc = 0; mc < MasterChainNames.Length; mc++)
 			{
-				ScenarioInfoData.MasterChains[mc] = new MasterChain();
-				ScenarioInfoData.MasterChains[mc].Name = MasterChainNames[mc];
+				Data.MasterChains[mc] = new MasterChain();
+				Data.MasterChains[mc].Name = MasterChainNames[mc];
 
 				LuaTable MarkersTable = (LuaTable)MasterChainTabs[mc].RawGet(MasterChain.KEY_MARKERS);
 				LuaTable[] MarkersTabs = LuaParser.Read.GetTableTables(MarkersTable);
 				string[] MarkersNames = LuaParser.Read.GetTableKeys(MarkersTable);
-				ScenarioInfoData.MasterChains[mc].Markers = new Marker[MarkersTabs.Length];
+				Data.MasterChains[mc].Markers = new Marker[MarkersTabs.Length];
 				for(int m = 0; m < MarkersTabs.Length; m++)
 				{
-					ScenarioInfoData.MasterChains[mc].Markers[m] = new Marker(MarkersNames[m], MarkersTabs[m]);
+					Data.MasterChains[mc].Markers[m] = new Marker(MarkersNames[m], MarkersTabs[m]);
 				}
 			}
 
@@ -461,48 +586,49 @@ namespace MapLua
 			LuaTable ChainsTable = (LuaTable)ScenarioInfoTab.RawGet(Scenario.KEY_CHAINS);
 			LuaTable[] ChainTabs = LuaParser.Read.GetTableTables(ChainsTable);
 			string[] ChainNames = LuaParser.Read.GetTableKeys(ChainsTable);
-			ScenarioInfoData.Chains = new Chain[ChainNames.Length];
+			Data.Chains = new Chain[ChainNames.Length];
 			for (int c = 0; c < ChainNames.Length; c++)
 			{
-				ScenarioInfoData.Chains[c] = new Chain();
-				ScenarioInfoData.Chains[c].Markers = LuaParser.Read.StringArrayFromTable(ChainTabs[c], Chain.KEY_MARKERS);
+				Data.Chains[c] = new Chain();
+				Data.Chains[c].Name = ChainNames[c];
+				Data.Chains[c].Markers = LuaParser.Read.StringArrayFromTable(ChainTabs[c], Chain.KEY_MARKERS);
 
 			}
 
 
-			ScenarioInfoData.next_queue_id = LuaParser.Read.IntFromTable(ScenarioInfoTab, Scenario.KEY_NEXTQUEUEID);
+			Data.next_queue_id = LuaParser.Read.IntFromTable(ScenarioInfoTab, Scenario.KEY_NEXTQUEUEID);
 			// Orders - leave as empty
-			ScenarioInfoData.next_platoon_id = LuaParser.Read.IntFromTable(ScenarioInfoTab, Scenario.KEY_NEXTPLATOONID);
+			Data.next_platoon_id = LuaParser.Read.IntFromTable(ScenarioInfoTab, Scenario.KEY_NEXTPLATOONID);
 
 			// Platoons
 			LuaTable PlatoonsTable = (LuaTable)ScenarioInfoTab.RawGet(Scenario.KEY_PLATOONS);
 			LuaTable[] PlatoonsTabs = LuaParser.Read.GetTableTables(PlatoonsTable);
 			string[] PlatoonsNames = LuaParser.Read.GetTableKeys(PlatoonsTable);
-			ScenarioInfoData.Platoons = new Platoon[PlatoonsNames.Length];
+			Data.Platoons = new Platoon[PlatoonsNames.Length];
 			for(int p = 0; p < PlatoonsNames.Length; p++)
 			{
-				ScenarioInfoData.Platoons[p] = new Platoon(PlatoonsNames[p], PlatoonsTabs[p]);
+				Data.Platoons[p] = new Platoon(PlatoonsNames[p], PlatoonsTabs[p]);
 			}
 
 
-			ScenarioInfoData.next_army_id = LuaParser.Read.IntFromTable(ScenarioInfoTab, Scenario.KEY_NEXTARMYID);
-			ScenarioInfoData.next_group_id = LuaParser.Read.IntFromTable(ScenarioInfoTab, Scenario.KEY_NEXTGROUPID);
-			ScenarioInfoData.next_unit_id = LuaParser.Read.IntFromTable(ScenarioInfoTab, Scenario.KEY_NEXTUNITID);
+			Data.next_army_id = LuaParser.Read.IntFromTable(ScenarioInfoTab, Scenario.KEY_NEXTARMYID);
+			Data.next_group_id = LuaParser.Read.IntFromTable(ScenarioInfoTab, Scenario.KEY_NEXTGROUPID);
+			Data.next_unit_id = LuaParser.Read.IntFromTable(ScenarioInfoTab, Scenario.KEY_NEXTUNITID);
 
 			// Armies
 			LuaTable ArmiesTable = (LuaTable)ScenarioInfoTab.RawGet(Scenario.KEY_ARMIES);
 			LuaTable[] ArmiesTabs = LuaParser.Read.GetTableTables(ArmiesTable);
 			string[] ArmiesNames = LuaParser.Read.GetTableKeys(ArmiesTable);
-			ScenarioInfoData.Armies = new Army[ArmiesNames.Length];
+			Data.Armies = new Army[ArmiesNames.Length];
 			for (int a = 0; a < ArmiesNames.Length; a++)
 			{
-				ScenarioInfoData.Armies[a] = new Army(ArmiesNames[a], ArmiesTabs[a]);
+				Data.Armies[a] = new Army(ArmiesNames[a], ArmiesTabs[a]);
 			}
 
 			return true;
 		}
 		
-		public void Save_SaveLua(string Path)
+		public void Save(string Path)
 		{
 			LuaParser.Creator LuaFile = new LuaParser.Creator();
 
@@ -517,7 +643,7 @@ namespace MapLua
 			LuaFile.AddLine(KEY_Scenario + LuaParser.Write.OpenBracketValue);
 			{
 				LuaFile.OpenTab();
-				LuaFile.AddLine(LuaParser.Write.StringToLua(Scenario.KEY_NEXTAREAID, ScenarioInfoData.next_area_id.ToString()));
+				LuaFile.AddLine(LuaParser.Write.StringToLua(Scenario.KEY_NEXTAREAID, Data.next_area_id.ToString()));
 
 				// Props
 				LuaFile.AddSaveComent("");
@@ -530,25 +656,139 @@ namespace MapLua
 				LuaFile.AddSaveComent("");
 				LuaFile.AddSaveComent("Areas");
 				LuaFile.AddSaveComent("");
-				LuaFile.AddLine(Scenario.KEY_AREAS + LuaParser.Write.OpenBracketValue);
+				LuaFile.OpenTab(Scenario.KEY_AREAS + LuaParser.Write.OpenBracketValue);
 				{
-					LuaFile.OpenTab();
-
-					for(int a = 0; a < ScenarioInfoData.areas.Length; a++)
+					for(int a = 0; a < Data.areas.Length; a++)
 					{
 						//TODO
+						LuaFile.OpenTab(LuaParser.Write.PropertiveToLua(Data.areas[a].Name) + LuaParser.Write.OpenBracketValue);
+						LuaFile.AddLine(LuaParser.Write.RectangleToLua(LuaParser.Write.PropertiveToLua(Areas.KEY_RECTANGLE), Data.areas[a].rectangle));
+						LuaFile.CloseTab(LuaParser.Write.EndBracketNext);
+					}
+				}
+				LuaFile.CloseTab(LuaParser.Write.EndBracketNext);
+
+
+				//Markers
+				LuaFile.AddSaveComent("");
+				LuaFile.AddSaveComent("Markers");
+				LuaFile.AddSaveComent("");
+				LuaFile.OpenTab(Scenario.KEY_MASTERCHAIN + LuaParser.Write.OpenBracketValue);
+				{
+					for(int mc = 0; mc < Data.MasterChains.Length; mc++)
+					{
+						LuaFile.OpenTab(LuaParser.Write.PropertiveToLua(Data.MasterChains[mc].Name) + LuaParser.Write.OpenBracketValue);
+						{
+							LuaFile.OpenTab(MasterChain.KEY_MARKERS + LuaParser.Write.OpenBracketValue);
+							{
+								for(int m = 0; m < Data.MasterChains[mc].Markers.Length; m++)
+								{
+									LuaFile.OpenTab(LuaParser.Write.PropertiveToLua(Data.MasterChains[mc].Markers[m].Name) + LuaParser.Write.OpenBracketValue);
+									Data.MasterChains[mc].Markers[m].SaveMarkerValues(LuaFile);
+									LuaFile.CloseTab(LuaParser.Write.EndBracketNext);
+								}
+							}
+							LuaFile.CloseTab(LuaParser.Write.EndBracketNext);
+						}
+						LuaFile.CloseTab(LuaParser.Write.EndBracketNext);
 
 					}
-
-					LuaFile.CloseTab();
 				}
-				LuaFile.AddLine(LuaParser.Write.EndBracketNext);
+				LuaFile.CloseTab(LuaParser.Write.EndBracketNext);
+
+				//Chains
+				LuaFile.OpenTab(Scenario.KEY_CHAINS + LuaParser.Write.OpenBracketValue);
+				{
+					for(int c = 0; c < Data.Chains.Length; c++)
+					{
+						LuaFile.OpenTab(LuaParser.Write.PropertiveToLua(Data.Chains[c].Name) + LuaParser.Write.OpenBracketValue);
+						LuaFile.OpenTab(Chain.KEY_MARKERS + LuaParser.Write.OpenBracketValue);
+
+						for(int i = 0; i < Data.Chains[c].Markers.Length; i++)
+						{
+							LuaFile.AddLine("\"" + Data.Chains[c].Markers[i] + "\",");
+						}
+
+						LuaFile.CloseTab(LuaParser.Write.EndBracketNext);
+						LuaFile.CloseTab(LuaParser.Write.EndBracketNext);
+					}
+				}
+				LuaFile.CloseTab(LuaParser.Write.EndBracketNext);
+
+				LuaFile.AddLine(LuaParser.Write.StringToLua(Scenario.KEY_NEXTQUEUEID, Data.next_queue_id.ToString()));
+
+				//Orders
+				LuaFile.AddSaveComent("");
+				LuaFile.AddSaveComent("Orders");
+				LuaFile.AddSaveComent("");
+				LuaFile.OpenTab(Scenario.KEY_ORDERS + LuaParser.Write.OpenBracketValue);
+				{
+					//Leave empty
+				}
+				LuaFile.CloseTab(LuaParser.Write.EndBracketNext);
+
+				LuaFile.AddLine(LuaParser.Write.StringToLua(Scenario.KEY_NEXTPLATOONID, Data.next_platoon_id.ToString()));
+
+				//Platoons
+				LuaFile.AddSaveComent("");
+				LuaFile.AddSaveComent("Platoons");
+				LuaFile.AddSaveComent("");
+				LuaFile.OpenTab(Scenario.KEY_ORDERS + LuaParser.Write.OpenBracketValue);
+				{
+					for (int p = 0; p < Data.Platoons.Length; p++)
+					{
+						LuaFile.OpenTab(LuaParser.Write.PropertiveToLua(Data.Platoons[p].Name) + LuaParser.Write.OpenBracketValue);
+						LuaFile.AddLine(LuaParser.Write.Coma + Data.Platoons[p].PlatoonName + LuaParser.Write.Coma + LuaParser.Write.NextValue);
+						LuaFile.AddLine(LuaParser.Write.Coma + Data.Platoons[p].PlatoonFunction + LuaParser.Write.Coma + LuaParser.Write.NextValue);
+
+						string Action = LuaParser.Write.OpenBracket;
+						Action += LuaParser.Write.Coma + Data.Platoons[p].Action.Unit + LuaParser.Write.Coma + LuaParser.Write.NextValue + " ";
+						Action += Data.Platoons[p].Action.Unit.ToString() + LuaParser.Write.NextValue + " ";
+						Action += Data.Platoons[p].Action.count.ToString() + LuaParser.Write.NextValue + " ";
+						Action += LuaParser.Write.Coma + Data.Platoons[p].Action.Action + LuaParser.Write.Coma + LuaParser.Write.NextValue + " ";
+						Action += LuaParser.Write.Coma + Data.Platoons[p].Action.Formation + LuaParser.Write.Coma + LuaParser.Write.NextValue + " ";
+
+						LuaFile.AddLine(Action);
+
+						LuaFile.CloseTab(LuaParser.Write.EndBracketNext);
+					}
+				}
+				LuaFile.CloseTab(LuaParser.Write.EndBracketNext);
 
 
-				LuaFile.CloseTab();
+				LuaFile.AddLine(LuaParser.Write.StringToLua(Scenario.KEY_NEXTARMYID, Data.next_army_id.ToString()));
+				LuaFile.AddLine(LuaParser.Write.StringToLua(Scenario.KEY_NEXTGROUPID, Data.next_group_id.ToString()));
+				LuaFile.AddLine(LuaParser.Write.StringToLua(Scenario.KEY_NEXTUNITID, Data.next_unit_id.ToString()));
+
+				//Armies
+				LuaFile.AddSaveComent("");
+				LuaFile.AddSaveComent("Armies");
+				LuaFile.AddSaveComent("");
+				LuaFile.OpenTab(Scenario.KEY_ORDERS + LuaParser.Write.OpenBracketValue);
+				{
+					for(int a = 0; a < Data.Armies.Length; a++)
+					{
+						LuaFile.AddSaveComent("");
+						LuaFile.AddSaveComent("Army");
+						LuaFile.AddSaveComent("");
+
+						LuaFile.AddLine(LuaParser.Write.PropertiveToLua(Data.Armies[a].Name) + LuaParser.Write.SetValue);
+						LuaFile.OpenTab(LuaParser.Write.OpenBracket);
+						{
+							Data.Armies[a].SaveArmy(LuaFile);
+
+						}
+						LuaFile.CloseTab(LuaParser.Write.EndBracketNext);
+					}
+				}
+				LuaFile.CloseTab(LuaParser.Write.EndBracketNext);
+
 			}
-			LuaFile.AddLine(LuaParser.Write.EndBracket);
+			LuaFile.CloseTab(LuaParser.Write.EndBracket);
 
+
+
+			System.IO.File.WriteAllText(Path, LuaFile.GetFileString());
 		}
 
 

@@ -6,6 +6,7 @@ namespace EditMap
 {
 	public class LightingInfo : MonoBehaviour
 	{
+		public const float SunMultipiler = 0.25f;
 
 		public ScmapEditor Scmap;
 
@@ -228,7 +229,7 @@ namespace EditMap
 			Vector3 SunDIr = new Vector3(-Scmap.map.SunDirection.x, -Scmap.map.SunDirection.y, -Scmap.map.SunDirection.z);
 			Scmap.Sun.transform.rotation = Quaternion.LookRotation(SunDIr);
 			Scmap.Sun.color = new Color(Scmap.map.SunColor.x, Scmap.map.SunColor.y, Scmap.map.SunColor.z, 1);
-			Scmap.Sun.intensity = Scmap.map.LightingMultiplier * 1f;
+			Scmap.Sun.intensity = Scmap.map.LightingMultiplier * SunMultipiler;
 
 			// Set terrain lighting data
 			Scmap.TerrainMaterial.SetFloat("_LightingMultiplier", Scmap.map.LightingMultiplier);

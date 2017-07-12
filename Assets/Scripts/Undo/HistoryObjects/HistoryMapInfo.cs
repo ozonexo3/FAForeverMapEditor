@@ -11,10 +11,10 @@ public class HistoryMapInfo : HistoryObject {
 	public		int				Script;
 
 	public override void Register(){
-		Name = Undo.Current.Scenario.ScenarioData.MapName;
-		Desc = Undo.Current.Scenario.ScenarioData.MapDesc;
-		Version = Undo.Current.Scenario.ScenarioData.Version;
-		Script = Undo.Current.Scenario.ScriptId;
+		Name = MapLuaParser.Current.ScenarioLuaFile.Data.name;
+		Desc = MapLuaParser.Current.ScenarioLuaFile.Data.description;
+		Version = MapLuaParser.Current.ScenarioLuaFile.Data.map_version;
+		Script = MapLuaParser.Current.ScriptId;
 	}
 
 
@@ -25,10 +25,10 @@ public class HistoryMapInfo : HistoryObject {
 
 	public override void DoRedo(){
 		if(Undo.Current.EditMenu.State != Editing.EditStates.MapStat) Undo.Current.EditMenu.ButtonFunction("Map");
-		Undo.Current.Scenario.ScenarioData.MapName = Name;
-		Undo.Current.Scenario.ScenarioData.MapDesc = Desc;
-		Undo.Current.Scenario.ScenarioData.Version = Version;
-		Undo.Current.Scenario.ScriptId = Script;
+		MapLuaParser.Current.ScenarioLuaFile.Data.name = Name;
+		MapLuaParser.Current.ScenarioLuaFile.Data.description = Desc;
+		MapLuaParser.Current.ScenarioLuaFile.Data.map_version = Version;
+		MapLuaParser.Current.ScriptId = Script;
 		Undo.Current.MapInfoMenu.UpdateScriptToggles(Script);
 		Undo.Current.MapInfoMenu.UpdateFields();
 	}

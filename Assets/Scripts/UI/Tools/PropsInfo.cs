@@ -509,9 +509,9 @@ namespace EditMap
 
 				float SizeValue = Mathf.Clamp(BrushSizeSlider.value, MinimumRenderBrushSize * 2, MaximumBrushSize);
 
-				coord.x = (tempCoord.x - SizeValue * MapLuaParser.Current.ScenarioData.Size.x * 0.0001f) / ScmapEditor.Current.Teren.terrainData.size.x; // TODO 0.05 ?? this should be terrain proportion?
+				coord.x = (tempCoord.x - SizeValue * MapLuaParser.GetMapSizeX() * 0.0001f) / ScmapEditor.Current.Teren.terrainData.size.x; // TODO 0.05 ?? this should be terrain proportion?
 																																										  //coord.y = tempCoord.y / Map.Teren.terrainData.size.y;
-				coord.z = (tempCoord.z - SizeValue * MapLuaParser.Current.ScenarioData.Size.y * 0.0001f) / ScmapEditor.Current.Teren.terrainData.size.z;
+				coord.z = (tempCoord.z - SizeValue * MapLuaParser.GetMapSizeY() * 0.0001f) / ScmapEditor.Current.Teren.terrainData.size.z;
 
 				TerrainMaterial.SetFloat("_BrushSize", SizeValue);
 				TerrainMaterial.SetFloat("_BrushUvX", coord.x);
@@ -542,7 +542,7 @@ namespace EditMap
 				return;
 			}
 
-			size = BrushSizeSlider.value * MapLuaParser.Current.ScenarioData.Size.x * 0.0001f;
+			size = BrushSizeSlider.value * MapLuaParser.GetMapSizeX() * 0.0001f;
 
 			//float BrushField = Mathf.PI * (size * size);
 			//BrushField /= 16f;

@@ -687,8 +687,8 @@ namespace EditMap
 			SelectedSymmetryMarkers[id].gameObject.SetActive(true);
 			SelectedSymmetryMarkers[id].localScale = SelectedMarker.localScale;
 
-			Vector3 Origin = new Vector3(0, 0, -Scenario.ScenarioData.Size.y / 10f);
-			Vector3 Origin2 = new Vector3(Scenario.ScenarioData.Size.y / 10f, 0, 0);
+			Vector3 Origin = new Vector3(0, 0, -MapLuaParser.GetMapSizeY() / 10f);
+			Vector3 Origin2 = new Vector3(MapLuaParser.GetMapSizeY() / 10f, 0, 0);
 			Vector3 Point = new Vector3(SelectedMarker.position.x, 0, SelectedMarker.position.z);
 
 			Vector3 PointOfMirror = ClosestPointToLine(Origin, Origin2, Point);
@@ -747,7 +747,7 @@ namespace EditMap
 			SelectedSymmetryMarkers[id].localScale = SelectedMarker.localScale;
 
 			Vector3 Origin = new Vector3(0, 0, 0);
-			Vector3 Origin2 = new Vector3(Scenario.ScenarioData.Size.y / 10f, 0, -Scenario.ScenarioData.Size.y / 10f);
+			Vector3 Origin2 = new Vector3(MapLuaParser.GetMapSizeY() / 10f, 0, -MapLuaParser.GetMapSizeY() / 10f);
 			Vector3 Point = new Vector3(SelectedMarker.position.x, 0, SelectedMarker.position.z);
 
 			Vector3 PointOfMirror = ClosestPointToLine(Origin, Origin2, Point);

@@ -14,7 +14,6 @@ public class MapLuaParser : MonoBehaviour {
 
 	public static MapLuaParser Current;
 
-
 	public ScenarioLua ScenarioLuaFile;
 	public SaveLua SaveLuaFile;
 
@@ -26,7 +25,7 @@ public class MapLuaParser : MonoBehaviour {
 	public		MapHelperGui	HelperGui;
 	public		string			FolderName;
 	public		string			ScenarioFileName;
-	public		Scenario		ScenarioData;
+	//public		Scenario		ScenarioData;
 	public		GameObject[]	Prefabs;
 	public		Transform		MarkersParent;
 	public		GameObject		MapElements;
@@ -200,7 +199,6 @@ public class MapLuaParser : MonoBehaviour {
 		public		int				Players;
 		public		Vector2			Size;
 		public		float			MaxHeight;
-		public		Vector3			WaterLevels;
 		public		float			NoRushRadius;
 		public		Vector2[]		NoRushARMY;
 		public		string			SaveLua;
@@ -310,9 +308,16 @@ public class MapLuaParser : MonoBehaviour {
 			InfoPopup.Show (true, "Loading map...");
 			yield return null;
 			// Scenario LUA
-			LoadScenarioLua ();
-			// NewLoading
-			ScenarioLuaFile.Load_ScenarioLua(FolderName, ScenarioFileName);
+			if(ScenarioLuaFile.Load(FolderName, ScenarioFileName)){
+				//Map Loaded
+			}
+			else
+			{
+				HelperGui.MapLoaded = false;
+			}
+
+			CamControll.MapSize = Mathf.Max(ScenarioLuaFile.Data.Size[0], ScenarioLuaFile.Data.Size[1]);
+			CamControll.RestartCam();
 			yield return null;
 
 			// SCMAP
@@ -323,11 +328,12 @@ public class MapLuaParser : MonoBehaviour {
 			EditMenu.MapInfoMenu.SaveAsFa.isOn = HeightmapControler.map.VersionMinor >= 60;
 
 
-			SaveLuaFile.Load_SaveLua();
 
 			if (loadSave) {
 				// Save LUA
-				LoadSaveLua ();
+				SaveLuaFile.Load();
+
+				LoadSaveLua();
 				yield return null;
 			}
 
@@ -367,109 +373,6 @@ public class MapLuaParser : MonoBehaviour {
 		return loadedFileFunctions;
 	}
 
-	#region Load Scenario Lua
-	private void LoadScenarioLua(){
-
-		
-
-
-		System.Text.Encoding encodeType = System.Text.Encoding.ASCII;
-
-		string MapPath = EnvPaths.GetMapsPath();
-
-		string loadedFile = "";
-		Debug.Log("Load file:" + MapPath + FolderName + "/" + ScenarioFileName + ".lua");
-		string loc = MapPath + FolderName + "/" + ScenarioFileName + ".lua";
-		loadedFile = System.IO.File.ReadAllText(loc, encodeType);
-
-		env = new Lua();
-		env.LoadCLRPackage();
-		
-		try {
-			env.DoString(GetLoadedFileFunctions() + loadedFile);
-		} catch(NLua.Exceptions.LuaException e) {
-			Debug.LogError(ParsingStructureData.FormatException(e), gameObject);
-			
-			HelperGui.MapLoaded = false;
-			return;
-		}
-		
-		// Load Map Prop
-		ScenarioData.MapName = env.GetTable("ScenarioInfo").RawGet("name").ToString();
-		ScenarioData.MapDesc = env.GetTable("ScenarioInfo").RawGet("description").ToString();
-		ScenarioData.Type = env.GetTable("ScenarioInfo").RawGet("type").ToString();
-
-		if(env.GetTable("ScenarioInfo").RawGet("map_version") != null && env.GetTable("ScenarioInfo").RawGet("map_version").ToString() != "null"){
-			ScenarioData.Version = float.Parse(env.GetTable("ScenarioInfo").RawGet("map_version").ToString(), System.Globalization.CultureInfo.InvariantCulture.NumberFormat);
-		}
-		else{
-			ScenarioData.Version = 1;
-		}
-
-		if(env.GetTable("ScenarioInfo").RawGet("AdaptiveMap") != null && env.GetTable("ScenarioInfo").RawGet("AdaptiveMap").ToString() != "null"){
-			ScenarioData.AdaptiveMap = env.GetTable("ScenarioInfo").RawGet("AdaptiveMap").ToString() == "true";
-		}
-		else{
-			ScenarioData.AdaptiveMap = false;
-		}
-
-		if(env.GetTable("ScenarioInfo").RawGet("preview") != null && env.GetTable("ScenarioInfo").RawGet("preview").ToString() != "null"){
-			ScenarioData.Preview = env.GetTable("ScenarioInfo").RawGet("preview").ToString();
-		}
-		else{
-			ScenarioData.Preview = "";
-		}
-
-		ScenarioData.SaveLua =  env.GetTable("ScenarioInfo").RawGet("save").ToString();
-		ScenarioData.Scmap = env.GetTable("ScenarioInfo").RawGet("map").ToString();
-		ScenarioData.ScriptLua = env.GetTable("ScenarioInfo").RawGet("script").ToString();
-		
-		// Load Map Size
-		var width = env.GetTable("ScenarioInfo.size")[1].ToString();
-		var height = env.GetTable("ScenarioInfo.size")[2].ToString();
-		
-		ScenarioData.Size.x = float.Parse(width.ToString(), System.Globalization.CultureInfo.InvariantCulture.NumberFormat);
-		ScenarioData.Size.y = float.Parse(height.ToString(), System.Globalization.CultureInfo.InvariantCulture.NumberFormat);
-		ScenarioData.MaxHeight = 128;
-		CamControll.MapSize = Mathf.Max(ScenarioData.Size.x, ScenarioData.Size.y);
-		CamControll.RestartCam();
-		
-		// Load Players
-		LuaTable TeamsTab = env.GetTable("ScenarioInfo.Configurations.standard.teams")[1] as LuaTable;
-		LuaTable ArmyTab = TeamsTab.RawGet("armies") as LuaTable;
-		
-		ScenarioData.Players = ArmyTab.Values.Count;
-
-		if(env.GetTable("ScenarioInfo") != null && env.GetTable("ScenarioInfo").RawGet("norushradius") != null)
-			ScenarioData.NoRushRadius = float.Parse(env.GetTable("ScenarioInfo").RawGet("norushradius").ToString(), System.Globalization.CultureInfo.InvariantCulture.NumberFormat);
-		else
-		{
-			ScenarioData.NoRushRadius = 0;
-		}
-
-		ScenarioData.NoRushARMY = new Vector2[ScenarioData.Players];
-		
-		for(int id = 0; id < ScenarioData.Players; id++) {
-			ScenarioData.NoRushARMY[id] = Vector2.zero;
-			if(env.GetTable("ScenarioInfo").RawGet("norushoffsetX_ARMY_" + (id + 1)) != null)
-				ScenarioData.NoRushARMY[id].x = float.Parse(env.GetTable("ScenarioInfo").RawGet("norushoffsetX_ARMY_" + (id + 1)).ToString(), System.Globalization.CultureInfo.InvariantCulture.NumberFormat);
-			if(env.GetTable("ScenarioInfo").RawGet("norushoffsetY_ARMY_" + (id + 1)) != null)
-				ScenarioData.NoRushARMY[id].y = float.Parse(env.GetTable("ScenarioInfo").RawGet("norushoffsetY_ARMY_" + (id + 1)).ToString(), System.Globalization.CultureInfo.InvariantCulture.NumberFormat);
-		}
-
-		ScenarioData.CustomProps = new List<customprop> ();
-		LuaHelper.LHTable CustomPropsTable = new LuaHelper.LHTable(env.GetTable("ScenarioInfo.Configurations.standard.customprops"));
-
-		for (int i = 0; i < CustomPropsTable.Count; i++) {
-			customprop NewProp = new customprop ();
-			NewProp.key = CustomPropsTable.Keys [i];
-			NewProp.value = CustomPropsTable.GetStringValue (CustomPropsTable.Keys [i]);
-			ScenarioData.CustomProps.Add (NewProp);
-		}
-
-
-	}
-	#endregion
 
 	#region Load Save Lua
 	private void LoadSaveLua(){
@@ -477,13 +380,10 @@ public class MapLuaParser : MonoBehaviour {
 		string loadedFileSave = "";
 		string MapPath = EnvPaths.GetMapsPath();
 
-		loadedFileSave = System.IO.File.ReadAllText(ScenarioData.SaveLua.Replace("/maps/", MapPath), encodeType);
+		loadedFileSave = System.IO.File.ReadAllText(ScenarioLuaFile.Data.save.Replace("/maps/", MapPath), encodeType);
 
 		string loadedFileFunctions = LuaHelper.GetStructureText ("lua_variable_functions.lua");
-		//loadedFileFunctions = System.IO.File.ReadAllText(StructurePath + "lua_variable_functions.lua", encodeType);
-
 		string loadedFileEndFunctions = LuaHelper.GetStructureText ("lua_variable_end_functions.lua");
-		//loadedFileEndFunctions = System.IO.File.ReadAllText(StructurePath + "lua_variable_end_functions.lua", encodeType);
 		
 		loadedFileSave = loadedFileFunctions + loadedFileSave + loadedFileEndFunctions;
 		
@@ -500,31 +400,18 @@ public class MapLuaParser : MonoBehaviour {
 			return;
 		}
 
-
-
 		// LoadArea
-		ScenarioData.Area = new Rect();
-		if(save.GetTable("Scenario.Areas.AREA_1") != null && save.GetTable("Scenario.Areas.AREA_1").ToString() != "null"){
-			ScenarioData.DefaultArea = true;
-			ScenarioData.Area.x = float.Parse(save.GetTable("Scenario.Areas.AREA_1.rectangle")[1].ToString(), System.Globalization.CultureInfo.InvariantCulture.NumberFormat);
-			ScenarioData.Area.y = float.Parse(save.GetTable("Scenario.Areas.AREA_1.rectangle")[2].ToString(), System.Globalization.CultureInfo.InvariantCulture.NumberFormat);
-			ScenarioData.Area.width = float.Parse(save.GetTable("Scenario.Areas.AREA_1.rectangle")[3].ToString(), System.Globalization.CultureInfo.InvariantCulture.NumberFormat);
-			ScenarioData.Area.height = float.Parse(save.GetTable("Scenario.Areas.AREA_1.rectangle")[4].ToString(), System.Globalization.CultureInfo.InvariantCulture.NumberFormat);
-			UpdateArea();
-		}
-		else{
-			ScenarioData.DefaultArea = false;
-			HeightmapControler.TerrainMaterial.SetInt("_Area", ScenarioData.DefaultArea?1:0);
-			MapElements.SetActive(false);
-			HeightmapControler.TerrainMaterial.SetFloat("_AreaX", 0);
-			HeightmapControler.TerrainMaterial.SetFloat("_AreaY", 0);
-			HeightmapControler.TerrainMaterial.SetFloat("_AreaWidht", ScenarioData.Size.x / 10f);
-			HeightmapControler.TerrainMaterial.SetFloat("_AreaHeight", ScenarioData.Size.y / 10f);
-		}
+
+		HeightmapControler.TerrainMaterial.SetInt("_Area", 0); // TODO
+		MapElements.SetActive(false);
+		HeightmapControler.TerrainMaterial.SetFloat("_AreaX", 0);
+		HeightmapControler.TerrainMaterial.SetFloat("_AreaY", 0);
+		HeightmapControler.TerrainMaterial.SetFloat("_AreaWidht", GetMapSizeX() / 10f);
+		HeightmapControler.TerrainMaterial.SetFloat("_AreaHeight", GetMapSizeY() / 10f);
 
 		MapCenterPoint = Vector3.zero;
-		MapCenterPoint.x = (ScenarioData.Size.x / 20);
-		MapCenterPoint.z = -1 * (ScenarioData.Size.y / 20);
+		MapCenterPoint.x = (GetMapSizeX() / 20);
+		MapCenterPoint.z = -1 * (GetMapSizeY() / 20);
 		
 		// LoadMarkers
 		#region Load Markers
@@ -714,16 +601,23 @@ public class MapLuaParser : MonoBehaviour {
 
 		System.IO.Directory.CreateDirectory(BackupPath);
 
+
+		// New Lua Parser
+		ScenarioLuaFile.Save(EnvPaths.GetMapsPath() + FolderName + "/" + ScenarioFileName + ".lua");
+		
+		SaveLuaFile.Save(ScenarioLuaFile.Data.save.Replace("/maps/", MapPath).Replace(".lua", "_new.lua"));
+
+
 		yield return null;
-		SaveScenarioLua();
+		//SaveScenarioLua();
 		yield return null;
-		SaveSaveLua();
+		//SaveSaveLua();
 		yield return null;
 
-		SaveScriptLua(ScriptId);
+		//SaveScriptLua(ScriptId);
 		yield return null;
 
-		SaveScmap();
+		//SaveScmap();
 		yield return null;
 
 		InfoPopup.Show(false);
@@ -732,9 +626,9 @@ public class MapLuaParser : MonoBehaviour {
 	public void SaveScmap(){
 
 		string MapPath = EnvPaths.GetMapsPath();
-		string MapFilePath = ScenarioData.Scmap.Replace("/maps/", MapPath);
+		string MapFilePath = ScenarioLuaFile.Data.map.Replace("/maps/", MapPath);
 
-		string FileName = ScenarioData.Scmap;
+		string FileName = ScenarioLuaFile.Data.map;
 		char[] NameSeparator = ("/").ToCharArray();
 		string[] Names = FileName.Split(NameSeparator);
 		Debug.Log(BackupPath + "/" + Names[Names.Length - 1]);
@@ -744,6 +638,7 @@ public class MapLuaParser : MonoBehaviour {
 		HeightmapControler.SaveScmapFile();
 	}
 
+	/*
 	public void SaveScenarioLua(){
 		string SaveData = "";
 		string loadedFile = "";
@@ -819,10 +714,9 @@ public class MapLuaParser : MonoBehaviour {
 		System.IO.File.Move(ScenarioFilePath, BackupPath + "/" + ScenarioFileName + ".lua");
 		System.IO.File.WriteAllText(ScenarioFilePath, SaveData);
 
-		ScenarioLuaFile.Save_ScenarioLua(ScenarioFilePath.Replace(".lua", "_new.lua"));
 
 	}
-
+	*/
 
 	public void SaveSaveLua(){
 		System.Text.Encoding encodeType = System.Text.Encoding.ASCII;
@@ -979,9 +873,9 @@ public class MapLuaParser : MonoBehaviour {
 		SaveData = SaveData.Replace ("[MARKERS]", MarkersData);
 		SaveData = SaveData.Replace ("[CHAINS]", "");
 
-		string AreaData = "";
-		AreaData += "            ['rectangle'] = RECTANGLE( " + ScenarioData.Area.x.ToString() +", "+ ScenarioData.Area.y.ToString() +", "+ ScenarioData.Area.width.ToString() +", "+ ScenarioData.Area.height.ToString() +"),";
-		SaveData = SaveData.Replace ("[AREA]", AreaData);
+		//string AreaData = "";
+		//AreaData += "            ['rectangle'] = RECTANGLE( " + ScenarioData.Area.x.ToString() +", "+ ScenarioData.Area.y.ToString() +", "+ ScenarioData.Area.width.ToString() +", "+ ScenarioData.Area.height.ToString() +"),";
+		//SaveData = SaveData.Replace ("[AREA]", AreaData);
 
 
 		string ArmyUnitsStructure = LuaHelper.GetStructureText ("save_army.lua");
@@ -1047,15 +941,14 @@ public class MapLuaParser : MonoBehaviour {
 
 
 		string MapPath = EnvPaths.GetMapsPath();
-		string SaveFilePath = ScenarioData.SaveLua.Replace("/maps/", MapPath);
+		string SaveFilePath = ScenarioLuaFile.Data.save.Replace("/maps/", MapPath);
 
-		string FileName = ScenarioData.SaveLua;
+		string FileName = ScenarioLuaFile.Data.save;
 		char[] NameSeparator = ("/").ToCharArray();
 		string[] Names = FileName.Split(NameSeparator);
 		System.IO.File.Move(SaveFilePath, BackupPath + "/" + Names[Names.Length - 1]);
 
 		SaveData = SaveData.Replace ("\r", "");
-
 		System.IO.File.WriteAllText(SaveFilePath, SaveData);
 	}
 
@@ -1074,9 +967,9 @@ public class MapLuaParser : MonoBehaviour {
 		SaveData = loadedFile;
 
 		string MapPath = EnvPaths.GetMapsPath();
-		string SaveFilePath = ScenarioData.ScriptLua.Replace("/maps/", MapPath);
+		string SaveFilePath = ScenarioLuaFile.Data.script.Replace("/maps/", MapPath);
 
-		string FileName = ScenarioData.ScriptLua;
+		string FileName = ScenarioLuaFile.Data.script;
 		char[] NameSeparator = ("/").ToCharArray();
 		string[] Names = FileName.Split(NameSeparator);
 		System.IO.File.Move(SaveFilePath, BackupPath + "/" + Names[Names.Length - 1]);
@@ -1106,7 +999,7 @@ public class MapLuaParser : MonoBehaviour {
 	}
 
 	public void UpdateArea(){
-
+		/*
 		if(ScenarioData.Area.width == 0 && ScenarioData.Area.height == 0){
 			ScenarioData.DefaultArea = false;
 			HeightmapControler.TerrainMaterial.SetInt("_Area", ScenarioData.DefaultArea?1:0);
@@ -1117,6 +1010,7 @@ public class MapLuaParser : MonoBehaviour {
 		HeightmapControler.TerrainMaterial.SetFloat("_AreaY", ScenarioData.Area.y / 10f);
 		HeightmapControler.TerrainMaterial.SetFloat("_AreaWidht", ScenarioData.Area.width / 10f);
 		HeightmapControler.TerrainMaterial.SetFloat("_AreaHeight", ScenarioData.Area.height / 10f);
+		*/
 	}
 	#endregion
 
@@ -1346,6 +1240,25 @@ public class MapLuaParser : MonoBehaviour {
 		}
 		return ToReturn;
 	}
-		
+
+	#endregion
+
+
+	#region Lua values
+	public static Vector2 GetMapSize()
+	{
+		return new Vector2(Current.ScenarioLuaFile.Data.Size[0], Current.ScenarioLuaFile.Data.Size[1]);
+	}
+
+	public static float GetMapSizeX()
+	{
+		return Current.ScenarioLuaFile.Data.Size[0];
+	}
+
+	public static float GetMapSizeY()
+	{
+		return Current.ScenarioLuaFile.Data.Size[1];
+	}
+
 	#endregion
 }

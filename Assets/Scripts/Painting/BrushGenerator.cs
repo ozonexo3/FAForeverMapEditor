@@ -328,8 +328,8 @@ public class BrushGenerator : MonoBehaviour
 
 	Vector3 GetDiagonal1Symetry()
 	{
-		Vector3 Origin = new Vector3(0, 0, -MapLuaParser.Current.ScenarioData.Size.y / 10f);
-		Vector3 Origin2 = new Vector3(MapLuaParser.Current.ScenarioData.Size.y / 10f, 0, 0);
+		Vector3 Origin = new Vector3(0, 0, -MapLuaParser.GetMapSizeY() / 10f);
+		Vector3 Origin2 = new Vector3(MapLuaParser.GetMapSizeY() / 10f, 0, 0);
 		Vector3 Point = new Vector3(BrushPos.x, 0, BrushPos.z);
 
 		Vector3 PointOfMirror = MarkersInfo.ClosestPointToLine(Origin, Origin2, Point);
@@ -345,7 +345,7 @@ public class BrushGenerator : MonoBehaviour
 	Vector3 GetDiagonal2Symetry()
 	{
 		Vector3 Origin = new Vector3(0, 0, 0);
-		Vector3 Origin2 = new Vector3(MapLuaParser.Current.ScenarioData.Size.y / 10f, 0, -MapLuaParser.Current.ScenarioData.Size.y / 10f);
+		Vector3 Origin2 = new Vector3(MapLuaParser.GetMapSizeY() / 10f, 0, -MapLuaParser.GetMapSizeY() / 10f);
 		Vector3 Point = new Vector3(BrushPos.x, 0, BrushPos.z);
 
 		Vector3 PointOfMirror = MarkersInfo.ClosestPointToLine(Origin, Origin2, Point);
@@ -360,8 +360,8 @@ public class BrushGenerator : MonoBehaviour
 
 	Vector3 GetDiagonal3Symetry()
 	{
-		Vector3 Origin = new Vector3(0, 0, -MapLuaParser.Current.ScenarioData.Size.y / 10f);
-		Vector3 Origin2 = new Vector3(MapLuaParser.Current.ScenarioData.Size.y / 10f, 0, 0);
+		Vector3 Origin = new Vector3(0, 0, -MapLuaParser.GetMapSizeY() / 10f);
+		Vector3 Origin2 = new Vector3(MapLuaParser.GetMapSizeY() / 10f, 0, 0);
 		Vector3 Point = new Vector3(BrushPos.x, 0, BrushPos.z);
 
 		Vector3 PointOfMirror = MarkersInfo.ClosestPointToLine(Origin, Origin2, Point);
@@ -375,7 +375,7 @@ public class BrushGenerator : MonoBehaviour
 
 
 		Origin = new Vector3(0, 0, 0);
-		Origin2 = new Vector3(MapLuaParser.Current.ScenarioData.Size.y / 10f, 0, -MapLuaParser.Current.ScenarioData.Size.y / 10f);
+		Origin2 = new Vector3(MapLuaParser.GetMapSizeY() / 10f, 0, -MapLuaParser.GetMapSizeY() / 10f);
 		Point = new Vector3(MirroredPos.x, 0, MirroredPos.z);
 
 		PointOfMirror = MarkersInfo.ClosestPointToLine(Origin, Origin2, Point);

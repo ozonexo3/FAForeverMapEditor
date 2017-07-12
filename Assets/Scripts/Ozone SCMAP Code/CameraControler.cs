@@ -600,8 +600,8 @@ public class CameraControler : MonoBehaviour {
 						MarkerToCreateSymmetry[i].position = FinalPos;
 					}
 					else if(SymmetryCode == 5 || (SymmetryCode == 7 && i == 0)){
-						Vector3 Origin = new Vector3(0, 0, -Edit.Scenario.ScenarioData.Size.y / 10f);
-						Vector3 Origin2 = new Vector3(Edit.Scenario.ScenarioData.Size.y / 10f, 0, 0);
+						Vector3 Origin = new Vector3(0, 0, -MapLuaParser.GetMapSize().y / 10f);
+						Vector3 Origin2 = new Vector3(MapLuaParser.GetMapSize().y / 10f, 0, 0);
 						Vector3 Point = new Vector3(HitPointSnaped.x, 0, HitPointSnaped.z);
 
 						Vector3 PointOfMirror = MarkersInfo.ClosestPointToLine(Origin, Origin2, Point);
@@ -615,7 +615,7 @@ public class CameraControler : MonoBehaviour {
 					}
 					else if(SymmetryCode == 6 || (SymmetryCode == 7 && i == 1)){
 						Vector3 Origin = new Vector3(0, 0, 0);
-						Vector3 Origin2 = new Vector3(Edit.Scenario.ScenarioData.Size.y / 10f, 0, -Edit.Scenario.ScenarioData.Size.y / 10f);
+						Vector3 Origin2 = new Vector3(MapLuaParser.GetMapSize().y / 10f, 0, -MapLuaParser.GetMapSize().y / 10f);
 						Vector3 Point = new Vector3(HitPointSnaped.x, 0, HitPointSnaped.z);
 						
 						Vector3 PointOfMirror = MarkersInfo.ClosestPointToLine(Origin, Origin2, Point);
@@ -629,8 +629,8 @@ public class CameraControler : MonoBehaviour {
 					}
 					else if(SymmetryCode == 7 && i == 2){
 						// Step 1
-						Vector3 Origin = new Vector3(0, 0, -Edit.Scenario.ScenarioData.Size.y / 10f);
-						Vector3 Origin2 = new Vector3(Edit.Scenario.ScenarioData.Size.y / 10f, 0, 0);
+						Vector3 Origin = new Vector3(0, 0, -MapLuaParser.GetMapSize().y / 10f);
+						Vector3 Origin2 = new Vector3(MapLuaParser.GetMapSize().y / 10f, 0, 0);
 						Vector3 Point = new Vector3(HitPointSnaped.x, 0, HitPointSnaped.z);
 
 						Vector3 PointOfMirror = MarkersInfo.ClosestPointToLine(Origin, Origin2, Point);
@@ -642,7 +642,7 @@ public class CameraControler : MonoBehaviour {
 
 						// Step 2
 						Origin = new Vector3(0, 0, 0);
-						Origin2 = new Vector3(Edit.Scenario.ScenarioData.Size.y / 10f, 0, -Edit.Scenario.ScenarioData.Size.y / 10f);
+						Origin2 = new Vector3(MapLuaParser.GetMapSize().y / 10f, 0, -MapLuaParser.GetMapSize().y / 10f);
 						Point = new Vector3(MirroredMarker.x, 0, MirroredMarker.z);
 
 						PointOfMirror = MarkersInfo.ClosestPointToLine(Origin, Origin2, Point);

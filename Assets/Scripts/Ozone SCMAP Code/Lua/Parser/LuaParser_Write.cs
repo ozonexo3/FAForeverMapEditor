@@ -120,8 +120,41 @@ namespace LuaParser
 		{
 			return key + SetValue + (value?("true"):("false")) + GetNextValue(NextLine);
 		}
+
+		public static string Vector3ToLua(string key, Vector3 value, bool NextLine = true)
+		{
+			return key + OpenBracketValue + " " + value.x.ToString() + ", " + value.y.ToString() + ", " + value.z.ToString() + " " + EndBracket + GetNextValue(NextLine);
+		}
 		#endregion
 
+		// Functions
+		#region Functions
+		public static string RectangleToLua(string key, Rect value, bool NextLine = true)
+		{
+			return key + SetValue + "RECTANGLE( " + value.x.ToString() + ", " + value.y.ToString() + ", " + value.width.ToString() + ", " + value.height.ToString() + " )" + GetNextValue(NextLine);
+		}
+
+		public static string Vector3ToLuaFunction(string key, Vector3 value, bool NextLine = true)
+		{
+			return key + SetValue + "VECTOR3( " + value.x.ToString() + ", " + value.y.ToString() + ", " + value.z.ToString() + " )" + GetNextValue(NextLine);
+		}
+
+		public static string StringToLuaFunction(string key, string value, bool NextLine = true)
+		{
+			return key + SetValue + "STRING( " + Coma + value + Coma + " )" + GetNextValue(NextLine);
+		}
+
+		public static string FloatToLuaFunction(string key, float value, bool NextLine = true)
+		{
+			return key + SetValue + "FLOAT( " + value.ToString(FloatFunctionFormat) +" )" + GetNextValue(NextLine);
+		}
+
+		public static string BoolToLuaFunction(string key, bool value, bool NextLine = true)
+		{
+			return key + SetValue + "BOOLEAN( " + (value ? ("true") : ("false")) + " )" + GetNextValue(NextLine);
+		}
+
+		#endregion
 
 		public static string PropertiveToLua(string prop)
 		{
@@ -142,6 +175,7 @@ namespace LuaParser
 		}
 
 		public const string FloatFormat = "";
+		public const string FloatFunctionFormat = "N6";
 		public const string Coma = "'";
 		public const string SetValue = " = ";
 		public const string OpenBracket = "{";
