@@ -6,6 +6,10 @@ namespace Selection
 {
 	public partial class SelectionManager : MonoBehaviour
 	{
+
+		public static SelectionManager Current;
+
+		[Header("Core")]
 		public Camera Cam;
 		public RectTransform SelBox;
 		public int DisableLayer;
@@ -13,6 +17,13 @@ namespace Selection
 		public bool SnapToGrid;
 
 		public GameObject[] AfectedGameObjects;
+		private bool Active = false;
+
+
+		void Awake()
+		{
+			Current = this;
+		}
 
 		public void SetAfectedGameObjects(GameObject[] GameObjects)
 		{
@@ -37,6 +48,9 @@ namespace Selection
 						AfectedGameObjects[i].layer = UsedLayer;
 				}
 			}
+
+
+			Active = AfectedGameObjects.Length > 0;
 
 		}
 

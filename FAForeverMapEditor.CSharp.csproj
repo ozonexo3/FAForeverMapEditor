@@ -258,6 +258,7 @@
     <Compile Include="Assets\Scripts\Painting\PaintWithBrush.cs" />
     <Compile Include="Assets\Scripts\Selection\SelectionManager.cs" />
     <Compile Include="Assets\Scripts\Selection\SelectionManager_Controls.cs" />
+    <Compile Include="Assets\Scripts\Selection\SelectionManager_Ring.cs" />
     <Compile Include="Assets\Scripts\Selection\SelectionManager_Symmetry.cs" />
     <Compile Include="Assets\Scripts\Tes\ArrayRange.cs" />
     <Compile Include="Assets\Scripts\Tes\ColorUtils.cs" />
