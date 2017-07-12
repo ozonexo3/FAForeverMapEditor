@@ -8,7 +8,6 @@ public class PropsRenderer : MonoBehaviour {
 	public static PropsRenderer Current;
 
 	bool Updating = false;
-	bool BuforUpdate = false;
 	Coroutine Cor;
 
 	private void Awake()
@@ -20,7 +19,6 @@ public class PropsRenderer : MonoBehaviour {
 	{
 		if (Updating)
 		{
-			BuforUpdate = true;
 		}
 		else
 		{

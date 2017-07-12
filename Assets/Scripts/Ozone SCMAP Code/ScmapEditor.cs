@@ -494,7 +494,7 @@ public class ScmapEditor : MonoBehaviour
 		return ToReturn;
 	}
 
-	public static Vector3 SnapToSmallGrid(Vector3 Pos)
+	public static Vector3 SnapToSmallGridCenter(Vector3 Pos)
 	{
 		Pos.x += 0.05f;
 		Pos.z -= 0.05f;
@@ -508,20 +508,48 @@ public class ScmapEditor : MonoBehaviour
 		Pos.z /= 20.0f;
 
 		return Pos;
+	}
 
+	public static Vector3 SnapToSmallGrid(Vector3 Pos)
+	{
+		Pos.x *= 20;
+		Pos.x = (int)(Pos.x + 0.0f);
+		Pos.x /= 20.0f;
+
+		Pos.z *= 20;
+		Pos.z = (int)(Pos.z + 0.0f);
+		Pos.z /= 20.0f;
+
+		return Pos;
+	}
+
+	public static Vector3 SnapToGridCenter(Vector3 Pos)
+	{
+		Pos.x += 0.1f;
+		//Pos.z += 0.1f;
+
+		Pos.x *= 10;
+		Pos.x = (int)(Pos.x);
+		Pos.x /= 10.0f;
+
+		Pos.z *= 10;
+		Pos.z = (int)(Pos.z);
+		Pos.z /= 10.0f;
+
+		Pos.x -= 0.05f;
+		Pos.z -= 0.05f;
+
+		return Pos;
 	}
 
 	public static Vector3 SnapToGrid(Vector3 Pos)
 	{
-		Pos.x += 0.05f;
-		Pos.z -= 0.05f;
-
 		Pos.x *= 10;
-		Pos.x = (int)(Pos.x + 0.0f);
+		Pos.x = (int)(Pos.x);
 		Pos.x /= 10.0f;
 
 		Pos.z *= 10;
-		Pos.z = (int)(Pos.z + 0.0f);
+		Pos.z = (int)(Pos.z);
 		Pos.z /= 10.0f;
 
 		return Pos;

@@ -401,7 +401,6 @@ namespace EditMap
 		Vector3 BrushPos;
 		Vector3 MouseBeginClick;
 		Vector3 BeginMousePos;
-		bool PropsChanged = false;
 		public bool AllowBrushUpdate = false;
 		float StrengthBeginValue;
 		bool ChangingStrength;
@@ -501,7 +500,7 @@ namespace EditMap
 			{
 				BrushPos = hit.point;
 				if (SnapToGround.isOn && BrushSizeSlider.value < 1.5f)
-					BrushPos = Vector3.Lerp(ScmapEditor.SnapToSmallGrid(BrushPos), BrushPos, (BrushSizeSlider.value - 0.2f) / 1.5f);
+					BrushPos = Vector3.Lerp(ScmapEditor.SnapToSmallGridCenter(BrushPos), BrushPos, (BrushSizeSlider.value - 0.2f) / 1.5f);
 				BrushPos.y = ScmapEditor.Current.Teren.SampleHeight(BrushPos);
 
 				Vector3 tempCoord = ScmapEditor.Current.Teren.gameObject.transform.InverseTransformPoint(BrushPos);
@@ -560,7 +559,7 @@ namespace EditMap
 
 			if (SnapToGround.isOn)
 			{
-				BrushPos = ScmapEditor.SnapToSmallGrid(BrushPos);
+				BrushPos = ScmapEditor.SnapToSmallGridCenter(BrushPos);
 
 			}
 

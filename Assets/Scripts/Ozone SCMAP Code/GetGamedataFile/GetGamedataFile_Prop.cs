@@ -27,8 +27,15 @@ public partial struct GetGamedataFile
 				NewProp.Mf.sharedMesh = BP.LODs[0].Mesh;
 				NewProp.Mr.sharedMaterial = BP.LODs[0].Mat;
 
-				float DeltaSize = Mathf.Max(BP.LODs[0].Mesh.bounds.size.x, BP.LODs[0].Mesh.bounds.size.y);
-				DeltaSize = Mathf.Max(DeltaSize, BP.LODs[0].Mesh.bounds.size.z);
+				float DeltaSize = 0.01f;
+				if (BP.LODs[0].Mesh != null)
+				{
+					DeltaSize = Mathf.Max(BP.LODs[0].Mesh.bounds.size.x, BP.LODs[0].Mesh.bounds.size.y);
+					DeltaSize = Mathf.Max(DeltaSize, BP.LODs[0].Mesh.bounds.size.z);
+
+					if (DeltaSize < 0.01f)
+						DeltaSize = 0.01f;
+				}
 
 				Lods = NewProp.Lodg.GetLODs();
 				Lods[0].screenRelativeTransitionHeight = Mathf.Lerp(0.018f, 0.20f, Mathf.Pow((DeltaSize - 1.9f) / 190f, 2f));

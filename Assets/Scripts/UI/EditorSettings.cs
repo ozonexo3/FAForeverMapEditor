@@ -27,7 +27,7 @@ public class EditorSettings : MonoBehaviour {
 	}
 
 	public void Save(){
-		string newPath = PathField.text.Replace("\\", "/");
+		//string newPath = PathField.text.Replace("\\", "/");
 		//if(newPath[newPath.Length - 1].ToString() != "/") newPath += "/";
 		//if(newPath[0].ToString() == "/") newPath = newPath.Remove(0,1);
 		//PlayerPrefs.SetString("GameDataPath", newPath);
@@ -52,12 +52,6 @@ public class EditorSettings : MonoBehaviour {
 	[DllImport("user32.dll")]
 	private static extern void SaveFileDialog(); //in your case : OpenFileDialog
 
-	private void myMethod()
-	{
-		System.Windows.Forms.SaveFileDialog sfd = new System.Windows.Forms.SaveFileDialog();
-
-		//your code
-	}
 
 	public void BrowseMapPath(){
 

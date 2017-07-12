@@ -254,7 +254,7 @@ public class MapLuaParser : MonoBehaviour {
 
 		FolderName = Names[Names.Length - 2];
 		ScenarioFileName = Names[Names.Length - 1].Replace(".lua", "");
-		string NewMapPatch = path.Replace(FolderName + "/" + ScenarioFileName + ".lua", "");
+		//string NewMapPath = path.Replace(FolderName + "/" + ScenarioFileName + ".lua", "");
 
 		Debug.Log("Parsed args: \n"
 			+ FolderName + "\n"
@@ -262,7 +262,7 @@ public class MapLuaParser : MonoBehaviour {
 			+ FolderName);
 
 
-		//PlayerPrefs.SetString("MapsPath", NewMapPatch);
+		//PlayerPrefs.SetString("MapsPath", NewMapPath);
 		loadSave = false;
 		LoadProps = false;
 		var LoadFile = StartCoroutine("LoadingFile");
@@ -410,8 +410,8 @@ public class MapLuaParser : MonoBehaviour {
 		HeightmapControler.TerrainMaterial.SetFloat("_AreaHeight", GetMapSizeY() / 10f);
 
 		MapCenterPoint = Vector3.zero;
-		MapCenterPoint.x = (GetMapSizeX() / 20);
-		MapCenterPoint.z = -1 * (GetMapSizeY() / 20);
+		MapCenterPoint.x = (GetMapSizeX() / 20f);
+		MapCenterPoint.z = -1 * (GetMapSizeY() / 20f);
 		
 		// LoadMarkers
 		#region Load Markers

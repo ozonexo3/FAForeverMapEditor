@@ -65,6 +65,19 @@ namespace Markers
 			}
 		}
 
+		public static GameObject[] GetMarkerObjects()
+		{
+			List<GameObject> AllGameObjects = new List<GameObject>();
+			for (int mc = 0; mc < MapLuaParser.Current.SaveLuaFile.Data.MasterChains.Length; mc++)
+			{
+				for (int m = 0; m < MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers.Length; m++)
+				{
+					AllGameObjects.Add(MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers[m].MarkerObj.gameObject);
+				}
+			}
+			return AllGameObjects.ToArray();
+		}
+
 
 		static void CreateMarker(MapLua.SaveLua.Marker Owner, int mc)
 		{
@@ -72,6 +85,7 @@ namespace Markers
 			NewMarker.name = Owner.Name;
 			MarkerObject NewObj = NewMarker.GetComponent<MarkerObject>();
 			NewObj.Owner = Owner;
+			Owner.MarkerObj = NewObj;
 
 			MarkerPropGraphic PropGraphic = GetPropByType(Owner.MarkerType);
 			NewObj.Mf.sharedMesh = PropGraphic.SharedMesh;

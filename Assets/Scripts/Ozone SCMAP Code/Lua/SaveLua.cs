@@ -146,7 +146,8 @@ namespace MapLua
 				RallyPoint, NavalRallyPoint,
 				LandPathNode, AirPathNode, WaterPathNode, AmphibiousPathNode,
 				NavalLink,
-				TransportMarker
+				TransportMarker,
+				Island
 			}
 
 			string MarkerTypeToString(MarkerTypes MType)

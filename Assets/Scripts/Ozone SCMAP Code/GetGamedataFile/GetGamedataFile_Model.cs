@@ -15,7 +15,7 @@ public partial struct GetGamedataFile
 		public Scm_Vert[] Verts;
 		public Scm_Tris[] Tris;
 		//public Vector4[] SkinWeights;
-		public int[] WitchBone;
+		//public int[] WitchBone;
 
 		public void LoadFromStream(BinaryReader Stream)
 		{
@@ -186,8 +186,8 @@ public partial struct GetGamedataFile
 		public Vector2 Uv0;
 		public Vector2 Uv1;
 		public byte[] BoneIndex; // 4 connected bones
-		public int NewIndex;
-		public int OldInxed;
+		//public int NewIndex;
+		//public int OldInxed;
 
 		public Scm_Vert()
 		{

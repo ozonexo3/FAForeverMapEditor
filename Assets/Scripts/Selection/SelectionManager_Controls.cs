@@ -10,15 +10,18 @@ namespace Selection
 
 		[Header("Controls")]
 		public LayerMask SelectionLayers;
+		public LayerMask ControlerLayers;
 
 		bool PointerOnGameplay;
 		DragTypes DragType;
 		Vector3 BeginMousePos = Vector3.zero;
-
+		Vector3 ControlerBegin = Vector3.zero;
+		Vector3 ControlerClickPoint = Vector3.zero;
+		bool DragStarted = false;
 
 		enum DragTypes
 		{
-			None, SelectionBox, Move, Rotate, Scale
+			None, SelectionBox, MoveX, MoveZ, MoveXZ
 		}
 
 
@@ -40,45 +43,102 @@ namespace Selection
 
 		public void Click()
 		{
-			Debug.Log("Click");
+			if (!Active)
+				return;
+			if (!Input.GetMouseButtonUp(0) || DragStarted)
+				return;
+			//Debug.Log("Click");
 			ClickOnScreen();
 		}
 
 		public void DragInit()
 		{
 			BeginMousePos = Input.mousePosition;
-			DragType = DragTypes.SelectionBox;
+			if (Input.GetMouseButtonDown(0))
+			{
+
+				Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+				RaycastHit hit;
+				if (Physics.Raycast(ray, out hit, 1000, ControlerLayers))
+				{
+					CreateControlerPlane(false);
+					Controler_StorePositions();
+
+					ControlerClickPoint = PosOnControler(ray);
+					ControlerBegin = Controls.position;
+
+					if (hit.collider.gameObject.name == "X")
+						DragType = DragTypes.MoveX;
+					else if (hit.collider.gameObject.name == "Z")
+						DragType = DragTypes.MoveZ;
+					else if (hit.collider.gameObject.name == "XZ")
+						DragType = DragTypes.MoveXZ;
+					else
+						DragType = DragTypes.None;
+
+				}
+				else
+				{
+					DragType = DragTypes.SelectionBox;
+				}
+			}
+			else
+				DragType = DragTypes.None;
 			//TODO Add Move/Rotate/Scale
 		}
 
 		public void DragBegin()
 		{
-			Debug.Log("Drag Begin");
-			if(DragType == DragTypes.SelectionBox)
+			if (!Active)
+				return;
+			DragStarted = true;
+			if (DragType == DragTypes.SelectionBox)
 			{
+				//Debug.Log("Drag Begin");
+
 				UpdateSelectionBox();
 			}
 		}
 
 		public void DragUpdate()
 		{
+			if (!Active)
+				return;
 			// UpdateBox
-			Debug.Log("Drag Update");
 			if (DragType == DragTypes.SelectionBox)
 			{
+				//Debug.Log("Drag Update");
+
 				UpdateSelectionBox();
+			}
+			else if (DragType == DragTypes.MoveX || DragType == DragTypes.MoveZ || DragType == DragTypes.MoveXZ)
+			{
+				ControlerDrag();
 			}
 		}
 
 		public void DragEnd()
 		{
-			DragType = DragTypes.None;
-			Debug.Log("Drag End");
+			if (!Active)
+				return;
 			if (DragType == DragTypes.SelectionBox)
 			{
+				//Debug.Log("Drag End");
+
 				UpdateSelectionBox(false);
 				AddSelectionBoxObjects();
 			}
+			else if(DragType == DragTypes.MoveX || DragType == DragTypes.MoveZ || DragType == DragTypes.MoveXZ)
+			{
+				ControlerFinish();
+			}
+			else
+			{
+
+			}
+			DragStarted = false;
+			DragType = DragTypes.None;
+
 		}
 		#endregion
 
@@ -86,12 +146,12 @@ namespace Selection
 		#region Input
 		bool IsSelectionAdd()
 		{
-			return Input.GetKeyDown(KeyCode.LeftShift);
+			return Input.GetKey(KeyCode.LeftShift);
 		}
 
 		bool IsSelectionRemove()
 		{
-			return Input.GetKeyDown(KeyCode.LeftAlt);
+			return Input.GetKey(KeyCode.LeftAlt);
 		}
 		#endregion
 
@@ -105,12 +165,11 @@ namespace Selection
 			if (Physics.Raycast(ray, out hit, 1000, SelectionLayers))
 			{
 				int ObjectId = GetIdOfObject(hit.collider.gameObject);
-
 				if(ObjectId >= 0)
 				{
 					if (IsSelectionRemove())
 					{
-						if (!Selection.Ids.Contains(ObjectId))
+						if (Selection.Ids.Contains(ObjectId))
 						{
 							Selection.Ids.Remove(ObjectId);
 							FinishSelectionChange();
@@ -134,9 +193,14 @@ namespace Selection
 							FinishSelectionChange();
 						}
 					}
-
 				}
 			}
+			else if(Selection.Ids.Count > 0)
+			{
+				Selection.Ids = new List<int>();
+				FinishSelectionChange();
+			}
+
 		}
 
 		#endregion
@@ -178,35 +242,115 @@ namespace Selection
 			Vector3 diference = MouseEndPos - BeginMousePos;
 			Rect SelectionBoxArea = new Rect(Mathf.Min(MouseEndPos.x, BeginMousePos.x), Mathf.Min(MouseEndPos.y, BeginMousePos.y), Mathf.Abs(diference.x), Mathf.Abs(diference.y));
 
+			bool AnyChanged = false;
+
 			if (IsSelectionRemove())
 			{
 				// Add
-				for (int i = 0; i < AfectedGameObjects.Length; i++)
+				for (int i = 0; i < AffectedGameObjects.Length; i++)
 				{
-					if (Selection.Ids.Contains(i))
+					if (AffectedGameObjects[i].activeSelf && SelectionBoxArea.Contains(GetComponent<Camera>().WorldToScreenPoint(AffectedGameObjects[i].transform.position)))
 					{
-						Selection.Ids.RemoveAt(Selection.Ids.IndexOf(i));
+						if (Selection.Ids.Contains(i))
+						{
+							AnyChanged = true;
+							Selection.Ids.RemoveAt(Selection.Ids.IndexOf(i));
+						}
 					}
 				}
 			}
 			else {
 				if (!IsSelectionAdd())
+				{
 					Selection.Ids = new List<int>();
+					AnyChanged = true;
+				}
 
-				for (int i = 0; i < AfectedGameObjects.Length; i++)
+				for (int i = 0; i < AffectedGameObjects.Length; i++)
 				{
 					if (Selection.Ids.Contains(i))
 						continue;
 
-					if (SelectionBoxArea.Contains(GetComponent<Camera>().WorldToScreenPoint(AfectedGameObjects[i].transform.position)))
+					if (AffectedGameObjects[i].activeSelf && SelectionBoxArea.Contains(Cam.WorldToScreenPoint(AffectedGameObjects[i].transform.position)))
 					{
 						Selection.Ids.Add(i);
+						AnyChanged = true;
 					}
 				}
 			}
+
+			if (AnyChanged)
+			{
+				FinishSelectionChange();
+
+			}
+
+
 		}
 		#endregion
 
+
+		Plane ControlPlane;
+
+		void CreateControlerPlane(bool up)
+		{
+			if (up)
+			{
+				ControlPlane = new Plane(Vector3.up, Controls.position.y);
+			}
+			else
+			{
+				ControlPlane = new Plane();
+				ControlPlane.SetNormalAndPosition(Vector3.up, Controls.position);
+			}
+		}
+
+		Vector3 PosOnControler(Ray ray)
+		{
+			float enter = 0;
+			if (ControlPlane.Raycast(ray, out enter))
+			{
+				return ray.GetPoint(enter);
+			}
+			return Vector3.zero;
+		}
+
+		void Controler_StorePositions()
+		{
+			Selection.StorePositions();
+			for(int i = 0; i < SymetrySelection.Length; i++)
+			{
+				SymetrySelection[i].StorePositions();
+			}
+		}
+
+		void ControlerDrag()
+		{
+			Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+			Vector3 NewPos = PosOnControler(ray);
+			Vector3 Offset = NewPos - ControlerClickPoint;
+
+			if (DragType == DragTypes.MoveZ)
+				Offset.x = 0;
+			if (DragType == DragTypes.MoveX)
+				Offset.z = 0;
+
+			if (SnapToGrid)
+				Offset = ScmapEditor.SnapToGrid(Offset);
+
+			Controls.position = ControlerBegin + Offset;
+			Selection.OffsetPosition(Offset);
+			for (int i = 0; i < SymetrySelection.Length; i++)
+			{
+				SymetrySelection[i].OffsetPosition(Offset);
+			}
+		}
+
+		void ControlerFinish()
+		{
+			//TODO Bake Positions
+			ResetControlerPosition();
+		}
 
 	}
 }

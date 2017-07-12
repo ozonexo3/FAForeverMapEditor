@@ -16,8 +16,8 @@ namespace Selection
 		public int UsedLayer;
 		public bool SnapToGrid;
 
-		public GameObject[] AfectedGameObjects;
-		private bool Active = false;
+		public GameObject[] AffectedGameObjects;
+		public bool Active = false;
 
 
 		void Awake()
@@ -25,32 +25,36 @@ namespace Selection
 			Current = this;
 		}
 
-		public void SetAfectedGameObjects(GameObject[] GameObjects)
+		public void SetAffectedGameObjects(GameObject[] GameObjects, bool AllowUp = false, bool AllowRotation = false, bool AllowScale = false)
 		{
-			if(AfectedGameObjects.Length == 0)
+			Controls_Up.SetActive(AllowUp);
+			Controls_Rotate.SetActive(AllowRotation);
+			Controls_Scale.SetActive(AllowScale);
+
+			if (AffectedGameObjects.Length > 0)
 			{
 				// Clean
-				for(int i = 0; i < AfectedGameObjects.Length; i++)
+				for(int i = 0; i < AffectedGameObjects.Length; i++)
 				{
-					if(AfectedGameObjects[i])
-						AfectedGameObjects[i].layer = DisableLayer;
+					if(AffectedGameObjects[i])
+						AffectedGameObjects[i].layer = DisableLayer;
 				}
 			}
 
-			AfectedGameObjects = GameObjects;
+			AffectedGameObjects = GameObjects;
 
-			if (AfectedGameObjects.Length == 0)
+			if (AffectedGameObjects.Length > 0)
 			{
 				// activate settings
-				for (int i = 0; i < AfectedGameObjects.Length; i++)
+				for (int i = 0; i < AffectedGameObjects.Length; i++)
 				{
-					if (AfectedGameObjects[i])
-						AfectedGameObjects[i].layer = UsedLayer;
+					if (AffectedGameObjects[i])
+						AffectedGameObjects[i].layer = UsedLayer;
 				}
 			}
 
 
-			Active = AfectedGameObjects.Length > 0;
+			Active = AffectedGameObjects.Length > 0;
 
 		}
 

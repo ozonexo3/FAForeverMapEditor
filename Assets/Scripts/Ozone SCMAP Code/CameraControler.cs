@@ -109,6 +109,14 @@ public class CameraControler : MonoBehaviour {
 
 
 		// Interaction
+
+		if (HUD.MapLoaded && Edit.MauseOnGameplay)
+		{
+			CameraMovement();
+
+		}
+
+		/*
 		if ((Edit.MauseOnGameplay || DragStartedGameplay) && !DragStartedOverMenu) {
 			if (Edit.EditMarkers.CreatingId != 0) {
 				if(Input.GetKeyDown(KeyCode.Escape)){
@@ -149,7 +157,7 @@ public class CameraControler : MonoBehaviour {
 
 			}
 		}
-
+		*/
 		if (Menu.IsMenuOpen())
 			return;
 		if (Input.GetKey (KeyCode.LeftControl)) {
