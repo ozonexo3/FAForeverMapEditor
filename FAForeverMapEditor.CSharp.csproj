@@ -219,6 +219,7 @@
     <Compile Include="Assets\PostProcessing\Utilities\CustomMotionTexture\ExampleWheelController.cs" />
     <Compile Include="Assets\Scripts\Common\EditorVersion.cs" />
     <Compile Include="Assets\Scripts\Common\MassMath.cs" />
+    <Compile Include="Assets\Scripts\GFX\ControlerScale.cs" />
     <Compile Include="Assets\Scripts\GFX\GridCamera.cs" />
     <Compile Include="Assets\Scripts\GFX\SelectionRing.cs" />
     <Compile Include="Assets\Scripts\GFX\TerrainMesh.cs" />
@@ -256,6 +257,7 @@
     <Compile Include="Assets\Scripts\Ozone SCMAP Code\Texture\TextureScale.cs" />
     <Compile Include="Assets\Scripts\Painting\BrushGenerator.cs" />
     <Compile Include="Assets\Scripts\Painting\PaintWithBrush.cs" />
+    <Compile Include="Assets\Scripts\Selection\ChangeControlerType.cs" />
     <Compile Include="Assets\Scripts\Selection\SelectionManager.cs" />
     <Compile Include="Assets\Scripts\Selection\SelectionManager_Controls.cs" />
     <Compile Include="Assets\Scripts\Selection\SelectionManager_Ring.cs" />
@@ -288,6 +290,7 @@
     <Compile Include="Assets\Scripts\UI\Lists\StratumLayerBtnPreview.cs" />
     <Compile Include="Assets\Scripts\UI\Loading\SimpleLoadingWheel.cs" />
     <Compile Include="Assets\Scripts\UI\Marker\MarkerObject.cs" />
+    <Compile Include="Assets\Scripts\UI\Marker\MarkerSelectionOptions.cs" />
     <Compile Include="Assets\Scripts\UI\Marker\MarkersControler.cs" />
     <Compile Include="Assets\Scripts\UI\Marker\Old\MarkerData.cs" />
     <Compile Include="Assets\Scripts\UI\Marker\Old\MarkerScript.cs" />
@@ -298,6 +301,7 @@
     <Compile Include="Assets\Scripts\UI\Tools\LightingInfo.cs" />
     <Compile Include="Assets\Scripts\UI\Tools\MapInfo.cs" />
     <Compile Include="Assets\Scripts\UI\Tools\MarkersInfo.cs" />
+    <Compile Include="Assets\Scripts\UI\Tools\NewMarkersInfo.cs" />
     <Compile Include="Assets\Scripts\UI\Tools\PropsInfo.cs" />
     <Compile Include="Assets\Scripts\UI\Tools\StratumInfo.cs" />
     <Compile Include="Assets\Scripts\UI\Tools\TerrainInfo.cs" />
@@ -335,6 +339,7 @@
     <None Include="Assets\GFX\Shaders\RawImageChannel.shader" />
     <None Include="Assets\GFX\Shaders\RawImageNoAlpha.shader" />
     <None Include="Assets\GFX\Shaders\Selection.shader" />
+    <None Include="Assets\GFX\Shaders\UI\UI-Add.shader" />
     <None Include="Assets\PostProcessing\Editor Resources\Monitors\HistogramCompute.compute" />
     <None Include="Assets\PostProcessing\Editor Resources\Monitors\HistogramRender.shader" />
     <None Include="Assets\PostProcessing\Editor Resources\Monitors\ParadeRender.shader" />

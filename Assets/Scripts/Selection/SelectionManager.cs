@@ -25,8 +25,16 @@ namespace Selection
 			Current = this;
 		}
 
-		public void SetAffectedGameObjects(GameObject[] GameObjects, bool AllowUp = false, bool AllowRotation = false, bool AllowScale = false)
+		public bool AllowUp;
+		public bool AllowRotation;
+		public bool AllowScale;
+
+		public void SetAffectedGameObjects(GameObject[] GameObjects, bool _AllowUp = false, bool _AllowRotation = false, bool _AllowScale = false)
 		{
+			AllowUp = _AllowUp;
+			AllowRotation = _AllowRotation;
+			AllowScale = _AllowScale;
+
 			Controls_Up.SetActive(AllowUp);
 			Controls_Rotate.SetActive(AllowRotation);
 			Controls_Scale.SetActive(AllowScale);

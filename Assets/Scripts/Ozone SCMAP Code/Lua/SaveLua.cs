@@ -147,7 +147,8 @@ namespace MapLua
 				LandPathNode, AirPathNode, WaterPathNode, AmphibiousPathNode,
 				NavalLink,
 				TransportMarker,
-				Island
+				Island,
+				Count
 			}
 
 			string MarkerTypeToString(MarkerTypes MType)
@@ -163,7 +164,7 @@ namespace MapLua
 				return newstring;
 			}
 
-			bool AllowByType(string Key)
+			public bool AllowByType(string Key)
 			{
 				if (MarkerType == MarkerTypes.Mass)
 					return Key == KEY_SIZE || Key == KEY_RESOURCE || Key == KEY_AMOUNT || Key == KEY_EDITORICON;

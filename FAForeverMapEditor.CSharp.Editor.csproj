@@ -177,6 +177,7 @@
     <None Include="Assets\GFX\Shaders\RawImageChannel.shader" />
     <None Include="Assets\GFX\Shaders\RawImageNoAlpha.shader" />
     <None Include="Assets\GFX\Shaders\Selection.shader" />
+    <None Include="Assets\GFX\Shaders\UI\UI-Add.shader" />
     <None Include="Assets\PostProcessing\Editor Resources\Monitors\HistogramCompute.compute" />
     <None Include="Assets\PostProcessing\Editor Resources\Monitors\HistogramRender.shader" />
     <None Include="Assets\PostProcessing\Editor Resources\Monitors\ParadeRender.shader" />
