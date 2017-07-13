@@ -290,6 +290,7 @@
     <Compile Include="Assets\Scripts\UI\Lists\StratumLayerBtnPreview.cs" />
     <Compile Include="Assets\Scripts\UI\Loading\SimpleLoadingWheel.cs" />
     <Compile Include="Assets\Scripts\UI\Marker\MarkerObject.cs" />
+    <Compile Include="Assets\Scripts\UI\Marker\MarkerSelectionOptions.cs" />
     <Compile Include="Assets\Scripts\UI\Marker\MarkersControler.cs" />
     <Compile Include="Assets\Scripts\UI\Marker\Old\MarkerData.cs" />
     <Compile Include="Assets\Scripts\UI\Marker\Old\MarkerScript.cs" />

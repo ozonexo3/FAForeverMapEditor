@@ -103,6 +103,7 @@ namespace Selection
 			Selection.SymmetryMatrix = Matrix4x4.TRS(Vector3.zero, Quaternion.identity, Vector3.one);
 			UpdateSelectionRing();
 			GenerateSymmetry();
+			EditMap.MarkerSelectionOptions.UpdateOptions();
 		}
 
 		int LastSym = 0;
@@ -154,14 +155,14 @@ namespace Selection
 					GenerateSymmetrySelectionRing(SymetrySelection[2]);
 					break;
 				case 5:// Diagonal1
-					SymetrySelection = new SelectedObjects[3];
+					SymetrySelection = new SelectedObjects[1];
 					SymetrySelection[0] = new SelectedObjects();
 					SymetrySelection[0].SymmetryMatrix = Matrix4x4.TRS(Vector3.zero, Quaternion.Euler(Vector3.up * 90), new Vector3(-1, 1, 1));
 					SymetrySelection[0].LoadSymetryIds();
 					GenerateSymmetrySelectionRing(SymetrySelection[0]);
 					break;
 				case 6: // Diagonal 2
-					SymetrySelection = new SelectedObjects[3];
+					SymetrySelection = new SelectedObjects[1];
 					SymetrySelection[0] = new SelectedObjects();
 					SymetrySelection[0].SymmetryMatrix = Matrix4x4.TRS(Vector3.zero, Quaternion.Euler(Vector3.down * 90), new Vector3(-1, 1, 1));
 					SymetrySelection[0].LoadSymetryIds();
