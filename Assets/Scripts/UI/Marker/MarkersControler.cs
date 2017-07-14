@@ -96,7 +96,7 @@ namespace Markers
 			NewObj.Tr.localPosition = ScmapEditor.MapPosInWorld(Owner.position);
 		}
 
-		static MarkerPropGraphic GetPropByType(MapLua.SaveLua.Marker.MarkerTypes mType)
+		public static MarkerPropGraphic GetPropByType(MapLua.SaveLua.Marker.MarkerTypes mType)
 		{
 			for(int i = 0; i < Current.MarkerPropGraphics.Length; i++)
 			{

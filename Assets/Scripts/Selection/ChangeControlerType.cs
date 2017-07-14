@@ -14,6 +14,7 @@ namespace Selection
 		public GameObject[] Selection;
 		public GameObject SnapSelection;
 
+		public Button Position;
 		public Button Rotation;
 		public Button Scale;
 
@@ -39,21 +40,32 @@ namespace Selection
 			SnapSelection.SetActive(SelectionManager.Current.SnapToGrid);
 		}
 
-		void UpdateButtons()
+		public void UpdateButtons()
 		{
 			//Rotation.SetActive(SelectionManager.Current.AllowRotation);
 			//Scale.SetActive(SelectionManager.Current.AllowScale);
 
+			Position.interactable = SelectionManager.Current.Active;
 			Rotation.interactable = SelectionManager.Current.AllowRotation;
 			Scale.interactable = SelectionManager.Current.AllowScale;
 
-			if (ControlerId == 1 && !SelectionManager.Current.AllowRotation)
+			if (!SelectionManager.Current.Active)
+			{
+				Selection[0].SetActive(false);
+				Selection[1].SetActive(false);
+				Selection[2].SetActive(false);
+			}
+			else if (ControlerId == 1 && !SelectionManager.Current.AllowRotation)
 			{
 				ChangeControler(0);
 			}
 			else if (ControlerId == 2 && !SelectionManager.Current.AllowScale)
 			{
 				ChangeControler(0);
+			}
+			else
+			{
+				ChangeControler(ControlerId);
 			}
 
 		}

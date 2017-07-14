@@ -96,6 +96,7 @@ namespace MapLua
 		{
 			public string Name = "";
 			public MarkerTypes MarkerType;
+			public MarkerLayers MarkerLayer;
 			public Markers.MarkerObject MarkerObj;
 			public float size = 1f;
 			public bool resource = false;
@@ -151,7 +152,12 @@ namespace MapLua
 				Count
 			}
 
-			string MarkerTypeToString(MarkerTypes MType)
+			public enum MarkerLayers
+			{
+				All, NoAI, Land, Air, Naval, AnyPath, Other
+			}
+
+			public static string MarkerTypeToString(MarkerTypes MType)
 			{
 				string str1 = MType.ToString();
 				string newstring = "";
@@ -180,6 +186,20 @@ namespace MapLua
 					return Key == KEY_ZOOM || Key == KEY_CANSETCAMERA || Key == KEY_CANSYNCCAMERA;
 				else //Unknown
 					return Key == KEY_HINT;
+			}
+
+			public MarkerLayers LayerByType(MarkerTypes Type)
+			{
+				if (Type == MarkerTypes.BlankMarker || Type == MarkerTypes.Mass || Type == MarkerTypes.Hydrocarbon || Type == MarkerTypes.CameraInfo)
+					return MarkerLayers.NoAI;
+				else if (Type == MarkerTypes.LandPathNode || Type == MarkerTypes.RallyPoint || Type == MarkerTypes.AmphibiousPathNode)
+					return MarkerLayers.Land;
+				else if (Type == MarkerTypes.WaterPathNode || Type == MarkerTypes.NavalRallyPoint || Type == MarkerTypes.NavalLink)
+					return MarkerLayers.Naval;
+				else if (Type == MarkerTypes.AirPathNode)
+					return MarkerLayers.Air;
+				else
+					return MarkerLayers.Other;
 			}
 
 			public Marker()
@@ -228,6 +248,9 @@ namespace MapLua
 							break;
 						case KEY_ZOOM:
 							zoom = LuaParser.Read.FloatFromTable(Table, KEY_ZOOM);
+							break;
+						case KEY_ADJACENTTO:
+							adjacentTo = LuaParser.Read.StringFromTable(Table, KEY_ADJACENTTO);
 							break;
 						case KEY_CANSETCAMERA:
 							canSetCamera = LuaParser.Read.BoolFromTable(Table, KEY_CANSETCAMERA);

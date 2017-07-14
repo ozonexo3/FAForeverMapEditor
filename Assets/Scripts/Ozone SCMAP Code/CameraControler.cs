@@ -6,6 +6,7 @@ using EditMap;
 public class CameraControler : MonoBehaviour {
 
 	public static			CameraControler		Current;
+
 	public			Undo				History;
 	public			MapHelperGui		HUD;
 	public			Editing				Edit;
@@ -65,6 +66,21 @@ public class CameraControler : MonoBehaviour {
 		transform.localPosition = new Vector3(transform.localPosition.x, ZoomCamPos() * MapSize / 7 + CameraMinOffset, transform.localPosition.z);
 		Pivot.localRotation = Quaternion.Euler(Rot);
 		Pivot.localPosition = Pos;
+	}
+
+	public static void FocusCamera(Transform Pivot, float Zoom = 30, float rot = 10)
+	{
+		float ZoomValue = Zoom - CameraMinOffset;
+		ZoomValue /= Current.MapSize / 7f;
+		ZoomValue = Mathf.Pow(ZoomValue, 1f / 3f);
+		Current.zoomIn = ZoomValue;
+		Current.transform.localPosition = new Vector3(Current.transform.localPosition.x, Zoom, Current.transform.localPosition.z);
+
+		Current.Rot = Vector3.right * rot;
+		Current.Pivot.localRotation = Quaternion.Euler(Current.Rot);
+
+		Current.Pos = Pivot.position;
+		Current.Pivot.localPosition = Current.Pos;
 	}
 
 	public void RenderCamera(int resWidth, int resHeight, string path){

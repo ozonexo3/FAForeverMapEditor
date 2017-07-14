@@ -332,8 +332,8 @@ public class MapLuaParser : MonoBehaviour {
 			if (loadSave) {
 				// Save LUA
 				SaveLuaFile.Load();
-
-				LoadSaveLua();
+				SetSaveLua();
+				//LoadSaveLua();
 				yield return null;
 			}
 
@@ -375,6 +375,24 @@ public class MapLuaParser : MonoBehaviour {
 
 
 	#region Load Save Lua
+	void SetSaveLua()
+	{
+		HeightmapControler.TerrainMaterial.SetInt("_Area", 0); // TODO
+		MapElements.SetActive(false);
+		HeightmapControler.TerrainMaterial.SetFloat("_AreaX", 0);
+		HeightmapControler.TerrainMaterial.SetFloat("_AreaY", 0);
+		HeightmapControler.TerrainMaterial.SetFloat("_AreaWidht", GetMapSizeX() / 10f);
+		HeightmapControler.TerrainMaterial.SetFloat("_AreaHeight", GetMapSizeY() / 10f);
+
+		MapCenterPoint = Vector3.zero;
+		MapCenterPoint.x = (GetMapSizeX() / 20f);
+		MapCenterPoint.z = -1 * (GetMapSizeY() / 20f);
+
+
+		//SortArmys();
+	}
+
+
 	private void LoadSaveLua(){
 		System.Text.Encoding encodeType = System.Text.Encoding.ASCII;
 		string loadedFileSave = "";

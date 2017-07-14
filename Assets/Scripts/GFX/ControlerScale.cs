@@ -14,6 +14,9 @@ public class ControlerScale : MonoBehaviour {
 
 		Plane plane = new Plane(CamPos.forward, CamPos.position);
 		float dist = plane.GetDistanceToPoint(Pos.position);
+		if (dist < 2)
+			dist = 2;
+
 		Pos.localScale = Vector3.one * dist * 0.5f;
 	}
 }
