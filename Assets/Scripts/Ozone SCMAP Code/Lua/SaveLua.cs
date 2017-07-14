@@ -86,7 +86,35 @@ namespace MapLua
 		{
 			public string Name;
 			public string[] Markers;
+			public List<Marker> ConnectedMarkers;
 			public const string KEY_MARKERS = "Markers";
+
+			public void ConnectMarkers(List<Marker> SearchMarkers)
+			{
+				ConnectedMarkers = new List<Marker>();
+				int Count = SearchMarkers.Count;
+				for (int n = 0; n < Markers.Length; n++)
+				{
+					for (int i = 0; i < Count; i++)
+					{
+						if (SearchMarkers[i].Name == Markers[n])
+						{
+							ConnectedMarkers.Add(SearchMarkers[i]);
+							break;
+						}
+					}
+
+				}
+			}
+
+			public void BakeMarkers()
+			{
+				Markers = new string[ConnectedMarkers.Count];
+				for(int i = 0; i < Markers.Length; i++)
+				{
+					Markers[i] = ConnectedMarkers[i].Name;
+				}
+			}
 		}
 
 
@@ -206,6 +234,41 @@ namespace MapLua
 			{
 			}
 
+			public Marker(MarkerTypes Type, string name)
+			{
+				Name = name;
+				size = 1;
+				position = Vector3.zero;
+				orientation = Vector3.zero;
+				prop = "/env/common/props/markers/M_Blank_prop.bp";
+
+				MarkerType = Type;
+				type = MarkerTypeToString(Type);
+
+				if (Type == MarkerTypes.Mass)
+				{
+					resource = true;
+					amount = 100;
+					prop = "/env/common/props/markers/M_Mass_prop.bp";
+					color = "ff808080";
+				}
+				else if (Type == MarkerTypes.Hydrocarbon)
+				{
+					size = 3;
+					resource = true;
+					amount = 100;
+					prop = "/env/common/props/markers/M_Hydrocarbon_prop.bp";
+					color = "ff808080";
+				}
+				else if (Type == MarkerTypes.CameraInfo)
+				{
+
+				}
+
+
+
+			}
+
 			public Marker(string name, LuaTable Table)
 			{
 				// Create marker from table
@@ -274,6 +337,9 @@ namespace MapLua
 
 			public void SaveMarkerValues(LuaParser.Creator LuaFile)
 			{
+				position = ScmapEditor.MapWorldPosInSave(MarkerObj.transform.position);
+				//position = ScmapEditor.MapWorldPosInSave(MarkerObj.transform.position);
+
 				if (AllowByType(KEY_SIZE))
 					LuaFile.AddLine(LuaParser.Write.FloatToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_SIZE), size));
 				if (AllowByType(KEY_RESOURCE))
@@ -574,7 +640,6 @@ namespace MapLua
 		#endregion
 
 		#endregion
-
 		public bool Load()
 		{
 			System.Text.Encoding encodeType = System.Text.Encoding.ASCII;
@@ -625,6 +690,7 @@ namespace MapLua
 			LuaTable[] MasterChainTabs = LuaParser.Read.GetTableTables(MasterChainTable);
 			string[] MasterChainNames = LuaParser.Read.GetTableKeys(MasterChainTable);
 			Data.MasterChains = new MasterChain[MasterChainNames.Length];
+			List<Marker> AllLoadedMarkers = new List<Marker>();
 			for (int mc = 0; mc < MasterChainNames.Length; mc++)
 			{
 				Data.MasterChains[mc] = new MasterChain();
@@ -638,6 +704,7 @@ namespace MapLua
 				{
 					Data.MasterChains[mc].Markers[m] = new Marker(MarkersNames[m], MarkersTabs[m]);
 				}
+				AllLoadedMarkers.AddRange(Data.MasterChains[mc].Markers);
 			}
 
 			Markers.MarkersControler.LoadMarkers();
@@ -652,7 +719,7 @@ namespace MapLua
 				Data.Chains[c] = new Chain();
 				Data.Chains[c].Name = ChainNames[c];
 				Data.Chains[c].Markers = LuaParser.Read.StringArrayFromTable(ChainTabs[c], Chain.KEY_MARKERS);
-
+				Data.Chains[c].ConnectMarkers(AllLoadedMarkers);
 			}
 
 
@@ -761,6 +828,8 @@ namespace MapLua
 				{
 					for(int c = 0; c < Data.Chains.Length; c++)
 					{
+						Data.Chains[c].BakeMarkers();
+
 						LuaFile.OpenTab(LuaParser.Write.PropertiveToLua(Data.Chains[c].Name) + LuaParser.Write.OpenBracketValue);
 						LuaFile.OpenTab(Chain.KEY_MARKERS + LuaParser.Write.OpenBracketValue);
 

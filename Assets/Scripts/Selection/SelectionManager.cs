@@ -25,6 +25,18 @@ namespace Selection
 			Current = this;
 		}
 
+		void Update()
+		{
+			if (!Active)
+				return;
+
+			if (Input.GetKeyDown(KeyCode.Delete))
+			{
+				DestroySelectedObjects();
+			}
+
+		}
+
 		public bool AllowUp;
 		public bool AllowRotation;
 		public bool AllowScale;
@@ -64,8 +76,58 @@ namespace Selection
 
 			Active = AffectedGameObjects.Length > 0;
 
+			CleanIfInactive();
+
 		}
 
+		void CleanIfInactive()
+		{
+			if (!Active)
+			{
+				AffectedGameObjects = new GameObject[0];
+				Selection.Ids = new List<int>();
+				FinishSelectionChange();
+			}
+		}
+
+
+		private System.Action<List<GameObject>> RemoveAction;
+		public void SetRemoveAction(System.Action<List<GameObject>> Action)
+		{
+			RemoveAction = Action;
+
+		}
+
+
+		void DestroySelectedObjects()
+		{
+			int Count = Selection.Ids.Count;
+			if (Count > 0)
+			{
+				List<GameObject> SelectedObjectsList = new List<GameObject>();
+				for(int i = 0; i < Count; i++)
+				{
+					SelectedObjectsList.Add(AffectedGameObjects[Selection.Ids[i]]);
+				}
+
+
+				for(int s = 0; s < SymetrySelection.Length; s++)
+				{
+					Count = SymetrySelection[s].Ids.Count;
+
+					for (int i = 0; i < Count; i++)
+					{
+						SelectedObjectsList.Add(AffectedGameObjects[SymetrySelection[s].Ids[i]]);
+					}
+				}
+
+				RemoveAction(SelectedObjectsList);
+
+				Active = false;
+
+				CleanIfInactive();
+			}
+		}
 
 
 

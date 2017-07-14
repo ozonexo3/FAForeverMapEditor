@@ -15,5 +15,5 @@ Assembly-UnityScript-Editor-vs.unityproj
 Library
 Temp
 obj
-Assets/OnlyLocal
+Assets/OnlyLocal/*
 .vs

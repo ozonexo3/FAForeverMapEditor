@@ -75,6 +75,12 @@ public class AppMenu : MonoBehaviour
 			case "Slope":
 				ScmapEditor.Current.ToogleSlope(SlopeToggle.isOn);
 				break;
+			case "Forum":
+				Application.OpenURL("http://forums.faforever.com/viewtopic.php?f=45&t=10647");
+				break;
+			case "Donate":
+				Application.OpenURL("https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=LUYMTPBDH5V4E&lc=GB&item_name=FAF%20Map%20Editor&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted");
+				break;
 		}
 	}
 
@@ -106,6 +112,10 @@ public class AppMenu : MonoBehaviour
 			case "Symmetry":
 				Popups[3].SetActive(true);
 				Buttons[3].interactable = false;
+				break;
+			case "Help":
+				Popups[4].SetActive(true);
+				Buttons[4].interactable = false;
 				break;
 		}
 

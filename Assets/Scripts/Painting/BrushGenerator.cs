@@ -332,7 +332,7 @@ public class BrushGenerator : MonoBehaviour
 		Vector3 Origin2 = new Vector3(MapLuaParser.GetMapSizeY() / 10f, 0, 0);
 		Vector3 Point = new Vector3(BrushPos.x, 0, BrushPos.z);
 
-		Vector3 PointOfMirror = MarkersInfo.ClosestPointToLine(Origin, Origin2, Point);
+		Vector3 PointOfMirror = ClosestPointToLine(Origin, Origin2, Point);
 		Vector3 FinalDir = PointOfMirror - Point;
 		FinalDir.y = 0;
 		FinalDir.Normalize();
@@ -348,7 +348,7 @@ public class BrushGenerator : MonoBehaviour
 		Vector3 Origin2 = new Vector3(MapLuaParser.GetMapSizeY() / 10f, 0, -MapLuaParser.GetMapSizeY() / 10f);
 		Vector3 Point = new Vector3(BrushPos.x, 0, BrushPos.z);
 
-		Vector3 PointOfMirror = MarkersInfo.ClosestPointToLine(Origin, Origin2, Point);
+		Vector3 PointOfMirror = ClosestPointToLine(Origin, Origin2, Point);
 		Vector3 FinalDir = PointOfMirror - Point;
 		FinalDir.y = 0;
 		FinalDir.Normalize();
@@ -364,7 +364,7 @@ public class BrushGenerator : MonoBehaviour
 		Vector3 Origin2 = new Vector3(MapLuaParser.GetMapSizeY() / 10f, 0, 0);
 		Vector3 Point = new Vector3(BrushPos.x, 0, BrushPos.z);
 
-		Vector3 PointOfMirror = MarkersInfo.ClosestPointToLine(Origin, Origin2, Point);
+		Vector3 PointOfMirror = ClosestPointToLine(Origin, Origin2, Point);
 		Vector3 FinalDir = PointOfMirror - Point;
 		FinalDir.y = 0;
 		FinalDir.Normalize();
@@ -378,7 +378,7 @@ public class BrushGenerator : MonoBehaviour
 		Origin2 = new Vector3(MapLuaParser.GetMapSizeY() / 10f, 0, -MapLuaParser.GetMapSizeY() / 10f);
 		Point = new Vector3(MirroredPos.x, 0, MirroredPos.z);
 
-		PointOfMirror = MarkersInfo.ClosestPointToLine(Origin, Origin2, Point);
+		PointOfMirror = ClosestPointToLine(Origin, Origin2, Point);
 		FinalDir = PointOfMirror - Point;
 		FinalDir.y = 0;
 		FinalDir.Normalize();
@@ -392,7 +392,7 @@ public class BrushGenerator : MonoBehaviour
 	Vector3 GetRotationSymetry(float angle)
 	{
 		Vector3 MirroredPos = BrushPos - MapLuaParser.Current.MapCenterPoint;
-		MirroredPos = MarkersInfo.RotatePointAroundPivot(BrushPos, MapLuaParser.Current.MapCenterPoint, angle);
+		MirroredPos = RotatePointAroundPivot(BrushPos, MapLuaParser.Current.MapCenterPoint, angle);
 		return MirroredPos;
 	}
 
@@ -499,4 +499,27 @@ public class BrushGenerator : MonoBehaviour
 		return rotImage;
 	}
 	#endregion
+
+
+
+
+
+	public static Vector3 RotatePointAroundPivot(Vector3 point, Vector3 pivot, float angle)
+	{
+		Vector3 dir = point - pivot;
+		dir = Quaternion.Euler(Vector3.up * angle) * dir;
+		point = dir + pivot;
+		return point;
+	}
+
+	public static Vector3 ClosestPointToLine(Vector3 A, Vector3 B, Vector3 P)
+	{
+		Vector3 AP = P - A;
+		Vector3 AB = B - A;
+		float ab2 = AB.x * AB.x + AB.z * AB.z;
+		float ap_ab = AP.x * AB.x + AP.z * AB.z;
+		float t = ap_ab / ab2;
+		Vector3 Closest = A + AB * t;
+		return Closest;
+	}
 }

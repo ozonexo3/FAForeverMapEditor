@@ -159,48 +159,51 @@ namespace Selection
 
 		void ClickOnScreen()
 		{
-
 			Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 			RaycastHit hit;
 			if (Physics.Raycast(ray, out hit, 1000, SelectionLayers))
 			{
-				int ObjectId = GetIdOfObject(hit.collider.gameObject);
-				if(ObjectId >= 0)
-				{
-					if (IsSelectionRemove())
-					{
-						if (Selection.Ids.Contains(ObjectId))
-						{
-							Selection.Ids.Remove(ObjectId);
-							FinishSelectionChange();
-						}
-					}
-					else if (IsSelectionAdd())
-					{
-						if (!Selection.Ids.Contains(ObjectId))
-						{
-							Selection.Ids.Add(ObjectId);
-							FinishSelectionChange();
-						}
-					}
-					else
-					{
-						if (Selection.Ids.Count == 1 && Selection.Ids[0] == ObjectId)
-						{ }
-						else {
-							Selection.Ids = new List<int>();
-							Selection.Ids.Add(ObjectId);
-							FinishSelectionChange();
-						}
-					}
-				}
+				SelectObject(hit.collider.gameObject);
 			}
 			else if(Selection.Ids.Count > 0)
 			{
 				Selection.Ids = new List<int>();
 				FinishSelectionChange();
 			}
+		}
 
+		public void SelectObject(GameObject Obj)
+		{
+			int ObjectId = GetIdOfObject(Obj);
+			if (ObjectId >= 0)
+			{
+				if (IsSelectionRemove())
+				{
+					if (Selection.Ids.Contains(ObjectId))
+					{
+						Selection.Ids.Remove(ObjectId);
+						FinishSelectionChange();
+					}
+				}
+				else if (IsSelectionAdd())
+				{
+					if (!Selection.Ids.Contains(ObjectId))
+					{
+						Selection.Ids.Add(ObjectId);
+						FinishSelectionChange();
+					}
+				}
+				else
+				{
+					if (Selection.Ids.Count == 1 && Selection.Ids[0] == ObjectId)
+					{ }
+					else {
+						Selection.Ids = new List<int>();
+						Selection.Ids.Add(ObjectId);
+						FinishSelectionChange();
+					}
+				}
+			}
 		}
 
 		#endregion

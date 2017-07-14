@@ -18,8 +18,7 @@ public class MarkersList : MonoBehaviour
 
 	void OnEnable()
 	{
-		GenerateList();
-
+		//GenerateList();
 	}
 
 	void OnDisable()
@@ -41,12 +40,7 @@ public class MarkersList : MonoBehaviour
 
 	public void UpdateSelection()
 	{
-		foreach (ListObject obj in AllFields)
-		{
-			if (MarkersMenu.IsSelected(obj.ListId, obj.InstanceId)) obj.SetSelection(1);
-			else if (MarkersMenu.IsSymmetrySelected(obj.ListId, obj.InstanceId)) obj.SetSelection(2);
-			else obj.SetSelection(0);
-		}
+		
 	}
 
 	public void UpdateList()
@@ -61,6 +55,63 @@ public class MarkersList : MonoBehaviour
 
 	void GenerateList()
 	{
+		int mc = 0;
+		if (MapLuaParser.Current.SaveLuaFile.Data.MasterChains.Length == 0)
+			return;
+
+		for(int i = 0; i < MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers.Length; i++)
+		{
+			MapLua.SaveLua.Marker CurrentMarker = MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers[i];
+			if (CurrentMarker == null || CurrentMarker.MarkerObj == null)
+				continue;
+
+			GameObject newList = Instantiate(ListPrefab, Pivot.position, Quaternion.identity) as GameObject;
+			newList.GetComponent<RectTransform>().SetParent(Pivot);
+			//newList.GetComponent<RectTransform>().localPosition = Vector3.up * -30 * count;
+			//newList.GetComponent<RectTransform>().sizeDelta = new Vector3(1, 30);
+
+			ListObject NewListObject = newList.GetComponent<ListObject>();
+
+
+			//int a = Scenario.MarkerRend.Armys[i].GetComponent<MarkerData>().InstanceId;
+			NewListObject.ObjectName.text = CurrentMarker.Name;
+			NewListObject.InstanceId = i;
+			NewListObject.ListId = 0;
+			NewListObject.ConnectedGameObject = CurrentMarker.MarkerObj.gameObject;
+
+
+			if(Selection.SelectionManager.Current.Selection.Ids.Contains(i))
+				NewListObject.SetSelection(1);
+			else
+			{
+				NewListObject.SetSelection(0);
+
+				if (Selection.SelectionManager.Current.SymetrySelection.Length > 0)
+				{
+					for(int s = 0; s < Selection.SelectionManager.Current.SymetrySelection.Length; s++)
+					{
+						if(Selection.SelectionManager.Current.SymetrySelection[s].Ids.Contains(i))
+							NewListObject.SetSelection(2);
+					}
+				}
+			}
+
+			NewListObject.Icon.sprite = Markers.MarkersControler.GetIconByType(CurrentMarker.MarkerType);
+
+			/*if (CurrentMarker.MarkerType == MapLua.SaveLua.Marker.MarkerTypes.BlankMarker)
+				NewListObject.Icon.sprite = Icons[0];
+			else if (CurrentMarker.MarkerType == MapLua.SaveLua.Marker.MarkerTypes.Mass)
+				NewListObject.Icon.sprite = Icons[1];
+			else if (CurrentMarker.MarkerType == MapLua.SaveLua.Marker.MarkerTypes.Hydrocarbon)
+				NewListObject.Icon.sprite = Icons[2];
+			else
+				NewListObject.Icon.sprite = Icons[3];*/
+
+			AllFields.Add(NewListObject);
+		}
+
+
+		/*
 		int count = 0;
 		for (int i = 0; i < Scenario.MarkerRend.Armys.Count; i++)
 		{
@@ -152,5 +203,6 @@ public class MarkersList : MonoBehaviour
 		Vector2 PivotRect = Pivot.sizeDelta;
 		PivotRect.y = 30 * count;
 		Pivot.sizeDelta = PivotRect;
+		*/
 	}
 }

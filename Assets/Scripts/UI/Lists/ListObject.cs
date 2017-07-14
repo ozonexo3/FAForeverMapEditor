@@ -28,6 +28,7 @@ public class ListObject : MonoBehaviour {
 	}
 
 	public void Clicked(){
-		KameraKontroler.MarkerList(ConnectedGameObject);
+		//KameraKontroler.MarkerList(ConnectedGameObject);
+		Selection.SelectionManager.Current.SelectObject(ConnectedGameObject);
 	}
 }

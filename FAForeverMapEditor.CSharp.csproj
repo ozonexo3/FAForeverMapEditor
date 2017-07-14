@@ -257,6 +257,7 @@
     <Compile Include="Assets\Scripts\Ozone SCMAP Code\Texture\TextureScale.cs" />
     <Compile Include="Assets\Scripts\Painting\BrushGenerator.cs" />
     <Compile Include="Assets\Scripts\Painting\PaintWithBrush.cs" />
+    <Compile Include="Assets\Scripts\Placement\PlacementManager.cs" />
     <Compile Include="Assets\Scripts\Selection\ChangeControlerType.cs" />
     <Compile Include="Assets\Scripts\Selection\SelectionManager.cs" />
     <Compile Include="Assets\Scripts\Selection\SelectionManager_Controls.cs" />
@@ -289,7 +290,10 @@
     <Compile Include="Assets\Scripts\UI\Lists\SliderLabel.cs" />
     <Compile Include="Assets\Scripts\UI\Lists\StratumLayerBtnPreview.cs" />
     <Compile Include="Assets\Scripts\UI\Loading\SimpleLoadingWheel.cs" />
+    <Compile Include="Assets\Scripts\UI\Marker\MarkerConnected.cs" />
+    <Compile Include="Assets\Scripts\UI\Marker\MarkerNew.cs" />
     <Compile Include="Assets\Scripts\UI\Marker\MarkerObject.cs" />
+    <Compile Include="Assets\Scripts\UI\Marker\MarkerPreset.cs" />
     <Compile Include="Assets\Scripts\UI\Marker\MarkerSelectionOptions.cs" />
     <Compile Include="Assets\Scripts\UI\Marker\MarkersControler.cs" />
     <Compile Include="Assets\Scripts\UI\Marker\Old\MarkerData.cs" />

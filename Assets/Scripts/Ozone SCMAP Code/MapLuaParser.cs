@@ -551,7 +551,7 @@ public class MapLuaParser : MonoBehaviour {
 			SaveArmy NewArmy = new SaveArmy();
 			NewArmy.Name = ArmiesTable.Keys[m];
 
-			AddSaveArmyMarker(NewArmy.Name);
+			//AddSaveArmyMarker(NewArmy.Name);
 
 			NewArmy.personality = ArmyTable.GetStringValue("personality");
 			NewArmy.plans = ArmyTable.GetStringValue("plans");
@@ -621,9 +621,20 @@ public class MapLuaParser : MonoBehaviour {
 
 
 		// New Lua Parser
-		ScenarioLuaFile.Save(EnvPaths.GetMapsPath() + FolderName + "/" + ScenarioFileName + ".lua");
-		
-		SaveLuaFile.Save(ScenarioLuaFile.Data.save.Replace("/maps/", MapPath).Replace(".lua", "_new.lua"));
+		string ScenarioFilePath = EnvPaths.GetMapsPath() + FolderName + "/" + ScenarioFileName + ".lua";
+		System.IO.File.Move(ScenarioFilePath, BackupPath + "/" + ScenarioFileName + ".lua");
+		ScenarioLuaFile.Save(ScenarioFilePath);
+
+
+
+
+		string SaveFilePath = ScenarioLuaFile.Data.save.Replace("/maps/", MapPath);
+		string FileName = ScenarioLuaFile.Data.save;
+		string[] Names = FileName.Split(("/").ToCharArray());
+		System.IO.File.Move(SaveFilePath, BackupPath + "/" + Names[Names.Length - 1]);
+
+		SaveLuaFile.Save(SaveFilePath);
+
 
 
 		yield return null;
@@ -635,7 +646,7 @@ public class MapLuaParser : MonoBehaviour {
 		//SaveScriptLua(ScriptId);
 		yield return null;
 
-		//SaveScmap();
+		SaveScmap();
 		yield return null;
 
 		InfoPopup.Show(false);
@@ -763,6 +774,8 @@ public class MapLuaParser : MonoBehaviour {
 
 		string MarkersData = "";
 
+
+		/*
 		for(int a = 0; a < ARMY_.Count; a++){
 			if (ARMY_ [a].Hidden)
 				continue;
@@ -888,6 +901,7 @@ public class MapLuaParser : MonoBehaviour {
 			MarkersData += NewSi + "\n";
 
 		}
+		*/
 		SaveData = SaveData.Replace ("[MARKERS]", MarkersData);
 		SaveData = SaveData.Replace ("[CHAINS]", "");
 
@@ -1032,217 +1046,6 @@ public class MapLuaParser : MonoBehaviour {
 	}
 	#endregion
 
-	#region Marker functions
-
-	public Vector3 GetPosOfMarker(EditMap.MarkersInfo.WorkingElement Element){
-		switch(Element.ListId){
-		case 0:
-			return MarkerRend.Armys[Element.InstanceId].transform.position;
-		case 1:
-			return MarkerRend.Mex[Element.InstanceId].transform.position;
-		case 2:
-			return MarkerRend.Hydro[Element.InstanceId].transform.position;
-		case 3:
-			return MarkerRend.Ai[Element.InstanceId].transform.position;
-		}
-		return Vector3.zero;
-	}
-
-	public Vector3 GetPosOfMarkerId(int list, int instance){
-		switch(list){
-		case 0:
-			return MarkerRend.Armys[instance].transform.position;
-		case 1:
-			return MarkerRend.Mex[instance].transform.position;
-		case 2:
-			return MarkerRend.Hydro[instance].transform.position;
-		case 3:
-			return MarkerRend.Ai[instance].transform.position;
-		}
-		return Vector3.zero;
-	}
-
-	public void SetPosOfMarker(EditMap.MarkersInfo.WorkingElement Element, Vector3 NewPos){
-		switch(Element.ListId){
-		case 0:
-			ARMY_[Element.InstanceId].position = NewPos;
-			break;
-		case 1:
-			Mexes[Element.InstanceId].position = NewPos;
-			break;
-		case 2:
-			Hydros[Element.InstanceId].position = NewPos;
-			break;
-		case 3:
-			SiMarkers[Element.InstanceId].position = NewPos;
-			break;
-		}
-	}
-
-	public GameObject GetMarkerRenderer(EditMap.MarkersInfo.WorkingElement Element){
-		switch(Element.ListId){
-		case 0:
-			return MarkerRend.Armys[Element.InstanceId];
-		case 1:
-			return MarkerRend.Mex[Element.InstanceId];
-		case 2:
-			return MarkerRend.Hydro[Element.InstanceId];
-		case 3:
-			return MarkerRend.Ai[Element.InstanceId];
-		}
-		return null;
-	}
-
-	#endregion
-
-	#region Marker Create & Destroy
-
-	public void CreateMarker(int MarkerType, Vector3 position, string name){
-		if(MarkerType == 0){
-			ARMY_.Add(new Army());
-			ARMY_[ARMY_.Count - 1].name = "ARMY_" + ARMY_.Count.ToString();
-			ARMY_[ARMY_.Count - 1].position = position;
-			AddSaveArmy (ARMY_ [ARMY_.Count - 1].name);
-		}
-		else if(MarkerType == 1){
-			MexTotalCount++;
-			Mexes.Add(new Mex());
-			Mexes[Mexes.Count - 1].name = ParsingStructureData.MexName.Replace("#", MexTotalCount.ToString(ParsingStructureData.MarkerIdToString));
-			Mexes[Mexes.Count - 1].position = position;
-		}
-		else if(MarkerType == 2){
-			HydrosTotalCount++;
-			Hydros.Add(new Hydro());
-			Hydros[Hydros.Count - 1].name = ParsingStructureData.HydroName.Replace("#", HydrosTotalCount.ToString(ParsingStructureData.MarkerIdToString));
-			Hydros[Hydros.Count - 1].position = position;
-		}
-		else if(MarkerType == 3){
-			SiMarkers.Add(new Marker());
-			SiMarkers[SiMarkers.Count - 1].name = "AI_" + SiTotalCount.ToString(ParsingStructureData.MarkerIdToString);
-			SiMarkers[SiMarkers.Count - 1].position = position;
-		}
-		MarkerRend.Regenerate();
-		EditMenu.EditMarkers.AllMarkersList.UpdateList();
-	}
-
-	public void AddMarkerToTrash(EditMap.MarkersInfo.WorkingElement Element){
-		switch (Element.ListId) {
-		case 0:
-			ArmiesTrash.Add(Element.InstanceId);
-			break;
-		case 1:
-			MexesTrash.Add(Element.InstanceId);
-			break;
-		case 2:
-			HydrosTrash.Add(Element.InstanceId);
-			break;
-		case 3:
-			AiTrash.Add(Element.InstanceId);
-			break;
-		}
-	}
-	public void CleanMarkersTrash(){
-		List<Army>	NewArmy_ = new List<Army> ();
-		List<Mex>	NewMexes = new List<Mex> ();
-		List<Hydro> NewHydros = new List<Hydro>();
-		List<Marker> NewAi = new List<Marker>();
-
-		for (int i = 0; i < ARMY_.Count; i++) {
-			bool InTrash = false;
-			for(int t = 0; t < ArmiesTrash.Count; t++){
-				if(ArmiesTrash[t] == i){
-					InTrash = true;
-					break;
-				}
-			}
-			if (!InTrash) {
-				RemoveSaveArmy (ARMY_ [i].name);
-				NewArmy_.Add (ARMY_ [i]);
-			}
-		}
-
-		for (int i = 0; i < Mexes.Count; i++) {
-			bool InTrash = false;
-			for(int t = 0; t < MexesTrash.Count; t++){
-				if(MexesTrash[t] == i){
-					InTrash = true;
-					break;
-				}
-			}
-			if(!InTrash) NewMexes.Add( Mexes[i]);
-		}
-
-		for (int i = 0; i < Hydros.Count; i++) {
-			bool InTrash = false;
-			for(int t = 0; t < HydrosTrash.Count; t++){
-				if(HydrosTrash[t] == i){
-					InTrash = true;
-					break;
-				}
-			}
-			if(!InTrash) NewHydros.Add( Hydros[i]);
-		}
-		for (int i = 0; i < SiMarkers.Count; i++) {
-			bool InTrash = false;
-			for(int t = 0; t < AiTrash.Count; t++){
-				if(AiTrash[t] == i){
-					InTrash = true;
-					break;
-				}
-			}
-			if(!InTrash) NewAi.Add( SiMarkers[i]);
-		}
-
-		ARMY_ = NewArmy_;
-		Mexes = NewMexes;
-		Hydros = NewHydros;
-		SiMarkers = NewAi;
-
-		ArmiesTrash = new List<int> ();
-		MexesTrash = new List<int> ();
-		HydrosTrash = new List<int> ();
-		AiTrash = new List<int> ();
-		EditMenu.EditMarkers.AllMarkersList.UpdateList();
-	}
-
-	public void DeleteMarker(EditMap.MarkersInfo.WorkingElement Element){
-		switch (Element.ListId) {
-		case 0:
-			ArmiesTrash.Add(Element.InstanceId);
-			break;
-		case 1:
-			MexesTrash.Add(Element.InstanceId);
-			break;
-		case 2:
-			HydrosTrash.Add(Element.InstanceId);
-			break;
-		case 3:
-			AiTrash.Add(Element.InstanceId);
-			break;
-		}
-	}
-
-	public void AddSaveArmyMarker(string name){
-		for (int i = 0; i < ARMY_.Count; i++) {
-			if (ARMY_ [i].name == name)
-				return;
-		}
-
-		ARMY_.Add(new Army());
-		ARMY_[ARMY_.Count - 1].name = name;
-		ARMY_ [ARMY_.Count - 1].Hidden = true;
-		ARMY_[ARMY_.Count - 1].position = Vector3.zero;
-		//AddSaveArmy (ARMY_ [ARMY_.Count - 1].name);
-	}
-
-	public void RemoveSaveArmy(string name){
-		for (int i = 0; i < SaveArmys.Count; i++) {
-			if (SaveArmys [i].Name == name) {
-				SaveArmys.RemoveAt (i);
-				break;
-			}
-		}
-	}
 
 	public void AddSaveArmy(string name){
 		SaveArmy NewArmy = new SaveArmy ();
@@ -1259,7 +1062,6 @@ public class MapLuaParser : MonoBehaviour {
 		return ToReturn;
 	}
 
-	#endregion
 
 
 	#region Lua values

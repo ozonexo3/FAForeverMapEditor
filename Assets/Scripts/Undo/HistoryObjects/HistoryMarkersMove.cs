@@ -21,6 +21,7 @@ public class HistoryMarkersMove : HistoryObject {
 
 
 	public override void Register(){
+		/*
 		SelectedMarker = Undo.Current.EditMenu.EditMarkers.SelectedMarker.position;
 		SelectedSymmetryMarkers = new Vector3[Undo.Current.EditMenu.EditMarkers.SelectedSymmetryMarkers.Count];
 		for(int i = 0; i < Undo.Current.EditMenu.EditMarkers.SelectedSymmetryMarkers.Count; i++){
@@ -40,6 +41,7 @@ public class HistoryMarkersMove : HistoryObject {
 				MirrorPos[i].MarkersPosSelection[e] = Undo.Current.Scenario.GetPosOfMarker(Undo.Current.EditMenu.EditMarkers.SymmetrySelectionList[i].MirrorSelected[e]);
 			}
 		}
+		*/
 	}
 
 
@@ -49,6 +51,7 @@ public class HistoryMarkersMove : HistoryObject {
 	}
 
 	public override void DoRedo(){
+		/*
 		Undo.Current.EditMenu.EditMarkers.SelectedMarker.position = SelectedMarker;
 		for(int i = 0; i < Undo.Current.EditMenu.EditMarkers.SelectedSymmetryMarkers.Count; i++){
 			Undo.Current.EditMenu.EditMarkers.SelectedSymmetryMarkers[i].position = SelectedSymmetryMarkers[i];
@@ -61,5 +64,6 @@ public class HistoryMarkersMove : HistoryObject {
 				Undo.Current.Scenario.SetPosOfMarker(Undo.Current.EditMenu.EditMarkers.SymmetrySelectionList[i].MirrorSelected[e], MirrorPos[i].MarkersPosSelection[e]);
 			}
 		}
+		*/
 	}
 }

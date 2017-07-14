@@ -37,7 +37,7 @@ public class SymmetryWindow : MonoBehaviour {
 			AnythingChanged = true;
 		}
 
-		if(AnythingChanged) EditMenu.EditMarkers.UpdateSelectionRing();
+		//if(AnythingChanged) EditMenu.EditMarkers.UpdateSelectionRing();
 	}
 
 	public void Button(string func){
@@ -76,8 +76,6 @@ public class SymmetryWindow : MonoBehaviour {
 			break;
 		}
 		PlayerPrefs.Save();
-
-		EditMenu.EditMarkers.UpdateSelectionRing();
 	}
 
 

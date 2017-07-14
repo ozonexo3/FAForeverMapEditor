@@ -33,6 +33,8 @@ namespace EditMap
 		public InputField SizeField;
 		public InputField AmountField;
 
+		public MarkersList MarkerListControler;
+
 		[Header("Config")]
 		public Color CheckmarkNormal;
 		public Color CheckmarkDifferent;
@@ -56,7 +58,10 @@ namespace EditMap
 		{
 			if (Current == null)
 				return;
+			if (!Current.gameObject.activeSelf)
+				return;
 			Current.UpdateSelectionOptions();
+			
 		}
 
 		bool Loading = false;
@@ -89,6 +94,7 @@ namespace EditMap
 			{
 				None.SetActive(true);
 				Mix.SetActive(false);
+				MarkerListControler.UpdateList();
 				return;
 			}
 
@@ -165,7 +171,11 @@ namespace EditMap
 			else
 				Markers.MarkerConnected.Clear();
 
+
+			MarkerListControler.UpdateList();
+
 			Loading = false;
+
 		}
 
 

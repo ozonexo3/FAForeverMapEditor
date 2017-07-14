@@ -48,42 +48,34 @@ namespace EditMap
 				case "Map":
 					State = EditStates.MapStat;
 					ChangeCategory(0);
-					EditMarkers.ClearWorkingElements();
 					break;
 				case "Terrain":
 					State = EditStates.TerrainStat;
 					ChangeCategory(1);
-					EditMarkers.ClearWorkingElements();
 					break;
 				case "Textures":
 					State = EditStates.TexturesStat;
 					ChangeCategory(2);
-					EditMarkers.ClearWorkingElements();
 					break;
 				case "Lighting":
 					State = EditStates.LightingStat;
 					ChangeCategory(3);
-					EditMarkers.ClearWorkingElements();
 					break;
 				case "Markers":
 					State = EditStates.MarkersStat;
 					ChangeCategory(4);
-					EditMarkers.GenerateAllWorkingElements();
 					break;
 				case "Decals":
 					State = EditStates.DecalsStat;
 					ChangeCategory(5);
-					EditMarkers.ClearWorkingElements();
 					break;
 				case "Props":
 					State = EditStates.PropsStat;
 					ChangeCategory(6);
-					EditMarkers.ClearWorkingElements();
 					break;
 				case "Ai":
 					State = EditStates.AIStat;
 					ChangeCategory(7);
-					EditMarkers.ClearWorkingElements();
 					break;
 			}
 		}

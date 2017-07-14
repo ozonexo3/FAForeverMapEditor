@@ -19,6 +19,8 @@ public class PlacementManager : MonoBehaviour {
 	public LayerMask RaycastMask;
 	public Camera Cam;
 
+	int PlaceAngle = 0;
+
 	public static void BeginPlacement(GameObject Prefab, System.Action<Vector3[], Quaternion[]> PlaceAction)
 	{
 		Clear();
@@ -33,6 +35,11 @@ public class PlacementManager : MonoBehaviour {
 	public static void Clear()
 	{
 		Destroy(Current.PlacementObject);
+		for (int i = 0; i < Current.PlacementSymmetry.Length; i++)
+			if (Current.PlacementSymmetry[i])
+				Destroy(Current.PlacementSymmetry[i]);
+
+
 		Current.enabled = false;
 
 	}
@@ -45,7 +52,8 @@ public class PlacementManager : MonoBehaviour {
 			return;
 		}
 
-
+		if (!SelectionManager.Current.IsPointerOnGameplay())
+			return;
 
 		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 		RaycastHit hit;
@@ -61,6 +69,17 @@ public class PlacementManager : MonoBehaviour {
 					PlacementSymmetry[i].SetActive(true);
 			}
 
+
+			// Rotate
+			if (Input.GetKeyDown(KeyCode.R))
+			{
+				PlaceAngle += 90;
+				if (PlaceAngle >= 360)
+					PlaceAngle = 0;
+				PlacementObject.transform.rotation = Quaternion.Euler(Vector3.up * PlaceAngle);
+			}
+
+
 			if (SelectionManager.Current.SnapToGrid)
 				PlacementObject.transform.position = ScmapEditor.SnapToGridCenter(hit.point);
 			else
@@ -71,11 +90,12 @@ public class PlacementManager : MonoBehaviour {
 				Vector3 SymmetryPoint = SymmetryMatrix[i].MultiplyPoint(PlacementObject.transform.position - MapLuaParser.Current.MapCenterPoint) + MapLuaParser.Current.MapCenterPoint;
 
 				PlacementSymmetry[i].transform.position = SymmetryPoint;
-				PlacementSymmetry[i].transform.rotation = MassMath.QuaternionFromMatrix(SymmetryMatrix[i]);
+				PlacementSymmetry[i].transform.rotation = PlacementObject.transform.rotation * MassMath.QuaternionFromMatrix(SymmetryMatrix[i]);
 
 			}
 
 
+			// Action
 			if (Input.GetMouseButtonDown(0))
 			{
 
@@ -83,12 +103,12 @@ public class PlacementManager : MonoBehaviour {
 				Quaternion[] Rotations = new Quaternion[SymmetryMatrix.Length + 1];
 
 				Positions[0] = PlacementObject.transform.position;
-				Rotations[0] = Quaternion.identity;
+				Rotations[0] = PlacementObject.transform.rotation;
 
 				for(int i = 0; i < SymmetryMatrix.Length; i++)
 				{
-					Positions[i] = PlacementSymmetry[i].transform.position;
-					Rotations[i] = PlacementSymmetry[i].transform.rotation;
+					Positions[i + 1] = PlacementSymmetry[i].transform.position;
+					Rotations[i + 1] = PlacementSymmetry[i].transform.rotation;
 				}
 
 				CurrentPlaceAction(Positions, Rotations);

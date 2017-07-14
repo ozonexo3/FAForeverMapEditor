@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Markers
 {
@@ -20,6 +21,7 @@ namespace Markers
 			public MapLua.SaveLua.Marker.MarkerTypes mType;
 			public Mesh SharedMesh;
 			public Material SharedMaterial;
+			public Sprite Icon;
 		}
 
 
@@ -79,7 +81,7 @@ namespace Markers
 		}
 
 
-		static void CreateMarker(MapLua.SaveLua.Marker Owner, int mc)
+		public static void CreateMarker(MapLua.SaveLua.Marker Owner, int mc)
 		{
 			GameObject NewMarker = Instantiate(Current.MarkerPrefab, Current.MasterChains[mc]);
 			NewMarker.name = Owner.Name;
@@ -109,6 +111,19 @@ namespace Markers
 			return Current.MarkerPropGraphics[0];
 		}
 
+		public static Sprite GetIconByType(MapLua.SaveLua.Marker.MarkerTypes mType)
+		{
+			for (int i = 0; i < Current.MarkerPropGraphics.Length; i++)
+			{
+				if (Current.MarkerPropGraphics[i].mType == mType)
+				{
+					return Current.MarkerPropGraphics[i].Icon;
+				}
+			}
+
+			return Current.MarkerPropGraphics[0].Icon;
+
+		}
 
 		public static void RemoveMarker(int mc, int m)
 		{
