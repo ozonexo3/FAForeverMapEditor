@@ -98,7 +98,7 @@ namespace Selection
 		}
 
 
-		private void FinishSelectionChange()
+		public void FinishSelectionChange()
 		{
 			Selection.SymmetryMatrix = Matrix4x4.TRS(Vector3.zero, Quaternion.identity, Vector3.one);
 			UpdateSelectionRing();

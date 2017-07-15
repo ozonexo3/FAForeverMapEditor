@@ -21,6 +21,8 @@ public class MarkersList : MonoBehaviour
 		//GenerateList();
 	}
 
+	bool Generated = false;
+	int GeneratedCount = 0;
 	void OnDisable()
 	{
 		foreach (RectTransform child in Pivot)
@@ -28,6 +30,7 @@ public class MarkersList : MonoBehaviour
 			AllFields = new List<ListObject>();
 			Destroy(child.gameObject);
 		}
+		Generated = false;
 	}
 
 	public void UnselectAll()
@@ -40,11 +43,38 @@ public class MarkersList : MonoBehaviour
 
 	public void UpdateSelection()
 	{
-		
+		for(int g = 0; g < GeneratedCount; g++)
+		{
+			int i = AllFields[g].InstanceId;
+
+			if (Selection.SelectionManager.Current.Selection.Ids.Contains(i))
+				AllFields[g].SetSelection(1);
+			else
+			{
+				AllFields[g].SetSelection(0);
+
+				if (Selection.SelectionManager.Current.SymetrySelection.Length > 0)
+				{
+					for (int s = 0; s < Selection.SelectionManager.Current.SymetrySelection.Length; s++)
+					{
+						if (Selection.SelectionManager.Current.SymetrySelection[s].Ids.Contains(i))
+							AllFields[g].SetSelection(2);
+					}
+				}
+			}
+
+		}
 	}
 
 	public void UpdateList()
 	{
+		if (Generated && AllFields.Count == GeneratedCount)
+		{
+			UpdateSelection();
+			return;
+
+		}
+
 		foreach (RectTransform child in Pivot)
 		{
 			AllFields = new List<ListObject>();
@@ -58,6 +88,7 @@ public class MarkersList : MonoBehaviour
 		int mc = 0;
 		if (MapLuaParser.Current.SaveLuaFile.Data.MasterChains.Length == 0)
 			return;
+
 
 		for(int i = 0; i < MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers.Length; i++)
 		{
@@ -109,7 +140,8 @@ public class MarkersList : MonoBehaviour
 
 			AllFields.Add(NewListObject);
 		}
-
+		Generated = true;
+		GeneratedCount = AllFields.Count;
 
 		/*
 		int count = 0;

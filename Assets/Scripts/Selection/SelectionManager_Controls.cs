@@ -167,6 +167,7 @@ namespace Selection
 			}
 			else if(Selection.Ids.Count > 0)
 			{
+				Undo.Current.RegisterSelectionChange();
 				Selection.Ids = new List<int>();
 				FinishSelectionChange();
 			}
@@ -177,6 +178,7 @@ namespace Selection
 			int ObjectId = GetIdOfObject(Obj);
 			if (ObjectId >= 0)
 			{
+				Undo.Current.RegisterSelectionChange();
 				if (IsSelectionRemove())
 				{
 					if (Selection.Ids.Contains(ObjectId))
@@ -241,6 +243,8 @@ namespace Selection
 
 		void AddSelectionBoxObjects()
 		{
+			Undo.Current.RegisterSelectionChange();
+
 			Vector3 MouseEndPos = Input.mousePosition;
 			Vector3 diference = MouseEndPos - BeginMousePos;
 			Rect SelectionBoxArea = new Rect(Mathf.Min(MouseEndPos.x, BeginMousePos.x), Mathf.Min(MouseEndPos.y, BeginMousePos.y), Mathf.Abs(diference.x), Mathf.Abs(diference.y));
@@ -252,7 +256,7 @@ namespace Selection
 				// Add
 				for (int i = 0; i < AffectedGameObjects.Length; i++)
 				{
-					if (AffectedGameObjects[i].activeSelf && SelectionBoxArea.Contains(GetComponent<Camera>().WorldToScreenPoint(AffectedGameObjects[i].transform.position)))
+					if (AffectedGameObjects[i].activeSelf && SelectionBoxArea.Contains(Cam.WorldToScreenPoint(AffectedGameObjects[i].transform.position)))
 					{
 						if (Selection.Ids.Contains(i))
 						{

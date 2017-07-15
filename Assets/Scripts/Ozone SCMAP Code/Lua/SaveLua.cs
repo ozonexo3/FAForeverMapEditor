@@ -6,7 +6,7 @@ using NLua;
 namespace MapLua
 {
 	[System.Serializable]
-	public class SaveLua
+	public partial class SaveLua
 	{
 
 		public Scenario Data = new Scenario();
@@ -67,8 +67,6 @@ namespace MapLua
 		{
 			public string Name;
 			public Rect rectangle;
-
-
 			public const string KEY_RECTANGLE = "rectangle";
 		}
 
@@ -77,569 +75,14 @@ namespace MapLua
 		{
 			public string Name = "";
 			public Marker[] Markers = new Marker[0];
-
 			public const string KEY_MARKERS = "Markers";
 		}
 
-		[System.Serializable]
-		public class Chain
-		{
-			public string Name;
-			public string[] Markers;
-			public List<Marker> ConnectedMarkers;
-			public const string KEY_MARKERS = "Markers";
 
-			public void ConnectMarkers(List<Marker> SearchMarkers)
-			{
-				ConnectedMarkers = new List<Marker>();
-				int Count = SearchMarkers.Count;
-				for (int n = 0; n < Markers.Length; n++)
-				{
-					for (int i = 0; i < Count; i++)
-					{
-						if (SearchMarkers[i].Name == Markers[n])
-						{
-							ConnectedMarkers.Add(SearchMarkers[i]);
-							break;
-						}
-					}
-
-				}
-			}
-
-			public void BakeMarkers()
-			{
-				Markers = new string[ConnectedMarkers.Count];
-				for(int i = 0; i < Markers.Length; i++)
-				{
-					Markers[i] = ConnectedMarkers[i].Name;
-				}
-			}
-		}
-
-
-		#region Marker
-		[System.Serializable]
-		public class Marker
-		{
-			public string Name = "";
-			public MarkerTypes MarkerType;
-			public MarkerLayers MarkerLayer;
-			public Markers.MarkerObject MarkerObj;
-			public float size = 1f;
-			public bool resource = false;
-			public float amount = 100;
-			public string color = "ff808080";
-			public string type = "";
-			public string prop = "";
-			public Vector3 orientation = Vector3.zero;
-			public Vector3 position = Vector3.zero;
-			public string editorIcon = "";
-			public bool hint;
-
-			public string graph = "";
-			public string adjacentTo = "";
-
-			public float zoom = 30;
-			public bool canSetCamera = true;
-			public bool canSyncCamera = true;
-
-
-			public const string KEY_SIZE = "size";
-			public const string KEY_RESOURCE = "resource";
-			public const string KEY_AMOUNT = "amount";
-			public const string KEY_COLOR = "color";
-			public const string KEY_TYPE = "type";
-			public const string KEY_PROP = "prop";
-			public const string KEY_ORIENTATION = "orientation";
-			public const string KEY_POSITION = "position";
-
-			public const string KEY_EDITORICON = "editorIcon";
-			public const string KEY_HINT = "hint";
-
-			public const string KEY_ZOOM = "zoom";
-			public const string KEY_CANSETCAMERA = "canSetCamera";
-			public const string KEY_CANSYNCCAMERA = "canSyncCamera";
-
-			public const string KEY_GRAPH = "graph";
-			public const string KEY_ADJACENTTO = "adjacentTo";
-
-			public enum MarkerTypes
-			{
-				None,
-				Mass, Hydrocarbon, BlankMarker, CameraInfo,
-				CombatZone,
-				DefensivePoint, NavalDefensivePoint,
-				ProtectedExperimentalConstruction,
-				ExpansionArea, LargeExpansionArea, NavalArea,
-				RallyPoint, NavalRallyPoint,
-				LandPathNode, AirPathNode, WaterPathNode, AmphibiousPathNode,
-				NavalLink,
-				TransportMarker,
-				Island,
-				Count
-			}
-
-			public enum MarkerLayers
-			{
-				All, NoAI, Land, Air, Naval, AnyPath, Other
-			}
-
-			public static string MarkerTypeToString(MarkerTypes MType)
-			{
-				string str1 = MType.ToString();
-				string newstring = "";
-				for (int i = 0; i < str1.Length; i++)
-				{
-					if (char.IsUpper(str1[i]))
-						newstring += " ";
-					newstring += str1[i].ToString();
-				}
-				return newstring;
-			}
-
-			public bool AllowByType(string Key)
-			{
-				if (MarkerType == MarkerTypes.Mass)
-					return Key == KEY_SIZE || Key == KEY_RESOURCE || Key == KEY_AMOUNT || Key == KEY_EDITORICON;
-				else if (MarkerType == MarkerTypes.Hydrocarbon)
-					return Key == KEY_SIZE || Key == KEY_RESOURCE || Key == KEY_AMOUNT;
-				else if (MarkerType == MarkerTypes.BlankMarker)
-					return false;
-				else if(MarkerType == MarkerTypes.LandPathNode || MarkerType == MarkerTypes.AirPathNode || MarkerType == MarkerTypes.WaterPathNode || MarkerType == MarkerTypes.AmphibiousPathNode)
-					return Key == KEY_HINT || Key == KEY_GRAPH || Key == KEY_ADJACENTTO;
-				else if(MarkerType == MarkerTypes.NavalLink)
-					return false;
-				else if (MarkerType == MarkerTypes.CameraInfo)
-					return Key == KEY_ZOOM || Key == KEY_CANSETCAMERA || Key == KEY_CANSYNCCAMERA;
-				else //Unknown
-					return Key == KEY_HINT;
-			}
-
-			public MarkerLayers LayerByType(MarkerTypes Type)
-			{
-				if (Type == MarkerTypes.BlankMarker || Type == MarkerTypes.Mass || Type == MarkerTypes.Hydrocarbon || Type == MarkerTypes.CameraInfo)
-					return MarkerLayers.NoAI;
-				else if (Type == MarkerTypes.LandPathNode || Type == MarkerTypes.RallyPoint || Type == MarkerTypes.AmphibiousPathNode)
-					return MarkerLayers.Land;
-				else if (Type == MarkerTypes.WaterPathNode || Type == MarkerTypes.NavalRallyPoint || Type == MarkerTypes.NavalLink)
-					return MarkerLayers.Naval;
-				else if (Type == MarkerTypes.AirPathNode)
-					return MarkerLayers.Air;
-				else
-					return MarkerLayers.Other;
-			}
-
-			public Marker()
-			{
-			}
-
-			public Marker(MarkerTypes Type, string name)
-			{
-				Name = name;
-				size = 1;
-				position = Vector3.zero;
-				orientation = Vector3.zero;
-				prop = "/env/common/props/markers/M_Blank_prop.bp";
-
-				MarkerType = Type;
-				type = MarkerTypeToString(Type);
-
-				if (Type == MarkerTypes.Mass)
-				{
-					resource = true;
-					amount = 100;
-					prop = "/env/common/props/markers/M_Mass_prop.bp";
-					color = "ff808080";
-				}
-				else if (Type == MarkerTypes.Hydrocarbon)
-				{
-					size = 3;
-					resource = true;
-					amount = 100;
-					prop = "/env/common/props/markers/M_Hydrocarbon_prop.bp";
-					color = "ff808080";
-				}
-				else if (Type == MarkerTypes.CameraInfo)
-				{
-
-				}
-
-
-
-			}
-
-			public Marker(string name, LuaTable Table)
-			{
-				// Create marker from table
-				Name = name;
-				string[] Keys = LuaParser.Read.GetTableKeys(Table);
-
-				for (int k = 0; k < Keys.Length; k++)
-				{
-					switch (Keys[k])
-					{
-						case KEY_POSITION:
-							position = LuaParser.Read.Vector3FromTable(Table, KEY_POSITION);
-							break;
-						case KEY_ORIENTATION:
-							orientation = LuaParser.Read.Vector3FromTable(Table, KEY_ORIENTATION);
-							break;
-						case KEY_SIZE:
-							size = LuaParser.Read.FloatFromTable(Table, KEY_SIZE);
-							break;
-						case KEY_RESOURCE:
-							resource = LuaParser.Read.BoolFromTable(Table, KEY_RESOURCE);
-							break;
-						case KEY_AMOUNT:
-							amount = LuaParser.Read.FloatFromTable(Table, KEY_AMOUNT);
-							break;
-						case KEY_COLOR:
-							color = LuaParser.Read.StringFromTable(Table, KEY_COLOR);
-							break;
-						case KEY_TYPE:
-							type = LuaParser.Read.StringFromTable(Table, KEY_TYPE);
-							break;
-						case KEY_PROP:
-							prop = LuaParser.Read.StringFromTable(Table, KEY_PROP);
-							break;
-						case KEY_EDITORICON:
-							editorIcon = LuaParser.Read.StringFromTable(Table, KEY_EDITORICON);
-							break;
-						case KEY_HINT:
-							hint = LuaParser.Read.BoolFromTable(Table, KEY_HINT);
-							break;
-						case KEY_ZOOM:
-							zoom = LuaParser.Read.FloatFromTable(Table, KEY_ZOOM);
-							break;
-						case KEY_ADJACENTTO:
-							adjacentTo = LuaParser.Read.StringFromTable(Table, KEY_ADJACENTTO);
-							break;
-						case KEY_CANSETCAMERA:
-							canSetCamera = LuaParser.Read.BoolFromTable(Table, KEY_CANSETCAMERA);
-							break;
-						case KEY_CANSYNCCAMERA:
-							canSyncCamera = LuaParser.Read.BoolFromTable(Table, KEY_CANSYNCCAMERA);
-							break;
-					}
-				}
-
-				if (string.IsNullOrEmpty(type))
-					MarkerType = MarkerTypes.BlankMarker;
-				else
-				{
-					MarkerType = (MarkerTypes)System.Enum.Parse(typeof(MarkerTypes), type.Replace(" ", ""));
-
-				}
-
-
-			}
-
-			public void SaveMarkerValues(LuaParser.Creator LuaFile)
-			{
-				position = ScmapEditor.MapWorldPosInSave(MarkerObj.transform.position);
-				//position = ScmapEditor.MapWorldPosInSave(MarkerObj.transform.position);
-
-				if (AllowByType(KEY_SIZE))
-					LuaFile.AddLine(LuaParser.Write.FloatToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_SIZE), size));
-				if (AllowByType(KEY_RESOURCE))
-					LuaFile.AddLine(LuaParser.Write.BoolToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_RESOURCE), resource));
-				if (AllowByType(KEY_AMOUNT))
-					LuaFile.AddLine(LuaParser.Write.FloatToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_AMOUNT), amount));
-
-				LuaFile.AddLine(LuaParser.Write.StringToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_COLOR), color));
-
-				if (AllowByType(KEY_EDITORICON))
-					LuaFile.AddLine(LuaParser.Write.StringToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_EDITORICON), editorIcon));
-				if (AllowByType(KEY_HINT))
-					LuaFile.AddLine(LuaParser.Write.BoolToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_HINT), hint));
-
-				//Type
-				LuaFile.AddLine(LuaParser.Write.StringToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_TYPE), MarkerTypeToString(MarkerType)));
-				LuaFile.AddLine(LuaParser.Write.StringToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_PROP), prop));
-
-				if (AllowByType(KEY_ZOOM))
-					LuaFile.AddLine(LuaParser.Write.FloatToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_ZOOM), zoom));
-				if (AllowByType(KEY_CANSETCAMERA))
-					LuaFile.AddLine(LuaParser.Write.BoolToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_CANSETCAMERA), canSetCamera));
-				if (AllowByType(KEY_CANSYNCCAMERA))
-					LuaFile.AddLine(LuaParser.Write.BoolToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_CANSYNCCAMERA), canSyncCamera));
-
-				//Transform
-				LuaFile.AddLine(LuaParser.Write.Vector3ToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_POSITION), position));
-				LuaFile.AddLine(LuaParser.Write.Vector3ToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_ORIENTATION), orientation));
-			}
-
-
-		}
 		#endregion
 
-		#region Platoon
-		[System.Serializable]
-		public class Platoon
-		{
-			public string Name;
-			public string PlatoonName;
-			public string PlatoonFunction;
-			public PlatoonAction Action;
-
-			[System.Serializable]
-			public class PlatoonAction
-			{
-				public string Unit;
-				public int Id;
-				public int count;
-				public string Action;
-				public string Formation;
-
-				public PlatoonAction() { }
-
-				public PlatoonAction(LuaTable Table)
-				{
-					object[] Objects = LuaParser.Read.GetTableObjects(Table);
-					Unit = Objects[0].ToString();
-					Id = LuaParser.Read.StringToInt(Objects[1].ToString());
-					count = LuaParser.Read.StringToInt(Objects[2].ToString());
-					Action = Objects[3].ToString();
-					Formation = Objects[4].ToString();
-				}
-			}
-
-			public Platoon()
-			{
-			}
-
-			public Platoon(string name, LuaTable Table)
-			{
-				Name = name;
-
-				object[] Objects = LuaParser.Read.GetTableObjects(Table);
-				PlatoonName = Objects[0].ToString();
-				PlatoonFunction = Objects[1].ToString();
-				if (Objects.Length > 2)
-					Action = new PlatoonAction((LuaTable)Objects[2]);
-				else
-					Action = new PlatoonAction();
-
-			}
-		}
-		#endregion
-
-		#region Army
-		[System.Serializable]
-		public class Army
-		{
-			public string Name;
-			public string personality = "";
-			public string plans = "";
-			public int color = 0;
-			public int faction = 0;
-			public EconomyTab Economy;
-			public Aliance[] Alliances;
-			public UnitsGroup Units;
 
 
-			const string KEY_PERSONALITY = "personality";
-			const string KEY_PLANS = "plans";
-			const string KEY_COLOR = "color";
-			const string KEY_FACTION = "faction";
-			const string KEY_ECONOMY = "Economy";
-			const string KEY_ALLIANCES = "Alliances";
-			const string KEY_UNITS = "Units";
-			const string KEY_PLATOONBUILDERS = "PlatoonBuilders";
-
-			#region Classes
-			[System.Serializable]
-			public class EconomyTab
-			{
-				public float mass = 0;
-				public float energy = 0;
-
-				public const string KEY_MASS = "mass";
-				public const string KEY_ENERGY = "energy";
-			}
-
-			[System.Serializable]
-			public class Aliance
-			{
-				public string Army = "";
-				public string AllianceType = "Enemy";
-			}
-
-			//[System.Serializable]
-			public class UnitsGroup
-			{
-				public string Name;
-				public string orders;
-				public string platoon;
-				public UnitsGroup[] UnitGroups;
-				public Unit[] Units;
-
-				public const string KEY_ORDERS = "orders";
-				public const string KEY_PLATOON = "platoon";
-				public const string KEY_UNITS = "Units";
-				public const string KEY_TYPE = "type";
-				public const string KEY_POSITION = "position";
-				public const string KEY_ORIENTATION = "orientation";
-
-				public UnitsGroup()
-				{
-				}
-
-				public UnitsGroup(string name, LuaTable Table)
-				{
-					Name = name;
-					orders = LuaParser.Read.StringFromTable(Table, KEY_ORDERS);
-					platoon = LuaParser.Read.StringFromTable(Table, KEY_PLATOON);
-
-					LuaTable[] UnitsTables = LuaParser.Read.GetTableTables((LuaTable)Table.RawGet(KEY_UNITS));
-					string[] UnitsNames = LuaParser.Read.GetTableKeys((LuaTable)Table.RawGet(KEY_UNITS));
-
-					if (UnitsNames.Length > 0)
-					{
-						List<UnitsGroup> UnitGroupsList = new List<UnitsGroup>();
-						List<Unit> UnitsList = new List<Unit>();
-
-						for (int i = 0; i < UnitsNames.Length; i++)
-						{
-							if (LuaParser.Read.ValueExist(UnitsTables[i], KEY_TYPE))
-							{
-								Unit NewUnit = new Unit();
-								NewUnit.Name = UnitsNames[i];
-								NewUnit.type = LuaParser.Read.StringFromTable(UnitsTables[i], KEY_TYPE);
-								NewUnit.orders = LuaParser.Read.StringFromTable(UnitsTables[i], KEY_ORDERS);
-								NewUnit.platoon = LuaParser.Read.StringFromTable(UnitsTables[i], KEY_PLATOON);
-								NewUnit.Position = LuaParser.Read.Vector3FromTable(UnitsTables[i], KEY_POSITION);
-								NewUnit.Orientation = LuaParser.Read.Vector3FromTable(UnitsTables[i], KEY_ORIENTATION);
-								UnitsList.Add(NewUnit);
-							}
-							else
-							{
-								UnitsGroup NewUnitsGroup = new UnitsGroup(UnitsNames[i], UnitsTables[i]);
-								UnitGroupsList.Add(NewUnitsGroup);
-							}
-						}
-
-						UnitGroups = UnitGroupsList.ToArray();
-						Units = UnitsList.ToArray();
-						UnitGroupsList = null;
-						UnitsList = null;
-					}
-					else
-					{
-						UnitGroups = new UnitsGroup[0];
-						Units = new Unit[0];
-					}
-				}
-
-				public void SaveUnitsGroup(LuaParser.Creator LuaFile)
-				{
-					LuaFile.OpenTab(LuaParser.Write.PropertiveToLua(Name) + LuaParser.Write.SetValue + "GROUP " + LuaParser.Write.OpenBracket);
-
-					LuaFile.AddLine(LuaParser.Write.StringToLua(KEY_ORDERS, orders));
-					LuaFile.AddLine(LuaParser.Write.StringToLua(KEY_PLATOON, platoon));
-
-					for (int g = 0; g < UnitGroups.Length; g++)
-					{
-						UnitGroups[g].SaveUnitsGroup(LuaFile);
-					}
-					for (int u = 0; u < UnitGroups.Length; u++)
-					{
-						Units[u].SaveUnit(LuaFile);
-					}
-					LuaFile.CloseTab(LuaParser.Write.EndBracketNext);
-				}
-			}
-
-			[System.Serializable]
-			public class Unit
-			{
-				public string Name;
-				public string type;
-				public string orders;
-				public string platoon;
-				public Vector3 Position;
-				public Vector3 Orientation;
-
-				public void SaveUnit(LuaParser.Creator LuaFile)
-				{
-					LuaFile.OpenTab(LuaParser.Write.PropertiveToLua(Name) + LuaParser.Write.OpenBracketValue);
-
-					LuaFile.AddLine(LuaParser.Write.StringToLua(UnitsGroup.KEY_TYPE, type));
-					LuaFile.AddLine(LuaParser.Write.StringToLua(UnitsGroup.KEY_ORDERS, orders));
-					LuaFile.AddLine(LuaParser.Write.StringToLua(UnitsGroup.KEY_PLATOON, platoon));
-					LuaFile.AddLine(LuaParser.Write.Vector3ToLua(UnitsGroup.KEY_POSITION, Position));
-					LuaFile.AddLine(LuaParser.Write.Vector3ToLua(UnitsGroup.KEY_ORIENTATION, Orientation));
-
-					LuaFile.CloseTab(LuaParser.Write.EndBracketNext);
-
-				}
-			}
-			#endregion
-
-			public Army()
-			{
-			}
-
-			public Army(string name, LuaTable Table)
-			{
-				Name = name;
-
-				personality = LuaParser.Read.StringFromTable(Table, KEY_PERSONALITY);
-				plans = LuaParser.Read.StringFromTable(Table, KEY_PLANS);
-				color = LuaParser.Read.IntFromTable(Table, KEY_COLOR);
-				faction = LuaParser.Read.IntFromTable(Table, KEY_FACTION);
-
-				LuaTable EconomyTable = (LuaTable)Table.RawGet(KEY_ECONOMY);
-				Economy = new EconomyTab();
-				Economy.mass = LuaParser.Read.FloatFromTable(EconomyTable, EconomyTab.KEY_MASS);
-				Economy.energy = LuaParser.Read.FloatFromTable(EconomyTable, EconomyTab.KEY_ENERGY);
-
-				LuaTable AlliancesTable = (LuaTable)Table.RawGet(KEY_ALLIANCES);
-				string[] AlliancesKeys = LuaParser.Read.GetTableKeys(AlliancesTable);
-				string[] AlliancesValues = LuaParser.Read.GetTableValues(AlliancesTable);
-
-				Alliances = new Aliance[AlliancesKeys.Length];
-				for(int a = 0; a < AlliancesKeys.Length; a++)
-				{
-					Alliances[a] = new Aliance();
-					Alliances[a].Army = AlliancesKeys[a];
-					Alliances[a].AllianceType = AlliancesValues[a];
-				}
-
-				LuaTable UnitsTable = (LuaTable)Table.RawGet(KEY_UNITS);
-				Units = new UnitsGroup(KEY_UNITS, UnitsTable);
-			}
-
-			public void SaveArmy(LuaParser.Creator LuaFile)
-			{
-				LuaFile.AddLine(LuaParser.Write.StringToLua(KEY_PERSONALITY, personality));
-				LuaFile.AddLine(LuaParser.Write.StringToLua(KEY_PLANS, plans));
-				LuaFile.AddLine(LuaParser.Write.IntToLua(KEY_COLOR, color));
-				LuaFile.AddLine(LuaParser.Write.IntToLua(KEY_FACTION, faction));
-
-				// Economy
-				LuaFile.OpenTab(KEY_ECONOMY + LuaParser.Write.OpenBracketValue);
-				LuaFile.AddLine(LuaParser.Write.FloatToLua(EconomyTab.KEY_MASS, Economy.mass));
-				LuaFile.AddLine(LuaParser.Write.FloatToLua(EconomyTab.KEY_ENERGY, Economy.energy));
-				LuaFile.CloseTab(LuaParser.Write.EndBracketNext);
-
-				// Aliances
-				LuaFile.OpenTab(KEY_ALLIANCES + LuaParser.Write.OpenBracketValue);
-				for(int a = 0; a < Alliances.Length; a++)
-				{
-					LuaFile.AddLine(LuaParser.Write.StringToLua(LuaParser.Write.PropertiveToLua(Alliances[a].Army), Alliances[a].AllianceType));
-				}
-				LuaFile.CloseTab(LuaParser.Write.EndBracketNext);
-
-				// Units
-				Units.SaveUnitsGroup(LuaFile);
-				
-			}
-		}
-		#endregion
-
-		#endregion
 		public bool Load()
 		{
 			System.Text.Encoding encodeType = System.Text.Encoding.ASCII;
@@ -654,6 +97,8 @@ namespace MapLua
 
 			LuaFile = new Lua();
 			LuaFile.LoadCLRPackage();
+
+			loadedFileSave = loadedFileSave.Replace("GROUP ", "");
 
 			try
 			{
@@ -862,7 +307,7 @@ namespace MapLua
 				LuaFile.AddSaveComent("");
 				LuaFile.AddSaveComent("Platoons");
 				LuaFile.AddSaveComent("");
-				LuaFile.OpenTab(Scenario.KEY_ORDERS + LuaParser.Write.OpenBracketValue);
+				LuaFile.OpenTab(Scenario.KEY_PLATOONS + LuaParser.Write.OpenBracketValue);
 				{
 					for (int p = 0; p < Data.Platoons.Length; p++)
 					{
@@ -870,14 +315,20 @@ namespace MapLua
 						LuaFile.AddLine(LuaParser.Write.Coma + Data.Platoons[p].PlatoonName + LuaParser.Write.Coma + LuaParser.Write.NextValue);
 						LuaFile.AddLine(LuaParser.Write.Coma + Data.Platoons[p].PlatoonFunction + LuaParser.Write.Coma + LuaParser.Write.NextValue);
 
-						string Action = LuaParser.Write.OpenBracket;
-						Action += LuaParser.Write.Coma + Data.Platoons[p].Action.Unit + LuaParser.Write.Coma + LuaParser.Write.NextValue + " ";
-						Action += Data.Platoons[p].Action.Unit.ToString() + LuaParser.Write.NextValue + " ";
-						Action += Data.Platoons[p].Action.count.ToString() + LuaParser.Write.NextValue + " ";
-						Action += LuaParser.Write.Coma + Data.Platoons[p].Action.Action + LuaParser.Write.Coma + LuaParser.Write.NextValue + " ";
-						Action += LuaParser.Write.Coma + Data.Platoons[p].Action.Formation + LuaParser.Write.Coma + LuaParser.Write.NextValue + " ";
+						if (Data.Platoons[p].Action.Loaded)
+						{
+							string Action = LuaParser.Write.OpenBracket;
+							Action += LuaParser.Write.Coma + Data.Platoons[p].Action.Unit + LuaParser.Write.Coma + LuaParser.Write.NextValue + " ";
+							Action += Data.Platoons[p].Action.Unit.ToString() + LuaParser.Write.NextValue + " ";
+							Action += Data.Platoons[p].Action.count.ToString() + LuaParser.Write.NextValue + " ";
+							Action += LuaParser.Write.Coma + Data.Platoons[p].Action.Action + LuaParser.Write.Coma + LuaParser.Write.NextValue + " ";
+							Action += LuaParser.Write.Coma + Data.Platoons[p].Action.Formation + LuaParser.Write.Coma + LuaParser.Write.EndBracketNext + " ";
+							LuaFile.AddLine(Action);
 
-						LuaFile.AddLine(Action);
+						}
+
+
+
 
 						LuaFile.CloseTab(LuaParser.Write.EndBracketNext);
 					}

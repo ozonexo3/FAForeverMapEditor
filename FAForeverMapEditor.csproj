@@ -246,6 +246,10 @@
     <Compile Include="Assets\Scripts\Ozone SCMAP Code\Lua\Parser\LuaParser_Read.cs" />
     <Compile Include="Assets\Scripts\Ozone SCMAP Code\Lua\Parser\LuaParser_Write.cs" />
     <Compile Include="Assets\Scripts\Ozone SCMAP Code\Lua\SaveLua.cs" />
+    <Compile Include="Assets\Scripts\Ozone SCMAP Code\Lua\SaveLua_Army.cs" />
+    <Compile Include="Assets\Scripts\Ozone SCMAP Code\Lua\SaveLua_Chain.cs" />
+    <Compile Include="Assets\Scripts\Ozone SCMAP Code\Lua\SaveLua_Marker.cs" />
+    <Compile Include="Assets\Scripts\Ozone SCMAP Code\Lua\SaveLua_Platoon.cs" />
     <Compile Include="Assets\Scripts\Ozone SCMAP Code\Lua\ScenarioLua.cs" />
     <Compile Include="Assets\Scripts\Ozone SCMAP Code\Map\MapData.cs" />
     <Compile Include="Assets\Scripts\Ozone SCMAP Code\Map\MapData_Class.cs" />
@@ -278,7 +282,7 @@
     <Compile Include="Assets\Scripts\Trash\Common\GUILayoutx.cs" />
     <Compile Include="Assets\Scripts\UI\AppMenu.cs" />
     <Compile Include="Assets\Scripts\UI\Editing.cs" />
-    <Compile Include="Assets\Scripts\UI\EditorSettings.cs" />
+    <Compile Include="Assets\Scripts\UI\FafEditorSettings.cs" />
     <Compile Include="Assets\Scripts\UI\Lists\ArmyIdButton.cs" />
     <Compile Include="Assets\Scripts\UI\Lists\ArmyListId.cs" />
     <Compile Include="Assets\Scripts\UI\Lists\ArmyMinimapButton.cs" />
@@ -325,6 +329,8 @@
     <Compile Include="Assets\Scripts\Undo\HistoryObjects\HistoryMarkersChange.cs" />
     <Compile Include="Assets\Scripts\Undo\HistoryObjects\HistoryMarkersMove.cs" />
     <Compile Include="Assets\Scripts\Undo\HistoryObjects\HistoryMarkersSelection.cs" />
+    <Compile Include="Assets\Scripts\Undo\HistoryObjects\HistorySelectionChange.cs" />
+    <Compile Include="Assets\Scripts\Undo\HistoryObjects\HistorySelectionRange.cs" />
     <Compile Include="Assets\Scripts\Undo\HistoryObjects\HistoryStep.cs" />
     <Compile Include="Assets\Scripts\Undo\HistoryObjects\HistoryStratumChange.cs" />
     <Compile Include="Assets\Scripts\Undo\HistoryObjects\HistoryStratumPaint.cs" />

@@ -106,6 +106,11 @@ namespace LuaParser
 			return key + SetValue + Coma + value + Coma + GetNextValue(NextLine);
 		}
 
+		public static string DescriptionToLua(string key, string value, bool NextLine = true)
+		{
+			return key + SetValue + "\"" + value + "\"" + GetNextValue(NextLine);
+		}
+
 		public static string FloatToLua(string key, float value, bool NextLine = true)
 		{
 			return key + SetValue + value.ToString(FloatFormat) + GetNextValue(NextLine);

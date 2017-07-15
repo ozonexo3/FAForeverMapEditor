@@ -10,6 +10,13 @@ namespace EditMap
 	public class NewMarkersInfo : MonoBehaviour
 	{
 
+		public static NewMarkersInfo Current;
+
+		private void Awake()
+		{
+			Current = this;
+		}
+
 		void OnEnable()
 		{
 			if (CreationId >= 0)
@@ -22,7 +29,7 @@ namespace EditMap
 
 		void OnDisable()
 		{
-			Selection.SelectionManager.Current.SetAffectedGameObjects(new GameObject[0]);
+			Selection.SelectionManager.Current.ClearAffectedGameObjects();
 			PlacementManager.Clear();
 		}
 
@@ -30,14 +37,16 @@ namespace EditMap
 		{
 			Selection.SelectionManager.Current.SetAffectedGameObjects(MarkersControler.GetMarkerObjects());
 			PlacementManager.Clear();
-			ChangeControlerType.Current.UpdateButtons();
+			if(ChangeControlerType.Current)
+				ChangeControlerType.Current.UpdateButtons();
 		}
 
 		void GoToCreation()
 		{
-			Selection.SelectionManager.Current.SetAffectedGameObjects(new GameObject[0]);
+			Selection.SelectionManager.Current.ClearAffectedGameObjects();
 			PlacementManager.BeginPlacement(GetCreationObject(), Place);
-			ChangeControlerType.Current.UpdateButtons();
+			if (ChangeControlerType.Current)
+				ChangeControlerType.Current.UpdateButtons();
 		}
 
 
@@ -49,6 +58,16 @@ namespace EditMap
 
 		public GameObject MarkerPrefab;
 		public GameObject[] MarkerPresets;
+
+		public void ClearCreateNew()
+		{
+			for (int i = 0; i < CreateButtonSelections.Length; i++)
+				CreateButtonSelections[i].SetActive(false);
+
+			CreationId = -1;
+			AiCreationDropdown.gameObject.SetActive(CreationId == 4);
+			SpawnPressetDropdown.gameObject.SetActive(CreationId == 5);
+		}
 
 		public void SelectCreateNew(int id)
 		{
@@ -158,10 +177,6 @@ namespace EditMap
 			}
 
 			MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers = NewMarkers.ToArray();
-
-
-
-
 		}
 
 

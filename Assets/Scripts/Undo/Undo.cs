@@ -35,6 +35,17 @@ public class Undo : MonoBehaviour {
 		MaxHistoryLength = PlayerPrefs.GetInt(FafEditorSettings.UndoHistory, FafEditorSettings.DefaultUndoHistory);
 	}
 
+	public void AddUndoCleanup()
+	{
+		while(History.Count > CurrentStage)
+		{
+			Destroy(History[History.Count - 1].gameObject);
+			History.RemoveAt(History.Count - 1);
+			Destroy(RedoHistory[0].gameObject);
+			RedoHistory.RemoveAt(0);
+		}
+	}
+
 	// keys
 	void Update(){
 		if(Input.GetKey(KeyCode.LeftControl)){
@@ -86,13 +97,15 @@ public class Undo : MonoBehaviour {
 		HistoryMapInfo.GenerateUndo (Prefabs.MapInfo).Register();
 	}
 
-	public void RegisteSelectionChange()
+	public void RegisterSelectionChange()
 	{
 		HistoryMarkersMove.GenerateUndo(Prefabs.SelectionChange).Register();
 	}
 
 	public void RegisterSelectionRangeChange()
 	{
+		if (HistorySelectionRange.DoingRedo)
+			return;
 		HistorySelectionRange.GenerateUndo(Prefabs.SelectionRange).Register();
 	}
 

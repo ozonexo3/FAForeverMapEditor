@@ -106,9 +106,9 @@ namespace LuaParser
 				return new Rect(0, 0, 0, 0);
 		}
 
+
 		public static Vector3 Vector3FromTable(LuaTable Table, string key)
 		{
-
 			if (ValueExist(Table, key))
 			{
 				LuaTable RectTable = (LuaTable)Table.RawGet(key);

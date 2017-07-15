@@ -385,7 +385,7 @@ public class ScmapEditor : MonoBehaviour
 				map.SetHeight(y, map.Height - x, (short)(heights[x, y] * HeightResize));
 			}
 		}
-		Debug.Log("Set Heightmap to map " + map.Width + ", " + map.Height);
+		//Debug.Log("Set Heightmap to map " + map.Width + ", " + map.Height);
 
 		string MapPath = EnvPaths.GetMapsPath();
 		string path = MapLuaParser.Current.ScenarioLuaFile.Data.map.Replace("/maps/", MapPath);

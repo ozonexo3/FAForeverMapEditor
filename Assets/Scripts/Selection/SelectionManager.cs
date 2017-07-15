@@ -37,12 +37,21 @@ namespace Selection
 
 		}
 
+		public void ClearAffectedGameObjects()
+		{
+			Undo.Current.RegisterSelectionRangeChange();
+			SetAffectedGameObjects(new GameObject[0], false, false, false, false);
+
+		}
+
+		public bool AllowMove;
 		public bool AllowUp;
 		public bool AllowRotation;
 		public bool AllowScale;
 
-		public void SetAffectedGameObjects(GameObject[] GameObjects, bool _AllowUp = false, bool _AllowRotation = false, bool _AllowScale = false)
+		public void SetAffectedGameObjects(GameObject[] GameObjects, bool _AllowMove = true, bool _AllowUp = false, bool _AllowRotation = false, bool _AllowScale = false)
 		{
+			AllowMove = _AllowMove;
 			AllowUp = _AllowUp;
 			AllowRotation = _AllowRotation;
 			AllowScale = _AllowScale;

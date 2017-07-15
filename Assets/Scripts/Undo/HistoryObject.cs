@@ -20,6 +20,7 @@ namespace UndoHistory{
 			GameObject NewHistoryStep = Instantiate (Prefab) as GameObject;
 			NewHistoryStep.name = Prefab.name + "_Undo";
 			NewHistoryStep.transform.parent = Undo.Current.transform;
+			Undo.Current.AddUndoCleanup();
 			int ListId = Undo.Current.AddToHistory (NewHistoryStep.GetComponent<HistoryObject> ());
 			Undo.Current.CurrentStage = Undo.Current.History.Count;
 			return Undo.Current.History [ListId];
