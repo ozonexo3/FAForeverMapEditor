@@ -8,9 +8,9 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 447826}
-  - component: {fileID: 114936671935961458}
+  - component: {fileID: 114000012362785336}
   m_Layer: 0
-  m_Name: ChangeSelectionRange
+  m_Name: History_StratumChange
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -48,7 +48,7 @@ Prefab:
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 108316}
   m_IsPrefabParent: 1
---- !u!114 &114936671935961458
+--- !u!114 &114000012362785336
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -56,14 +56,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 108316}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b535b3301f1011a4baf09ab7882c9292, type: 3}
+  m_Script: {fileID: 11500000, guid: 94d40023e1e6de74bbb3ffcd372ea124, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  UndoCommandName: Selection
-  MenuState: 0
-  CategoryId: 0
-  AffectedGameObjects: []
-  AllowMove: 0
-  AllowUp: 0
-  AllowRotation: 0
-  AllowScale: 0
+  UndoCommandName: Stratum change
+  i: 0
+  Textures:
+    Albedo: {fileID: 0}
+    Normal: {fileID: 0}
+    Tilling: {x: 1, y: 1}
+    AlbedoPath: 
+    NormalPath: 
+    AlbedoScale: 0
+    NormalScale: 0

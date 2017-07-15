@@ -33,12 +33,16 @@ namespace EditMap
 			PlacementManager.Clear();
 		}
 
-		void GoToSelection()
+		public void GoToSelection()
 		{
 			Selection.SelectionManager.Current.SetAffectedGameObjects(MarkersControler.GetMarkerObjects());
+			Selection.SelectionManager.Current.CleanSelection();
 			PlacementManager.Clear();
 			if(ChangeControlerType.Current)
 				ChangeControlerType.Current.UpdateButtons();
+
+			MarkerSelectionOptions.UpdateOptions();
+
 		}
 
 		void GoToCreation()
@@ -47,6 +51,8 @@ namespace EditMap
 			PlacementManager.BeginPlacement(GetCreationObject(), Place);
 			if (ChangeControlerType.Current)
 				ChangeControlerType.Current.UpdateButtons();
+
+			MarkerSelectionOptions.UpdateOptions();
 		}
 
 
@@ -93,13 +99,17 @@ namespace EditMap
 		public void ChangeList()
 		{
 			PlacementManager.BeginPlacement(GetCreationObject(), Place);
-
 		}
+
+		public List<int> LastAddedMarkers;
 
 		public void Place(Vector3[] Positions, Quaternion[] Rotations)
 		{
-			List<MapLua.SaveLua.Marker> NewMarkers = new List<MapLua.SaveLua.Marker>();
+			//List<MapLua.SaveLua.Marker> NewMarkers = new List<MapLua.SaveLua.Marker>();
 			int mc = 0; // MasterChainID
+			LastAddedMarkers = new List<int>();
+			int TotalMarkersCount = MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers.Count;
+			bool AnyCreated = false;
 
 			if (CreationId == 5)
 			{
@@ -110,6 +120,10 @@ namespace EditMap
 				{
 					for (int m = 0; m < Mpreset.Markers.Length; m++)
 					{
+						if(!AnyCreated)
+							Undo.Current.RegisterMarkersAdd();
+						AnyCreated = true;
+
 						//Debug.Log(Mpreset.Markers[m].Tr.localPosition);
 						NewPos = Positions[i] + Rotations[i] * Mpreset.Markers[m].Tr.localPosition;
 
@@ -118,11 +132,13 @@ namespace EditMap
 
 						NewPos.y = ScmapEditor.Current.Teren.SampleHeight(NewPos);
 
-						MapLua.SaveLua.Marker NewMarker = new MapLua.SaveLua.Marker(Mpreset.Markers[m].MarkerType, Mpreset.Markers[m].MarkerType.ToString() + "_" + i + "_" + m);
+						MapLua.SaveLua.Marker NewMarker = new MapLua.SaveLua.Marker(Mpreset.Markers[m].MarkerType, Mpreset.Markers[m].MarkerType.ToString() + "_" + TotalMarkersCount);
 						NewMarker.position = ScmapEditor.MapWorldPosInSave(NewPos);
 						MarkersControler.CreateMarker(NewMarker, mc);
 
-						NewMarkers.Add(NewMarker);
+						LastAddedMarkers.Add(TotalMarkersCount);
+						TotalMarkersCount++;
+						MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers.Add(NewMarker);
 					}
 				}
 			}
@@ -130,7 +146,11 @@ namespace EditMap
 			{
 				for (int i = 0; i < Positions.Length; i++)
 				{
-					MapLua.SaveLua.Marker NewMarker = new MapLua.SaveLua.Marker(LastCreationType, LastCreationType.ToString() + "_" + i);
+					if (!AnyCreated)
+						Undo.Current.RegisterMarkersAdd();
+					AnyCreated = true;
+
+					MapLua.SaveLua.Marker NewMarker = new MapLua.SaveLua.Marker(LastCreationType, LastCreationType.ToString() + "_" + TotalMarkersCount);
 
 					if (SelectionManager.Current.SnapToGrid)
 						Positions[i] = ScmapEditor.SnapToGridCenter(Positions[i]);
@@ -139,28 +159,53 @@ namespace EditMap
 
 					NewMarker.position = ScmapEditor.MapWorldPosInSave(Positions[i]);
 					MarkersControler.CreateMarker(NewMarker, mc);
-
-					NewMarkers.Add(NewMarker);
+					LastAddedMarkers.Add(TotalMarkersCount);
+					TotalMarkersCount++;
+					MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers.Add(NewMarker);
 				}
 
 			}
 
-
-			if (NewMarkers.Count > 0)
+			if (AnyCreated)
 			{
-				MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers = MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers.Concat<MapLua.SaveLua.Marker>(NewMarkers.ToArray());
+				//MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers = MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers.Concat<MapLua.SaveLua.Marker>(NewMarkers.ToArray());
+				MarkerSelectionOptions.UpdateOptions();
 			}
 		}
 
-
-		public void DestroyMarkers(List<GameObject> MarkerObjects)
+		public int[] LastDestroyedMarkers;
+		public void DestroyMarkers(List<GameObject> MarkerObjects, bool RegisterUndo = true)
 		{
-			List<MapLua.SaveLua.Marker> NewMarkers = new List<MapLua.SaveLua.Marker>();
 			int mc = 0; // MasterChainID
+			bool AnyRemoved = false;
+			int Mcount = MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers.Count;
 
-			for(int i = 0; i < MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers.Length; i++)
+			if (RegisterUndo)
 			{
-				bool Removed = false;
+				LastDestroyedMarkers = new int[MarkerObjects.Count];
+				int Step = 0;
+				for (int i = 0; i < Mcount; i++)
+				{
+					//bool Removed = false;
+					for (int m = 0; m < MarkerObjects.Count; m++)
+					{
+						if (MarkerObjects[m] == MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers[i].MarkerObj.gameObject)
+						{
+							LastDestroyedMarkers[Step] = i;
+							Step++;
+							break;
+						}
+					}
+				}
+
+				Undo.Current.RegisterMarkersRemove();
+			}
+
+			//List<MapLua.SaveLua.Marker> NewMarkers = new List<MapLua.SaveLua.Marker>();
+			
+			for (int i = 0; i < Mcount; i++)
+			{
+				//bool Removed = false;
 				for(int m = 0; m < MarkerObjects.Count; m++)
 				{
 					if(MarkerObjects[m] == MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers[i].MarkerObj.gameObject)
@@ -168,15 +213,23 @@ namespace EditMap
 						Destroy(MarkerObjects[m]);
 						MarkerObjects.RemoveAt(m);
 						MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers[i] = null;
-						Removed = true;
+						MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers.RemoveAt(i);
+						i--;
+						AnyRemoved = true;
+						break;
 					}
 				}
 
-				if (!Removed)
-					NewMarkers.Add(MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers[i]);
+				//if (!Removed)
+				//	NewMarkers.Add(MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers[i]);
 			}
 
-			MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers = NewMarkers.ToArray();
+			//MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers = NewMarkers.ToArray();
+			if (AnyRemoved)
+			{
+				Selection.SelectionManager.Current.SetAffectedGameObjects(MarkersControler.GetMarkerObjects());
+				MarkerSelectionOptions.UpdateOptions();
+			}
 		}
 
 
@@ -192,8 +245,10 @@ namespace EditMap
 				return MapLua.SaveLua.Marker.MarkerTypes.CameraInfo;
 			else if (CreationId == 4)
 			{
+				return MapLua.SaveLua.Marker.StringToMarkerType(AiCreationDropdown.options[AiCreationDropdown.value].text);
+
 				//TODO
-				return MapLua.SaveLua.Marker.MarkerTypes.CombatZone;
+				//return MapLua.SaveLua.Marker.MarkerTypes.CombatZone;
 
 			}
 
@@ -210,7 +265,6 @@ namespace EditMap
 			}
 			else
 			{
-
 				LastCreationType = GetCreationType();
 
 				MarkersControler.MarkerPropGraphic Mpg = MarkersControler.GetPropByType(LastCreationType);
@@ -220,7 +274,6 @@ namespace EditMap
 				NewMarkerObject.Mr.sharedMaterial = Mpg.SharedMaterial;
 
 				return MarkerPrefab;
-
 			}
 
 		}

@@ -99,14 +99,24 @@ public class Undo : MonoBehaviour {
 
 	public void RegisterSelectionChange()
 	{
-		HistoryMarkersMove.GenerateUndo(Prefabs.SelectionChange).Register();
+		//HistoryMarkersMove.GenerateUndo(Prefabs.SelectionChange).Register();
 	}
 
 	public void RegisterSelectionRangeChange()
 	{
-		if (HistorySelectionRange.DoingRedo)
-			return;
-		HistorySelectionRange.GenerateUndo(Prefabs.SelectionRange).Register();
+		//if (HistorySelectionRange.DoingRedo)
+		//	return;
+		//HistorySelectionRange.GenerateUndo(Prefabs.SelectionRange).Register();
+	}
+
+	public void RegisterMarkersAdd()
+	{
+		HistoryMarkersRemove.GenerateUndo(Prefabs.MarkersRemove).Register();
+	}
+
+	public void RegisterMarkersRemove()
+	{
+		HistoryMarkersRemove.GenerateUndo(Prefabs.MarkersRemove).Register();
 	}
 
 	public void RegisterMarkersMove(){

@@ -5,12 +5,12 @@ GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 447826}
-  - 114: {fileID: 11400890}
+  - component: {fileID: 447826}
+  - component: {fileID: 114936671935961458}
   m_Layer: 0
-  m_Name: ChangeMarkersMove
+  m_Name: History_SelectionRange
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -25,27 +25,10 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
---- !u!114 &11400890
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 108316}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fbe200e0bbfe6b34ba65d764acb2524b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  UndoCommandName: Move Marker
-  UndoType: 1
-  MarkersPosSelection: []
-  MirrorPos: []
-  SelectedMarker: {x: 0, y: 0, z: 0}
-  SelectedSymmetryMarkers: []
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1
@@ -57,7 +40,32 @@ Prefab:
       propertyPath: UndoCommandName
       value: Move Marker
       objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: UndoType
+      value: 3
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 108316}
   m_IsPrefabParent: 1
+--- !u!114 &114936671935961458
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 108316}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b535b3301f1011a4baf09ab7882c9292, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  UndoCommandName: Selection
+  MenuState: 0
+  CategoryId: 0
+  MarkersPage: 0
+  Ids: 
+  AffectedGameObjects: []
+  AllowMove: 0
+  AllowUp: 0
+  AllowRotation: 0
+  AllowScale: 0

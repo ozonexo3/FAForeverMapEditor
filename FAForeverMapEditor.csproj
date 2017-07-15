@@ -328,6 +328,7 @@
     <Compile Include="Assets\Scripts\Undo\HistoryObjects\HistoryMapInfo.cs" />
     <Compile Include="Assets\Scripts\Undo\HistoryObjects\HistoryMarkersChange.cs" />
     <Compile Include="Assets\Scripts\Undo\HistoryObjects\HistoryMarkersMove.cs" />
+    <Compile Include="Assets\Scripts\Undo\HistoryObjects\HistoryMarkersRemove.cs" />
     <Compile Include="Assets\Scripts\Undo\HistoryObjects\HistoryMarkersSelection.cs" />
     <Compile Include="Assets\Scripts\Undo\HistoryObjects\HistorySelectionChange.cs" />
     <Compile Include="Assets\Scripts\Undo\HistoryObjects\HistorySelectionRange.cs" />

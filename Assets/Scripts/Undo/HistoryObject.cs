@@ -44,7 +44,12 @@ namespace UndoHistory{
 		public virtual void Register(){
 
 		}
-			
+
+		public virtual HistoryObject RegisterReturn()
+		{
+			return this;
+		}
+
 
 		public virtual void DoUndo(){
 

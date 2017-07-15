@@ -38,7 +38,7 @@ public partial struct GetGamedataFile
 				}
 
 				Lods = NewProp.Lodg.GetLODs();
-				Lods[0].screenRelativeTransitionHeight = Mathf.Lerp(0.018f, 0.20f, Mathf.Pow((DeltaSize - 1.9f) / 190f, 2f));
+				Lods[0].screenRelativeTransitionHeight = Mathf.Lerp(0.027f, 0.19f, Mathf.Pow((DeltaSize - 1.9f) / 190f, 2f));
 				NewProp.Lodg.SetLODs(Lods);
 
 				NewProp.Tr.localPosition = position;

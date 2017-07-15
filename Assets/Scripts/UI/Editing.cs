@@ -88,6 +88,9 @@ namespace EditMap
 		int CurrentCategory = 0;
 		public void ChangeCategory(int id = 0)
 		{
+			if (id == CurrentCategory)
+				return;
+
 			foreach (GameObject obj in Categorys)
 			{
 				obj.SetActive(false);

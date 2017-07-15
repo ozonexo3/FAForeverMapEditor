@@ -215,7 +215,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
-    - _AbyssLevel: 1
+    - _AbyssLevel: 0.25
     - _Area: 0
     - _AreaHeight: 51.2
     - _AreaWidht: 51.2
@@ -227,20 +227,20 @@ Material:
     - _BrushUvY: 0.34550664
     - _DeepLevel: 1.675625
     - _Grid: 0
-    - _GridCamDist: 1.2794001
+    - _GridCamDist: 2.9618785
     - _GridScale: 51.2
-    - _LightingMultiplier: 1.5
-    - _LowerScale: 512
-    - _LowerScaleNormal: 128
+    - _LightingMultiplier: 1.6
+    - _LowerScale: 64
+    - _LowerScaleNormal: 512
     - _Shininess: 0.03
     - _Slope: 0
-    - _Splat0Scale: 23.011236
-    - _Splat0ScaleNormal: 23.011236
-    - _Splat1Scale: 97.52381
-    - _Splat1ScaleNormal: 128
-    - _Splat2Scale: 53.894737
-    - _Splat2ScaleNormal: 64
-    - _Splat3Scale: 128
+    - _Splat0Scale: 128
+    - _Splat0ScaleNormal: 23.813953
+    - _Splat1Scale: 128
+    - _Splat1ScaleNormal: 85.333336
+    - _Splat2Scale: 30.476192
+    - _Splat2ScaleNormal: 128
+    - _Splat3Scale: 39.384617
     - _Splat3ScaleNormal: 128
     - _Splat4Scale: 128
     - _Splat4ScaleNormal: 128
@@ -253,13 +253,13 @@ Material:
     - _TTerrainXP: 0
     - _UpperScale: 4
     - _UpperScaleNormal: 512
-    - _Water: 1
-    - _WaterLevel: 2.5
+    - _Water: 0
+    - _WaterLevel: 1.75
     m_Colors:
     - _Abyss: {r: 0.005190316, g: 0.051962737, b: 0.2352941, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _Deep: {r: 0.22577855, g: 0.4590157, b: 0.5294118, a: 1}
-    - _ShadowColor: {r: 0.35, g: 0.35, b: 0.375, a: 1}
+    - _ShadowColor: {r: 0.35500005, g: 0.35500005, b: 0.405, a: 1}
     - _SpecColor: {r: 0, g: 0, b: 0, a: 0}
-    - _SunAmbience: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-    - _SunColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+    - _SunAmbience: {r: 0, g: 0, b: 0, a: 1}
+    - _SunColor: {r: 0.76, g: 0.82500005, b: 0.74, a: 1}

@@ -9,10 +9,11 @@ public class GridCamera : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		GridTexture.mipMapBias = -0.3f;
+		InvokeRepeating("UpdateGrid", 0, 0.333f);
 	}
 	
 	// Update is called once per frame
-	void Update () {
+	void UpdateGrid () {
 		GridMaterial.SetFloat("_GridCamDist", transform.localPosition.y / 20);
 	}
 }

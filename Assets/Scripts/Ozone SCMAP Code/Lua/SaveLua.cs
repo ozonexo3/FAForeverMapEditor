@@ -74,7 +74,7 @@ namespace MapLua
 		public class MasterChain
 		{
 			public string Name = "";
-			public Marker[] Markers = new Marker[0];
+			public List<Marker> Markers = new List<Marker>();
 			public const string KEY_MARKERS = "Markers";
 		}
 
@@ -144,10 +144,10 @@ namespace MapLua
 				LuaTable MarkersTable = (LuaTable)MasterChainTabs[mc].RawGet(MasterChain.KEY_MARKERS);
 				LuaTable[] MarkersTabs = LuaParser.Read.GetTableTables(MarkersTable);
 				string[] MarkersNames = LuaParser.Read.GetTableKeys(MarkersTable);
-				Data.MasterChains[mc].Markers = new Marker[MarkersTabs.Length];
+				Data.MasterChains[mc].Markers = new List<Marker>();
 				for(int m = 0; m < MarkersTabs.Length; m++)
 				{
-					Data.MasterChains[mc].Markers[m] = new Marker(MarkersNames[m], MarkersTabs[m]);
+					Data.MasterChains[mc].Markers.Add(new Marker(MarkersNames[m], MarkersTabs[m]));
 				}
 				AllLoadedMarkers.AddRange(Data.MasterChains[mc].Markers);
 			}
@@ -253,7 +253,8 @@ namespace MapLua
 						{
 							LuaFile.OpenTab(MasterChain.KEY_MARKERS + LuaParser.Write.OpenBracketValue);
 							{
-								for(int m = 0; m < Data.MasterChains[mc].Markers.Length; m++)
+								int Mcount = Data.MasterChains[mc].Markers.Count;
+								for (int m = 0; m < Mcount; m++)
 								{
 									LuaFile.OpenTab(LuaParser.Write.PropertiveToLua(Data.MasterChains[mc].Markers[m].Name) + LuaParser.Write.OpenBracketValue);
 									Data.MasterChains[mc].Markers[m].SaveMarkerValues(LuaFile);

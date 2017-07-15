@@ -18,11 +18,11 @@ public class MarkersList : MonoBehaviour
 
 	void OnEnable()
 	{
-		//GenerateList();
+		UpdateList();
 	}
 
 	bool Generated = false;
-	int GeneratedCount = 0;
+	int GeneratedCount = -1;
 	void OnDisable()
 	{
 		foreach (RectTransform child in Pivot)
@@ -68,7 +68,8 @@ public class MarkersList : MonoBehaviour
 
 	public void UpdateList()
 	{
-		if (Generated && AllFields.Count == GeneratedCount)
+		int mc = 0;
+		if (Generated && GeneratedCount == MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers.Count)
 		{
 			UpdateSelection();
 			return;
@@ -89,8 +90,8 @@ public class MarkersList : MonoBehaviour
 		if (MapLuaParser.Current.SaveLuaFile.Data.MasterChains.Length == 0)
 			return;
 
-
-		for(int i = 0; i < MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers.Length; i++)
+		int Mcount = MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers.Count;
+		for (int i = 0; i < Mcount; i++)
 		{
 			MapLua.SaveLua.Marker CurrentMarker = MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers[i];
 			if (CurrentMarker == null || CurrentMarker.MarkerObj == null)

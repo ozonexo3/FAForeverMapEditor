@@ -207,12 +207,14 @@ public class ScmapEditor : MonoBehaviour
 		Teren.gameObject.name = "TERRAIN";
 		Teren.materialType = Terrain.MaterialType.Custom;
 		Teren.materialTemplate = TerrainMaterial;
-		Teren.heightmapPixelError = 1;
+		Teren.heightmapPixelError = 2f;
 		Teren.basemapDistance = 10000;
 		Teren.castShadows = false;
 		Teren.drawTreesAndFoliage = false;
 		Teren.reflectionProbeUsage = UnityEngine.Rendering.ReflectionProbeUsage.Off;
-
+		//Teren.terrainData.detailResolution = 32;
+		//Teren.terrainData.alphamapResolution = 32;
+		//Teren.terrainData.baseMapResolution = 32;
 
 		Data.heightmapResolution = (int)(xRes + 1);
 		Data.size = new Vector3(
@@ -220,9 +222,9 @@ public class ScmapEditor : MonoBehaviour
 			yRes * MapHeightScale,
 			HalfzRes
 			);
-		Data.SetDetailResolution((int)(xRes / 2), 8);
-		Data.baseMapResolution = (int)(xRes / 2);
-		Data.alphamapResolution = (int)(xRes / 2);
+		//Data.SetDetailResolution((int)(xRes / 2), 8);
+		//Data.baseMapResolution = (int)(xRes / 2);
+		//Data.alphamapResolution = (int)(xRes / 2);
 
 		Teren.transform.localPosition = new Vector3(0, 0, -HalfzRes);
 
@@ -268,7 +270,7 @@ public class ScmapEditor : MonoBehaviour
 
 
 		Teren.gameObject.layer = 8;
-		Teren.heightmapPixelError = 0; // Force terrain pixel error to 0, to get more sharp terrain
+		//Teren.heightmapPixelError = 0; // Force terrain pixel error to 0, to get more sharp terrain
 
 		SetTextures();
 		yield return null;

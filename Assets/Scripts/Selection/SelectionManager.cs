@@ -86,7 +86,12 @@ namespace Selection
 			Active = AffectedGameObjects.Length > 0;
 
 			CleanIfInactive();
+		}
 
+		public void CleanSelection()
+		{
+			Selection.Ids = new List<int>();
+			FinishSelectionChange();
 		}
 
 		void CleanIfInactive()
@@ -94,14 +99,13 @@ namespace Selection
 			if (!Active)
 			{
 				AffectedGameObjects = new GameObject[0];
-				Selection.Ids = new List<int>();
-				FinishSelectionChange();
+				CleanSelection();
 			}
 		}
 
 
-		private System.Action<List<GameObject>> RemoveAction;
-		public void SetRemoveAction(System.Action<List<GameObject>> Action)
+		private System.Action<List<GameObject>, bool> RemoveAction;
+		public void SetRemoveAction(System.Action<List<GameObject>, bool> Action)
 		{
 			RemoveAction = Action;
 
@@ -130,7 +134,7 @@ namespace Selection
 					}
 				}
 
-				RemoveAction(SelectedObjectsList);
+				RemoveAction(SelectedObjectsList, true);
 
 				Active = false;
 

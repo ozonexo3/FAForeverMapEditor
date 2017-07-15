@@ -41,7 +41,8 @@ namespace Markers
 				Current.MasterChains[mc] = new GameObject(MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Name).transform;
 				Current.MasterChains[mc].parent = Current.transform;
 
-				for (int m = 0; m < MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers.Length; m++)
+				int Mcount = MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers.Count;
+				for (int m = 0; m < Mcount; m++)
 				{
 					if(MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers[m].MarkerObj == null)
 					{
@@ -72,7 +73,8 @@ namespace Markers
 			List<GameObject> AllGameObjects = new List<GameObject>();
 			for (int mc = 0; mc < MapLuaParser.Current.SaveLuaFile.Data.MasterChains.Length; mc++)
 			{
-				for (int m = 0; m < MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers.Length; m++)
+				int Mcount = MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers.Count;
+				for (int m = 0; m < Mcount; m++)
 				{
 					AllGameObjects.Add(MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers[m].MarkerObj.gameObject);
 				}
@@ -125,18 +127,46 @@ namespace Markers
 
 		}
 
-		public static void RemoveMarker(int mc, int m)
+		public static void RemoveMarker(int mc, int i)
 		{
 			// TODO
 
 		}
 
-		public static void AddMarker(int mc, MapLua.SaveLua.Marker.MarkerTypes MarkerType)
+		public static void AddMarker(int mc, MapLua.SaveLua.Marker.MarkerTypes MarkerType, int Insert = -1)
 		{
 			// TODO
 
 
+		}
 
+		public static int RecreateMarker(int mc, MapLua.SaveLua.Marker Marker, int Insert = -1)
+		{
+			CreateMarker(Marker, mc);
+
+			if (Insert >= 0 && Insert <= MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers.Count)
+			{
+				MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers.Insert(Insert, Marker);
+				return Insert;
+			}
+			else
+			{
+				MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers.Add(Marker);
+				return MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers.Count - 1;
+			}
+		}
+
+		public static void RegenerateMarkers()
+		{
+			for (int mc = 0; mc < MapLuaParser.Current.SaveLuaFile.Data.MasterChains.Length; mc++)
+			{
+				int Mcount = MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers.Count;
+				for (int m = 0; m < Mcount; m++)
+				{
+					if(MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers[m].MarkerObj == null)
+						CreateMarker(MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers[m], mc);
+				}
+			}
 		}
 
 	}

@@ -10,7 +10,7 @@ GameObject:
   - component: {fileID: 447826}
   - component: {fileID: 114430368232900190}
   m_Layer: 0
-  m_Name: ChangeSelectionChange
+  m_Name: History_SelectionChange
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

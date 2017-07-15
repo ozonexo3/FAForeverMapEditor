@@ -218,11 +218,13 @@ namespace MapLua
 					MarkerType = MarkerTypes.BlankMarker;
 				else
 				{
-					MarkerType = (MarkerTypes)System.Enum.Parse(typeof(MarkerTypes), type.Replace(" ", ""));
-
+					MarkerType = StringToMarkerType(type);
 				}
+			}
 
-
+			public static MarkerTypes StringToMarkerType(string value)
+			{
+				return (MarkerTypes)System.Enum.Parse(typeof(MarkerTypes), value.Replace(" ", ""));
 			}
 
 			public void SaveMarkerValues(LuaParser.Creator LuaFile)

@@ -243,7 +243,7 @@ namespace Selection
 
 		void AddSelectionBoxObjects()
 		{
-			Undo.Current.RegisterSelectionChange();
+			//Undo.Current.RegisterSelectionChange();
 
 			Vector3 MouseEndPos = Input.mousePosition;
 			Vector3 diference = MouseEndPos - BeginMousePos;
@@ -260,6 +260,8 @@ namespace Selection
 					{
 						if (Selection.Ids.Contains(i))
 						{
+							if(!AnyChanged)
+								Undo.Current.RegisterSelectionChange();
 							AnyChanged = true;
 							Selection.Ids.RemoveAt(Selection.Ids.IndexOf(i));
 						}
@@ -267,10 +269,14 @@ namespace Selection
 				}
 			}
 			else {
-				if (!IsSelectionAdd())
+				if (!IsSelectionAdd() && Selection.Ids.Count > 0)
 				{
-					Selection.Ids = new List<int>();
+					if (!AnyChanged)
+						Undo.Current.RegisterSelectionChange();
 					AnyChanged = true;
+
+					Selection.Ids = new List<int>();
+
 				}
 
 				for (int i = 0; i < AffectedGameObjects.Length; i++)
@@ -281,6 +287,8 @@ namespace Selection
 					if (AffectedGameObjects[i].activeSelf && SelectionBoxArea.Contains(Cam.WorldToScreenPoint(AffectedGameObjects[i].transform.position)))
 					{
 						Selection.Ids.Add(i);
+						if (!AnyChanged)
+							Undo.Current.RegisterSelectionChange();
 						AnyChanged = true;
 					}
 				}
@@ -289,7 +297,6 @@ namespace Selection
 			if (AnyChanged)
 			{
 				FinishSelectionChange();
-
 			}
 
 
@@ -324,6 +331,7 @@ namespace Selection
 
 		void Controler_StorePositions()
 		{
+
 			Selection.StorePositions();
 			for(int i = 0; i < SymetrySelection.Length; i++)
 			{
@@ -331,8 +339,16 @@ namespace Selection
 			}
 		}
 
+
+		bool Draged = false;
 		void ControlerDrag()
 		{
+			if (!Draged)
+			{
+				Undo.Current.RegisterMarkersMove();
+				Draged = true;
+			}
+
 			Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 			Vector3 NewPos = PosOnControler(ray);
 			Vector3 Offset = NewPos - ControlerClickPoint;
@@ -357,6 +373,7 @@ namespace Selection
 		{
 			//TODO Bake Positions
 			ResetControlerPosition();
+			Draged = false;
 		}
 
 	}
