@@ -32,7 +32,7 @@ public class Undo : MonoBehaviour {
 	}
 
 	void Start(){
-		MaxHistoryLength = PlayerPrefs.GetInt("UndoHistry", 5);
+		MaxHistoryLength = PlayerPrefs.GetInt(FafEditorSettings.UndoHistory, FafEditorSettings.DefaultUndoHistory);
 	}
 
 	// keys
@@ -86,6 +86,16 @@ public class Undo : MonoBehaviour {
 		HistoryMapInfo.GenerateUndo (Prefabs.MapInfo).Register();
 	}
 
+	public void RegisteSelectionChange()
+	{
+		HistoryMarkersMove.GenerateUndo(Prefabs.SelectionChange).Register();
+	}
+
+	public void RegisterSelectionRangeChange()
+	{
+		HistorySelectionRange.GenerateUndo(Prefabs.SelectionRange).Register();
+	}
+
 	public void RegisterMarkersMove(){
 		HistoryMarkersMove.GenerateUndo (Prefabs.MarkersMove).Register();
 	}
@@ -102,6 +112,8 @@ public class Undo : MonoBehaviour {
 	public void RegisterMarkerChange(){
 		HistoryMarkersChange.GenerateUndo (Prefabs.MarkersChange).Register();
 	}
+
+
 
 	public static float[,] UndoData_newheights;
 	public void RegisterTerrainHeightmapChange(float[,] newheights){

@@ -80,7 +80,12 @@ namespace EditMap
 			}
 		}
 
+		public int GetCategoryId()
+		{
+			return CurrentCategory;
+		}
 
+		int CurrentCategory = 0;
 		public void ChangeCategory(int id = 0)
 		{
 			foreach (GameObject obj in Categorys)
@@ -92,7 +97,7 @@ namespace EditMap
 			{
 				obj.SetActive(false);
 			}
-
+			CurrentCategory = id;
 
 			CategorysSelected[id].SetActive(true);
 			Categorys[id].SetActive(true);

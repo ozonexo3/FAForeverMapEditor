@@ -10,6 +10,8 @@ namespace UndoHistory{
 	[System.Serializable]
 	public class UndoPrefabs{
 		public		GameObject		MapInfo;
+		public		GameObject		SelectionChange;
+		public GameObject SelectionRange;
 		public		GameObject		MarkersMove;
 		public		GameObject		MarkersSelection;
 		public		GameObject		MarkersChange;

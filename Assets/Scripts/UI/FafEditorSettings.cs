@@ -4,12 +4,15 @@ using System.Collections;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
-public class EditorSettings : MonoBehaviour {
+public class FafEditorSettings : MonoBehaviour {
 
 	public InputField		PathField;
 	public InputField		MapsPathField;
 	public	Slider			HistorySlider;
 	public	Undo			History;
+
+	public const int DefaultUndoHistory = 50;
+	public const string UndoHistory = "UndoHistrySteps";
 
 	void OnEnable(){
 		PathField.text = EnvPaths.GetInstalationPath();
@@ -18,7 +21,7 @@ public class EditorSettings : MonoBehaviour {
 	
 
 	public void Open(){
-		HistorySlider.value = PlayerPrefs.GetInt("UndoHistry", 5);
+		HistorySlider.value = PlayerPrefs.GetInt(UndoHistory, DefaultUndoHistory);
 		gameObject.SetActive(true);
 	}
 
@@ -41,7 +44,7 @@ public class EditorSettings : MonoBehaviour {
 
 		EnvPaths.SetMapsPath (MapsPathField.text);
 
-		PlayerPrefs.SetInt("UndoHistry", (int)HistorySlider.value);
+		PlayerPrefs.SetInt(UndoHistory, (int)HistorySlider.value);
 		if(History)History.MaxHistoryLength = (int)HistorySlider.value;
 
 		PlayerPrefs.Save();
