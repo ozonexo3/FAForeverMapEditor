@@ -7,15 +7,15 @@ using EditMap;
 public class HistoryMarkersChange : HistoryObject
 {
 
-	public List<MapLuaParser.Mex> Mexes = new List<MapLuaParser.Mex>();
-	public List<MapLuaParser.Hydro> Hydros = new List<MapLuaParser.Hydro>();
-	public List<MapLuaParser.Army> ARMY_ = new List<MapLuaParser.Army>();
-	public List<MapLuaParser.Marker> SiMarkers = new List<MapLuaParser.Marker>();
+	//public List<MapLuaParser.Mex> Mexes = new List<MapLuaParser.Mex>();
+	//public List<MapLuaParser.Hydro> Hydros = new List<MapLuaParser.Hydro>();
+	//public List<MapLuaParser.Army> ARMY_ = new List<MapLuaParser.Army>();
+	//public List<MapLuaParser.Marker> SiMarkers = new List<MapLuaParser.Marker>();
 
 	//public List<MarkersInfo.WorkingElement> Selected = new List<MarkersInfo.WorkingElement>();
 	//public MarkersInfo.SymmetrySelection[] SymmetrySelectionList = new MarkersInfo.SymmetrySelection[0];
 
-	public List<MapLuaParser.SaveArmy> SaveArmys = new List<MapLuaParser.SaveArmy>();
+	//public List<MapLuaParser.SaveArmy> SaveArmys = new List<MapLuaParser.SaveArmy>();
 
 
 	public override void Register()
@@ -28,11 +28,13 @@ public class HistoryMarkersChange : HistoryObject
 		}
 		SymmetrySelectionList = Undo.Current.EditMenu.EditMarkers.SymmetrySelectionList;
 		*/
+		/*
 		ARMY_ = Undo.Current.Scenario.ARMY_;
 		Mexes = Undo.Current.Scenario.Mexes;
 		Hydros = Undo.Current.Scenario.Hydros;
 		SiMarkers = Undo.Current.Scenario.SiMarkers;
 		SaveArmys = Undo.Current.Scenario.SaveArmys;
+		*/
 	}
 
 
@@ -51,11 +53,13 @@ public class HistoryMarkersChange : HistoryObject
 			Undo.Current.EditMenu.ChangeCategory(4);
 		}
 
+		/*
 		Undo.Current.Scenario.ARMY_ = ARMY_;
 		Undo.Current.Scenario.Mexes = Mexes;
 		Undo.Current.Scenario.Hydros = Hydros;
 		Undo.Current.Scenario.SiMarkers = SiMarkers;
 		Undo.Current.Scenario.SaveArmys = SaveArmys;
+		*/
 
 		/*
 		Undo.Current.EditMenu.EditMarkers.GenerateAllWorkingElements();

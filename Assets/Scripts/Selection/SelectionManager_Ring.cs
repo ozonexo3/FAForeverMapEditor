@@ -29,7 +29,7 @@ namespace Selection
 			}
 			else
 			{
-				Controls.gameObject.SetActive(true);
+				Controls.gameObject.SetActive(AllowMove || AllowUp);
 
 				Bounds NewBounds = new Bounds();
 

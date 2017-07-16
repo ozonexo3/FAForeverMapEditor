@@ -111,6 +111,7 @@ namespace MapLua
 				return false;
 			}
 
+			AllExistingNames = new List<string>();
 			Data = new Scenario();
 			LuaTable ScenarioInfoTab = LuaFile.GetTable(KEY_Scenario);
 

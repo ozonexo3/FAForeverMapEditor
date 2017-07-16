@@ -12,6 +12,8 @@ public class ArmyListId : MonoBehaviour {
 
 	public void GenerateIds(int defaultId = 0){
 		gameObject.SetActive(true);
+		//TODO
+		/*
 		for(int i = 0; i < Armys.Scenario.ARMY_.Count; i++){
 			GameObject NewBut = Instantiate(ButtonPrefab) as GameObject;
 			NewBut.transform.SetParent(Pivot);
@@ -23,8 +25,10 @@ public class ArmyListId : MonoBehaviour {
 			NewBut.GetComponent<RectTransform>().localPosition = Vector3.up * -27 * i;
 			if(i == defaultId) ArmyButtons[i].Select.color = new Color(0.15f, 0.15f, 0.5f, 1);
 		}
+		
 
 		GetComponent<RectTransform>().sizeDelta = new Vector2(52, 6 + 27 * Armys.Scenario.ARMY_.Count);
+		*/
 	}
 
 	public void Selected(int id){

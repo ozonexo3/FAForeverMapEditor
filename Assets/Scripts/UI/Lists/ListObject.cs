@@ -8,10 +8,12 @@ public class ListObject : MonoBehaviour {
 	public		Image				Icon;
 	public		GameObject			Selected;
 	public		GameObject			SymmetrySelected;
-	public		CameraControler		KameraKontroler;
+	//public		CameraControler		KameraKontroler;
 	public		int					InstanceId;
 	public		int					ListId;
 	public		GameObject			ConnectedGameObject;
+	public System.Action<GameObject> ClickAction;
+	public System.Action<int> ClickActionId;
 
 	public void SetSelection(int id){
 		Selected.SetActive(id == 1);
@@ -29,6 +31,13 @@ public class ListObject : MonoBehaviour {
 
 	public void Clicked(){
 		//KameraKontroler.MarkerList(ConnectedGameObject);
-		Selection.SelectionManager.Current.SelectObject(ConnectedGameObject);
+		if (ConnectedGameObject)
+			ClickAction(ConnectedGameObject);
+		//Selection.SelectionManager.Current.SelectObject(ConnectedGameObject);
+		else
+		{
+			ClickActionId(InstanceId);
+
+		}
 	}
 }

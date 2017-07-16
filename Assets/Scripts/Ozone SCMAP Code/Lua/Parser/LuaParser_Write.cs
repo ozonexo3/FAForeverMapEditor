@@ -189,7 +189,7 @@ namespace LuaParser
 		public const string NextValue = ",";
 		public const string EndBracketNext = EndBracket + NextValue;
 
-		const string tab = "    ";
+		public const string tab = "    ";
 		static string GetTabs(int count)
 		{
 			string ToReturn = "";

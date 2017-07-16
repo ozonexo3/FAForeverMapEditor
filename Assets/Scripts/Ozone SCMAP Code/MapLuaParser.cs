@@ -19,38 +19,38 @@ public class MapLuaParser : MonoBehaviour {
 
 	#region Variables
 	[Header("Objects")]
-	public		MarkersRenderer	MarkerRend;
+	//public		MarkersRenderer	MarkerRend;
 	public		Editing			EditMenu;
 	public		Undo			History;
 	public		MapHelperGui	HelperGui;
 	public		string			FolderName;
 	public		string			ScenarioFileName;
 	//public		Scenario		ScenarioData;
-	public		GameObject[]	Prefabs;
-	public		Transform		MarkersParent;
-	public		GameObject		MapElements;
-	public		Transform[]		MapBorders;
+	//public		GameObject[]	Prefabs;
+	//public		Transform		MarkersParent;
+	//public		GameObject		MapElements;
+	//public		Transform[]		MapBorders;
 	public		CameraControler	CamControll;
 	public		ScmapEditor		HeightmapControler;
-	public		GetGamedataFile	Gamedata;
+	//public		GetGamedataFile	Gamedata;
 	public		GenericInfoPopup	InfoPopup;
 	public PropsInfo PropsMenu;
 	public static		bool			Water;
 
 
 	[Header("Local Data")]
-	public		List<Mex>		Mexes = new List<Mex>();
-	public		List<Hydro>		Hydros = new List<Hydro>();
-	public		List<Army>		ARMY_ = new List<Army>();
-	public		List<Marker>	SiMarkers = new List<Marker>();
-	public int ArmyHidenCount = 0;
+	//public		List<Mex>		Mexes = new List<Mex>();
+	//public		List<Hydro>		Hydros = new List<Hydro>();
+	//public		List<Army>		ARMY_ = new List<Army>();
+	//public		List<Marker>	SiMarkers = new List<Marker>();
+	//public int ArmyHidenCount = 0;
 
-	public		List<int>		MexesTrash;
-	public		List<int>		HydrosTrash;
-	public		List<int>		ArmiesTrash;
-	public		List<int>		AiTrash;
+	//public		List<int>		MexesTrash;
+	//public		List<int>		HydrosTrash;
+	//public		List<int>		ArmiesTrash;
+	//public		List<int>		AiTrash;
 
-	public		List<SaveArmy> 		SaveArmys = new List<SaveArmy>();
+	//public		List<SaveArmy> 		SaveArmys = new List<SaveArmy>();
 
 	public		int MexTotalCount = 0;
 	public		int HydrosTotalCount = 0;
@@ -71,144 +71,6 @@ public class MapLuaParser : MonoBehaviour {
 	#endregion
 
 	#region Classes
-	[System.Serializable]
-	public class Mex{
-		public		string		name;
-		public		Transform	Mark;
-		public		MarkerScript		Script;
-		public		Vector3		position;
-		public		Vector3		orientation;
-		public		armys		SpawnWithArmy;
-	}
-
-	[System.Serializable]
-	public class Hydro{
-		public		string		name;
-		public		Transform	Mark;
-		public		MarkerScript		Script;
-		public		float size = 3;
-		public		float amount = 100;
-		public		bool resource = true;
-		public		string prop = "/env/common/props/markers/M_Hydrocarbon_prop.bp";
-		public		Color color;
-		public		Vector3		position;
-		public		Vector3		orientation;
-		public		armys		SpawnWithArmy;
-
-		public Hydro(){
-			size = 3;
-			amount = 100;
-			resource = true;
-			prop = "/env/common/props/markers/M_Hydrocarbon_prop.bp";
-			color = new Color(1, 0, 0.5f, 0);
-			SpawnWithArmy = armys.none;
-		}
-	}
-
-	[System.Serializable]
-	public class Marker{
-		public		string		name;
-		public		Transform	Mark;
-		public		MarkerScript		Script;
-
-		public		string 		hintValue;
-		public		bool 		hint = true;
-		public		string		graph;
-		public		string 		adjacentTo;
-		public		string		type;
-		public		Color		Kolor;
-		public		string		prop;
-		public		Vector3		orientation;
-		public		Vector3		position;
-		public		armys		SpawnWithArmy;
-		//public		float		Size;
-	}
-
-	[System.Serializable]
-	public class Army{
-		public		string		name;
-		public		bool 		Hidden = false;
-		public		int			Id;
-		public		Transform	Mark;
-		public		MarkerScript		Script;
-		public		Vector3		position;
-		public		Vector3		orientation;
-	}
-
-	[System.Serializable]
-	public class SaveArmy{
-		public string Name = "";
-		public int ArmysOffset = 0;
-		public string personality = "";
-		public string plans = "";
-		public int color = 0;
-		public int faction = 0;
-		public int EconomyMass = 0;
-		public int EconomyEnergy = 0;
-		public string[] Alliances = new string[0];
-		public string UnitsOrders = "";
-		public string UnitsPlatoon = "";
-		public List<UnitGroup> Units = new List<UnitGroup>();
-		public int PlatoonBuilders_NextBuilderId = 0;
-		public List<string> PlatoonBuilders_Builders = new List<string>();
-
-		/*public SaveArmy(){
-			Name = "";
-			ArmysOffset = 0;
-			personality = "";
-			plans = "";
-			color = 0;
-			faction = 0;
-			EconomyMass = 0;
-			EconomyEnergy = 0;
-			Alliances = "";
-			UnitsOrders = "";
-			UnitsPlatoon = "";
-			Units = new List<UnitGroup>();
-			PlatoonBuilders_NextBuilderId = 0;
-			PlatoonBuilders_Builders = new List<string>();
-		}*/
-	}
-
-	[System.Serializable]
-	public class UnitGroup{
-		public string Name = "";
-		public string orders = "";
-		public string platoon = "";
-		public List<Unit> Units = new List<Unit>();
-	}
-
-	[System.Serializable]
-	public class Unit{
-		public string Name = "";
-		public string type = "";
-		public string orders = "";
-		public string platoon = "";
-		public Vector3 Position;
-		public Vector3 Orientation;
-	}
-
-	[System.Serializable]
-	public class Scenario{
-		public		string			MapName;
-		public		string			MapDesc;
-		public		string			Preview;
-		public		string			Type;
-		public		float			Version;
-		public		bool			AdaptiveMap;
-		public		int				Players;
-		public		Vector2			Size;
-		public		float			MaxHeight;
-		public		float			NoRushRadius;
-		public		Vector2[]		NoRushARMY;
-		public		string			SaveLua;
-		public		string			ScriptLua;
-		public		string			Scmap;
-		public		bool			DefaultArea;
-		public		Rect			Area;
-		public		Rect[]			Areas;
-		public		List<customprop> CustomProps;
-	}
 	
 	public	enum armys 
 	{
@@ -216,12 +78,6 @@ public class MapLuaParser : MonoBehaviour {
 	}
 	#endregion
 
-	[System.Serializable]
-	public class customprop
-	{
-		public string key;
-		public string value;
-	}
 
 	void Awake(){
 		ICSharpCode.SharpZipLib.Zip.ZipConstants.DefaultCodePage = 0;
@@ -307,8 +163,17 @@ public class MapLuaParser : MonoBehaviour {
 			// Begin load
 			InfoPopup.Show (true, "Loading map...");
 			yield return null;
+
+			ScenarioLuaFile = new ScenarioLua();
+			SaveLuaFile = new SaveLua();
+			AsyncOperation ResUn = Resources.UnloadUnusedAssets();
+			while (!ResUn.isDone)
+			{
+				yield return null;
+			}
+
 			// Scenario LUA
-			if(ScenarioLuaFile.Load(FolderName, ScenarioFileName)){
+			if (ScenarioLuaFile.Load(FolderName, ScenarioFileName)){
 				//Map Loaded
 			}
 			else
@@ -377,238 +242,29 @@ public class MapLuaParser : MonoBehaviour {
 	#region Load Save Lua
 	void SetSaveLua()
 	{
-		HeightmapControler.TerrainMaterial.SetInt("_Area", 0); // TODO
-		MapElements.SetActive(false);
-		HeightmapControler.TerrainMaterial.SetFloat("_AreaX", 0);
-		HeightmapControler.TerrainMaterial.SetFloat("_AreaY", 0);
-		HeightmapControler.TerrainMaterial.SetFloat("_AreaWidht", GetMapSizeX() / 10f);
-		HeightmapControler.TerrainMaterial.SetFloat("_AreaHeight", GetMapSizeY() / 10f);
+		UpdateArea();
+
+		//MapElements.SetActive(false);
 
 		MapCenterPoint = Vector3.zero;
 		MapCenterPoint.x = (GetMapSizeX() / 20f);
 		MapCenterPoint.z = -1 * (GetMapSizeY() / 20f);
-
 
 		//SortArmys();
 	}
-
-
-	private void LoadSaveLua(){
-		System.Text.Encoding encodeType = System.Text.Encoding.ASCII;
-		string loadedFileSave = "";
-		string MapPath = EnvPaths.GetMapsPath();
-
-		loadedFileSave = System.IO.File.ReadAllText(ScenarioLuaFile.Data.save.Replace("/maps/", MapPath), encodeType);
-
-		string loadedFileFunctions = LuaHelper.GetStructureText ("lua_variable_functions.lua");
-		string loadedFileEndFunctions = LuaHelper.GetStructureText ("lua_variable_end_functions.lua");
-		
-		loadedFileSave = loadedFileFunctions + loadedFileSave + loadedFileEndFunctions;
-		
-		save = new Lua();
-		save.LoadCLRPackage();
-		
-		try {
-			save.DoString(loadedFileSave);
-		}
-		catch (NLua.Exceptions.LuaException e) {
-			Debug.LogError(ParsingStructureData.FormatException(e), gameObject);
-			
-			HelperGui.MapLoaded = false;
-			return;
-		}
-
-		// LoadArea
-
-		HeightmapControler.TerrainMaterial.SetInt("_Area", 0); // TODO
-		MapElements.SetActive(false);
-		HeightmapControler.TerrainMaterial.SetFloat("_AreaX", 0);
-		HeightmapControler.TerrainMaterial.SetFloat("_AreaY", 0);
-		HeightmapControler.TerrainMaterial.SetFloat("_AreaWidht", GetMapSizeX() / 10f);
-		HeightmapControler.TerrainMaterial.SetFloat("_AreaHeight", GetMapSizeY() / 10f);
-
-		MapCenterPoint = Vector3.zero;
-		MapCenterPoint.x = (GetMapSizeX() / 20f);
-		MapCenterPoint.z = -1 * (GetMapSizeY() / 20f);
-		
-		// LoadMarkers
-		#region Load Markers
-		//int MarkersCount = save.GetTable("Scenario.MasterChain._MASTERCHAIN_.Markers").Values.Count;
-
-		Mexes = new List<Mex>();
-		Hydros = new List<Hydro>();
-		ARMY_ = new List<Army>();
-		SiMarkers = new List<Marker>();
-
-
-		//LuaTable MasterChain = save.GetTable("Scenario.MasterChain._MASTERCHAIN_.Markers") as LuaTable;
-		//string[] KeysArray = new string[MarkersCount];
-		//MasterChain.Keys.CopyTo(KeysArray, 0);
-
-		LuaHelper.LHTable MarkersTable = new LuaHelper.LHTable(save.GetTable("Scenario.MasterChain._MASTERCHAIN_.Markers"));
-
-		for(int m = 0; m < MarkersTable.Count; m++){
-			//LuaTable MarkerTab = MasterChain[KeysArray[m]] as LuaTable;
-			LuaHelper.LHTable MarkerTable = new LuaHelper.LHTable(MarkersTable, MarkersTable.Keys[m]);
-
-			Vector3 MarkerPosParsed = Vector3.zero;
-			MarkerTable.GetVector3Value("position", out MarkerPosParsed);
-
-			Vector3 MarkerRotParsed = Vector3.zero;
-			MarkerTable.GetVector3Value("orientation", out MarkerRotParsed);
-
-			string TypeOfMarker = MarkerTable.GetStringValue("type");
-
-			if(TypeOfMarker == "Mass"){
-				Mex newMex = new Mex();
-				newMex.name = MarkersTable.Keys[m];
-				
-				newMex.position = ScmapEditor.MapPosInWorld(MarkerPosParsed);
-				newMex.orientation = MarkerRotParsed;
-				
-				LuaHelper.ReadSpawnWithArmy(out newMex.SpawnWithArmy, MarkerTable);
-
-				Mexes.Add(newMex);
-			}
-			else if(TypeOfMarker == "Hydrocarbon"){
-				Hydro NewHydro = new Hydro();
-				NewHydro.name = MarkersTable.Keys[m];
-
-				NewHydro.size = MarkerTable.GetFloatValue("size");
-				NewHydro.amount = MarkerTable.GetFloatValue("amount");
-				NewHydro.resource = MarkerTable.GetBoolValue("resource");
-				NewHydro.prop = MarkerTable.GetStringValue("prop");
-
-				NewHydro.color = MarkerTable.GetColorValue("color");
-
-				NewHydro.position = ScmapEditor.MapPosInWorld(MarkerPosParsed);
-				NewHydro.orientation = MarkerRotParsed;
-
-				LuaHelper.ReadSpawnWithArmy(out NewHydro.SpawnWithArmy, MarkerTable);
-
-				Hydros.Add(NewHydro);
-			}
-			else if(MarkersTable.Keys[m].Contains("ARMY_")){
-				Army NewArmy = new Army();
-				NewArmy.name = MarkersTable.Keys[m];
-
-				NewArmy.Id = int.Parse(MarkersTable.Keys[m].Replace("ARMY_", ""));
-
-				NewArmy.position = ScmapEditor.MapPosInWorld(MarkerPosParsed);
-				NewArmy.orientation = MarkerRotParsed;
-
-				ARMY_.Add(NewArmy);
-			}
-			else{
-				Marker NewMarker = new Marker();
-				NewMarker.name = MarkersTable.Keys[m];
-				NewMarker.position = ScmapEditor.MapPosInWorld(MarkerPosParsed);
-				NewMarker.orientation = MarkerRotParsed;
-
-				NewMarker.type = TypeOfMarker;
-				NewMarker.prop = MarkerTable.GetStringValue("prop");
-
-				// HINT
-				NewMarker.hintValue = MarkerTable.GetStringValue("hint");
-				NewMarker.hint = MarkerTable.GetBoolValue("hint");
-
-				// GRAPH
-				NewMarker.graph = MarkerTable.GetStringValue("graph");
-
-				// adjacentTo
-				NewMarker.adjacentTo = MarkerTable.GetStringValue("adjacentTo");
-
-
-				// Color
-				if (!string.IsNullOrEmpty(MarkerTable.GetStringValue("color"))) {
-					//Color MyColor = Color.white;
-					//ColorUtility.TryParseHtmlString (MarkerTable.GetStringValue("color"), out MyColor);
-					NewMarker.Kolor = MarkerTable.GetColorValue("color");
-
-				} else
-					NewMarker.Kolor = Color.white;
-				
-
-				LuaHelper.ReadSpawnWithArmy(out NewMarker.SpawnWithArmy, MarkerTable);
-
-				SiMarkers.Add(NewMarker);
-			}
-		}
-
-		SortArmys();
-
-		MexTotalCount = Mexes.Count;
-		HydrosTotalCount = Hydros.Count;
-		SiTotalCount = SiMarkers.Count;
-		#endregion
-
-		#region Load Army Save
-		SaveArmys = new List<SaveArmy> ();
-		LuaHelper.LHTable ArmiesTable = new LuaHelper.LHTable(save.GetTable("Scenario.Armies"));
-
-		for(int m = 0; m < ArmiesTable.Count; m++){
-			LuaHelper.LHTable ArmyTable = new LuaHelper.LHTable(ArmiesTable, ArmiesTable.Keys[m]);
-			SaveArmy NewArmy = new SaveArmy();
-			NewArmy.Name = ArmiesTable.Keys[m];
-
-			//AddSaveArmyMarker(NewArmy.Name);
-
-			NewArmy.personality = ArmyTable.GetStringValue("personality");
-			NewArmy.plans = ArmyTable.GetStringValue("plans");
-			NewArmy.color = ArmyTable.GetIntValue("color");
-			NewArmy.faction = ArmyTable.GetIntValue("faction");
-
-			LuaHelper.LHTable EconomyTable = new LuaHelper.LHTable(ArmyTable, "Economy");
-			NewArmy.EconomyMass = EconomyTable.GetIntValue("mass");
-			NewArmy.EconomyEnergy = EconomyTable.GetIntValue("energy");
-
-			NewArmy.Alliances = ArmyTable.GetStringArrayValue("Alliances");
-
-
-			// Get units
-
-			NewArmy.UnitsOrders = "";
-			NewArmy.UnitsPlatoon = "";
-			NewArmy.Units = new List<UnitGroup>();
-			LuaHelper.LHTable ArmyUnitsTable;
-			ArmyTable.GetLuaArmyGroup("Units", out NewArmy.UnitsOrders, out NewArmy.UnitsPlatoon, out ArmyUnitsTable);
-
-		
-			for(int i = 0; i < ArmyUnitsTable.Count; i++){
-				UnitGroup NewUnitGroup = new UnitGroup();
-				NewUnitGroup.Name = ArmyUnitsTable.Keys[i];
-
-				LuaHelper.LHTable UnitsGroupTable;
-				ArmyUnitsTable.GetLuaArmyGroup(ArmyUnitsTable.Keys[i], out NewUnitGroup.orders, out NewUnitGroup.platoon, out UnitsGroupTable);
-
-				for(int u = 0; u < UnitsGroupTable.Count; u++){
-					Unit NewUnit = new Unit();
-					LuaHelper.LHTable UnitTable = new LuaHelper.LHTable(UnitsGroupTable, UnitsGroupTable.Keys[u]);
-
-					NewUnit.Name = UnitsGroupTable.Keys[u];
-					NewUnit.type = UnitTable.GetStringValue("type");
-					NewUnit.orders = UnitTable.GetStringValue("orders");
-					NewUnit.platoon = UnitTable.GetStringValue("platoon");
-					UnitTable.GetVector3Value("Position", out NewUnit.Position);
-					UnitTable.GetVector3Value("Orientation", out NewUnit.Orientation);
-
-					NewUnitGroup.Units.Add(NewUnit);
-				}
-
-				NewArmy.Units.Add(NewUnitGroup);
-			}
-				
-			SaveArmys.Add(NewArmy);
-		}
-
-		#endregion
-	}
-
 	#endregion
 
 	#region SaveMap
 
-	public IEnumerator SaveMap(){
+	public void SaveMap()
+	{
+		if (string.IsNullOrEmpty(FolderName) || string.IsNullOrEmpty(ScenarioFileName))
+			return;
+
+		StartCoroutine(SaveMapProcess());
+	}
+
+	public IEnumerator SaveMapProcess(){
 
 		InfoPopup.Show(true, "Saving map...");
 		yield return null;
@@ -620,31 +276,25 @@ public class MapLuaParser : MonoBehaviour {
 		System.IO.Directory.CreateDirectory(BackupPath);
 
 
-		// New Lua Parser
+		// Scenario.lua
 		string ScenarioFilePath = EnvPaths.GetMapsPath() + FolderName + "/" + ScenarioFileName + ".lua";
 		System.IO.File.Move(ScenarioFilePath, BackupPath + "/" + ScenarioFileName + ".lua");
 		ScenarioLuaFile.Save(ScenarioFilePath);
+		yield return null;
 
 
-
-
+		//Save.lua
 		string SaveFilePath = ScenarioLuaFile.Data.save.Replace("/maps/", MapPath);
 		string FileName = ScenarioLuaFile.Data.save;
 		string[] Names = FileName.Split(("/").ToCharArray());
+
 		System.IO.File.Move(SaveFilePath, BackupPath + "/" + Names[Names.Length - 1]);
-
 		SaveLuaFile.Save(SaveFilePath);
-
-
-
 		yield return null;
+
 		//SaveScenarioLua();
-		yield return null;
 		//SaveSaveLua();
-		yield return null;
-
 		//SaveScriptLua(ScriptId);
-		yield return null;
 
 		SaveScmap();
 		yield return null;
@@ -660,9 +310,8 @@ public class MapLuaParser : MonoBehaviour {
 		string FileName = ScenarioLuaFile.Data.map;
 		char[] NameSeparator = ("/").ToCharArray();
 		string[] Names = FileName.Split(NameSeparator);
-		Debug.Log(BackupPath + "/" + Names[Names.Length - 1]);
+		//Debug.Log(BackupPath + "/" + Names[Names.Length - 1]);
 		System.IO.File.Move(MapFilePath, BackupPath + "/" + Names[Names.Length - 1]);
-
 
 		HeightmapControler.SaveScmapFile();
 	}
@@ -747,242 +396,6 @@ public class MapLuaParser : MonoBehaviour {
 	}
 	*/
 
-	public void SaveSaveLua(){
-		System.Text.Encoding encodeType = System.Text.Encoding.ASCII;
-		string loc = StructurePath + "save_structure.lua";
-		string loadedFile = System.IO.File.ReadAllText(loc, encodeType);
-
-		string SaveData = loadedFile;
-
-
-		//char[] Separator = "\n".ToCharArray();
-		//string[] AllLines = loadedFile.Split(Separator);
-
-		//Mex
-		string MexStructure = System.IO.File.ReadAllText(StructurePath + "save_mex.lua", encodeType);
-
-		//Hydro
-		string HydroStructure = System.IO.File.ReadAllText(StructurePath + "save_hydro.lua", encodeType);
-
-		//Army Marker
-		string ArmyMarkerStructure = System.IO.File.ReadAllText(StructurePath + "save_armymarker.lua", encodeType);
-
-		//Si
-		string SiStructure = System.IO.File.ReadAllText(StructurePath + "save_marker.lua", encodeType);
-
-		//string ArmyStructure = System.IO.File.ReadAllText(StructurePath + "save_army.lua", encodeType);
-
-		string MarkersData = "";
-
-
-		/*
-		for(int a = 0; a < ARMY_.Count; a++){
-			if (ARMY_ [a].Hidden)
-				continue;
-			string NewArmy = ArmyMarkerStructure;
-
-			string ArmyName = "                ['" + ARMY_[a].name + "'] = {";
-			NewArmy = NewArmy.Replace("['ARMY_']", ArmyName);
-
-			Vector3 MexPos = ScmapEditor.MapWorldPosInSave( GetPosOfMarkerId(0, a) );
-			string Position = ParsingStructureData.Save_Position.Replace("#", Vector3ToLua(MexPos));
-			NewArmy = NewArmy.Replace("['position']", Position);
-
-			Position = ParsingStructureData.Save_Rotation.Replace("#", Vector3ToLua(ARMY_[a].orientation));
-			NewArmy = NewArmy.Replace("['orientation']", Position);
-
-			MarkersData += NewArmy + "\n";
-		}
-
-		for(int h = 0; h < Hydros.Count; h++){
-			string NewHydro = HydroStructure;
-
-			//string HydroName = "                ['"+ Hydros[h].name +"'] = {";
-			NewHydro = NewHydro.Replace("[name]", Hydros[h].name);
-
-			string StringValue = ParsingStructureData.LuaMarkerProperty("size", ParsingStructureData.ToLuaFloatVaue(ParsingStructureData.ToFloatString(Hydros[h].size)));
-			NewHydro = NewHydro.Replace("[size]", StringValue);
-
-			StringValue = ParsingStructureData.LuaMarkerProperty("amount", ParsingStructureData.ToLuaFloatVaue(ParsingStructureData.ToFloatString(Hydros[h].amount)));
-			NewHydro = NewHydro.Replace("[amount]", StringValue);
-
-			StringValue = ParsingStructureData.LuaMarkerProperty("prop", ParsingStructureData.ToLuaStringVaue(Hydros[h].prop));
-			NewHydro = NewHydro.Replace("[prop]", StringValue);
-
-			StringValue = ParsingStructureData.LuaMarkerProperty("color", ParsingStructureData.ToLuaStringVaue( ParsingStructureData.ToColorString(Hydros[h].color)));
-			NewHydro = NewHydro.Replace("[color]", StringValue);
-
-
-			// Spawn With Army
-			string SpawnWithArmy = ParsingStructureData.SpawnWithArmy.Replace("#", Hydros[h].SpawnWithArmy.ToString());
-			if( Hydros[h].SpawnWithArmy == armys.none) NewHydro = NewHydro.Replace("[SpawnWithArmy]\r\n", "");
-			else NewHydro = NewHydro.Replace("[SpawnWithArmy]", SpawnWithArmy);
-
-			// Position
-			Vector3 MexPos = ScmapEditor.MapWorldPosInSave( GetPosOfMarkerId(2, h) );
-			string Position = ParsingStructureData.Save_Position.Replace("#", Vector3ToLua(MexPos));
-			NewHydro = NewHydro.Replace("[position]", Position);
-
-			// Orientation
-			Position = ParsingStructureData.Save_Rotation.Replace("#", Vector3ToLua(Hydros[h].orientation));
-			NewHydro = NewHydro.Replace("[orientation]", Position);
-
-			MarkersData += NewHydro + "\n";
-		}
-
-		for(int m = 0; m < Mexes.Count; m++){
-			string NewMex = MexStructure;
-
-			string MexName = "                ['"+ Mexes[m].name +"'] = {";
-			NewMex = NewMex.Replace("['MassName']", MexName);
-
-			string SpawnWithArmy = ParsingStructureData.SpawnWithArmy.Replace("#", Mexes[m].SpawnWithArmy.ToString());
-			if( Mexes[m].SpawnWithArmy == armys.none) NewMex = NewMex.Replace("['SpawnWithArmy']\r\n", "");
-			else NewMex = NewMex.Replace("['SpawnWithArmy']", SpawnWithArmy);
-
-			Vector3 MexPos = ScmapEditor.MapWorldPosInSave( GetPosOfMarkerId(1, m) );
-			string Position = ParsingStructureData.Save_Position.Replace("#", Vector3ToLua(MexPos));
-			NewMex = NewMex.Replace("['position']", Position);
-
-			Position = ParsingStructureData.Save_Rotation.Replace("#", Vector3ToLua(Mexes[m].orientation));
-			NewMex = NewMex.Replace("['orientation']", Position);
-
-			MarkersData += NewMex + "\n";
-		}
-
-		for(int s = 0; s < SiMarkers.Count; s++){
-			string NewSi = SiStructure;
-
-			string SiName = "                ['"+ SiMarkers[s].name +"'] = {";
-			NewSi = NewSi.Replace("['Marker']", SiName);
-
-			string SiType = ParsingStructureData.LuaMarkerProperty ("type", ParsingStructureData.ToLuaStringVaue (SiMarkers [s].type));
-			NewSi = NewSi.Replace("['type']", SiType);
-
-			string SiProp = ParsingStructureData.LuaMarkerProperty ("prop", ParsingStructureData.ToLuaStringVaue (SiMarkers [s].prop));
-			NewSi = NewSi.Replace("['prop']", SiProp);
-
-			// Additional values
-			// * hint
-			if (string.IsNullOrEmpty (SiMarkers [s].hintValue)) {
-				NewSi = NewSi.Replace("['hint']\r\n", "");
-			} else {
-				SiProp = ParsingStructureData.LuaMarkerProperty ("hint", ParsingStructureData.ToLuaBooleanVaue (SiMarkers [s].hint));
-				NewSi = NewSi.Replace("['hint']", SiProp);
-			}
-
-			// * Graph
-			if (string.IsNullOrEmpty (SiMarkers [s].graph)) {
-				NewSi = NewSi.Replace("['graph']\r\n", "");
-			} else {
-				SiProp = ParsingStructureData.LuaMarkerProperty ("graph", ParsingStructureData.ToLuaStringVaue (SiMarkers [s].graph));
-				NewSi = NewSi.Replace("['graph']", SiProp);
-			}
-
-			// * AdjacentTo
-			if (string.IsNullOrEmpty (SiMarkers [s].adjacentTo)) {
-				NewSi = NewSi.Replace("['adjacentTo']\r\n", "");
-			} else {
-				SiProp = ParsingStructureData.LuaMarkerProperty ("adjacentTo", ParsingStructureData.ToLuaStringVaue (SiMarkers [s].adjacentTo));
-				NewSi = NewSi.Replace("['adjacentTo']", SiProp);
-			}
-
-			// * Color
-			SiProp = ParsingStructureData.LuaMarkerProperty ("color", ParsingStructureData.ToLuaStringVaue (ColorUtility.ToHtmlStringRGBA(SiMarkers[s].Kolor).ToLower()));
-			NewSi = NewSi.Replace("['color']", SiProp);
-
-			Vector3 MexPos = ScmapEditor.MapWorldPosInSave( GetPosOfMarkerId(3, s) );
-			string Position = ParsingStructureData.Save_Position.Replace("#", Vector3ToLua(MexPos));
-			NewSi = NewSi.Replace("['position']", Position);
-
-			Position = ParsingStructureData.Save_Rotation.Replace("#", Vector3ToLua(SiMarkers [s].orientation));
-			NewSi = NewSi.Replace("['orientation']", Position);
-
-			MarkersData += NewSi + "\n";
-
-		}
-		*/
-		SaveData = SaveData.Replace ("[MARKERS]", MarkersData);
-		SaveData = SaveData.Replace ("[CHAINS]", "");
-
-		//string AreaData = "";
-		//AreaData += "            ['rectangle'] = RECTANGLE( " + ScenarioData.Area.x.ToString() +", "+ ScenarioData.Area.y.ToString() +", "+ ScenarioData.Area.width.ToString() +", "+ ScenarioData.Area.height.ToString() +"),";
-		//SaveData = SaveData.Replace ("[AREA]", AreaData);
-
-
-		string ArmyUnitsStructure = LuaHelper.GetStructureText ("save_army.lua");
-		string ArmyUnitGruopStructure = LuaHelper.GetStructureText ("save_armyunits.lua");
-		string ArmyUnitStructure = LuaHelper.GetStructureText ("save_armyunit.lua");
-
-		string SaveArmysData = "";
-		for(int a = 0; a < SaveArmys.Count; a++){
-			string NewArmySave = ArmyUnitsStructure;
-
-			NewArmySave = NewArmySave.Replace ("[name]", SaveArmys [a].Name);
-
-			NewArmySave = NewArmySave.Replace ("[Alliances]", "");
-
-			NewArmySave = NewArmySave.Replace ("[personality]", SaveArmys [a].personality);
-			NewArmySave = NewArmySave.Replace ("[plans]", SaveArmys [a].plans);
-			NewArmySave = NewArmySave.Replace ("[color]", SaveArmys [a].color.ToString());
-			NewArmySave = NewArmySave.Replace ("[faction]", SaveArmys [a].faction.ToString());
-
-			NewArmySave = NewArmySave.Replace ("[mass]", SaveArmys [a].EconomyMass.ToString());
-			NewArmySave = NewArmySave.Replace ("[energy]", SaveArmys [a].EconomyEnergy.ToString());
-
-			NewArmySave = NewArmySave.Replace ("[armyorders]", SaveArmys [a].UnitsOrders);
-			NewArmySave = NewArmySave.Replace ("[armyplatoon]", SaveArmys [a].UnitsPlatoon);
-			string AllUnitGroups = "";
-
-			for (int i = 0; i < SaveArmys [a].Units.Count; i++) {
-				string NewUnitsGroup = ArmyUnitGruopStructure;
-
-				NewUnitsGroup = NewUnitsGroup.Replace ("[name]", SaveArmys [a].Units [i].Name);
-				NewUnitsGroup = NewUnitsGroup.Replace ("[orders]", SaveArmys [a].Units [i].orders);
-				NewUnitsGroup = NewUnitsGroup.Replace ("[platoon]", SaveArmys [a].Units [i].platoon);
-
-				string UnitsArray = "";
-				for (int u = 0; u < SaveArmys [a].Units [i].Units.Count; u++) {
-					string NewUnit = ArmyUnitStructure;
-
-					NewUnit = NewUnit.Replace ("[name]", SaveArmys [a].Units [i].Units [u].Name);
-					NewUnit = NewUnit.Replace ("[type]", SaveArmys [a].Units [i].Units [u].type);
-					NewUnit = NewUnit.Replace ("[orders]", SaveArmys [a].Units [i].Units [u].orders);
-					NewUnit = NewUnit.Replace ("[platoon]", SaveArmys [a].Units [i].Units [u].platoon);
-
-					NewUnit = NewUnit.Replace ("[position]", ParsingStructureData.ToLuaSimpleVector3Value( SaveArmys [a].Units [i].Units [u].Position));
-					NewUnit = NewUnit.Replace ("[rotation]", ParsingStructureData.ToLuaSimpleVector3Value( SaveArmys [a].Units [i].Units [u].Orientation));
-
-					//if (u > 0)
-					//	UnitsArray += "\n";
-					UnitsArray += "\n" + NewUnit;
-				}
-				NewUnitsGroup = NewUnitsGroup.Replace ("[UnitsArray]", UnitsArray);
-
-				if (i > 0)
-					AllUnitGroups += "\n";
-				AllUnitGroups += NewUnitsGroup;
-			}
-			NewArmySave = NewArmySave.Replace ("[armyunits]", AllUnitGroups);
-			if (a > 0)
-				SaveArmysData += "\n";
-			SaveArmysData += NewArmySave;
-		}
-		SaveData = SaveData.Replace ("[ARMYS]", SaveArmysData);
-
-
-
-		string MapPath = EnvPaths.GetMapsPath();
-		string SaveFilePath = ScenarioLuaFile.Data.save.Replace("/maps/", MapPath);
-
-		string FileName = ScenarioLuaFile.Data.save;
-		char[] NameSeparator = ("/").ToCharArray();
-		string[] Names = FileName.Split(NameSeparator);
-		System.IO.File.Move(SaveFilePath, BackupPath + "/" + Names[Names.Length - 1]);
-
-		SaveData = SaveData.Replace ("\r", "");
-		System.IO.File.WriteAllText(SaveFilePath, SaveData);
-	}
 
 	public void SaveScriptLua(int ID = 0){
 		string SaveData = "";
@@ -1011,26 +424,49 @@ public class MapLuaParser : MonoBehaviour {
 
 	#endregion
 
-	public static string Vector3ToLua(Vector3 vec){
-		return vec.x.ToString() +", "+ vec.y.ToString() +", "+ vec.z.ToString();
-	}
 
 	#region Map functions
 	public void SortArmys(){
-		List<Army> NewArmys = new List<Army>();
-		for(int i = 0; i < ARMY_.Count; i++){
-			for(int a = 0; a < ARMY_.Count; a++){
-				if(ARMY_[a].name == "ARMY_" + (i + 1).ToString()){
-					NewArmys.Add(ARMY_[a]);
-					break;
-				}
-			}
-		}
-
-		ARMY_ = NewArmys;
+	
 	}
 
 	public void UpdateArea(){
+		if(SaveLuaFile.Data.areas.Length > 0)
+		{
+			//int bigestAreaId = 0;
+			Rect bigestAreaRect = new Rect(SaveLuaFile.Data.areas[0].rectangle);
+			for(int i = 1; i < SaveLuaFile.Data.areas.Length; i++)
+			{
+				if (bigestAreaRect.x > SaveLuaFile.Data.areas[i].rectangle.x)
+					bigestAreaRect.x = SaveLuaFile.Data.areas[i].rectangle.x;
+
+				if (bigestAreaRect.y > SaveLuaFile.Data.areas[i].rectangle.y)
+					bigestAreaRect.y = SaveLuaFile.Data.areas[i].rectangle.y;
+
+				if (bigestAreaRect.width < SaveLuaFile.Data.areas[i].rectangle.width)
+					bigestAreaRect.width = SaveLuaFile.Data.areas[i].rectangle.width;
+
+				if (bigestAreaRect.height < SaveLuaFile.Data.areas[i].rectangle.height)
+					bigestAreaRect.height = SaveLuaFile.Data.areas[i].rectangle.height;
+			}
+
+			if (bigestAreaRect.width > 0 && bigestAreaRect.height > 0)
+			{
+				HeightmapControler.TerrainMaterial.SetInt("_Area", 1);
+				HeightmapControler.TerrainMaterial.SetFloat("_AreaX", bigestAreaRect.x / 10f);
+				HeightmapControler.TerrainMaterial.SetFloat("_AreaY", bigestAreaRect.y / 10f);
+				HeightmapControler.TerrainMaterial.SetFloat("_AreaWidht", bigestAreaRect.width / 10f);
+				HeightmapControler.TerrainMaterial.SetFloat("_AreaHeight", bigestAreaRect.height / 10f);
+			}
+			else
+			{
+				HeightmapControler.TerrainMaterial.SetInt("_Area", 0);
+			}
+
+		}
+		else
+			HeightmapControler.TerrainMaterial.SetInt("_Area", 0);
+
 		/*
 		if(ScenarioData.Area.width == 0 && ScenarioData.Area.height == 0){
 			ScenarioData.DefaultArea = false;
@@ -1045,22 +481,6 @@ public class MapLuaParser : MonoBehaviour {
 		*/
 	}
 	#endregion
-
-
-	public void AddSaveArmy(string name){
-		SaveArmy NewArmy = new SaveArmy ();
-		NewArmy.Name = name;
-		SaveArmys.Add (NewArmy);
-	}
-
-	public int GetHigestArmy(){
-		int ToReturn = 0;
-		for (int i = 0; i < ARMY_.Count; i++) {
-			if (ARMY_ [i].Id > ToReturn)
-				ToReturn = ARMY_ [i].Id;
-		}
-		return ToReturn;
-	}
 
 
 

@@ -25,12 +25,7 @@ public class MarkersList : MonoBehaviour
 	int GeneratedCount = -1;
 	void OnDisable()
 	{
-		foreach (RectTransform child in Pivot)
-		{
-			AllFields = new List<ListObject>();
-			Destroy(child.gameObject);
-		}
-		Generated = false;
+		Clean();
 	}
 
 	public void UnselectAll()
@@ -75,13 +70,19 @@ public class MarkersList : MonoBehaviour
 			return;
 
 		}
+		Clean();
+		GenerateList();
+	}
+
+	void Clean()
+	{
+		AllFields = new List<ListObject>();
 
 		foreach (RectTransform child in Pivot)
 		{
-			AllFields = new List<ListObject>();
 			Destroy(child.gameObject);
 		}
-		GenerateList();
+		Generated = false;
 	}
 
 	void GenerateList()
@@ -110,9 +111,9 @@ public class MarkersList : MonoBehaviour
 			NewListObject.InstanceId = i;
 			NewListObject.ListId = 0;
 			NewListObject.ConnectedGameObject = CurrentMarker.MarkerObj.gameObject;
+			NewListObject.ClickAction = Selection.SelectionManager.Current.SelectObject;
 
-
-			if(Selection.SelectionManager.Current.Selection.Ids.Contains(i))
+			if (Selection.SelectionManager.Current.Selection.Ids.Contains(i))
 				NewListObject.SetSelection(1);
 			else
 			{

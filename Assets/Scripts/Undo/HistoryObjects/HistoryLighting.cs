@@ -58,7 +58,9 @@ public class HistoryLighting : HistoryObject {
 
 
 	public override void DoUndo(){
-		HistoryLighting.GenerateRedo (Undo.Current.Prefabs.LightingChange).Register();
+		if (!RedoGenerated)
+			HistoryLighting.GenerateRedo (Undo.Current.Prefabs.LightingChange).Register();
+		RedoGenerated = true;
 		DoRedo ();
 	}
 

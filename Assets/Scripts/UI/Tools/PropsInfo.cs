@@ -84,7 +84,7 @@ namespace EditMap
 						Blueprint = "/" + Blueprint;
 
 					Props[i].BlueprintPath = Blueprint;
-					Props[i].Position = ScmapEditor.MapWorldPosInSave(PropsInstances[i].Tr.position);
+					Props[i].Position = ScmapEditor.WorldPosToScmap(PropsInstances[i].Tr.position);
 					Props[i].RotationX = Vector3.zero;
 					Props[i].RotationY = Vector3.zero;
 					Props[i].RotationZ = Vector3.zero;
@@ -137,7 +137,7 @@ namespace EditMap
 		}
 
 		#region Loading Assets
-		public void UnloadProps()
+		public static void UnloadProps()
 		{
 			if (AllPropsTypes != null && AllPropsTypes.Count > 0)
 				for (int i = 0; i < AllPropsTypes.Count; i++)
@@ -149,9 +149,12 @@ namespace EditMap
 				}
 
 			AllPropsTypes = new List<PropTypeGroup>();
-			TotalMassCount = 0;
-			TotalEnergyCount = 0;
-			TotalReclaimTime = 0;
+			if (Current)
+			{
+				Current.TotalMassCount = 0;
+				Current.TotalEnergyCount = 0;
+				Current.TotalReclaimTime = 0;
+			}
 		}
 
 		public IEnumerator LoadProps()
@@ -203,7 +206,7 @@ namespace EditMap
 				//TODO store props as instances
 				AllPropsTypes[GroupId].PropsInstances.Add(
 					AllPropsTypes[GroupId].PropObject.CreatePropGameObject(
-						ScmapEditor.MapPosInWorld(Props[i].Position),
+						ScmapEditor.ScmapPosToWorld(Props[i].Position),
 						MassMath.QuaternionFromRotationMatrix(Props[i].RotationX, Props[i].RotationY, Props[i].RotationZ), 
 						Props[i].Scale
 						)

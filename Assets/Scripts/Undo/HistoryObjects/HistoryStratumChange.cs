@@ -32,7 +32,9 @@ public class HistoryStratumChange : HistoryObject {
 
 
 	public override void DoUndo(){
-		HistoryStratumChange.GenerateRedo (Undo.Current.Prefabs.StratumChange).Register();
+		if (!RedoGenerated)
+			HistoryStratumChange.GenerateRedo (Undo.Current.Prefabs.StratumChange).Register();
+		RedoGenerated = true;
 		DoRedo ();
 	}
 

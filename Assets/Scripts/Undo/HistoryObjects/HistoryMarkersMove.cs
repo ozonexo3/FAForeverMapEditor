@@ -58,7 +58,9 @@ public class HistoryMarkersMove : HistoryObject {
 
 
 	public override void DoUndo(){
-		HistoryMarkersMove.GenerateRedo (Undo.Current.Prefabs.MarkersMove).Register();
+		if (!RedoGenerated)
+			HistoryMarkersMove.GenerateRedo (Undo.Current.Prefabs.MarkersMove).Register();
+		RedoGenerated = true;
 		DoRedo ();
 	}
 

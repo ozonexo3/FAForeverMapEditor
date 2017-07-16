@@ -21,15 +21,22 @@ public class HistoryStratumPaint : HistoryObject {
 
 	public override void DoUndo(){
 		//Undo.UndoData_newheights = Undo.Current.Scmap.Teren.terrainData.GetHeights(0, 0, Undo.Current.Scmap.Teren.terrainData.heightmapWidth, Undo.Current.Scmap.Teren.terrainData.heightmapHeight);
-		if (Id == 1) {
-			Undo.UndoData_StratumId = Id;
-			Undo.UndoData_Stratum = Undo.Current.Scmap.map.TexturemapTex2.GetPixels ();
-		} else {
-			Undo.UndoData_StratumId = Id;
-			Undo.UndoData_Stratum = Undo.Current.Scmap.map.TexturemapTex.GetPixels ();
-		}
+		if (!RedoGenerated)
+		{
+			if (Id == 1)
+			{
+				Undo.UndoData_StratumId = Id;
+				Undo.UndoData_Stratum = Undo.Current.Scmap.map.TexturemapTex2.GetPixels();
+			}
+			else
+			{
+				Undo.UndoData_StratumId = Id;
+				Undo.UndoData_Stratum = Undo.Current.Scmap.map.TexturemapTex.GetPixels();
+			}
 
-		HistoryStratumPaint.GenerateRedo (Undo.Current.Prefabs.StratumPaint).Register();
+			HistoryStratumPaint.GenerateRedo(Undo.Current.Prefabs.StratumPaint).Register();
+		}
+		RedoGenerated = true;
 		DoRedo ();
 	}
 

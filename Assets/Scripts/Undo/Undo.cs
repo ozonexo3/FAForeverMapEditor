@@ -136,7 +136,17 @@ public class Undo : MonoBehaviour {
 		HistoryMarkersChange.GenerateUndo (Prefabs.MarkersChange).Register();
 	}
 
+	public void RegisterChainsChange()
+	{
+		HistoryMarkersMove.GenerateUndo(Undo.Current.Prefabs.ChainChange).Register();
+	}
 
+	public static int LastChainId = 0;
+	public void RegisterChainMarkersChange(int ChainId = 0)
+	{
+		LastChainId = ChainId;
+		HistoryMarkersMove.GenerateUndo(Undo.Current.Prefabs.ChainMarkers).Register();
+	}
 
 	public static float[,] UndoData_newheights;
 	public void RegisterTerrainHeightmapChange(float[,] newheights){

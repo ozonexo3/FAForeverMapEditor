@@ -17,6 +17,7 @@ namespace EditMap
 
 		public GameObject[] Selection;
 		public GameObject[] Page;
+		public ChainsList ChainsInfo;
 
 		void OnEnable()
 		{

@@ -159,6 +159,8 @@ namespace Selection
 
 		void ClickOnScreen()
 		{
+			if (!AllowSelection)
+				return;
 			Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 			RaycastHit hit;
 			if (Physics.Raycast(ray, out hit, 1000, SelectionLayers))
@@ -208,11 +210,27 @@ namespace Selection
 			}
 		}
 
+		public void SelectObjectAdd(GameObject Obj)
+		{
+			int ObjectId = GetIdOfObject(Obj);
+			if (ObjectId >= 0)
+			{
+				if (!Selection.Ids.Contains(ObjectId))
+				{
+					Selection.Ids.Add(ObjectId);
+					FinishSelectionChange();
+				}
+			}
+		}
+
 		#endregion
 
 		#region Selection Box
 		void UpdateSelectionBox(bool On = true)
 		{
+			if (!AllowSelection)
+				On = false;
+
 			if (On)
 			{
 				Vector2 diference = Input.mousePosition - BeginMousePos;
@@ -243,6 +261,8 @@ namespace Selection
 
 		void AddSelectionBoxObjects()
 		{
+			if (!AllowSelection)
+				return;
 			//Undo.Current.RegisterSelectionChange();
 
 			Vector3 MouseEndPos = Input.mousePosition;

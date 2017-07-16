@@ -62,6 +62,8 @@ public class ArmysWindow : MonoBehaviour {
 	public void UpdateArmys(){
 		Clean();
 
+		//TODO
+		/*
 		for(int i = 0; i < Scenario.ARMY_.Count; i++){
 			GameObject NewBut = Instantiate(ArmyButtonPrefab) as GameObject;
 			NewBut.transform.SetParent(Pivot);
@@ -79,6 +81,7 @@ public class ArmysWindow : MonoBehaviour {
 
 			NewBut.GetComponent<RectTransform>().localPosition = IconPos;
 		}
+		*/
 
 		UpdateAutoteam();
 	}
@@ -124,9 +127,10 @@ public class ArmysWindow : MonoBehaviour {
 	}
 
 	public void ChangeSelectedToId(int newId){
-		List<MapLuaParser.Army> NewArmys = new List<MapLuaParser.Army>();
+		//List<MapLuaParser.Army> NewArmys = new List<MapLuaParser.Army>();
 
-
+		//TODO
+		/*
 		for(int i = 0; i < Scenario.ARMY_.Count; i++){ 
 			if(i == newId){
 				NewArmys.Add(Scenario.ARMY_[SelectedArmy]);
@@ -142,7 +146,7 @@ public class ArmysWindow : MonoBehaviour {
 
 		Scenario.ARMY_ = NewArmys;
 		//Scenario.SortArmys();
-
+		*/
 		UpdateArmys();
 	}
 }

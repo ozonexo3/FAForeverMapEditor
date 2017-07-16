@@ -19,7 +19,9 @@ public class HistoryMapInfo : HistoryObject {
 
 
 	public override void DoUndo(){
-		HistoryMapInfo.GenerateRedo (Undo.Current.Prefabs.MapInfo).Register();
+		if (!RedoGenerated)
+			HistoryMapInfo.GenerateRedo (Undo.Current.Prefabs.MapInfo).Register();
+		RedoGenerated = true;
 		DoRedo ();
 	}
 

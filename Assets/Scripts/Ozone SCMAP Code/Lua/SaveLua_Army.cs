@@ -19,6 +19,7 @@ namespace MapLua
 			public EconomyTab Economy;
 			public Aliance[] Alliances;
 			public UnitsGroup Units;
+			public string nextPlatoonBuilderId = "";
 			public PlatoonBuilder[] PlatoonBuilders;
 
 			const string KEY_PERSONALITY = "personality";
@@ -163,6 +164,7 @@ namespace MapLua
 				}
 			}
 
+			[System.Serializable]
 			public class PlatoonBuilder
 			{
 				public string Name;
@@ -173,14 +175,30 @@ namespace MapLua
 				public int BuildTimeOut;
 				public string PlatoonType;
 				public bool RequiresConstruction;
+				public PlatoonAIFunction PlatoonAiFunctions;
+				public BuildCondition[] BuildConditions;
+				public PlatoonAddFunction[] PlatoonAddFunctions;
+				public PlatoonData[] PlatoonDatas;
+
 
 				public const string KEY_NEXTPLATOONBUILDERID = "next_platoon_builder_id";
 				public const string KEY_BUILDERS = "Builders";
+				public const string KEY_PLATOONTEMPLATE = "PlatoonTemplate";
+				public const string KEY_PRIORITY = "Priority";
+				public const string KEY_INSTANCECOUNT = "InstanceCount";
+				public const string KEY_LOCATIONTYPE = "LocationType";
+				public const string KEY_BUILDTIMEOUT = "BuildTimeOut";
+				public const string KEY_PLATOONTYPE = "PlatoonType";
+				public const string KEY_REQUIRESCONSTRUCTION = "RequiresConstruction";
+				public const string KEY_PLATOONAIFUNCTION = "PlatoonAIFunction";
+				public const string KEY_BUILDCONDITIONS = "BuildConditions";
+				public const string KEY_PLATOONADDFUNCTION = "PlatoonAddFunctions";
+				public const string KEY_PLATOONDATA = "PlatoonData";
+
 
 
 				public class PlatoonAIFunction
 				{
-
 
 				}
 
@@ -193,8 +211,52 @@ namespace MapLua
 
 				}
 
-			}
+				public class PlatoonAddFunction
+				{
 
+				}
+
+				public class PlatoonData
+				{
+					int type;
+					string name;
+					bool value;
+					string stringValue;
+				}
+
+				public PlatoonBuilder()
+				{
+
+				}
+
+				public PlatoonBuilder(string name, LuaTable Table)
+				{
+					Name = name;
+					PlatoonTemplate = LuaParser.Read.StringFromTable(Table, KEY_PLATOONTEMPLATE);
+					Priority = LuaParser.Read.IntFromTable(Table, KEY_PRIORITY);
+					InstanceCount = LuaParser.Read.IntFromTable(Table, KEY_INSTANCECOUNT);
+					LocationType = LuaParser.Read.StringFromTable(Table, KEY_LOCATIONTYPE);
+					BuildTimeOut = LuaParser.Read.IntFromTable(Table, KEY_BUILDTIMEOUT);
+					PlatoonType = LuaParser.Read.StringFromTable(Table, KEY_PLATOONTYPE);
+					RequiresConstruction = LuaParser.Read.BoolFromTable(Table, KEY_PLATOONTYPE);
+				}
+
+				public void SavePlatoonBuilder(LuaParser.Creator LuaFile)
+				{
+					LuaFile.OpenTab(LuaParser.Write.PropertiveToLua(Name) + LuaParser.Write.OpenBracketValue);
+
+					LuaFile.AddLine(LuaParser.Write.StringToLua(KEY_PLATOONTEMPLATE, PlatoonTemplate));
+					LuaFile.AddLine(LuaParser.Write.IntToLua(KEY_PLATOONTEMPLATE, Priority));
+					LuaFile.AddLine(LuaParser.Write.IntToLua(KEY_PLATOONTEMPLATE, InstanceCount));
+					LuaFile.AddLine(LuaParser.Write.StringToLua(KEY_PLATOONTEMPLATE, LocationType));
+					LuaFile.AddLine(LuaParser.Write.IntToLua(KEY_PLATOONTEMPLATE, BuildTimeOut));
+					LuaFile.AddLine(LuaParser.Write.StringToLua(KEY_PLATOONTEMPLATE, PlatoonType));
+					LuaFile.AddLine(LuaParser.Write.BoolToLua(KEY_PLATOONTEMPLATE, RequiresConstruction));
+
+					//TODO
+					LuaFile.CloseTab(LuaParser.Write.EndBracketNext);
+				}
+			}
 
 
 			#endregion
@@ -233,6 +295,18 @@ namespace MapLua
 				Units = new UnitsGroup(KEY_UNITS, UnitsTable);
 
 				//TODO Read PlatoonBuilders
+				LuaTable PbTable = (LuaTable)Table.RawGet(KEY_PLATOONBUILDERS);
+				nextPlatoonBuilderId = LuaParser.Read.StringFromTable(PbTable, PlatoonBuilder.KEY_NEXTPLATOONBUILDERID);
+
+				LuaTable BuildersTable = (LuaTable)PbTable.RawGet(PlatoonBuilder.KEY_BUILDERS);
+				LuaTable[] PbTabs = LuaParser.Read.GetTableTables(BuildersTable);
+				string[] PbNames = LuaParser.Read.GetTableKeys(BuildersTable);
+				PlatoonBuilders = new PlatoonBuilder[PbNames.Length];
+				for (int c = 0; c < PbNames.Length; c++)
+				{
+					PlatoonBuilders[c] = new PlatoonBuilder(PbNames[c], PbTabs[c]);
+				}
+
 			}
 
 			public void SaveArmy(LuaParser.Creator LuaFile)
@@ -259,12 +333,18 @@ namespace MapLua
 				// Units
 				Units.SaveUnitsGroup(LuaFile);
 
+				//Platoon Builders
 				LuaFile.OpenTab(KEY_PLATOONBUILDERS + LuaParser.Write.OpenBracketValue);
+
 				LuaFile.AddLine(LuaParser.Write.StringToLua(PlatoonBuilder.KEY_NEXTPLATOONBUILDERID, "1"));
+
 				LuaFile.OpenTab(PlatoonBuilder.KEY_BUILDERS + LuaParser.Write.OpenBracketValue);
-				//TODO
-				// Write all PlatoonBuilders
+				for (int i = 0; i < PlatoonBuilders.Length; i++)
+				{
+					PlatoonBuilders[i].SavePlatoonBuilder(LuaFile);
+				}
 				LuaFile.CloseTab(LuaParser.Write.EndBracketNext);
+
 				LuaFile.CloseTab(LuaParser.Write.EndBracketNext);
 			}
 		}

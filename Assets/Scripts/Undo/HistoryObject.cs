@@ -26,6 +26,8 @@ namespace UndoHistory{
 			return Undo.Current.History [ListId];
 		}
 
+
+		public bool RedoGenerated = false;
 		/// <summary>
 		/// Generates Redo
 		/// </summary>

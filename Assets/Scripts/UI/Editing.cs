@@ -43,7 +43,7 @@ namespace EditMap
 			switch (func)
 			{
 				case "Save":
-					Scenario.StartCoroutine("SaveMap");
+					MapLuaParser.Current.SaveMap();
 					break;
 				case "Map":
 					State = EditStates.MapStat;
@@ -89,7 +89,15 @@ namespace EditMap
 		public void ChangeCategory(int id = 0)
 		{
 			if (id == CurrentCategory)
+			{
+				if(!Categorys[id].activeSelf)
+					Categorys[id].SetActive(true);
+				if (!CategorysSelected[id].activeSelf)
+					CategorysSelected[id].SetActive(true);
 				return;
+
+			}
+
 
 			foreach (GameObject obj in Categorys)
 			{

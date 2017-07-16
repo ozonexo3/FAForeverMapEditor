@@ -30,7 +30,7 @@ namespace Selection
 			if (!Active)
 				return;
 
-			if (Input.GetKeyDown(KeyCode.Delete))
+			if (AllowRemove && Input.GetKeyDown(KeyCode.Delete))
 			{
 				DestroySelectedObjects();
 			}
@@ -44,10 +44,27 @@ namespace Selection
 
 		}
 
+		public bool AllowSelection = true;
+		public bool AllowSymmetry = true;
+		public bool AllowRemove = true;
 		public bool AllowMove;
 		public bool AllowUp;
 		public bool AllowRotation;
 		public bool AllowScale;
+
+		public void SetCustomSettings(bool _Selection = true, bool _Symmetry = true, bool _Remove = true)
+		{
+			if (AllowSymmetry != _Selection && !_Selection)
+				CleanSelection();
+			else if(AllowSymmetry != _Symmetry && !_Symmetry)
+				CleanSelection();
+			else if (AllowRemove != _Remove && !_Remove)
+				CleanSelection();
+
+			AllowSelection = _Selection;
+			AllowSymmetry = _Symmetry;
+			AllowRemove = _Remove;
+		}
 
 		public void SetAffectedGameObjects(GameObject[] GameObjects, bool _AllowMove = true, bool _AllowUp = false, bool _AllowRotation = false, bool _AllowScale = false)
 		{
@@ -88,6 +105,7 @@ namespace Selection
 			CleanIfInactive();
 		}
 
+
 		public void CleanSelection()
 		{
 			Selection.Ids = new List<int>();
@@ -104,11 +122,11 @@ namespace Selection
 		}
 
 
+		#region Action Events
 		private System.Action<List<GameObject>, bool> RemoveAction;
 		public void SetRemoveAction(System.Action<List<GameObject>, bool> Action)
 		{
 			RemoveAction = Action;
-
 		}
 
 
@@ -142,8 +160,12 @@ namespace Selection
 			}
 		}
 
+		private System.Action SelectionChangeAction;
+		public void SetSelectionChangeAction(System.Action Action)
+		{
+			SelectionChangeAction = Action;
+		}
 
-
-
+		#endregion
 	}
 }

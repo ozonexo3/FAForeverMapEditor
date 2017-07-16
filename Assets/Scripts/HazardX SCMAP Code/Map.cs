@@ -743,7 +743,7 @@ public class Map
 		SaveTexture(_with2, PreviewTex, PreviewTextHeader);
 		//_with2.Write(PreviewImageLength);
 		//_with2.Write(PreviewData);
-		Debug.Log( _with2.BaseStream.Length );
+		//Debug.Log( _with2.BaseStream.Length );
 
         //# Heightmap Section #
         _with2.Write(MapFileVersion);
@@ -968,7 +968,7 @@ public class Map
 	private void SaveTexture(BinaryWriter Stream, Texture2D texture, GetGamedataFile.HeaderClass header)
     {
 		byte[] texArray = TextureLoader.SaveTextureDDS(texture, header);
-		Debug.Log("L2: " + texArray.Length);
+		//Debug.Log("L2: " + texArray.Length);
 		Stream.Write(texArray.Length);
 		Stream.Write(texArray,0,texArray.Length);
     }

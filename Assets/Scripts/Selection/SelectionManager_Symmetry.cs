@@ -102,8 +102,11 @@ namespace Selection
 		{
 			Selection.SymmetryMatrix = Matrix4x4.TRS(Vector3.zero, Quaternion.identity, Vector3.one);
 			UpdateSelectionRing();
-			GenerateSymmetry();
+			if(AllowSymmetry)
+				GenerateSymmetry();
 			EditMap.MarkerSelectionOptions.UpdateOptions();
+			if(SelectionChangeAction != null)
+				SelectionChangeAction();
 		}
 
 		int LastSym = 0;

@@ -63,11 +63,12 @@ public class ScmapEditor : MonoBehaviour
 	{
 		ToogleGrid(false);
 		heights = new float[10, 10];
-		RestartTerrain();
+		RestartTerrainAsset();
 	}
 
 	public IEnumerator LoadScmapFile()
 	{
+		UnloadMap();
 
 		map = new Map();
 
@@ -276,6 +277,7 @@ public class ScmapEditor : MonoBehaviour
 		yield return null;
 	}
 
+	#region Textures
 	public void SetTextures(int OnlyOne = -1)
 	{
 
@@ -358,13 +360,11 @@ public class ScmapEditor : MonoBehaviour
 		{
 			TerrainMaterial.SetFloat("_LowerScale", map.Width / Textures[0].AlbedoScale);
 			TerrainMaterial.SetFloat("_LowerScaleNormal", map.Width / Textures[0].NormalScale);
-
 		}
 		else if (id == 9)
 		{
 			TerrainMaterial.SetFloat("_UpperScale", map.Width / Textures[9].AlbedoScale);
 			TerrainMaterial.SetFloat("_UpperScaleNormal", map.Width / Textures[9].NormalScale);
-
 		}
 		else
 		{
@@ -373,6 +373,7 @@ public class ScmapEditor : MonoBehaviour
 			TerrainMaterial.SetFloat("_Splat" + IdStrig + "ScaleNormal", map.Width / Textures[id].NormalScale);
 		}
 	}
+	#endregion
 
 	#region Saving
 	public void SaveScmapFile()
@@ -435,7 +436,7 @@ public class ScmapEditor : MonoBehaviour
 	#endregion
 
 	#region Clean
-	public void RestartTerrain()
+	public void RestartTerrainAsset()
 	{
 		int xRes = (int)(256 + 1);
 		int zRes = (int)(256 + 1);
@@ -465,10 +466,23 @@ public class ScmapEditor : MonoBehaviour
 		// Set terrain heights from heights array
 		Data.SetHeights(0, 0, heights);
 	}
+
+	public void UnloadMap()
+	{
+
+		EditMap.PropsInfo.UnloadProps();
+		Markers.MarkersControler.UnloadMarkers();
+
+	}
 	#endregion
 
 	#region Converters
-	public static Vector3 MapPosInWorld(Vector3 MapPos)
+	/// <summary>
+	/// Convert Scmap position to editor world position
+	/// </summary>
+	/// <param name="MapPos"></param>
+	/// <returns></returns>
+	public static Vector3 ScmapPosToWorld(Vector3 MapPos)
 	{
 		Vector3 ToReturn = MapPos;
 
@@ -482,7 +496,12 @@ public class ScmapEditor : MonoBehaviour
 		return ToReturn;
 	}
 
-	public static Vector3 MapWorldPosInSave(Vector3 MapPos)
+	/// <summary>
+	/// Convert Editor world position to Scmap position
+	/// </summary>
+	/// <param name="MapPos"></param>
+	/// <returns></returns>
+	public static Vector3 WorldPosToScmap(Vector3 MapPos)
 	{
 		Vector3 ToReturn = MapPos;
 

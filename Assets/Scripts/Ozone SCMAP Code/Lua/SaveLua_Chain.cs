@@ -26,6 +26,10 @@ namespace MapLua
 						if (SearchMarkers[i].Name == Markers[n])
 						{
 							ConnectedMarkers.Add(SearchMarkers[i]);
+
+							if(!SearchMarkers[i].ConnectedToChains.Contains(this))
+								SearchMarkers[i].ConnectedToChains.Add(this);
+
 							break;
 						}
 					}
@@ -34,11 +38,14 @@ namespace MapLua
 
 			public void BakeMarkers()
 			{
-				Markers = new string[ConnectedMarkers.Count];
-				for (int i = 0; i < Markers.Length; i++)
+				List <string> NewMarkers = new List<string>();
+
+				for (int i = 0; i < ConnectedMarkers.Count; i++)
 				{
-					Markers[i] = ConnectedMarkers[i].Name;
+					if (ConnectedMarkers[i] != null && ConnectedMarkers[i].MarkerObj != null)
+						NewMarkers.Add(ConnectedMarkers[i].Name);
 				}
+				Markers = NewMarkers.ToArray();
 			}
 		}
 	}

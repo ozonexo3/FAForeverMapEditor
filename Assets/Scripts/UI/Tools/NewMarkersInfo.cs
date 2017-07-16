@@ -24,6 +24,7 @@ namespace EditMap
 			GoToSelection();
 
 			Selection.SelectionManager.Current.SetRemoveAction(DestroyMarkers);
+			Selection.SelectionManager.Current.SetSelectionChangeAction(SelectMarkers);
 		}
 
 
@@ -36,6 +37,7 @@ namespace EditMap
 		public void GoToSelection()
 		{
 			Selection.SelectionManager.Current.SetAffectedGameObjects(MarkersControler.GetMarkerObjects());
+			Selection.SelectionManager.Current.SetCustomSettings(true, true, true);
 			Selection.SelectionManager.Current.CleanSelection();
 			PlacementManager.Clear();
 			if(ChangeControlerType.Current)
@@ -71,8 +73,8 @@ namespace EditMap
 				CreateButtonSelections[i].SetActive(false);
 
 			CreationId = -1;
-			AiCreationDropdown.gameObject.SetActive(CreationId == 4);
-			SpawnPressetDropdown.gameObject.SetActive(CreationId == 5);
+			AiCreationDropdown.transform.parent.gameObject.SetActive(CreationId == 4);
+			SpawnPressetDropdown.transform.parent.gameObject.SetActive(CreationId == 5);
 		}
 
 		public void SelectCreateNew(int id)
@@ -92,8 +94,8 @@ namespace EditMap
 				GoToCreation();
 			}
 
-			AiCreationDropdown.gameObject.SetActive(CreationId == 4);
-			SpawnPressetDropdown.gameObject.SetActive(CreationId == 5);
+			AiCreationDropdown.transform.parent.gameObject.SetActive(CreationId == 4);
+			SpawnPressetDropdown.transform.parent.gameObject.SetActive(CreationId == 5);
 		}
 
 		public void ChangeList()
@@ -132,8 +134,8 @@ namespace EditMap
 
 						NewPos.y = ScmapEditor.Current.Teren.SampleHeight(NewPos);
 
-						MapLua.SaveLua.Marker NewMarker = new MapLua.SaveLua.Marker(Mpreset.Markers[m].MarkerType, Mpreset.Markers[m].MarkerType.ToString() + "_" + TotalMarkersCount);
-						NewMarker.position = ScmapEditor.MapWorldPosInSave(NewPos);
+						MapLua.SaveLua.Marker NewMarker = new MapLua.SaveLua.Marker(Mpreset.Markers[m].MarkerType);
+						NewMarker.position = ScmapEditor.WorldPosToScmap(NewPos);
 						MarkersControler.CreateMarker(NewMarker, mc);
 
 						LastAddedMarkers.Add(TotalMarkersCount);
@@ -150,14 +152,14 @@ namespace EditMap
 						Undo.Current.RegisterMarkersAdd();
 					AnyCreated = true;
 
-					MapLua.SaveLua.Marker NewMarker = new MapLua.SaveLua.Marker(LastCreationType, LastCreationType.ToString() + "_" + TotalMarkersCount);
+					MapLua.SaveLua.Marker NewMarker = new MapLua.SaveLua.Marker(LastCreationType);
 
 					if (SelectionManager.Current.SnapToGrid)
 						Positions[i] = ScmapEditor.SnapToGridCenter(Positions[i]);
 
 					Positions[i].y = ScmapEditor.Current.Teren.SampleHeight(Positions[i]);
 
-					NewMarker.position = ScmapEditor.MapWorldPosInSave(Positions[i]);
+					NewMarker.position = ScmapEditor.WorldPosToScmap(Positions[i]);
 					MarkersControler.CreateMarker(NewMarker, mc);
 					LastAddedMarkers.Add(TotalMarkersCount);
 					TotalMarkersCount++;
@@ -255,6 +257,11 @@ namespace EditMap
 			return MapLua.SaveLua.Marker.MarkerTypes.Mass;
 		}
 
+		public void SelectMarkers()
+		{
+
+
+		}
 
 		MapLua.SaveLua.Marker.MarkerTypes LastCreationType = MapLua.SaveLua.Marker.MarkerTypes.BlankMarker;
 		GameObject GetCreationObject()

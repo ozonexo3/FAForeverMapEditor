@@ -23,30 +23,45 @@ public partial struct GetGamedataFile
 			NewProp.gameObject.name = BP.Name;
 
 			if (BP.LODs.Length > 0)
-			{
-				NewProp.Mf.sharedMesh = BP.LODs[0].Mesh;
+			{ 
+				if(BP.LODs[0].Mesh)
+					NewProp.Mf.sharedMesh = BP.LODs[0].Mesh;
 				NewProp.Mr.sharedMaterial = BP.LODs[0].Mat;
+
+				scale.x *= BP.LocalScale.x;
+				scale.y *= BP.LocalScale.y;
+				scale.z *= BP.LocalScale.z;
+				NewProp.Tr.localScale = scale;
 
 				float DeltaSize = 0.01f;
 				if (BP.LODs[0].Mesh != null)
 				{
-					DeltaSize = Mathf.Max(BP.LODs[0].Mesh.bounds.size.x, BP.LODs[0].Mesh.bounds.size.y);
-					DeltaSize = Mathf.Max(DeltaSize, BP.LODs[0].Mesh.bounds.size.z);
+					
+					//Vector3 RealSize = NewProp.Mf.sharedMesh.bounds.size;
+					//RealSize.x *= scale.x;
+					//RealSize.y *= scale.y;
+					//RealSize.z *= scale.z;
+
+					//DeltaSize = Mathf.Max(RealSize.x, RealSize.y);
+					//DeltaSize = Mathf.Max(DeltaSize, RealSize.z);
+
+					//DeltaSize *= 5;
+
+					NewProp.Lodg.RecalculateBounds();
+					DeltaSize = NewProp.Lodg.size * Mathf.Max(scale.x, scale.y, scale.z) * 0.6f;
+					DeltaSize -= 0.04f;
 
 					if (DeltaSize < 0.01f)
 						DeltaSize = 0.01f;
 				}
 
 				Lods = NewProp.Lodg.GetLODs();
-				Lods[0].screenRelativeTransitionHeight = Mathf.Lerp(0.027f, 0.19f, Mathf.Pow((DeltaSize - 1.9f) / 190f, 2f));
+				Lods[0].screenRelativeTransitionHeight = Mathf.Lerp(0.018f, 0.31f, DeltaSize);
 				NewProp.Lodg.SetLODs(Lods);
 
 				NewProp.Tr.localPosition = position;
 				NewProp.Tr.localRotation = rotation;
-				scale.x *= BP.LocalScale.x;
-				scale.y *= BP.LocalScale.y;
-				scale.z *= BP.LocalScale.z;
-				NewProp.Tr.localScale = scale;
+
 
 			}
 			else

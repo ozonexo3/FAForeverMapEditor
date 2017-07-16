@@ -16,6 +16,8 @@ namespace MapLua
 			public MarkerTypes MarkerType;
 			public MarkerLayers MarkerLayer;
 			public Markers.MarkerObject MarkerObj;
+			public List<Chain> ConnectedToChains;
+
 			public float size = 1f;
 			public bool resource = false;
 			public float amount = 100;
@@ -124,9 +126,12 @@ namespace MapLua
 			{
 			}
 
-			public Marker(MarkerTypes Type, string name)
+			public Marker(MarkerTypes Type)
 			{
-				Name = name;
+				ConnectedToChains = new List<Chain>();
+
+				Name = GetLowestName(Type);
+				RegisterMarkerName(Name);
 				size = 1;
 				position = Vector3.zero;
 				orientation = Vector3.zero;
@@ -152,17 +157,18 @@ namespace MapLua
 				}
 				else if (Type == MarkerTypes.CameraInfo)
 				{
-
+					canSyncCamera = true;
+					canSetCamera = true;
+					zoom = 30;
 				}
-
-
-
 			}
 
 			public Marker(string name, LuaTable Table)
 			{
 				// Create marker from table
 				Name = name;
+				RegisterMarkerName(Name);
+				ConnectedToChains = new List<Chain>();
 				string[] Keys = LuaParser.Read.GetTableKeys(Table);
 
 				for (int k = 0; k < Keys.Length; k++)
@@ -229,7 +235,7 @@ namespace MapLua
 
 			public void SaveMarkerValues(LuaParser.Creator LuaFile)
 			{
-				position = ScmapEditor.MapWorldPosInSave(MarkerObj.transform.position);
+				position = ScmapEditor.WorldPosToScmap(MarkerObj.transform.position);
 				//position = ScmapEditor.MapWorldPosInSave(MarkerObj.transform.position);
 
 				if (AllowByType(KEY_SIZE))
@@ -265,6 +271,32 @@ namespace MapLua
 
 		}
 		#endregion
+
+
+		static List<string> AllExistingNames = new List<string>();
+
+		public static void RegisterMarkerName(string MarkerName)
+		{
+			if (!AllExistingNames.Contains(MarkerName))
+				AllExistingNames.Add(MarkerName);
+		}
+
+		public static string GetLowestName(Marker.MarkerTypes Type)
+		{
+			string prefix = "";
+			if (Type == Marker.MarkerTypes.BlankMarker || Type == Marker.MarkerTypes.Mass || Type == Marker.MarkerTypes.Hydrocarbon)
+				prefix = Marker.MarkerTypeToString(Type) + " ";
+			else
+			{
+				prefix = prefix.ToString() + "_";
+			}
+
+			int ID = 0;
+			while (AllExistingNames.Contains(prefix + ID.ToString()))
+				ID++;
+
+			return prefix + ID.ToString();
+		}
 
 	}
 }

@@ -23,9 +23,14 @@ public class HistoryTerrainHeight : HistoryObject {
 
 
 	public override void DoUndo(){
-		Undo.UndoData_newheights = Undo.Current.Scmap.Teren.terrainData.GetHeights(0, 0, Undo.Current.Scmap.Teren.terrainData.heightmapWidth, Undo.Current.Scmap.Teren.terrainData.heightmapHeight);
-		HistoryTerrainHeight.GenerateRedo (Undo.Current.Prefabs.TerrainHeightChange).Register();
+		if (!RedoGenerated)
+		{
+			Undo.UndoData_newheights = Undo.Current.Scmap.Teren.terrainData.GetHeights(0, 0, Undo.Current.Scmap.Teren.terrainData.heightmapWidth, Undo.Current.Scmap.Teren.terrainData.heightmapHeight);
+			HistoryTerrainHeight.GenerateRedo(Undo.Current.Prefabs.TerrainHeightChange).Register();
+		}
+		RedoGenerated = true;
 		DoRedo ();
+
 	}
 
 	public override void DoRedo(){
@@ -35,6 +40,6 @@ public class HistoryTerrainHeight : HistoryObject {
 		}
 		Debug.Log("Undo " + Pixels.Length);
 		Undo.Current.Scmap.Teren.terrainData.SetHeights(0, 0, Pixels);
-		Undo.Current.EditMenu.EditTerrain.Markers.UpdateMarkersHeights();
+		Markers.MarkersControler.UpdateMarkersHeights();
 	}
 }

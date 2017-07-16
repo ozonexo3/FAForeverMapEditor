@@ -1,46 +1,45 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Text;
 
 namespace LuaParser
 {
 	public class Creator
 	{
 
-		string FileString;
+		StringBuilder Sb;
+		//string FileString;
 
-		int tabs = 0;
-
-		public void ForceTab(int count)
-		{
-			tabs = count;
-		}
+		//int tabs = 0;
+		string TabsString = "";
 
 		public void OpenTab()
 		{
-			tabs++;
+			TabsString += LuaParser.Write.tab;
 		}
 
 		public void CloseTab()
 		{
-			tabs--;
+			TabsString = TabsString.Remove(TabsString.Length - LuaParser.Write.tab.Length);
 		}
 
 		public void OpenTab(string line)
 		{
 			AddLine(line);
-			tabs++;
+			OpenTab();
 		}
 
 		public void CloseTab(string line)
 		{
-			tabs--;
+			CloseTab();
 			AddLine(line);
 		}
 
 		public void AddLine(string line)
 		{
-			LuaParser.Write.AddLine(line, tabs, ref FileString);
+			Sb.AppendLine(TabsString + line);
+			//LuaParser.Write.AddLine(line, tabs, ref FileString);
 		}
 
 
@@ -54,19 +53,20 @@ namespace LuaParser
 			while (coment.Length < MinimumComentCharacters)
 				coment += " ";
 
-			LuaParser.Write.AddLine(CommentSaveBegin + coment + CommentSaveEnd, tabs, ref FileString);
+			Sb.AppendLine(TabsString + CommentSaveBegin + coment + CommentSaveEnd);
+			//LuaParser.Write.AddLine(CommentSaveBegin + coment + CommentSaveEnd, tabs, ref FileString);
 		}
 
 		public string GetFileString()
 		{
-			return FileString;
-
+			return Sb.ToString();
 		}
 
 		public Creator()
 		{
-			FileString = "";
-			tabs = 0;
+			Sb = new StringBuilder(2048);
+			//FileString = "";
+			//tabs = 0;
 		}
 	}
 }

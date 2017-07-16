@@ -13,7 +13,6 @@ namespace EditMap
 		public CameraControler KameraKontroler;
 		public Editing Edit;
 		public ScmapEditor Map;
-		public MarkersRenderer Markers;
 		public Camera GameplayCamera;
 		public Slider BrushSizeSlider;
 		public InputField BrushSize;
@@ -685,7 +684,8 @@ namespace EditMap
 			}
 
 			Map.Teren.terrainData.SetHeightsDelayLOD(posXInTerrain - offset + OffsetLeft, posYInTerrain - offset + OffsetDown, heights);
-			Markers.UpdateMarkersHeights();
+
+			Markers.MarkersControler.UpdateMarkersHeights();
 		}
 
 		float GetNearValues(ref float[,] heigths, int x, int y, int range = 1)

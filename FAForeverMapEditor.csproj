@@ -281,6 +281,7 @@
     <Compile Include="Assets\Scripts\Tes\VirtualFileSystem.cs" />
     <Compile Include="Assets\Scripts\Trash\Common\GUILayoutx.cs" />
     <Compile Include="Assets\Scripts\UI\AppMenu.cs" />
+    <Compile Include="Assets\Scripts\UI\Chains\ChainsList.cs" />
     <Compile Include="Assets\Scripts\UI\Editing.cs" />
     <Compile Include="Assets\Scripts\UI\FafEditorSettings.cs" />
     <Compile Include="Assets\Scripts\UI\Lists\ArmyIdButton.cs" />
@@ -302,8 +303,6 @@
     <Compile Include="Assets\Scripts\UI\Marker\MarkerSelectionOptions.cs" />
     <Compile Include="Assets\Scripts\UI\Marker\MarkersControler.cs" />
     <Compile Include="Assets\Scripts\UI\Marker\Old\MarkerData.cs" />
-    <Compile Include="Assets\Scripts\UI\Marker\Old\MarkerScript.cs" />
-    <Compile Include="Assets\Scripts\UI\Marker\Old\MarkersRenderer.cs" />
     <Compile Include="Assets\Scripts\UI\Props\PropGameObject.cs" />
     <Compile Include="Assets\Scripts\UI\Props\PropsRenderer.cs" />
     <Compile Include="Assets\Scripts\UI\StartingScreen.cs" />
@@ -324,6 +323,8 @@
     <Compile Include="Assets\Scripts\UI\Windows\SymmetryWindow.cs" />
     <Compile Include="Assets\Scripts\Undo\HistoryClasses.cs" />
     <Compile Include="Assets\Scripts\Undo\HistoryObject.cs" />
+    <Compile Include="Assets\Scripts\Undo\HistoryObjects\HistoryChainChange.cs" />
+    <Compile Include="Assets\Scripts\Undo\HistoryObjects\HistoryChainMarkers.cs" />
     <Compile Include="Assets\Scripts\Undo\HistoryObjects\HistoryLighting.cs" />
     <Compile Include="Assets\Scripts\Undo\HistoryObjects\HistoryMapInfo.cs" />
     <Compile Include="Assets\Scripts\Undo\HistoryObjects\HistoryMarkersChange.cs" />
