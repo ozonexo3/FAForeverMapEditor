@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2015
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FAForeverMapEditor.CSharp", "FAForeverMapEditor.CSharp.csproj", "{CAD0EB34-2B98-FF6F-631D-EA8D18665D12}"
+# Visual Studio 2017
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FAForeverMapEditor", "FAForeverMapEditor.csproj", "{726F1A7D-6B82-7E5C-457A-25BF0902FEF2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FAForeverMapEditor.CSharp.Editor", "FAForeverMapEditor.CSharp.Editor.csproj", "{A77B4400-50D8-C5C8-FC3F-523723D86747}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FAForeverMapEditor.Editor", "FAForeverMapEditor.Editor.csproj", "{A7FE3FE6-27C6-EFE4-A771-5044D500E8E3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,14 +11,14 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{CAD0EB34-2B98-FF6F-631D-EA8D18665D12}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CAD0EB34-2B98-FF6F-631D-EA8D18665D12}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CAD0EB34-2B98-FF6F-631D-EA8D18665D12}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CAD0EB34-2B98-FF6F-631D-EA8D18665D12}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A77B4400-50D8-C5C8-FC3F-523723D86747}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A77B4400-50D8-C5C8-FC3F-523723D86747}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A77B4400-50D8-C5C8-FC3F-523723D86747}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A77B4400-50D8-C5C8-FC3F-523723D86747}.Release|Any CPU.Build.0 = Release|Any CPU
+		{726F1A7D-6B82-7E5C-457A-25BF0902FEF2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{726F1A7D-6B82-7E5C-457A-25BF0902FEF2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{726F1A7D-6B82-7E5C-457A-25BF0902FEF2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{726F1A7D-6B82-7E5C-457A-25BF0902FEF2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A7FE3FE6-27C6-EFE4-A771-5044D500E8E3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A7FE3FE6-27C6-EFE4-A771-5044D500E8E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A7FE3FE6-27C6-EFE4-A771-5044D500E8E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A7FE3FE6-27C6-EFE4-A771-5044D500E8E3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

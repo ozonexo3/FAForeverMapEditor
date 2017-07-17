@@ -115,6 +115,37 @@ namespace EditMap
 		}
 
 		#region Update List
+		public void UpdateSelection()
+		{
+			if (ChainSelected < 0)
+				return;
+
+			for (int g = 0; g < AllFields.Count; g++)
+			{
+				//int i = AllFields[g].InstanceId;
+
+				int ObjectId = SelectionManager.Current.GetIdOfObject(AllFields[g].ConnectedGameObject);
+
+				if (Selection.SelectionManager.Current.Selection.Ids.Contains(ObjectId))
+					AllFields[g].SetSelection(1);
+				else
+				{
+					AllFields[g].SetSelection(0);
+
+					if (Selection.SelectionManager.Current.SymetrySelection.Length > 0)
+					{
+						for (int s = 0; s < Selection.SelectionManager.Current.SymetrySelection.Length; s++)
+						{
+							if (Selection.SelectionManager.Current.SymetrySelection[s].Ids.Contains(ObjectId))
+								AllFields[g].SetSelection(2);
+						}
+					}
+				}
+
+			}
+		}
+
+
 		void GenerateChains()
 		{
 			int Mcount = MapLuaParser.Current.SaveLuaFile.Data.Chains.Length;
@@ -153,6 +184,24 @@ namespace EditMap
 
 				NewListObject.ConnectedGameObject = CurrentMarker.MarkerObj.gameObject;
 				NewListObject.ClickAction = Selection.SelectionManager.Current.SelectObject;
+
+				int ObjectId = SelectionManager.Current.GetIdOfObject(NewListObject.ConnectedGameObject);
+
+				if (Selection.SelectionManager.Current.Selection.Ids.Contains(ObjectId))
+					NewListObject.SetSelection(1);
+				else
+				{
+					NewListObject.SetSelection(0);
+
+					if (Selection.SelectionManager.Current.SymetrySelection.Length > 0)
+					{
+						for (int s = 0; s < Selection.SelectionManager.Current.SymetrySelection.Length; s++)
+						{
+							if (Selection.SelectionManager.Current.SymetrySelection[s].Ids.Contains(ObjectId))
+								NewListObject.SetSelection(2);
+						}
+					}
+				}
 
 				NewListObject.Icon.sprite = Markers.MarkersControler.GetIconByType(CurrentMarker.MarkerType);
 				AllFields.Add(NewListObject);
@@ -234,7 +283,7 @@ namespace EditMap
 			{
 				if (i == AtId)
 				{
-					if(ListObject.DragBeginId > AtId)
+					if (ListObject.DragBeginId > AtId)
 					{
 						NewMarkerList.Add(MapLuaParser.Current.SaveLuaFile.Data.Chains[ChainSelected].ConnectedMarkers[ListObject.DragBeginId]);
 						NewMarkerList.Add(MapLuaParser.Current.SaveLuaFile.Data.Chains[ChainSelected].ConnectedMarkers[i]);
@@ -244,7 +293,7 @@ namespace EditMap
 						NewMarkerList.Add(MapLuaParser.Current.SaveLuaFile.Data.Chains[ChainSelected].ConnectedMarkers[i]);
 						NewMarkerList.Add(MapLuaParser.Current.SaveLuaFile.Data.Chains[ChainSelected].ConnectedMarkers[ListObject.DragBeginId]);
 					}
-					
+
 				}
 				else if (i == ListObject.DragBeginId)
 				{
@@ -262,12 +311,121 @@ namespace EditMap
 
 		public void AddSelected()
 		{
+			if (ChainSelected < 0)
+				return;
+
+			bool AnyChanged = false;
+			int count = SelectionManager.Current.Selection.Ids.Count;
+
+			if (count <= 0)
+				return;
+
+			for (int i = 0; i < count; i++)
+			{
+
+				MarkerObject Mobj = SelectionManager.Current.AffectedGameObjects[SelectionManager.Current.Selection.Ids[i]].GetComponent<MarkerObject>();
+
+				if (Mobj != null && Mobj.Owner != null)
+				{
+					if (!MapLuaParser.Current.SaveLuaFile.Data.Chains[ChainSelected].ConnectedMarkers.Contains(Mobj.Owner))
+					{
+						if (!AnyChanged)
+						{
+							Undo.Current.RegisterChainMarkersChange(ChainSelected);
+							AnyChanged = true;
+						}
+						MapLuaParser.Current.SaveLuaFile.Data.Chains[ChainSelected].ConnectedMarkers.Add(Mobj.Owner);
+					}
+
+				}
+			}
+
+			for (int s = 0; s < SelectionManager.Current.SymetrySelection.Length; s++)
+			{
+				count = SelectionManager.Current.SymetrySelection[s].Ids.Count;
+
+				for (int i = 0; i < count; i++)
+				{
+
+					MarkerObject Mobj = SelectionManager.Current.AffectedGameObjects[SelectionManager.Current.SymetrySelection[s].Ids[i]].GetComponent<MarkerObject>();
+
+					if (Mobj != null && Mobj.Owner != null)
+					{
+						if (!MapLuaParser.Current.SaveLuaFile.Data.Chains[ChainSelected].ConnectedMarkers.Contains(Mobj.Owner))
+						{
+							if (!AnyChanged)
+							{
+								Undo.Current.RegisterChainMarkersChange(ChainSelected);
+								AnyChanged = true;
+							}
+							MapLuaParser.Current.SaveLuaFile.Data.Chains[ChainSelected].ConnectedMarkers.Add(Mobj.Owner);
+						}
+
+					}
+				}
+			}
+
+			UpdateList();
 
 		}
 
 		public void RemoveSelected()
 		{
+			if (ChainSelected < 0)
+				return;
 
+			bool AnyChanged = false;
+			int count = SelectionManager.Current.Selection.Ids.Count;
+
+			if (count <= 0)
+				return;
+
+			for (int i = 0; i < count; i++)
+			{
+
+				MarkerObject Mobj = SelectionManager.Current.AffectedGameObjects[SelectionManager.Current.Selection.Ids[i]].GetComponent<MarkerObject>();
+
+				if (Mobj != null && Mobj.Owner != null)
+				{
+					if (MapLuaParser.Current.SaveLuaFile.Data.Chains[ChainSelected].ConnectedMarkers.Contains(Mobj.Owner))
+					{
+						if (!AnyChanged)
+						{
+							Undo.Current.RegisterChainMarkersChange(ChainSelected);
+							AnyChanged = true;
+						}
+						MapLuaParser.Current.SaveLuaFile.Data.Chains[ChainSelected].ConnectedMarkers.Remove(Mobj.Owner);
+					}
+
+				}
+			}
+
+			for (int s = 0; s < SelectionManager.Current.SymetrySelection.Length; s++)
+			{
+				count = SelectionManager.Current.SymetrySelection[s].Ids.Count;
+
+				for (int i = 0; i < count; i++)
+				{
+
+					MarkerObject Mobj = SelectionManager.Current.AffectedGameObjects[SelectionManager.Current.SymetrySelection[s].Ids[i]].GetComponent<MarkerObject>();
+
+					if (Mobj != null && Mobj.Owner != null)
+					{
+						if (MapLuaParser.Current.SaveLuaFile.Data.Chains[ChainSelected].ConnectedMarkers.Contains(Mobj.Owner))
+						{
+							if (!AnyChanged)
+							{
+								Undo.Current.RegisterChainMarkersChange(ChainSelected);
+								AnyChanged = true;
+							}
+							MapLuaParser.Current.SaveLuaFile.Data.Chains[ChainSelected].ConnectedMarkers.Remove(Mobj.Owner);
+						}
+
+					}
+				}
+			}
+
+			UpdateList();
 		}
 
 		public void ReturnFromChain()
@@ -321,6 +479,7 @@ namespace EditMap
 
 		public void SelectMarkers()
 		{
+			UpdateSelection();
 			/*
 			// Set All selected to chain
 			if (ChainSelected < 0)

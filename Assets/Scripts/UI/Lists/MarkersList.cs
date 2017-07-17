@@ -164,6 +164,6 @@ public class MarkersList : MonoBehaviour
 
 		Generated = true;
 		GeneratedCount = AllFields.Count;
-		Debug.Log(GeneratedCount + " / " + MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers.Count);
+		//Debug.Log(GeneratedCount + " / " + MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers.Count);
 	}
 }

@@ -55,7 +55,11 @@ namespace Selection
 
 					MeshRenderer Mr = AffectedGameObjects[ID].GetComponent<MeshRenderer>();
 					if (Mr)
-						Selection.SelectionRings[i].transform.localScale = new Vector3(Mr.bounds.size.x + 0.2f, 1, Mr.bounds.size.z + 0.2f);
+					{
+						float ScaleMax = Mathf.Max(Mr.bounds.size.x, Mr.bounds.size.z) + 0.2f;
+						Selection.SelectionRings[i].transform.localScale = new Vector3(ScaleMax, 1, ScaleMax);
+
+					}
 				}
 
 				Controls.localPosition = NewBounds.center;

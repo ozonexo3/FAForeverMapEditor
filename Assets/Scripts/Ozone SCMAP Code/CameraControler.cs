@@ -84,6 +84,11 @@ public class CameraControler : MonoBehaviour {
 		Current.Pivot.localPosition = Current.Pos;
 	}
 
+	public static float GetCurrentZoom()
+	{
+		return Current.zoomIn * Current.MapSize / 7f + CameraMinOffset;
+	}
+
 	public void RenderCamera(int resWidth, int resHeight, string path){
 		// Set Camera
 		Camera.main.orthographic = true;

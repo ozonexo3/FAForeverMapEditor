@@ -9,7 +9,7 @@ namespace MapLua
 	{
 
 		#region Marker
-		[System.Serializable]
+		//[System.Serializable]
 		public class Marker
 		{
 			public string Name = "";
@@ -236,6 +236,7 @@ namespace MapLua
 			public void SaveMarkerValues(LuaParser.Creator LuaFile)
 			{
 				position = ScmapEditor.WorldPosToScmap(MarkerObj.transform.position);
+				orientation = MarkerObj.transform.eulerAngles;
 				//position = ScmapEditor.MapWorldPosInSave(MarkerObj.transform.position);
 
 				if (AllowByType(KEY_SIZE))

@@ -16,9 +16,9 @@
     <CompilerResponseFile>Assets\gmcs.rsp</CompilerResponseFile>
     <UnityProjectType>Editor:5</UnityProjectType>
     <UnityBuildTarget>StandaloneWindows64:19</UnityBuildTarget>
-    <UnityVersion>5.6.2f1</UnityVersion>
+    <UnityVersion>5.6.2p3</UnityVersion>
     <RootNamespace></RootNamespace>
-    <LangVersion Condition=" '$(VisualStudioVersion)' != '10.0' ">4</LangVersion>
+    <LangVersion>4</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -175,6 +175,7 @@
     <None Include="Assets\GFX\Shaders\RawImageNoAlpha.shader" />
     <None Include="Assets\GFX\Shaders\Selection.shader" />
     <None Include="Assets\GFX\Shaders\UI\UI-Add.shader" />
+    <None Include="Assets\GFX\Shaders\Unlit-Color.shader" />
     <None Include="Assets\PostProcessing\Editor Resources\Monitors\HistogramCompute.compute" />
     <None Include="Assets\PostProcessing\Editor Resources\Monitors\HistogramRender.shader" />
     <None Include="Assets\PostProcessing\Editor Resources\Monitors\ParadeRender.shader" />

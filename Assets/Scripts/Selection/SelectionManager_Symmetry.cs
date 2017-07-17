@@ -87,7 +87,7 @@ namespace Selection
 			}
 		}
 
-		private int GetIdOfObject(GameObject Obj)
+		public int GetIdOfObject(GameObject Obj)
 		{
 			for(int i = 0; i < AffectedGameObjects.Length; i++)
 			{

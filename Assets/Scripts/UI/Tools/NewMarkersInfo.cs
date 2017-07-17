@@ -76,6 +76,7 @@ namespace EditMap
 		int CreationId;
 		public Dropdown AiCreationDropdown;
 		public Dropdown SpawnPressetDropdown;
+		public GameObject CreateFromViewBtn;
 
 
 		public GameObject MarkerPrefab;
@@ -87,6 +88,7 @@ namespace EditMap
 				CreateButtonSelections[i].SetActive(false);
 
 			CreationId = -1;
+			CreateFromViewBtn.SetActive(CreationId == 3);
 			AiCreationDropdown.transform.parent.gameObject.SetActive(CreationId == 4);
 			SpawnPressetDropdown.transform.parent.gameObject.SetActive(CreationId == 5);
 		}
@@ -108,6 +110,7 @@ namespace EditMap
 				GoToCreation();
 			}
 
+			CreateFromViewBtn.SetActive(CreationId == 3);
 			AiCreationDropdown.transform.parent.gameObject.SetActive(CreationId == 4);
 			SpawnPressetDropdown.transform.parent.gameObject.SetActive(CreationId == 5);
 		}
@@ -115,6 +118,14 @@ namespace EditMap
 		public void ChangeList()
 		{
 			PlacementManager.BeginPlacement(GetCreationObject(), Place);
+		}
+
+
+		public void CreateFromView()
+		{
+			Place(new Vector3[] { CameraControler.Current.Pivot.localPosition }, new Quaternion[] { CameraControler.Current.Pivot.localRotation });
+			int mc = 0;
+			MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers[LastAddedMarkers[0]].zoom = CameraControler.GetCurrentZoom();
 		}
 
 		public List<int> LastAddedMarkers;
@@ -150,6 +161,7 @@ namespace EditMap
 
 						MapLua.SaveLua.Marker NewMarker = new MapLua.SaveLua.Marker(Mpreset.Markers[m].MarkerType);
 						NewMarker.position = ScmapEditor.WorldPosToScmap(NewPos);
+						//NewMarker.orientation = 
 						MarkersControler.CreateMarker(NewMarker, mc);
 						ChainsList.AddToCurrentChain(NewMarker);
 
@@ -178,6 +190,7 @@ namespace EditMap
 					ChainsList.AddToCurrentChain(NewMarker);
 
 					NewMarker.position = ScmapEditor.WorldPosToScmap(Positions[i]);
+					NewMarker.orientation = Rotations[i].eulerAngles;
 					MarkersControler.CreateMarker(NewMarker, mc);
 					LastAddedMarkers.Add(TotalMarkersCount);
 					TotalMarkersCount++;
