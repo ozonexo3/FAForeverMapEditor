@@ -175,15 +175,34 @@ namespace Selection
 			}
 		}
 
+		float LastClickTime = 0;
+		//GameObject LastSelectObject;
 		public void SelectObject(GameObject Obj)
 		{
 			int ObjectId = GetIdOfObject(Obj);
+
+			bool contains = Selection.Ids.Contains(ObjectId);
+			
+			if( contains&& !IsSelectionRemove() && !IsSelectionAdd())
+			{
+				if(Time.time < LastClickTime + 0.2f)
+					CameraControler.FocusOnObject(Obj);
+				LastClickTime = Time.time;
+
+				return;
+			}
+
+			//LastSelectObject = Obj;
+
+			LastClickTime = Time.time;
+
+
 			if (ObjectId >= 0)
 			{
 				Undo.Current.RegisterSelectionChange();
 				if (IsSelectionRemove())
 				{
-					if (Selection.Ids.Contains(ObjectId))
+					if (contains)
 					{
 						Selection.Ids.Remove(ObjectId);
 						FinishSelectionChange();
@@ -191,7 +210,7 @@ namespace Selection
 				}
 				else if (IsSelectionAdd())
 				{
-					if (!Selection.Ids.Contains(ObjectId))
+					if (!contains)
 					{
 						Selection.Ids.Add(ObjectId);
 						FinishSelectionChange();

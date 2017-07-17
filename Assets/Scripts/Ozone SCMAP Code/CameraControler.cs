@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using EditMap;
+using Selection;
 
 public class CameraControler : MonoBehaviour {
 
@@ -126,10 +127,9 @@ public class CameraControler : MonoBehaviour {
 
 		// Interaction
 
-		if (HUD.MapLoaded && Edit.MauseOnGameplay)
+		if (HUD.MapLoaded)
 		{
 			CameraMovement();
-
 		}
 
 		/*
@@ -204,49 +204,60 @@ public class CameraControler : MonoBehaviour {
 	}
 
 	void CameraMovement(){
-		if(Input.GetAxis("Mouse ScrollWheel") > 0 && zoomIn > 0){
-			zoomIn -= Input.GetAxis("Mouse ScrollWheel") * 0.5f * 1;
-			
-			Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-			RaycastHit hit;
-			if (Physics.Raycast(ray, out hit, 1000, Mask)){
-				Pos += (hit.point - Pos) * Mathf.Lerp(0.22f, 0.12f, ZoomCamPos()) * 1;
+
+		if (Edit.MauseOnGameplay)
+		{
+			if (Input.GetAxis("Mouse ScrollWheel") > 0 && zoomIn > 0)
+			{
+				zoomIn -= Input.GetAxis("Mouse ScrollWheel") * 0.5f * 1;
+
+				Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+				RaycastHit hit;
+				if (Physics.Raycast(ray, out hit, 1000, Mask))
+				{
+					Pos += (hit.point - Pos) * Mathf.Lerp(0.22f, 0.12f, ZoomCamPos()) * 1;
+					ClampPosY();
+				}
+
+			}
+			else if (Input.GetAxis("Mouse ScrollWheel") < 0)
+			{
+				zoomIn -= Input.GetAxis("Mouse ScrollWheel") * 0.5f * 1;
+			}
+
+			zoomIn = Mathf.Clamp01(zoomIn);
+
+
+			if (Input.GetKeyDown(KeyCode.Space) || Input.GetMouseButtonDown(2))
+			{
+				prevMausePos = Input.mousePosition;
+			}
+
+			if (Input.GetKey(KeyCode.Space))
+			{
+				Rot.y += (Input.mousePosition.x - prevMausePos.x) * 12 * Time.deltaTime;
+				Rot.x -= (Input.mousePosition.y - prevMausePos.y) * 12 * Time.deltaTime;
+				Rot.x = Mathf.Clamp(Rot.x, -80, 0);
+				prevMausePos = Input.mousePosition;
+			}
+			if (Input.GetMouseButton(2))
+			{
+				//float PanSpeed = Mathf.Lerp (2f, 3f, Mathf.Pow( ZoomCamPos (), 0.5f));
+				float PanSpeed = 2.5f;
+				Pos -= transform.right * (Input.mousePosition.x - prevMausePos.x) * PanSpeed * (transform.localPosition.y * 0.03f + 0.2f) * Time.deltaTime;
+				Pos -= (transform.forward + transform.up) * (Input.mousePosition.y - prevMausePos.y) * PanSpeed * (transform.localPosition.y * 0.03f + 0.2f) * Time.deltaTime;
+				prevMausePos = Input.mousePosition;
+
+				Pos.x = Mathf.Clamp(Pos.x, 0, MapSize / 10.0f);
+				Pos.z = Mathf.Clamp(Pos.z, MapSize / -10.0f, 0);
+				Pos.y = Terrain.activeTerrain.SampleHeight(Pos);
 				ClampPosY();
 			}
-			
-		}
-		else if(Input.GetAxis("Mouse ScrollWheel") < 0){
-			zoomIn -= Input.GetAxis("Mouse ScrollWheel") * 0.5f * 1;
-		}
-		
-		zoomIn = Mathf.Clamp01(zoomIn);
-		
-		
-		if(Input.GetKeyDown(KeyCode.Space) || Input.GetMouseButtonDown(2)){
-			prevMausePos = Input.mousePosition;
-		}
-		
-		if(Input.GetKey(KeyCode.Space)){
-			Rot.y += (Input.mousePosition.x - prevMausePos.x) * 12 * Time.deltaTime;
-			Rot.x -= (Input.mousePosition.y - prevMausePos.y) * 12 * Time.deltaTime;
-			Rot.x = Mathf.Clamp(Rot.x, -80, 0);
-			prevMausePos = Input.mousePosition;
-		}
-		if(Input.GetMouseButton(2)){
-			//float PanSpeed = Mathf.Lerp (2f, 3f, Mathf.Pow( ZoomCamPos (), 0.5f));
-			float PanSpeed = 2.5f;
-			Pos -= transform.right * (Input.mousePosition.x - prevMausePos.x) * PanSpeed * (transform.localPosition.y * 0.03f + 0.2f) * Time.deltaTime;
-			Pos -= (transform.forward + transform.up) * (Input.mousePosition.y - prevMausePos.y) * PanSpeed * (transform.localPosition.y * 0.03f + 0.2f) * Time.deltaTime;
-			prevMausePos = Input.mousePosition;
-			
-			Pos.x = Mathf.Clamp(Pos.x, 0, MapSize / 10.0f);
-			Pos.z = Mathf.Clamp(Pos.z, MapSize / -10.0f, 0);
-			Pos.y = Terrain.activeTerrain.SampleHeight(Pos);
-			ClampPosY();
-		}
-		
-		if(Input.GetKeyDown(KeyCode.Home)){
-			RestartCam();
+
+			if (Input.GetKeyDown(KeyCode.Home))
+			{
+				RestartCam();
+			}
 		}
 		
 		
@@ -264,6 +275,23 @@ public class CameraControler : MonoBehaviour {
 	
 
 	void Focus(){
+		int count = SelectionManager.Current.Selection.Ids.Count;
+		if (SelectionManager.Current.Active && count > 0)
+		{
+			Bounds FocusBound = new Bounds(SelectionManager.Current.AffectedGameObjects[SelectionManager.Current.Selection.Ids[0]].transform.localPosition, ((count > 1)?( Vector3.zero):(Vector3.one)));
+
+			for (int i = 1; i < count; i++)
+			{
+				FocusBound.Encapsulate(SelectionManager.Current.AffectedGameObjects[SelectionManager.Current.Selection.Ids[i]].transform.localPosition);
+			}
+
+			Pos = FocusBound.center;
+			ClampPosY();
+			float size = Mathf.Max(FocusBound.size.x, FocusBound.size.z) * 2;
+			zoomIn = size / (MapSize * 0.075f) + 0.21f;
+		}
+
+
 		/*
 		if (Edit.State == Editing.EditStates.MarkersStat) {
 			if (Edit.EditMarkers.SelectionsRings.Count > 0) {
@@ -276,6 +304,18 @@ public class CameraControler : MonoBehaviour {
 			}
 		}
 		*/
+	}
+
+
+
+	public static void FocusOnObject(GameObject Obj)
+	{
+		Bounds FocusBound = new Bounds(Obj.transform.localPosition, Vector3.one);
+
+		Current.Pos = FocusBound.center;
+		Current.ClampPosY();
+		float size = Mathf.Max(FocusBound.size.x, FocusBound.size.z) * 2;
+		Current.zoomIn = size / (Current.MapSize * 0.075f) + 0.21f;
 	}
 
 }

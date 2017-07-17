@@ -221,6 +221,7 @@
     <Compile Include="Assets\Scripts\Common\MassMath.cs" />
     <Compile Include="Assets\Scripts\GFX\ControlerScale.cs" />
     <Compile Include="Assets\Scripts\GFX\GridCamera.cs" />
+    <Compile Include="Assets\Scripts\GFX\RenderChainLine.cs" />
     <Compile Include="Assets\Scripts\GFX\RenderLineBetweenTransforms.cs" />
     <Compile Include="Assets\Scripts\GFX\SelectionRing.cs" />
     <Compile Include="Assets\Scripts\GFX\TerrainMesh.cs" />
@@ -354,6 +355,7 @@
     <None Include="Assets\GFX\Shaders\RawImageNoAlpha.shader" />
     <None Include="Assets\GFX\Shaders\Selection.shader" />
     <None Include="Assets\GFX\Shaders\UI\UI-Add.shader" />
+    <None Include="Assets\GFX\Shaders\Unlit-Color.shader" />
     <None Include="Assets\PostProcessing\Editor Resources\Monitors\HistogramCompute.compute" />
     <None Include="Assets\PostProcessing\Editor Resources\Monitors\HistogramRender.shader" />
     <None Include="Assets\PostProcessing\Editor Resources\Monitors\ParadeRender.shader" />

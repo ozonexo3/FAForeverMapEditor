@@ -23,6 +23,7 @@ namespace EditMap
 		public GameObject ListPrefab;
 		public GameObject ListPrefab_Marker;
 		public List<ListObject> AllFields = new List<ListObject>();
+		public RenderChainLine RenderChainConnection;
 
 		public static int GetCurretnChain()
 		{
@@ -80,6 +81,7 @@ namespace EditMap
 		public void CleanMenu()
 		{
 			ChainSelected = -1;
+			RenderChainConnection.RenderChain = null;
 			UpdateList();
 
 		}
@@ -146,10 +148,11 @@ namespace EditMap
 
 				NewListObject.ObjectName.text = CurrentMarker.Name;
 				NewListObject.InstanceId = i;
-				NewListObject.ClickActionId = SelectMarker;
+				//NewListObject.ClickActionId = SelectMarker;
 				NewListObject.DragAction = DragEnded;
 
-				//NewListObject.ConnectedGameObject = CurrentMarker.MarkerObj.gameObject;
+				NewListObject.ConnectedGameObject = CurrentMarker.MarkerObj.gameObject;
+				NewListObject.ClickAction = Selection.SelectionManager.Current.SelectObject;
 
 				NewListObject.Icon.sprite = Markers.MarkersControler.GetIconByType(CurrentMarker.MarkerType);
 				AllFields.Add(NewListObject);
@@ -169,6 +172,7 @@ namespace EditMap
 			MapLuaParser.Current.SaveLuaFile.Data.Chains = Chains.ToArray();
 
 			ChainSelected = -1;
+			RenderChainConnection.RenderChain = null;
 
 			Selection.SelectionManager.Current.SetCustomSettings(true, false, false);
 			Selection.SelectionManager.Current.CleanSelection();
@@ -190,6 +194,7 @@ namespace EditMap
 			MapLuaParser.Current.SaveLuaFile.Data.Chains = Chains.ToArray();
 
 			ChainSelected = -1;
+			RenderChainConnection.RenderChain = null;
 
 			Selection.SelectionManager.Current.SetCustomSettings(true, false, false);
 			Selection.SelectionManager.Current.CleanSelection();
@@ -218,7 +223,10 @@ namespace EditMap
 			int count = MapLuaParser.Current.SaveLuaFile.Data.Chains[ChainSelected].ConnectedMarkers.Count;
 
 			if (AtId < 0 || ListObject.DragBeginId < 0 || AtId >= count || ListObject.DragBeginId >= count)
-				return;
+				return; // Wrong IDs
+
+			if (AtId == ListObject.DragBeginId)
+				return; // Same object
 
 			List<MapLua.SaveLua.Marker> NewMarkerList = new List<MapLua.SaveLua.Marker>();
 
@@ -265,9 +273,10 @@ namespace EditMap
 		public void ReturnFromChain()
 		{
 			ChainSelected = -1;
+			RenderChainConnection.RenderChain = null;
 			Selection.SelectionManager.Current.SetCustomSettings(true, false, false);
 			//Selection.SelectionManager.Current.CleanSelection();
-
+			RenderChainConnection.RenderChain = null;
 			UpdateList();
 		}
 
@@ -288,6 +297,9 @@ namespace EditMap
 			ChainSelected = i;
 
 			MapLuaParser.Current.SaveLuaFile.Data.Chains[i].BakeMarkers();
+			RenderChainConnection.RenderChain = MapLuaParser.Current.SaveLuaFile.Data.Chains[i];
+
+			//RenderChainConnection.Transforms = MapLuaParser.Current.SaveLuaFile.Data.Chains[i].con
 
 			UpdateList();
 		}
@@ -342,6 +354,7 @@ namespace EditMap
 		public void SelectMarker(int i)
 		{
 			// TODO Focus on marker
+
 		}
 
 	}

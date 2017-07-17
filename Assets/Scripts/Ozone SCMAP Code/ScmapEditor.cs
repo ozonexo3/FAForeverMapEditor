@@ -544,7 +544,7 @@ public class ScmapEditor : MonoBehaviour
 		return Pos;
 	}
 
-	public static Vector3 SnapToGridCenter(Vector3 Pos)
+	public static Vector3 SnapToGridCenter(Vector3 Pos, bool SampleHeight = false)
 	{
 		Pos.x += 0.1f;
 		//Pos.z += 0.1f;
@@ -560,6 +560,8 @@ public class ScmapEditor : MonoBehaviour
 		Pos.x -= 0.05f;
 		Pos.z -= 0.05f;
 
+		if (SampleHeight)
+			Pos.y = Current.Teren.SampleHeight(Pos);
 		return Pos;
 	}
 

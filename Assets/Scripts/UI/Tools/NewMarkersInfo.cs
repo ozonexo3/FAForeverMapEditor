@@ -144,9 +144,9 @@ namespace EditMap
 						NewPos = Positions[i] + Rotations[i] * Mpreset.Markers[m].Tr.localPosition;
 
 						if (SelectionManager.Current.SnapToGrid)
-							NewPos = ScmapEditor.SnapToGridCenter(NewPos);
+							NewPos = ScmapEditor.SnapToGridCenter(NewPos, true);
 
-						NewPos.y = ScmapEditor.Current.Teren.SampleHeight(NewPos);
+						//NewPos.y = ScmapEditor.Current.Teren.SampleHeight(NewPos);
 
 						MapLua.SaveLua.Marker NewMarker = new MapLua.SaveLua.Marker(Mpreset.Markers[m].MarkerType);
 						NewMarker.position = ScmapEditor.WorldPosToScmap(NewPos);
@@ -171,9 +171,9 @@ namespace EditMap
 					MapLua.SaveLua.Marker NewMarker = new MapLua.SaveLua.Marker(LastCreationType);
 
 					if (SelectionManager.Current.SnapToGrid)
-						Positions[i] = ScmapEditor.SnapToGridCenter(Positions[i]);
+						Positions[i] = ScmapEditor.SnapToGridCenter(Positions[i], true);
 
-					Positions[i].y = ScmapEditor.Current.Teren.SampleHeight(Positions[i]);
+					//Positions[i].y = ScmapEditor.Current.Teren.SampleHeight(Positions[i]);
 
 					ChainsList.AddToCurrentChain(NewMarker);
 
