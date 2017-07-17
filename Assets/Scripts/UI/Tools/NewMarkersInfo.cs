@@ -19,26 +19,40 @@ namespace EditMap
 
 		void OnEnable()
 		{
+			Selection.SelectionManager.Current.SetRemoveAction(DestroyMarkers);
+			Selection.SelectionManager.Current.SetSelectionChangeAction(SelectMarkers);
+
 			if (CreationId >= 0)
 				SelectCreateNew(CreationId);
 			GoToSelection();
-
-			Selection.SelectionManager.Current.SetRemoveAction(DestroyMarkers);
-			Selection.SelectionManager.Current.SetSelectionChangeAction(SelectMarkers);
 		}
 
 
 		void OnDisable()
 		{
-			Selection.SelectionManager.Current.ClearAffectedGameObjects();
+			if (MarkersInfo.MarkerPageChange)
+			{
+
+			}
+			else
+			{
+				Selection.SelectionManager.Current.ClearAffectedGameObjects();
+			}
 			PlacementManager.Clear();
 		}
 
 		public void GoToSelection()
 		{
+
+			if (!MarkersInfo.MarkerPageChange)
+			{
+				Selection.SelectionManager.Current.CleanSelection();
+			}
+
 			Selection.SelectionManager.Current.SetAffectedGameObjects(MarkersControler.GetMarkerObjects());
 			Selection.SelectionManager.Current.SetCustomSettings(true, true, true);
-			Selection.SelectionManager.Current.CleanSelection();
+
+
 			PlacementManager.Clear();
 			if(ChangeControlerType.Current)
 				ChangeControlerType.Current.UpdateButtons();
@@ -137,6 +151,8 @@ namespace EditMap
 						MapLua.SaveLua.Marker NewMarker = new MapLua.SaveLua.Marker(Mpreset.Markers[m].MarkerType);
 						NewMarker.position = ScmapEditor.WorldPosToScmap(NewPos);
 						MarkersControler.CreateMarker(NewMarker, mc);
+						ChainsList.AddToCurrentChain(NewMarker);
+
 
 						LastAddedMarkers.Add(TotalMarkersCount);
 						TotalMarkersCount++;
@@ -158,6 +174,8 @@ namespace EditMap
 						Positions[i] = ScmapEditor.SnapToGridCenter(Positions[i]);
 
 					Positions[i].y = ScmapEditor.Current.Teren.SampleHeight(Positions[i]);
+
+					ChainsList.AddToCurrentChain(NewMarker);
 
 					NewMarker.position = ScmapEditor.WorldPosToScmap(Positions[i]);
 					MarkersControler.CreateMarker(NewMarker, mc);
@@ -212,6 +230,7 @@ namespace EditMap
 				{
 					if(MarkerObjects[m] == MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers[i].MarkerObj.gameObject)
 					{
+						MapLua.SaveLua.RemoveMarkerName(MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers[i].Name);
 						Destroy(MarkerObjects[m]);
 						MarkerObjects.RemoveAt(m);
 						MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers[i] = null;

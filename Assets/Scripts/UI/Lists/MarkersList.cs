@@ -1,14 +1,15 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using EditMap;
 
 public class MarkersList : MonoBehaviour
 {
 
-	public MapLuaParser Scenario;
-	public CameraControler KameraKontroler;
-	public MarkersInfo MarkersMenu;
+	//public MapLuaParser Scenario;
+	//public CameraControler KameraKontroler;
+	//public MarkersInfo MarkersMenu;
 
 	public RectTransform Pivot;
 	public GameObject ListPrefab;
@@ -25,7 +26,8 @@ public class MarkersList : MonoBehaviour
 	int GeneratedCount = -1;
 	void OnDisable()
 	{
-		Clean();
+		if(!MarkersInfo.MarkerPageChange)
+			Clean();
 	}
 
 	public void UnselectAll()
@@ -70,12 +72,14 @@ public class MarkersList : MonoBehaviour
 			return;
 
 		}
+		
 		Clean();
 		GenerateList();
 	}
 
-	void Clean()
+	public void Clean()
 	{
+		//Debug.Log("Clean");
 		AllFields = new List<ListObject>();
 
 		foreach (RectTransform child in Pivot)
@@ -85,158 +89,81 @@ public class MarkersList : MonoBehaviour
 		Generated = false;
 	}
 
+
+
 	void GenerateList()
 	{
+		//Debug.Log("Regenerate");
 		int mc = 0;
 		if (MapLuaParser.Current.SaveLuaFile.Data.MasterChains.Length == 0)
 			return;
 
 		int Mcount = MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers.Count;
-		for (int i = 0; i < Mcount; i++)
+		int TypesCount = (int)MapLua.SaveLua.Marker.MarkerTypes.Count;
+
+		MapLua.SaveLua.Marker CurrentMarker;
+		GameObject newList;
+		ListObject NewListObject;
+		int t = 0;
+		int i = 0;
+
+		List<GameObject> AllObjectsList = new List<GameObject>();
+		for (t = 0; t < TypesCount; t++)
 		{
-			MapLua.SaveLua.Marker CurrentMarker = MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers[i];
-			if (CurrentMarker == null || CurrentMarker.MarkerObj == null)
-				continue;
+			List<GameObject> ObjectToSort = new List<GameObject>();
 
-			GameObject newList = Instantiate(ListPrefab, Pivot.position, Quaternion.identity) as GameObject;
-			newList.GetComponent<RectTransform>().SetParent(Pivot);
-			//newList.GetComponent<RectTransform>().localPosition = Vector3.up * -30 * count;
-			//newList.GetComponent<RectTransform>().sizeDelta = new Vector3(1, 30);
-
-			ListObject NewListObject = newList.GetComponent<ListObject>();
-
-
-			//int a = Scenario.MarkerRend.Armys[i].GetComponent<MarkerData>().InstanceId;
-			NewListObject.ObjectName.text = CurrentMarker.Name;
-			NewListObject.InstanceId = i;
-			NewListObject.ListId = 0;
-			NewListObject.ConnectedGameObject = CurrentMarker.MarkerObj.gameObject;
-			NewListObject.ClickAction = Selection.SelectionManager.Current.SelectObject;
-
-			if (Selection.SelectionManager.Current.Selection.Ids.Contains(i))
-				NewListObject.SetSelection(1);
-			else
+			for (i = 0; i < Mcount; i++)
 			{
-				NewListObject.SetSelection(0);
+				CurrentMarker = MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers[i];
+				if ((int)CurrentMarker.MarkerType != t)
+					continue; 
 
-				if (Selection.SelectionManager.Current.SymetrySelection.Length > 0)
+				if (CurrentMarker == null || CurrentMarker.MarkerObj == null)
+					continue;
+
+				newList = Instantiate(ListPrefab, Pivot.position, Quaternion.identity) as GameObject;
+				newList.GetComponent<RectTransform>().SetParent(Pivot);
+				newList.name = CurrentMarker.Name;
+				ObjectToSort.Add(newList);
+
+				NewListObject = newList.GetComponent<ListObject>();
+				AllFields.Add(NewListObject);
+				NewListObject.ObjectName.text = CurrentMarker.Name;
+				NewListObject.InstanceId = i;
+				NewListObject.ListId = 0;
+				NewListObject.ConnectedGameObject = CurrentMarker.MarkerObj.gameObject;
+				NewListObject.ClickAction = Selection.SelectionManager.Current.SelectObject;
+
+				if (Selection.SelectionManager.Current.Selection.Ids.Contains(i))
+					NewListObject.SetSelection(1);
+				else
 				{
-					for(int s = 0; s < Selection.SelectionManager.Current.SymetrySelection.Length; s++)
+					NewListObject.SetSelection(0);
+
+					if (Selection.SelectionManager.Current.SymetrySelection.Length > 0)
 					{
-						if(Selection.SelectionManager.Current.SymetrySelection[s].Ids.Contains(i))
-							NewListObject.SetSelection(2);
+						for (int s = 0; s < Selection.SelectionManager.Current.SymetrySelection.Length; s++)
+						{
+							if (Selection.SelectionManager.Current.SymetrySelection[s].Ids.Contains(i))
+								NewListObject.SetSelection(2);
+						}
 					}
 				}
+
+				NewListObject.Icon.sprite = Markers.MarkersControler.GetIconByType(CurrentMarker.MarkerType);
 			}
 
-			NewListObject.Icon.sprite = Markers.MarkersControler.GetIconByType(CurrentMarker.MarkerType);
-
-			/*if (CurrentMarker.MarkerType == MapLua.SaveLua.Marker.MarkerTypes.BlankMarker)
-				NewListObject.Icon.sprite = Icons[0];
-			else if (CurrentMarker.MarkerType == MapLua.SaveLua.Marker.MarkerTypes.Mass)
-				NewListObject.Icon.sprite = Icons[1];
-			else if (CurrentMarker.MarkerType == MapLua.SaveLua.Marker.MarkerTypes.Hydrocarbon)
-				NewListObject.Icon.sprite = Icons[2];
-			else
-				NewListObject.Icon.sprite = Icons[3];*/
-
-			AllFields.Add(NewListObject);
+			AllObjectsList.AddRange(ObjectToSort.OrderBy(go => go.name));
 		}
+
+		int ListCount = AllObjectsList.Count;
+		for (i = 0; i < ListCount; i++)
+		{
+			AllObjectsList[i].transform.SetSiblingIndex(i);
+		}
+
 		Generated = true;
 		GeneratedCount = AllFields.Count;
-
-		/*
-		int count = 0;
-		for (int i = 0; i < Scenario.MarkerRend.Armys.Count; i++)
-		{
-			if (Scenario.ARMY_[i].Hidden)
-				continue;
-			GameObject newList = Instantiate(ListPrefab, Pivot.position, Quaternion.identity) as GameObject;
-			newList.GetComponent<RectTransform>().SetParent(Pivot);
-			newList.GetComponent<RectTransform>().localPosition = Vector3.up * -30 * count;
-			newList.GetComponent<RectTransform>().sizeDelta = new Vector3(1, 30);
-			AllFields.Add(newList.GetComponent<ListObject>());
-
-			int a = Scenario.MarkerRend.Armys[i].GetComponent<MarkerData>().InstanceId;
-			AllFields[count].ObjectName.text = Scenario.ARMY_[a].name;
-			AllFields[count].Icon.sprite = Icons[0];
-			AllFields[count].KameraKontroler = KameraKontroler;
-			AllFields[count].InstanceId = i;
-			AllFields[count].ListId = 0;
-			AllFields[count].ConnectedGameObject = Scenario.MarkerRend.Armys[i];
-			if (MarkersMenu.IsSelected(0, i)) AllFields[count].SetSelection(1);
-			else if (MarkersMenu.IsSymmetrySelected(0, i)) AllFields[count].SetSelection(2);
-			else AllFields[count].SetSelection(0);
-
-			count++;
-		}
-
-		for (int i = 0; i < Scenario.Mexes.Count; i++)
-		{
-			GameObject newList = Instantiate(ListPrefab, Pivot.position, Quaternion.identity) as GameObject;
-			newList.GetComponent<RectTransform>().SetParent(Pivot);
-			newList.GetComponent<RectTransform>().localPosition = Vector3.up * -30 * count;
-			newList.GetComponent<RectTransform>().sizeDelta = new Vector3(1, 30);
-
-			AllFields.Add(newList.GetComponent<ListObject>());
-			AllFields[count].ObjectName.text = Scenario.Mexes[i].name;
-			AllFields[count].Icon.sprite = Icons[1];
-			AllFields[count].KameraKontroler = KameraKontroler;
-			AllFields[count].InstanceId = i;
-			AllFields[count].ListId = 1;
-			AllFields[count].ConnectedGameObject = Scenario.MarkerRend.Mex[i];
-
-			if (MarkersMenu.IsSelected(1, i)) AllFields[count].SetSelection(1);
-			else if (MarkersMenu.IsSymmetrySelected(1, i)) AllFields[count].SetSelection(2);
-			else AllFields[count].SetSelection(0);
-
-			count++;
-		}
-
-		for (int i = 0; i < Scenario.Hydros.Count; i++)
-		{
-			GameObject newList = Instantiate(ListPrefab, Pivot.position, Quaternion.identity) as GameObject;
-			newList.GetComponent<RectTransform>().SetParent(Pivot);
-			newList.GetComponent<RectTransform>().localPosition = Vector3.up * -30 * count;
-			newList.GetComponent<RectTransform>().sizeDelta = new Vector3(1, 30);
-			AllFields.Add(newList.GetComponent<ListObject>());
-			AllFields[count].ObjectName.text = Scenario.Hydros[i].name;
-			AllFields[count].Icon.sprite = Icons[2];
-			AllFields[count].KameraKontroler = KameraKontroler;
-			AllFields[count].InstanceId = i;
-			AllFields[count].ListId = 2;
-			AllFields[count].ConnectedGameObject = Scenario.MarkerRend.Hydro[i];
-
-			if (MarkersMenu.IsSelected(2, i)) AllFields[count].SetSelection(1);
-			else if (MarkersMenu.IsSymmetrySelected(2, i)) AllFields[count].SetSelection(2);
-			else AllFields[count].SetSelection(0);
-
-			count++;
-		}
-
-		for (int i = 0; i < Scenario.SiMarkers.Count; i++)
-		{
-			GameObject newList = Instantiate(ListPrefab, Pivot.position, Quaternion.identity) as GameObject;
-			newList.GetComponent<RectTransform>().SetParent(Pivot);
-			newList.GetComponent<RectTransform>().localPosition = Vector3.up * -30 * count;
-			newList.GetComponent<RectTransform>().sizeDelta = new Vector3(1, 30);
-			AllFields.Add(newList.GetComponent<ListObject>());
-			AllFields[count].ObjectName.text = Scenario.SiMarkers[i].name;
-			AllFields[count].Icon.sprite = Icons[3];
-			AllFields[count].KameraKontroler = KameraKontroler;
-			AllFields[count].InstanceId = i;
-			AllFields[count].ListId = 3;
-			AllFields[count].ConnectedGameObject = Scenario.MarkerRend.Ai[i];
-
-			if (MarkersMenu.IsSelected(3, i)) AllFields[count].SetSelection(1);
-			else if (MarkersMenu.IsSymmetrySelected(3, i)) AllFields[count].SetSelection(2);
-			else AllFields[count].SetSelection(0);
-			count++;
-		}
-
-		Vector2 PivotRect = Pivot.sizeDelta;
-		PivotRect.y = 30 * count;
-		Pivot.sizeDelta = PivotRect;
-		*/
+		Debug.Log(GeneratedCount + " / " + MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers.Count);
 	}
 }

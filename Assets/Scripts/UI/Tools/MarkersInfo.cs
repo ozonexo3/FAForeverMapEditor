@@ -18,11 +18,17 @@ namespace EditMap
 		public GameObject[] Selection;
 		public GameObject[] Page;
 		public ChainsList ChainsInfo;
+		public MarkersList MarkerList;
 
 		void OnEnable()
 		{
 			ChangePage(CurrentPage);
 
+		}
+
+		void OnDisable()
+		{
+			MarkerList.Clean();
 		}
 
 		public int GetCurrentPage()
@@ -37,8 +43,10 @@ namespace EditMap
 
 		int PreviousPage = 0;
 		int CurrentPage = 0;
+		public static bool MarkerPageChange = false;
 		public void ChangePage(int PageId)
 		{
+			MarkerPageChange = true;
 			if (CurrentPage == PageId)
 				return;
 			PreviousPage = CurrentPage;
@@ -52,7 +60,7 @@ namespace EditMap
 
 			Page[CurrentPage].SetActive(true);
 			Selection[CurrentPage].SetActive(true);
-
+			MarkerPageChange = false;
 		}
 
 	}

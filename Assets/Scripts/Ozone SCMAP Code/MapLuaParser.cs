@@ -260,10 +260,11 @@ public class MapLuaParser : MonoBehaviour {
 	{
 		if (string.IsNullOrEmpty(FolderName) || string.IsNullOrEmpty(ScenarioFileName))
 			return;
-
+		SavingMapProcess = true;
 		StartCoroutine(SaveMapProcess());
 	}
 
+	public static bool SavingMapProcess = false;
 	public IEnumerator SaveMapProcess(){
 
 		InfoPopup.Show(true, "Saving map...");
@@ -300,6 +301,7 @@ public class MapLuaParser : MonoBehaviour {
 		yield return null;
 
 		InfoPopup.Show(false);
+		SavingMapProcess = false;
 	}
 
 	public void SaveScmap(){

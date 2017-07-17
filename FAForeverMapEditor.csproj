@@ -318,6 +318,7 @@
     <Compile Include="Assets\Scripts\UI\Windows\GenericInfoPopup.cs" />
     <Compile Include="Assets\Scripts\UI\Windows\LastMapsPopup.cs" />
     <Compile Include="Assets\Scripts\UI\Windows\MoveWindow.cs" />
+    <Compile Include="Assets\Scripts\UI\Windows\OnFafEditorQuit.cs" />
     <Compile Include="Assets\Scripts\UI\Windows\ResourceBrowser.cs" />
     <Compile Include="Assets\Scripts\UI\Windows\SearchMapPopup.cs" />
     <Compile Include="Assets\Scripts\UI\Windows\SymmetryWindow.cs" />

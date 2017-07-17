@@ -83,7 +83,7 @@ namespace MapLua
 				string newstring = "";
 				for (int i = 0; i < str1.Length; i++)
 				{
-					if (char.IsUpper(str1[i]))
+					if (i > 0 && char.IsUpper(str1[i]))
 						newstring += " ";
 					newstring += str1[i].ToString();
 				}
@@ -281,6 +281,12 @@ namespace MapLua
 				AllExistingNames.Add(MarkerName);
 		}
 
+		public static void RemoveMarkerName(string MarkerName)
+		{
+			AllExistingNames.Remove(MarkerName);
+
+		}
+
 		public static string GetLowestName(Marker.MarkerTypes Type)
 		{
 			string prefix = "";
@@ -288,7 +294,7 @@ namespace MapLua
 				prefix = Marker.MarkerTypeToString(Type) + " ";
 			else
 			{
-				prefix = prefix.ToString() + "_";
+				prefix = Type.ToString() + "_";
 			}
 
 			int ID = 0;

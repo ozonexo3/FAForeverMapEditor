@@ -54,12 +54,12 @@ namespace Selection
 
 		public void SetCustomSettings(bool _Selection = true, bool _Symmetry = true, bool _Remove = true)
 		{
-			if (AllowSymmetry != _Selection && !_Selection)
-				CleanSelection();
-			else if(AllowSymmetry != _Symmetry && !_Symmetry)
-				CleanSelection();
-			else if (AllowRemove != _Remove && !_Remove)
-				CleanSelection();
+			if (AllowSymmetry != _Selection)
+				FinishSelectionChange();
+			else if(AllowSymmetry != _Symmetry)
+				FinishSelectionChange();
+			else if (AllowRemove != _Remove)
+				FinishSelectionChange();
 
 			AllowSelection = _Selection;
 			AllowSymmetry = _Symmetry;
