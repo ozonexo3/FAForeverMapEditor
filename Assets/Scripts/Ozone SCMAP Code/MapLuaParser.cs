@@ -261,13 +261,14 @@ public class MapLuaParser : MonoBehaviour {
 		if (string.IsNullOrEmpty(FolderName) || string.IsNullOrEmpty(ScenarioFileName))
 			return;
 		SavingMapProcess = true;
+		InfoPopup.Show(true, "Saving map...");
+
 		StartCoroutine(SaveMapProcess());
 	}
 
 	public static bool SavingMapProcess = false;
 	public IEnumerator SaveMapProcess(){
 
-		InfoPopup.Show(true, "Saving map...");
 		yield return null;
 
 		string MapPath = EnvPaths.GetMapsPath ();
@@ -275,7 +276,7 @@ public class MapLuaParser : MonoBehaviour {
 		BackupPath = MapPath + FolderName + "/Backup_" + BackupId;
 
 		System.IO.Directory.CreateDirectory(BackupPath);
-
+		yield return null;
 
 		// Scenario.lua
 		string ScenarioFilePath = EnvPaths.GetMapsPath() + FolderName + "/" + ScenarioFileName + ".lua";

@@ -45,6 +45,7 @@ namespace MapLua
 			public const string KEY_SCRIPT = "script";
 			public const string KEY_SIZE = "size";
 			public const string KEY_CONFIGURATIONS = "Configurations";
+			public const string KEY_EXTRAARMIES = "ExtraArmies";
 		}
 
 		[System.Serializable]

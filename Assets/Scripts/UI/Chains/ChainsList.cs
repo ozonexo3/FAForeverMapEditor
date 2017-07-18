@@ -54,7 +54,7 @@ namespace EditMap
 
 			Selection.SelectionManager.Current.SetSelectionChangeAction(SelectMarkers);
 
-			Selection.SelectionManager.Current.SetAffectedGameObjects(MarkersControler.GetMarkerObjects(), false, false, false, false);
+			Selection.SelectionManager.Current.SetAffectedGameObjects(MarkersControler.GetMarkerObjects(), true, false, false, false);
 			Selection.SelectionManager.Current.SetCustomSettings(true, false, false);
 			//ChainSelected = -1;
 

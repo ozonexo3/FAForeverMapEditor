@@ -46,9 +46,10 @@ namespace EditMap
 		public static bool MarkerPageChange = false;
 		public void ChangePage(int PageId)
 		{
-			MarkerPageChange = true;
-			if (CurrentPage == PageId)
+			if (CurrentPage == PageId && Page[CurrentPage].activeSelf && Selection[CurrentPage].activeSelf)
 				return;
+			MarkerPageChange = true;
+
 			PreviousPage = CurrentPage;
 			CurrentPage = PageId;
 

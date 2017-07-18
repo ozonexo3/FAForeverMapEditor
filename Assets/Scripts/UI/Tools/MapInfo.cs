@@ -15,9 +15,49 @@ namespace EditMap
 		public Toggle SaveAsFa;
 
 
+		int PreviousPage = 0;
+		int CurrentPage = 0;
+		public GameObject[] Selection;
+		public GameObject[] Page;
+
+		#region Page
+		public int GetCurrentPage()
+		{
+			return CurrentPage;
+		}
+
+
+		public int PreviousCurrentPage()
+		{
+			return PreviousPage;
+		}
+
+		public static bool MapPageChange = false;
+		public void ChangePage(int PageId)
+		{
+			if (CurrentPage == PageId && Page[CurrentPage].activeSelf && Selection[CurrentPage].activeSelf)
+				return;
+			MapPageChange = true;
+
+			PreviousPage = CurrentPage;
+			CurrentPage = PageId;
+
+			for (int i = 0; i < Page.Length; i++)
+			{
+				Page[i].SetActive(false);
+				Selection[i].SetActive(false);
+			}
+
+			Page[CurrentPage].SetActive(true);
+			Selection[CurrentPage].SetActive(true);
+			MapPageChange = false;
+		}
+		#endregion
+
 		void OnEnable()
 		{
 			UpdateFields();
+			ChangePage(CurrentPage);
 		}
 
 		public void UpdateFields()
