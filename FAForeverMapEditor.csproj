@@ -287,6 +287,7 @@
     <Compile Include="Assets\Scripts\UI\Chains\ChainsList.cs" />
     <Compile Include="Assets\Scripts\UI\Editing.cs" />
     <Compile Include="Assets\Scripts\UI\FafEditorSettings.cs" />
+    <Compile Include="Assets\Scripts\UI\GenericPopup\GenericPopup.cs" />
     <Compile Include="Assets\Scripts\UI\Lists\ArmyIdButton.cs" />
     <Compile Include="Assets\Scripts\UI\Lists\ArmyListId.cs" />
     <Compile Include="Assets\Scripts\UI\Lists\ArmyMinimapButton.cs" />

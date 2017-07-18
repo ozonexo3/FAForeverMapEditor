@@ -288,6 +288,11 @@ namespace MapLua
 
 		}
 
+		public static bool NameExist(string name)
+		{
+			return AllExistingNames.Contains(name);
+		}
+
 		public static string GetLowestName(Marker.MarkerTypes Type)
 		{
 			string prefix = "";

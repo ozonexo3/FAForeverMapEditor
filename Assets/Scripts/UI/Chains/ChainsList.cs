@@ -107,9 +107,10 @@ namespace EditMap
 
 		void Clean()
 		{
+			AllFields = new List<ListObject>();
+
 			foreach (RectTransform child in Pivot)
 			{
-				AllFields = new List<ListObject>();
 				Destroy(child.gameObject);
 			}
 		}
@@ -263,7 +264,7 @@ namespace EditMap
 			//TODO
 		}
 
-		public void DragEnded(int AtId)
+		public void DragEnded(ListObject AtId)
 		{
 			if (ChainSelected < 0)
 				return;
@@ -271,7 +272,7 @@ namespace EditMap
 
 			int count = MapLuaParser.Current.SaveLuaFile.Data.Chains[ChainSelected].ConnectedMarkers.Count;
 
-			if (AtId < 0 || ListObject.DragBeginId < 0 || AtId >= count || ListObject.DragBeginId >= count)
+			if (AtId.InstanceId < 0 || ListObject.DragBeginId.InstanceId < 0 || AtId.InstanceId >= count || ListObject.DragBeginId.InstanceId >= count)
 				return; // Wrong IDs
 
 			if (AtId == ListObject.DragBeginId)
@@ -281,21 +282,21 @@ namespace EditMap
 
 			for (int i = 0; i < count; i++)
 			{
-				if (i == AtId)
+				if (i == AtId.InstanceId)
 				{
-					if (ListObject.DragBeginId > AtId)
+					if (ListObject.DragBeginId.InstanceId > AtId.InstanceId)
 					{
-						NewMarkerList.Add(MapLuaParser.Current.SaveLuaFile.Data.Chains[ChainSelected].ConnectedMarkers[ListObject.DragBeginId]);
+						NewMarkerList.Add(MapLuaParser.Current.SaveLuaFile.Data.Chains[ChainSelected].ConnectedMarkers[ListObject.DragBeginId.InstanceId]);
 						NewMarkerList.Add(MapLuaParser.Current.SaveLuaFile.Data.Chains[ChainSelected].ConnectedMarkers[i]);
 					}
 					else
 					{
 						NewMarkerList.Add(MapLuaParser.Current.SaveLuaFile.Data.Chains[ChainSelected].ConnectedMarkers[i]);
-						NewMarkerList.Add(MapLuaParser.Current.SaveLuaFile.Data.Chains[ChainSelected].ConnectedMarkers[ListObject.DragBeginId]);
+						NewMarkerList.Add(MapLuaParser.Current.SaveLuaFile.Data.Chains[ChainSelected].ConnectedMarkers[ListObject.DragBeginId.InstanceId]);
 					}
 
 				}
-				else if (i == ListObject.DragBeginId)
+				else if (i == ListObject.DragBeginId.InstanceId)
 				{
 					//i++;
 					//NewMarkerList.Add(MapLuaParser.Current.SaveLuaFile.Data.Chains[ChainSelected].ConnectedMarkers[i]);
@@ -433,31 +434,26 @@ namespace EditMap
 			ChainSelected = -1;
 			RenderChainConnection.RenderChain = null;
 			Selection.SelectionManager.Current.SetCustomSettings(true, false, false);
-			//Selection.SelectionManager.Current.CleanSelection();
 			RenderChainConnection.RenderChain = null;
 			UpdateList();
 		}
 
+
+
+		public void SelectChain(ListObject i)
+		{
+			SelectChain(i.InstanceId);
+
+		}
+
 		public void SelectChain(int i)
 		{
-
 			Selection.SelectionManager.Current.SetCustomSettings(true, false, false);
-			//Selection.SelectionManager.Current.CleanSelection();
-
-			/*
-			int Mcount = MapLuaParser.Current.SaveLuaFile.Data.Chains[i].ConnectedMarkers.Count;
-			for (int m = 0; m < Mcount; m++) {
-				if(MapLuaParser.Current.SaveLuaFile.Data.Chains[i].ConnectedMarkers[m] != null && MapLuaParser.Current.SaveLuaFile.Data.Chains[i].ConnectedMarkers[m].MarkerObj != null)
-				Selection.SelectionManager.Current.SelectObjectAdd(MapLuaParser.Current.SaveLuaFile.Data.Chains[i].ConnectedMarkers[m].MarkerObj.gameObject);
-			}
-			*/
 
 			ChainSelected = i;
 
-			MapLuaParser.Current.SaveLuaFile.Data.Chains[i].BakeMarkers();
-			RenderChainConnection.RenderChain = MapLuaParser.Current.SaveLuaFile.Data.Chains[i];
-
-			//RenderChainConnection.Transforms = MapLuaParser.Current.SaveLuaFile.Data.Chains[i].con
+			MapLuaParser.Current.SaveLuaFile.Data.Chains[ChainSelected].BakeMarkers();
+			RenderChainConnection.RenderChain = MapLuaParser.Current.SaveLuaFile.Data.Chains[ChainSelected];
 
 			UpdateList();
 		}

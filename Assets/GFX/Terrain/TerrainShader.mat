@@ -223,11 +223,11 @@ Material:
     - _AreaY: 1.05
     - _Brush: 0
     - _BrushSize: 0
-    - _BrushUvX: 0.30047205
-    - _BrushUvY: 0.34550664
+    - _BrushUvX: 0.060768783
+    - _BrushUvY: 0.77869856
     - _DeepLevel: 1.675625
     - _Grid: 0
-    - _GridCamDist: 0.037342858
+    - _GridCamDist: 0.35825688
     - _GridScale: 51.2
     - _LightingMultiplier: 1.43
     - _LowerScale: 128

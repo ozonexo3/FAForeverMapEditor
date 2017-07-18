@@ -4,13 +4,13 @@ using UnityEngine;
 
 public class TeamListObject : MonoBehaviour {
 
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
+	public Transform Pivot;
+	public int InstanceId;
+
+	public System.Action<TeamListObject> AddAction;
+
+	public void AddNew()
+	{
+		AddAction(this);
 	}
 }

@@ -13,13 +13,17 @@ public class ListObject : MonoBehaviour {
 	public		int					ListId;
 	public		GameObject			ConnectedGameObject;
 	public System.Action<GameObject> ClickAction;
-	public System.Action<int> ClickActionId;
-	public System.Action<int> DragAction;
+	public System.Action<ListObject> ClickActionId;
+	public System.Action<ListObject> ClickApplyActionId;
+	public System.Action<ListObject> ClickCloseActionId;
+	public System.Action<ListObject> DragAction;
 	public CanvasGroup Cg;
 
 	public void SetSelection(int id){
-		Selected.SetActive(id == 1);
-		SymmetrySelected.SetActive(id == 2);
+		if(Selected)
+			Selected.SetActive(id == 1);
+		if(SymmetrySelected)
+			SymmetrySelected.SetActive(id == 2);
 	}
 
 	public void Unselect(){
@@ -38,22 +42,34 @@ public class ListObject : MonoBehaviour {
 		//Selection.SelectionManager.Current.SelectObject(ConnectedGameObject);
 		else
 		{
-			ClickActionId(InstanceId);
+			ClickActionId(this);
 		}
 	}
 
-	public static int DragBeginId = -1;
+	public void ClickedClose()
+	{
+		if (ClickCloseActionId != null)
+			ClickCloseActionId(this);
+	}
+
+	public void Apply()
+	{
+		ClickApplyActionId(this);
+	}
+
+#region Drag
+	public static ListObject DragBeginId;
 
 	public void DropObject()
 	{
 		//Debug.Log("Drop");
-		DragAction(InstanceId);
+		DragAction(this);
 
 	}
 
 	public void InitializeDrag()
 	{
-		DragBeginId = InstanceId;
+		DragBeginId = this;
 	}
 
 	public void BeginDrag()
@@ -71,4 +87,5 @@ public class ListObject : MonoBehaviour {
 		//Debug.Log("EndDrag");
 		Cg.alpha = 1f;
 	}
+#endregion
 }
