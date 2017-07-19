@@ -204,7 +204,10 @@ namespace EditMap
 					}
 				}
 
-				NewListObject.Icon.sprite = Markers.MarkersControler.GetIconByType(CurrentMarker.MarkerType);
+				if (CurrentMarker.MarkerType == MapLua.SaveLua.Marker.MarkerTypes.BlankMarker && ArmyInfo.ArmyExist(CurrentMarker.Name))
+					NewListObject.Icon.sprite = Markers.MarkersControler.Current.SpawnGraphic.Icon;
+				else
+					NewListObject.Icon.sprite = Markers.MarkersControler.GetIconByType(CurrentMarker.MarkerType);
 				AllFields.Add(NewListObject);
 			}
 		}

@@ -11,6 +11,7 @@ namespace Markers
 		public static MarkersControler Current;
 
 		public GameObject MarkerPrefab;
+		public MarkerPropGraphic SpawnGraphic;
 		public MarkerPropGraphic[] MarkerPropGraphics;
 
 		public Transform[] MasterChains;
@@ -111,7 +112,11 @@ namespace Markers
 			NewObj.Owner = Owner;
 			Owner.MarkerObj = NewObj;
 
-			MarkerPropGraphic PropGraphic = GetPropByType(Owner.MarkerType);
+			MarkerPropGraphic PropGraphic;
+			if (Owner.MarkerType == MapLua.SaveLua.Marker.MarkerTypes.BlankMarker && ArmyInfo.ArmyExist(Owner.Name))
+				PropGraphic = Current.SpawnGraphic;
+			else
+				PropGraphic = GetPropByType(Owner.MarkerType);
 			NewObj.Mf.sharedMesh = PropGraphic.SharedMesh;
 			NewObj.Mr.sharedMaterial = PropGraphic.SharedMaterial;
 			NewObj.Bc.size = PropGraphic.SharedMesh.bounds.size;
@@ -121,9 +126,87 @@ namespace Markers
 			NewObj.Tr.localRotation = Quaternion.Euler(Owner.orientation);
 		}
 
+
+#region Refresh
+		public static void UpdateGraphics(MapLua.SaveLua.Marker Owner, int mc)
+		{
+			MarkerPropGraphic PropGraphic;
+			if (Owner.MarkerType == MapLua.SaveLua.Marker.MarkerTypes.BlankMarker && ArmyInfo.ArmyExist(Owner.Name))
+				PropGraphic = Current.SpawnGraphic;
+			else
+				PropGraphic = GetPropByType(Owner.MarkerType);
+
+			Owner.MarkerObj.Mf.sharedMesh = PropGraphic.SharedMesh;
+			Owner.MarkerObj.Mr.sharedMaterial = PropGraphic.SharedMaterial;
+			Owner.MarkerObj.Bc.size = PropGraphic.SharedMesh.bounds.size;
+			Owner.MarkerObj.Bc.center = PropGraphic.SharedMesh.bounds.center;
+		}
+
+		public static void UpdateBlankMarkersGraphics()
+		{
+			for (int mc = 0; mc < MapLuaParser.Current.SaveLuaFile.Data.MasterChains.Length; mc++)
+			{
+				int Mcount = MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers.Count;
+				for (int m = 0; m < Mcount; m++)
+				{
+					if (MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers[m].MarkerObj == null)
+					{
+						UpdateGraphics(MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers[m], mc);
+					}
+				}
+			}
+		}
+
+
+		public static int RecreateMarker(int mc, MapLua.SaveLua.Marker Marker, int Insert = -1)
+		{
+			CreateMarker(Marker, mc);
+
+			if (Insert >= 0 && Insert <= MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers.Count)
+			{
+				MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers.Insert(Insert, Marker);
+				return Insert;
+			}
+			else
+			{
+				MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers.Add(Marker);
+				return MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers.Count - 1;
+			}
+
+			int ChainsCount = Marker.ConnectedToChains.Count;
+			for (int c = 0; c < ChainsCount; c++)
+			{
+				if (Marker.ConnectedToChains[c] != null && !Marker.ConnectedToChains[c].ConnectedMarkers.Contains(Marker))
+				{
+					Marker.ConnectedToChains[c].ConnectedMarkers.Add(Marker);
+				}
+			}
+
+		}
+
+		public static void RegenerateMarkers()
+		{
+			for (int mc = 0; mc < MapLuaParser.Current.SaveLuaFile.Data.MasterChains.Length; mc++)
+			{
+				int Mcount = MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers.Count;
+				for (int m = 0; m < Mcount; m++)
+				{
+					if (MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers[m].MarkerObj == null)
+						CreateMarker(MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers[m], mc);
+				}
+			}
+		}
+
+		#endregion
+
+		#region Public functions
 		public static MarkerPropGraphic GetPropByType(MapLua.SaveLua.Marker.MarkerTypes mType)
 		{
-			for(int i = 0; i < Current.MarkerPropGraphics.Length; i++)
+
+			if (mType == MapLua.SaveLua.Marker.MarkerTypes.BlankMarker && ArmyInfo.ArmyExist(mType.ToString()))
+				return Current.SpawnGraphic;
+
+			for (int i = 0; i < Current.MarkerPropGraphics.Length; i++)
 			{
 				if(Current.MarkerPropGraphics[i].mType == mType)
 				{
@@ -147,59 +230,12 @@ namespace Markers
 			return Current.MarkerPropGraphics[0].Icon;
 
 		}
-
-		public static void RemoveMarker(int mc, int i)
-		{
-			// TODO
-
-		}
-
-		public static void AddMarker(int mc, MapLua.SaveLua.Marker.MarkerTypes MarkerType, int Insert = -1)
-		{
-			// TODO
+		#endregion
 
 
-		}
 
-		public static int RecreateMarker(int mc, MapLua.SaveLua.Marker Marker, int Insert = -1)
-		{
-			CreateMarker(Marker, mc);
 
-			if (Insert >= 0 && Insert <= MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers.Count)
-			{
-				MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers.Insert(Insert, Marker);
-				return Insert;
-			}
-			else
-			{
-				MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers.Add(Marker);
-				return MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers.Count - 1;
-			}
-
-			int ChainsCount = Marker.ConnectedToChains.Count;
-			for(int c = 0; c < ChainsCount; c++)
-			{
-				if(Marker.ConnectedToChains[c] != null && !Marker.ConnectedToChains[c].ConnectedMarkers.Contains(Marker))
-				{
-					Marker.ConnectedToChains[c].ConnectedMarkers.Add(Marker);
-				}
-			}
-
-		}
-
-		public static void RegenerateMarkers()
-		{
-			for (int mc = 0; mc < MapLuaParser.Current.SaveLuaFile.Data.MasterChains.Length; mc++)
-			{
-				int Mcount = MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers.Count;
-				for (int m = 0; m < Mcount; m++)
-				{
-					if(MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers[m].MarkerObj == null)
-						CreateMarker(MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers[m], mc);
-				}
-			}
-		}
-
+#region Update
 
 		static bool UpdatingMarkers = false;
 		static bool BufforMarkersUpdate = false;
@@ -246,7 +282,7 @@ namespace Markers
 
 			yield return null;
 		}
-
+#endregion
 
 	}
 }

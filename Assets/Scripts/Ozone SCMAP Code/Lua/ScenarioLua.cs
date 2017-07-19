@@ -30,7 +30,7 @@ namespace MapLua
 			public int[] Size = new int[0];
 			public float MaxHeight = 128;
 			public float norushradius = 40;
-			public NoRusnOffset[] NoRushOffsets = new NoRusnOffset[0];
+			//public NoRusnOffset[] NoRushOffsets = new NoRusnOffset[0];
 			public Configuration[] Configurations = new Configuration[0];
 
 			public const string KEY_NAME = "name";
@@ -54,7 +54,32 @@ namespace MapLua
 			public string name;
 			public Team[] Teams = new Team[0];
 			public CustomProps[] customprops = new CustomProps[0];
+			public List<Army> ExtraArmys = new List<Army>();
 			public Factions[] factions = new Factions[0];
+
+			public void ArmysFromCustomProps(LuaTable Table)
+			{
+				string[] Names = new string[0];
+				for(int i = 0; i < customprops.Length; i++)
+				{
+					if(customprops[i].key == ScenarioInfo.KEY_EXTRAARMIES)
+					{
+						Names = customprops[i].value.Split(" ".ToCharArray());
+						break;
+					}
+				}
+
+				for(int i = 0; i < Names.Length; i++)
+				{
+					Army NewArmy = new Army();
+					NewArmy.Name = Names[i];
+					NewArmy.NoRush = new NoRusnOffset();
+					NewArmy.NoRush.X = LuaParser.Read.FloatFromTable(Table, NoRusnOffset.VALUE_X + NewArmy.Name, 0);
+					NewArmy.NoRush.Y = LuaParser.Read.FloatFromTable(Table, NoRusnOffset.VALUE_Y + NewArmy.Name, 0);
+
+					ExtraArmys.Add(NewArmy);
+				}
+			}
 
 			public const string KEY_TEAMS = "teams";
 			public const string KEY_CUSTOMPROPS = "customprops";
@@ -66,11 +91,45 @@ namespace MapLua
 		public class Team
 		{
 			public string name = "";
-			public string[] Armys = new string[0];
+			//public string[] Armys = new string[0];
+			public List<Army> Armys = new List<Army>();
+
+			public void ArmysFromStringArray(string[] Array, LuaTable Table)
+			{
+				Armys = new List<Army>();
+				for (int i = 0; i < Array.Length; i++)
+				{
+					Army NewArmy = new Army();
+					NewArmy.Name = Array[i];
+					NewArmy.NoRush = new NoRusnOffset();
+					NewArmy.NoRush.X = LuaParser.Read.FloatFromTable(Table, NoRusnOffset.VALUE_X + NewArmy.Name, 0);
+					NewArmy.NoRush.Y = LuaParser.Read.FloatFromTable(Table, NoRusnOffset.VALUE_Y + NewArmy.Name, 0);
+
+					Armys.Add(NewArmy);
+				}
+			}
+
+			public string[] GetArmys()
+			{
+				string[] ToReturn = new string[Armys.Count];
+				for (int i = 0; i < ToReturn.Length; i++)
+				{
+					ToReturn[i] = Armys[i].Name;
+				}
+				return ToReturn;
+			}
 
 			public const string KEY_NAME = "name";
 			public const string KEY_ARMIES = "armies";
 
+		}
+
+		[System.Serializable]
+		public class Army
+		{
+			public string Name;
+			public SaveLua.Army Data;
+			public NoRusnOffset NoRush;
 		}
 
 		[System.Serializable]
@@ -117,6 +176,36 @@ namespace MapLua
 
 		#endregion
 
+
+		public void AddDataToArmy(SaveLua.Army ArmyData)
+		{
+			for(int c = 0; c < Data.Configurations.Length; c++)
+			{
+				for(int t = 0; t < Data.Configurations[c].Teams.Length; t++)
+				{
+					for(int a = 0; a < Data.Configurations[c].Teams[t].Armys.Count; a++)
+					{
+						if(Data.Configurations[c].Teams[t].Armys[a].Name == ArmyData.Name)
+						{
+							Data.Configurations[c].Teams[t].Armys[a].Data = ArmyData;
+							return;
+						}
+
+					}
+
+				}
+
+				for (int a = 0; a < Data.Configurations[c].ExtraArmys.Count; a++)
+				{
+					if (Data.Configurations[c].ExtraArmys[a].Name == ArmyData.Name)
+					{
+						Data.Configurations[c].ExtraArmys[a].Data = ArmyData;
+						return;
+					}
+				}
+
+			}
+		}
 
 		#region Load
 		public bool Load(string FolderName, string ScenarioFileName)
@@ -187,8 +276,10 @@ namespace MapLua
 				{
 					Data.Configurations[Ct].Teams[T] = new Team();
 					Data.Configurations[Ct].Teams[T].name = LuaParser.Read.StringFromTable(TeamsTables[T], Team.KEY_NAME, "FFA");
-					Data.Configurations[Ct].Teams[T].Armys = LuaParser.Read.StringArrayFromTable(TeamsTables[T], Team.KEY_ARMIES);
-					AllArmys.AddRange(Data.Configurations[Ct].Teams[T].Armys);
+					//Data.Configurations[Ct].Teams[T].Armys = LuaParser.Read.StringArrayFromTable(TeamsTables[T], Team.KEY_ARMIES);
+					string[] ArmyArray = LuaParser.Read.StringArrayFromTable(TeamsTables[T], Team.KEY_ARMIES);
+					Data.Configurations[Ct].Teams[T].ArmysFromStringArray(ArmyArray, ScenarioInfoTab);
+					AllArmys.AddRange(ArmyArray);
 				}
 
 				// Custom Props
@@ -204,17 +295,19 @@ namespace MapLua
 					Data.Configurations[Ct].customprops[cp].value = CustomPropsValues[cp];
 				}
 
+				Data.Configurations[Ct].ArmysFromCustomProps(ScenarioInfoTab);
+
 				// Factions
 				LuaTable[] FactionsTables = LuaParser.Read.TableArrayFromTable(
 					LuaFile.GetTable(TABLE_SCENARIOINFO + "." + ScenarioInfo.KEY_CONFIGURATIONS + "." + ConfKeys[Ct] + "." + Configuration.KEY_FACTIONS)
 					);
 				Debug.Log("factions: " + FactionsTables.Length);
 				Data.Configurations[Ct].factions = new Factions[FactionsTables.Length];
+
 				for(int i = 0; i < Data.Configurations[Ct].factions.Length; i++)
 				{
 					Data.Configurations[Ct].factions[i] = new Factions();
 					Data.Configurations[Ct].factions[i].Values = LuaParser.Read.StringArrayFromTable(FactionsTables[i]);
-
 				}
 
 			}
@@ -222,6 +315,7 @@ namespace MapLua
 
 			//All NoRushOffsets
 			Data.norushradius = LuaParser.Read.FloatFromTable(ScenarioInfoTab, NoRusnOffset.VALUE_RADIUS, NoRusnOffset.DefaultRadius);
+			/*
 			Data.NoRushOffsets = new NoRusnOffset[AllArmys.Count];
 			for(int i = 0; i < AllArmys.Count; i++)
 			{
@@ -231,6 +325,7 @@ namespace MapLua
 				Data.NoRushOffsets[i].X = LuaParser.Read.FloatFromTable(ScenarioInfoTab, NoRusnOffset.VALUE_X + AllArmys[i], 0);
 				Data.NoRushOffsets[i].Y = LuaParser.Read.FloatFromTable(ScenarioInfoTab, NoRusnOffset.VALUE_Y + AllArmys[i], 0);
 			}
+			*/
 
 			return true;
 		}
@@ -262,6 +357,22 @@ namespace MapLua
 				LuaFile.AddLine(LuaParser.Write.StringToLua(ScenarioInfo.KEY_SCRIPT, Data.script));
 				LuaFile.AddLine(LuaParser.Write.FloatToLua(NoRusnOffset.VALUE_RADIUS, Data.norushradius));
 
+
+				for(int c = 0; c < Data.Configurations.Length; c++)
+				{
+					for(int t = 0; t < Data.Configurations[c].Teams.Length; t++)
+					{
+						for(int a = 0; a < Data.Configurations[c].Teams[t].Armys.Count; a++)
+						{
+							if (Data.Configurations[c].Teams[t].Armys[a].NoRush.X > 0)
+								LuaFile.AddLine(LuaParser.Write.FloatToLua(Data.Configurations[c].Teams[t].Armys[a].NoRush.GetXKey(), Data.Configurations[c].Teams[t].Armys[a].NoRush.X));
+							if (Data.Configurations[c].Teams[t].Armys[a].NoRush.Y > 0)
+								LuaFile.AddLine(LuaParser.Write.FloatToLua(Data.Configurations[c].Teams[t].Armys[a].NoRush.GetYKey(), Data.Configurations[c].Teams[t].Armys[a].NoRush.Y));
+						}
+					}
+				}
+
+				/*
 				for(int i = 0; i < Data.NoRushOffsets.Length; i++)
 				{
 					if(Data.NoRushOffsets[i].X > 0)
@@ -269,7 +380,7 @@ namespace MapLua
 					if(Data.NoRushOffsets[i].Y > 0)
 						LuaFile.AddLine(LuaParser.Write.FloatToLua(Data.NoRushOffsets[i].GetYKey(), Data.NoRushOffsets[i].Y));
 				}
-
+				*/
 
 				LuaFile.OpenTab(ScenarioInfo.KEY_CONFIGURATIONS + LuaParser.Write.OpenBracketValue);
 				{// Configurations
@@ -286,7 +397,7 @@ namespace MapLua
 									LuaFile.OpenTab(LuaParser.Write.OpenBracket);
 									{// Team Tab
 										LuaFile.AddLine(LuaParser.Write.StringToLua(Team.KEY_NAME, Data.Configurations[Cf].Teams[T].name));
-										LuaFile.AddLine(LuaParser.Write.StringArrayToLua(Team.KEY_ARMIES, Data.Configurations[Cf].Teams[T].Armys, false));
+										LuaFile.AddLine(LuaParser.Write.StringArrayToLua(Team.KEY_ARMIES, Data.Configurations[Cf].Teams[T].GetArmys(), false));
 
 									}
 									LuaFile.CloseTab(LuaParser.Write.EndBracketNext);

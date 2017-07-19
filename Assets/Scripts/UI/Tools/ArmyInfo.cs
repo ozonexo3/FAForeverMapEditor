@@ -38,7 +38,7 @@ public class ArmyInfo : MonoBehaviour {
 #region Generate
 	public void UpdateList()
 	{
-		if(!string.IsNullOrEmpty(SelectedArmy))
+		if(SelectedArmy != null)
 		{
 			// Show Army
 			ArmyOptions.SetActive(true);
@@ -112,17 +112,17 @@ public class ArmyInfo : MonoBehaviour {
 			TeamId++;
 
 
-			for (int a = 0; a < MapLuaParser.Current.ScenarioLuaFile.Data.Configurations[c].Teams[t].Armys.Length; a++)
+			for (int a = 0; a < MapLuaParser.Current.ScenarioLuaFile.Data.Configurations[c].Teams[t].Armys.Count; a++)
 			{
 
 				newList = Instantiate(ArmyPrefab, TeamPivot.position, Quaternion.identity) as GameObject;
 				newList.GetComponent<RectTransform>().SetParent(TeamPivot);
 				ListObject ArmyListObject = newList.GetComponent<ListObject>();
-				ArmyListObject.name = MapLuaParser.Current.ScenarioLuaFile.Data.Configurations[c].Teams[t].Armys[a];
+				ArmyListObject.name = MapLuaParser.Current.ScenarioLuaFile.Data.Configurations[c].Teams[t].Armys[a].Name;
 
 				ArmyListObject.ObjectName.text = ArmyListObject.name;
 
-				if (ArmyByName(ArmyListObject.name) == null)
+				if (MapLuaParser.Current.ScenarioLuaFile.Data.Configurations[c].Teams[t].Armys[a].Data == null)
 				{
 					ArmyListObject.SetSelection(1);
 					ArmyListObject.ObjectName.text += "\nNo army in Save.lua!";
@@ -142,43 +142,32 @@ public class ArmyInfo : MonoBehaviour {
 			}
 
 
-			for (int p = 0; p < MapLuaParser.Current.ScenarioLuaFile.Data.Configurations[c].customprops.Length; p++)
+			for (int a = 0; a < MapLuaParser.Current.ScenarioLuaFile.Data.Configurations[c].ExtraArmys.Count; a++)
 			{
-				if (MapLuaParser.Current.ScenarioLuaFile.Data.Configurations[c].customprops[p].key == ScenarioLua.ScenarioInfo.KEY_EXTRAARMIES)
+
+				newList = Instantiate(ArmyPrefab, ExtraPivot.Pivot.position, Quaternion.identity) as GameObject;
+				newList.GetComponent<RectTransform>().SetParent(ExtraPivot.Pivot);
+				ListObject ArmyListObject = newList.GetComponent<ListObject>();
+				ArmyListObject.name = MapLuaParser.Current.ScenarioLuaFile.Data.Configurations[c].ExtraArmys[a].Name;
+				ArmyListObject.ObjectName.text = ArmyListObject.name;
+
+				if (MapLuaParser.Current.ScenarioLuaFile.Data.Configurations[c].ExtraArmys[a].Data == null)
 				{
-					// Extra armies
-					string[] ArmyNames = MapLuaParser.Current.ScenarioLuaFile.Data.Configurations[c].customprops[p].value.Split(" ".ToCharArray());
-
-					for(int a = 0; a < ArmyNames.Length; a++)
-					{
-						newList = Instantiate(ArmyPrefab, ExtraPivot.Pivot.position, Quaternion.identity) as GameObject;
-						newList.GetComponent<RectTransform>().SetParent(ExtraPivot.Pivot);
-						ListObject ArmyListObject = newList.GetComponent<ListObject>();
-						ArmyListObject.name = ArmyNames[a];
-						ArmyListObject.ObjectName.text = ArmyListObject.name;
-
-						if (ArmyByName(ArmyListObject.name) == null)
-						{
-							ArmyListObject.SetSelection(1);
-							ArmyListObject.ObjectName.text += "\nNo army in Save.lua!";
-						}
-						else if (!SaveLua.NameExist(ArmyListObject.name))
-						{
-							ArmyListObject.SetSelection(1);
-							ArmyListObject.ObjectName.text += "\nArmy marker not found!";
-						}
-
-
-						ArmyListObject.ListId = -1;
-						ArmyListObject.InstanceId = a;
-						ArmyListObject.ClickActionId = SelectArmy;
-						ArmyListObject.ClickCloseActionId = RemoveArmy;
-						AllFields.Add(ArmyListObject);
-
-					}
-
-					break;
+					ArmyListObject.SetSelection(1);
+					ArmyListObject.ObjectName.text += "\nNo army in Save.lua!";
 				}
+				/*else if (!SaveLua.NameExist(ArmyListObject.name))
+				{
+					ArmyListObject.SetSelection(1);
+					ArmyListObject.ObjectName.text += "\nArmy marker not found!";
+				}*/
+
+
+				ArmyListObject.ListId = -1;
+				ArmyListObject.InstanceId = a;
+				ArmyListObject.ClickActionId = SelectArmy;
+				ArmyListObject.ClickCloseActionId = RemoveArmy;
+				AllFields.Add(ArmyListObject);
 			}
 
 		}
@@ -189,19 +178,41 @@ public class ArmyInfo : MonoBehaviour {
 #region Get Army
 	public SaveLua.Army GetCurrentArmy()
 	{
-		for (int i = 0; i < MapLuaParser.Current.SaveLuaFile.Data.Armies.Length; i++)
+		if (SelectedArmy == null)
+			return null;
+		return SelectedArmy.Data;
+		/*for (int i = 0; i < MapLuaParser.Current.SaveLuaFile.Data.Armies.Length; i++)
 			if (MapLuaParser.Current.SaveLuaFile.Data.Armies[i].Name == SelectedArmy)
 				return MapLuaParser.Current.SaveLuaFile.Data.Armies[i];
-
-		return null;
+				*/
+		//return null;
 	}
 
-	SaveLua.Army ArmyByName(string Name){
+	public static SaveLua.Army ArmyByName(string Name){
 		for (int i = 0; i < MapLuaParser.Current.SaveLuaFile.Data.Armies.Length; i++)
 			if (MapLuaParser.Current.SaveLuaFile.Data.Armies[i].Name == Name)
 				return MapLuaParser.Current.SaveLuaFile.Data.Armies[i];
 
 		return null;
+	}
+
+
+	public static bool ArmyExist(string Name)
+	{
+		int c = 0;
+
+		
+		for (int t = 0; t < MapLuaParser.Current.ScenarioLuaFile.Data.Configurations[c].Teams.Length; t++)
+		{
+			for (int a = 0; a < MapLuaParser.Current.ScenarioLuaFile.Data.Configurations[c].Teams[t].Armys.Count; a++)
+			{
+				if (Name == MapLuaParser.Current.ScenarioLuaFile.Data.Configurations[c].Teams[t].Armys[a].Name)
+					return true;
+			}
+		}
+
+
+		return false;
 	}
 	#endregion
 
@@ -286,7 +297,7 @@ public class ArmyInfo : MonoBehaviour {
 			DefaultName += "_" + OffsetId.ToString();
 
 		NewTeam.name = DefaultName;
-		NewTeam.Armys = new string[0];
+		NewTeam.Armys = new List<ScenarioLua.Army>();
 
 		List< ScenarioLua.Team> TeamsList = MapLuaParser.Current.ScenarioLuaFile.Data.Configurations[c].Teams.ToList();
 		TeamsList.Add(NewTeam);
@@ -299,9 +310,17 @@ public class ArmyInfo : MonoBehaviour {
 	public void AddArmy(TeamListObject TeamObject)
 	{
 		//TODO Register Undo
+		ScenarioLua.Army CreatedArmy;
+		//string CreatedName;
 		int c = 0;
 		if (TeamObject.InstanceId == -1)
 		{
+			CreatedArmy = new ScenarioLua.Army();
+			CreatedArmy.Name = "NewExtraArmy" + (MapLuaParser.Current.ScenarioLuaFile.Data.Configurations[c].ExtraArmys.Count + 1);
+			CreatedArmy.NoRush = new ScenarioLua.NoRusnOffset();
+			MapLuaParser.Current.ScenarioLuaFile.Data.Configurations[c].ExtraArmys.Add(CreatedArmy);
+
+			/*
 			int foundP = -1;
 			for (int p = 0; p < MapLuaParser.Current.ScenarioLuaFile.Data.Configurations[c].customprops.Length; p++)
 			{
@@ -326,7 +345,8 @@ public class ArmyInfo : MonoBehaviour {
 
 
 			List<string> Armies = MapLuaParser.Current.ScenarioLuaFile.Data.Configurations[c].customprops[foundP].value.Split(" ".ToCharArray()).ToList();
-			Armies.Add("NewExtraArmy" + (Armies.Count + 1));
+			CreatedName = "NewExtraArmy" + (Armies.Count + 1);
+			Armies.Add(CreatedName);
 
 			MapLuaParser.Current.ScenarioLuaFile.Data.Configurations[c].customprops[foundP].value = "";
 			bool Added = false;
@@ -337,16 +357,23 @@ public class ArmyInfo : MonoBehaviour {
 				MapLuaParser.Current.ScenarioLuaFile.Data.Configurations[c].customprops[foundP].value += (Added?(" "):("")) + Armies[i];
 				Added = true;
 			}
+			*/
 
 		}
 		else if (TeamObject.InstanceId < 0 || TeamObject.InstanceId >= MapLuaParser.Current.ScenarioLuaFile.Data.Configurations[c].Teams.Length)
 			return;
 		else {
 
-			List<string> Armies = MapLuaParser.Current.ScenarioLuaFile.Data.Configurations[c].Teams[TeamObject.InstanceId].Armys.ToList();
-			Armies.Add("NewArmy" + (Armies.Count + 1));
-			MapLuaParser.Current.ScenarioLuaFile.Data.Configurations[c].Teams[TeamObject.InstanceId].Armys = Armies.ToArray();
+			//MapLuaParser.Current.ScenarioLuaFile.Data.Configurations[c].Teams[TeamObject.InstanceId].Armys.ToList();
+			CreatedArmy = new ScenarioLua.Army();
+			CreatedArmy.Name = "NewArmy" + (MapLuaParser.Current.ScenarioLuaFile.Data.Configurations[c].Teams[TeamObject.InstanceId].Armys.Count + 1);
+			CreatedArmy.NoRush = new ScenarioLua.NoRusnOffset();
+			MapLuaParser.Current.ScenarioLuaFile.Data.Configurations[c].Teams[TeamObject.InstanceId].Armys.Add(CreatedArmy);
+			//MapLuaParser.Current.ScenarioLuaFile.Data.Configurations[c].Teams[TeamObject.InstanceId].Armys = Armies;
 		}
+
+
+
 		UpdateList();
 	}
 
@@ -355,39 +382,59 @@ public class ArmyInfo : MonoBehaviour {
 
 	}
 
+	public void RemoveCurrentArmy()
+	{
+
+	}
+
+
+	#region Army Changes
 	public void SelectArmy(ListObject id)
 	{
 		int c = 0;
-		if (id.ListId < 0 || id.InstanceId < 0)
-			return;
-		if (id.ListId >= MapLuaParser.Current.ScenarioLuaFile.Data.Configurations[c].Teams.Length || 
-			id.InstanceId >= MapLuaParser.Current.ScenarioLuaFile.Data.Configurations[c].Teams[id.ListId].Armys.Length)
+
+
+		if (id.ListId < -1 || id.InstanceId < 0)
 			return;
 
-		SelectedArmy = MapLuaParser.Current.ScenarioLuaFile.Data.Configurations[c].Teams[id.ListId].Armys[id.InstanceId];
 
-		ArmyNameInput.text = SelectedArmy;
+
+		if (id.ListId == -1)
+		{
+			if (id.InstanceId >= MapLuaParser.Current.ScenarioLuaFile.Data.Configurations[c].ExtraArmys.Count)
+				return;
+
+				SelectedArmy = MapLuaParser.Current.ScenarioLuaFile.Data.Configurations[c].ExtraArmys[id.InstanceId];
+		}
+		else
+		{
+			if (id.ListId >= MapLuaParser.Current.ScenarioLuaFile.Data.Configurations[c].Teams.Length ||
+				id.InstanceId >= MapLuaParser.Current.ScenarioLuaFile.Data.Configurations[c].Teams[id.ListId].Armys.Count)
+				return;
+
+			SelectedArmy = MapLuaParser.Current.ScenarioLuaFile.Data.Configurations[c].Teams[id.ListId].Armys[id.InstanceId];
+		}
+
+		ArmyNameInput.text = SelectedArmy.Name;
 
 		UpdateList();
 	}
 
 
+	ScenarioLua.Army SelectedArmy = null;
 
-	public string SelectedArmy = "";
-	public void SelectArmy(string selected)
-	{
-		SelectedArmy = selected;
-	}
 
 	public void ArmyNameChange()
 	{
-
+		Markers.MarkersControler.UpdateBlankMarkersGraphics();
 	}
 
 	public void ReturnFromArmy()
 	{
-		SelectedArmy = "";
+		SelectedArmy = null;
 		UpdateList();
 	}
-#endregion
 }
+#endregion
+#endregion
+

@@ -18486,6 +18486,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   MarkerPrefab: {fileID: 985370838}
+  SpawnGraphic:
+    mType: 3
+    SharedMesh: {fileID: 4300000, guid: cec6c7026bd5dab479ab7875f0fc87e0, type: 3}
+    SharedMaterial: {fileID: 2100000, guid: c73b3aff4b8efb941bec136ed2e330a5, type: 2}
+    Icon: {fileID: 21300000, guid: 383a57b83334cfc4a9594acf5a84f714, type: 3}
   MarkerPropGraphics:
   - mType: 0
     SharedMesh: {fileID: 4300000, guid: cec6c7026bd5dab479ab7875f0fc87e0, type: 3}
@@ -18494,7 +18499,7 @@ MonoBehaviour:
   - mType: 3
     SharedMesh: {fileID: 4300000, guid: cec6c7026bd5dab479ab7875f0fc87e0, type: 3}
     SharedMaterial: {fileID: 2100000, guid: d2271bcf68b4ce644ac74fe785127681, type: 2}
-    Icon: {fileID: 21300000, guid: 383a57b83334cfc4a9594acf5a84f714, type: 3}
+    Icon: {fileID: 21300000, guid: 8f31f7a0a2904f2478a06227975d8da6, type: 3}
   - mType: 4
     SharedMesh: {fileID: 4300000, guid: c7f3338c78547cc47b391d6f551aee8d, type: 3}
     SharedMaterial: {fileID: 2100000, guid: ed4913e9ecb1a5a45814c99decfdc74c, type: 2}
@@ -19796,7 +19801,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &433953021
 RectTransform:
   m_ObjectHideFlags: 0
@@ -19856,8 +19861,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_MethodName: RemoveCurrentChain
+      - m_Target: {fileID: 248982626}
+        m_MethodName: RemoveCurrentArmy
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -47380,7 +47385,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 19.250061, y: -36.8}
+  m_AnchoredPosition: {x: 19.250061, y: -80}
   m_SizeDelta: {x: 229.7, y: 18.7}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &999865842
@@ -62828,7 +62833,6 @@ MonoBehaviour:
       Size: 
       MaxHeight: 128
       norushradius: 40
-      NoRushOffsets: []
       Configurations: []
   SaveLuaFile:
     Data:

@@ -203,6 +203,7 @@ namespace EditMap
 			{
 				//MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers = MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers.Concat<MapLua.SaveLua.Marker>(NewMarkers.ToArray());
 				MarkerSelectionOptions.UpdateOptions();
+				MarkersControler.UpdateBlankMarkersGraphics();
 			}
 		}
 
@@ -305,7 +306,6 @@ namespace EditMap
 			else
 			{
 				LastCreationType = GetCreationType();
-
 				MarkersControler.MarkerPropGraphic Mpg = MarkersControler.GetPropByType(LastCreationType);
 
 				MarkerNew NewMarkerObject = MarkerPrefab.GetComponent<MarkerNew>();

@@ -307,6 +307,8 @@ namespace MapLua
 					PlatoonBuilders[c] = new PlatoonBuilder(PbNames[c], PbTabs[c]);
 				}
 
+				MapLuaParser.Current.ScenarioLuaFile.AddDataToArmy(this);
+
 			}
 
 			public void SaveArmy(LuaParser.Creator LuaFile)

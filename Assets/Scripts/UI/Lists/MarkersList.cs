@@ -149,8 +149,10 @@ public class MarkersList : MonoBehaviour
 						}
 					}
 				}
-
-				NewListObject.Icon.sprite = Markers.MarkersControler.GetIconByType(CurrentMarker.MarkerType);
+				if (CurrentMarker.MarkerType == MapLua.SaveLua.Marker.MarkerTypes.BlankMarker && ArmyInfo.ArmyExist(CurrentMarker.Name))
+					NewListObject.Icon.sprite = Markers.MarkersControler.Current.SpawnGraphic.Icon;
+				else
+					NewListObject.Icon.sprite = Markers.MarkersControler.GetIconByType(CurrentMarker.MarkerType);
 			}
 
 			AllObjectsList.AddRange(ObjectToSort.OrderBy(go => go.name));

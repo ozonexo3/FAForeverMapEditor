@@ -361,6 +361,8 @@ namespace EditMap
 			SelectedGameObjects[0].name = NameToChange;
 			NameField.text = NameToChange;
 
+			MarkersControler.UpdateBlankMarkersGraphics();
+
 			Loading = false;
 		}
 
