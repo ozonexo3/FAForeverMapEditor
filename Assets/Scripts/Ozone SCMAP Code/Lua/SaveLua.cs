@@ -45,7 +45,7 @@ namespace MapLua
 			public int next_group_id = 0;
 			public int next_unit_id = 0;
 
-			public Army[] Armies;
+			//public Army[] Armies;
 
 			public const string KEY_NEXTAREAID = "next_area_id";
 			public const string KEY_PROPS = "Props";
@@ -192,11 +192,14 @@ namespace MapLua
 			LuaTable ArmiesTable = (LuaTable)ScenarioInfoTab.RawGet(Scenario.KEY_ARMIES);
 			LuaTable[] ArmiesTabs = LuaParser.Read.GetTableTables(ArmiesTable);
 			string[] ArmiesNames = LuaParser.Read.GetTableKeys(ArmiesTable);
-			Data.Armies = new Army[ArmiesNames.Length];
+			//Data.Armies = new Army[ArmiesNames.Length];
 			for (int a = 0; a < ArmiesNames.Length; a++)
 			{
-				Data.Armies[a] = new Army(ArmiesNames[a], ArmiesTabs[a]);
+				Army NewArmy = new Army(ArmiesNames[a], ArmiesTabs[a]);
+				MapLuaParser.Current.ScenarioLuaFile.AddDataToArmy(NewArmy);
 			}
+
+			MapLuaParser.Current.ScenarioLuaFile.CheckForEmptyArmy();
 
 			return true;
 		}
@@ -348,7 +351,10 @@ namespace MapLua
 				LuaFile.AddSaveComent("");
 				LuaFile.OpenTab(Scenario.KEY_ORDERS + LuaParser.Write.OpenBracketValue);
 				{
-					for(int a = 0; a < Data.Armies.Length; a++)
+					//for(int c = 0; c < MapLuaParser.Current.)
+					MapLuaParser.Current.ScenarioLuaFile.SaveArmys(LuaFile);
+
+					/*for(int a = 0; a < Data.Armies.Length; a++)
 					{
 						LuaFile.AddSaveComent("");
 						LuaFile.AddSaveComent("Army");
@@ -361,7 +367,7 @@ namespace MapLua
 
 						}
 						LuaFile.CloseTab(LuaParser.Write.EndBracketNext);
-					}
+					}*/
 				}
 				LuaFile.CloseTab(LuaParser.Write.EndBracketNext);
 

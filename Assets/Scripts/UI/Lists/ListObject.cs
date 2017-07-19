@@ -75,6 +75,7 @@ public class ListObject : MonoBehaviour {
 	public void BeginDrag()
 	{
 		//Debug.Log("BeginDrag");
+		if(Cg)
 		Cg.alpha = 0.12f;
 	}
 
@@ -85,7 +86,8 @@ public class ListObject : MonoBehaviour {
 	public void EndDrag()
 	{
 		//Debug.Log("EndDrag");
-		Cg.alpha = 1f;
+		if (Cg)
+			Cg.alpha = 1f;
 	}
 #endregion
 }

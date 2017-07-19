@@ -263,6 +263,16 @@ namespace MapLua
 
 			public Army()
 			{
+				Name = "";
+				personality = "";
+				plans = "";
+				color = 0;
+				faction = 0;
+				Economy = new EconomyTab();
+				Alliances = new Aliance[0];
+				Units = new UnitsGroup();
+				nextPlatoonBuilderId = "1";
+				PlatoonBuilders = new PlatoonBuilder[0];
 			}
 
 			public Army(string name, LuaTable Table)
@@ -311,8 +321,16 @@ namespace MapLua
 
 			}
 
-			public void SaveArmy(LuaParser.Creator LuaFile)
+			public void SaveArmy(LuaParser.Creator LuaFile, string ArmyName)
 			{
+				LuaFile.AddSaveComent("");
+				LuaFile.AddSaveComent(ArmyName);
+				LuaFile.AddSaveComent("");
+
+				LuaFile.AddLine(LuaParser.Write.PropertiveToLua(ArmyName) + LuaParser.Write.SetValue);
+				LuaFile.OpenTab(LuaParser.Write.OpenBracket);
+
+
 				LuaFile.AddLine(LuaParser.Write.StringToLua(KEY_PERSONALITY, personality));
 				LuaFile.AddLine(LuaParser.Write.StringToLua(KEY_PLANS, plans));
 				LuaFile.AddLine(LuaParser.Write.IntToLua(KEY_COLOR, color));
@@ -345,6 +363,8 @@ namespace MapLua
 				{
 					PlatoonBuilders[i].SavePlatoonBuilder(LuaFile);
 				}
+				LuaFile.CloseTab(LuaParser.Write.EndBracketNext);
+
 				LuaFile.CloseTab(LuaParser.Write.EndBracketNext);
 
 				LuaFile.CloseTab(LuaParser.Write.EndBracketNext);

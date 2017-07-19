@@ -12,6 +12,7 @@ public class ArmyInfo : MonoBehaviour {
 	public GameObject ArmyPrefab;
 
 	public Transform TeamsPivot;
+	public ListObject ExtraList;
 	public TeamListObject ExtraPivot;
 
 	public GameObject ArmyOptions;
@@ -27,6 +28,7 @@ public class ArmyInfo : MonoBehaviour {
 
 	private void OnEnable()
 	{
+		ExtraList.DragAction = DragEnded;
 		UpdateList();
 	}
 
@@ -100,6 +102,7 @@ public class ArmyInfo : MonoBehaviour {
 			TeamListObject.ClickActionId = SelectTeam;
 			TeamListObject.ClickCloseActionId = RemoveTeam;
 			TeamListObject.ClickApplyActionId = ApplyTeam;
+			TeamListObject.DragAction = DragEnded;
 			AllTeamFields.Add(TeamListObject);
 
 			newList = Instantiate(TeamListPrefab, TeamsPivot.position, Quaternion.identity) as GameObject;
@@ -137,6 +140,7 @@ public class ArmyInfo : MonoBehaviour {
 				ArmyListObject.InstanceId = a;
 				ArmyListObject.ClickActionId = SelectArmy;
 				ArmyListObject.ClickCloseActionId = RemoveArmy;
+				ArmyListObject.DragAction = DragEndedArmy;
 				AllFields.Add(ArmyListObject);
 
 			}
@@ -167,6 +171,8 @@ public class ArmyInfo : MonoBehaviour {
 				ArmyListObject.InstanceId = a;
 				ArmyListObject.ClickActionId = SelectArmy;
 				ArmyListObject.ClickCloseActionId = RemoveArmy;
+				ArmyListObject.DragAction = DragEndedArmy;
+				
 				AllFields.Add(ArmyListObject);
 			}
 
@@ -188,13 +194,12 @@ public class ArmyInfo : MonoBehaviour {
 		//return null;
 	}
 
-	public static SaveLua.Army ArmyByName(string Name){
+	/*public static SaveLua.Army ArmyByName(string Name){
 		for (int i = 0; i < MapLuaParser.Current.SaveLuaFile.Data.Armies.Length; i++)
 			if (MapLuaParser.Current.SaveLuaFile.Data.Armies[i].Name == Name)
 				return MapLuaParser.Current.SaveLuaFile.Data.Armies[i];
-
 		return null;
-	}
+	}*/
 
 
 	public static bool ArmyExist(string Name)
@@ -434,7 +439,93 @@ public class ArmyInfo : MonoBehaviour {
 		SelectedArmy = null;
 		UpdateList();
 	}
+	#endregion
+	#endregion
+
+
+	#region Drag Drop
+	public void DragEnded(ListObject AtId)
+	{
+		if (AtId.ListId == ListObject.DragBeginId.ListId)
+			return;
+
+		if (AllTeamFields.Contains(ListObject.DragBeginId))
+			return;
+
+		int c = 0;
+
+
+		//TODO Register Undo
+		ScenarioLua.Army Army;
+		if (ListObject.DragBeginId.ListId >= 0)
+		{
+			Army = MapLuaParser.Current.ScenarioLuaFile.Data.Configurations[c].Teams[ListObject.DragBeginId.ListId].Armys[ListObject.DragBeginId.InstanceId];
+			MapLuaParser.Current.ScenarioLuaFile.Data.Configurations[c].Teams[ListObject.DragBeginId.ListId].Armys.RemoveAt(ListObject.DragBeginId.InstanceId);
+		}
+		else
+		{
+			Army = MapLuaParser.Current.ScenarioLuaFile.Data.Configurations[c].ExtraArmys[ListObject.DragBeginId.InstanceId];
+			MapLuaParser.Current.ScenarioLuaFile.Data.Configurations[c].ExtraArmys.RemoveAt(ListObject.DragBeginId.InstanceId);
+		}
+
+		if (AtId.ListId >= 0)
+		{
+			MapLuaParser.Current.ScenarioLuaFile.Data.Configurations[c].Teams[AtId.ListId].Armys.Insert(MapLuaParser.Current.ScenarioLuaFile.Data.Configurations[c].Teams[AtId.ListId].Armys.Count, Army);
+			ListObject.DragBeginId.ListId = AtId.ListId;
+		}
+		else
+		{
+			MapLuaParser.Current.ScenarioLuaFile.Data.Configurations[c].ExtraArmys.Insert(MapLuaParser.Current.ScenarioLuaFile.Data.Configurations[c].ExtraArmys.Count, Army);
+			ListObject.DragBeginId.ListId = AtId.ListId;
+		}
+
+		UpdateList();
+
+	}
+
+	public void DragEndedArmy(ListObject AtId)
+	{
+		int c = 0;
+
+		if (AtId.ListId == ListObject.DragBeginId.ListId && AtId.InstanceId == ListObject.DragBeginId.InstanceId)
+			return; // Same
+
+		if (AllTeamFields.Contains(ListObject.DragBeginId))
+			return;
+
+		//TODO Register Undo
+
+		ScenarioLua.Army Army;
+
+		if (ListObject.DragBeginId.ListId >= 0)
+		{
+			Army = MapLuaParser.Current.ScenarioLuaFile.Data.Configurations[c].Teams[ListObject.DragBeginId.ListId].Armys[ListObject.DragBeginId.InstanceId];
+			MapLuaParser.Current.ScenarioLuaFile.Data.Configurations[c].Teams[ListObject.DragBeginId.ListId].Armys.RemoveAt(ListObject.DragBeginId.InstanceId);
+		}
+		else
+		{
+			Army = MapLuaParser.Current.ScenarioLuaFile.Data.Configurations[c].ExtraArmys[ListObject.DragBeginId.InstanceId];
+			MapLuaParser.Current.ScenarioLuaFile.Data.Configurations[c].ExtraArmys.RemoveAt(ListObject.DragBeginId.InstanceId);
+		}
+
+		if(AtId.ListId >= 0)
+		{
+			MapLuaParser.Current.ScenarioLuaFile.Data.Configurations[c].Teams[AtId.ListId].Armys.Insert(AtId.InstanceId, Army);
+			ListObject.DragBeginId.ListId = AtId.ListId;
+		}
+		else
+		{
+			MapLuaParser.Current.ScenarioLuaFile.Data.Configurations[c].ExtraArmys.Insert(AtId.InstanceId, Army);
+			ListObject.DragBeginId.ListId = AtId.ListId;
+		}
+
+
+		UpdateList();
+
+	}
+	#endregion
 }
-#endregion
-#endregion
+
+
+
 

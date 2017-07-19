@@ -176,8 +176,8 @@ namespace MapLua
 
 		#endregion
 
-
-		public void AddDataToArmy(SaveLua.Army ArmyData)
+#region Armys
+		public bool AddDataToArmy(SaveLua.Army ArmyData)
 		{
 			for(int c = 0; c < Data.Configurations.Length; c++)
 			{
@@ -188,7 +188,7 @@ namespace MapLua
 						if(Data.Configurations[c].Teams[t].Armys[a].Name == ArmyData.Name)
 						{
 							Data.Configurations[c].Teams[t].Armys[a].Data = ArmyData;
-							return;
+							return true;
 						}
 
 					}
@@ -200,12 +200,107 @@ namespace MapLua
 					if (Data.Configurations[c].ExtraArmys[a].Name == ArmyData.Name)
 					{
 						Data.Configurations[c].ExtraArmys[a].Data = ArmyData;
-						return;
+						return true;
 					}
 				}
+			}
+
+			//No army found - Force new army
+			if(Data.Configurations.Length > 0 && Data.Configurations[0].Teams.Length > 0)
+			{
+				Army NewArmy = new Army();
+				NewArmy.Name = ArmyData.Name;
+				NewArmy.NoRush = new NoRusnOffset();
+				NewArmy.Data = ArmyData;
+
+				Data.Configurations[0].Teams[0].Armys.Add(NewArmy);
+				return true;
 
 			}
+
+			return false; // Unable to add new army
 		}
+
+		public void CheckForEmptyArmy()
+		{
+
+			for (int c = 0; c < Data.Configurations.Length; c++)
+			{
+				for (int t = 0; t < Data.Configurations[c].Teams.Length; t++)
+				{
+					for (int a = 0; a < Data.Configurations[c].Teams[t].Armys.Count; a++)
+					{
+						if (Data.Configurations[c].Teams[t].Armys[a].Data == null)
+						{
+							Debug.Log("Fix army: " + Data.Configurations[c].Teams[t].Armys[a].Name);
+							Data.Configurations[c].Teams[t].Armys[a].Data = new SaveLua.Army();
+							Data.Configurations[c].Teams[t].Armys[a].Data.Name = Data.Configurations[c].Teams[t].Armys[a].Name;
+						}
+
+					}
+
+				}
+
+				for (int a = 0; a < Data.Configurations[c].ExtraArmys.Count; a++)
+				{
+					if (Data.Configurations[c].ExtraArmys[a].Data == null)
+					{
+						Debug.Log("Fix army: " + Data.Configurations[c].ExtraArmys[a].Name);
+						Data.Configurations[c].ExtraArmys[a].Data = new SaveLua.Army();
+						Data.Configurations[c].ExtraArmys[a].Data.Name = Data.Configurations[c].ExtraArmys[a].Name;
+
+					}
+				}
+			}
+		}
+
+		public void SaveArmys(LuaParser.Creator LuaFile)
+		{
+
+			for (int c = 0; c < Data.Configurations.Length; c++)
+			{
+				for (int t = 0; t < Data.Configurations[c].Teams.Length; t++)
+				{
+					for (int a = 0; a < Data.Configurations[c].Teams[t].Armys.Count; a++)
+					{
+						if (Data.Configurations[c].Teams[t].Armys[a] != null)
+						{
+
+							Data.Configurations[c].Teams[t].Armys[a].Data.SaveArmy(LuaFile, Data.Configurations[c].Teams[t].Armys[a].Name);
+
+						}
+					}
+
+				}
+
+				for (int a = 0; a < Data.Configurations[c].ExtraArmys.Count; a++)
+				{
+					if (Data.Configurations[c].ExtraArmys[a].Data != null)
+					{
+						Data.Configurations[c].ExtraArmys[a].Data.SaveArmy(LuaFile, Data.Configurations[c].ExtraArmys[a].Name);
+					}
+				}
+			}
+
+			/*for(int a = 0; a < Data.Armies.Length; a++)
+			{
+				LuaFile.AddSaveComent("");
+				LuaFile.AddSaveComent("Army");
+				LuaFile.AddSaveComent("");
+
+				LuaFile.AddLine(LuaParser.Write.PropertiveToLua(Data.Armies[a].Name) + LuaParser.Write.SetValue);
+				LuaFile.OpenTab(LuaParser.Write.OpenBracket);
+				{
+					Data.Armies[a].SaveArmy(LuaFile);
+
+				}
+				LuaFile.CloseTab(LuaParser.Write.EndBracketNext);
+			}*/
+
+		}
+
+
+		#endregion
 
 		#region Load
 		public bool Load(string FolderName, string ScenarioFileName)
