@@ -7963,8 +7963,8 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 383a57b83334cfc4a9594acf5a84f714, type: 3}
   - {fileID: 21300000, guid: f7c24ebc4342a86478d9661c07cf1e5d, type: 3}
   - {fileID: 21300000, guid: 87241f48fa437354893dc4ef1904bf85, type: 3}
-  - {fileID: 21300000, guid: e670e456e40f36a45835c6bbdc88fdde, type: 3}
-  - {fileID: 21300000, guid: e670e456e40f36a45835c6bbdc88fdde, type: 3}
+  - {fileID: 0}
+  - {fileID: 0}
 --- !u!114 &157186354
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10699,10 +10699,10 @@ RectTransform:
   m_Father: {fileID: 2064009598}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 0, y: -11}
+  m_SizeDelta: {x: 96.4, y: 22}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!114 &225976348
 MonoBehaviour:
@@ -18556,7 +18556,7 @@ MonoBehaviour:
   - mType: 0
     SharedMesh: {fileID: 4300000, guid: cec6c7026bd5dab479ab7875f0fc87e0, type: 3}
     SharedMaterial: {fileID: 2100000, guid: a1a7ab3abf551994fba82748c71dae3a, type: 2}
-    Icon: {fileID: 21300000, guid: e670e456e40f36a45835c6bbdc88fdde, type: 3}
+    Icon: {fileID: 21300000, guid: 0d8c23b78c7dafc4d8049cb049dc6bc6, type: 3}
   - mType: 3
     SharedMesh: {fileID: 4300000, guid: cec6c7026bd5dab479ab7875f0fc87e0, type: 3}
     SharedMaterial: {fileID: 2100000, guid: d2271bcf68b4ce644ac74fe785127681, type: 2}
@@ -18564,7 +18564,7 @@ MonoBehaviour:
   - mType: 4
     SharedMesh: {fileID: 4300000, guid: c57e88c99e7871f4e8c94e1ee4bb3383, type: 3}
     SharedMaterial: {fileID: 2100000, guid: ed4913e9ecb1a5a45814c99decfdc74c, type: 2}
-    Icon: {fileID: 21300000, guid: e670e456e40f36a45835c6bbdc88fdde, type: 3}
+    Icon: {fileID: 21300000, guid: 74a6a246b31ae6e4191364e7fe8bf9f4, type: 3}
   - mType: 1
     SharedMesh: {fileID: 4300000, guid: 93677307776fc5749800b166cb83d8f7, type: 3}
     SharedMaterial: {fileID: 2100000, guid: e007f758f5027c543b590ae62754aa89, type: 2}
@@ -18576,55 +18576,55 @@ MonoBehaviour:
   - mType: 5
     SharedMesh: {fileID: 4300006, guid: c7f3338c78547cc47b391d6f551aee8d, type: 3}
     SharedMaterial: {fileID: 2100000, guid: a1a7ab3abf551994fba82748c71dae3a, type: 2}
-    Icon: {fileID: 21300000, guid: e670e456e40f36a45835c6bbdc88fdde, type: 3}
+    Icon: {fileID: 21300000, guid: 0d8c23b78c7dafc4d8049cb049dc6bc6, type: 3}
   - mType: 6
     SharedMesh: {fileID: 4300008, guid: c7f3338c78547cc47b391d6f551aee8d, type: 3}
     SharedMaterial: {fileID: 2100000, guid: db424c8c4acaf614c8dbd67c936c75ef, type: 2}
-    Icon: {fileID: 21300000, guid: e670e456e40f36a45835c6bbdc88fdde, type: 3}
+    Icon: {fileID: 21300000, guid: 0d8c23b78c7dafc4d8049cb049dc6bc6, type: 3}
   - mType: 7
     SharedMesh: {fileID: 4300008, guid: c7f3338c78547cc47b391d6f551aee8d, type: 3}
     SharedMaterial: {fileID: 2100000, guid: 452c972854c1f694eb6391a285bdece6, type: 2}
-    Icon: {fileID: 21300000, guid: e670e456e40f36a45835c6bbdc88fdde, type: 3}
+    Icon: {fileID: 21300000, guid: 0d8c23b78c7dafc4d8049cb049dc6bc6, type: 3}
   - mType: 8
     SharedMesh: {fileID: 4300000, guid: 06ad4518eabaec44d9edef230972c9a1, type: 3}
     SharedMaterial: {fileID: 2100000, guid: db424c8c4acaf614c8dbd67c936c75ef, type: 2}
-    Icon: {fileID: 21300000, guid: e670e456e40f36a45835c6bbdc88fdde, type: 3}
+    Icon: {fileID: 21300000, guid: 0d8c23b78c7dafc4d8049cb049dc6bc6, type: 3}
   - mType: 9
     SharedMesh: {fileID: 4300000, guid: 06ad4518eabaec44d9edef230972c9a1, type: 3}
     SharedMaterial: {fileID: 2100000, guid: a4eafd83f48b39d47af5d313424d22d0, type: 2}
-    Icon: {fileID: 21300000, guid: e670e456e40f36a45835c6bbdc88fdde, type: 3}
+    Icon: {fileID: 21300000, guid: 0d8c23b78c7dafc4d8049cb049dc6bc6, type: 3}
   - mType: 10
     SharedMesh: {fileID: 4300000, guid: 06ad4518eabaec44d9edef230972c9a1, type: 3}
     SharedMaterial: {fileID: 2100000, guid: a4eafd83f48b39d47af5d313424d22d0, type: 2}
-    Icon: {fileID: 21300000, guid: e670e456e40f36a45835c6bbdc88fdde, type: 3}
+    Icon: {fileID: 21300000, guid: 0d8c23b78c7dafc4d8049cb049dc6bc6, type: 3}
   - mType: 12
     SharedMesh: {fileID: 4300002, guid: c7f3338c78547cc47b391d6f551aee8d, type: 3}
     SharedMaterial: {fileID: 2100000, guid: db424c8c4acaf614c8dbd67c936c75ef, type: 2}
-    Icon: {fileID: 21300000, guid: e670e456e40f36a45835c6bbdc88fdde, type: 3}
+    Icon: {fileID: 21300000, guid: 80da5e3c665e0924887dee62430c7ca4, type: 3}
   - mType: 13
     SharedMesh: {fileID: 4300004, guid: c7f3338c78547cc47b391d6f551aee8d, type: 3}
     SharedMaterial: {fileID: 2100000, guid: e53c207fc19072a4b9a041e1d533bea0, type: 2}
-    Icon: {fileID: 21300000, guid: e670e456e40f36a45835c6bbdc88fdde, type: 3}
+    Icon: {fileID: 21300000, guid: 431ae1e8b0a894345b57d842223c8180, type: 3}
   - mType: 14
     SharedMesh: {fileID: 4300010, guid: c57e88c99e7871f4e8c94e1ee4bb3383, type: 3}
     SharedMaterial: {fileID: 2100000, guid: b380e3f39bd5fcb43963743db90512ce, type: 2}
-    Icon: {fileID: 21300000, guid: e670e456e40f36a45835c6bbdc88fdde, type: 3}
+    Icon: {fileID: 21300000, guid: 8534d949e5bc60940bc9f50a26f4ef85, type: 3}
   - mType: 15
     SharedMesh: {fileID: 4300010, guid: c57e88c99e7871f4e8c94e1ee4bb3383, type: 3}
-    SharedMaterial: {fileID: 2100000, guid: b380e3f39bd5fcb43963743db90512ce, type: 2}
-    Icon: {fileID: 21300000, guid: e670e456e40f36a45835c6bbdc88fdde, type: 3}
+    SharedMaterial: {fileID: 2100000, guid: c73b3aff4b8efb941bec136ed2e330a5, type: 2}
+    Icon: {fileID: 21300000, guid: 42af6af99b868da4dba1fbe576569bc5, type: 3}
   - mType: 16
     SharedMesh: {fileID: 4300010, guid: c57e88c99e7871f4e8c94e1ee4bb3383, type: 3}
-    SharedMaterial: {fileID: 2100000, guid: b380e3f39bd5fcb43963743db90512ce, type: 2}
-    Icon: {fileID: 21300000, guid: e670e456e40f36a45835c6bbdc88fdde, type: 3}
+    SharedMaterial: {fileID: 2100000, guid: 452c972854c1f694eb6391a285bdece6, type: 2}
+    Icon: {fileID: 21300000, guid: 22c3204c0a219904c8b55a769f7f6c45, type: 3}
   - mType: 17
     SharedMesh: {fileID: 4300010, guid: c57e88c99e7871f4e8c94e1ee4bb3383, type: 3}
-    SharedMaterial: {fileID: 2100000, guid: b380e3f39bd5fcb43963743db90512ce, type: 2}
-    Icon: {fileID: 21300000, guid: e670e456e40f36a45835c6bbdc88fdde, type: 3}
+    SharedMaterial: {fileID: 2100000, guid: 4cc2be31df1a46d4e96381de61b89e22, type: 2}
+    Icon: {fileID: 21300000, guid: df4c7ce2ade588444b519e5c04bec9aa, type: 3}
   - mType: 18
     SharedMesh: {fileID: 4300010, guid: c57e88c99e7871f4e8c94e1ee4bb3383, type: 3}
     SharedMaterial: {fileID: 2100000, guid: a4eafd83f48b39d47af5d313424d22d0, type: 2}
-    Icon: {fileID: 21300000, guid: e670e456e40f36a45835c6bbdc88fdde, type: 3}
+    Icon: {fileID: 21300000, guid: 22c3204c0a219904c8b55a769f7f6c45, type: 3}
   MasterChains: []
 --- !u!114 &394412736
 MonoBehaviour:
@@ -21142,7 +21142,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -51814,10 +51814,10 @@ RectTransform:
   m_Father: {fileID: 2064009598}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 96.4, y: -11}
+  m_SizeDelta: {x: 96.4, y: 22}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!114 &1057566778
 MonoBehaviour:
@@ -68522,10 +68522,10 @@ RectTransform:
   m_Father: {fileID: 2064009598}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 192.8, y: -11}
+  m_SizeDelta: {x: 96.4, y: 22}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!114 &1480361272
 MonoBehaviour:
@@ -69303,7 +69303,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300000, guid: e670e456e40f36a45835c6bbdc88fdde, type: 3}
+  m_Sprite: {fileID: 0}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -70791,7 +70791,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300000, guid: e670e456e40f36a45835c6bbdc88fdde, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 74a6a246b31ae6e4191364e7fe8bf9f4, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -72336,7 +72336,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1559365571
 RectTransform:
   m_ObjectHideFlags: 0
@@ -90497,6 +90497,8 @@ MonoBehaviour:
   MaxHistoryLength: 20
   Prefabs:
     MapInfo: {fileID: 103088, guid: e858d370420b66741be17ea857192b5b, type: 2}
+    ArmiesChange: {fileID: 103088, guid: 743b415eb37e1d94da0066439b1f7a8b, type: 2}
+    ArmyChange: {fileID: 103088, guid: ea31adf2ba229bc4e88cbd70a5ecf14a, type: 2}
     SelectionChange: {fileID: 108316, guid: d4b5ddbc605f04c46b344d7f829c9b62, type: 2}
     SelectionRange: {fileID: 108316, guid: f0e738f3a0cb6494eb5b2b51e5768986, type: 2}
     MarkersRemove: {fileID: 108316, guid: 1811d59cead26af4eac883fd34c24644, type: 2}

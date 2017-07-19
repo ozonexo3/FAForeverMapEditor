@@ -97,6 +97,18 @@ public class Undo : MonoBehaviour {
 		HistoryMapInfo.GenerateUndo (Prefabs.MapInfo).Register();
 	}
 
+	public void RegisterArmiesChange()
+	{
+		HistoryArmiesChange.GenerateUndo(Prefabs.ArmiesChange).Register();
+	}
+
+	public void RegisterArmyChange(MapLua.ScenarioLua.Army Army)
+	{
+		HistoryArmyChange.CurrentArmy = Army;
+
+		HistoryArmyChange.GenerateUndo(Prefabs.ArmyChange).Register();
+	}
+
 	public void RegisterSelectionChange()
 	{
 		//HistoryMarkersMove.GenerateUndo(Prefabs.SelectionChange).Register();

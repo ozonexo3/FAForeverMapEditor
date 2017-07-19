@@ -59,9 +59,9 @@ namespace MapLua
 				object[] Objects = LuaParser.Read.GetTableObjects(Table);
 				PlatoonName = Objects[0].ToString();
 				PlatoonFunction = Objects[1].ToString();
-				if (Objects.Length > 2)
-					Action = new PlatoonAction((LuaTable)Objects[2]);
-				else
+				//if (Objects.Length > 2)
+				//	Action = new PlatoonAction((LuaTable)Objects[2]);
+				//else
 					Action = new PlatoonAction();
 
 			}

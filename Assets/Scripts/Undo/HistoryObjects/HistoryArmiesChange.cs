@@ -1,13 +1,14 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UndoHistory;
 using EditMap;
 using MapLua;
 
 public class HistoryArmiesChange : HistoryObject {
 
-
+	public string[] TeamNames;
 	public ScenarioLua.Team[] Teams;
 	public ScenarioLua.Army[][] TeamArmies;
 	public ScenarioLua.Army[] ExtraArmies;
@@ -18,45 +19,50 @@ public class HistoryArmiesChange : HistoryObject {
 
 		Teams = new ScenarioLua.Team[MapLuaParser.Current.ScenarioLuaFile.Data.Configurations[c].Teams.Length];
 		MapLuaParser.Current.ScenarioLuaFile.Data.Configurations[c].Teams.CopyTo(Teams, 0);
-
+		TeamNames = new string[Teams.Length];
 		TeamArmies = new ScenarioLua.Army[Teams.Length][];
 		for (int t = 0; t < Teams.Length; t++)
 		{
 			TeamArmies[t] = new ScenarioLua.Army[Teams[t].Armys.Count];
 			Teams[t].Armys.CopyTo(TeamArmies[t]);
+			TeamNames[t] = Teams[t].name;
 		}
 
 		ExtraArmies = new ScenarioLua.Army[MapLuaParser.Current.ScenarioLuaFile.Data.Configurations[c].ExtraArmys.Count];
 		MapLuaParser.Current.ScenarioLuaFile.Data.Configurations[c].ExtraArmys.CopyTo(ExtraArmies, 0);
-
-		//AllChains = new MapLua.SaveLua.Chain[MapLuaParser.Current.SaveLuaFile.Data.Chains.Length];
-		//MapLuaParser.Current.SaveLuaFile.Data.Chains.CopyTo(AllChains, 0);
 
 	}
 
 
 	public override void DoUndo(){
 		if (!RedoGenerated)
-			HistoryMarkersMove.GenerateRedo (Undo.Current.Prefabs.ChainChange).Register();
+			HistoryArmiesChange.GenerateRedo (Undo.Current.Prefabs.ArmiesChange).Register();
 		RedoGenerated = true;
 		DoRedo ();
 	}
 
 	public override void DoRedo(){
+		int c = 0;
+		MapLuaParser.Current.ScenarioLuaFile.Data.Configurations[c].Teams = new ScenarioLua.Team[Teams.Length];
+		Teams.CopyTo(MapLuaParser.Current.ScenarioLuaFile.Data.Configurations[c].Teams, 0);
 
-		/*MapLuaParser.Current.SaveLuaFile.Data.Chains = new MapLua.SaveLua.Chain[AllChains.Length];
+		for (int t = 0; t < Teams.Length; t++)
+		{
+			MapLuaParser.Current.ScenarioLuaFile.Data.Configurations[c].Teams[t].Armys = TeamArmies[t].ToList();
+			Teams[t].name = TeamNames[t];
+		}
 
-		AllChains.CopyTo(MapLuaParser.Current.SaveLuaFile.Data.Chains, 0);
+		MapLuaParser.Current.ScenarioLuaFile.Data.Configurations[c].ExtraArmys = ExtraArmies.ToList();
 
-		MarkersInfo.Current.ChainsInfo.CleanMenu();
+		if (ArmyInfo.Current)
+		{
+			ArmyInfo.Current.ReturnFromArmy();
+			ArmyInfo.Current.UpdateList();
+		}
 
+		Undo.Current.EditMenu.ChangeCategory(0);
+		Undo.Current.EditMenu.MapInfoMenu.ChangePage(1);
 
-		Selection.SelectionManager.Current.SetCustomSettings(false, false, false);
-		Selection.SelectionManager.Current.CleanSelection();
-
-		Undo.Current.EditMenu.ChangeCategory(4);
-		//NewMarkersInfo.Current.ClearCreateNew();
-		MarkersInfo.Current.ChangePage(1);*/
-
+		Markers.MarkersControler.UpdateBlankMarkersGraphics();
 	}
 }

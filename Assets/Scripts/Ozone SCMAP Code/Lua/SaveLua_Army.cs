@@ -67,6 +67,12 @@ namespace MapLua
 
 				public UnitsGroup()
 				{
+					Name = "Units";
+					orders = "";
+					platoon = "";
+
+					UnitGroups = new UnitsGroup[0];
+					Units = new Unit[0];
 				}
 
 				public UnitsGroup(string name, LuaTable Table)

@@ -13,6 +13,8 @@ namespace UndoHistory
 	public class UndoPrefabs
 	{
 		public GameObject MapInfo;
+		public GameObject ArmiesChange;
+		public GameObject ArmyChange;
 		public GameObject SelectionChange;
 		public GameObject SelectionRange;
 		public GameObject MarkersRemove;

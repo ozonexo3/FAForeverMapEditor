@@ -148,7 +148,6 @@ namespace MapLua
 		[System.Serializable]
 		public class NoRusnOffset
 		{
-			public string ARMY;
 			public float X;
 			public float Y;
 
@@ -158,12 +157,12 @@ namespace MapLua
 			public const string VALUE_X = "norushoffsetX_";
 			public const string VALUE_Y = "norushoffsetY_";
 
-			public string GetXKey()
+			public string GetXKey(string ARMY)
 			{
 				return VALUE_X + ARMY;
 			}
 
-			public string GetYKey()
+			public string GetYKey(string ARMY)
 			{
 				return VALUE_Y + ARMY;
 			}
@@ -460,9 +459,9 @@ namespace MapLua
 						for(int a = 0; a < Data.Configurations[c].Teams[t].Armys.Count; a++)
 						{
 							if (Data.Configurations[c].Teams[t].Armys[a].NoRush.X > 0)
-								LuaFile.AddLine(LuaParser.Write.FloatToLua(Data.Configurations[c].Teams[t].Armys[a].NoRush.GetXKey(), Data.Configurations[c].Teams[t].Armys[a].NoRush.X));
+								LuaFile.AddLine(LuaParser.Write.FloatToLua(Data.Configurations[c].Teams[t].Armys[a].NoRush.GetXKey(Data.Configurations[c].Teams[t].Armys[a].Name), Data.Configurations[c].Teams[t].Armys[a].NoRush.X));
 							if (Data.Configurations[c].Teams[t].Armys[a].NoRush.Y > 0)
-								LuaFile.AddLine(LuaParser.Write.FloatToLua(Data.Configurations[c].Teams[t].Armys[a].NoRush.GetYKey(), Data.Configurations[c].Teams[t].Armys[a].NoRush.Y));
+								LuaFile.AddLine(LuaParser.Write.FloatToLua(Data.Configurations[c].Teams[t].Armys[a].NoRush.GetYKey(Data.Configurations[c].Teams[t].Armys[a].Name), Data.Configurations[c].Teams[t].Armys[a].NoRush.Y));
 						}
 					}
 				}
@@ -504,8 +503,30 @@ namespace MapLua
 
 							LuaFile.OpenTab(Configuration.KEY_CUSTOMPROPS + LuaParser.Write.OpenBracketValue);
 							{ // Custom Props
+								int ExtraCount = Data.Configurations[Cf].ExtraArmys.Count;
+								if (ExtraCount > 0)
+								{
+									string ExtraArmyString = "";
+									for(int i = 0; i < ExtraCount; i++)
+									{
+										if (i > 0)
+											ExtraArmyString += " ";
+										ExtraArmyString += Data.Configurations[Cf].ExtraArmys[i].Name;
+
+									}
+
+									LuaFile.AddLine(
+										LuaParser.Write.ValueToLua(LuaParser.Write.PropertiveToLua(ScenarioInfo.KEY_EXTRAARMIES),
+										LuaParser.Write.StringFunction(ExtraArmyString),
+										(Data.Configurations[Cf].customprops.Length > 0)
+										));
+								}
+
+
 								for (int i = 0; i < Data.Configurations[Cf].customprops.Length; i++)
 								{
+									if (Data.Configurations[Cf].customprops[i].key == ScenarioInfo.KEY_EXTRAARMIES)
+										continue;
 									LuaFile.AddLine(
 										LuaParser.Write.ValueToLua(LuaParser.Write.PropertiveToLua(Data.Configurations[Cf].customprops[i].key), 
 										LuaParser.Write.StringFunction(Data.Configurations[Cf].customprops[i].value), 
