@@ -434,24 +434,39 @@ public class MapLuaParser : MonoBehaviour {
 	}
 
 	public void UpdateArea(){
-		if(SaveLuaFile.Data.areas.Length > 0)
+		if(SaveLuaFile.Data.areas.Length > 0 && !AreaInfo.HideArea)
 		{
 			//int bigestAreaId = 0;
 			Rect bigestAreaRect = new Rect(SaveLuaFile.Data.areas[0].rectangle);
-			for(int i = 1; i < SaveLuaFile.Data.areas.Length; i++)
+
+			if (AreaInfo.SelectedArea != null)
 			{
-				if (bigestAreaRect.x > SaveLuaFile.Data.areas[i].rectangle.x)
-					bigestAreaRect.x = SaveLuaFile.Data.areas[i].rectangle.x;
-
-				if (bigestAreaRect.y > SaveLuaFile.Data.areas[i].rectangle.y)
-					bigestAreaRect.y = SaveLuaFile.Data.areas[i].rectangle.y;
-
-				if (bigestAreaRect.width < SaveLuaFile.Data.areas[i].rectangle.width)
-					bigestAreaRect.width = SaveLuaFile.Data.areas[i].rectangle.width;
-
-				if (bigestAreaRect.height < SaveLuaFile.Data.areas[i].rectangle.height)
-					bigestAreaRect.height = SaveLuaFile.Data.areas[i].rectangle.height;
+				bigestAreaRect = AreaInfo.SelectedArea.rectangle;
 			}
+			else
+			{
+				for (int i = 1; i < SaveLuaFile.Data.areas.Length; i++)
+				{
+					if (bigestAreaRect.x > SaveLuaFile.Data.areas[i].rectangle.x)
+						bigestAreaRect.x = SaveLuaFile.Data.areas[i].rectangle.x;
+
+					if (bigestAreaRect.y > SaveLuaFile.Data.areas[i].rectangle.y)
+						bigestAreaRect.y = SaveLuaFile.Data.areas[i].rectangle.y;
+
+					if (bigestAreaRect.width < SaveLuaFile.Data.areas[i].rectangle.width)
+						bigestAreaRect.width = SaveLuaFile.Data.areas[i].rectangle.width;
+
+					if (bigestAreaRect.height < SaveLuaFile.Data.areas[i].rectangle.height)
+						bigestAreaRect.height = SaveLuaFile.Data.areas[i].rectangle.height;
+				}
+			}
+
+			//bigestAreaRect.x = ScmapEditor.Current.map.Width - bigestAreaRect.width;
+			//bigestAreaRect.width = ScmapEditor.Current.map.Width - bigestAreaRect.x;
+
+			float LastY = bigestAreaRect.y;
+			bigestAreaRect.y = ScmapEditor.Current.map.Width - bigestAreaRect.height;
+			bigestAreaRect.height = ScmapEditor.Current.map.Width - LastY;
 
 			if (bigestAreaRect.width > 0 && bigestAreaRect.height > 0)
 			{
@@ -469,19 +484,6 @@ public class MapLuaParser : MonoBehaviour {
 		}
 		else
 			HeightmapControler.TerrainMaterial.SetInt("_Area", 0);
-
-		/*
-		if(ScenarioData.Area.width == 0 && ScenarioData.Area.height == 0){
-			ScenarioData.DefaultArea = false;
-			HeightmapControler.TerrainMaterial.SetInt("_Area", ScenarioData.DefaultArea?1:0);
-			return;
-		}
-		HeightmapControler.TerrainMaterial.SetInt("_Area", ScenarioData.DefaultArea?1:0);
-		HeightmapControler.TerrainMaterial.SetFloat("_AreaX", ScenarioData.Area.x / 10f);
-		HeightmapControler.TerrainMaterial.SetFloat("_AreaY", ScenarioData.Area.y / 10f);
-		HeightmapControler.TerrainMaterial.SetFloat("_AreaWidht", ScenarioData.Area.width / 10f);
-		HeightmapControler.TerrainMaterial.SetFloat("_AreaHeight", ScenarioData.Area.height / 10f);
-		*/
 	}
 	#endregion
 

@@ -287,6 +287,7 @@
     <Compile Include="Assets\Scripts\UI\Editing.cs" />
     <Compile Include="Assets\Scripts\UI\FafEditorSettings.cs" />
     <Compile Include="Assets\Scripts\UI\GenericPopup\GenericPopup.cs" />
+    <Compile Include="Assets\Scripts\UI\Lists\AreaListObject.cs" />
     <Compile Include="Assets\Scripts\UI\Lists\ArmyIdButton.cs" />
     <Compile Include="Assets\Scripts\UI\Lists\ArmyListId.cs" />
     <Compile Include="Assets\Scripts\UI\Lists\ArmyMinimapButton.cs" />
@@ -310,6 +311,7 @@
     <Compile Include="Assets\Scripts\UI\Props\PropGameObject.cs" />
     <Compile Include="Assets\Scripts\UI\Props\PropsRenderer.cs" />
     <Compile Include="Assets\Scripts\UI\StartingScreen.cs" />
+    <Compile Include="Assets\Scripts\UI\Tools\AreaInfo.cs" />
     <Compile Include="Assets\Scripts\UI\Tools\ArmyInfo.cs" />
     <Compile Include="Assets\Scripts\UI\Tools\LightingInfo.cs" />
     <Compile Include="Assets\Scripts\UI\Tools\MapInfo.cs" />
