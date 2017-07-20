@@ -209,5 +209,13 @@ namespace LuaParser
 		}
 
 		#endregion
+
+
+
+		public static string FormatException(NLua.Exceptions.LuaException e)
+		{
+			string source = (string.IsNullOrEmpty(e.Source)) ? "<no source>" : e.Source.Substring(0, e.Source.Length - 2);
+			return string.Format("{0}\nLua (at {2})", e.Message, string.Empty, source);
+		}
 	}
 }

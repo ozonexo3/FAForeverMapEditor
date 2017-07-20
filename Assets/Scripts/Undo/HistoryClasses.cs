@@ -15,6 +15,8 @@ namespace UndoHistory
 		public GameObject MapInfo;
 		public GameObject ArmiesChange;
 		public GameObject ArmyChange;
+		public GameObject AreasChange;
+		public GameObject AreaChange;
 		public GameObject SelectionChange;
 		public GameObject SelectionRange;
 		public GameObject MarkersRemove;

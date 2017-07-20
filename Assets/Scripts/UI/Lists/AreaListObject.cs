@@ -32,6 +32,6 @@ public class AreaListObject : MonoBehaviour {
 
 	public void OnRemove()
 	{
-
+		Controler.Remove(InstanceId);
 	}
 }

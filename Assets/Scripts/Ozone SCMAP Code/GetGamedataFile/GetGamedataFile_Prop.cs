@@ -160,7 +160,7 @@ public partial struct GetGamedataFile
 		}
 		catch (NLua.Exceptions.LuaException e)
 		{
-			Debug.LogError(ParsingStructureData.FormatException(e) + "\n" + LocalPath);
+			Debug.LogError(LuaParser.Read.FormatException(e) + "\n" + LocalPath);
 			return ToReturn;
 		}
 

@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -67,8 +68,7 @@ public class AreaInfo : MonoBehaviour {
 
 		MapLua.SaveLua.Areas[] Areas = MapLuaParser.Current.SaveLuaFile.Data.areas;
 
-		if (SelectedArea != null)
-			AreaHide.isOn = true;
+		bool ToogleFound = false;
 
 		for (int i = 0; i < Areas.Length; i++)
 		{
@@ -100,10 +100,14 @@ public class AreaInfo : MonoBehaviour {
 			if(Areas[i] == SelectedArea)
 			{
 				AreaObject.Selected.isOn = true;
+				ToogleFound = true;
 			}
 
 			Created.Add(AreaObject);
 		}
+
+		if (SelectedArea != null && !ToogleFound)
+			AreaHide.isOn = true;
 
 	}
 
@@ -136,7 +140,7 @@ public class AreaInfo : MonoBehaviour {
 	#region UI
 	public void OnValuesChange(int instanceID)
 	{
-		//TODO Undo
+		Undo.Current.RegisterAreaChange(MapLuaParser.Current.SaveLuaFile.Data.areas[instanceID]);
 
 		MapLuaParser.Current.SaveLuaFile.Data.areas[instanceID].Name = Created[instanceID].Name.text;
 
@@ -159,7 +163,6 @@ public class AreaInfo : MonoBehaviour {
 		}
 
 
-
 		if (SelectedArea == MapLuaParser.Current.SaveLuaFile.Data.areas[instanceID])
 		{
 			MapLuaParser.Current.UpdateArea();
@@ -172,6 +175,56 @@ public class AreaInfo : MonoBehaviour {
 	public void AddNew()
 	{
 
+		Undo.Current.RegisterAreasChange();
+
+		List<MapLua.SaveLua.Areas> Areas = MapLuaParser.Current.SaveLuaFile.Data.areas.ToList();
+		MapLua.SaveLua.Areas NewArea = new MapLua.SaveLua.Areas();
+
+		string DefaultMapArea = "New Area";
+		int NextAreaName = 0;
+		bool FoundGoodName = false;
+		while (!FoundGoodName)
+		{
+			FoundGoodName = true;
+			string TestName = DefaultMapArea + ((NextAreaName > 0) ? (" " + NextAreaName.ToString()) : (""));
+			for (int i = 0; i < MapLuaParser.Current.SaveLuaFile.Data.areas.Length; i++)
+			{
+				if(MapLuaParser.Current.SaveLuaFile.Data.areas[i].Name == TestName)
+				{
+					FoundGoodName = false;
+					NextAreaName++;
+					break;
+				}
+			}
+		}
+
+		NewArea.Name = DefaultMapArea + ((NextAreaName > 0)?(" " + NextAreaName.ToString()) :(""));
+		NewArea.rectangle = new Rect(0, 0, ScmapEditor.Current.map.Width, ScmapEditor.Current.map.Height);
+		Areas.Add(NewArea);
+
+		MapLuaParser.Current.SaveLuaFile.Data.areas = Areas.ToArray();
+		UpdateList();
+
+	}
+
+	public void Remove(int instanceID)
+	{
+		Undo.Current.RegisterAreasChange();
+
+		if (SelectedArea == MapLuaParser.Current.SaveLuaFile.Data.areas[instanceID])
+		{
+			SelectedArea = null;
+			AreaDefault.isOn = true;
+		}
+
+		List<MapLua.SaveLua.Areas> Areas = MapLuaParser.Current.SaveLuaFile.Data.areas.ToList();
+
+		Areas.RemoveAt(instanceID);
+
+		MapLuaParser.Current.SaveLuaFile.Data.areas = Areas.ToArray();
+
+
+		UpdateList();
 	}
 
 

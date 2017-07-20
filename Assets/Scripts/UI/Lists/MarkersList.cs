@@ -40,12 +40,28 @@ public class MarkersList : MonoBehaviour
 
 	public void UpdateSelection()
 	{
+
+		//bool Focused = false;
 		for(int g = 0; g < GeneratedCount; g++)
 		{
 			int i = AllFields[g].InstanceId;
 
+
+
 			if (Selection.SelectionManager.Current.Selection.Ids.Contains(i))
+			{
 				AllFields[g].SetSelection(1);
+				if (!IgnoreFocusList && i == Selection.SelectionManager.Current.Selection.Ids[Selection.SelectionManager.Current.Selection.Ids.Count - 1])
+				{
+					// Focus on
+					Vector3 Pos = AllFields[g].GetComponent<RectTransform>().localPosition;
+					Pos.y = 0 - Pos.y;
+					Pos.y += 250;
+					Pos.x = 0;
+					Pivot.localPosition = Pos;
+
+				}
+			}
 			else
 			{
 				AllFields[g].SetSelection(0);
@@ -89,7 +105,13 @@ public class MarkersList : MonoBehaviour
 		Generated = false;
 	}
 
-
+	bool IgnoreFocusList = false;
+	public void SelectListGameobject(GameObject Connected)
+	{
+		IgnoreFocusList = true;
+		Selection.SelectionManager.Current.SelectObject(Connected);
+		IgnoreFocusList = false;
+	}
 
 	void GenerateList()
 	{
@@ -132,7 +154,7 @@ public class MarkersList : MonoBehaviour
 				NewListObject.InstanceId = i;
 				NewListObject.ListId = 0;
 				NewListObject.ConnectedGameObject = CurrentMarker.MarkerObj.gameObject;
-				NewListObject.ClickAction = Selection.SelectionManager.Current.SelectObject;
+				NewListObject.ClickAction = SelectListGameobject;
 
 				if (Selection.SelectionManager.Current.Selection.Ids.Contains(i))
 					NewListObject.SetSelection(1);

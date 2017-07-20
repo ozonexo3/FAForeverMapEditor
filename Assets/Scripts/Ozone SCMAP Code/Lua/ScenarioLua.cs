@@ -321,7 +321,7 @@ namespace MapLua
 			}
 			catch (NLua.Exceptions.LuaException e)
 			{
-				Debug.LogError(ParsingStructureData.FormatException(e), MapLuaParser.Current.gameObject);
+				Debug.LogError(LuaParser.Read.FormatException(e), MapLuaParser.Current.gameObject);
 				//HelperGui.MapLoaded = false;
 				return false;
 			}

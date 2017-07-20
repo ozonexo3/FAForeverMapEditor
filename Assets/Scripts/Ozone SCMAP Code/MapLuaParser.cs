@@ -94,7 +94,6 @@ public class MapLuaParser : MonoBehaviour {
 		StructurePath = StructurePath.Replace("Assets", "");
 		#endif
 
-		ParsingStructureData.LoadData ();
 	}
 
 	#region Loading
