@@ -9,24 +9,13 @@ public class HistoryMarkersMove : HistoryObject {
 
 	// MarkersPos
 	Vector3[]							MarkersPosSelection; 
-
-	/*
-	MirrorMarkersPos[]					MirrorPos;
-
-	// SelectionPos
-	Vector3								SelectedMarker;
-	Vector3[]							SelectedSymmetryMarkers;
-
-	[System.Serializable]
-	class MirrorMarkersPos{
-		public		Vector3[]							MarkersPosSelection;
-	}
-	*/
+		public static bool UndoMenu;
+		public bool UndoToMarkerMenu;
 
 	public override void Register(){
 
 		int mc = 0;
-
+		UndoToMarkerMenu = UndoMenu;
 		MarkersPosSelection = new Vector3[MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers.Count];
 		for (int i = 0; i < MarkersPosSelection.Length; i++)
 		{
@@ -58,6 +47,9 @@ public class HistoryMarkersMove : HistoryObject {
 
 
 	public override void DoUndo(){
+		UndoMenu = UndoToMarkerMenu;
+
+
 		if (!RedoGenerated)
 			HistoryMarkersMove.GenerateRedo (Undo.Current.Prefabs.MarkersMove).Register();
 		RedoGenerated = true;
@@ -72,11 +64,14 @@ public class HistoryMarkersMove : HistoryObject {
 			MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers[i].MarkerObj.Tr.localPosition = MarkersPosSelection[i];
 		}
 
-		Undo.Current.EditMenu.ChangeCategory(4);
-		NewMarkersInfo.Current.ClearCreateNew();
-		MarkersInfo.Current.ChangePage(0);
+		if (UndoToMarkerMenu)
+		{
+			Undo.Current.EditMenu.ChangeCategory(4);
+			NewMarkersInfo.Current.ClearCreateNew();
+			MarkersInfo.Current.ChangePage(0);
 
-		NewMarkersInfo.Current.GoToSelection();
+			NewMarkersInfo.Current.GoToSelection();
+		}
 
 		/*
 		Undo.Current.EditMenu.EditMarkers.SelectedMarker.position = SelectedMarker;

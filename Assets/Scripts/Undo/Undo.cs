@@ -141,7 +141,8 @@ public class Undo : MonoBehaviour {
 		HistoryMarkersRemove.GenerateUndo(Prefabs.MarkersRemove).Register();
 	}
 
-	public void RegisterMarkersMove(){
+	public void RegisterMarkersMove(bool MoveMenu = true){
+		HistoryMarkersMove.UndoMenu = MoveMenu;
 		HistoryMarkersMove.GenerateUndo (Prefabs.MarkersMove).Register();
 	}
 

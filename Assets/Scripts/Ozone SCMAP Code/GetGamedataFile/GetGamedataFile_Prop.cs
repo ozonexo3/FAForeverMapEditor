@@ -239,10 +239,12 @@ public partial struct GetGamedataFile
 		{
 			ToReturn.BP.LODs[i].Mesh = LoadModel(scd, ToReturn.BP.LODs[i].Scm);
 
-			ToReturn.BP.LODs[i].Mat = new Material(Shader.Find("Standard (Specular setup)"));
+			//ToReturn.BP.LODs[i].Mat = new Material(Shader.Find("Standard (Specular setup)"));
+			ToReturn.BP.LODs[i].Mat = new Material(EditMap.PropsInfo.Current.PropMaterial);
 
 			ToReturn.BP.LODs[i].Mat.name = ToReturn.BP.Name + " mat";
 
+			/*
 			{ // Set AlphaTest standard shader
 				ToReturn.BP.LODs[i].Mat.SetFloat("_Mode", 1);
 				ToReturn.BP.LODs[i].Mat.SetOverrideTag("RenderType", "TransparentCutout");
@@ -258,6 +260,7 @@ public partial struct GetGamedataFile
 				ToReturn.BP.LODs[i].Mat.SetFloat("_Glossiness", 1);
 				ToReturn.BP.LODs[i].Mat.enableInstancing = true;
 			}
+			*/
 
 			if (ToReturn.BP.LODs[i].AlbedoName.Length == 0)
 			{
@@ -269,8 +272,8 @@ public partial struct GetGamedataFile
 			}
 
 			ToReturn.BP.LODs[i].Albedo = LoadTexture2DFromGamedata(scd, ToReturn.BP.LODs[i].AlbedoName, false);
-			if(ToReturn.BP.LODs[i].Albedo != null)
-				ToReturn.BP.LODs[i].Albedo.mipMapBias = PropTexturesMipMapBias;
+			//if(ToReturn.BP.LODs[i].Albedo != null)
+			//	ToReturn.BP.LODs[i].Albedo.mipMapBias = PropTexturesMipMapBias;
 			ToReturn.BP.LODs[i].Mat.SetTexture("_MainTex", ToReturn.BP.LODs[i].Albedo);
 
 
@@ -284,8 +287,8 @@ public partial struct GetGamedataFile
 			}
 
 			ToReturn.BP.LODs[i].Normal = LoadTexture2DFromGamedata(scd, ToReturn.BP.LODs[i].NormalsName, true);
-			if (ToReturn.BP.LODs[i].Normal != null)
-				ToReturn.BP.LODs[i].Normal.mipMapBias = PropTexturesMipMapBias;
+			//if (ToReturn.BP.LODs[i].Normal != null)
+			//	ToReturn.BP.LODs[i].Normal.mipMapBias = PropTexturesMipMapBias;
 			ToReturn.BP.LODs[i].Mat.SetTexture("_BumpMap", ToReturn.BP.LODs[i].Normal);
 
 		}

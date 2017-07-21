@@ -6,6 +6,8 @@ public class ArmyIdButton : MonoBehaviour {
 
 	public		ArmyListId		Controler;
 	public		int				Id;
+	public int ArmyId;
+	public int ArmyTeam;
 	public		Text			Name;
 	public		Image			Select;
 

@@ -36,7 +36,7 @@ namespace EditMap
 		public Toggle SnapToGround;
 		public LayerMask TerrainMask;
 		public Material TerrainMaterial;
-
+		public Material PropMaterial;
 
 		float TotalMassCount = 0;
 		float TotalEnergyCount = 0;

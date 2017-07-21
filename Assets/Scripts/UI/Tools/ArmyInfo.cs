@@ -223,6 +223,28 @@ public class ArmyInfo : MonoBehaviour {
 
 		return false;
 	}
+
+	public static void GetArmyId(string Name, out int Army, out int Team)
+	{
+		int c = 0;
+		for (int t = 0; t < MapLuaParser.Current.ScenarioLuaFile.Data.Configurations[c].Teams.Length; t++)
+		{
+			for (int a = 0; a < MapLuaParser.Current.ScenarioLuaFile.Data.Configurations[c].Teams[t].Armys.Count; a++)
+			{
+				if (Name == MapLuaParser.Current.ScenarioLuaFile.Data.Configurations[c].Teams[t].Armys[a].Name) {
+					Army = a;
+					Team = t;
+					return;
+				}
+			}
+		}
+
+		Army = -1;
+		Team = -1;
+
+		return;
+	}
+
 	#endregion
 
 

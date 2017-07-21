@@ -76,9 +76,6 @@
     <Reference Include="UnityEditor">
       <HintPath>Library\UnityAssemblies\UnityEditor.dll</HintPath>
     </Reference>
-    <Reference Include="Mono.Cecil">
-      <HintPath>Library\UnityAssemblies\Mono.Cecil.dll</HintPath>
-    </Reference>
     <Reference Include="ICSharpCode.SharpZipLib">
       <HintPath>Assets\Plugins\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
@@ -175,6 +172,7 @@
     <Compile Include="Assets\LUA\NLua\ObjectTranslator.cs" />
     <Compile Include="Assets\LUA\NLua\ObjectTranslatorPool.cs" />
     <Compile Include="Assets\LUA\NLua\ProxyType.cs" />
+    <Compile Include="Assets\OnlyLocal\Reflection.cs" />
     <Compile Include="Assets\PostProcessing\Runtime\Attributes\GetSetAttribute.cs" />
     <Compile Include="Assets\PostProcessing\Runtime\Attributes\MinAttribute.cs" />
     <Compile Include="Assets\PostProcessing\Runtime\Attributes\TrackballAttribute.cs" />
@@ -321,7 +319,6 @@
     <Compile Include="Assets\Scripts\UI\Tools\PropsInfo.cs" />
     <Compile Include="Assets\Scripts\UI\Tools\StratumInfo.cs" />
     <Compile Include="Assets\Scripts\UI\Tools\TerrainInfo.cs" />
-    <Compile Include="Assets\Scripts\UI\Windows\AreasWindow.cs" />
     <Compile Include="Assets\Scripts\UI\Windows\ArmysWindow.cs" />
     <Compile Include="Assets\Scripts\UI\Windows\GenericInfoPopup.cs" />
     <Compile Include="Assets\Scripts\UI\Windows\LastMapsPopup.cs" />
@@ -362,6 +359,7 @@
     <None Include="Assets\GFX\Shaders\Decals\Projector Decal.shader" />
     <None Include="Assets\GFX\Shaders\FaTerrainShader.shader" />
     <None Include="Assets\GFX\Shaders\FaWater.shader" />
+    <None Include="Assets\GFX\Shaders\PropShader.shader" />
     <None Include="Assets\GFX\Shaders\RawImageChannel.shader" />
     <None Include="Assets\GFX\Shaders\RawImageNoAlpha.shader" />
     <None Include="Assets\GFX\Shaders\Selection.shader" />

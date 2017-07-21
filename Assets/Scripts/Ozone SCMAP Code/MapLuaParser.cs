@@ -432,8 +432,9 @@ public class MapLuaParser : MonoBehaviour {
 	
 	}
 
-	public void UpdateArea(){
-		if(SaveLuaFile.Data.areas.Length > 0 && !AreaInfo.HideArea)
+	public Rect GetAreaRect()
+	{
+		if (SaveLuaFile.Data.areas.Length > 0 && !AreaInfo.HideArea)
 		{
 			//int bigestAreaId = 0;
 			Rect bigestAreaRect = new Rect(SaveLuaFile.Data.areas[0].rectangle);
@@ -460,12 +461,24 @@ public class MapLuaParser : MonoBehaviour {
 				}
 			}
 
-			//bigestAreaRect.x = ScmapEditor.Current.map.Width - bigestAreaRect.width;
-			//bigestAreaRect.width = ScmapEditor.Current.map.Width - bigestAreaRect.x;
-
 			float LastY = bigestAreaRect.y;
 			bigestAreaRect.y = ScmapEditor.Current.map.Width - bigestAreaRect.height;
 			bigestAreaRect.height = ScmapEditor.Current.map.Width - LastY;
+			return bigestAreaRect;
+		}
+		else
+		{
+
+			return new Rect(0, 0, ScmapEditor.Current.map.Width, ScmapEditor.Current.map.Height);
+		}
+
+	}
+
+	public void UpdateArea(){
+		if(SaveLuaFile.Data.areas.Length > 0 && !AreaInfo.HideArea)
+		{
+			//int bigestAreaId = 0;
+			Rect bigestAreaRect = GetAreaRect();
 
 			if (bigestAreaRect.width > 0 && bigestAreaRect.height > 0)
 			{
