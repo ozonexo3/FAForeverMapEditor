@@ -388,8 +388,8 @@ namespace EditMap
 			{
 				InforeUpdate = true;
 				
-				BrushSizeSlider.value = Mathf.Clamp( MassMath.StringToFloat(BrushSize.text), MinimumBrushSize, MaximumBrushSize);
-				BrushStrengthSlider.value = Mathf.Clamp(MassMath.StringToFloat(BrushStrength.text), 0, 100);
+				BrushSizeSlider.value = Mathf.Clamp(LuaParser.Read.StringToFloat(BrushSize.text), MinimumBrushSize, MaximumBrushSize);
+				BrushStrengthSlider.value = Mathf.Clamp(LuaParser.Read.StringToFloat(BrushStrength.text), 0, 100);
 
 				InforeUpdate = false;
 				UpdateBrushMenu(true);
@@ -609,12 +609,12 @@ namespace EditMap
 			{
 
 				RandomProp = Random.Range(0, Count);
-				RandomScale = Random.Range(MassMath.StringToFloat(PaintButtons[RandomProp].ScaleMin.text), MassMath.StringToFloat(PaintButtons[RandomProp].ScaleMax.text));
+				RandomScale = Random.Range(LuaParser.Read.StringToFloat(PaintButtons[RandomProp].ScaleMin.text), LuaParser.Read.StringToFloat(PaintButtons[RandomProp].ScaleMax.text));
 
 				BrushGenerator.Current.GenerateSymmetry(BrushPos, size, float.Parse(Scatter.text), size);
 
-				float RotMin = MassMath.StringToFloat(PaintButtons[RandomProp].RotationMin.text);
-				float RotMax = MassMath.StringToFloat(PaintButtons[RandomProp].RotationMax.text);
+				float RotMin = LuaParser.Read.StringToFloat(PaintButtons[RandomProp].RotationMin.text);
+				float RotMax = LuaParser.Read.StringToFloat(PaintButtons[RandomProp].RotationMax.text);
 
 				BrushGenerator.Current.GenerateRotationSymmetry(Quaternion.Euler(Vector3.up * Random.Range(RotMin, RotMax)));
 

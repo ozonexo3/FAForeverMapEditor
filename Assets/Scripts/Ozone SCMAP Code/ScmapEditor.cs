@@ -32,7 +32,7 @@ public class ScmapEditor : MonoBehaviour
 	float[,] heights = new float[1, 1];
 	bool Grid;
 	bool Slope;
-	string Shader;
+	//string Shader;
 	//public		TerrainMesh		TerrainM;
 
 	const float MapHeightScale = 2048;
@@ -138,7 +138,7 @@ public class ScmapEditor : MonoBehaviour
 
 		EnvPaths.CurrentGamedataPath = EnvPaths.GetGamedataPath();
 
-		Shader = map.TerrainShader;
+		//Shader = map.TerrainShader;
 		MapLuaParser.Current.EditMenu.TexturesMenu.TTerrainXP.isOn = map.TerrainShader == "TTerrainXP";
 		ToogleShader();
 

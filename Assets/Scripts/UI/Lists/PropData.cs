@@ -56,8 +56,8 @@ public class PropData : MonoBehaviour {
 
 	public void ClampRotations()
 	{
-		float RotMin = MassMath.StringToFloat(RotationMin.text);
-		float RotMax = MassMath.StringToFloat(RotationMax.text);
+		float RotMin = LuaParser.Read.StringToFloat(RotationMin.text);
+		float RotMax = LuaParser.Read.StringToFloat(RotationMax.text);
 
 		RotationMin.text = Mathf.Clamp(RotMin, 0, RotMax).ToString();
 		RotationMax.text = Mathf.Clamp(RotMax, RotMin, 360).ToString();

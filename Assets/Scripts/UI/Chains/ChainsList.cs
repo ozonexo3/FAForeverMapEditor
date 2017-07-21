@@ -76,8 +76,6 @@ namespace EditMap
 		}
 
 
-		int LastGeneratedChains = -2;
-
 		public void CleanMenu()
 		{
 			ChainSelected = -1;

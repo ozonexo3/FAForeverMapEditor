@@ -39,6 +39,10 @@ public class ArmysWindow : MonoBehaviour {
 		float W = ((ScmapEditor.Current.map.Width - AreaSize.width) / ScmapEditor.Current.map.Width) * ImageSize;
 		float H = ((ScmapEditor.Current.map.Height - AreaSize.height) / ScmapEditor.Current.map.Height) * ImageSize;
 
+		AreaImages[0].sizeDelta = new Vector2(Mathf.Clamp(X, 0, ImageSize), 0);
+		AreaImages[1].sizeDelta = new Vector2(0, Mathf.Clamp(Y, 0, ImageSize));
+		AreaImages[2].sizeDelta = new Vector2(Mathf.Clamp(W, 0, ImageSize), 0);
+		AreaImages[3].sizeDelta = new Vector2(0, Mathf.Clamp(H, 0, ImageSize));
 
 		//AreaImages[0].sizeDelta = new Vector2(Mathf.Clamp(X, 0, ImageSize), 0);
 		//AreaImages[1].sizeDelta = new Vector2(0, Mathf.Clamp(Y, 0, ImageSize));

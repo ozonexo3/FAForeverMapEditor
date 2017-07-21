@@ -162,18 +162,19 @@ namespace Markers
 		public static int RecreateMarker(int mc, MapLua.SaveLua.Marker Marker, int Insert = -1)
 		{
 			CreateMarker(Marker, mc);
+			int ToReturn = 0;
 
 			if (Insert >= 0 && Insert <= MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers.Count)
 			{
 				MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers.Insert(Insert, Marker);
-				return Insert;
+				ToReturn = Insert;
 			}
 			else
 			{
 				MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers.Add(Marker);
-				return MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers.Count - 1;
+				ToReturn = MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers.Count - 1;
 			}
-
+			
 			int ChainsCount = Marker.ConnectedToChains.Count;
 			for (int c = 0; c < ChainsCount; c++)
 			{
@@ -182,6 +183,8 @@ namespace Markers
 					Marker.ConnectedToChains[c].ConnectedMarkers.Add(Marker);
 				}
 			}
+
+			return ToReturn;
 
 		}
 
@@ -245,6 +248,7 @@ namespace Markers
 			//TODO
 			if (!UpdatingMarkers)
 			{
+				UpdatingMarkers = true;
 				Current.StartCoroutine(Current.UpdatingMarkersHeights());
 			}
 			else
@@ -279,9 +283,14 @@ namespace Markers
 					}
 				}
 			}
-
+			UpdatingMarkers = false;
 
 			yield return null;
+			if (BufforMarkersUpdate)
+			{
+				BufforMarkersUpdate = false;
+				UpdateMarkersHeights();
+			}
 		}
 #endregion
 
