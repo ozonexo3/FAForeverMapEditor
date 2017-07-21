@@ -124,13 +124,13 @@ public class PlacementManager : MonoBehaviour {
 
 
 	int LastSym = 0;
-	float LastTolerance;
+	//float LastTolerance;
 	public Matrix4x4[] SymmetryMatrix;
 	public GameObject[] PlacementSymmetry;
 	public void GenerateSymmetry()
 	{
 		LastSym = PlayerPrefs.GetInt("Symmetry", 0);
-		LastTolerance = SymmetryWindow.GetTolerance();
+		//LastTolerance = SymmetryWindow.GetTolerance();
 
 		for(int i = 0; i < PlacementSymmetry.Length; i++)
 		{

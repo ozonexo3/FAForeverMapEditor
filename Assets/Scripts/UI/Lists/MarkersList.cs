@@ -47,6 +47,8 @@ public class MarkersList : MonoBehaviour
 			int i = AllFields[g].InstanceId;
 
 
+			if (AllFields[g].gameObject.activeSelf != AllFields[g].ConnectedGameObject.activeSelf)
+				AllFields[g].gameObject.SetActive(AllFields[g].ConnectedGameObject.activeSelf);
 
 			if (Selection.SelectionManager.Current.Selection.Ids.Contains(i))
 			{
@@ -155,6 +157,9 @@ public class MarkersList : MonoBehaviour
 				NewListObject.ListId = 0;
 				NewListObject.ConnectedGameObject = CurrentMarker.MarkerObj.gameObject;
 				NewListObject.ClickAction = SelectListGameobject;
+
+				if (!NewListObject.ConnectedGameObject.activeSelf)
+					newList.SetActive(false);
 
 				if (Selection.SelectionManager.Current.Selection.Ids.Contains(i))
 					NewListObject.SetSelection(1);

@@ -172,38 +172,38 @@ public partial struct GetGamedataFile
 			if (EconomyTab != null)
 			{
 				if (EconomyTab.RawGet("ReclaimEnergyMax") != null)
-					ToReturn.BP.ReclaimEnergyMax = MassMath.StringToFloat(EconomyTab.RawGet("ReclaimEnergyMax").ToString());
+					ToReturn.BP.ReclaimEnergyMax = LuaParser.Read.StringToFloat(EconomyTab.RawGet("ReclaimEnergyMax").ToString());
 
 				if (EconomyTab.RawGet("ReclaimMassMax") != null)
-					ToReturn.BP.ReclaimMassMax = MassMath.StringToFloat(EconomyTab.RawGet("ReclaimMassMax").ToString());
+					ToReturn.BP.ReclaimMassMax = LuaParser.Read.StringToFloat(EconomyTab.RawGet("ReclaimMassMax").ToString());
 
 				if (EconomyTab.RawGet("ReclaimTime") != null)
-					ToReturn.BP.ReclaimTime = MassMath.StringToFloat(EconomyTab.RawGet("ReclaimTime").ToString());
+					ToReturn.BP.ReclaimTime = LuaParser.Read.StringToFloat(EconomyTab.RawGet("ReclaimTime").ToString());
 			}
 		}
 
 		//Size
 		if (BP.GetTable("PropBlueprint").RawGet("SizeX") != null)
-			ToReturn.BP.SizeX = MassMath.StringToFloat(BP.GetTable("PropBlueprint").RawGet("SizeX").ToString());
+			ToReturn.BP.SizeX = LuaParser.Read.StringToFloat(BP.GetTable("PropBlueprint").RawGet("SizeX").ToString());
 
 		if (BP.GetTable("PropBlueprint").RawGet("SizeY") != null)
-			ToReturn.BP.SizeY = MassMath.StringToFloat(BP.GetTable("PropBlueprint").RawGet("SizeY").ToString());
+			ToReturn.BP.SizeY = LuaParser.Read.StringToFloat(BP.GetTable("PropBlueprint").RawGet("SizeY").ToString());
 
 		if (BP.GetTable("PropBlueprint").RawGet("SizeZ") != null)
-			ToReturn.BP.SizeY = MassMath.StringToFloat(BP.GetTable("PropBlueprint").RawGet("SizeZ").ToString());
+			ToReturn.BP.SizeY = LuaParser.Read.StringToFloat(BP.GetTable("PropBlueprint").RawGet("SizeZ").ToString());
 
 
 		//Display
 		if (BP.GetTable("PropBlueprint.Display") != null)
 		{
 			if (BP.GetTable("PropBlueprint.Display").RawGet("UniformScale") != null)
-				ToReturn.BP.UniformScale = MassMath.StringToFloat(BP.GetTable("PropBlueprint.Display").RawGet("UniformScale").ToString());
+				ToReturn.BP.UniformScale = LuaParser.Read.StringToFloat(BP.GetTable("PropBlueprint.Display").RawGet("UniformScale").ToString());
 
 			// Mesh
 			if (BP.GetTable("PropBlueprint.Display.Mesh") != null)
 			{
 				if (BP.GetTable("PropBlueprint.Display.Mesh").RawGet("IconFadeInZoom") != null)
-					ToReturn.BP.IconFadeInZoom = MassMath.StringToFloat(BP.GetTable("PropBlueprint.Display.Mesh").RawGet("IconFadeInZoom").ToString());
+					ToReturn.BP.IconFadeInZoom = LuaParser.Read.StringToFloat(BP.GetTable("PropBlueprint.Display.Mesh").RawGet("IconFadeInZoom").ToString());
 
 				//Lods
 				LuaTable LodTable = BP.GetTable("PropBlueprint.Display.Mesh.LODs");
@@ -226,7 +226,7 @@ public partial struct GetGamedataFile
 						ToReturn.BP.LODs[i].ShaderName = LodTableValues[i].RawGet("ShaderName").ToString();
 
 					if (LodTableValues[i].RawGet("LODCutoff") != null)
-						ToReturn.BP.LODs[i].LODCutoff = MassMath.StringToFloat(LodTableValues[i].RawGet("LODCutoff").ToString());
+						ToReturn.BP.LODs[i].LODCutoff = LuaParser.Read.StringToFloat(LodTableValues[i].RawGet("LODCutoff").ToString());
 
 					ToReturn.BP.LODs[i].Scm = LocalPath.Replace("prop.bp", "lod" + i.ToString() + ".scm");
 				}

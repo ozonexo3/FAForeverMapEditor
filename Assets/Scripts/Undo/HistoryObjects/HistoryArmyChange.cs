@@ -27,8 +27,6 @@ public class HistoryArmyChange : HistoryObject {
 	public SaveLua.Army.Aliance[] Alliances;
 
 	public override void Register(){
-		int c = 0;
-
 		Army = CurrentArmy;
 
 		ArmyName = Army.Name;

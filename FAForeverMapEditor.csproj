@@ -76,6 +76,9 @@
     <Reference Include="UnityEditor">
       <HintPath>Library\UnityAssemblies\UnityEditor.dll</HintPath>
     </Reference>
+    <Reference Include="Mono.Cecil">
+      <HintPath>Library\UnityAssemblies\Mono.Cecil.dll</HintPath>
+    </Reference>
     <Reference Include="ICSharpCode.SharpZipLib">
       <HintPath>Assets\Plugins\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
@@ -172,7 +175,6 @@
     <Compile Include="Assets\LUA\NLua\ObjectTranslator.cs" />
     <Compile Include="Assets\LUA\NLua\ObjectTranslatorPool.cs" />
     <Compile Include="Assets\LUA\NLua\ProxyType.cs" />
-    <Compile Include="Assets\OnlyLocal\Reflection.cs" />
     <Compile Include="Assets\PostProcessing\Runtime\Attributes\GetSetAttribute.cs" />
     <Compile Include="Assets\PostProcessing\Runtime\Attributes\MinAttribute.cs" />
     <Compile Include="Assets\PostProcessing\Runtime\Attributes\TrackballAttribute.cs" />
@@ -224,6 +226,7 @@
     <Compile Include="Assets\Scripts\GFX\GridCamera.cs" />
     <Compile Include="Assets\Scripts\GFX\RenderChainLine.cs" />
     <Compile Include="Assets\Scripts\GFX\RenderLineBetweenTransforms.cs" />
+    <Compile Include="Assets\Scripts\GFX\RenderMarkersConnections.cs" />
     <Compile Include="Assets\Scripts\GFX\SelectionRing.cs" />
     <Compile Include="Assets\Scripts\GFX\TerrainMesh.cs" />
     <Compile Include="Assets\Scripts\HazardX SCMAP Code\BinaryReader.cs" />
@@ -314,6 +317,7 @@
     <Compile Include="Assets\Scripts\UI\Tools\ArmyInfo.cs" />
     <Compile Include="Assets\Scripts\UI\Tools\LightingInfo.cs" />
     <Compile Include="Assets\Scripts\UI\Tools\MapInfo.cs" />
+    <Compile Include="Assets\Scripts\UI\Tools\MarkerLayersInfo.cs" />
     <Compile Include="Assets\Scripts\UI\Tools\MarkersInfo.cs" />
     <Compile Include="Assets\Scripts\UI\Tools\NewMarkersInfo.cs" />
     <Compile Include="Assets\Scripts\UI\Tools\PropsInfo.cs" />

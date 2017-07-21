@@ -32,4 +32,7 @@ QualitySettings:
     asyncUploadTimeSlice: 2
     asyncUploadBufferSize: 4
     excludedTargetPlatforms: []
-  m_PerPlatformDefaultQuality: {}
+  m_PerPlatformDefaultQuality:
+    PS4: 0
+    Standalone: 0
+    Windows Store Apps: 0

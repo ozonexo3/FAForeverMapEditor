@@ -26,15 +26,15 @@ public class SymmetryWindow : MonoBehaviour {
 
 	public void SliderChange(){
 		if(Enabling) return;
-		bool AnythingChanged = false;
+		//bool AnythingChanged = false;
 		if(GetTolerance() != (int)AngleSlider.value){
 			PlayerPrefs.SetInt("SymmetryAngleCount", (int)AngleSlider.value);
-			AnythingChanged = true;
+			//AnythingChanged = true;
 		}
 		if(float.Parse(ToleranceInput.text) != PlayerPrefs.GetFloat("SymmetryTolerance", 0.4f)){
 			PlayerPrefs.SetFloat("SymmetryTolerance", float.Parse(ToleranceInput.text));
 			EditMenu.MirrorTolerance = float.Parse(ToleranceInput.text);
-			AnythingChanged = true;
+			//AnythingChanged = true;
 		}
 
 		//if(AnythingChanged) EditMenu.EditMarkers.UpdateSelectionRing();

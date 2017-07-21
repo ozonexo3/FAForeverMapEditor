@@ -1490,9 +1490,9 @@ MonoBehaviour:
   onValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1002653540}
-        m_MethodName: ChangeScript
-        m_Mode: 3
+      - m_Target: {fileID: 579193427}
+        m_MethodName: ValuesChanged
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -8801,9 +8801,9 @@ MonoBehaviour:
   onValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1002653540}
-        m_MethodName: ChangeScript
-        m_Mode: 3
+      - m_Target: {fileID: 579193427}
+        m_MethodName: ValuesChanged
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -11798,9 +11798,9 @@ MonoBehaviour:
   onValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1002653540}
-        m_MethodName: ChangeScript
-        m_Mode: 3
+      - m_Target: {fileID: 579193427}
+        m_MethodName: ValuesChanged
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -15998,9 +15998,9 @@ MonoBehaviour:
   onValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1002653540}
-        m_MethodName: ChangeScript
-        m_Mode: 3
+      - m_Target: {fileID: 579193427}
+        m_MethodName: ValuesChanged
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -17022,9 +17022,9 @@ MonoBehaviour:
   onValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1002653540}
-        m_MethodName: ChangeScript
-        m_Mode: 3
+      - m_Target: {fileID: 579193427}
+        m_MethodName: ValuesChanged
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -19837,6 +19837,10 @@ GameObject:
   - component: {fileID: 394412736}
   - component: {fileID: 394412733}
   - component: {fileID: 394412737}
+  - component: {fileID: 394412738}
+  - component: {fileID: 394412741}
+  - component: {fileID: 394412740}
+  - component: {fileID: 394412739}
   m_Layer: 0
   m_Name: Markers
   m_TagString: Untagged
@@ -20032,6 +20036,19 @@ MonoBehaviour:
     SharedMesh: {fileID: 4300010, guid: c57e88c99e7871f4e8c94e1ee4bb3383, type: 3}
     SharedMaterial: {fileID: 2100000, guid: a4eafd83f48b39d47af5d313424d22d0, type: 2}
     Icon: {fileID: 21300000, guid: 22c3204c0a219904c8b55a769f7f6c45, type: 3}
+  MarkerLayersSettings:
+    Blank: 1
+    Spawn: 1
+    Resource: 1
+    Camera: 1
+    LandNodes: 1
+    AmphibiousNodes: 1
+    NavyNodes: 1
+    AirNodes: 1
+    ConnectedNodes: 0
+    RallyPoint: 1
+    NavyRallyPoint: 1
+    Other: 1
   MasterChains: []
 --- !u!114 &394412736
 MonoBehaviour:
@@ -20061,6 +20078,66 @@ MonoBehaviour:
   RenderChain:
     Name: 
     Markers: []
+--- !u!114 &394412738
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 394412732}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: babf1c3ab62dab3459a8e9137d635c9b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  AllMaterial: {fileID: 2100000, guid: 7dee331d25b099344a1a25d9b79fe7c1, type: 2}
+  SelectedMaterial: {fileID: 2100000, guid: 7dee331d25b099344a1a25d9b79fe7c1, type: 2}
+  AllowedMarkers: 0e0000000c000000
+  Edges: []
+--- !u!114 &394412739
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 394412732}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: babf1c3ab62dab3459a8e9137d635c9b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  AllMaterial: {fileID: 2100000, guid: 7dee331d25b099344a1a25d9b79fe7c1, type: 2}
+  SelectedMaterial: {fileID: 2100000, guid: 7dee331d25b099344a1a25d9b79fe7c1, type: 2}
+  AllowedMarkers: 110000000c000000
+  Edges: []
+--- !u!114 &394412740
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 394412732}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: babf1c3ab62dab3459a8e9137d635c9b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  AllMaterial: {fileID: 2100000, guid: 29420440cc18a0a4580e5bec50d2c3de, type: 2}
+  SelectedMaterial: {fileID: 2100000, guid: 7dee331d25b099344a1a25d9b79fe7c1, type: 2}
+  AllowedMarkers: 100000000d00000012000000
+  Edges: []
+--- !u!114 &394412741
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 394412732}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: babf1c3ab62dab3459a8e9137d635c9b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  AllMaterial: {fileID: 2100000, guid: 4f94b04124897754db05b83ee12c3bad, type: 2}
+  SelectedMaterial: {fileID: 2100000, guid: 7dee331d25b099344a1a25d9b79fe7c1, type: 2}
+  AllowedMarkers: 0f0000000c000000
+  Edges: []
 --- !u!1 &394445767
 GameObject:
   m_ObjectHideFlags: 0
@@ -30441,6 +30518,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 579193426}
+  - component: {fileID: 579193427}
   m_Layer: 5
   m_Name: Layers
   m_TagString: Untagged
@@ -30459,6 +30537,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 661562520}
+  - {fileID: 1529121955}
   m_Father: {fileID: 156286933}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -30467,6 +30546,29 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: -13.649963}
   m_SizeDelta: {x: 0, y: -27.299927}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &579193427
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 579193425}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3b07d6d70032650429014bd251175344, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  BlankActive: {fileID: 1238258659}
+  SpawnActive: {fileID: 335346647}
+  ResourcesActive: {fileID: 1683697454}
+  CameraActive: {fileID: 232066923}
+  LandNodesActive: {fileID: 1287283229}
+  AmphibiousNodesActive: {fileID: 990800510}
+  NavalNodesActive: {fileID: 171410476}
+  AirNodesActive: {fileID: 312973456}
+  ConnectionsActive: {fileID: 911666492}
+  RallyPointActive: {fileID: 35001278}
+  NavyRallyPointActive: {fileID: 1973135153}
+  OtherActive: {fileID: 1259242410}
 --- !u!1 &580699981
 GameObject:
   m_ObjectHideFlags: 0
@@ -33837,7 +33939,7 @@ GameObject:
   - component: {fileID: 661562522}
   - component: {fileID: 661562521}
   m_Layer: 5
-  m_Name: Script
+  m_Name: Layers
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -33852,8 +33954,7 @@ RectTransform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children:
-  - {fileID: 1529121955}
+  m_Children: []
   m_Father: {fileID: 579193426}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -44641,7 +44742,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Rally points
+  m_Text: ' Rally points'
 --- !u!222 &882159873
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -46213,9 +46314,9 @@ MonoBehaviour:
   onValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1002653540}
-        m_MethodName: ChangeScript
-        m_Mode: 3
+      - m_Target: {fileID: 579193427}
+        m_MethodName: ValuesChanged
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -49444,9 +49545,9 @@ MonoBehaviour:
   onValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1002653540}
-        m_MethodName: ChangeScript
-        m_Mode: 3
+      - m_Target: {fileID: 579193427}
+        m_MethodName: ValuesChanged
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -57266,7 +57367,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Basic
+  m_Text: ' Basic'
 --- !u!222 &1142234387
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -61411,9 +61512,9 @@ MonoBehaviour:
   onValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1002653540}
-        m_MethodName: ChangeScript
-        m_Mode: 3
+      - m_Target: {fileID: 579193427}
+        m_MethodName: ValuesChanged
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -62456,9 +62557,9 @@ MonoBehaviour:
   onValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1002653540}
-        m_MethodName: ChangeScript
-        m_Mode: 3
+      - m_Target: {fileID: 579193427}
+        m_MethodName: ValuesChanged
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -63870,9 +63971,9 @@ MonoBehaviour:
   onValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1002653540}
-        m_MethodName: ChangeScript
-        m_Mode: 3
+      - m_Target: {fileID: 579193427}
+        m_MethodName: ValuesChanged
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -74124,7 +74225,7 @@ GameObject:
   - component: {fileID: 1529121957}
   - component: {fileID: 1529121956}
   m_Layer: 5
-  m_Name: Script
+  m_Name: LayersList
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -74136,7 +74237,7 @@ RectTransform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1529121954}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -74156,12 +74257,12 @@ RectTransform:
   - {fileID: 1973135152}
   - {fileID: 1696707824}
   - {fileID: 1259242409}
-  m_Father: {fileID: 661562520}
-  m_RootOrder: 0
+  m_Father: {fileID: 579193426}
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 2.8999848, y: -24.250008}
+  m_AnchoredPosition: {x: -9.100016, y: -40.300056}
   m_SizeDelta: {x: 274.6, y: 402.8}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &1529121956
@@ -74176,7 +74277,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Padding:
-    m_Left: 5
+    m_Left: 15
     m_Right: 5
     m_Top: 5
     m_Bottom: 5
@@ -75426,7 +75527,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1559365571
 RectTransform:
   m_ObjectHideFlags: 0
@@ -81569,9 +81670,9 @@ MonoBehaviour:
   onValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1002653540}
-        m_MethodName: ChangeScript
-        m_Mode: 3
+      - m_Target: {fileID: 579193427}
+        m_MethodName: ValuesChanged
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -82471,7 +82572,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: AI
+  m_Text: ' AI'
 --- !u!222 &1696707826
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -94759,7 +94860,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Paths
+  m_Text: ' Paths'
 --- !u!222 &1928506070
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -95916,9 +96017,9 @@ MonoBehaviour:
   onValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1002653540}
-        m_MethodName: ChangeScript
-        m_Mode: 3
+      - m_Target: {fileID: 579193427}
+        m_MethodName: ValuesChanged
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
