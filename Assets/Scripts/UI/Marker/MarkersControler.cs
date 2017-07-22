@@ -109,6 +109,8 @@ namespace Markers
 					}
 				}
 			}
+
+			RenderMarkersConnections.Current.UpdateConnections();
 		}
 
 		public static void UnloadMarkers()
@@ -128,6 +130,8 @@ namespace Markers
 				}
 				MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers = null;
 			}
+
+			RenderMarkersConnections.Current.UpdateConnections();
 		}
 
 		public static void Save()
@@ -241,6 +245,7 @@ namespace Markers
 				}
 			}
 
+			RenderMarkersConnections.Current.UpdateConnections();
 		}
 
 
@@ -284,6 +289,8 @@ namespace Markers
 						CreateMarker(MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers[m], mc);
 				}
 			}
+
+			RenderMarkersConnections.Current.UpdateConnections();
 		}
 
 		#endregion

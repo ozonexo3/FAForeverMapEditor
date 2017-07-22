@@ -81,7 +81,9 @@ public class PlacementManager : MonoBehaviour {
 
 
 			if (SelectionManager.Current.SnapToGrid)
-				PlacementObject.transform.position = ScmapEditor.SnapToGridCenter(hit.point, true);
+				PlacementObject.transform.position = ScmapEditor.SnapToGridCenter(hit.point, true, SelectionManager.Current.SnapToWater);
+			else if(SelectionManager.Current.SnapToWater)
+				PlacementObject.transform.position = ScmapEditor.ClampToWater(hit.point);
 			else
 				PlacementObject.transform.position = hit.point;
 

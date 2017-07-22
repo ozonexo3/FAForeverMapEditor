@@ -15,6 +15,7 @@ namespace Selection
 		public int DisableLayer;
 		public int UsedLayer;
 		public bool SnapToGrid;
+		public bool SnapToWater = true;
 
 		public GameObject[] AffectedGameObjects;
 		public bool Active = false;

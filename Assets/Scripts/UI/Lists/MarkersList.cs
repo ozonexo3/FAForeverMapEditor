@@ -28,6 +28,11 @@ public class MarkersList : MonoBehaviour
 	{
 		if(!MarkersInfo.MarkerPageChange)
 			Clean();
+		else if (Generating)
+		{
+			StopCoroutine(GeneratingEnum);
+			Generating = false;
+		}
 	}
 
 	public void UnselectAll()
@@ -38,11 +43,17 @@ public class MarkersList : MonoBehaviour
 		}
 	}
 
+	bool UpdateSelectionAfterGenerate = false;
 	public void UpdateSelection()
 	{
+		if (Generating)
+		{
+			UpdateSelectionAfterGenerate = true;
+			return;
 
+		}
 		//bool Focused = false;
-		for(int g = 0; g < GeneratedCount; g++)
+		for (int g = 0; g < GeneratedCount; g++)
 		{
 			int i = AllFields[g].InstanceId;
 
@@ -77,7 +88,6 @@ public class MarkersList : MonoBehaviour
 					}
 				}
 			}
-
 		}
 	}
 
@@ -88,16 +98,23 @@ public class MarkersList : MonoBehaviour
 		{
 			UpdateSelection();
 			return;
-
 		}
-		
+
+		if (Generating)
+			StopCoroutine(GeneratingEnum);
+
 		Clean();
 		GenerateList();
 	}
 
 	public void Clean()
 	{
-		//Debug.Log("Clean");
+		if (Generating)
+		{
+			StopCoroutine(GeneratingEnum);
+			Generating = false;
+		}
+
 		AllFields = new List<ListObject>();
 
 		foreach (RectTransform child in Pivot)
@@ -110,17 +127,42 @@ public class MarkersList : MonoBehaviour
 	bool IgnoreFocusList = false;
 	public void SelectListGameobject(GameObject Connected)
 	{
+		if (Generating)
+			return;
 		IgnoreFocusList = true;
 		Selection.SelectionManager.Current.SelectObject(Connected);
 		IgnoreFocusList = false;
 	}
 
+
+	bool Buffor = false;
+	bool Generating = false;
+	Coroutine GeneratingEnum;
 	void GenerateList()
+	{
+		if (MapLuaParser.Current.SaveLuaFile.Data.MasterChains.Length == 0)
+			return;
+
+		if (!gameObject.activeInHierarchy)
+			return;
+
+		if (Generating)
+		{
+			Buffor = true;
+		}
+		else
+		{
+			Generating = true;
+			GeneratingEnum = StartCoroutine(GenerateingList());
+		}
+	}
+
+	IEnumerator GenerateingList()
 	{
 		//Debug.Log("Regenerate");
 		int mc = 0;
-		if (MapLuaParser.Current.SaveLuaFile.Data.MasterChains.Length == 0)
-			return;
+		const int PauseEvery = 3;
+		int GenerateCounter = 0;
 
 		int Mcount = MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers.Count;
 		int TypesCount = (int)MapLua.SaveLua.Marker.MarkerTypes.Count;
@@ -180,6 +222,17 @@ public class MarkersList : MonoBehaviour
 					NewListObject.Icon.sprite = Markers.MarkersControler.Current.SpawnGraphic.Icon;
 				else
 					NewListObject.Icon.sprite = Markers.MarkersControler.GetIconByType(CurrentMarker.MarkerType);
+
+				
+			}
+
+
+			GenerateCounter++;
+			if (GenerateCounter > PauseEvery)
+			{
+				GenerateCounter = 0;
+				//yield return null;
+
 			}
 
 			AllObjectsList.AddRange(ObjectToSort.OrderBy(go => go.name));
@@ -193,6 +246,21 @@ public class MarkersList : MonoBehaviour
 
 		Generated = true;
 		GeneratedCount = AllFields.Count;
-		//Debug.Log(GeneratedCount + " / " + MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers.Count);
+
+		yield return null;
+
+		Generating = false;
+		if (Buffor)
+		{
+			Buffor = false;
+			UpdateSelectionAfterGenerate = false;
+			GenerateList();
+		}
+		else if (UpdateSelectionAfterGenerate)
+		{
+			UpdateSelectionAfterGenerate = false;
+			UpdateSelection();
+		}
+
 	}
 }

@@ -544,7 +544,7 @@ public class ScmapEditor : MonoBehaviour
 		return Pos;
 	}
 
-	public static Vector3 SnapToGridCenter(Vector3 Pos, bool SampleHeight = false)
+	public static Vector3 SnapToGridCenter(Vector3 Pos, bool SampleHeight = false, bool MinimumWaterLevel = false)
 	{
 		Pos.x += 0.1f;
 		//Pos.z += 0.1f;
@@ -562,6 +562,14 @@ public class ScmapEditor : MonoBehaviour
 
 		if (SampleHeight)
 			Pos.y = Current.Teren.SampleHeight(Pos);
+		if (MinimumWaterLevel)
+			Pos.y = Mathf.Clamp(Pos.y, Current.WaterLevel.localPosition.y, 10000);
+		return Pos;
+	}
+
+	public static Vector3 ClampToWater(Vector3 Pos)
+	{
+		Pos.y = Mathf.Clamp(Pos.y, Current.WaterLevel.localPosition.y, 10000);
 		return Pos;
 	}
 

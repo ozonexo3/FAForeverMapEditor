@@ -155,7 +155,7 @@ namespace EditMap
 						NewPos = Positions[i] + Rotations[i] * Mpreset.Markers[m].Tr.localPosition;
 
 						if (SelectionManager.Current.SnapToGrid)
-							NewPos = ScmapEditor.SnapToGridCenter(NewPos, true);
+							NewPos = ScmapEditor.SnapToGridCenter(NewPos, true, SelectionManager.Current.SnapToWater);
 
 						//NewPos.y = ScmapEditor.Current.Teren.SampleHeight(NewPos);
 
@@ -183,7 +183,7 @@ namespace EditMap
 					MapLua.SaveLua.Marker NewMarker = new MapLua.SaveLua.Marker(LastCreationType);
 
 					if (SelectionManager.Current.SnapToGrid)
-						Positions[i] = ScmapEditor.SnapToGridCenter(Positions[i], true);
+						Positions[i] = ScmapEditor.SnapToGridCenter(Positions[i], true, SelectionManager.Current.SnapToWater);
 
 					//Positions[i].y = ScmapEditor.Current.Teren.SampleHeight(Positions[i]);
 

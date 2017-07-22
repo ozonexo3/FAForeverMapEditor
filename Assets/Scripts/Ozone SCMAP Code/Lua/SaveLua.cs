@@ -199,7 +199,9 @@ namespace MapLua
 				MapLuaParser.Current.ScenarioLuaFile.AddDataToArmy(NewArmy);
 			}
 
+			// Conversions
 			MapLuaParser.Current.ScenarioLuaFile.CheckForEmptyArmy();
+			ConnectAdjacentMarkers();
 
 			return true;
 		}

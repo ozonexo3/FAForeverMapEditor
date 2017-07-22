@@ -61,7 +61,21 @@ namespace EditMap
 			if (!Current.gameObject.activeSelf)
 				return;
 			Current.UpdateSelectionOptions();
-			
+		}
+
+		private void Update()
+		{
+			if (Connect.activeSelf)
+			{
+				if (Input.GetKeyDown(KeyCode.C))
+				{
+					ConnectSelected();
+				}
+				else if (Input.GetKeyDown(KeyCode.D))
+				{
+					DisconnectSelected();
+				}
+			}
 		}
 
 		bool Loading = false;
@@ -483,7 +497,61 @@ namespace EditMap
 			}
 			Loading = false;
 		}
+		
 
+		public void ConnectSelected()
+		{
+
+			ChangeConnection(SelectionManager.Current.Selection, true);
+
+			for (int s = 0; s < SelectionManager.Current.SymetrySelection.Length; s++)
+			{
+				ChangeConnection(SelectionManager.Current.SymetrySelection[s], true);
+			}
+
+			RenderMarkersConnections.Current.UpdateConnections();
+
+		}
+
+		public void DisconnectSelected()
+		{
+			ChangeConnection(SelectionManager.Current.Selection, false);
+
+			for (int s = 0; s < SelectionManager.Current.SymetrySelection.Length; s++)
+			{
+				ChangeConnection(SelectionManager.Current.SymetrySelection[s], false);
+			}
+
+			RenderMarkersConnections.Current.UpdateConnections();
+		}
+
+		void ChangeConnection(SelectionManager.SelectedObjects Sel, bool Connect)
+		{
+
+			SaveLua.Marker[] SelectedMarkers = new SaveLua.Marker[Sel.Ids.Count];
+			for (int i = 0; i < SelectedMarkers.Length; i++)
+			{
+				SelectedMarkers[i] = SelectionManager.Current.AffectedGameObjects[Sel.Ids[i]].GetComponent<MarkerObject>().Owner;
+			}
+
+
+			for (int i = 0; i < Sel.Ids.Count; i++)
+			{
+				SaveLua.Marker Mobj = SelectionManager.Current.AffectedGameObjects[Sel.Ids[i]].GetComponent<MarkerObject>().Owner;
+
+				for (int c = 0; c < SelectedMarkers.Length; c++)
+				{
+					if (SelectedMarkers[c] != null && SelectedMarkers[c] != Mobj)
+					{
+						if(Connect && !Mobj.AdjacentToMarker.Contains(SelectedMarkers[c]))
+							Mobj.AdjacentToMarker.Add(SelectedMarkers[c]);
+						else if(!Connect && Mobj.AdjacentToMarker.Contains(SelectedMarkers[c]))
+							Mobj.AdjacentToMarker.Remove(SelectedMarkers[c]);
+					}
+				}
+
+			}
+		}
 
 		#endregion
 	}

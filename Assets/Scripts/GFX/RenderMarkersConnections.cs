@@ -6,11 +6,19 @@ using MapLua;
 
 public class RenderMarkersConnections : MonoBehaviour
 {
+	public static RenderMarkersConnections Current;
 
-	public Material AllMaterial;
-	public Material SelectedMaterial;
+	public ConnectionLayer[] Layers;
 
-	public List<SaveLua.Marker.MarkerTypes> AllowedMarkers;
+	[System.Serializable]
+	public class ConnectionLayer
+	{
+		public bool Enabled;
+		public Material Mat;
+		public List<SaveLua.Marker.MarkerTypes> AllowedMarkers;
+		public List<Edge> Edges = new List<Edge>();
+		public int Count = 0;
+	}
 
 	[System.Serializable]
 	public class Edge
@@ -22,63 +30,109 @@ public class RenderMarkersConnections : MonoBehaviour
 		public Transform Point1;
 	}
 
-	private void OnEnable()
+
+	private void Awake()
 	{
-		GenerateEdges();
+		Current = this;
 	}
 
-	int Count = 0;
-	public List<Edge> Edges = new List<Edge>();
-	bool generating = false;
+	private void OnEnable()
+	{
+		//UpdateConnections();
+
+	}
+
+
+
+	public void UpdateConnections()
+	{
+		if (generating)
+		{
+			Buffor = true;
+			return;
+		}
+
+		Layers[0].Enabled = MarkersControler.Current.MarkerLayersSettings.LandNodes;
+		Layers[1].Enabled = MarkersControler.Current.MarkerLayersSettings.NavyNodes;
+		Layers[2].Enabled = MarkersControler.Current.MarkerLayersSettings.AirNodes;
+		Layers[3].Enabled = MarkersControler.Current.MarkerLayersSettings.AmphibiousNodes;
+
+		StartCoroutine(GenerateEdges());
+	}
+
+	public bool Buffor;
+	public bool generating = false;
 
 	int Mcount = 0;
-	void GenerateEdges()
+	IEnumerator GenerateEdges()
 	{
-		Edges = new List<Edge>();
+
+
+		generating = true;
 
 		int mc = 0;
 		Mcount = MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers.Count;
-		//bool[] MarkerDone = new bool[Mcount];
-		Count = 0;
-		for (int m = 0; m < Mcount; m++)
+
+		for (int l = 0; l < Layers.Length; l++)
 		{
-			if(AllowedMarkers.Contains( MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers[m].MarkerType))
+			if (!Layers[l].Enabled)
+				continue;
+
+			Layers[l].Edges = new List<Edge>();
+
+			Layers[l].Count = 0;
+			for (int m = 0; m < Mcount; m++)
 			{
-				string[] Names = MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers[m].adjacentTo.Split(" ".ToCharArray());
-				//MarkerDone[m] = true;
-
-				Transform Tr = MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers[m].MarkerObj.Tr;
-
-				for (int e = 0; e < Names.Length; e++)
+				if (Layers[l].AllowedMarkers.Contains(MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers[m].MarkerType))
 				{
-					int ConM = MarkerIdByName(mc, Names[e]);
 
-					if (ConM >= 0 && !EdgeExist(m, ConM))
+					//string[] Names = MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers[m].adjacentTo.Split(" ".ToCharArray());
+					Transform Tr = MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers[m].MarkerObj.Tr;
+
+					for (int e = 0; e < MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers[m].AdjacentToMarker.Count; e++)
 					{
-						//MarkerDone[ConM] = true;
+						//int ConM = MarkerIdByName(mc, Names[e]);
+						int ConM = MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers.IndexOf(MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers[m].AdjacentToMarker[e]);
 
-						Edge NewEdge = new Edge();
-						NewEdge.Point0 = Tr;
-						NewEdge.Point1 = MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers[ConM].MarkerObj.Tr;
+						if (ConM >= 0 && !EdgeExist(l, m, ConM))
+						{
 
-						Edges.Add(NewEdge);
-						Count++;
+							Edge NewEdge = new Edge();
+							NewEdge.Point0 = Tr;
+							NewEdge.Point1 = MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers[ConM].MarkerObj.Tr;
+
+							NewEdge.ConId0 = m;
+							NewEdge.ConId1 = ConM;
+
+							Layers[l].Edges.Add(NewEdge);
+							Layers[l].Count++;
+						}
 					}
 				}
 			}
+			//yield return null;
 		}
-		Count = Edges.Count;
+
+		yield return null;
+		generating = false;
+		if (Buffor)
+		{
+			Buffor = false;
+			UpdateConnections();
+		}
+
 	}
 
-	bool EdgeExist(int p0, int p1)
+	bool EdgeExist(int l, int p0, int p1)
 	{
-		for (int e = 0; e < Count; e++)
+		for (int e = 0; e < Layers[l].Count; e++)
 		{
-			if ((Edges[e].ConId0 == p0 || Edges[e].ConId0 == p1) && (Edges[e].ConId1 == p0 || Edges[e].ConId1 == p1))
+			if ((Layers[l].Edges[e].ConId0 == p0 || Layers[l].Edges[e].ConId0 == p1) && (Layers[l].Edges[e].ConId1 == p0 || Layers[l].Edges[e].ConId1 == p1))
 				return true;
 		}
 		return false;
 	}
+
 
 	int MarkerIdByName(int mc, string SearchName)
 	{
@@ -94,25 +148,36 @@ public class RenderMarkersConnections : MonoBehaviour
 	{
 		if (generating)
 			return;
+
+		if (!MarkersControler.Current.MarkerLayersSettings.ConnectedNodes)
+			return;
+
 		//CreateLineMaterial();
 		// Apply the line material
-		AllMaterial.SetPass(0);
 
-		GL.PushMatrix();
-		// Set transformation matrix for drawing to
-		// match our transform
-		GL.MultMatrix(transform.localToWorldMatrix);
-
-
-		// Draw lines
-		GL.Begin(GL.LINES);
-
-		for (int i = 0; i < Count; i++)
+		for (int l = 0; l < Layers.Length; l++)
 		{
-			GL.Vertex(Edges[i].Point0.localPosition);
-			GL.Vertex(Edges[i].Point1.localPosition);
+			if (!Layers[l].Enabled)
+				continue;
+
+			Layers[l].Mat.SetPass(0);
+
+			GL.PushMatrix();
+			// Set transformation matrix for drawing to
+			// match our transform
+			GL.MultMatrix(transform.localToWorldMatrix);
+
+
+			// Draw lines
+			GL.Begin(GL.LINES);
+
+			for (int i = 0; i < Layers[l].Count; i++)
+			{
+				GL.Vertex(Layers[l].Edges[i].Point0.localPosition);
+				GL.Vertex(Layers[l].Edges[i].Point1.localPosition);
+			}
+			GL.End();
+			GL.PopMatrix();
 		}
-		GL.End();
-		GL.PopMatrix();
 	}
 }

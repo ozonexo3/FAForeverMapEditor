@@ -31,6 +31,7 @@ namespace MapLua
 
 			public string graph = "";
 			public string adjacentTo = "";
+			public List<Marker> AdjacentToMarker = new List<Marker>();
 
 			public float zoom = 30;
 			public bool canSetCamera = true;
@@ -129,6 +130,7 @@ namespace MapLua
 			public Marker(MarkerTypes Type)
 			{
 				ConnectedToChains = new List<Chain>();
+				AdjacentToMarker = new List<Marker>();
 
 				Name = GetLowestName(Type);
 				RegisterMarkerName(Name);
@@ -169,6 +171,7 @@ namespace MapLua
 				Name = name;
 				RegisterMarkerName(Name);
 				ConnectedToChains = new List<Chain>();
+				AdjacentToMarker = new List<Marker>();
 				string[] Keys = LuaParser.Read.GetTableKeys(Table);
 
 				for (int k = 0; k < Keys.Length; k++)
@@ -253,6 +256,20 @@ namespace MapLua
 				if (AllowByType(KEY_HINT))
 					LuaFile.AddLine(LuaParser.Write.BoolToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_HINT), hint));
 
+				if (AllowByType(KEY_ADJACENTTO))
+				{
+					adjacentTo = "";
+					for(int i = 0; i < AdjacentToMarker.Count; i++)
+					{
+						if (i > 0)
+							adjacentTo += " ";
+						adjacentTo += AdjacentToMarker[i].Name;
+					}
+
+					LuaFile.AddLine(LuaParser.Write.StringToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_ADJACENTTO), adjacentTo));
+
+				}
+
 				//Type
 				LuaFile.AddLine(LuaParser.Write.StringToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_TYPE), MarkerTypeToString(MarkerType)));
 				LuaFile.AddLine(LuaParser.Write.StringToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_PROP), prop));
@@ -308,6 +325,46 @@ namespace MapLua
 				ID++;
 
 			return prefix + ID.ToString();
+		}
+
+
+
+		private void ConnectAdjacentMarkers()
+		{
+			int mc = 0;
+			int Mcount = MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers.Count;
+
+			for (int m = 0; m < Mcount; m++)
+			{
+				if (MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers[m].adjacentTo.Length > 0)
+				{
+					string[] Names = MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers[m].adjacentTo.Split(" ".ToCharArray());
+					//Transform Tr = MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers[m].MarkerObj.Tr;
+
+					for (int e = 0; e < Names.Length; e++)
+					{
+						int ConM = MarkerIdByName(mc, Names[e], Mcount);
+
+						if(ConM >= 0)
+						{
+
+							MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers[m].AdjacentToMarker.Add(MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers[ConM]);
+
+						}
+
+					}
+				}
+			}
+		}
+
+		int MarkerIdByName(int mc, string SearchName, int Mcount)
+		{
+			for (int m = 0; m < Mcount; m++)
+			{
+				if (MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers[m].MarkerObj.name == SearchName)
+					return m;
+			}
+			return -1;
 		}
 
 	}

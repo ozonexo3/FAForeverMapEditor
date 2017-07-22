@@ -72,7 +72,7 @@ namespace Selection
 				{
 					for (int i = 0; i < Positions.Length; i++)
 					{
-						Current.AffectedGameObjects[Ids[i]].transform.localPosition = ScmapEditor.SnapToGridCenter(Positions[i] + Offset, true);
+						Current.AffectedGameObjects[Ids[i]].transform.localPosition = ScmapEditor.SnapToGridCenter(Positions[i] + Offset, true, Current.SnapToWater);
 						SelectionRings[i].transform.localPosition = Current.AffectedGameObjects[Ids[i]].transform.localPosition;
 					}
 				}
