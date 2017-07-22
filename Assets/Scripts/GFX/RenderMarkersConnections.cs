@@ -155,6 +155,12 @@ public class RenderMarkersConnections : MonoBehaviour
 		//CreateLineMaterial();
 		// Apply the line material
 
+
+		GL.PushMatrix();
+		// Set transformation matrix for drawing to
+		// match our transform
+		GL.MultMatrix(transform.localToWorldMatrix);
+
 		for (int l = 0; l < Layers.Length; l++)
 		{
 			if (!Layers[l].Enabled)
@@ -162,10 +168,6 @@ public class RenderMarkersConnections : MonoBehaviour
 
 			Layers[l].Mat.SetPass(0);
 
-			GL.PushMatrix();
-			// Set transformation matrix for drawing to
-			// match our transform
-			GL.MultMatrix(transform.localToWorldMatrix);
 
 
 			// Draw lines
@@ -177,7 +179,9 @@ public class RenderMarkersConnections : MonoBehaviour
 				GL.Vertex(Layers[l].Edges[i].Point1.localPosition);
 			}
 			GL.End();
-			GL.PopMatrix();
 		}
+
+		GL.PopMatrix();
+
 	}
 }

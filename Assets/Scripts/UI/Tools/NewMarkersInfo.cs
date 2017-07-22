@@ -223,6 +223,9 @@ namespace EditMap
 					//bool Removed = false;
 					for (int m = 0; m < MarkerObjects.Count; m++)
 					{
+						if (MarkerObjects[m] == null)
+							break;
+
 						if (MarkerObjects[m] == MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers[i].MarkerObj.gameObject)
 						{
 							LastDestroyedMarkers[Step] = i;
@@ -236,9 +239,14 @@ namespace EditMap
 			}
 
 			//List<MapLua.SaveLua.Marker> NewMarkers = new List<MapLua.SaveLua.Marker>();
-			
+
+			//Mcount = MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers.Count;
+
 			for (int i = 0; i < Mcount; i++)
 			{
+				if (MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers[i].MarkerObj == null)
+					continue;
+
 				//bool Removed = false;
 				for(int m = 0; m < MarkerObjects.Count; m++)
 				{
@@ -249,6 +257,7 @@ namespace EditMap
 						MarkerObjects.RemoveAt(m);
 						MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers[i] = null;
 						MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers.RemoveAt(i);
+						Mcount--;
 						i--;
 						AnyRemoved = true;
 						break;
@@ -262,8 +271,11 @@ namespace EditMap
 			//MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers = NewMarkers.ToArray();
 			if (AnyRemoved)
 			{
+				Selection.SelectionManager.Current.CleanSelection();
 				Selection.SelectionManager.Current.SetAffectedGameObjects(MarkersControler.GetMarkerObjects());
 				MarkerSelectionOptions.UpdateOptions();
+
+				RenderMarkersConnections.Current.UpdateConnections();
 			}
 		}
 

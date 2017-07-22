@@ -94,7 +94,7 @@ public struct MassMath {
 
 	public static Quaternion QuaternionFromMatrix(Matrix4x4 m)
 	{
-		Quaternion q = new Quaternion();
+		/*Quaternion q = new Quaternion();
 		q.w = Mathf.Sqrt(Mathf.Max(0, 1 + m[0, 0] + m[1, 1] + m[2, 2])) / 2;
 		q.x = Mathf.Sqrt(Mathf.Max(0, 1 + m[0, 0] - m[1, 1] - m[2, 2])) / 2;
 		q.y = Mathf.Sqrt(Mathf.Max(0, 1 - m[0, 0] + m[1, 1] - m[2, 2])) / 2;
@@ -102,7 +102,8 @@ public struct MassMath {
 		q.x *= Mathf.Sign(q.x * (m[2, 1] - m[1, 2]));
 		q.y *= Mathf.Sign(q.y * (m[0, 2] - m[2, 0]));
 		q.z *= Mathf.Sign(q.z * (m[1, 0] - m[0, 1]));
-		return q;
+		return q;*/
+		return Quaternion.LookRotation(m.GetColumn(2), m.GetColumn(1));
 	}
 
 	public static void QuaternionToRotationMatrix(Quaternion Rotation, ref Vector3 VecX, ref Vector3 VecY, ref Vector3 VecZ)
