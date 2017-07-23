@@ -222,6 +222,7 @@
     <Compile Include="Assets\Scripts\Common\MassMath.cs" />
     <Compile Include="Assets\Scripts\GFX\ControlerScale.cs" />
     <Compile Include="Assets\Scripts\GFX\GridCamera.cs" />
+    <Compile Include="Assets\Scripts\GFX\RenderAreas.cs" />
     <Compile Include="Assets\Scripts\GFX\RenderChainLine.cs" />
     <Compile Include="Assets\Scripts\GFX\RenderLineBetweenTransforms.cs" />
     <Compile Include="Assets\Scripts\GFX\RenderMarkersConnections.cs" />
@@ -319,6 +320,7 @@
     <Compile Include="Assets\Scripts\UI\Tools\MarkersInfo.cs" />
     <Compile Include="Assets\Scripts\UI\Tools\NewMarkersInfo.cs" />
     <Compile Include="Assets\Scripts\UI\Tools\PropsInfo.cs" />
+    <Compile Include="Assets\Scripts\UI\Tools\RenderMap.cs" />
     <Compile Include="Assets\Scripts\UI\Tools\StratumInfo.cs" />
     <Compile Include="Assets\Scripts\UI\Tools\TerrainInfo.cs" />
     <Compile Include="Assets\Scripts\UI\Windows\ArmysWindow.cs" />

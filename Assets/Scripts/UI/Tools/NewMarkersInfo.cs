@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine.UI;
 using Markers;
 using Selection;
+using System.Windows.Forms;
 
 namespace EditMap
 {
@@ -326,8 +327,112 @@ namespace EditMap
 
 				return MarkerPrefab;
 			}
-
 		}
+
+
+		[System.Serializable]
+		public class ExportMarkers
+		{
+			public ExportMarker[] Markers;
+			public int MapWidth;
+			public int MapHeight;
+
+			[System.Serializable]
+			public class ExportMarker
+			{
+				public MapLua.SaveLua.Marker.MarkerTypes MarkerType;
+				public Vector3 Pos;
+				public Quaternion Rot;
+			}
+		}
+
+		public void ExportSelectedMarkers() { 
+
+			SaveFileDialog FileDialog = new SaveFileDialog();
+			FileDialog.Title = "Export markers";
+			FileDialog.AddExtension = true;
+
+			FileDialog.DefaultExt = ".fafmapmarkers";
+			FileDialog.Filter = "Faf Markers (*.fafmapmarkers)|*.fafmapmarkers";
+
+
+			//System.Windows.Forms.FolderBrowserDialog FolderDialog = new FolderBrowserDialog();
+
+			//FolderDialog.ShowNewFolderButton = false;
+			//FolderDialog.Description = "Select 'Maps' folder.";
+
+			if (FileDialog.ShowDialog() == DialogResult.OK)
+			{
+				Debug.Log(FileDialog.FileName);
+
+				ExportMarkers ExpMarkers = new ExportMarkers();
+				ExpMarkers.MapWidth = ScmapEditor.Current.map.Width;
+				ExpMarkers.MapHeight = ScmapEditor.Current.map.Height;
+
+				List<MapLua.SaveLua.Marker> SelectedObjects = new List<MapLua.SaveLua.Marker>();
+				for(int i = 0; i < SelectionManager.Current.Selection.Ids.Count; i++)
+				{
+					SelectedObjects.Add(SelectionManager.Current.AffectedGameObjects[SelectionManager.Current.Selection.Ids[i]].GetComponent<MarkerObject>().Owner);
+				}
+				ExpMarkers.Markers = new ExportMarkers.ExportMarker[SelectedObjects.Count];
+				for(int i = 0; i < ExpMarkers.Markers.Length; i++)
+				{
+					ExpMarkers.Markers[i] = new ExportMarkers.ExportMarker();
+					ExpMarkers.Markers[i].MarkerType = SelectedObjects[i].MarkerType;
+					ExpMarkers.Markers[i].Pos = SelectedObjects[i].MarkerObj.Tr.localPosition;
+					ExpMarkers.Markers[i].Rot = SelectedObjects[i].MarkerObj.Tr.localRotation;
+				}
+
+
+
+				System.IO.File.WriteAllText(FileDialog.FileName, JsonUtility.ToJson(ExpMarkers));
+			}
+		}
+
+		public void ImportMarkers()
+		{
+			OpenFileDialog FileDialog = new OpenFileDialog();
+			FileDialog.Title = "Import markers";
+			FileDialog.AddExtension = true;
+			FileDialog.DefaultExt = ".fafmapmarkers";
+			FileDialog.Filter = "Faf Markers (*.fafmapmarkers)|*.fafmapmarkers";
+			FileDialog.CheckFileExists = true;
+
+			if (FileDialog.ShowDialog() == DialogResult.OK)
+			{
+				Debug.Log(FileDialog.FileName);
+
+				ExportMarkers ImpMarkers = JsonUtility.FromJson<ExportMarkers>(System.IO.File.ReadAllText(FileDialog.FileName));
+
+				bool AnyCreated = false;
+				int mc = 0;
+
+				for (int m = 0; m < ImpMarkers.Markers.Length; m++)
+				{
+					if (!AnyCreated)
+						Undo.Current.RegisterMarkersAdd();
+					AnyCreated = true;
+
+
+					if (SelectionManager.Current.SnapToGrid)
+						ImpMarkers.Markers[m].Pos = ScmapEditor.SnapToGridCenter(ImpMarkers.Markers[m].Pos, true, SelectionManager.Current.SnapToWater);
+
+					//NewPos.y = ScmapEditor.Current.Teren.SampleHeight(NewPos);
+
+					MapLua.SaveLua.Marker NewMarker = new MapLua.SaveLua.Marker(ImpMarkers.Markers[m].MarkerType);
+					NewMarker.position = ScmapEditor.WorldPosToScmap(ImpMarkers.Markers[m].Pos);
+					NewMarker.orientation = ImpMarkers.Markers[m].Rot.eulerAngles;
+					MarkersControler.CreateMarker(NewMarker, mc);
+					ChainsList.AddToCurrentChain(NewMarker);
+
+
+					//LastAddedMarkers.Add(TotalMarkersCount);
+					//TotalMarkersCount++;
+					MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers.Add(NewMarker);
+				}
+			}
+		}
+
 
 	}
 }

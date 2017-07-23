@@ -6,6 +6,7 @@ using MapLua;
 
 public class RenderMarkersConnections : MonoBehaviour
 {
+	public Camera RenderCamera;
 	public static RenderMarkersConnections Current;
 
 	public ConnectionLayer[] Layers;
@@ -60,8 +61,8 @@ public class RenderMarkersConnections : MonoBehaviour
 		StartCoroutine(GenerateEdges());
 	}
 
-	public bool Buffor;
-	public bool generating = false;
+	bool Buffor;
+	bool generating = false;
 
 	int Mcount = 0;
 	IEnumerator GenerateEdges()
@@ -150,6 +151,9 @@ public class RenderMarkersConnections : MonoBehaviour
 			return;
 
 		if (!MarkersControler.Current.MarkerLayersSettings.ConnectedNodes)
+			return;
+
+		if (Camera.current != RenderCamera)
 			return;
 
 		//CreateLineMaterial();

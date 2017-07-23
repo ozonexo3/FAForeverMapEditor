@@ -96,6 +96,11 @@ public class MapLuaParser : MonoBehaviour {
 
 	}
 
+	public bool MapLoaded()
+	{
+		return !string.IsNullOrEmpty(FolderName) && !string.IsNullOrEmpty(ScenarioFileName);
+	}
+
 	#region Loading
 
 	public IEnumerator ForceLoadMapAtPath(string path){

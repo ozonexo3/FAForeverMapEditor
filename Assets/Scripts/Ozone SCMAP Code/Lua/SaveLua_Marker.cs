@@ -29,14 +29,38 @@ namespace MapLua
 			public string editorIcon = "";
 			public bool hint;
 
+			// Path
 			public string graph = "";
 			public string adjacentTo = "";
 			public List<Marker> AdjacentToMarker = new List<Marker>();
 
+			// Camera
 			public float zoom = 30;
 			public bool canSetCamera = true;
 			public bool canSyncCamera = true;
 
+			//WeatherGenerator
+			public float cloudCount = 1;
+			public float cloudEmitterScale = 10;
+			public float cloudEmitterScaleRange = 0.2f;
+			public float cloudCountRange = 7;
+			public float cloudSpread = 250f;
+			public float cloudHeightRange = 15;
+			public float spawnChance = 1;
+			public string ForceType = "None";
+			public float cloudHeight = 180;
+
+			//WeatherDefinition
+			public Vector3 WeatherDriftDirection = Vector3.zero;
+			public string MapStyle = "";
+			public string WeatherType04 = "None";
+			public string WeatherType03 = "None";
+			public string WeatherType02 = "None";
+			public string WeatherType01 = "None";
+			public float WeatherType04Chance = 0;
+			public float WeatherType03Chance = 0;
+			public float WeatherType02Chance = 0;
+			public float WeatherType01Chance = 0;
 
 			public const string KEY_SIZE = "size";
 			public const string KEY_RESOURCE = "resource";
@@ -57,6 +81,14 @@ namespace MapLua
 			public const string KEY_GRAPH = "graph";
 			public const string KEY_ADJACENTTO = "adjacentTo";
 
+			public const string KEY_CLOUDCOUNT = "cloudCount", KEY_CLOUDEMITTERSCALE = "cloudEmitterScale", KEY_CLOUDEMITTERSCALERANGE = "cloudEmitterScaleRange", 
+				KEY_CLOUDCOUNTRANGE = "cloudCountRange", KEY_CLOUDSPREAD = "cloudSpread", KEY_CLOUDHEIGHTRANGE = "cloudHeightRange",
+				KEY_SPAWNCHANCE = "spawnChance", KEY_FORCETYPE = "ForceType", KEY_CLOUDHEIGHT = "cloudHeight";
+
+			public const string KEY_WEATHERDRIFTDIRECTION = "WeatherDriftDirection", KEY_MAPSTYLE = "MapStyle";
+			public const string KEY_WEATHERTYPE01 = "WeatherType01", KEY_WEATHERTYPE02 = "WeatherType02", KEY_WEATHERTYPE03 = "WeatherType03", KEY_WEATHERTYPE04 = "WeatherType04";
+			public const string KEY_WEATHERTYPE01CHANCE = "WeatherType01Chance", KEY_WEATHERTYPE02CHANCE = "WeatherType02Chance", KEY_WEATHERTYPE03CHANCE = "WeatherType03Chance", KEY_WEATHERTYPE04CHANCE = "WeatherType04Chance";
+
 			public enum MarkerTypes
 			{
 				None,
@@ -70,6 +102,7 @@ namespace MapLua
 				NavalLink,
 				TransportMarker,
 				Island,
+				WeatherGenerator, WeatherDefinition,
 				Count
 			}
 
@@ -105,6 +138,13 @@ namespace MapLua
 					return false;
 				else if (MarkerType == MarkerTypes.CameraInfo)
 					return Key == KEY_ZOOM || Key == KEY_CANSETCAMERA || Key == KEY_CANSYNCCAMERA;
+				else if (MarkerType == MarkerTypes.WeatherGenerator)
+					return Key == KEY_CLOUDCOUNT || Key == KEY_CLOUDEMITTERSCALE || Key == KEY_CLOUDEMITTERSCALERANGE || Key == KEY_CLOUDCOUNTRANGE || Key == KEY_CLOUDSPREAD || Key == KEY_CLOUDHEIGHTRANGE
+						|| Key == KEY_SPAWNCHANCE || Key == KEY_FORCETYPE || Key == KEY_CLOUDHEIGHT;
+				else if (MarkerType == MarkerTypes.WeatherDefinition)
+					return Key == KEY_WEATHERDRIFTDIRECTION || Key == KEY_MAPSTYLE 
+						|| Key == KEY_WEATHERTYPE01 || Key == KEY_WEATHERTYPE02 || Key == KEY_WEATHERTYPE03 || Key == KEY_WEATHERTYPE04
+						|| Key == KEY_WEATHERTYPE01CHANCE || Key == KEY_WEATHERTYPE02CHANCE || Key == KEY_WEATHERTYPE03CHANCE || Key == KEY_WEATHERTYPE04CHANCE;
 				else //Unknown
 					return Key == KEY_HINT;
 			}
@@ -178,6 +218,7 @@ namespace MapLua
 				{
 					switch (Keys[k])
 					{
+#region Search For Keys
 						case KEY_POSITION:
 							position = LuaParser.Read.Vector3FromTable(Table, KEY_POSITION);
 							break;
@@ -220,6 +261,66 @@ namespace MapLua
 						case KEY_CANSYNCCAMERA:
 							canSyncCamera = LuaParser.Read.BoolFromTable(Table, KEY_CANSYNCCAMERA);
 							break;
+							// Weather Generator
+						case KEY_CLOUDCOUNT:
+							cloudCount = LuaParser.Read.FloatFromTable(Table, KEY_CLOUDCOUNT);
+							break;
+						case KEY_CLOUDEMITTERSCALE:
+							cloudEmitterScale = LuaParser.Read.FloatFromTable(Table, KEY_CLOUDEMITTERSCALE);
+							break;
+						case KEY_CLOUDEMITTERSCALERANGE:
+							cloudEmitterScaleRange = LuaParser.Read.FloatFromTable(Table, KEY_CLOUDEMITTERSCALERANGE);
+							break;
+						case KEY_CLOUDCOUNTRANGE:
+							cloudCountRange = LuaParser.Read.FloatFromTable(Table, KEY_CLOUDCOUNTRANGE);
+							break;
+						case KEY_CLOUDSPREAD:
+							cloudSpread = LuaParser.Read.FloatFromTable(Table, KEY_CLOUDSPREAD);
+							break;
+						case KEY_CLOUDHEIGHTRANGE:
+							cloudHeightRange = LuaParser.Read.FloatFromTable(Table, KEY_CLOUDHEIGHTRANGE);
+							break;
+						case KEY_SPAWNCHANCE:
+							spawnChance = LuaParser.Read.FloatFromTable(Table, KEY_SPAWNCHANCE);
+							break;
+						case KEY_FORCETYPE:
+							ForceType = LuaParser.Read.StringFromTable(Table, KEY_FORCETYPE);
+							break;
+						case KEY_CLOUDHEIGHT:
+							cloudHeight = LuaParser.Read.FloatFromTable(Table, KEY_CLOUDHEIGHT);
+							break;
+						// Weather Definition
+						case KEY_WEATHERDRIFTDIRECTION:
+							WeatherDriftDirection = LuaParser.Read.Vector3FromTable(Table, KEY_WEATHERDRIFTDIRECTION);
+							break;
+						case KEY_MAPSTYLE:
+							MapStyle = LuaParser.Read.StringFromTable(Table, KEY_MAPSTYLE);
+							break;
+						case KEY_WEATHERTYPE01:
+							WeatherType01 = LuaParser.Read.StringFromTable(Table, KEY_WEATHERTYPE01);
+							break;
+						case KEY_WEATHERTYPE02:
+							WeatherType02 = LuaParser.Read.StringFromTable(Table, KEY_WEATHERTYPE02);
+							break;
+						case KEY_WEATHERTYPE03:
+							WeatherType03 = LuaParser.Read.StringFromTable(Table, KEY_WEATHERTYPE03);
+							break;
+						case KEY_WEATHERTYPE04:
+							WeatherType04 = LuaParser.Read.StringFromTable(Table, KEY_WEATHERTYPE04);
+							break;
+						case KEY_WEATHERTYPE01CHANCE:
+							WeatherType01Chance = LuaParser.Read.FloatFromTable(Table, KEY_WEATHERTYPE01CHANCE);
+							break;
+						case KEY_WEATHERTYPE02CHANCE:
+							WeatherType02Chance = LuaParser.Read.FloatFromTable(Table, KEY_WEATHERTYPE02CHANCE);
+							break;
+						case KEY_WEATHERTYPE03CHANCE:
+							WeatherType03Chance = LuaParser.Read.FloatFromTable(Table, KEY_WEATHERTYPE03CHANCE);
+							break;
+						case KEY_WEATHERTYPE04CHANCE:
+							WeatherType04Chance = LuaParser.Read.FloatFromTable(Table, KEY_WEATHERTYPE04CHANCE);
+							break;
+							#endregion
 					}
 				}
 
@@ -280,6 +381,37 @@ namespace MapLua
 					LuaFile.AddLine(LuaParser.Write.BoolToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_CANSETCAMERA), canSetCamera));
 				if (AllowByType(KEY_CANSYNCCAMERA))
 					LuaFile.AddLine(LuaParser.Write.BoolToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_CANSYNCCAMERA), canSyncCamera));
+
+				if(MarkerType == MarkerTypes.WeatherGenerator)
+				{
+					LuaFile.AddLine(LuaParser.Write.FloatToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_CLOUDCOUNT), cloudCount));
+					LuaFile.AddLine(LuaParser.Write.FloatToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_CLOUDCOUNTRANGE), cloudCountRange));
+
+					LuaFile.AddLine(LuaParser.Write.FloatToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_CLOUDEMITTERSCALE), cloudEmitterScale));
+					LuaFile.AddLine(LuaParser.Write.FloatToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_CLOUDEMITTERSCALERANGE), cloudEmitterScaleRange));
+
+					LuaFile.AddLine(LuaParser.Write.FloatToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_CLOUDHEIGHT), cloudHeight));
+					LuaFile.AddLine(LuaParser.Write.FloatToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_CLOUDHEIGHTRANGE), cloudHeightRange));
+
+					LuaFile.AddLine(LuaParser.Write.FloatToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_CLOUDSPREAD), cloudSpread));
+					LuaFile.AddLine(LuaParser.Write.FloatToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_SPAWNCHANCE), spawnChance));
+					LuaFile.AddLine(LuaParser.Write.StringToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_FORCETYPE), ForceType));
+				}
+				else if(MarkerType == MarkerTypes.WeatherDefinition)
+				{
+					LuaFile.AddLine(LuaParser.Write.Vector3ToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_WEATHERDRIFTDIRECTION), WeatherDriftDirection));
+					LuaFile.AddLine(LuaParser.Write.StringToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_MAPSTYLE), MapStyle));
+
+					LuaFile.AddLine(LuaParser.Write.StringToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_WEATHERTYPE01), WeatherType01));
+					LuaFile.AddLine(LuaParser.Write.StringToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_WEATHERTYPE02), WeatherType02));
+					LuaFile.AddLine(LuaParser.Write.StringToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_WEATHERTYPE03), WeatherType03));
+					LuaFile.AddLine(LuaParser.Write.StringToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_WEATHERTYPE04), WeatherType04));
+
+					LuaFile.AddLine(LuaParser.Write.FloatToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_WEATHERTYPE01CHANCE), WeatherType01Chance));
+					LuaFile.AddLine(LuaParser.Write.FloatToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_WEATHERTYPE02CHANCE), WeatherType02Chance));
+					LuaFile.AddLine(LuaParser.Write.FloatToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_WEATHERTYPE03CHANCE), WeatherType03Chance));
+					LuaFile.AddLine(LuaParser.Write.FloatToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_WEATHERTYPE04CHANCE), WeatherType04Chance));
+				}
 
 				//Transform
 				LuaFile.AddLine(LuaParser.Write.Vector3ToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_POSITION), position));

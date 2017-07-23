@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
 using EditMap;
@@ -22,32 +23,11 @@ public class CameraControler : MonoBehaviour {
 	public 			Vector3				Pos = Vector3.zero;
 	public 			Vector3				Rot = Vector3.zero;
 					Vector2 			prevMausePos = Vector2.zero;
-	private			Vector2				BeginMarkerPos;
-	private			Vector3				ClickSnapDif;
-	private			bool				MoveMarker;
 
-	public			LayerMask			MarkerMask;
 	public			LayerMask			Mask;
-	public			LayerMask			ControlerMask;
-
-	public			Transform			SelectedMarker;
-	public			RectTransform		SelectionBoxImage;
-	private			bool				SelectionBox;
-	private			Vector2				MouseBeginClick;
-	public			bool				BeginWithShift;
-	public			bool				BeginWithCtrl;
-	public			bool				BeginWithAlt;
-	public			bool				ControlerBegin;
-	public			bool				ControlerDrag;
-	public			Transform			DebugCube;
 
 	public			Transform			ReflectionCamera;
-	public			Vector3				TerrainClickPos;
-
-
-	// Creating Marker;
-	public			Transform			MarkerToCreate;
-	public			Transform[]			MarkerToCreateSymmetry;
+	public			Text				CursorInfo;
 
 	void Awake(){
 		Current = this;
@@ -128,7 +108,7 @@ public class CameraControler : MonoBehaviour {
 		else if (Input.GetMouseButtonUp (0)) {
 			DragStartedOverMenu = false;
 		}
-
+		DragStartedGameplay = !DragStartedOverMenu;
 
 		// Interaction
 
@@ -137,48 +117,6 @@ public class CameraControler : MonoBehaviour {
 			CameraMovement();
 		}
 
-		/*
-		if ((Edit.MauseOnGameplay || DragStartedGameplay) && !DragStartedOverMenu) {
-			if (Edit.EditMarkers.CreatingId != 0) {
-				if(Input.GetKeyDown(KeyCode.Escape)){
-					Edit.EditMarkers.CreatingId = 0;
-					Edit.EditMarkers.UpdateCreating();
-					return;
-				}
-				CameraMovement ();
-				bool MarkerOK = OnCreateMarker ();
-				if (Input.GetMouseButtonDown (0) && MarkerOK) {
-					// Create marker
-					Edit.Scenario.CreateMarker (Edit.EditMarkers.CreatingId - 1, MarkerToCreate.position, "");
-					for (int i = 0; i < MarkerToCreateSymmetry.Length; i++) {
-						Edit.Scenario.CreateMarker (Edit.EditMarkers.CreatingId - 1, MarkerToCreateSymmetry [i].position, "");
-					}
-					Edit.EditMarkers.GenerateAllWorkingElements ();
-				}
-			} else if (HUD.MapLoaded) {
-				CameraMovement ();
-
-				if (Edit.State == Editing.EditStates.MarkersStat) {
-					MarkersInteraction ();
-				}
-
-				if (Input.GetMouseButtonDown (0)) {
-					DragStartedGameplay = Edit.MauseOnGameplay;
-					if(AllowDrag()) OnBeginDragFunc ();
-				} else if (Input.GetMouseButtonUp (0)) {
-					if(AllowDrag()) OnEndDragFunc ();
-					DragStartedGameplay = false;
-					BeginWithShift = false;
-					BeginWithCtrl = false;
-					BeginWithAlt = false;
-				} else if (Input.GetMouseButton (0)) {
-					if(AllowDrag()) OnDragFunc ();
-				}
-			} else {
-
-			}
-		}
-		*/
 		if (Menu.IsMenuOpen())
 			return;
 		if (Input.GetKey (KeyCode.LeftControl)) {
@@ -212,26 +150,41 @@ public class CameraControler : MonoBehaviour {
 
 		if (Edit.MauseOnGameplay)
 		{
-			if (Input.GetAxis("Mouse ScrollWheel") > 0 && zoomIn > 0)
+
+			Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+			RaycastHit hit;
+			if (Physics.Raycast(ray, out hit, 1000, Mask))
 			{
+
+				if (Input.GetAxis("Mouse ScrollWheel") > 0 && zoomIn > 0)
+				{
 				zoomIn -= Input.GetAxis("Mouse ScrollWheel") * 0.5f * 1;
 
-				Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-				RaycastHit hit;
-				if (Physics.Raycast(ray, out hit, 1000, Mask))
-				{
+				
 					Pos += (hit.point - Pos) * Mathf.Lerp(0.22f, 0.12f, ZoomCamPos()) * 1;
 					ClampPosY();
 				}
+				else if (Input.GetAxis("Mouse ScrollWheel") < 0)
+				{
+					zoomIn -= Input.GetAxis("Mouse ScrollWheel") * 0.5f * 1;
+				}
+				Vector3 GameplayCursorPos = ScmapEditor.WorldPosToScmap(hit.point);
+				string X = GameplayCursorPos.x.ToString("N2");
+				string Y = GameplayCursorPos.y.ToString("N2");
+				string Z = GameplayCursorPos.y.ToString("N2");
 
+				X = X.PadRight(8);
+				Y = Y.PadRight(8);
+				Z = Z.PadRight(8);
+
+				CursorInfo.text = "x: " + X + "\ty: " + Y + "\tz: " + Z;
 			}
-			else if (Input.GetAxis("Mouse ScrollWheel") < 0)
+			else
 			{
-				zoomIn -= Input.GetAxis("Mouse ScrollWheel") * 0.5f * 1;
+				CursorInfo.text = "x: --------  \ty: --------  \tz: --------  ";
 			}
 
 			zoomIn = Mathf.Clamp01(zoomIn);
-
 
 			if (Input.GetKeyDown(KeyCode.Space) || Input.GetMouseButtonDown(2))
 			{
@@ -276,9 +229,9 @@ public class CameraControler : MonoBehaviour {
 	{
 		Pos.y = Mathf.Clamp(Pos.y, MapLuaParser.Current.HeightmapControler.WaterLevel.transform.localPosition.y, 2048);
 	}
-	
-	
 
+
+#region Focus
 	void Focus(){
 		int count = SelectionManager.Current.Selection.Ids.Count;
 		if (SelectionManager.Current.Active && count > 0)
@@ -296,19 +249,6 @@ public class CameraControler : MonoBehaviour {
 			zoomIn = size / (MapSize * 0.075f) + 0.21f;
 		}
 
-
-		/*
-		if (Edit.State == Editing.EditStates.MarkersStat) {
-			if (Edit.EditMarkers.SelectionsRings.Count > 0) {
-				Pos = Edit.EditMarkers.SelectedMarker.transform.position;
-				ClampPosY();
-				//Pivot.position = Edit.EditMarkers.SelectionsRings[0].transform.position;
-				float size = Mathf.Max (Edit.EditMarkers.SelectedMarker.GetComponent<MeshRenderer> ().bounds.size.x, Edit.EditMarkers.SelectedMarker.GetComponent<MeshRenderer> ().bounds.size.z);
-				//Debug.Log (size + ", " + MapSize);
-				zoomIn = size / (MapSize * 0.075f) + 0.21f;
-			}
-		}
-		*/
 	}
 
 
@@ -322,5 +262,5 @@ public class CameraControler : MonoBehaviour {
 		float size = Mathf.Max(FocusBound.size.x, FocusBound.size.z) * 2;
 		Current.zoomIn = size / (Current.MapSize * 0.075f) + 0.21f;
 	}
-
+#endregion
 }
