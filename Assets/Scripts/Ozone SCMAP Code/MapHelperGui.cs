@@ -95,8 +95,8 @@ public class MapHelperGui : MonoBehaviour {
 	}
 
 	public void ReturnLoadingWithError(string Error){
-		Map = false;
-		OpenComposition(0);
+		//Map = false;
+		//OpenComposition(0);
 		ErrorPopup.Show (true, Error);
 		ErrorPopup.InvokeHide ();
 	}

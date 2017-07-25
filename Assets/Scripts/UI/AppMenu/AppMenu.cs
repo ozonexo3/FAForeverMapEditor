@@ -211,7 +211,7 @@ public class AppMenu : MonoBehaviour
 
 			LoadRecentMaps.MoveLastMaps(MapLuaParser.Current.ScenarioFileName, MapLuaParser.Current.FolderName, MapLuaParser.Current.FolderParentPath);
 
-			MapLuaParser.Current.SaveMap();
+			MapLuaParser.Current.SaveMap(false);
 		}
 	}
 }

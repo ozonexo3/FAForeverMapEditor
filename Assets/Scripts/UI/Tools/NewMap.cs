@@ -130,9 +130,9 @@ namespace EditMap
 			MapLuaParser.Current.ScenarioLuaFile.Data.type = MapType.options[MapType.value].text.ToLower();
 			MapLuaParser.Current.ScenarioLuaFile.Data.Size[0] = SizeByValue(Width.value);
 			MapLuaParser.Current.ScenarioLuaFile.Data.Size[1] = SizeByValue(Height.value);
-			MapLuaParser.Current.ScenarioLuaFile.Data.save = FileName + "_save.lua";
-			MapLuaParser.Current.ScenarioLuaFile.Data.script = FileName + "_script.lua";
-			MapLuaParser.Current.ScenarioLuaFile.Data.map = FileName + ".scmap";
+			MapLuaParser.Current.ScenarioLuaFile.Data.save = "/maps/" + FolderName  + "/" + FileName + "_save.lua";
+			MapLuaParser.Current.ScenarioLuaFile.Data.script = "/maps/" + FolderName + "/" + FileName + "_script.lua";
+			MapLuaParser.Current.ScenarioLuaFile.Data.map = "/maps/" + FolderName + "/" + FileName + ".scmap";
 			MapLuaParser.Current.ScenarioLuaFile.Data.map_version = 1;
 			MapLuaParser.Current.ScenarioLuaFile.Data.starts = true;
 

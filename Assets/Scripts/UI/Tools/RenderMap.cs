@@ -17,6 +17,11 @@ public class RenderMap : MonoBehaviour {
 
 	public void RenderCurrentMap()
 	{
+		StartCoroutine(Rendering());
+	}
+
+	IEnumerator Rendering()
+	{
 		if (MapLuaParser.Current.MapLoaded())
 		{
 			if (Directory.Exists(Path.text))
@@ -26,20 +31,40 @@ public class RenderMap : MonoBehaviour {
 				QualitySettings.shadowDistance = 500;
 
 
-				for (int i = 0; i < Canvases.Length; i++)
-					Canvases[i].enabled = false;
+				//for (int i = 0; i < Canvases.Length; i++)
+				//	Canvases[i].enabled = false;
 				Markers.SetActive(RenderMarkers.isOn);
 
+				const int ResValue = 1024;
 
 				int Res = int.Parse(Resolution.text);
+				if (Res < ResValue)
+					Res = ResValue;
+
 
 				CameraControler.Current.RestartCam();
 				string path = Path.text.Replace("\\", "/");
 				if (!path.EndsWith("/"))
 					path += "/";
 
-				CameraControler.Current.RenderCamera(Res, Res, path + MapLuaParser.Current.ScenarioFileName.Replace(".lua", "") + "_preview." + ((Png.isOn)?("png"):("jpg")));
+				int width = Screen.width;
+				int height = Screen.height;
 
+				int Scale = Res / height;
+				int Size = Res / Scale;
+
+
+				//Screen.SetResolution(Size, Size, false);
+				yield return null;
+				//Application.CaptureScreenshot(path + MapLuaParser.Current.ScenarioFileName.Replace(".lua", "") + "_preview." + ((Png.isOn) ? ("png") : ("jpg")), Scale);
+				CameraControler.Current.RenderCamera(Res, Res, path + MapLuaParser.Current.ScenarioFileName.Replace(".lua", "") + "_preview." + ((Png.isOn)?("png"):("jpg")));
+				yield return null;
+				//Screen.SetResolution(width, height, false);
+				yield return null;
+
+
+
+				yield return null;
 				Markers.SetActive(true);
 				for (int i = 0; i < Canvases.Length; i++)
 					Canvases[i].enabled = true;

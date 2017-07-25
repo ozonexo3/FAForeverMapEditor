@@ -99,8 +99,6 @@ public class MapLuaParser : MonoBehaviour {
 		path = path.Replace("\\", "/");
 		Debug.Log("Load from: " + path);
 
-		//string LastMapPatch = EnvPaths.GetMapsPath();
-
 		char[] NameSeparator = ("/").ToCharArray();
 		string[] Names = path.Split(NameSeparator);
 
@@ -142,7 +140,6 @@ public class MapLuaParser : MonoBehaviour {
 			yield return null;
 
 		bool AllFilesExists = true;
-		//string MapPath = EnvPaths.GetMapsPath();
 		string Error = "";
 		if (!System.IO.Directory.Exists (FolderParentPath)) {
 			Error = "Map folder not exist: " + FolderParentPath;
@@ -222,7 +219,8 @@ public class MapLuaParser : MonoBehaviour {
 			InfoPopup.Show (false);
 
 			EditMenu.Categorys [0].GetComponent<MapInfo> ().UpdateFields ();
-		} else {
+		}
+		else {
 			HelperGui.ReturnLoadingWithError (Error);
 		}
 
@@ -289,11 +287,12 @@ public class MapLuaParser : MonoBehaviour {
 		string BackupId = System.DateTime.Now.Month.ToString() +System.DateTime.Now.Day.ToString() + System.DateTime.Now.Hour.ToString() + System.DateTime.Now.Minute.ToString() + System.DateTime.Now.Second.ToString();
 		BackupPath = FolderParentPath + FolderName + "/Backup_" + BackupId;
 
-		System.IO.Directory.CreateDirectory(BackupPath);
+		if(BackupFiles)
+			System.IO.Directory.CreateDirectory(BackupPath);
 		yield return null;
 
 		// Scenario.lua
-		string ScenarioFilePath = EnvPaths.GetMapsPath() + FolderName + "/" + ScenarioFileName + ".lua";
+		string ScenarioFilePath = FolderParentPath + FolderName + "/" + ScenarioFileName + ".lua";
 		if(BackupFiles && System.IO.File.Exists(ScenarioFilePath))
 			System.IO.File.Move(ScenarioFilePath, BackupPath + "/" + ScenarioFileName + ".lua");
 		ScenarioLuaFile.Save(ScenarioFilePath);
@@ -336,86 +335,6 @@ public class MapLuaParser : MonoBehaviour {
 		HeightmapControler.SaveScmapFile();
 	}
 
-	/*
-	public void SaveScenarioLua(){
-		string SaveData = "";
-		string loadedFile = "";
-		
-		System.Text.Encoding encodeType = System.Text.Encoding.ASCII;
-		string loc = StructurePath + "scenario_structure.lua";
-		loadedFile = System.IO.File.ReadAllText(loc, encodeType);
-
-		char[] Separator = "\n".ToCharArray();
-		string[] AllLines = loadedFile.Split(Separator);
-		foreach(string line in AllLines){
-			if(line.Contains("[*name*]")){
-				SaveData += "    name = '" + ScenarioData.MapName + "',\n";
-			}
-			else if(line.Contains("[*desc*]")){
-				SaveData += "    description = \"" + ScenarioData.MapDesc.Replace("\"", "'") + "\",\n";
-			}
-			else if(line.Contains("[version]")){
-				SaveData += "    map_version = " + ((int)ScenarioData.Version).ToString() + ",\n";
-			}
-			else if(line.Contains("[AdaptiveMap]")){
-				SaveData += "    AdaptiveMap = " + (ScenarioData.AdaptiveMap?("true"):("false")) + ",\n";
-			}
-			else if(line.Contains("[*size*]")){
-				SaveData += "    size = {" + ScenarioData.Size.x + ", " + ScenarioData.Size.y + "},\n";
-			}
-			else if(line.Contains("[*paths*]")){
-				SaveData += "    map = '" + ScenarioData.Scmap + "',\n";
-				SaveData += "    save = '" + ScenarioData.SaveLua + "',\n";
-				SaveData += "    script = '" + ScenarioData.ScriptLua + "',\n";
-				SaveData += "    preview = '" + ScenarioData.Preview + "',\n";
-			}
-			else if(line.Contains("[*norushoffset*]")){
-				SaveData += "    norushradius = " + ScenarioData.NoRushRadius.ToString("0.000000") + ",\n";
-				for(int a = 0; a < ScenarioData.NoRushARMY.Length; a++){
-					SaveData += "    norushoffsetX_ARMY_" + (a + 1).ToString() + " = " + ScenarioData.NoRushARMY[a].x.ToString("0.000000") + ",\n";
-					SaveData += "    norushoffsetY_ARMY_" + (a + 1).ToString() + " = " + ScenarioData.NoRushARMY[a].y.ToString("0.000000") + ",\n";
-				}
-			}
-			else if(line.Contains("[*armies*]")){
-				SaveData += "					armies = {";
-
-				for(int a = 0; a < ARMY_.Count; a++){
-					if (ARMY_ [a].Hidden)
-						continue;
-					SaveData += "'ARMY_" + (a + 1).ToString() + "',";
-				}
-
-				SaveData += "}\n";
-				//SaveData += line;
-			}
-			else{
-				SaveData += line;
-			}
-		}
-
-		string CustomPropsCode = "";
-		for (int i = 0; i < ScenarioData.CustomProps.Count; i++) {
-			CustomPropsCode += "\n";
-			CustomPropsCode += "\t\t\t\t['" + ScenarioData.CustomProps [i].key + "'] = " + ParsingStructureData.ToLuaStringVaue (ScenarioData.CustomProps [i].value);
-		}
-
-		SaveData = SaveData.Replace ("[customprops]", CustomPropsCode);
-
-		string MapPath = EnvPaths.GetMapsPath();
-		string ScenarioFilePath = MapPath + FolderName + "/" + ScenarioFileName + ".lua";
-		//string SavePath = Application.dataPath + ScenarioFilePath.Replace(".lua", "_new.lua");
-		//string SavePath = Application.dataPath + ScenarioFilePath;
-		//#if UNITY_EDITOR
-		//SavePath = SavePath.Replace("Assets/", "");
-		//#endif
-
-		System.IO.File.Move(ScenarioFilePath, BackupPath + "/" + ScenarioFileName + ".lua");
-		System.IO.File.WriteAllText(ScenarioFilePath, SaveData);
-
-
-	}
-	*/
-
 
 	public void SaveScriptLua(int ID = 0){
 		string SaveData = "";
@@ -431,7 +350,6 @@ public class MapLuaParser : MonoBehaviour {
 
 		SaveData = loadedFile;
 
-		string MapPath = EnvPaths.GetMapsPath();
 		string SaveFilePath = ScenarioLuaFile.Data.script.Replace("/maps/", FolderParentPath);
 
 		string FileName = ScenarioLuaFile.Data.script;
