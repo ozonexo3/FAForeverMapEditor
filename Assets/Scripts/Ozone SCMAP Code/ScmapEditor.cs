@@ -241,10 +241,8 @@ public class ScmapEditor : MonoBehaviour
 
 		int Max = (int)Mathf.Max((map.Height + 1), (map.Width + 1));
 		heights = new float[Max, Max];
-		Debug.Log(map.Width + " / " + map.Height);
 
 		float HeightWidthMultiply = (map.Height / (float)map.Width);
-		Debug.Log(HeightWidthMultiply);
 
 		// Modify heights array data
 		int y = 0;
@@ -378,20 +376,23 @@ public class ScmapEditor : MonoBehaviour
 	#region Saving
 	public void SaveScmapFile()
 	{
-		heights = Teren.terrainData.GetHeights(0, 0, Teren.terrainData.heightmapWidth, Teren.terrainData.heightmapHeight);
-
-		float HeightResize = 512 * 40;
-		for (int y = 0; y < map.Width + 1; y++)
+		if (Teren)
 		{
-			for (int x = 0; x < map.Height + 1; x++)
+			heights = Teren.terrainData.GetHeights(0, 0, Teren.terrainData.heightmapWidth, Teren.terrainData.heightmapHeight);
+
+			float HeightResize = 512 * 40;
+			for (int y = 0; y < map.Width + 1; y++)
 			{
-				map.SetHeight(y, map.Height - x, (short)(heights[x, y] * HeightResize));
+				for (int x = 0; x < map.Height + 1; x++)
+				{
+					map.SetHeight(y, map.Height - x, (short)(heights[x, y] * HeightResize));
+				}
 			}
 		}
 		//Debug.Log("Set Heightmap to map " + map.Width + ", " + map.Height);
 
-		string MapPath = EnvPaths.GetMapsPath();
-		string path = MapLuaParser.Current.ScenarioLuaFile.Data.map.Replace("/maps/", MapPath);
+		//string MapPath = EnvPaths.GetMapsPath();
+		string path = MapLuaParser.Current.ScenarioLuaFile.Data.map.Replace("/maps/", MapLuaParser.Current.FolderParentPath);
 
 		//TODO force values if needed
 		//map.TerrainShader = Shader;
@@ -421,14 +422,19 @@ public class ScmapEditor : MonoBehaviour
 			map.Layers[i].ScaleNormalmap = Textures[i].NormalScale;
 		}
 
+
+		
 		List<Prop> AllProps = new List<Prop>();
-
-		int Count = EditMap.PropsInfo.AllPropsTypes.Count;
-		for (int i = 0; i < EditMap.PropsInfo.AllPropsTypes.Count; i++) {
-			AllProps.AddRange(EditMap.PropsInfo.AllPropsTypes[i].GenerateSupComProps());
+		if (EditMap.PropsInfo.AllPropsTypes != null)
+		{
+			int Count = EditMap.PropsInfo.AllPropsTypes.Count;
+			for (int i = 0; i < EditMap.PropsInfo.AllPropsTypes.Count; i++)
+			{
+				AllProps.AddRange(EditMap.PropsInfo.AllPropsTypes[i].GenerateSupComProps());
+			}
 		}
-
 		map.Props = AllProps;
+
 
 		map.Save(path, map.VersionMinor);
 	}
@@ -469,6 +475,57 @@ public class ScmapEditor : MonoBehaviour
 
 	public void UnloadMap()
 	{
+
+		Textures[0].AlbedoPath = "/env/evergreen2/layers/eg_gravel005_albedo.dds";
+		Textures[0].NormalPath = "/env/tundra/layers/tund_sandlight_normal.dds";
+		Textures[0].AlbedoScale = 4;
+		Textures[0].NormalScale = 8.75f;
+
+		Textures[1].AlbedoPath = "";
+		Textures[1].NormalPath = "";
+		Textures[1].AlbedoScale = 4;
+		Textures[1].NormalScale = 4;
+
+		Textures[2].AlbedoPath = "";
+		Textures[2].NormalPath = "";
+		Textures[2].AlbedoScale = 4;
+		Textures[2].NormalScale = 4;
+
+		Textures[3].AlbedoPath = "";
+		Textures[3].NormalPath = "";
+		Textures[3].AlbedoScale = 4;
+		Textures[3].NormalScale = 4;
+
+		Textures[4].AlbedoPath = "";
+		Textures[4].NormalPath = "";
+		Textures[4].AlbedoScale = 4;
+		Textures[4].NormalScale = 4;
+
+		Textures[5].AlbedoPath = "";
+		Textures[5].NormalPath = "";
+		Textures[5].AlbedoScale = 4;
+		Textures[5].NormalScale = 4;
+
+		Textures[6].AlbedoPath = "";
+		Textures[6].NormalPath = "";
+		Textures[6].AlbedoScale = 4;
+		Textures[6].NormalScale = 4;
+
+		Textures[7].AlbedoPath = "";
+		Textures[7].NormalPath = "";
+		Textures[7].AlbedoScale = 4;
+		Textures[7].NormalScale = 4;
+
+		Textures[8].AlbedoPath = "";
+		Textures[8].NormalPath = "";
+		Textures[8].AlbedoScale = 4;
+		Textures[8].NormalScale = 4;
+
+		Textures[9].AlbedoPath = "/env/evergreen/layers/macrotexture000_albedo.dds";
+		Textures[9].NormalPath = "";
+		Textures[9].AlbedoScale = 128;
+		Textures[9].NormalScale = 4;
+
 
 		EditMap.PropsInfo.UnloadProps();
 		Markers.MarkersControler.UnloadMarkers();

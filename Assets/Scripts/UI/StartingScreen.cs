@@ -39,18 +39,18 @@ public class StartingScreen : MonoBehaviour {
 	}
 
 	void OnEnable(){
-		Scenario.FolderName = PlayerPrefs.GetString("LastFolder", "");
-		Scenario.ScenarioFileName = PlayerPrefs.GetString("LastScenario", "");
+		//Scenario.FolderName = PlayerPrefs.GetString("LastFolder", "");
+		//Scenario.ScenarioFileName = PlayerPrefs.GetString("LastScenario", "");
 
 		UpdateFields();
 	}
 
 	public void InputEnd(){
-		Scenario.FolderName = Folder.text;
-		Scenario.ScenarioFileName = Name.text;
+		//Scenario.FolderName = Folder.text;
+		//Scenario.ScenarioFileName = Name.text;
 
-		PlayerPrefs.SetString("LastFolder", Folder.text);
-		PlayerPrefs.SetString("LastScenario", Name.text);
+		//PlayerPrefs.SetString("LastFolder", Folder.text);
+		//PlayerPrefs.SetString("LastScenario", Name.text);
 	}
 
 	public void UpdateFields(){

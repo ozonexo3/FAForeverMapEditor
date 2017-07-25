@@ -6004,6 +6004,77 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 103151247}
+--- !u!1001 &104175281
+Prefab:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 1969265565}
+    m_Modifications:
+    - target: {fileID: 414254, guid: 67de491fe8610014aa40963e5f710d4f, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: -4.24
+      objectReference: {fileID: 0}
+    - target: {fileID: 414254, guid: 67de491fe8610014aa40963e5f710d4f, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: 1.89
+      objectReference: {fileID: 0}
+    - target: {fileID: 414254, guid: 67de491fe8610014aa40963e5f710d4f, type: 2}
+      propertyPath: m_LocalPosition.z
+      value: -15.91
+      objectReference: {fileID: 0}
+    - target: {fileID: 414254, guid: 67de491fe8610014aa40963e5f710d4f, type: 2}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 414254, guid: 67de491fe8610014aa40963e5f710d4f, type: 2}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 414254, guid: 67de491fe8610014aa40963e5f710d4f, type: 2}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 414254, guid: 67de491fe8610014aa40963e5f710d4f, type: 2}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 414254, guid: 67de491fe8610014aa40963e5f710d4f, type: 2}
+      propertyPath: m_RootOrder
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 6462510, guid: 67de491fe8610014aa40963e5f710d4f, type: 2}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 414254, guid: 67de491fe8610014aa40963e5f710d4f, type: 2}
+      propertyPath: m_LocalScale.x
+      value: 0.29999998
+      objectReference: {fileID: 0}
+    - target: {fileID: 414254, guid: 67de491fe8610014aa40963e5f710d4f, type: 2}
+      propertyPath: m_LocalScale.z
+      value: 0.29999998
+      objectReference: {fileID: 0}
+    - target: {fileID: 414254, guid: 67de491fe8610014aa40963e5f710d4f, type: 2}
+      propertyPath: m_LocalScale.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 121322, guid: 67de491fe8610014aa40963e5f710d4f, type: 2}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 121322, guid: 67de491fe8610014aa40963e5f710d4f, type: 2}
+      propertyPath: m_Name
+      value: SelectionRingEmpty
+      objectReference: {fileID: 0}
+    - target: {fileID: 2336834, guid: 67de491fe8610014aa40963e5f710d4f, type: 2}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 338e37d30ed668d43a1fbd74f30ccc00, type: 2}
+    m_RemovedComponents:
+    - {fileID: 6462510, guid: 67de491fe8610014aa40963e5f710d4f, type: 2}
+  m_ParentPrefab: {fileID: 100100000, guid: 67de491fe8610014aa40963e5f710d4f, type: 2}
+  m_IsPrefabParent: 0
 --- !u!1 &107613227
 GameObject:
   m_ObjectHideFlags: 0
@@ -12171,10 +12242,10 @@ RectTransform:
   m_Father: {fileID: 1894089468}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 230, y: -54.1}
-  m_SizeDelta: {x: 334.2, y: 35}
+  m_AnchorMin: {x: 1, y: 1}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: -2.800003, y: -51.8}
+  m_SizeDelta: {x: 334.2, y: 10}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &213375570
 MonoBehaviour:
@@ -12519,7 +12590,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: -10, y: -2.100006}
+  m_AnchoredPosition: {x: -10, y: -2.0999756}
   m_SizeDelta: {x: 463, y: 26.1}
   m_Pivot: {x: 1, y: 0}
 --- !u!114 &216075307
@@ -15362,11 +15433,11 @@ RectTransform:
   m_Father: {fileID: 1320305015}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0}
-  m_AnchorMax: {x: 0.5, y: 0}
-  m_AnchoredPosition: {x: -653, y: -2.100006}
-  m_SizeDelta: {x: 181, y: 28.4}
-  m_Pivot: {x: 0.5, y: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 17, y: -2.0999756}
+  m_SizeDelta: {x: 181, y: 28.400024}
+  m_Pivot: {x: 0, y: 0}
 --- !u!114 &253092197
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -27430,6 +27501,14 @@ MonoBehaviour:
       m_TypeName: UnityEngine.EventSystems.EventTrigger+TriggerEvent, UnityEngine.UI,
         Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   delegates: []
+--- !u!1 &492583015 stripped
+GameObject:
+  m_PrefabParentObject: {fileID: 121322, guid: 67de491fe8610014aa40963e5f710d4f, type: 2}
+  m_PrefabInternal: {fileID: 104175281}
+--- !u!4 &492583016 stripped
+Transform:
+  m_PrefabParentObject: {fileID: 414254, guid: 67de491fe8610014aa40963e5f710d4f, type: 2}
+  m_PrefabInternal: {fileID: 104175281}
 --- !u!1 &494272162
 GameObject:
   m_ObjectHideFlags: 0
@@ -32129,7 +32208,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1969265565}
-  m_RootOrder: 5
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &551778610
 MonoBehaviour:
@@ -37203,7 +37282,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.078431375}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.209}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -40752,7 +40831,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1969265565}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &729791801
 MonoBehaviour:
@@ -67668,7 +67747,7 @@ Transform:
   m_LocalScale: {x: 0.10484262, y: 0.21470076, z: 0.10484262}
   m_Children: []
   m_Father: {fileID: 1969265565}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!23 &1241768353
 MeshRenderer:
@@ -72514,6 +72593,7 @@ GameObject:
   - component: {fileID: 1334852570}
   - component: {fileID: 1334852571}
   - component: {fileID: 1334852568}
+  - component: {fileID: 1334852569}
   m_Layer: 0
   m_Name: OzoneMapEditor
   m_TagString: Untagged
@@ -72552,30 +72632,30 @@ MonoBehaviour:
   - Albedo: {fileID: 0}
     Normal: {fileID: 0}
     Tilling: {x: 1, y: 1}
-    AlbedoPath: env/evergreen2/layers/evgrass009_albedo.dds
-    NormalPath: env/evergreen2/layers/evrock007_normal.dds
+    AlbedoPath: 
+    NormalPath: 
     AlbedoScale: 4
-    NormalScale: 21.5
+    NormalScale: 4
   - Albedo: {fileID: 0}
     Normal: {fileID: 0}
     Tilling: {x: 1.5, y: 1.5}
-    AlbedoPath: env/evergreen2/layers/evgrass010a_albedo.dds
-    NormalPath: env/evergreen2/layers/evrock007_normal.dds
+    AlbedoPath: 
+    NormalPath: 
     AlbedoScale: 4
-    NormalScale: 6
-  - Albedo: {fileID: 0}
-    Normal: {fileID: 0}
-    Tilling: {x: 0.5, y: 0.5}
-    AlbedoPath: env/evergreen2/layers/evrock007_albedo.dds
-    NormalPath: env/evergreen2/layers/eg_none_normal.dds
-    AlbedoScale: 16.8
     NormalScale: 4
   - Albedo: {fileID: 0}
     Normal: {fileID: 0}
     Tilling: {x: 0.5, y: 0.5}
-    AlbedoPath: env/evergreen2/layers/evrock006_albedo.dds
-    NormalPath: env/tundra/layers/tund_none_normal.dds
-    AlbedoScale: 13
+    AlbedoPath: 
+    NormalPath: 
+    AlbedoScale: 4
+    NormalScale: 4
+  - Albedo: {fileID: 0}
+    Normal: {fileID: 0}
+    Tilling: {x: 0.5, y: 0.5}
+    AlbedoPath: 
+    NormalPath: 
+    AlbedoScale: 4
     NormalScale: 4
   - Albedo: {fileID: 0}
     Normal: {fileID: 0}
@@ -72612,6 +72692,242 @@ MonoBehaviour:
     NormalPath: 
     AlbedoScale: 128
     NormalScale: 1
+  map:
+    Filename: 
+    PreviewTextHeader:
+      Format: 0
+      Magic: 0
+      size: 0
+      flags: 0
+      height: 0
+      width: 0
+      sizeorpitch: 0
+      depth: 0
+      mipmapcount: 0
+      alphabitdepth: 0
+      reserved0: 0
+      reserved1: 0
+      reserved2: 0
+      reserved3: 0
+      reserved4: 0
+      reserved5: 0
+      reserved6: 0
+      reserved7: 0
+      reserved8: 0
+      reserved9: 0
+      pixelformatSize: 0
+      pixelformatflags: 0
+      pixelformatFourcc: 0
+      pixelformatRgbBitCount: 0
+      pixelformatRbitMask: 0
+      pixelformatGbitMask: 0
+      pixelformatBbitMask: 0
+      pixelformatAbitMask: 0
+      caps1: 0
+      caps2: 0
+      caps3: 0
+      caps4: 0
+    TextureMapHeader:
+      Format: 0
+      Magic: 0
+      size: 0
+      flags: 0
+      height: 0
+      width: 0
+      sizeorpitch: 0
+      depth: 0
+      mipmapcount: 0
+      alphabitdepth: 0
+      reserved0: 0
+      reserved1: 0
+      reserved2: 0
+      reserved3: 0
+      reserved4: 0
+      reserved5: 0
+      reserved6: 0
+      reserved7: 0
+      reserved8: 0
+      reserved9: 0
+      pixelformatSize: 0
+      pixelformatflags: 0
+      pixelformatFourcc: 0
+      pixelformatRgbBitCount: 0
+      pixelformatRbitMask: 0
+      pixelformatGbitMask: 0
+      pixelformatBbitMask: 0
+      pixelformatAbitMask: 0
+      caps1: 0
+      caps2: 0
+      caps3: 0
+      caps4: 0
+    TextureMap2Header:
+      Format: 0
+      Magic: 0
+      size: 0
+      flags: 0
+      height: 0
+      width: 0
+      sizeorpitch: 0
+      depth: 0
+      mipmapcount: 0
+      alphabitdepth: 0
+      reserved0: 0
+      reserved1: 0
+      reserved2: 0
+      reserved3: 0
+      reserved4: 0
+      reserved5: 0
+      reserved6: 0
+      reserved7: 0
+      reserved8: 0
+      reserved9: 0
+      pixelformatSize: 0
+      pixelformatflags: 0
+      pixelformatFourcc: 0
+      pixelformatRgbBitCount: 0
+      pixelformatRbitMask: 0
+      pixelformatGbitMask: 0
+      pixelformatBbitMask: 0
+      pixelformatAbitMask: 0
+      caps1: 0
+      caps2: 0
+      caps3: 0
+      caps4: 0
+    NormalmapHeader:
+      Format: 0
+      Magic: 0
+      size: 0
+      flags: 0
+      height: 0
+      width: 0
+      sizeorpitch: 0
+      depth: 0
+      mipmapcount: 0
+      alphabitdepth: 0
+      reserved0: 0
+      reserved1: 0
+      reserved2: 0
+      reserved3: 0
+      reserved4: 0
+      reserved5: 0
+      reserved6: 0
+      reserved7: 0
+      reserved8: 0
+      reserved9: 0
+      pixelformatSize: 0
+      pixelformatflags: 0
+      pixelformatFourcc: 0
+      pixelformatRgbBitCount: 0
+      pixelformatRbitMask: 0
+      pixelformatGbitMask: 0
+      pixelformatBbitMask: 0
+      pixelformatAbitMask: 0
+      caps1: 0
+      caps2: 0
+      caps3: 0
+      caps4: 0
+    WatermapHeader:
+      Format: 0
+      Magic: 0
+      size: 0
+      flags: 0
+      height: 0
+      width: 0
+      sizeorpitch: 0
+      depth: 0
+      mipmapcount: 0
+      alphabitdepth: 0
+      reserved0: 0
+      reserved1: 0
+      reserved2: 0
+      reserved3: 0
+      reserved4: 0
+      reserved5: 0
+      reserved6: 0
+      reserved7: 0
+      reserved8: 0
+      reserved9: 0
+      pixelformatSize: 0
+      pixelformatflags: 0
+      pixelformatFourcc: 0
+      pixelformatRgbBitCount: 0
+      pixelformatRbitMask: 0
+      pixelformatGbitMask: 0
+      pixelformatBbitMask: 0
+      pixelformatAbitMask: 0
+      caps1: 0
+      caps2: 0
+      caps3: 0
+      caps4: 0
+    PreviewTex: {fileID: 0}
+    HeightmapData: 
+    HeightMin: 0
+    HeightMax: 0
+    HeightDiff: 0
+    TexturemapTex: {fileID: 0}
+    TexturemapTex2: {fileID: 0}
+    NormalmapTex: {fileID: 0}
+    WatermapTex: {fileID: 0}
+    WaterDataTexture: {fileID: 0}
+    WaterFoamMask: 
+    WaterFlatnessMask: 
+    WaterDepthBiasMask: 
+    Width: 0
+    Height: 0
+    TexPathBackground: 
+    TexPathSkyCubemap: 
+    EnvCubemapsName: []
+    EnvCubemapsFile: []
+    AdditionalSkyboxData:
+      Data:
+        BeginBytes: 
+        Albedo: /textures/environment/Decal_test_Albedo001.dds
+        Glow: /textures/environment/Decal_test_Glow001.dds
+        Length: 0
+        MidBytes: 
+        MidBytesStatic: 
+        Clouds: /textures/environment/cirrus000.dds
+        EndBytes: 
+    TerrainTypeData: 
+    Layers: []
+    VersionMinor: 0
+    VersionMajor: 0
+    HeightScale: 0
+    TerrainShader: 
+    LightingMultiplier: 0
+    SunDirection: {x: 0, y: 0, z: 0}
+    SunAmbience: {x: 0, y: 0, z: 0}
+    SunColor: {x: 0, y: 0, z: 0}
+    ShadowFillColor: {x: 0, y: 0, z: 0}
+    SpecularColor: {x: 0, y: 0, z: 0, w: 0}
+    Bloom: 0
+    FogColor: {x: 0, y: 0, z: 0}
+    FogStart: 0
+    FogEnd: 0
+    Unknown10: 0
+    Unknown11: 0
+    Unknown12: 0
+    Unknown13: 0
+    Unknown7: 0
+    Unknown8: 0
+    Unknown14: 0
+    MinimapContourInterval: 0
+    MinimapDeepWaterColor:
+      serializedVersion: 2
+      rgba: 0
+    MinimapShoreColor:
+      serializedVersion: 2
+      rgba: 0
+    MinimapLandStartColor:
+      serializedVersion: 2
+      rgba: 0
+    MinimapLandEndColor:
+      serializedVersion: 2
+      rgba: 0
+    MinimapContourColor:
+      serializedVersion: 2
+      rgba: 0
+    UncompressedWatermapTex: {fileID: 0}
   DefaultSkyboxData:
     BeginBytes: 
     Albedo: /textures/environment/Decal_test_Albedo001.dds
@@ -72621,6 +72937,182 @@ MonoBehaviour:
     MidBytesStatic: 
     Clouds: /textures/environment/cirrus000.dds
     EndBytes: 
+--- !u!114 &1334852569
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1334852567}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cccab4e61424a1943b823e27b7fcdf50, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  PreviewTextHeader:
+    Format: 4
+    Magic: 542327876
+    size: 124
+    flags: 4103
+    height: 256
+    width: 256
+    sizeorpitch: 0
+    depth: 0
+    mipmapcount: 0
+    alphabitdepth: 0
+    reserved0: 0
+    reserved1: 0
+    reserved2: 0
+    reserved3: 0
+    reserved4: 0
+    reserved5: 0
+    reserved6: 0
+    reserved7: 0
+    reserved8: 0
+    reserved9: 0
+    pixelformatSize: 32
+    pixelformatflags: 65
+    pixelformatFourcc: 0
+    pixelformatRgbBitCount: 32
+    pixelformatRbitMask: 16711680
+    pixelformatGbitMask: 65280
+    pixelformatBbitMask: 255
+    pixelformatAbitMask: 4278190080
+    caps1: 4098
+    caps2: 0
+    caps3: 0
+    caps4: 0
+  TextureMapHeader:
+    Format: 14
+    Magic: 542327876
+    size: 124
+    flags: 4103
+    height: 256
+    width: 256
+    sizeorpitch: 0
+    depth: 0
+    mipmapcount: 0
+    alphabitdepth: 0
+    reserved0: 0
+    reserved1: 0
+    reserved2: 0
+    reserved3: 0
+    reserved4: 0
+    reserved5: 0
+    reserved6: 0
+    reserved7: 0
+    reserved8: 0
+    reserved9: 0
+    pixelformatSize: 32
+    pixelformatflags: 65
+    pixelformatFourcc: 0
+    pixelformatRgbBitCount: 32
+    pixelformatRbitMask: 16711680
+    pixelformatGbitMask: 65280
+    pixelformatBbitMask: 255
+    pixelformatAbitMask: 4278190080
+    caps1: 4098
+    caps2: 0
+    caps3: 0
+    caps4: 0
+  TextureMap2Header:
+    Format: 14
+    Magic: 542327876
+    size: 124
+    flags: 4103
+    height: 256
+    width: 256
+    sizeorpitch: 0
+    depth: 0
+    mipmapcount: 0
+    alphabitdepth: 0
+    reserved0: 0
+    reserved1: 0
+    reserved2: 0
+    reserved3: 0
+    reserved4: 0
+    reserved5: 0
+    reserved6: 0
+    reserved7: 0
+    reserved8: 0
+    reserved9: 0
+    pixelformatSize: 32
+    pixelformatflags: 65
+    pixelformatFourcc: 0
+    pixelformatRgbBitCount: 32
+    pixelformatRbitMask: 16711680
+    pixelformatGbitMask: 65280
+    pixelformatBbitMask: 255
+    pixelformatAbitMask: 4278190080
+    caps1: 4098
+    caps2: 0
+    caps3: 0
+    caps4: 0
+  NormalmapHeader:
+    Format: 12
+    Magic: 542327876
+    size: 124
+    flags: 4103
+    height: 512
+    width: 512
+    sizeorpitch: 0
+    depth: 0
+    mipmapcount: 0
+    alphabitdepth: 0
+    reserved0: 0
+    reserved1: 0
+    reserved2: 0
+    reserved3: 0
+    reserved4: 0
+    reserved5: 0
+    reserved6: 0
+    reserved7: 0
+    reserved8: 0
+    reserved9: 0
+    pixelformatSize: 32
+    pixelformatflags: 4
+    pixelformatFourcc: 894720068
+    pixelformatRgbBitCount: 0
+    pixelformatRbitMask: 0
+    pixelformatGbitMask: 0
+    pixelformatBbitMask: 0
+    pixelformatAbitMask: 0
+    caps1: 4096
+    caps2: 0
+    caps3: 0
+    caps4: 0
+  WatermapHeader:
+    Format: 12
+    Magic: 542327876
+    size: 124
+    flags: 4103
+    height: 256
+    width: 256
+    sizeorpitch: 0
+    depth: 0
+    mipmapcount: 0
+    alphabitdepth: 0
+    reserved0: 0
+    reserved1: 0
+    reserved2: 0
+    reserved3: 0
+    reserved4: 0
+    reserved5: 0
+    reserved6: 0
+    reserved7: 0
+    reserved8: 0
+    reserved9: 0
+    pixelformatSize: 32
+    pixelformatflags: 4
+    pixelformatFourcc: 894720068
+    pixelformatRgbBitCount: 0
+    pixelformatRbitMask: 0
+    pixelformatGbitMask: 0
+    pixelformatBbitMask: 0
+    pixelformatAbitMask: 0
+    caps1: 4096
+    caps2: 0
+    caps3: 0
+    caps4: 0
 --- !u!4 &1334852570
 Transform:
   m_ObjectHideFlags: 0
@@ -72694,6 +73186,7 @@ MonoBehaviour:
   PropsMenu: {fileID: 703931132}
   MapCenterPoint: {x: 0, y: 0, z: 0}
   ScriptId: 0
+  BackupFiles: 1
 --- !u!1 &1336403084
 GameObject:
   m_ObjectHideFlags: 0
@@ -73494,7 +73987,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 728486287}
   toggleTransition: 1
   graphic: {fileID: 670419319}
-  m_Group: {fileID: 1461250162}
+  m_Group: {fileID: 0}
   onValueChanged:
     m_PersistentCalls:
       m_Calls:
@@ -84183,8 +84676,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 167.1, y: -14.5}
-  m_SizeDelta: {x: 334.2, y: 25}
+  m_AnchoredPosition: {x: 167.1, y: -2}
+  m_SizeDelta: {x: 334.2, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1585970177
 MonoBehaviour:
@@ -96632,8 +97125,8 @@ GameObject:
   - component: {fileID: 1818756036}
   - component: {fileID: 1818756039}
   - component: {fileID: 1818756038}
-  - component: {fileID: 1818756037}
   - component: {fileID: 1818756040}
+  - component: {fileID: 1818756037}
   m_Layer: 12
   m_Name: X
   m_TagString: SelectionRing
@@ -96648,14 +97141,14 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1818756035}
   m_LocalRotation: {x: -0, y: -0, z: -0.7071068, w: 0.7071068}
-  m_LocalPosition: {x: 0.024999619, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 0.06, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 0.9, z: 1}
   m_Children: []
   m_Father: {fileID: 1141478619}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: -90}
---- !u!65 &1818756037
-BoxCollider:
+--- !u!136 &1818756037
+CapsuleCollider:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
@@ -96663,9 +97156,10 @@ BoxCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 0.05, y: 0.26, z: 0.05}
-  m_Center: {x: 0, y: 0.12, z: 0}
+  m_Radius: 0.025
+  m_Height: 0.24860825
+  m_Direction: 1
+  m_Center: {x: -0.000007833356, y: 0.12430412, z: -0.00080969464}
 --- !u!23 &1818756038
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -102242,8 +102736,8 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1906476526}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.119999886, y: 0, z: 0.119999886}
-  m_LocalScale: {x: 0.12, y: 0.096751675, z: 0.12}
+  m_LocalPosition: {x: 0, y: 0.005, z: 0}
+  m_LocalScale: {x: 0.02, y: 0.02, z: 0.02}
   m_Children: []
   m_Father: {fileID: 1141478619}
   m_RootOrder: 3
@@ -102258,7 +102752,7 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 1, y: 0.2, z: 1}
+  m_Size: {x: 5, y: 2, z: 5}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!23 &1906476529
 MeshRenderer:
@@ -102298,7 +102792,7 @@ MeshFilter:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1906476526}
-  m_Mesh: {fileID: 4300000, guid: d7a163c8794117b4a8906168203e5e14, type: 3}
+  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!210 &1906476531
 SortingGroup:
   m_ObjectHideFlags: 0
@@ -105169,6 +105663,7 @@ Transform:
   - {fileID: 1262571319}
   - {fileID: 274584910}
   - {fileID: 2074602030}
+  - {fileID: 492583016}
   - {fileID: 1241768352}
   - {fileID: 729791800}
   - {fileID: 551778609}
@@ -105213,8 +105708,10 @@ MonoBehaviour:
   Controls_Scale: {fileID: 1113315697}
   SmallRing: {fileID: 274584909}
   SmallRingSymmetry: {fileID: 361039686}
+  SmallRingEmpty: {fileID: 492583015}
   Selection:
     Ids: 
+    Empty: []
     SelectionRings: []
     Positions: []
     SymmetryMatrix:
@@ -109402,8 +109899,8 @@ GameObject:
   - component: {fileID: 2048973223}
   - component: {fileID: 2048973226}
   - component: {fileID: 2048973225}
-  - component: {fileID: 2048973224}
   - component: {fileID: 2048973227}
+  - component: {fileID: 2048973224}
   m_Layer: 12
   m_Name: Z
   m_TagString: SelectionRing
@@ -109418,14 +109915,14 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 2048973222}
   m_LocalRotation: {x: 0.7071068, y: -0, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 0, z: 0.024999619}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0.06}
+  m_LocalScale: {x: 1, y: 0.9, z: 1}
   m_Children: []
   m_Father: {fileID: 1141478619}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
---- !u!65 &2048973224
-BoxCollider:
+--- !u!136 &2048973224
+CapsuleCollider:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
@@ -109433,9 +109930,10 @@ BoxCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 0.05, y: 0.26, z: 0.05}
-  m_Center: {x: 0, y: 0.12, z: 0}
+  m_Radius: 0.025
+  m_Height: 0.24860825
+  m_Direction: 1
+  m_Center: {x: -0.000007833354, y: 0.12430412, z: -0.0008096948}
 --- !u!23 &2048973225
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -113121,8 +113619,8 @@ GameObject:
   - component: {fileID: 2136053179}
   - component: {fileID: 2136053182}
   - component: {fileID: 2136053181}
-  - component: {fileID: 2136053180}
   - component: {fileID: 2136053183}
+  - component: {fileID: 2136053180}
   m_Layer: 12
   m_Name: Y
   m_TagString: SelectionRing
@@ -113137,14 +113635,14 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 2136053178}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.024999976, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 0, y: 0.06, z: 0}
+  m_LocalScale: {x: 1, y: 0.9, z: 1}
   m_Children: []
   m_Father: {fileID: 1141478619}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!65 &2136053180
-BoxCollider:
+--- !u!136 &2136053180
+CapsuleCollider:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
@@ -113152,9 +113650,10 @@ BoxCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 0.05, y: 0.26, z: 0.05}
-  m_Center: {x: 0, y: 0.12, z: 0}
+  m_Radius: 0.025
+  m_Height: 0.24860819
+  m_Direction: 1
+  m_Center: {x: -0.000007833354, y: 0.12430409, z: -0.00080969464}
 --- !u!23 &2136053181
 MeshRenderer:
   m_ObjectHideFlags: 0

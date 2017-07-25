@@ -11,7 +11,8 @@ using UnityEngine;
 
 public struct WaterShader
 {
-    public bool HasWater;
+
+	public bool HasWater;
     public float Elevation;
     public float ElevationDeep;
 

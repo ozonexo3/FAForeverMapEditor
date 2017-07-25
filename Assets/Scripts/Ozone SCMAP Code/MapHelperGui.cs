@@ -85,11 +85,11 @@ public class MapHelperGui : MonoBehaviour {
 			Kompositions[2].SetActive(false);
 			break;
 		case "LastMapSelect":
-			if(string.IsNullOrEmpty(PlayerPrefs.GetString("MapScenarioFile_" + LastMapsList.Selected, ""))) return;
-			Kompositions[2].SetActive(false);
-			MapLuaParser.Current.ScenarioFileName = PlayerPrefs.GetString("MapScenarioFile_" + LastMapsList.Selected, "");  
-			MapLuaParser.Current.FolderName = PlayerPrefs.GetString("MapFolder_" + LastMapsList.Selected, ""); 
-			StartScreen.UpdateFields();
+			//if(string.IsNullOrEmpty(PlayerPrefs.GetString("MapScenarioFile_" + LastMapsList.Selected, ""))) return;
+			//Kompositions[2].SetActive(false);
+			//MapLuaParser.Current.ScenarioFileName = PlayerPrefs.GetString("MapScenarioFile_" + LastMapsList.Selected, "");  
+			//MapLuaParser.Current.FolderName = PlayerPrefs.GetString("MapFolder_" + LastMapsList.Selected, ""); 
+			//StartScreen.UpdateFields();
 			break;
 		}
 	}

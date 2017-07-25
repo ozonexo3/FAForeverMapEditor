@@ -14,6 +14,7 @@ namespace Selection
 		public class SelectedObjects
 		{
 			public List<int> Ids = new List<int>();
+			public List<Vector3> Empty = new List<Vector3>();
 			public GameObject[] SelectionRings = new GameObject[0];
 			public Vector3[] Positions;
 			public Matrix4x4 SymmetryMatrix;
@@ -21,6 +22,7 @@ namespace Selection
 			public void LoadSymetryIds()
 			{
 				Ids = new List<int>();
+				Empty = new List<Vector3>();
 
 				int i = 0;
 				int o = 0;
@@ -50,30 +52,46 @@ namespace Selection
 						}
 					}
 
-					if(ClosestO >= 0)
+					if (ClosestO >= 0)
 						Ids.Add(ClosestO);
+					else
+						Empty.Add(SearchPos);
 				}
 			}
 
 			public void StorePositions()
 			{
-				Positions = new Vector3[SelectionRings.Length];
-				for(int i = 0; i < Positions.Length; i++)
+				int count = Ids.Count;
+				Positions = new Vector3[count + Empty.Count];
+				for(int i = 0; i < count; i++)
 				{
 					Positions[i] = Current.AffectedGameObjects[Ids[i]].transform.localPosition;
+				}
+
+				for(int i = 0; i < Empty.Count; i++)
+				{
+					Positions[i + count] = Empty[i];
+
 				}
 			}
 
 			public void OffsetPosition(Vector3 Offset)
 			{
 				Offset = SymmetryMatrix.MultiplyPoint(Offset);
-
+				int count = Ids.Count;
 				if (Current.SnapToGrid)
 				{
 					for (int i = 0; i < Positions.Length; i++)
 					{
-						Current.AffectedGameObjects[Ids[i]].transform.localPosition = ScmapEditor.SnapToGridCenter(Positions[i] + Offset, true, Current.SnapToWater);
-						SelectionRings[i].transform.localPosition = Current.AffectedGameObjects[Ids[i]].transform.localPosition;
+						if (i >= count)
+						{
+							SelectionRings[i].transform.localPosition = ScmapEditor.SnapToGridCenter(Positions[i] + Offset, true, Current.SnapToWater);
+						}
+						else
+						{
+							Current.AffectedGameObjects[Ids[i]].transform.localPosition = ScmapEditor.SnapToGridCenter(Positions[i] + Offset, true, Current.SnapToWater);
+							SelectionRings[i].transform.localPosition = Current.AffectedGameObjects[Ids[i]].transform.localPosition;
+						}
 					}
 				}
 				else

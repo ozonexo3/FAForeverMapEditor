@@ -5,7 +5,7 @@
 // * Source: http://www.hazardx.com/details.php?file=82
 // ***************************************************************************************
 
-
+[System.Serializable]
 public class Layer
 {
 

@@ -11,7 +11,7 @@ using UnityEngine;
 using System.IO;
 
 #if UNITY_EDITOR
-//[System.Serializable]
+[System.Serializable]
 #endif
 public class Map
 {
@@ -131,9 +131,10 @@ public class Map
 
         HeightScale = 0.0078125f;
 
-        //Unknown Values
 
-        Unknown8 = 0;
+	//Unknown Values
+
+	Unknown8 = 0;
         Unknown10 = -1091567891;
         Unknown11 = 2;
         Unknown12 = 0;
@@ -155,18 +156,35 @@ public class Map
 
 	}
 
-	public Map(int _Width, int _Height, int InitialHeight, bool Water, int WaterLevel, int DepthLevel, int AbyssLevel)
+	public Map(int _Width, int _Height, int InitialHeight, bool _Water, int WaterLevel, int DepthLevel, int AbyssLevel)
 	{
 		Width = _Width;
 		Height = _Height;
 		
-		PreviewTex = new Texture2D(Width, Height, TextureFormat.RGBA32, false);
+		PreviewTex = new Texture2D(256, 256, TextureFormat.RGBA32, false);
 		TexturemapTex = new Texture2D(Width, Height, TextureFormat.RGBA32, false);
 		TexturemapTex2 = new Texture2D(Width, Height, TextureFormat.RGBA32, false);
 		NormalmapTex = new Texture2D(Width, Height, TextureFormat.DXT5, false);
 		WatermapTex = new Texture2D(Width, Height, TextureFormat.DXT5, false);
 		UncompressedWatermapTex = new Texture2D(WatermapTex.width, WatermapTex.height, TextureFormat.RGBA32, false);
 		WaterDataTexture = new Texture2D(Width, Height, TextureFormat.RGB24, false);
+
+		Color SplatTextureColor = new Color(0, 0, 0, 0);
+		Color[] Pixels = new Color[Width * Height];
+		for (int i = 0; i < Pixels.Length; i++)
+			Pixels[i] = SplatTextureColor;
+
+		TexturemapTex.SetPixels(Pixels);
+		TexturemapTex2.SetPixels(Pixels);
+
+		TexturemapTex.Apply();
+		TexturemapTex2.Apply();
+
+		PreviewTextHeader = DefaultScmapHeaders.Current.PreviewTextHeader;
+		TextureMapHeader = DefaultScmapHeaders.Current.TextureMapHeader;
+		TextureMap2Header = DefaultScmapHeaders.Current.TextureMap2Header;
+		NormalmapHeader = DefaultScmapHeaders.Current.NormalmapHeader;
+		WatermapHeader = DefaultScmapHeaders.Current.WatermapHeader;
 
 		TerrainTypeData = new byte[Height * Width];
 		HeightmapData = new short[(Height + 1) * (Width + 1)];
@@ -190,6 +208,134 @@ public class Map
 
 		HeightScale = 0.0078125f;
 
+		TexPathBackground = "/textures/environment/blackbackground.dds";
+		TexPathSkyCubemap = "/textures/environment/skycube_evergreen01a.dds";
+		EnvCubemapsName = new string[3];
+		EnvCubemapsFile = new string[3];
+		EnvCubemapsName[0] = "<aeon>";
+		EnvCubemapsName[1] = "<default>";
+		EnvCubemapsName[2] = "<seraphim>";
+		EnvCubemapsFile[0] = "/textures/environment/envcube_aeon_evergreen.dds";
+		EnvCubemapsFile[1] = "/textures/environment/envcube_evergreen01a.dds";
+		EnvCubemapsFile[2] = "/textures/environment/envcube_seraphim_evergreen.dds";
+
+		Bloom = 0.03f;// 0.145f;
+
+		TerrainShader = "TTerrain";
+		LightingMultiplier = 1.54f;
+		SunDirection = new Vector3(0.616f, 0.559f, 0.55473f).normalized;
+		SunAmbience = Vector3.zero;
+		SunColor = new Vector3(1.38f, 1.29f, 1.14f);
+		ShadowFillColor = new Vector3(0.54f, 0.54f, 0.7f);
+		SpecularColor = new Vector4(0.31f, 0, 0, 0);
+
+
+		FogColor = new Vector3(0.37f, 0.49f, 0.45f);
+		FogStart = 0;
+		FogEnd = 750;
+		Unknown10 = -1091567891;
+		Unknown11 = 2;
+		Unknown12 = 0;
+		Unknown7 = 13153;
+		Unknown8 = 4;
+		Unknown14 = -8.3f;
+
+		WaveGenerators = new List<WaveGenerator>();
+		Layers = new List<Layer>();
+
+		{
+			// 0
+			Layer NewLayer = new Layer();
+			NewLayer.PathTexture = "/env/evergreen2/layers/eg_gravel005_albedo.dds";
+			NewLayer.PathNormalmap = "/env/tundra/layers/tund_sandlight_normal.dds";
+			NewLayer.ScaleTexture = 4;
+			NewLayer.ScaleNormalmap = 8.75f;
+			Layers.Add(NewLayer);
+
+			// 1
+			NewLayer = new Layer();
+			NewLayer.PathTexture = "";
+			NewLayer.PathNormalmap = "";
+			NewLayer.ScaleTexture = 4;
+			NewLayer.ScaleNormalmap = 4;
+			Layers.Add(NewLayer);
+
+			// 2
+			NewLayer = new Layer();
+			NewLayer.PathTexture = "";
+			NewLayer.PathNormalmap = "";
+			NewLayer.ScaleTexture = 4;
+			NewLayer.ScaleNormalmap = 4;
+			Layers.Add(NewLayer);
+
+			// 3
+			NewLayer = new Layer();
+			NewLayer.PathTexture = "";
+			NewLayer.PathNormalmap = "";
+			NewLayer.ScaleTexture = 4;
+			NewLayer.ScaleNormalmap = 4;
+			Layers.Add(NewLayer);
+
+			// 4
+			NewLayer = new Layer();
+			NewLayer.PathTexture = "";
+			NewLayer.PathNormalmap = "";
+			NewLayer.ScaleTexture = 4;
+			NewLayer.ScaleNormalmap = 4;
+			Layers.Add(NewLayer);
+
+			// 5
+			NewLayer = new Layer();
+			NewLayer.PathTexture = "";
+			NewLayer.PathNormalmap = "";
+			NewLayer.ScaleTexture = 4;
+			NewLayer.ScaleNormalmap = 4;
+			Layers.Add(NewLayer);
+
+			// 6
+			NewLayer = new Layer();
+			NewLayer.PathTexture = "";
+			NewLayer.PathNormalmap = "";
+			NewLayer.ScaleTexture = 4;
+			NewLayer.ScaleNormalmap = 4;
+			Layers.Add(NewLayer);
+
+			// 7
+			NewLayer = new Layer();
+			NewLayer.PathTexture = "";
+			NewLayer.PathNormalmap = "";
+			NewLayer.ScaleTexture = 4;
+			NewLayer.ScaleNormalmap = 4;
+			Layers.Add(NewLayer);
+
+			// 8
+			NewLayer = new Layer();
+			NewLayer.PathTexture = "";
+			NewLayer.PathNormalmap = "";
+			NewLayer.ScaleTexture = 4;
+			NewLayer.ScaleNormalmap = 4;
+			Layers.Add(NewLayer);
+
+			// 9
+			NewLayer = new Layer();
+			NewLayer.PathTexture = "/env/evergreen/layers/macrotexture000_albedo.dds";
+			NewLayer.PathNormalmap = "";
+			NewLayer.ScaleTexture = 128;
+			NewLayer.ScaleNormalmap = 1;
+			Layers.Add(NewLayer);
+		}
+
+
+		Decals = new List<Decal>();
+		DecalGroups = new List<IntegerGroup>();
+
+		Water = new WaterShader();
+		Water.Defaults();
+
+		Water.HasWater = _Water;
+		Water.Elevation = WaterLevel;
+		Water.ElevationDeep = DepthLevel;
+		Water.ElevationAbyss = AbyssLevel;
 		//Unknown Values
 
 		Unknown8 = 0;
@@ -477,7 +623,8 @@ public class Map
             //?
 
             int DecalCount = _with1.ReadInt32();
-            for (int i = 0; i <= DecalCount - 1; i++)
+			Debug.Log(DecalCount);
+            for (int i = 0; i < DecalCount; i++)
             {
                 Decal Feature = new Decal();
                 Feature.Load(Stream);
@@ -621,6 +768,8 @@ public class Map
 		PreviewTextHeader.Format = TextureFormat.RGBA32;
 		PreviewTex = TextureLoader.LoadTextureDXT(PreviewData, PreviewTextHeader);
 
+		Debug.Log(PreviewTex.width + ", " + PreviewTex.height + ", " + Width + ", " + Height);
+
 		TextureMapHeader = GetGamedataFile.GetDdsFormat(TexturemapData);
 		TextureMapHeader.Format = TextureFormat.BGRA32;
 		//TexturemapTex = TextureLoader.LoadTextureDXT(TexturemapData, TextureMapHeader);
@@ -662,7 +811,7 @@ public class Map
 
 		UncompressedWatermapTex.Apply ();
 
-        return true;
+		return true;
     }
 
 	public Texture2D UncompressedWatermapTex;
@@ -918,11 +1067,11 @@ public class Map
                 _with2.Write(Unknown14);
             }
 
-            for (int i = 0; i <= Layers.Count - 1; i++)
+            for (int i = 0; i < Layers.Count; i++)
             {
                 Layers[i].SaveAlbedo(Stream);
             }
-            for (int i = 0; i <= Layers.Count - 2; i++)
+            for (int i = 0; i < Layers.Count - 1; i++)
             {
                 Layers[i].SaveNormal(Stream);
             }
@@ -934,13 +1083,13 @@ public class Map
         //?
 
         _with2.Write(Decals.Count);
-        for (int i = 0; i <= Decals.Count - 1; i++)
+        for (int i = 0; i < Decals.Count; i++)
         {
             Decals[i].Save(Stream, i);
         }
 
         _with2.Write(DecalGroups.Count);
-        for (int i = 0; i <= DecalGroups.Count - 1; i++)
+        for (int i = 0; i < DecalGroups.Count; i++)
         {
             DecalGroups[i].Save(Stream);
         }

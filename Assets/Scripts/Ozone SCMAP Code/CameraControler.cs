@@ -227,7 +227,8 @@ public class CameraControler : MonoBehaviour {
 
 	void ClampPosY()
 	{
-		Pos.y = Mathf.Clamp(Pos.y, MapLuaParser.Current.HeightmapControler.WaterLevel.transform.localPosition.y, 2048);
+		if(MapLuaParser.Current.HeightmapControler.WaterLevel.gameObject.activeSelf)
+			Pos.y = Mathf.Clamp(Pos.y, MapLuaParser.Current.HeightmapControler.WaterLevel.transform.localPosition.y, 2048);
 	}
 
 

@@ -60,6 +60,19 @@ namespace MapLua
 			public const string KEY_NEXTGROUPID = "next_group_id";
 			public const string KEY_NEXTUNITID = "next_unit_id";
 			public const string KEY_ARMIES = "Armies";
+
+			public Scenario()
+			{
+				areas = new Areas[0];
+				MasterChains = new MasterChain[1];
+				MasterChains[0] = new MasterChain();
+				MasterChains[0].Name = "_MASTERCHAIN_" ;
+				MasterChains[0].Markers = new List<Marker>();
+
+				Chains = new Chain[0];
+				Platoons = new Platoon[0];
+			}
+
 		}
 
 		[System.Serializable]

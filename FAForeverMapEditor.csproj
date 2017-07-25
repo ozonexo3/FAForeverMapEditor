@@ -76,6 +76,9 @@
     <Reference Include="UnityEditor">
       <HintPath>Library\UnityAssemblies\UnityEditor.dll</HintPath>
     </Reference>
+    <Reference Include="Mono.Cecil">
+      <HintPath>Library\UnityAssemblies\Mono.Cecil.dll</HintPath>
+    </Reference>
     <Reference Include="ICSharpCode.SharpZipLib">
       <HintPath>Assets\Plugins\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
@@ -171,7 +174,6 @@
     <Compile Include="Assets\LUA\NLua\ObjectTranslator.cs" />
     <Compile Include="Assets\LUA\NLua\ObjectTranslatorPool.cs" />
     <Compile Include="Assets\LUA\NLua\ProxyType.cs" />
-    <Compile Include="Assets\OnlyLocal\Reflection.cs" />
     <Compile Include="Assets\PostProcessing\Runtime\Attributes\GetSetAttribute.cs" />
     <Compile Include="Assets\PostProcessing\Runtime\Attributes\MinAttribute.cs" />
     <Compile Include="Assets\PostProcessing\Runtime\Attributes\TrackballAttribute.cs" />
@@ -240,6 +242,7 @@
     <Compile Include="Assets\Scripts\HazardX SCMAP Code\WaveGenerator.cs" />
     <Compile Include="Assets\Scripts\HazardX SCMAP Code\WaveTexture.cs" />
     <Compile Include="Assets\Scripts\Ozone SCMAP Code\CameraControler.cs" />
+    <Compile Include="Assets\Scripts\Ozone SCMAP Code\DefaultScmapHeaders.cs" />
     <Compile Include="Assets\Scripts\Ozone SCMAP Code\EnvPaths.cs" />
     <Compile Include="Assets\Scripts\Ozone SCMAP Code\GetGamedataFile\GetGamedataFile.cs" />
     <Compile Include="Assets\Scripts\Ozone SCMAP Code\GetGamedataFile\GetGamedataFile_Bytes.cs" />

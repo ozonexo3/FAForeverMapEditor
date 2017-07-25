@@ -90,7 +90,7 @@ public class MapLuaParser : MonoBehaviour {
 
 	public bool MapLoaded()
 	{
-		return !string.IsNullOrEmpty(FolderName) && !string.IsNullOrEmpty(ScenarioFileName);
+		return !string.IsNullOrEmpty(FolderName) && !string.IsNullOrEmpty(ScenarioFileName) && !string.IsNullOrEmpty(FolderParentPath);
 	}
 
 	#region Loading
@@ -137,6 +137,9 @@ public class MapLuaParser : MonoBehaviour {
 	bool LoadProps = true;
 
 	IEnumerator LoadingFile(){
+
+		while (SavingMapProcess)
+			yield return null;
 
 		bool AllFilesExists = true;
 		//string MapPath = EnvPaths.GetMapsPath();
@@ -262,10 +265,15 @@ public class MapLuaParser : MonoBehaviour {
 
 	}
 
-	public void SaveMap()
+	public bool BackupFiles = true;
+	public void SaveMap(bool Backup = true)
 	{
 		if (!MapLuaParser.Current.MapLoaded())
 			return;
+
+		BackupFiles = Backup;
+
+		Debug.Log("Save map");
 
 		SavingMapProcess = true;
 		InfoPopup.Show(true, "Saving map...");
@@ -286,7 +294,7 @@ public class MapLuaParser : MonoBehaviour {
 
 		// Scenario.lua
 		string ScenarioFilePath = EnvPaths.GetMapsPath() + FolderName + "/" + ScenarioFileName + ".lua";
-		if(System.IO.File.Exists(ScenarioFilePath))
+		if(BackupFiles && System.IO.File.Exists(ScenarioFilePath))
 			System.IO.File.Move(ScenarioFilePath, BackupPath + "/" + ScenarioFileName + ".lua");
 		ScenarioLuaFile.Save(ScenarioFilePath);
 		yield return null;
@@ -296,7 +304,7 @@ public class MapLuaParser : MonoBehaviour {
 		string SaveFilePath = ScenarioLuaFile.Data.save.Replace("/maps/", FolderParentPath);
 		string FileName = ScenarioLuaFile.Data.save;
 		string[] Names = FileName.Split(("/").ToCharArray());
-		if (System.IO.File.Exists(SaveFilePath))
+		if (BackupFiles && System.IO.File.Exists(SaveFilePath))
 			System.IO.File.Move(SaveFilePath, BackupPath + "/" + Names[Names.Length - 1]);
 
 		SaveLuaFile.Save(SaveFilePath);
@@ -321,8 +329,9 @@ public class MapLuaParser : MonoBehaviour {
 		char[] NameSeparator = ("/").ToCharArray();
 		string[] Names = FileName.Split(NameSeparator);
 		//Debug.Log(BackupPath + "/" + Names[Names.Length - 1]);
-		if(System.IO.File.Exists(MapFilePath))
+		if(BackupFiles && System.IO.File.Exists(MapFilePath))
 			System.IO.File.Move(MapFilePath, BackupPath + "/" + Names[Names.Length - 1]);
+			 
 
 		HeightmapControler.SaveScmapFile();
 	}

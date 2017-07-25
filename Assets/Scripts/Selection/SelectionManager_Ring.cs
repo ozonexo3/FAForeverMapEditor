@@ -13,6 +13,7 @@ namespace Selection
 		public GameObject Controls_Scale;
 		public GameObject SmallRing;
 		public GameObject SmallRingSymmetry;
+		public GameObject SmallRingEmpty;
 
 		List<GameObject> SelectionRings = new List<GameObject>();
 
@@ -71,7 +72,8 @@ namespace Selection
 		private void GenerateSymmetrySelectionRing(SelectedObjects Sel)
 		{
 			int count = Sel.Ids.Count;
-			Sel.SelectionRings = new GameObject[count];
+			int count2 = Sel.Empty.Count;
+			Sel.SelectionRings = new GameObject[count + count2];
 			for (int i = 0; i < count; i++)
 			{
 				int ID = Sel.Ids[i];
@@ -84,6 +86,16 @@ namespace Selection
 				MeshRenderer Mr = AffectedGameObjects[ID].GetComponent<MeshRenderer>();
 				if (Mr)
 					Sel.SelectionRings[i].transform.localScale = new Vector3(Mr.bounds.size.x + 0.2f, 1, Mr.bounds.size.z + 0.2f);
+			}
+
+			for(int e = 0; e < count2; e++)
+			{
+				int i = e + count;
+
+				Sel.SelectionRings[i] = Instantiate(SmallRingEmpty, transform) as GameObject;
+				SelectionRings.Add(Sel.SelectionRings[i]);
+				Sel.SelectionRings[i].transform.localPosition = Sel.Empty[e];
+				Sel.SelectionRings[i].SetActive(true);
 			}
 		}
 
