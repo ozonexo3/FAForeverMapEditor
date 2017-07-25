@@ -216,18 +216,18 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Floats:
     - _AbyssLevel: 0.25
-    - _Area: 1
-    - _AreaHeight: 50.2
-    - _AreaWidht: 50.2
-    - _AreaX: 1
-    - _AreaY: 1
+    - _Area: 0
+    - _AreaHeight: 50.15
+    - _AreaWidht: 49.45
+    - _AreaX: 0.05
+    - _AreaY: 1.45
     - _Brush: 0
     - _BrushSize: 0
     - _BrushUvX: 0.15920788
     - _BrushUvY: 0.46744943
     - _DeepLevel: 1.675625
     - _Grid: 0
-    - _GridCamDist: 1.567861
+    - _GridCamDist: 2.9618785
     - _GridScale: 51.2
     - _LightingMultiplier: 1.3
     - _LowerScale: 128

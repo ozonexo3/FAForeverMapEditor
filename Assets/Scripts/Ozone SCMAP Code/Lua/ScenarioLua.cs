@@ -302,15 +302,15 @@ namespace MapLua
 		#endregion
 
 		#region Load
-		public bool Load(string FolderName, string ScenarioFileName)
+		public bool Load(string FolderName, string ScenarioFileName, string FolderParentPath)
 		{
 			System.Text.Encoding encodeType = System.Text.Encoding.ASCII;
 
-			string MapPath = EnvPaths.GetMapsPath();
+			//string MapPath = EnvPaths.GetMapsPath();
 
 			string loadedFile = "";
-			Debug.Log("Load file:" + MapPath + FolderName + "/" + ScenarioFileName + ".lua");
-			string loc = MapPath + FolderName + "/" + ScenarioFileName + ".lua";
+			Debug.Log("Load file:" + FolderParentPath + FolderName + "/" + ScenarioFileName + ".lua");
+			string loc = FolderParentPath + FolderName + "/" + ScenarioFileName + ".lua";
 			loadedFile = System.IO.File.ReadAllText(loc, encodeType);
 
 			LuaFile = new Lua();

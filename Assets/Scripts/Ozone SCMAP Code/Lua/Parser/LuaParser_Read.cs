@@ -217,5 +217,10 @@ namespace LuaParser
 			string source = (string.IsNullOrEmpty(e.Source)) ? "<no source>" : e.Source.Substring(0, e.Source.Length - 2);
 			return string.Format("{0}\nLua (at {2})", e.Message, string.Empty, source);
 		}
+
+		public static string GetStructureText(string name)
+		{
+			return System.IO.File.ReadAllText(MapLuaParser.StructurePath + name, System.Text.Encoding.ASCII);
+		}
 	}
 }

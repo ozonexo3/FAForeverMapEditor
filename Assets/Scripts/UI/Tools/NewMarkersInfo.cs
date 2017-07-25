@@ -343,6 +343,7 @@ namespace EditMap
 				public MapLua.SaveLua.Marker.MarkerTypes MarkerType;
 				public Vector3 Pos;
 				public Quaternion Rot;
+				public int[] Connected;
 			}
 		}
 
@@ -381,6 +382,16 @@ namespace EditMap
 					ExpMarkers.Markers[i].MarkerType = SelectedObjects[i].MarkerType;
 					ExpMarkers.Markers[i].Pos = SelectedObjects[i].MarkerObj.Tr.localPosition;
 					ExpMarkers.Markers[i].Rot = SelectedObjects[i].MarkerObj.Tr.localRotation;
+
+					List<int> Connected = new List<int>();
+					for(int c = 0; c < SelectedObjects[i].AdjacentToMarker.Count; c++)
+					{
+						if (SelectedObjects.Contains(SelectedObjects[i].AdjacentToMarker[c]))
+						{
+							Connected.Add(SelectedObjects.IndexOf(SelectedObjects[i].AdjacentToMarker[c]));
+						}
+					}
+					ExpMarkers.Markers[i].Connected = Connected.ToArray();
 				}
 
 
@@ -407,6 +418,8 @@ namespace EditMap
 				bool AnyCreated = false;
 				int mc = 0;
 
+				MapLua.SaveLua.Marker[] CreatedMarkers = new MapLua.SaveLua.Marker[ImpMarkers.Markers.Length];
+
 				for (int m = 0; m < ImpMarkers.Markers.Length; m++)
 				{
 					if (!AnyCreated)
@@ -417,19 +430,30 @@ namespace EditMap
 					if (SelectionManager.Current.SnapToGrid)
 						ImpMarkers.Markers[m].Pos = ScmapEditor.SnapToGridCenter(ImpMarkers.Markers[m].Pos, true, SelectionManager.Current.SnapToWater);
 
-					//NewPos.y = ScmapEditor.Current.Teren.SampleHeight(NewPos);
-
 					MapLua.SaveLua.Marker NewMarker = new MapLua.SaveLua.Marker(ImpMarkers.Markers[m].MarkerType);
+					CreatedMarkers[m] = NewMarker;
 					NewMarker.position = ScmapEditor.WorldPosToScmap(ImpMarkers.Markers[m].Pos);
 					NewMarker.orientation = ImpMarkers.Markers[m].Rot.eulerAngles;
 					MarkersControler.CreateMarker(NewMarker, mc);
 					ChainsList.AddToCurrentChain(NewMarker);
 
 
-					//LastAddedMarkers.Add(TotalMarkersCount);
-					//TotalMarkersCount++;
 					MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers.Add(NewMarker);
 				}
+
+
+				for (int m = 0; m < ImpMarkers.Markers.Length; m++)
+				{
+					CreatedMarkers[m].AdjacentToMarker = new List<MapLua.SaveLua.Marker>();
+					for (int c = 0; c < ImpMarkers.Markers[m].Connected.Length; c++)
+					{
+						CreatedMarkers[m].AdjacentToMarker.Add(CreatedMarkers[ImpMarkers.Markers[m].Connected[c]]);
+					}
+
+				}
+
+				RenderMarkersConnections.Current.UpdateConnections();
+
 			}
 		}
 

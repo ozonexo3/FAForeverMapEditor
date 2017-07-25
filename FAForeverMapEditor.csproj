@@ -131,7 +131,6 @@
     <Compile Include="Assets\LUA\KopiLua\lzio.cs" />
     <Compile Include="Assets\LUA\KopiLua\print.cs" />
     <Compile Include="Assets\LUA\KopiLua\printf\Tools.cs" />
-    <Compile Include="Assets\LUA\LuaHelper.cs" />
     <Compile Include="Assets\LUA\NLua\CheckType.cs" />
     <Compile Include="Assets\LUA\NLua\Config\NLuaConfig.cs" />
     <Compile Include="Assets\LUA\NLua\Event\DebugHookEventArgs.cs" />
@@ -283,7 +282,8 @@
     <Compile Include="Assets\Scripts\Tes\Vector2i.cs" />
     <Compile Include="Assets\Scripts\Tes\VirtualFileSystem.cs" />
     <Compile Include="Assets\Scripts\Trash\Common\GUILayoutx.cs" />
-    <Compile Include="Assets\Scripts\UI\AppMenu.cs" />
+    <Compile Include="Assets\Scripts\UI\AppMenu\AppMenu.cs" />
+    <Compile Include="Assets\Scripts\UI\AppMenu\LoadRecentMaps.cs" />
     <Compile Include="Assets\Scripts\UI\Chains\ChainsList.cs" />
     <Compile Include="Assets\Scripts\UI\Editing.cs" />
     <Compile Include="Assets\Scripts\UI\FafEditorSettings.cs" />
@@ -318,6 +318,7 @@
     <Compile Include="Assets\Scripts\UI\Tools\MapInfo.cs" />
     <Compile Include="Assets\Scripts\UI\Tools\MarkerLayersInfo.cs" />
     <Compile Include="Assets\Scripts\UI\Tools\MarkersInfo.cs" />
+    <Compile Include="Assets\Scripts\UI\Tools\NewMap.cs" />
     <Compile Include="Assets\Scripts\UI\Tools\NewMarkersInfo.cs" />
     <Compile Include="Assets\Scripts\UI\Tools\PropsInfo.cs" />
     <Compile Include="Assets\Scripts\UI\Tools\RenderMap.cs" />

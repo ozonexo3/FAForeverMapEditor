@@ -21,8 +21,10 @@ public class MapLuaParser : MonoBehaviour {
 	[Header("Objects")]
 	//public		MarkersRenderer	MarkerRend;
 	public		Editing			EditMenu;
+	public GameObject Background;
 	public		Undo			History;
 	public		MapHelperGui	HelperGui;
+	public string FolderParentPath;
 	public		string			FolderName;
 	public		string			ScenarioFileName;
 	//public		Scenario		ScenarioData;
@@ -38,7 +40,7 @@ public class MapLuaParser : MonoBehaviour {
 	public static		bool			Water;
 
 
-	[Header("Local Data")]
+	//[Header("Local Data")]
 	//public		List<Mex>		Mexes = new List<Mex>();
 	//public		List<Hydro>		Hydros = new List<Hydro>();
 	//public		List<Army>		ARMY_ = new List<Army>();
@@ -52,11 +54,12 @@ public class MapLuaParser : MonoBehaviour {
 
 	//public		List<SaveArmy> 		SaveArmys = new List<SaveArmy>();
 
-	public		int MexTotalCount = 0;
-	public		int HydrosTotalCount = 0;
-	public		int SiTotalCount = 0;
+	//public		int MexTotalCount = 0;
+	//public		int HydrosTotalCount = 0;
+	//public		int SiTotalCount = 0;
 
 	//[HideInInspector]
+	[Header("Local Data")]
 	public		Vector3			MapCenterPoint;
 
 	public		int				ScriptId = 0;
@@ -64,18 +67,7 @@ public class MapLuaParser : MonoBehaviour {
 	public static string			BackupPath;
 	public static string			StructurePath;
 
-	// LUA
-	Lua env;
-	Lua save;
 
-	#endregion
-
-	#region Classes
-	
-	public	enum armys 
-	{
-		none, ARMY1, ARMY2, ARMY3, ARMY4, ARMY5, ARMY6, ARMY7, ARMY8, ARMY9, ARMY10, ARMY11, ARMY12, ARMY13, ARMY14, ARMY15, ARMY16
-	}
 	#endregion
 
 
@@ -133,6 +125,11 @@ public class MapLuaParser : MonoBehaviour {
 	}
 
 	public void LoadFile(){
+		EditMenu.gameObject.SetActive(true);
+		Background.SetActive(false);
+
+		LoadRecentMaps.MoveLastMaps(ScenarioFileName, FolderName, FolderParentPath);
+
 		StartCoroutine("LoadingFile");
 	}
 
@@ -142,16 +139,16 @@ public class MapLuaParser : MonoBehaviour {
 	IEnumerator LoadingFile(){
 
 		bool AllFilesExists = true;
-		string MapPath = EnvPaths.GetMapsPath();
+		//string MapPath = EnvPaths.GetMapsPath();
 		string Error = "";
-		if (!System.IO.Directory.Exists (MapPath)) {
-			Error = "Map folder not exist: " + MapPath;
+		if (!System.IO.Directory.Exists (FolderParentPath)) {
+			Error = "Map folder not exist: " + FolderParentPath;
 			Debug.LogError (Error);
 			AllFilesExists = false;
 		}
 
-		if (AllFilesExists && !System.IO.File.Exists (MapPath + FolderName + "/" + ScenarioFileName + ".lua")) {
-			Error = "Scenario.lua not exist: " + MapPath + FolderName + "/" + ScenarioFileName + ".lua";
+		if (AllFilesExists && !System.IO.File.Exists (FolderParentPath + FolderName + "/" + ScenarioFileName + ".lua")) {
+			Error = "Scenario.lua not exist: " + FolderParentPath + FolderName + "/" + ScenarioFileName + ".lua";
 			Debug.LogError (Error);
 			AllFilesExists = false;
 		}
@@ -177,7 +174,7 @@ public class MapLuaParser : MonoBehaviour {
 			}
 
 			// Scenario LUA
-			if (ScenarioLuaFile.Load(FolderName, ScenarioFileName)){
+			if (ScenarioLuaFile.Load(FolderName, ScenarioFileName, FolderParentPath)){
 				//Map Loaded
 			}
 			else
@@ -260,10 +257,16 @@ public class MapLuaParser : MonoBehaviour {
 
 	#region SaveMap
 
+	public void SaveMapAs()
+	{
+
+	}
+
 	public void SaveMap()
 	{
-		if (string.IsNullOrEmpty(FolderName) || string.IsNullOrEmpty(ScenarioFileName))
+		if (!MapLuaParser.Current.MapLoaded())
 			return;
+
 		SavingMapProcess = true;
 		InfoPopup.Show(true, "Saving map...");
 
@@ -275,26 +278,27 @@ public class MapLuaParser : MonoBehaviour {
 
 		yield return null;
 
-		string MapPath = EnvPaths.GetMapsPath ();
 		string BackupId = System.DateTime.Now.Month.ToString() +System.DateTime.Now.Day.ToString() + System.DateTime.Now.Hour.ToString() + System.DateTime.Now.Minute.ToString() + System.DateTime.Now.Second.ToString();
-		BackupPath = MapPath + FolderName + "/Backup_" + BackupId;
+		BackupPath = FolderParentPath + FolderName + "/Backup_" + BackupId;
 
 		System.IO.Directory.CreateDirectory(BackupPath);
 		yield return null;
 
 		// Scenario.lua
 		string ScenarioFilePath = EnvPaths.GetMapsPath() + FolderName + "/" + ScenarioFileName + ".lua";
-		System.IO.File.Move(ScenarioFilePath, BackupPath + "/" + ScenarioFileName + ".lua");
+		if(System.IO.File.Exists(ScenarioFilePath))
+			System.IO.File.Move(ScenarioFilePath, BackupPath + "/" + ScenarioFileName + ".lua");
 		ScenarioLuaFile.Save(ScenarioFilePath);
 		yield return null;
 
 
 		//Save.lua
-		string SaveFilePath = ScenarioLuaFile.Data.save.Replace("/maps/", MapPath);
+		string SaveFilePath = ScenarioLuaFile.Data.save.Replace("/maps/", FolderParentPath);
 		string FileName = ScenarioLuaFile.Data.save;
 		string[] Names = FileName.Split(("/").ToCharArray());
+		if (System.IO.File.Exists(SaveFilePath))
+			System.IO.File.Move(SaveFilePath, BackupPath + "/" + Names[Names.Length - 1]);
 
-		System.IO.File.Move(SaveFilePath, BackupPath + "/" + Names[Names.Length - 1]);
 		SaveLuaFile.Save(SaveFilePath);
 		yield return null;
 
@@ -311,14 +315,14 @@ public class MapLuaParser : MonoBehaviour {
 
 	public void SaveScmap(){
 
-		string MapPath = EnvPaths.GetMapsPath();
-		string MapFilePath = ScenarioLuaFile.Data.map.Replace("/maps/", MapPath);
+		string MapFilePath = ScenarioLuaFile.Data.map.Replace("/maps/", FolderParentPath);
 
 		string FileName = ScenarioLuaFile.Data.map;
 		char[] NameSeparator = ("/").ToCharArray();
 		string[] Names = FileName.Split(NameSeparator);
 		//Debug.Log(BackupPath + "/" + Names[Names.Length - 1]);
-		System.IO.File.Move(MapFilePath, BackupPath + "/" + Names[Names.Length - 1]);
+		if(System.IO.File.Exists(MapFilePath))
+			System.IO.File.Move(MapFilePath, BackupPath + "/" + Names[Names.Length - 1]);
 
 		HeightmapControler.SaveScmapFile();
 	}
@@ -419,7 +423,7 @@ public class MapLuaParser : MonoBehaviour {
 		SaveData = loadedFile;
 
 		string MapPath = EnvPaths.GetMapsPath();
-		string SaveFilePath = ScenarioLuaFile.Data.script.Replace("/maps/", MapPath);
+		string SaveFilePath = ScenarioLuaFile.Data.script.Replace("/maps/", FolderParentPath);
 
 		string FileName = ScenarioLuaFile.Data.script;
 		char[] NameSeparator = ("/").ToCharArray();

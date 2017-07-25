@@ -453,10 +453,10 @@ namespace MapLua
 			}
 
 			int ID = 0;
-			while (AllExistingNames.Contains(prefix + ID.ToString()))
+			while (AllExistingNames.Contains(prefix + ID.ToString("00")))
 				ID++;
 
-			return prefix + ID.ToString();
+			return prefix + ID.ToString("00");
 		}
 
 

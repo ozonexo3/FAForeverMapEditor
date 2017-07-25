@@ -149,6 +149,67 @@ public class Map
 		MinimapLandEndColor = new Color(206, 206, 176);
     }
 
+
+	public Map()
+	{
+
+	}
+
+	public Map(int _Width, int _Height, int InitialHeight, bool Water, int WaterLevel, int DepthLevel, int AbyssLevel)
+	{
+		Width = _Width;
+		Height = _Height;
+		
+		PreviewTex = new Texture2D(Width, Height, TextureFormat.RGBA32, false);
+		TexturemapTex = new Texture2D(Width, Height, TextureFormat.RGBA32, false);
+		TexturemapTex2 = new Texture2D(Width, Height, TextureFormat.RGBA32, false);
+		NormalmapTex = new Texture2D(Width, Height, TextureFormat.DXT5, false);
+		WatermapTex = new Texture2D(Width, Height, TextureFormat.DXT5, false);
+		UncompressedWatermapTex = new Texture2D(WatermapTex.width, WatermapTex.height, TextureFormat.RGBA32, false);
+		WaterDataTexture = new Texture2D(Width, Height, TextureFormat.RGB24, false);
+
+		TerrainTypeData = new byte[Height * Width];
+		HeightmapData = new short[(Height + 1) * (Width + 1)];
+		WaterDepthBiasMask = new byte[(Height * Width) / 4];
+		WaterFlatnessMask = new byte[(Height * Width) / 4];
+		WaterFoamMask = new byte[(Height * Width) / 4];
+		for (int i = 0; i < WaterDepthBiasMask.Length; i++)
+		{
+			WaterDepthBiasMask[i] = 127;
+			WaterFlatnessMask[i] = 255;
+			WaterFoamMask[i] = 0;
+		}
+
+		for(int i = 0; i < HeightmapData.Length; i++)
+			HeightmapData[i] = (short)InitialHeight;
+
+
+		//Version
+		VersionMajor = 2;
+		VersionMinor = 56;
+
+		HeightScale = 0.0078125f;
+
+		//Unknown Values
+
+		Unknown8 = 0;
+		Unknown10 = -1091567891;
+		Unknown11 = 2;
+		Unknown12 = 0;
+		Unknown13 = 0;
+		Unknown14 = 0;
+
+		//Minimap Colors (Default)
+		MinimapContourInterval = 24;
+		MinimapDeepWaterColor = new Color(71, 140, 181);
+		MinimapContourColor = new Color(112, 112, 112);
+		MinimapShoreColor = new Color(140, 201, 224);
+		MinimapLandStartColor = new Color(117, 99, 107);
+		MinimapLandEndColor = new Color(206, 206, 176);
+	}
+
+
+
 	public int HeightmapId(int x, int y)
 	{
 		return (x + y * (Width + 1));

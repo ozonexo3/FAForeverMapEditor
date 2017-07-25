@@ -70,7 +70,7 @@ public class MapHelperGui : MonoBehaviour {
 	public void ButtonFunction(string func){
 		switch(func){
 		case "LoadMap":
-			MoveLastMaps(MapLuaParser.Current.ScenarioFileName, MapLuaParser.Current.FolderName);
+				LoadRecentMaps.MoveLastMaps(MapLuaParser.Current.ScenarioFileName, MapLuaParser.Current.FolderName);
 			OpenComposition(1);
 			Map = true;
 			MapLuaParser.Current.LoadFile();
@@ -120,39 +120,7 @@ public class MapHelperGui : MonoBehaviour {
 
 	}
 
-	public void MoveLastMaps(string scenario = "", string folder = ""){
-
-		if(scenario == PlayerPrefs.GetString("MapScenarioFile_" + 0, "") && folder == PlayerPrefs.GetString("MapFolder_" + 0, "")) return;
-
-		string[] NewScenario = new string[9];
-		string[] NewFolder = new string[9];
-
-		int offset = 0;
-		NewScenario[0] = scenario;
-		NewFolder[0] = folder;
-
-		for(int i = 0; i < 9; i++){
-			if(i == 0){
-
-				//PlayerPrefs.SetString("MapScenarioFile_" + 0, scenario);
-				//PlayerPrefs.SetString("MapFolder_" + 0, folder);
-			}
-			else{
-				while(PlayerPrefs.GetString("MapScenarioFile_" + (i - 1 + offset), "") == scenario && scenario != "" && offset < 9){
-					offset ++;
-				}
-				NewScenario[i] = PlayerPrefs.GetString("MapScenarioFile_" + (i - 1 + offset), "");
-				NewFolder[i] = PlayerPrefs.GetString("MapFolder_" + (i - 1 + offset), "");
-			}
-		}
-
-		for(int i = 0; i < 9; i++){
-
-			PlayerPrefs.SetString("MapScenarioFile_" + i, NewScenario[i]);
-			PlayerPrefs.SetString("MapFolder_" + i, NewFolder[i]);
-
-		}
 
 
-	}
+
 }
