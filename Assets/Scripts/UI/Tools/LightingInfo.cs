@@ -6,7 +6,8 @@ namespace EditMap
 {
 	public class LightingInfo : MonoBehaviour
 	{
-		public const float SunMultipiler = 0.5f;
+		public const float SunMultipiler = 1f;
+		public const float BloomMultipiler = 1f;
 
 		public ScmapEditor Scmap;
 

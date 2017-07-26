@@ -93,6 +93,16 @@ public class MapLuaParser : MonoBehaviour {
 		return !string.IsNullOrEmpty(FolderName) && !string.IsNullOrEmpty(ScenarioFileName) && !string.IsNullOrEmpty(FolderParentPath);
 	}
 
+	public void ResetUI()
+	{
+		EditMenu.gameObject.SetActive(false);
+		Background.SetActive(true);
+
+		FolderParentPath = "";
+		FolderName = "";
+		ScenarioFileName = "";
+	}
+
 	#region Loading
 
 	public IEnumerator ForceLoadMapAtPath(string path){
@@ -123,10 +133,14 @@ public class MapLuaParser : MonoBehaviour {
 	}
 
 	public void LoadFile(){
+		if (LoadingMapProcess)
+			return;
+
+		ScmapEditor.Current.UnloadMap();
+
 		EditMenu.gameObject.SetActive(true);
 		Background.SetActive(false);
 
-		LoadRecentMaps.MoveLastMaps(ScenarioFileName, FolderName, FolderParentPath);
 
 		StartCoroutine("LoadingFile");
 	}
@@ -134,6 +148,7 @@ public class MapLuaParser : MonoBehaviour {
 	bool loadSave = true;
 	bool LoadProps = true;
 
+	bool LoadingMapProcess = false;
 	IEnumerator LoadingFile(){
 
 		while (SavingMapProcess)
@@ -152,7 +167,14 @@ public class MapLuaParser : MonoBehaviour {
 			Debug.LogError (Error);
 			AllFilesExists = false;
 		}
-			
+		string ScenarioText = System.IO.File.ReadAllText(FolderParentPath + FolderName + "/" + ScenarioFileName + ".lua");
+		if (AllFilesExists && !ScenarioText.StartsWith("version = 3"))
+		{
+			//Debug.Log(ScenarioText);
+			Error = "Selected file is not a proper scenario.lua file";
+			Debug.LogError(Error);
+			AllFilesExists = false;
+		}
 
 		if(AllFilesExists && !System.IO.File.Exists(EnvPaths.GetGamedataPath() + "/env.scd")){
 			Error = "No source files in gamedata folder: " + EnvPaths.GetGamedataPath();
@@ -162,6 +184,8 @@ public class MapLuaParser : MonoBehaviour {
 
 		if (AllFilesExists) {
 			// Begin load
+			LoadRecentMaps.MoveLastMaps(ScenarioFileName, FolderName, FolderParentPath);
+			LoadingMapProcess = true;
 			InfoPopup.Show (true, "Loading map...");
 			yield return null;
 
@@ -211,7 +235,9 @@ public class MapLuaParser : MonoBehaviour {
 				PropsMenu.gameObject.SetActive(true);
 
 				PropsMenu.AllowBrushUpdate = false;
-				yield return PropsMenu.StartCoroutine(PropsMenu.LoadProps());
+				Coroutine LoadingProps = PropsMenu.StartCoroutine(PropsMenu.LoadProps());
+				while (PropsMenu.LoadingProps)
+					yield return null;
 
 				PropsMenu.gameObject.SetActive(false);
 			}
@@ -219,6 +245,7 @@ public class MapLuaParser : MonoBehaviour {
 			InfoPopup.Show (false);
 
 			EditMenu.Categorys [0].GetComponent<MapInfo> ().UpdateFields ();
+			LoadingMapProcess = false;
 		}
 		else {
 			HelperGui.ReturnLoadingWithError (Error);

@@ -122,6 +122,9 @@ namespace Markers
 
 			for (int mc = 0; mc < MapLuaParser.Current.SaveLuaFile.Data.MasterChains.Length; mc++)
 			{
+				if (MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc] == null || MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers == null)
+					continue;
+
 				int Mcount = MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers.Count;
 				for (int m = 0; m < Mcount; m++)
 				{

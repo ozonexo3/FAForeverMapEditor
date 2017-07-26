@@ -49,7 +49,11 @@ public class OnFafEditorQuit : MonoBehaviour {
 		if (!string.IsNullOrEmpty(MapLuaParser.Current.FolderName) && !string.IsNullOrEmpty(MapLuaParser.Current.ScenarioFileName) && !AllowQuit)
 		{
 			if (!Popup.activeSelf)
+			{
 				Popup.SetActive(true);
+				GenericPopup.RemoveAll();
+
+			}
 			Application.CancelQuit();
 		}
 

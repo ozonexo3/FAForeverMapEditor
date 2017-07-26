@@ -12,7 +12,7 @@ public partial struct GetGamedataFile
 	static bool DebugTextureLoad = false;
 	static bool IsDxt3 = false;
 
-	public static float MipmapBias = 0.5f;
+	public static float MipmapBias = 0.0f;
 	public static int AnisoLevel = 10;
 
 	public static Texture2D LoadTexture2DFromGamedata(string scd, string LocalPath, bool NormalMap = false)
@@ -42,11 +42,14 @@ public partial struct GetGamedataFile
 		{
 			try
 			{
+				//texture = DDS.DDSReader.LoadDDSTexture(new MemoryStream(FinalTextureData2), false).ToTexture2D();
 				texture.LoadRawTextureData(dxtBytes);
 			}
-			catch
+			catch (System.Exception e)
 			{
+				Debug.Log("Texture load fallback: " + e);
 				texture = DDS.DDSReader.LoadDDSTexture(new MemoryStream(FinalTextureData2), false).ToTexture2D();
+				//texture.LoadRawTextureData(dxtBytes);
 			}
 		}
 		texture.Apply(false);
@@ -57,7 +60,7 @@ public partial struct GetGamedataFile
 
 			Texture2D normalTexture = new Texture2D((int)LoadDDsHeader.width, (int)LoadDDsHeader.height, TextureFormat.RGBA32, Mipmaps, true);
 
-			//Color theColour = new Color();
+			Color theColour = new Color();
 			Color[] Pixels;
 
 			int m = 0;
@@ -84,8 +87,12 @@ public partial struct GetGamedataFile
 					theColour.b = 1;
 					theColour.a = Pixels[i].g;
 					Pixels[i] = theColour;*/
-					Pixels[i].b = 1;
-					Pixels[i].a = Pixels[i].g;
+					float R = Pixels[i].r;
+					float G = Pixels[i].g;
+					Pixels[i].r = R;
+					Pixels[i].g = G;
+					Pixels[i].b = 1 - (R + G);
+					Pixels[i].a = G;
 				}
 				normalTexture.SetPixels(0, 0, Texwidth, Texheight, Pixels, m);
 			}

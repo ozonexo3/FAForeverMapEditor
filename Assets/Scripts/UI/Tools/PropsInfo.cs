@@ -157,8 +157,10 @@ namespace EditMap
 			}
 		}
 
+		public bool LoadingProps;
 		public IEnumerator LoadProps()
 		{
+			LoadingProps = true;
 			UnloadProps();
 
 			List<Prop> Props = ScmapEditor.Current.map.Props;
@@ -229,6 +231,7 @@ namespace EditMap
 			TotalTime.text = TotalReclaimTime.ToString();
 
 			yield return null;
+			LoadingProps = false;
 
 			//Debug.Log("Props types: " + AllPropsTypes.Count);
 		}

@@ -68,7 +68,7 @@ public class ScmapEditor : MonoBehaviour
 
 	public IEnumerator LoadScmapFile()
 	{
-		UnloadMap();
+		//UnloadMap();
 
 		map = new Map();
 
@@ -88,7 +88,7 @@ public class ScmapEditor : MonoBehaviour
 
 			//Cam.GetComponent<Bloom>().bloomIntensity = map.Bloom * 4;
 			BloomModel.Settings Bs = PostProcessing.bloom.settings;
-			Bs.bloom.intensity = map.Bloom * 4;
+			Bs.bloom.intensity = map.Bloom * 10;
 			PostProcessing.bloom.settings = Bs;
 			//PostProcessing.bloom.settings.bloom.intensity = map.Bloom * 4;
 
@@ -106,6 +106,8 @@ public class ScmapEditor : MonoBehaviour
 			Debug.LogError("File not found");
 			StopCoroutine("LoadScmapFile");
 		}
+
+		
 
 
 		if (map.VersionMinor >= 60)
@@ -159,8 +161,6 @@ public class ScmapEditor : MonoBehaviour
 		WaterMaterial.SetTexture("_UtilitySamplerC", map.UncompressedWatermapTex);
 		WaterMaterial.SetFloat("_WaterScale", HalfxRes);
 
-
-
 		//*****************************************
 		// ***** Set Terrain proportives
 		//*****************************************
@@ -181,6 +181,8 @@ public class ScmapEditor : MonoBehaviour
 			}
 			Textures[i].AlbedoScale = map.Layers[i].ScaleTexture;
 			Textures[i].NormalScale = map.Layers[i].ScaleNormalmap;
+
+			//Debug.Log("Load textures: " + i);
 
 			try
 			{
@@ -273,6 +275,7 @@ public class ScmapEditor : MonoBehaviour
 
 		SetTextures();
 		yield return null;
+		Debug.Log("Scmap load complited");
 	}
 
 	#region Textures
@@ -529,7 +532,6 @@ public class ScmapEditor : MonoBehaviour
 
 		EditMap.PropsInfo.UnloadProps();
 		Markers.MarkersControler.UnloadMarkers();
-
 	}
 	#endregion
 

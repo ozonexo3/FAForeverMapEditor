@@ -489,12 +489,13 @@ namespace DDS
 		private static void ExtractDDSTextureFormatAndData(DDSHeader header, UnityBinaryReader reader, out bool hasMipmaps, out uint DDSMipmapLevelCount, out TextureFormat textureFormat, out int bytesPerPixel, out byte[] textureData)
 		{
 			hasMipmaps = Utils.ContainsBitFlags(header.dwCaps, (uint)DDSCaps.Mipmap);
-
+			hasMipmaps = hasMipmaps || header.dwMipMapCount > 1;
 			// Non-mipmapped textures still have one mipmap level: the texture itself.
 			DDSMipmapLevelCount = hasMipmaps ? header.dwMipMapCount : 1;
 
+
 			// If the DDS file contains uncompressed data.
-			if(Utils.ContainsBitFlags(header.pixelFormat.flags, (uint)DDSPixelFormatFlags.RGB))
+			if (Utils.ContainsBitFlags(header.pixelFormat.flags, (uint)DDSPixelFormatFlags.RGB))
 			{
 				// some permutation of RGB
 				if(!Utils.ContainsBitFlags(header.pixelFormat.flags, (uint)DDSPixelFormatFlags.AlphaPixels))

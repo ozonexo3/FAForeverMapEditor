@@ -32,8 +32,6 @@ public class AppMenu : MonoBehaviour
 			}
 			if (Input.GetMouseButtonUp(0))
 			{
-
-
 					foreach (GameObject obj in Popups)
 					{
 						obj.SetActive(false);
@@ -53,8 +51,7 @@ public class AppMenu : MonoBehaviour
 		switch (func)
 		{
 			case "NewMap":
-				MapHelper.Map = false;
-				MapHelper.OpenComposition(0);
+				OpenNewMap();
 				break;
 			case "Open":
 				OpenMap();
@@ -139,8 +136,46 @@ public class AppMenu : MonoBehaviour
 		return MenuOpen;
 	}
 
+	#region OpenMap
 
 	public void OpenMap()
+	{
+		if (MapLuaParser.Current.MapLoaded())
+			GenericPopup.ShowPopup(GenericPopup.PopupTypes.TriButton, "Save map", "Save current map before opening another map?", "Yes", OpenMapYes, "No", OpenMapNo, "Cancel", OpenMapCancel);
+		else
+			OpenMapProcess();
+	}
+
+	public void OpenMapYes()
+	{
+		StartCoroutine(OpenMapSave());
+	}
+
+	IEnumerator OpenMapSave()
+	{
+		MapLuaParser.Current.SaveMap();
+		yield return null;
+
+		while (MapLuaParser.SavingMapProcess)
+			yield return null;
+
+		OpenMapNo();
+	}
+
+	public void OpenMapNo()
+	{
+		ScmapEditor.Current.UnloadMap();
+		MapLuaParser.Current.ResetUI();
+		OpenMapProcess();
+	}
+
+	public void OpenMapCancel()
+	{
+
+	}
+
+
+	public void OpenMapProcess()
 	{
 		LateUpdate();
 
@@ -159,7 +194,7 @@ public class AppMenu : MonoBehaviour
 			MapLuaParser.Current.ScenarioFileName = PathSeparation[PathSeparation.Length - 1];
 			MapLuaParser.Current.FolderName = PathSeparation[PathSeparation.Length - 2];
 			string ParentPath = "";
-			for(int i = 0; i < PathSeparation.Length - 2; i++)
+			for (int i = 0; i < PathSeparation.Length - 2; i++)
 			{
 				ParentPath += PathSeparation[i] + "/";
 			}
@@ -170,6 +205,103 @@ public class AppMenu : MonoBehaviour
 			MapLuaParser.Current.LoadFile();
 		}
 	}
+
+
+	#endregion
+
+	#region OpenRecentMap
+
+	public void OpenRecentMap()
+	{
+		if (MapLuaParser.Current.ScenarioFileName == PlayerPrefs.GetString(LoadRecentMaps.ScenarioFile + LoadRecentMaps.RecentMapSelected, "")
+			&& MapLuaParser.Current.FolderName == PlayerPrefs.GetString(LoadRecentMaps.FolderPath + LoadRecentMaps.RecentMapSelected, "")
+			&& MapLuaParser.Current.FolderParentPath == PlayerPrefs.GetString(LoadRecentMaps.ParentPath + LoadRecentMaps.RecentMapSelected, ""))
+		{
+			Debug.LogWarning("Same map: Ignore loading recent map");
+			return; // Same map
+		}
+
+		if (MapLuaParser.Current.MapLoaded() )
+			GenericPopup.ShowPopup(GenericPopup.PopupTypes.TriButton, "Save map", "Save current map before opening another map?", "Yes", OpenRecentMapYes, "No", OpenRecentMapNo, "Cancel", OpenMapCancel);
+		else
+			OpenRecentMapNo();
+	}
+
+
+	public void OpenRecentMapYes()
+	{
+		if(!MapLuaParser.SavingMapProcess)
+			StartCoroutine(OpenRecentMapSave());
+	}
+
+	IEnumerator OpenRecentMapSave()
+	{
+		MapLuaParser.Current.SaveMap();
+		yield return null;
+
+		while (MapLuaParser.SavingMapProcess)
+			yield return null;
+
+		OpenRecentMapNo();
+	}
+
+	public void OpenRecentMapNo()
+	{
+		Debug.Log("Recent Map No");
+		ScmapEditor.Current.UnloadMap();
+		MapLuaParser.Current.ResetUI();
+
+		MapLuaParser.Current.ScenarioFileName = PlayerPrefs.GetString(LoadRecentMaps.ScenarioFile + LoadRecentMaps.RecentMapSelected, "");
+		MapLuaParser.Current.FolderName = PlayerPrefs.GetString(LoadRecentMaps.FolderPath + LoadRecentMaps.RecentMapSelected, "");
+		MapLuaParser.Current.FolderParentPath = PlayerPrefs.GetString(LoadRecentMaps.ParentPath + LoadRecentMaps.RecentMapSelected, "");
+
+		MapLuaParser.Current.LoadFile();
+	}
+
+	#endregion
+
+	#region New Map
+	public GameObject NewMapWindow;
+
+	public void OpenNewMap()
+	{
+		if(MapLuaParser.Current.MapLoaded())
+			GenericPopup.ShowPopup(GenericPopup.PopupTypes.TriButton, "Save map", "Save current map before creating new map?", "Yes", OpenNewMapYes, "No", OpenNewMapNo, "Cancel", OpenNewMapCancel);
+		else
+			NewMapWindow.SetActive(true);
+	}
+
+	public void OpenNewMapYes()
+	{
+		StartCoroutine(OpenNewMapSave());
+	}
+
+	IEnumerator OpenNewMapSave()
+	{
+		MapLuaParser.Current.SaveMap();
+		yield return null;
+
+		while (MapLuaParser.SavingMapProcess)
+			yield return null;
+
+		OpenNewMapNo();
+	}
+
+	public void OpenNewMapNo()
+	{
+		ScmapEditor.Current.UnloadMap();
+		MapLuaParser.Current.ResetUI();
+		NewMapWindow.SetActive(true);
+	}
+
+	public void OpenNewMapCancel()
+	{
+		NewMapWindow.SetActive(false);
+
+	}
+#endregion
+
+
 
 	public void SaveMapAs()
 	{

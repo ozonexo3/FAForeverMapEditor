@@ -235,6 +235,22 @@ Properties {
 				//return inColor;
 			}
 
+			inline fixed3 UnpackNormalDXT5nmScaled (fixed4 packednormal, fixed scale)
+{
+			   fixed3 normal;
+			   normal.xy = packednormal.wy * 2 - 1;
+			#if defined(SHADER_API_FLASH)
+			   // Flash does not have efficient saturate(), and dot() seems to require an extra register.
+			   normal.z = sqrt(1 - normal.x*normal.x - normal.y * normal.y);
+			#else
+			   normal.z = sqrt(1 - saturate(dot(normal.xy, normal.xy)));
+			#endif
+
+			 normal.xy *= scale;
+			
+			   return normal;
+			}
+
 			void surf (Input IN, inout SurfaceOutput o) {
 				float WaterDepth = (_WaterLevel - IN.worldPos.y) / (_WaterLevel - _AbyssLevel);
 				float2 UV = IN.uv_Control * fixed2(1, -1);
@@ -259,12 +275,12 @@ Properties {
 
 				//nrm = tex2D (_NormalLower, UV * 1000);
 				//nrm.rg *= 5;
-				nrm.b = 1;
+				//nrm.b = 1;
 				//nrm.rgb = UnpackNormal(nrm);
-				nrm.rgb = nrm.rgb * 2 - half3(1, 1, 1);
+				//nrm.rgb = nrm.rgb * 2 - half3(1, 1, 1);
 				//nrm.rg *= 3;
-				nrm.rgb = normalize(nrm.rgb);
-				o.Normal = nrm;
+				//nrm.rgb = normalize(nrm.rgb);
+				o.Normal = UnpackNormalDXT5nmScaled(nrm.rgba, 2);
 
 				if(_Slope > 0){
 					if(IN.worldPos.y < _WaterLevel){
@@ -325,7 +341,7 @@ Properties {
 
 					
 					if(_Grid > 0){
-						fixed4 GridColor = tex2D (_GridTexture, IN.uv_Control * _GridScale - float2(-0.00, -0.00));
+						fixed4 GridColor = tex2D (_GridTexture, IN.uv_Control * _GridScale - float2(-0.05, -0.05));
 						fixed4 GridFinal = fixed4(0,0,0,GridColor.a);
 						if(_GridCamDist < 1){
 							GridFinal.rgb = lerp(GridFinal.rgb, fixed3(1,1,1), GridColor.r * lerp(1, 0, _GridCamDist));

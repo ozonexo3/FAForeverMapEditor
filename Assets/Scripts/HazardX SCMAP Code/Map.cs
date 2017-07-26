@@ -768,8 +768,6 @@ public class Map
 		PreviewTextHeader.Format = TextureFormat.RGBA32;
 		PreviewTex = TextureLoader.LoadTextureDXT(PreviewData, PreviewTextHeader);
 
-		Debug.Log(PreviewTex.width + ", " + PreviewTex.height + ", " + Width + ", " + Height);
-
 		TextureMapHeader = GetGamedataFile.GetDdsFormat(TexturemapData);
 		TextureMapHeader.Format = TextureFormat.BGRA32;
 		//TexturemapTex = TextureLoader.LoadTextureDXT(TexturemapData, TextureMapHeader);

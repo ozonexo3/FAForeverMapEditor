@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class LoadRecentMaps : MonoBehaviour {
 
+	public AppMenu Menu;
 	public GameObject ListPrefab;
 	public Transform Pivot;
 	public MapHelperGui HelperGui;
@@ -43,19 +44,23 @@ public class LoadRecentMaps : MonoBehaviour {
 				Component.ObjectName.text = ScenarioFileName;
 				Component.InstanceId = i;
 			}
-
 		}
 	}
 
+	public static int RecentMapSelected = 0;
 	public void ClickRecentMap(ListObject id)
 	{
+		RecentMapSelected = id.InstanceId;
+		Menu.OpenRecentMap();
 
+		/*
 		MapLuaParser.Current.ScenarioFileName = PlayerPrefs.GetString(ScenarioFile + id.InstanceId, "");
 		MapLuaParser.Current.FolderName = PlayerPrefs.GetString(FolderPath + id.InstanceId, "");
 		MapLuaParser.Current.FolderParentPath = PlayerPrefs.GetString(ParentPath + id.InstanceId, "");
 
 		//HelperGui.ButtonFunction("LoadMap");
 		MapLuaParser.Current.LoadFile();
+		*/
 	}
 
 
@@ -63,9 +68,9 @@ public class LoadRecentMaps : MonoBehaviour {
 
 
 
-	const string ScenarioFile = "RecentScenario_";
-	const string FolderPath = "RecentFolder_";
-	const string ParentPath = "RecentParent_";
+	public const string ScenarioFile = "RecentScenario_";
+	public const string FolderPath = "RecentFolder_";
+	public const string ParentPath = "RecentParent_";
 
 	const int RecentCount = 10;
 	public static void MoveLastMaps(string scenario = "", string folder = "", string parent = "")
