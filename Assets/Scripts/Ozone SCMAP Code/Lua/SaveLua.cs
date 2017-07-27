@@ -364,7 +364,7 @@ namespace MapLua
 				LuaFile.AddSaveComent("");
 				LuaFile.AddSaveComent("Armies");
 				LuaFile.AddSaveComent("");
-				LuaFile.OpenTab(Scenario.KEY_ORDERS + LuaParser.Write.OpenBracketValue);
+				LuaFile.OpenTab(Scenario.KEY_ARMIES + LuaParser.Write.OpenBracketValue);
 				{
 					//for(int c = 0; c < MapLuaParser.Current.)
 					MapLuaParser.Current.ScenarioLuaFile.SaveArmys(LuaFile);

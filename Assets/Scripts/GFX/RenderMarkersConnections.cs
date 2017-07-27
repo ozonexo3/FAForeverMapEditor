@@ -58,7 +58,7 @@ public class RenderMarkersConnections : MonoBehaviour
 		Layers[2].Enabled = MarkersControler.Current.MarkerLayersSettings.AirNodes;
 		Layers[3].Enabled = MarkersControler.Current.MarkerLayersSettings.AmphibiousNodes;
 
-		if(MapLuaParser.Current.MapLoaded() && MapLuaParser.Current.SaveLuaFile.Data.MasterChains == null && MapLuaParser.Current.SaveLuaFile.Data.MasterChains.Length == 0 && MapLuaParser.Current.SaveLuaFile.Data.MasterChains[0].Markers == null)
+		if(MapLuaParser.Current.MapLoaded() && MapLuaParser.Current.SaveLuaFile.Data.MasterChains != null && MapLuaParser.Current.SaveLuaFile.Data.MasterChains.Length > 0 && MapLuaParser.Current.SaveLuaFile.Data.MasterChains[0].Markers != null)
 			StartCoroutine(GenerateEdges());
 	}
 
