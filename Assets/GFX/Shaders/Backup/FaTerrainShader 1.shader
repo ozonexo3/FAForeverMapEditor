@@ -280,7 +280,7 @@ Properties {
 				//nrm.rgb = nrm.rgb * 2 - half3(1, 1, 1);
 				//nrm.rg *= 3;
 				//nrm.rgb = normalize(nrm.rgb);
-				o.Normal = UnpackNormalDXT5nmScaled(nrm.rgba, 2);
+				o.Normal = UnpackNormalDXT5nmScaled(nrm.rgbg, 2);
 
 				if(_Slope > 0){
 					if(IN.worldPos.y < _WaterLevel){

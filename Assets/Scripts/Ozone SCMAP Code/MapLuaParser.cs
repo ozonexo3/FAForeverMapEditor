@@ -138,10 +138,6 @@ public class MapLuaParser : MonoBehaviour {
 
 		ScmapEditor.Current.UnloadMap();
 
-		EditMenu.gameObject.SetActive(true);
-		Background.SetActive(false);
-
-
 		StartCoroutine("LoadingFile");
 	}
 
@@ -186,7 +182,9 @@ public class MapLuaParser : MonoBehaviour {
 			// Begin load
 			LoadRecentMaps.MoveLastMaps(ScenarioFileName, FolderName, FolderParentPath);
 			LoadingMapProcess = true;
-			InfoPopup.Show (true, "Loading map...");
+			InfoPopup.Show (true, "Loading map...\n( " + ScenarioFileName + ".lua" + " )");
+			EditMenu.gameObject.SetActive(true);
+			Background.SetActive(false);
 			yield return null;
 
 			ScenarioLuaFile = new ScenarioLua();
@@ -206,8 +204,12 @@ public class MapLuaParser : MonoBehaviour {
 				HelperGui.MapLoaded = false;
 			}
 
+
 			CamControll.MapSize = Mathf.Max(ScenarioLuaFile.Data.Size[0], ScenarioLuaFile.Data.Size[1]);
 			CamControll.RestartCam();
+
+
+			InfoPopup.Show(true, "Loading map...\n(" + ScenarioLuaFile.Data.map + ")");
 			yield return null;
 
 			// SCMAP
@@ -218,6 +220,8 @@ public class MapLuaParser : MonoBehaviour {
 			EditMenu.MapInfoMenu.SaveAsFa.isOn = HeightmapControler.map.VersionMinor >= 60;
 
 
+			InfoPopup.Show(true, "Loading map...\n(" + ScenarioLuaFile.Data.save + ")");
+			yield return null;
 
 			if (loadSave) {
 				// Save LUA
@@ -237,7 +241,10 @@ public class MapLuaParser : MonoBehaviour {
 				PropsMenu.AllowBrushUpdate = false;
 				Coroutine LoadingProps = PropsMenu.StartCoroutine(PropsMenu.LoadProps());
 				while (PropsMenu.LoadingProps)
+				{
+					InfoPopup.Show(true, "Loading map...\n( Loading props " + PropsMenu.LoadedCount + "/" + ScmapEditor.Current.map.Props.Count + ")");
 					yield return null;
+				}
 
 				PropsMenu.gameObject.SetActive(false);
 			}

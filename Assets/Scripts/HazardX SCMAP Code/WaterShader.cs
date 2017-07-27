@@ -15,24 +15,26 @@ public struct WaterShader
 	public bool HasWater;
     public float Elevation;
     public float ElevationDeep;
-
     public float ElevationAbyss;
+
+
     public Vector3 SurfaceColor;
     public Vector2 ColorLerp;
     public float RefractionScale;
     public float FresnelBias;
     public float FresnelPower;
+
     public float UnitReflection;
     public float SkyReflection;
+
     public float SunShininess;
     public float SunStrength;
     public Vector3 SunDirection;
     public Vector3 SunColor;
     public float SunReflection;
-
     public float SunGlow;
-    public string TexPathCubemap;
 
+    public string TexPathCubemap;
     public string TexPathWaterRamp;
 
     public WaveTexture[] WaveTextures;

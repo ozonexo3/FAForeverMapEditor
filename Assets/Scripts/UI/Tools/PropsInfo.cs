@@ -158,6 +158,7 @@ namespace EditMap
 		}
 
 		public bool LoadingProps;
+		public int LoadedCount = 0;
 		public IEnumerator LoadProps()
 		{
 			LoadingProps = true;
@@ -170,6 +171,7 @@ namespace EditMap
 			const int YieldStep = 1000;
 			int LoadCounter = YieldStep;
 			int Count = Props.Count;
+			LoadedCount = 0;
 
 			for (int i = 0; i < Count; i++)
 			{
@@ -213,6 +215,8 @@ namespace EditMap
 						Props[i].Scale
 						)
 					);
+
+				LoadedCount++;
 				LoadCounter--;
 				if (LoadCounter <= 0)
 				{

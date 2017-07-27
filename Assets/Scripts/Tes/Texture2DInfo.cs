@@ -25,12 +25,12 @@ public class Texture2DInfo
 	/// </summary>
 	public Texture2D ToTexture2D()
 	{
-		var texture = new Texture2D(width, height, format, hasMipmaps);
+		var texture = new Texture2D(width, height, format, true, false);
 
 		if(rawData != null)
 		{
 			texture.LoadRawTextureData(rawData);
-			texture.Apply();
+			texture.Apply(true);
 		}
 		
 		return texture;

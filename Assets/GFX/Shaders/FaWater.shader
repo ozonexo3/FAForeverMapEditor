@@ -5,6 +5,8 @@
 Shader "MapEditor/FaWater" {
 	Properties {
 		waterColor  ("waterColor", Color) = (0.0, 0.7, 1.5, 1)
+		sunColor  ("Sun Color", Color) = (1.1, 0.7, 0.5, 1)
+		//SunDirection  ("Sun Color", float3) = float3( -0.2 , -0.967, -0.453)
 		_UtilitySamplerC ("_UtilitySamplerC", 2D) = "white" {}
 		_WaterData ("Water Data", 2D) = "white" {}
 		SkySampler("SkySampler", CUBE) = "" {}
@@ -46,10 +48,10 @@ Shader "MapEditor/FaWater" {
 		float refractionScale = 0.015;
 
 		// reflection amount
-		float unitreflectionAmount = 0.5;
+		//float unitreflectionAmount = 0.5;
 
 		// sky reflection amount
-		float skyreflectionAmount = 1.5;
+		//float skyreflectionAmount = 1.5;
 
 		// 3 repeat rate for 3 texture layers
 		float4  normalRepeatRate = float4(0.0009, 0.009, 0.05, 0.5);
@@ -110,9 +112,16 @@ Shader "MapEditor/FaWater" {
 			//v.color = _Abyss;
 		}
 
+		float SunShininess;
+		float sunReflectionAmount;
+		float unitreflectionAmount;
+		float skyreflectionAmount;
+		float2 waterLerp;
+	    float3 SunDirection;
 
-	    
-	    fixed4 waterColor;
+		float SunGlow;
+
+	    fixed4 waterColor, sunColor;
 	    uniform sampler2D _UtilitySamplerC;
 	    uniform sampler2D RefractionSampler;
 	    uniform sampler2D  ReflectionSampler;
@@ -124,14 +133,14 @@ Shader "MapEditor/FaWater" {
 	   void surf (Input IN, inout SurfaceOutput o) {
 	    
 	    	float4 ViewportScaleOffset = float4((_ScreenParams.x / _ScreenParams.y) * 1, 1.0, (_ScreenParams.x / _ScreenParams.y) * -0.25, 0);
-	    	float3 SunDirection = normalize(float3( -0.2 , -0.967, -0.453));
-	    	float SunShininess = 50;
-	    	float3 SunColor = normalize(float3( 1.1, 0.7, 0.5 ));
-	    	float sunReflectionAmount = 5;
-	    	float unitreflectionAmount = 0.5;
-	    	float2 waterLerp = 0.3;
+	    	//float3 SunDirection = normalize(float3( -0.2 , -0.967, -0.453));
+	    	//float SunShininess = 50;
+	    	//float3 SunColor = normalize(float3( 1.1, 0.7, 0.5 ));
+	    	//float sunReflectionAmount = 5;
+	    //	float unitreflectionAmount = 0.5;
+	    	//float2 waterLerp = 0.3;
 	    	float3 waveCrestColor = float3( 1, 1, 1);
-	    	float SunGlow = 1;
+	    	//float SunGlow = 1;
 	    	
 	    	// calculate the depth of water at this pixel, we use this to decide
 			// how to shade and it should become lesser as we get shallower
@@ -194,7 +203,7 @@ Shader "MapEditor/FaWater" {
 			fresnel = tex2D( FresnelSampler, float2(waterDepth, NDotL ) ).r;
 
 			// figure out the sun reflection
-    		float3 sunReflection = pow( saturate(dot(-R, SunDirection)), SunShininess) * SunColor;
+    		float3 sunReflection = pow( saturate(dot(-R, SunDirection)), SunShininess) * sunColor.rgb;
     		// lerp the reflections together
    			reflectedPixels = lerp( skyReflection, reflectedPixels, saturate(unitreflectionAmount * reflectedPixels.w));
    			
@@ -207,7 +216,6 @@ Shader "MapEditor/FaWater" {
 			
 			// implement the water depth into the reflection
 		    float depthReflectionAmount = 10;
-		    float skyreflectionAmount = 1.5;
 		    skyreflectionAmount *= saturate(waterDepth * depthReflectionAmount);
 		    
 		   	// lerp the reflection into the refraction   

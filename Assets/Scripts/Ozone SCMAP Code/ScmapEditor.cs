@@ -138,6 +138,7 @@ public class ScmapEditor : MonoBehaviour
 
 		}
 
+
 		EnvPaths.CurrentGamedataPath = EnvPaths.GetGamedataPath();
 
 		//Shader = map.TerrainShader;
@@ -169,6 +170,8 @@ public class ScmapEditor : MonoBehaviour
 		// Load Stratum Textures Paths
 		for (int i = 0; i < Textures.Length; i++)
 		{
+			MapLuaParser.Current.InfoPopup.Show(true, "Loading map...\n( Stratum textures " + (i + 1) + " )");
+
 			Textures[i].AlbedoPath = map.Layers[i].PathTexture;
 			Textures[i].NormalPath = map.Layers[i].PathNormalmap;
 			if (Textures[i].AlbedoPath.StartsWith("/"))
@@ -206,6 +209,9 @@ public class ScmapEditor : MonoBehaviour
 			yield return null;
 		}
 
+		MapLuaParser.Current.InfoPopup.Show(true, "Loading map...\n( Assing scmap data )");
+
+
 		Teren = Terrain.CreateTerrainGameObject(Data).GetComponent<Terrain>();
 		Teren.gameObject.name = "TERRAIN";
 		Teren.materialType = Terrain.MaterialType.Custom;
@@ -234,6 +240,16 @@ public class ScmapEditor : MonoBehaviour
 
 		WaterLevel.transform.localScale = new Vector3(HalfxRes, 1, HalfzRes);
 		WaterLevel.transform.position = Vector3.up * (map.Water.Elevation / 10.0f);
+		TerrainMaterial.SetColor("waterColor", new Color(map.Water.SurfaceColor.x, map.Water.SurfaceColor.y, map.Water.SurfaceColor.z, 1));
+		TerrainMaterial.SetColor("sunColor", new Color(map.Water.SunColor.x, map.Water.SunColor.y, map.Water.SunColor.z, 1));
+
+		Shader.SetGlobalVector("waterLerp", map.Water.ColorLerp);
+		Shader.SetGlobalVector("SunDirection", map.Water.SunDirection);
+		Shader.SetGlobalFloat("SunShininess", map.Water.SunShininess);
+		Shader.SetGlobalFloat("sunReflectionAmount", map.Water.SunReflection);
+		Shader.SetGlobalFloat("unitreflectionAmount", map.Water.UnitReflection);
+		Shader.SetGlobalFloat("skyreflectionAmount", map.Water.SkyReflection);
+
 		TerrainMaterial.SetFloat("_WaterLevel", map.Water.Elevation / 10.0f);
 		TerrainMaterial.SetFloat("_AbyssLevel", map.Water.ElevationAbyss / 10.0f);
 		TerrainMaterial.SetInt("_Water", MapLuaParser.Water ? 1 : 0);
@@ -268,7 +284,6 @@ public class ScmapEditor : MonoBehaviour
 
 		// Set terrain heights from heights array
 		Data.SetHeights(0, 0, heights);
-
 
 		Teren.gameObject.layer = 8;
 		//Teren.heightmapPixelError = 0; // Force terrain pixel error to 0, to get more sharp terrain

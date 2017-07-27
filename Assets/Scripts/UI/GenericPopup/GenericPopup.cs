@@ -106,6 +106,9 @@ public class GenericPopup : MonoBehaviour {
 			CancelBtn.SetActive(true);
 		}
 
+		TitleText.text = PopupBufor[0].Title;
+		DescriptionText.text = PopupBufor[0].Description;
+
 		YesText.text = PopupBufor[0].Yes;
 		NoText.text = PopupBufor[0].No;
 		CancelText.text = PopupBufor[0].Cancel;

@@ -13,7 +13,7 @@ public partial struct GetGamedataFile
 	static bool IsDxt3 = false;
 
 	public static float MipmapBias = 0.0f;
-	public static int AnisoLevel = 10;
+	public static int AnisoLevel = 2;
 
 	public static Texture2D LoadTexture2DFromGamedata(string scd, string LocalPath, bool NormalMap = false)
 	{
@@ -21,12 +21,12 @@ public partial struct GetGamedataFile
 
 		if (FinalTextureData2 == null || FinalTextureData2.Length == 0)
 		{
-			return new Texture2D(32, 32, TextureFormat.RGBA32, false);
+			return new Texture2D(32, 32, TextureFormat.RGBA32, true);
 		}
 
 		TextureFormat format = GetFormatOfDdsBytes(FinalTextureData2);
 		bool Mipmaps = LoadDDsHeader.mipmapcount > 0;
-		Texture2D texture = new Texture2D((int)LoadDDsHeader.width, (int)LoadDDsHeader.height, format, Mipmaps, true);
+		Texture2D texture = new Texture2D((int)LoadDDsHeader.width, (int)LoadDDsHeader.height, format, Mipmaps, false);
 
 
 		int DDS_HEADER_SIZE = 128;
@@ -36,31 +36,28 @@ public partial struct GetGamedataFile
 		if (IsDxt3)
 		{
 			texture = DDS.DDSReader.LoadDDSTexture(new MemoryStream(FinalTextureData2), false).ToTexture2D();
-			//texture.Apply(false);
 		}
 		else
 		{
 			try
 			{
-				//texture = DDS.DDSReader.LoadDDSTexture(new MemoryStream(FinalTextureData2), false).ToTexture2D();
 				texture.LoadRawTextureData(dxtBytes);
 			}
 			catch (System.Exception e)
 			{
 				Debug.Log("Texture load fallback: " + e);
 				texture = DDS.DDSReader.LoadDDSTexture(new MemoryStream(FinalTextureData2), false).ToTexture2D();
-				//texture.LoadRawTextureData(dxtBytes);
 			}
 		}
-		texture.Apply(false);
 
 		if (NormalMap)
 		{
-			texture.Compress(true);
+			//texture.Compress(true);
 
-			Texture2D normalTexture = new Texture2D((int)LoadDDsHeader.width, (int)LoadDDsHeader.height, TextureFormat.RGBA32, Mipmaps, true);
+			/*
+			Texture2D normalTexture = new Texture2D((int)LoadDDsHeader.width, (int)LoadDDsHeader.height, TextureFormat.RGBA32, Mipmaps, false);
 
-			Color theColour = new Color();
+			//Color theColour = new Color();
 			Color[] Pixels;
 
 			int m = 0;
@@ -82,11 +79,6 @@ public partial struct GetGamedataFile
 
 				for (i = 0; i < Pixels.Length; i++)
 				{
-					/*theColour.r = Pixels[i].r;
-					theColour.g = Pixels[i].g;
-					theColour.b = 1;
-					theColour.a = Pixels[i].g;
-					Pixels[i] = theColour;*/
 					float R = Pixels[i].r;
 					float G = Pixels[i].g;
 					Pixels[i].r = R;
@@ -101,16 +93,18 @@ public partial struct GetGamedataFile
 			normalTexture.filterMode = FilterMode.Bilinear;
 			normalTexture.anisoLevel = AnisoLevel;
 
-			normalTexture.Apply(false);
-
+			normalTexture.Apply(true);
+			
 
 			return normalTexture;
+			*/
 		}
 
 
 		texture.mipMapBias = MipmapBias;
 		texture.filterMode = FilterMode.Bilinear;
 		texture.anisoLevel = AnisoLevel;
+		texture.Apply(true);
 
 		return texture;
 	}
