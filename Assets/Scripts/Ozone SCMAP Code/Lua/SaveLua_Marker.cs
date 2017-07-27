@@ -255,6 +255,9 @@ namespace MapLua
 						case KEY_ADJACENTTO:
 							adjacentTo = LuaParser.Read.StringFromTable(Table, KEY_ADJACENTTO);
 							break;
+						case KEY_GRAPH:
+							graph = LuaParser.Read.StringFromTable(Table, KEY_GRAPH);
+							break;
 						case KEY_CANSETCAMERA:
 							canSetCamera = LuaParser.Read.BoolFromTable(Table, KEY_CANSETCAMERA);
 							break;
@@ -368,6 +371,27 @@ namespace MapLua
 					}
 
 					LuaFile.AddLine(LuaParser.Write.StringToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_ADJACENTTO), adjacentTo));
+
+					if (string.IsNullOrEmpty(graph))
+					{
+						switch (MarkerType)
+						{
+							case MarkerTypes.LandPathNode:
+								graph = "DefaultLand";
+								break;
+							case MarkerTypes.AmphibiousPathNode:
+								graph = "DefaultAmphibious";
+								break;
+							case MarkerTypes.WaterPathNode:
+								graph = "DefaultWater";
+								break;
+							case MarkerTypes.AirPathNode:
+								graph = "DefaultAmphibious";
+								break;
+						}
+
+
+					}
 
 				}
 
