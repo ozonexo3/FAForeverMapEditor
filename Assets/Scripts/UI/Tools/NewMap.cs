@@ -139,6 +139,8 @@ namespace EditMap
 
 			MapLuaParser.Current.SaveLuaFile.Data = new MapLua.SaveLua.Scenario();
 
+			MapLuaParser.Current.SaveLuaFile.Data.MasterChains[0].Markers = new List<MapLua.SaveLua.Marker>();
+
 			ScmapEditor.Current.map = new Map(MapLuaParser.Current.ScenarioLuaFile.Data.Size[0], MapLuaParser.Current.ScenarioLuaFile.Data.Size[1], int.Parse(InitialHeight.text), 
 				Water.isOn, int.Parse(WaterElv.text), int.Parse(DepthElevation.text), int.Parse(AbyssElevation.text));
 

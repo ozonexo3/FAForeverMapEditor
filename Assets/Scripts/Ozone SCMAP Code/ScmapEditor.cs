@@ -107,7 +107,7 @@ public class ScmapEditor : MonoBehaviour
 			StopCoroutine("LoadScmapFile");
 		}
 
-		
+
 
 
 		if (map.VersionMinor >= 60)
@@ -159,6 +159,7 @@ public class ScmapEditor : MonoBehaviour
 		float yRes = (float)map.HeightScale; ;
 		float HeightResize = 512 * 40;
 
+		TerrainMaterial.SetTexture("_UtilitySamplerC", map.UncompressedWatermapTex);
 		WaterMaterial.SetTexture("_UtilitySamplerC", map.UncompressedWatermapTex);
 		WaterMaterial.SetFloat("_WaterScaleX", xRes);
 		WaterMaterial.SetFloat("_WaterScaleZ", zRes);
@@ -243,8 +244,7 @@ public class ScmapEditor : MonoBehaviour
 		TerrainMaterial.SetFloat("_GridScale", HalfxRes);
 		TerrainMaterial.SetTexture("_UtilitySamplerC", map.UncompressedWatermapTex);
 
-		TerrainMaterial.SetColor("waterColor", new Color(map.Water.SurfaceColor.x, map.Water.SurfaceColor.y, map.Water.SurfaceColor.z, 1));
-		TerrainMaterial.SetColor("sunColor", new Color(map.Water.SunColor.x, map.Water.SunColor.y, map.Water.SunColor.z, 1));
+
 
 		Texture2D WaterRamp = GetGamedataFile.LoadTexture2DFromGamedata("textures.scd", map.Water.TexPathWaterRamp);
 		WaterRamp.wrapMode = TextureWrapMode.Clamp;
@@ -303,9 +303,9 @@ public class ScmapEditor : MonoBehaviour
 
 				heights[y, x] = map.GetHeight(x, localY) / HeightResize;
 
-				if (HeightWidthMultiply == 0.5f && y > 0 && y%2f == 0)
+				if (HeightWidthMultiply == 0.5f && y > 0 && y % 2f == 0)
 				{
-					heights[y-1, x] = Mathf.Lerp(heights[y, x], heights[y - 2, x], 0.5f);
+					heights[y - 1, x] = Mathf.Lerp(heights[y, x], heights[y - 2, x], 0.5f);
 				}
 			}
 		}
@@ -326,6 +326,9 @@ public class ScmapEditor : MonoBehaviour
 	{
 		WaterLevel.transform.position = Vector3.up * (map.Water.Elevation / 10.0f);
 
+		WaterMaterial.SetColor("waterColor", new Color(map.Water.SurfaceColor.x, map.Water.SurfaceColor.y, map.Water.SurfaceColor.z, 1));
+		WaterMaterial.SetColor("sunColor", new Color(map.Water.SunColor.x, map.Water.SunColor.y, map.Water.SunColor.z, 1));
+
 		Shader.SetGlobalVector("waterLerp", map.Water.ColorLerp);
 		Shader.SetGlobalVector("SunDirection", new Vector3(map.Water.SunDirection.x, map.Water.SunDirection.y, -map.Water.SunDirection.z));
 		Shader.SetGlobalFloat("SunShininess", map.Water.SunShininess);
@@ -339,12 +342,13 @@ public class ScmapEditor : MonoBehaviour
 		//Shader.SetGlobalVector("waterLerp", map.Water.WaveTextures);
 
 		TerrainMaterial.SetFloat("_WaterLevel", map.Water.Elevation / 10.0f);
+		TerrainMaterial.SetFloat("_DepthLevel", map.Water.ElevationDeep / 10.0f);
 		TerrainMaterial.SetFloat("_AbyssLevel", map.Water.ElevationAbyss / 10.0f);
 		TerrainMaterial.SetInt("_Water", MapLuaParser.Water ? 1 : 0);
-		
+
 	}
 
-#endregion
+	#endregion
 
 	#region Textures
 	public void SetTextures(int OnlyOne = -1)
@@ -494,7 +498,7 @@ public class ScmapEditor : MonoBehaviour
 		}
 
 
-		
+
 		List<Prop> AllProps = new List<Prop>();
 		if (EditMap.PropsInfo.AllPropsTypes != null)
 		{

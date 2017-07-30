@@ -260,6 +260,7 @@
     <Compile Include="Assets\Scripts\Ozone SCMAP Code\MapHelperGui.cs" />
     <Compile Include="Assets\Scripts\Ozone SCMAP Code\MapLuaParser.cs" />
     <Compile Include="Assets\Scripts\Ozone SCMAP Code\ScmapEditor.cs" />
+    <Compile Include="Assets\Scripts\Ozone SCMAP Code\Texture\BmpLoader.cs" />
     <Compile Include="Assets\Scripts\Ozone SCMAP Code\Texture\GenerateWaterTex.cs" />
     <Compile Include="Assets\Scripts\Ozone SCMAP Code\Texture\TextureLoader.cs" />
     <Compile Include="Assets\Scripts\Ozone SCMAP Code\Texture\TextureScale.cs" />

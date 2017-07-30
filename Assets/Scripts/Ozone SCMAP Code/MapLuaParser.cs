@@ -251,6 +251,8 @@ public class MapLuaParser : MonoBehaviour {
 
 			InfoPopup.Show (false);
 
+			RenderMarkersConnections.Current.UpdateConnections();
+
 			EditMenu.Categorys [0].GetComponent<MapInfo> ().UpdateFields ();
 			LoadingMapProcess = false;
 		}

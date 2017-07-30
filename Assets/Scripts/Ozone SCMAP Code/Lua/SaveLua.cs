@@ -272,6 +272,9 @@ namespace MapLua
 						{
 							LuaFile.OpenTab(MasterChain.KEY_MARKERS + LuaParser.Write.OpenBracketValue);
 							{
+								if (Data.MasterChains[mc].Markers == null)
+									Data.MasterChains[mc].Markers = new List<Marker>();
+
 								int Mcount = Data.MasterChains[mc].Markers.Count;
 								for (int m = 0; m < Mcount; m++)
 								{

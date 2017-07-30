@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
+using B83.Image.BMP;
 
 namespace EditMap
 {
@@ -835,6 +836,90 @@ namespace EditMap
 		#endregion
 
 		#region Import/Export
+
+		public void ImportStratumMask()
+		{
+			if (Selected == 0 || Selected == 9)
+				return;
+
+			System.Windows.Forms.OpenFileDialog FolderDialog = new System.Windows.Forms.OpenFileDialog();
+
+			FolderDialog.Filter = "BMP (*.bmp)|*.bmp|All files (*.*)|*.*";
+			FolderDialog.FilterIndex = 0;
+			FolderDialog.RestoreDirectory = true;
+			FolderDialog.InitialDirectory = EnvPaths.GetMapsPath();
+
+			if (FolderDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+			{
+				Debug.Log(FolderDialog.FileName);
+
+				if (FolderDialog.FileName.ToLower().EndsWith("bmp"))
+				{
+					BMPLoader loader = new BMPLoader();
+					BMPImage img = loader.LoadBMP(FolderDialog.FileName);
+
+					Color[] StratumData;
+					if (Selected > 4)
+					{
+						StratumData = Map.map.TexturemapTex2.GetPixels();
+					}
+					else
+					{
+						StratumData = Map.map.TexturemapTex.GetPixels();
+					}
+
+					Texture2D ImportedImage = img.ToTexture2D();
+					if(ImportedImage.width != Map.map.TexturemapTex.width || ImportedImage.height != Map.map.TexturemapTex.height)
+					{
+						//ImportedImage.Resize(Map.map.TexturemapTex.width, Map.map.TexturemapTex.height);
+						TextureScale.Bilinear(ImportedImage, Map.map.TexturemapTex.width, Map.map.TexturemapTex.height);
+						ImportedImage.Apply(false);
+					}
+
+					Color[] ImportedColors = ImportedImage.GetPixels();
+
+					for (int i = 0; i < StratumData.Length; i++)
+					{
+						if (Selected == 1 || Selected == 5)
+							StratumData[i].r = ImportedColors[i].r;
+						else if (Selected == 2 || Selected == 6)
+							StratumData[i].g = ImportedColors[i].r;
+						else if (Selected == 3 || Selected == 7)
+							StratumData[i].b = ImportedColors[i].r;
+						else if (Selected == 4 || Selected == 8)
+							StratumData[i].a = ImportedColors[i].r;
+					}
+
+
+					if (Selected > 4)
+					{
+						Map.map.TexturemapTex2.SetPixels(StratumData);
+						Map.map.TexturemapTex2.Apply(false);
+					}
+					else
+					{
+						Map.map.TexturemapTex.SetPixels(StratumData);
+						Map.map.TexturemapTex.Apply(false);
+					}
+
+				}
+				else if(FolderDialog.FileName.ToLower().EndsWith("raw"))
+				{
+
+				}
+				else
+				{
+					// Wrong file type
+
+				}
+
+
+				Map.SetTextures(Selected);
+
+				ReloadStratums();
+			}
+		}
+
 
 		public void ExportStratum()
 		{

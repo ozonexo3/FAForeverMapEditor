@@ -226,7 +226,7 @@ Shader "MapEditor/FaWater" {
 			
 			// implement the water depth into the reflection
 		    float depthReflectionAmount = 10;
-		    //skyreflectionAmount *= saturate(waterDepth * depthReflectionAmount);
+		    skyreflectionAmount *= saturate(waterDepth * depthReflectionAmount);
 		    
 		   	// lerp the reflection into the refraction   
 			refractedPixels = lerp( refractedPixels, reflectedPixels, saturate(skyreflectionAmount * saturate(waterDepth * depthReflectionAmount) * fresnel));

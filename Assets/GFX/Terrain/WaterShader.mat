@@ -117,5 +117,5 @@ Material:
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - sunColor: {r: 0.44, g: 0.44, b: 0.44, a: 1}
-    - waterColor: {r: 1.41, g: 1.41, b: 1.41, a: 1}
+    - sunColor: {r: 0.52, g: 0.61, b: 0.9, a: 1}
+    - waterColor: {r: 0.72, g: 0.96999997, b: 1.16, a: 1}

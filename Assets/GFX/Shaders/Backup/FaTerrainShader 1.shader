@@ -16,8 +16,10 @@ Properties {
 	
 
 	_WaterRam ("Water Ramp (RGBA)", 2D) = "blue" {}
-	_WaterLevel ("Water Level", Range (0.03, 5)) = 0.078125
-	_AbyssLevel ("Abyss Level", Range (0.03, 5)) = 0.078125
+	_UtilitySamplerC ("_UtilitySamplerC", 2D) = "white" {}
+	_WaterLevel ("Water Level", float) = 0.078125
+	_DepthLevel ("Depth Level", float) = 0.078125
+	_AbyssLevel ("Abyss Level", float) = 0.078125
 	
 	[MaterialToggle] _Area("Area", Int) = 0
 	_AreaX ("Area X", Range (0, 2048)) = 0
@@ -188,7 +190,7 @@ Properties {
 			sampler2D _WaterRam;
 			half _Shininess;
 			half _WaterLevel;
-			half _AbyssLevel;
+			half _DepthLevel, _AbyssLevel;
 			fixed4 _Abyss;
 			fixed4 _Deep;
 			int _Water;
@@ -203,6 +205,7 @@ Properties {
 
 			sampler2D _ControlXP;
 			sampler2D _Control2XP;
+			sampler2D _UtilitySamplerC;
 			sampler2D _SplatNormal3;
 			sampler2D _SplatNormal0, _SplatNormal1, _SplatNormal2, _NormalLower;
 			sampler2D _SplatNormal4, _SplatNormal5, _SplatNormal6, _SplatNormal7;
@@ -253,7 +256,12 @@ Properties {
 			}
 
 			void surf (Input IN, inout SurfaceOutput o) {
-				float WaterDepth = (_WaterLevel - IN.worldPos.y) / (_WaterLevel - _AbyssLevel);
+
+				float4 waterTexture = tex2D( _UtilitySamplerC, IN.uv_Control * float2(-1, 1) );
+
+				//float WaterDepth = (_WaterLevel - IN.worldPos.y) / (_WaterLevel - _AbyssLevel);
+				float WaterDepth = waterTexture.g;
+
 				float2 UV = IN.uv_Control * fixed2(1, -1);
 				float4 splat_control = saturate(tex2D (_ControlXP, UV) * 2 - 1);
 				float4 splat_control2 = saturate(tex2D (_Control2XP, UV) * 2 - 1);
