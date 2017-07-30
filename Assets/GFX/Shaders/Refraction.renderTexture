@@ -22,3 +22,5 @@ RenderTexture:
     m_Aniso: 0
     m_MipBias: 0
     m_WrapMode: 1
+  m_Dimension: 2
+  m_VolumeDepth: 1

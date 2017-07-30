@@ -68,13 +68,18 @@ public partial struct GetGamedataFile
 
 			FileStream fs = File.OpenRead(EnvPaths.GetGamedataPath() + scd);
 			ScdFiles[ScdId].zf = new ZipFile(fs);
+			Debug.Log("Add scd " + EnvPaths.GetGamedataPath() + scd + " as " + ScdId);
+
 		}
+
+		if (LocalPath.StartsWith("/"))
+			LocalPath = LocalPath.Remove(0, 1);
 
 		ZipEntry zipEntry2 = ScdFiles[ScdId].zf.GetEntry(LocalPath);
 
 		if (zipEntry2 == null)
 		{
-			//Debug.LogWarning("Zip Entry is empty for: " + LocalPath);
+			Debug.LogWarning("Zip Entry is empty for: " + LocalPath);
 			return null;
 		}
 

@@ -35,7 +35,7 @@ public class ScmapEditor : MonoBehaviour
 	//string Shader;
 	//public		TerrainMesh		TerrainM;
 
-	const float MapHeightScale = 2048;
+	public const float MapHeightScale = 2048;
 
 
 	// Stratum Layer
@@ -160,7 +160,8 @@ public class ScmapEditor : MonoBehaviour
 		float HeightResize = 512 * 40;
 
 		WaterMaterial.SetTexture("_UtilitySamplerC", map.UncompressedWatermapTex);
-		WaterMaterial.SetFloat("_WaterScale", HalfxRes);
+		WaterMaterial.SetFloat("_WaterScaleX", xRes);
+		WaterMaterial.SetFloat("_WaterScaleZ", zRes);
 
 		//*****************************************
 		// ***** Set Terrain proportives
@@ -239,22 +240,49 @@ public class ScmapEditor : MonoBehaviour
 
 
 		WaterLevel.transform.localScale = new Vector3(HalfxRes, 1, HalfzRes);
-		WaterLevel.transform.position = Vector3.up * (map.Water.Elevation / 10.0f);
+		TerrainMaterial.SetFloat("_GridScale", HalfxRes);
+		TerrainMaterial.SetTexture("_UtilitySamplerC", map.UncompressedWatermapTex);
+
 		TerrainMaterial.SetColor("waterColor", new Color(map.Water.SurfaceColor.x, map.Water.SurfaceColor.y, map.Water.SurfaceColor.z, 1));
 		TerrainMaterial.SetColor("sunColor", new Color(map.Water.SunColor.x, map.Water.SunColor.y, map.Water.SunColor.z, 1));
 
-		Shader.SetGlobalVector("waterLerp", map.Water.ColorLerp);
-		Shader.SetGlobalVector("SunDirection", map.Water.SunDirection);
-		Shader.SetGlobalFloat("SunShininess", map.Water.SunShininess);
-		Shader.SetGlobalFloat("sunReflectionAmount", map.Water.SunReflection);
-		Shader.SetGlobalFloat("unitreflectionAmount", map.Water.UnitReflection);
-		Shader.SetGlobalFloat("skyreflectionAmount", map.Water.SkyReflection);
+		Texture2D WaterRamp = GetGamedataFile.LoadTexture2DFromGamedata("textures.scd", map.Water.TexPathWaterRamp);
+		WaterRamp.wrapMode = TextureWrapMode.Clamp;
+		TerrainMaterial.SetTexture("_WaterRam", WaterRamp);
 
-		TerrainMaterial.SetFloat("_WaterLevel", map.Water.Elevation / 10.0f);
-		TerrainMaterial.SetFloat("_AbyssLevel", map.Water.ElevationAbyss / 10.0f);
-		TerrainMaterial.SetInt("_Water", MapLuaParser.Water ? 1 : 0);
-		TerrainMaterial.SetTexture("_UtilitySamplerC", map.UncompressedWatermapTex);
-		TerrainMaterial.SetFloat("_GridScale", HalfxRes);
+		/*
+		 * // Cubemap
+		Texture2D Cubemap = GetGamedataFile.LoadTexture2DFromGamedata("textures.scd", map.Water.TexPathCubemap);
+		Debug.Log(Cubemap.width);
+		Cubemap cb = new Cubemap(Cubemap.width, TextureFormat.RGB24, Cubemap.mipmapCount > 1);
+		cb.SetPixels(Cubemap.GetPixels(), CubemapFace.PositiveX);
+		WaterMaterial.SetTexture("_Reflection", cb);
+		*/
+
+
+		const int WaterAnisoLevel = 4;
+
+		Texture2D WaterNormal = GetGamedataFile.LoadTexture2DFromGamedata("textures.scd", map.Water.WaveTextures[0].TexPath);
+		WaterNormal.anisoLevel = WaterAnisoLevel;
+		WaterMaterial.SetTexture("NormalSampler0", WaterNormal);
+		WaterNormal = GetGamedataFile.LoadTexture2DFromGamedata("textures.scd", map.Water.WaveTextures[1].TexPath);
+		WaterNormal.anisoLevel = WaterAnisoLevel;
+		WaterMaterial.SetTexture("NormalSampler1", WaterNormal);
+		WaterNormal = GetGamedataFile.LoadTexture2DFromGamedata("textures.scd", map.Water.WaveTextures[2].TexPath);
+		WaterNormal.anisoLevel = WaterAnisoLevel;
+		WaterMaterial.SetTexture("NormalSampler2", WaterNormal);
+		WaterNormal = GetGamedataFile.LoadTexture2DFromGamedata("textures.scd", map.Water.WaveTextures[3].TexPath);
+		WaterNormal.anisoLevel = WaterAnisoLevel;
+		WaterMaterial.SetTexture("NormalSampler3", WaterNormal);
+
+		Shader.SetGlobalVector("normal1Movement", map.Water.WaveTextures[0].NormalMovement);
+		Shader.SetGlobalVector("normal2Movement", map.Water.WaveTextures[1].NormalMovement);
+		Shader.SetGlobalVector("normal3Movement", map.Water.WaveTextures[2].NormalMovement);
+		Shader.SetGlobalVector("normal4Movement", map.Water.WaveTextures[3].NormalMovement);
+		Shader.SetGlobalVector("normalRepeatRate", new Vector4(map.Water.WaveTextures[0].NormalRepeat, map.Water.WaveTextures[1].NormalRepeat, map.Water.WaveTextures[2].NormalRepeat, map.Water.WaveTextures[3].NormalRepeat));
+
+
+		SetWater();
 
 
 		int Max = (int)Mathf.Max((map.Height + 1), (map.Width + 1));
@@ -292,6 +320,31 @@ public class ScmapEditor : MonoBehaviour
 		yield return null;
 		Debug.Log("Scmap load complited");
 	}
+
+	#region Water
+	public void SetWater()
+	{
+		WaterLevel.transform.position = Vector3.up * (map.Water.Elevation / 10.0f);
+
+		Shader.SetGlobalVector("waterLerp", map.Water.ColorLerp);
+		Shader.SetGlobalVector("SunDirection", new Vector3(map.Water.SunDirection.x, map.Water.SunDirection.y, -map.Water.SunDirection.z));
+		Shader.SetGlobalFloat("SunShininess", map.Water.SunShininess);
+		Shader.SetGlobalFloat("sunReflectionAmount", map.Water.SunReflection);
+		Shader.SetGlobalFloat("unitreflectionAmount", map.Water.UnitReflection);
+		Shader.SetGlobalFloat("skyreflectionAmount", map.Water.SkyReflection);
+		Shader.SetGlobalFloat("refractionScale", map.Water.RefractionScale);
+		WaterMaterial.SetColor("sunColor", new Color(map.Water.SunColor.x, map.Water.SunColor.y, map.Water.SunColor.z, 1));
+		WaterMaterial.SetColor("waterColor", new Color(map.Water.SurfaceColor.x, map.Water.SurfaceColor.y, map.Water.SurfaceColor.z, 1));
+
+		//Shader.SetGlobalVector("waterLerp", map.Water.WaveTextures);
+
+		TerrainMaterial.SetFloat("_WaterLevel", map.Water.Elevation / 10.0f);
+		TerrainMaterial.SetFloat("_AbyssLevel", map.Water.ElevationAbyss / 10.0f);
+		TerrainMaterial.SetInt("_Water", MapLuaParser.Water ? 1 : 0);
+		
+	}
+
+#endregion
 
 	#region Textures
 	public void SetTextures(int OnlyOne = -1)

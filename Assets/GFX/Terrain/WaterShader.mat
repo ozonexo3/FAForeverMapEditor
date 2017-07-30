@@ -23,19 +23,19 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - NormalSampler0:
-        m_Texture: {fileID: 2800000, guid: 1ed1163a5c64a9842b45453c72588aaa, type: 3}
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - NormalSampler1:
-        m_Texture: {fileID: 2800000, guid: 1ed1163a5c64a9842b45453c72588aaa, type: 3}
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - NormalSampler2:
-        m_Texture: {fileID: 2800000, guid: b4f8b6bca20fe1645bb88a50a6aaf395, type: 3}
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - NormalSampler3:
-        m_Texture: {fileID: 2800000, guid: b4f8b6bca20fe1645bb88a50a6aaf395, type: 3}
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - ReflectionSampler:
@@ -47,7 +47,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - SkySampler:
-        m_Texture: {fileID: 8900000, guid: 4462d82eabe117945b29ff9b909c5d44, type: 3}
+        m_Texture: {fileID: 8900000, guid: 455fb4c6b472e9d4ba5a2ebaed933e84, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BumpMap:
@@ -87,7 +87,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Reflection:
-        m_Texture: {fileID: 8900000, guid: a6a0c18e4cbf23f4b83d1bbc7c23e0a6, type: 3}
+        m_Texture: {fileID: 8900000, guid: 4462d82eabe117945b29ff9b909c5d44, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _UtilitySamplerC:
@@ -110,10 +110,12 @@ Material:
     - _Parallax: 0.02
     - _SrcBlend: 1
     - _UVSec: 0
-    - _WaterScale: 51.2
+    - _WaterScale: 512
+    - _WaterScaleX: 512
+    - _WaterScaleZ: 512
     - _ZWrite: 1
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - sunColor: {r: 1.1, g: 0.7, b: 0.5, a: 1}
-    - waterColor: {r: 0, g: 0.7, b: 1.5, a: 1}
+    - sunColor: {r: 0.44, g: 0.44, b: 0.44, a: 1}
+    - waterColor: {r: 1.41, g: 1.41, b: 1.41, a: 1}

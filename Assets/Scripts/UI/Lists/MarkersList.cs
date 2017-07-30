@@ -91,10 +91,11 @@ public class MarkersList : MonoBehaviour
 		}
 	}
 
-	public void UpdateList()
+	public void UpdateList(bool forced = false)
 	{
 		int mc = 0;
-		if (Generated && GeneratedCount == MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers.Count)
+		if (forced) { }
+		else if (Generated && GeneratedCount == MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers.Count)
 		{
 			UpdateSelection();
 			return;

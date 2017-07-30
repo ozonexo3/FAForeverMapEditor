@@ -136,6 +136,8 @@ namespace MapLua
 					return Key == KEY_HINT || Key == KEY_GRAPH || Key == KEY_ADJACENTTO;
 				else if (MarkerType == MarkerTypes.NavalLink)
 					return false;
+				else if (MarkerType == MarkerTypes.TransportMarker)
+					return false;
 				else if (MarkerType == MarkerTypes.CameraInfo)
 					return Key == KEY_ZOOM || Key == KEY_CANSETCAMERA || Key == KEY_CANSYNCCAMERA;
 				else if (MarkerType == MarkerTypes.WeatherGenerator)
@@ -362,16 +364,6 @@ namespace MapLua
 
 				if (AllowByType(KEY_ADJACENTTO))
 				{
-					adjacentTo = "";
-					for(int i = 0; i < AdjacentToMarker.Count; i++)
-					{
-						if (i > 0)
-							adjacentTo += " ";
-						adjacentTo += AdjacentToMarker[i].Name;
-					}
-
-					LuaFile.AddLine(LuaParser.Write.StringToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_ADJACENTTO), adjacentTo));
-
 					if (string.IsNullOrEmpty(graph))
 					{
 						switch (MarkerType)
@@ -389,10 +381,20 @@ namespace MapLua
 								graph = "DefaultAmphibious";
 								break;
 						}
-
-
 					}
 
+					LuaFile.AddLine(LuaParser.Write.StringToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_GRAPH), graph));
+
+
+					adjacentTo = "";
+					for(int i = 0; i < AdjacentToMarker.Count; i++)
+					{
+						if (i > 0)
+							adjacentTo += " ";
+						adjacentTo += AdjacentToMarker[i].Name;
+					}
+
+					LuaFile.AddLine(LuaParser.Write.StringToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_ADJACENTTO), adjacentTo));
 				}
 
 				//Type

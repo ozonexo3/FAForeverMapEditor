@@ -9,7 +9,8 @@
 using System;
 using UnityEngine;
 
-public struct WaterShader
+[System.Serializable]
+public class WaterShader
 {
 
 	public bool HasWater;

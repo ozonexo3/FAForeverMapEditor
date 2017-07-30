@@ -15,7 +15,7 @@ Properties {
 	_ShadowColor ("Shadow Color", Color) = (0.5, 0.5, 0.5, 1)
 	
 
-	_WaterRam ("Control (RGBA)", 2D) = "blue" {}
+	_WaterRam ("Water Ramp (RGBA)", 2D) = "blue" {}
 	_WaterLevel ("Water Level", Range (0.03, 5)) = 0.078125
 	_AbyssLevel ("Abyss Level", Range (0.03, 5)) = 0.078125
 	
@@ -232,6 +232,7 @@ Properties {
 			float3 ApplyWaterColor( float depth, float3  inColor){
 				float4 wcolor = tex2D(_WaterRam, float2(depth,0));
 				return lerp( inColor.rgb, wcolor.rgb, wcolor.a );
+				//return inColor.rgb;
 				//return inColor;
 			}
 

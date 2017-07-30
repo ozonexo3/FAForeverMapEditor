@@ -139,7 +139,16 @@ public class CameraControler : MonoBehaviour {
 	}
 
 	void LateUpdate(){
-		ReflectionCamera.rotation = Quaternion.Euler(Vector3.right * -90);
+		Vector3 ReflPos = transform.position;
+		ReflPos.y = ReflPos.y - ScmapEditor.Current.WaterLevel.localPosition.y;
+		ReflPos.y = ScmapEditor.Current.WaterLevel.localPosition.y - ReflPos.y;
+
+		ReflectionCamera.position = ReflPos;
+		Vector3 Forward = transform.forward;
+		Vector3 LookDir = Vector3.Reflect(Forward, new Vector3(Forward.x, 0, Forward.z).normalized);
+		LookDir *= -1;
+		//LookDir.y *= -1;
+		ReflectionCamera.rotation = Quaternion.LookRotation(LookDir, Vector3.up);
 	}
 
 	float ZoomCamPos(){
@@ -169,9 +178,11 @@ public class CameraControler : MonoBehaviour {
 					zoomIn -= Input.GetAxis("Mouse ScrollWheel") * 0.5f * 1;
 				}
 				Vector3 GameplayCursorPos = ScmapEditor.WorldPosToScmap(hit.point);
+				GameplayCursorPos.y = hit.point.y * 10;
+				GameplayCursorPos.z = ScmapEditor.Current.map.Height - GameplayCursorPos.z;
 				string X = GameplayCursorPos.x.ToString("N2");
 				string Y = GameplayCursorPos.y.ToString("N2");
-				string Z = GameplayCursorPos.y.ToString("N2");
+				string Z = GameplayCursorPos.z.ToString("N2");
 
 				X = X.PadRight(8);
 				Y = Y.PadRight(8);

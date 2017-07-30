@@ -368,12 +368,16 @@ namespace EditMap
 					return;
 				}
 			}
+			Undo.Current.RegisterMarkerChange();
+
 			MapLua.SaveLua.RemoveMarkerName(SelectedGameObjects[0].name);
 			MapLua.SaveLua.RegisterMarkerName(NameToChange);
 
 			SelectedGameObjects[0].GetComponent<MarkerObject>().Owner.Name = NameToChange;
 			SelectedGameObjects[0].name = NameToChange;
 			NameField.text = NameToChange;
+
+			MarkerListControler.UpdateList(true);
 
 			MarkersControler.UpdateBlankMarkersGraphics();
 

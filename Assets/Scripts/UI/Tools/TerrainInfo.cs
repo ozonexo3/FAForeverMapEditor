@@ -246,8 +246,13 @@ namespace EditMap
 			BrushStrength.text = BrushStrengthSlider.value.ToString();
 			//BrushRotation.text = BrushRotationSlider.value.ToString();
 
-			Min = int.Parse(BrushMini.text) / 128f;
-			Max = int.Parse(BrushMax.text) / 128f;
+			//float TerrainHeight = ScmapEditor.Current.Data.size.y;
+
+			Min = int.Parse(BrushMini.text) / ScmapEditor.Current.Data.size.y;
+			Max = int.Parse(BrushMax.text) / ScmapEditor.Current.Data.size.y;
+
+			Min /= 10f;
+			Max /= 10f;
 
 			if (LastRotation != int.Parse(BrushRotation.text))
 			{

@@ -21,6 +21,7 @@ public partial struct GetGamedataFile
 
 		if (FinalTextureData2 == null || FinalTextureData2.Length == 0)
 		{
+			//Debug.LogWarning("File bytes are empty!");
 			return new Texture2D(32, 32, TextureFormat.RGBA32, true);
 		}
 
@@ -115,11 +116,31 @@ public partial struct GetGamedataFile
 		if (NormalMap)
 		{
 			ScmapEditor.Current.Textures[Id].Normal = LoadTexture2DFromGamedata(scd, LocalPath, NormalMap);
+
+			if (ScmapEditor.Current.Textures[Id].Normal.mipmapCount <= 1)
+			{
+				Debug.Log("Force mipmaps: " + LocalPath + " has " + ScmapEditor.Current.Textures[Id].Normal.mipmapCount + " mipmaps");
+				ScmapEditor.Current.Textures[Id].Normal = ConvertWithMipmaps(ScmapEditor.Current.Textures[Id].Normal);
+			}
 		}
 		else
 		{
 			ScmapEditor.Current.Textures[Id].Albedo = LoadTexture2DFromGamedata(scd, LocalPath, NormalMap);
+			if (ScmapEditor.Current.Textures[Id].Albedo.mipmapCount <= 1)
+			{
+				Debug.Log("Force mipmaps: " + LocalPath + " has " + ScmapEditor.Current.Textures[Id].Albedo.mipmapCount + " mipmaps");
+				ScmapEditor.Current.Textures[Id].Albedo = ConvertWithMipmaps(ScmapEditor.Current.Textures[Id].Albedo);
+			}
 		}
+	}
+
+	public static Texture2D ConvertWithMipmaps(Texture2D Old){
+		Texture2D ToReturn = new Texture2D(Old.width, Old.height, TextureFormat.RGBA32, true, false);
+
+		ToReturn.SetPixels(Old.GetPixels(0), 0);
+		ToReturn.Apply(true);
+
+		return ToReturn;
 	}
 
 
