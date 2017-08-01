@@ -1,8 +1,9 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using System.Text;
 using System.Runtime.InteropServices;
-using System.Windows.Forms;
+using SFB;
 
 public class FafEditorSettings : MonoBehaviour {
 
@@ -58,26 +59,34 @@ public class FafEditorSettings : MonoBehaviour {
 
 	public void BrowseMapPath(){
 
-		System.Windows.Forms.FolderBrowserDialog FolderDialog = new FolderBrowserDialog ();
+		var paths = StandaloneFileBrowser.OpenFolderPanel("Select 'Maps' folder.", EnvPaths.GetMapsPath(), false);
+
+		/*System.Windows.Forms.FolderBrowserDialog FolderDialog = new FolderBrowserDialog ();
 
 		FolderDialog.ShowNewFolderButton = false;
-		FolderDialog.Description = "Select 'Maps' folder.";
+		FolderDialog.Description = "Select 'Maps' folder.";*/
 
-		if (FolderDialog.ShowDialog() == DialogResult.OK)
+		if (paths.Length > 0 && !string.IsNullOrEmpty(paths[0]))
 		{
-			MapsPathField.text = FolderDialog.SelectedPath;
+			MapsPathField.text = paths[0];
 		}
 	}
 
 	public void BrowseGamedataPath(){
+
+		var paths = StandaloneFileBrowser.OpenFolderPanel("Select 'Gamedata' folder in FA instalation directory", EnvPaths.GetMapsPath(), false);
+
+		/*
 		System.Windows.Forms.FolderBrowserDialog FolderDialog = new FolderBrowserDialog ();
 
 		FolderDialog.ShowNewFolderButton = false;
 		FolderDialog.Description = "Select 'Gamedata' folder in Supreme Commander Forget Alliance instalation directory.";
+		*/
 
-		if (FolderDialog.ShowDialog() == DialogResult.OK)
+		//if (FolderDialog.ShowDialog() == DialogResult.OK)
+		if (paths.Length > 0 && !string.IsNullOrEmpty(paths[0]))
 		{
-			PathField.text = FolderDialog.SelectedPath;
+			PathField.text = paths[0];
 		}
 	}
 

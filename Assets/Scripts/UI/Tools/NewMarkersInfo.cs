@@ -4,8 +4,10 @@ using System.Collections.Generic;
 using UnityEngine.UI;
 using Markers;
 using Selection;
+//using System.Windows.Forms;
+using System.Text;
 using System.Runtime.InteropServices;
-using System.Windows.Forms;
+using SFB;
 
 namespace EditMap
 {
@@ -348,25 +350,31 @@ namespace EditMap
 			}
 		}
 
-		public void ExportSelectedMarkers() { 
+		public void ExportSelectedMarkers() {
 
+			var extensions = new[] {
+				new ExtensionFilter("Faf Markers", "fafmapmarkers")
+			};
+
+			var paths = StandaloneFileBrowser.SaveFilePanel("Export markers", EnvPaths.GetMapsPath(), "", extensions);
+
+			/*
 			SaveFileDialog FileDialog = new SaveFileDialog();
 			FileDialog.Title = "Export markers";
 			FileDialog.AddExtension = true;
 
 			FileDialog.DefaultExt = ".fafmapmarkers";
 			FileDialog.Filter = "Faf Markers (*.fafmapmarkers)|*.fafmapmarkers";
-
+			*/
 
 			//System.Windows.Forms.FolderBrowserDialog FolderDialog = new FolderBrowserDialog();
 
 			//FolderDialog.ShowNewFolderButton = false;
 			//FolderDialog.Description = "Select 'Maps' folder.";
 
-			if (FileDialog.ShowDialog() == DialogResult.OK)
+			//if (FileDialog.ShowDialog() == DialogResult.OK)
+			if (!string.IsNullOrEmpty(paths))
 			{
-				Debug.Log(FileDialog.FileName);
-
 				ExportMarkers ExpMarkers = new ExportMarkers();
 				ExpMarkers.MapWidth = ScmapEditor.Current.map.Width;
 				ExpMarkers.MapHeight = ScmapEditor.Current.map.Height;
@@ -397,24 +405,33 @@ namespace EditMap
 
 
 
-				System.IO.File.WriteAllText(FileDialog.FileName, JsonUtility.ToJson(ExpMarkers));
+				System.IO.File.WriteAllText(paths, JsonUtility.ToJson(ExpMarkers));
 			}
 		}
 
 		public void ImportMarkers()
 		{
+
+			var extensions = new[] {
+				new ExtensionFilter("Faf Markers", "fafmapmarkers")
+			};
+
+			var paths = StandaloneFileBrowser.OpenFilePanel("Import markers", EnvPaths.GetMapsPath(), extensions, false);
+
+
+			/*
 			OpenFileDialog FileDialog = new OpenFileDialog();
 			FileDialog.Title = "Import markers";
 			FileDialog.AddExtension = true;
 			FileDialog.DefaultExt = ".fafmapmarkers";
 			FileDialog.Filter = "Faf Markers (*.fafmapmarkers)|*.fafmapmarkers";
 			FileDialog.CheckFileExists = true;
+			*/
 
-			if (FileDialog.ShowDialog() == DialogResult.OK)
+			if (paths.Length > 0 && !string.IsNullOrEmpty(paths[0]))
 			{
-				Debug.Log(FileDialog.FileName);
 
-				ExportMarkers ImpMarkers = JsonUtility.FromJson<ExportMarkers>(System.IO.File.ReadAllText(FileDialog.FileName));
+				ExportMarkers ImpMarkers = JsonUtility.FromJson<ExportMarkers>(System.IO.File.ReadAllText(paths[0]));
 
 				bool AnyCreated = false;
 				int mc = 0;

@@ -76,11 +76,17 @@
     <Reference Include="UnityEditor">
       <HintPath>Library\UnityAssemblies\UnityEditor.dll</HintPath>
     </Reference>
+    <Reference Include="Mono.Cecil">
+      <HintPath>Library\UnityAssemblies\Mono.Cecil.dll</HintPath>
+    </Reference>
     <Reference Include="ICSharpCode.SharpZipLib">
       <HintPath>Assets\Plugins\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
     <Reference Include="System.Windows.Forms">
-      <HintPath>Assets\Plugins\System.Windows.Forms.dll</HintPath>
+      <HintPath>Assets\StandaloneFileBrowser\Plugins\System.Windows.Forms.dll</HintPath>
+    </Reference>
+    <Reference Include="Ookii.Dialogs">
+      <HintPath>Assets\StandaloneFileBrowser\Plugins\Ookii.Dialogs.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -171,7 +177,6 @@
     <Compile Include="Assets\LUA\NLua\ObjectTranslator.cs" />
     <Compile Include="Assets\LUA\NLua\ObjectTranslatorPool.cs" />
     <Compile Include="Assets\LUA\NLua\ProxyType.cs" />
-    <Compile Include="Assets\OnlyLocal\Reflection.cs" />
     <Compile Include="Assets\PostProcessing\Runtime\Attributes\GetSetAttribute.cs" />
     <Compile Include="Assets\PostProcessing\Runtime\Attributes\MinAttribute.cs" />
     <Compile Include="Assets\PostProcessing\Runtime\Attributes\TrackballAttribute.cs" />
@@ -356,6 +361,16 @@
     <Compile Include="Assets\Scripts\Undo\HistoryObjects\HistoryTerrainHeight.cs" />
     <Compile Include="Assets\Scripts\Undo\HistoryUndoRegister.cs" />
     <Compile Include="Assets\Scripts\Undo\Undo.cs" />
+    <Compile Include="Assets\StandaloneFileBrowser\IStandaloneFileBrowser.cs" />
+    <Compile Include="Assets\StandaloneFileBrowser\Sample\BasicSample.cs" />
+    <Compile Include="Assets\StandaloneFileBrowser\Sample\CanvasSampleOpenFileImage.cs" />
+    <Compile Include="Assets\StandaloneFileBrowser\Sample\CanvasSampleOpenFileText.cs" />
+    <Compile Include="Assets\StandaloneFileBrowser\Sample\CanvasSampleSaveFileImage.cs" />
+    <Compile Include="Assets\StandaloneFileBrowser\Sample\CanvasSampleSaveFileText.cs" />
+    <Compile Include="Assets\StandaloneFileBrowser\StandaloneFileBrowser.cs" />
+    <Compile Include="Assets\StandaloneFileBrowser\StandaloneFileBrowserEditor.cs" />
+    <Compile Include="Assets\StandaloneFileBrowser\StandaloneFileBrowserMac.cs" />
+    <Compile Include="Assets\StandaloneFileBrowser\StandaloneFileBrowserWindows.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\GFX\Shaders\Backup\FaTerrainShader 1.shader" />

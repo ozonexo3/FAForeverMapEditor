@@ -3,8 +3,10 @@ using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using System.Runtime.InteropServices;
 using B83.Image.BMP;
+using System.Text;
+using System.Runtime.InteropServices;
+using SFB;
 
 namespace EditMap
 {
@@ -842,21 +844,29 @@ namespace EditMap
 			if (Selected == 0 || Selected == 9)
 				return;
 
+			var extensions = new[]
+			{
+				new ExtensionFilter("Image", "bmp")
+			};
+
+			var paths = StandaloneFileBrowser.OpenFilePanel("Import stratum mask", EnvPaths.GetMapsPath(), extensions, false);
+
+			/*
 			System.Windows.Forms.OpenFileDialog FolderDialog = new System.Windows.Forms.OpenFileDialog();
 
 			FolderDialog.Filter = "BMP (*.bmp)|*.bmp|All files (*.*)|*.*";
 			FolderDialog.FilterIndex = 0;
 			FolderDialog.RestoreDirectory = true;
 			FolderDialog.InitialDirectory = EnvPaths.GetMapsPath();
+			*/
 
-			if (FolderDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+			if (paths.Length > 0 && !string.IsNullOrEmpty(paths[0]))
+			//if (FolderDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
 			{
-				Debug.Log(FolderDialog.FileName);
-
-				if (FolderDialog.FileName.ToLower().EndsWith("bmp"))
+				if (paths[0].ToLower().EndsWith("bmp"))
 				{
 					BMPLoader loader = new BMPLoader();
-					BMPImage img = loader.LoadBMP(FolderDialog.FileName);
+					BMPImage img = loader.LoadBMP(paths[0]);
 
 					Color[] StratumData;
 					if (Selected > 4)
@@ -903,7 +913,7 @@ namespace EditMap
 					}
 
 				}
-				else if(FolderDialog.FileName.ToLower().EndsWith("raw"))
+				else if(paths[0].ToLower().EndsWith("raw"))
 				{
 
 				}
@@ -923,25 +933,43 @@ namespace EditMap
 
 		public void ExportStratum()
 		{
+
+			var extensions = new[]
+{
+				new ExtensionFilter("Stratum setting file", "scmsl")
+			};
+
+			var paths = StandaloneFileBrowser.SaveFilePanel("Import stratum mask", EnvPaths.GetMapsPath(), "", extensions);
+
+			/*
 			System.Windows.Forms.SaveFileDialog FolderDialog = new System.Windows.Forms.SaveFileDialog();
 
 			FolderDialog.Filter = "scmstratum files (*.scmsl)|*.scmsl|All files (*.*)|*.*";
 			FolderDialog.FilterIndex = 0;
 			FolderDialog.RestoreDirectory = true;
 			FolderDialog.InitialDirectory = EnvPaths.GetMapsPath();
+			*/
 
-			if (FolderDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+			if(!string.IsNullOrEmpty(paths))
+			//if (FolderDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
 			{
-				Debug.Log(FolderDialog.FileName);
-
 				string data = UnityEngine.JsonUtility.ToJson(Map.Textures[Selected]);
 
-				File.WriteAllText(FolderDialog.FileName, data);
+				File.WriteAllText(paths, data);
 			}
 		}
 
 		public void ImportStratum()
 		{
+
+			var extensions = new[]
+{
+				new ExtensionFilter("Stratum setting file", "scmsl")
+			};
+
+			var paths = StandaloneFileBrowser.OpenFilePanel("Import stratum mask", EnvPaths.GetMapsPath(), extensions, false);
+
+			/*
 			System.Windows.Forms.OpenFileDialog FolderDialog = new System.Windows.Forms.OpenFileDialog();
 
 			//FolderDialog.DefaultExt = "scmstratum";
@@ -951,12 +979,11 @@ namespace EditMap
 			FolderDialog.RestoreDirectory = true;
 			FolderDialog.InitialDirectory = EnvPaths.GetMapsPath();
 			//FolderDialog.
+			*/
 
-			if (FolderDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+			if (paths.Length > 0 && !string.IsNullOrEmpty(paths[0]))
 			{
-				Debug.Log(FolderDialog.FileName);
-
-				string data = File.ReadAllText(FolderDialog.FileName);
+				string data = File.ReadAllText(paths[0]);
 
 				ScmapEditor.TerrainTexture NewTexture = UnityEngine.JsonUtility.FromJson<ScmapEditor.TerrainTexture>(data);
 
@@ -987,16 +1014,23 @@ namespace EditMap
 
 		public void ExportStratumTemplate()
 		{
+			var extensions = new[]
+{
+				new ExtensionFilter("Stratum template", "scmst")
+			};
+
+			var paths = StandaloneFileBrowser.SaveFilePanel("Import stratum mask", EnvPaths.GetMapsPath(), "", extensions);
+			/*
 			System.Windows.Forms.SaveFileDialog FolderDialog = new System.Windows.Forms.SaveFileDialog();
 
 			FolderDialog.Filter = "scmstratum files (*.scmst)|*.scmst|All files (*.*)|*.*";
 			FolderDialog.FilterIndex = 0;
 			FolderDialog.RestoreDirectory = true;
 			FolderDialog.InitialDirectory = EnvPaths.GetMapsPath();
+			*/
 
-			if (FolderDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+			if (!string.IsNullOrEmpty(paths))
 			{
-				Debug.Log(FolderDialog.FileName);
 
 				StratumTemplate NewTemplate = new StratumTemplate();
 				NewTemplate.Stratum0 = Map.Textures[0];
@@ -1012,23 +1046,31 @@ namespace EditMap
 
 				string data = UnityEngine.JsonUtility.ToJson(NewTemplate);
 
-				File.WriteAllText(FolderDialog.FileName, data);
+				File.WriteAllText(paths, data);
 			}
 		}
 
 		public void ImportStratumTemplate()
 		{
+
+			var extensions = new[]
+{
+				new ExtensionFilter("Stratum setting file", "scmsl")
+			};
+
+			var paths = StandaloneFileBrowser.OpenFilePanel("Import stratum mask", EnvPaths.GetMapsPath(), extensions, false);
+
+			/*
 			System.Windows.Forms.OpenFileDialog FolderDialog = new System.Windows.Forms.OpenFileDialog();
 
 			FolderDialog.Filter = "scmstratum files (*.scmst)|*.scmst|All files (*.*)|*.*";
 			FolderDialog.FilterIndex = 0;
 			FolderDialog.RestoreDirectory = true;
+			*/
 
-			if (FolderDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+			if (paths.Length > 0 && !string.IsNullOrEmpty(paths[0]))
 			{
-				Debug.Log(FolderDialog.FileName);
-
-				string data = File.ReadAllText(FolderDialog.FileName);
+				string data = File.ReadAllText(paths[0]);
 
 				StratumTemplate NewTemplate = UnityEngine.JsonUtility.FromJson<StratumTemplate>(data);
 

@@ -239,7 +239,7 @@ public class MapLuaParser : MonoBehaviour {
 				PropsMenu.gameObject.SetActive(true);
 
 				PropsMenu.AllowBrushUpdate = false;
-				Coroutine LoadingProps = PropsMenu.StartCoroutine(PropsMenu.LoadProps());
+				PropsMenu.StartCoroutine(PropsMenu.LoadProps());
 				while (PropsMenu.LoadingProps)
 				{
 					InfoPopup.Show(true, "Loading map...\n( Loading props " + PropsMenu.LoadedCount + "/" + ScmapEditor.Current.map.Props.Count + ")");

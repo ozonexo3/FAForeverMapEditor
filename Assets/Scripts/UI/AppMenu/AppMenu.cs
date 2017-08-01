@@ -2,7 +2,9 @@
 using UnityEngine.UI;
 using System.Collections;
 using EditMap;
+using System.Text;
 using System.Runtime.InteropServices;
+using SFB;
 
 public class AppMenu : MonoBehaviour
 {
@@ -179,6 +181,14 @@ public class AppMenu : MonoBehaviour
 	{
 		LateUpdate();
 
+		var extensions = new[]
+		{
+			new ExtensionFilter("Scenario", "lua")
+		};
+
+		var paths = StandaloneFileBrowser.OpenFilePanel("Open map", EnvPaths.GetMapsPath(), extensions, false);
+
+		/*
 		System.Windows.Forms.OpenFileDialog FileDialog = new System.Windows.Forms.OpenFileDialog();
 		FileDialog.InitialDirectory = EnvPaths.GetMapsPath();
 		FileDialog.Title = "Open map";
@@ -186,10 +196,12 @@ public class AppMenu : MonoBehaviour
 		FileDialog.DefaultExt = ".lua";
 		FileDialog.Filter = "Scenario (*.lua)|*.lua";
 		FileDialog.CheckFileExists = true;
+		*/
 
-		if (FileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+		//if (FileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+		if(paths.Length > 0 && !string.IsNullOrEmpty(paths[0]))
 		{
-			string[] PathSeparation = FileDialog.FileName.Replace("\\", "/").Replace(".lua", "").Split("/".ToCharArray());
+			string[] PathSeparation = paths[0].Replace("\\", "/").Replace(".lua", "").Split("/".ToCharArray());
 
 			MapLuaParser.Current.ScenarioFileName = PathSeparation[PathSeparation.Length - 1];
 			MapLuaParser.Current.FolderName = PathSeparation[PathSeparation.Length - 2];
@@ -310,20 +322,26 @@ public class AppMenu : MonoBehaviour
 
 		LateUpdate();
 
+
+		var paths = StandaloneFileBrowser.OpenFolderPanel("Save map as...", EnvPaths.GetMapsPath(), false);
+
+		/*
 		System.Windows.Forms.FolderBrowserDialog FolderDialog = new System.Windows.Forms.FolderBrowserDialog();
 		FolderDialog.SelectedPath = MapLuaParser.Current.FolderParentPath;
 		FolderDialog.Description = "Save map to folder";
 		FolderDialog.ShowNewFolderButton = true;
+		*/
 
-		if (FolderDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+		//if (FolderDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+		if (paths.Length > 0 && !string.IsNullOrEmpty(paths[0]))
 		{
-			if (System.IO.Directory.GetDirectories(FolderDialog.SelectedPath).Length > 0 || System.IO.Directory.GetFiles(FolderDialog.SelectedPath).Length > 0)
+			if (System.IO.Directory.GetDirectories(paths[0]).Length > 0 || System.IO.Directory.GetFiles(paths[0]).Length > 0)
 			{
-				Debug.LogError("Selected directory is not empty! " + FolderDialog.SelectedPath);
+				Debug.LogError("Selected directory is not empty! " + paths[0]);
 				return;
 			}
 
-			string[] PathSeparation = FolderDialog.SelectedPath.Replace("\\", "/").Split("/".ToCharArray());
+			string[] PathSeparation = paths[0].Replace("\\", "/").Split("/".ToCharArray());
 
 			string FileBeginName = PathSeparation[PathSeparation.Length - 1].ToLower();
 			MapLuaParser.Current.ScenarioFileName = FileBeginName + "_scenario";

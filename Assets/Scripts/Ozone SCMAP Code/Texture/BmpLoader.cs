@@ -52,6 +52,7 @@ using System.Collections.Generic;
 using System.IO;
 using System;
 
+#pragma warning disable 0219
 namespace B83.Image.BMP
 {
 	public enum BMPComressionMode : int

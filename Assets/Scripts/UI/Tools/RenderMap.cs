@@ -50,8 +50,8 @@ public class RenderMap : MonoBehaviour {
 				int width = Screen.width;
 				int height = Screen.height;
 
-				int Scale = Res / height;
-				int Size = Res / Scale;
+				//int Scale = Res / height;
+				//int Size = Res / Scale;
 
 
 				//Screen.SetResolution(Size, Size, false);
