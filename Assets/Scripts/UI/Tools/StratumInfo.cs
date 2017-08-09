@@ -886,6 +886,8 @@ namespace EditMap
 						ImportedImage.Apply(false);
 					}
 
+					ImportedImage = TextureFlip.FlipTextureVertical(ImportedImage, false);
+
 					Color[] ImportedColors = ImportedImage.GetPixels();
 
 					for (int i = 0; i < StratumData.Length; i++)

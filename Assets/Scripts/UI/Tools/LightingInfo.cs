@@ -94,6 +94,7 @@ namespace EditMap
 			ShadowColorR_Slider.value = Scmap.map.ShadowFillColor.x;
 			ShadowColorG_Slider.value = Scmap.map.ShadowFillColor.y;
 			ShadowColorB_Slider.value = Scmap.map.ShadowFillColor.z;
+
 			IgnoreUpdate = false;
 			//UpdateMenu(true);
 			UndoUpdate();
@@ -148,6 +149,10 @@ namespace EditMap
 				ShadowColorG.text = ShadowColorG_Slider.value.ToString("n2");
 				ShadowColorB.text = ShadowColorB_Slider.value.ToString("n2");
 
+				Bloom.text = Scmap.map.Bloom.ToString("n2");
+
+
+
 				//Glow.text = Glow_Slider.value.ToString ();
 				//Bloom.text = Bloom_Slider.value.ToString ();
 				UpdateMenu(false);
@@ -186,11 +191,13 @@ namespace EditMap
 				ShadowColorB_Slider.value = Mathf.Clamp(float.Parse(ShadowColorB.text), 0, 2);
 				ShadowColorB.text = ShadowColorB_Slider.value.ToString("n2");
 
+
+
 				//Glow_Slider.value = Mathf.Clamp (float.Parse (Glow.text), 0, 2);
 				//Glow.text = Glow_Slider.value.ToString ();
 
 				//Bloom_Slider.value = Mathf.Clamp (float.Parse (Bloom.text), 0, 2);
-				//Bloom.text = Bloom_Slider.value.ToString ();
+				Scmap.map.Bloom = Mathf.Clamp(float.Parse(Bloom.text), 0, 2);
 
 				RA_Value = (int)Mathf.Clamp(float.Parse(RA.text), -180, 180);
 				DA_Value = (int)Mathf.Clamp(float.Parse(DA.text), 0, 90);
@@ -221,6 +228,7 @@ namespace EditMap
 			Scmap.map.ShadowFillColor.y = ShadowColorG_Slider.value;
 			Scmap.map.ShadowFillColor.z = ShadowColorB_Slider.value;
 
+			Scmap.UpdateBloom();
 
 			// Set light
 			Scmap.Sun.transform.rotation = Quaternion.Euler(new Vector3(DA_Slider.value, -360 + RA_Slider.value, 0));

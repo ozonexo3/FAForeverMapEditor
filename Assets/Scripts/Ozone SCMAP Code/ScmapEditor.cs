@@ -5,7 +5,7 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-//using UnityStandardAssets.ImageEffects;
+using UnityStandardAssets.ImageEffects;
 using UnityEngine.PostProcessing;
 
 public class ScmapEditor : MonoBehaviour
@@ -23,6 +23,7 @@ public class ScmapEditor : MonoBehaviour
 	public Material TerrainMaterial;
 	public Material WaterMaterial;
 	public PostProcessingProfile PostProcessing;
+	public BloomOptimized BloomOpt;
 
 	[Header("Loaded variables")]
 	public TerrainTexture[] Textures; // Loaded textures
@@ -66,6 +67,15 @@ public class ScmapEditor : MonoBehaviour
 		RestartTerrainAsset();
 	}
 
+	public void UpdateBloom()
+	{
+		BloomModel.Settings Bs = PostProcessing.bloom.settings;
+		Bs.bloom.intensity = map.Bloom * 10;
+		PostProcessing.bloom.settings = Bs;
+
+		BloomOpt.intensity = map.Bloom;
+	}
+
 	public IEnumerator LoadScmapFile()
 	{
 		//UnloadMap();
@@ -87,10 +97,9 @@ public class ScmapEditor : MonoBehaviour
 			RenderSettings.ambientLight = new Color(map.ShadowFillColor.x, map.ShadowFillColor.y, map.ShadowFillColor.z, 1);
 
 			//Cam.GetComponent<Bloom>().bloomIntensity = map.Bloom * 4;
-			BloomModel.Settings Bs = PostProcessing.bloom.settings;
-			Bs.bloom.intensity = map.Bloom * 10;
-			PostProcessing.bloom.settings = Bs;
+
 			//PostProcessing.bloom.settings.bloom.intensity = map.Bloom * 4;
+			UpdateBloom();
 
 			RenderSettings.fogColor = new Color(map.FogColor.x, map.FogColor.y, map.FogColor.z, 1);
 			RenderSettings.fogStartDistance = map.FogStart * 2;
