@@ -623,7 +623,7 @@ public class Map
             //?
 
             int DecalCount = _with1.ReadInt32();
-			Debug.Log(DecalCount);
+			//Debug.Log(DecalCount);
             for (int i = 0; i < DecalCount; i++)
             {
                 Decal Feature = new Decal();

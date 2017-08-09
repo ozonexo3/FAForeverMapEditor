@@ -139,9 +139,10 @@ public class CameraControler : MonoBehaviour {
 	}
 
 	void LateUpdate(){
+		float WaterHeight = ScmapEditor.GetWaterLevel();
 		Vector3 ReflPos = transform.position;
-		ReflPos.y = ReflPos.y - ScmapEditor.Current.WaterLevel.localPosition.y;
-		ReflPos.y = ScmapEditor.Current.WaterLevel.localPosition.y - ReflPos.y;
+		ReflPos.y = ReflPos.y - WaterHeight;
+		ReflPos.y = WaterHeight - ReflPos.y;
 
 		ReflectionCamera.position = ReflPos;
 		Vector3 Forward = transform.forward;

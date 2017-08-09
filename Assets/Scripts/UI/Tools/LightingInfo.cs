@@ -19,6 +19,11 @@ namespace EditMap
 		public InputField LightMultipiler;
 		public Slider LightMultipilerSlider;
 
+		public UiColor LightColor;
+		public UiColor AmbienceColor;
+		public UiColor ShadowColor;
+
+		/*
 		public InputField LightColorR;
 		public Slider LightColorR_Slider;
 		public InputField LightColorG;
@@ -39,6 +44,7 @@ namespace EditMap
 		public Slider ShadowColorG_Slider;
 		public InputField ShadowColorB;
 		public Slider ShadowColorB_Slider;
+		*/
 
 		public InputField Glow;
 		public Slider Glow_Slider;
@@ -63,8 +69,6 @@ namespace EditMap
 			//Quaternion CheckRot = Quaternion.LookRotation(Scmap.map.SunDirection);
 			Quaternion CheckRot = Scmap.Sun.transform.rotation;
 
-			Debug.Log(CheckRot.eulerAngles);
-
 			float RaHold = CheckRot.eulerAngles.y;
 			if (RaHold > 180) RaHold -= 360;
 			if (RaHold < -180) RaHold += 360;
@@ -83,6 +87,11 @@ namespace EditMap
 
 			LightMultipilerSlider.value = Scmap.map.LightingMultiplier;
 
+			LightColor.SetColorField(Scmap.map.SunColor.x, Scmap.map.SunColor.y, Scmap.map.SunColor.z, UpdateColors);
+			AmbienceColor.SetColorField(Scmap.map.SunAmbience.x, Scmap.map.SunAmbience.y, Scmap.map.SunAmbience.z, UpdateColors);
+			ShadowColor.SetColorField(Scmap.map.ShadowFillColor.x, Scmap.map.ShadowFillColor.y, Scmap.map.ShadowFillColor.z, UpdateColors);
+
+			/*
 			LightColorR_Slider.value = Scmap.map.SunColor.x;
 			LightColorG_Slider.value = Scmap.map.SunColor.y;
 			LightColorB_Slider.value = Scmap.map.SunColor.z;
@@ -94,6 +103,7 @@ namespace EditMap
 			ShadowColorR_Slider.value = Scmap.map.ShadowFillColor.x;
 			ShadowColorG_Slider.value = Scmap.map.ShadowFillColor.y;
 			ShadowColorB_Slider.value = Scmap.map.ShadowFillColor.z;
+			*/
 
 			IgnoreUpdate = false;
 			//UpdateMenu(true);
@@ -113,6 +123,11 @@ namespace EditMap
 		public void EndSliderDrag()
 		{
 			SliderDrag = false;
+		}
+
+		public void UpdateColors()
+		{
+			UpdateMenu(true);
 		}
 
 		public void UpdateMenu(bool Slider = false)
@@ -137,6 +152,7 @@ namespace EditMap
 				//Debug.Log(RA.text);
 				DA.text = DA_Slider.value.ToString("n1");
 
+				/*
 				LightColorR.text = LightColorR_Slider.value.ToString("n2");
 				LightColorG.text = LightColorG_Slider.value.ToString("n2");
 				LightColorB.text = LightColorB_Slider.value.ToString("n2");
@@ -148,6 +164,7 @@ namespace EditMap
 				ShadowColorR.text = ShadowColorR_Slider.value.ToString("n2");
 				ShadowColorG.text = ShadowColorG_Slider.value.ToString("n2");
 				ShadowColorB.text = ShadowColorB_Slider.value.ToString("n2");
+				*/
 
 				Bloom.text = Scmap.map.Bloom.ToString("n2");
 
@@ -170,6 +187,7 @@ namespace EditMap
 				DA_Slider.value = Mathf.Clamp(float.Parse(DA.text), 0, 90);
 				DA.text = DA_Slider.value.ToString();
 
+				/*
 				LightColorR_Slider.value = Mathf.Clamp(float.Parse(LightColorR.text), 0, 2);
 				LightColorR.text = LightColorR_Slider.value.ToString("n2");
 				LightColorG_Slider.value = Mathf.Clamp(float.Parse(LightColorG.text), 0, 2);
@@ -190,7 +208,7 @@ namespace EditMap
 				ShadowColorG.text = ShadowColorG_Slider.value.ToString("n2");
 				ShadowColorB_Slider.value = Mathf.Clamp(float.Parse(ShadowColorB.text), 0, 2);
 				ShadowColorB.text = ShadowColorB_Slider.value.ToString("n2");
-
+				*/
 
 
 				//Glow_Slider.value = Mathf.Clamp (float.Parse (Glow.text), 0, 2);
@@ -216,17 +234,9 @@ namespace EditMap
 
 			Scmap.map.LightingMultiplier = LightMultipilerSlider.value;
 
-			Scmap.map.SunColor.x = LightColorR_Slider.value;
-			Scmap.map.SunColor.y = LightColorG_Slider.value;
-			Scmap.map.SunColor.z = LightColorB_Slider.value;
-
-			Scmap.map.SunAmbience.x = AmbienceColorR_Slider.value;
-			Scmap.map.SunAmbience.y = AmbienceColorG_Slider.value;
-			Scmap.map.SunAmbience.z = AmbienceColorB_Slider.value;
-
-			Scmap.map.ShadowFillColor.x = ShadowColorR_Slider.value;
-			Scmap.map.ShadowFillColor.y = ShadowColorG_Slider.value;
-			Scmap.map.ShadowFillColor.z = ShadowColorB_Slider.value;
+			Scmap.map.SunColor = LightColor.GetVectorValue();
+			Scmap.map.SunAmbience = AmbienceColor.GetVectorValue();
+			Scmap.map.ShadowFillColor = ShadowColor.GetVectorValue();
 
 			Scmap.UpdateBloom();
 

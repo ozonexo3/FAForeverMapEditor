@@ -154,10 +154,7 @@ public class ScmapEditor : MonoBehaviour
 		MapLuaParser.Current.EditMenu.TexturesMenu.TTerrainXP.isOn = map.TerrainShader == "TTerrainXP";
 		ToogleShader();
 
-
-		//MapLuaParser.Current.ScenarioData.MaxHeight = map.Water.Elevation;
-		MapLuaParser.Water = map.Water.HasWater;
-		WaterLevel.gameObject.SetActive(map.Water.HasWater);
+	
 
 		// Set Variables
 		int xRes = MapLuaParser.Current.ScenarioLuaFile.Data.Size[0];
@@ -255,9 +252,7 @@ public class ScmapEditor : MonoBehaviour
 
 
 
-		Texture2D WaterRamp = GetGamedataFile.LoadTexture2DFromGamedata("textures.scd", map.Water.TexPathWaterRamp);
-		WaterRamp.wrapMode = TextureWrapMode.Clamp;
-		TerrainMaterial.SetTexture("_WaterRam", WaterRamp);
+
 
 		/*
 		 * // Cubemap
@@ -268,27 +263,7 @@ public class ScmapEditor : MonoBehaviour
 		WaterMaterial.SetTexture("_Reflection", cb);
 		*/
 
-
-		const int WaterAnisoLevel = 4;
-
-		Texture2D WaterNormal = GetGamedataFile.LoadTexture2DFromGamedata("textures.scd", map.Water.WaveTextures[0].TexPath);
-		WaterNormal.anisoLevel = WaterAnisoLevel;
-		WaterMaterial.SetTexture("NormalSampler0", WaterNormal);
-		WaterNormal = GetGamedataFile.LoadTexture2DFromGamedata("textures.scd", map.Water.WaveTextures[1].TexPath);
-		WaterNormal.anisoLevel = WaterAnisoLevel;
-		WaterMaterial.SetTexture("NormalSampler1", WaterNormal);
-		WaterNormal = GetGamedataFile.LoadTexture2DFromGamedata("textures.scd", map.Water.WaveTextures[2].TexPath);
-		WaterNormal.anisoLevel = WaterAnisoLevel;
-		WaterMaterial.SetTexture("NormalSampler2", WaterNormal);
-		WaterNormal = GetGamedataFile.LoadTexture2DFromGamedata("textures.scd", map.Water.WaveTextures[3].TexPath);
-		WaterNormal.anisoLevel = WaterAnisoLevel;
-		WaterMaterial.SetTexture("NormalSampler3", WaterNormal);
-
-		Shader.SetGlobalVector("normal1Movement", map.Water.WaveTextures[0].NormalMovement);
-		Shader.SetGlobalVector("normal2Movement", map.Water.WaveTextures[1].NormalMovement);
-		Shader.SetGlobalVector("normal3Movement", map.Water.WaveTextures[2].NormalMovement);
-		Shader.SetGlobalVector("normal4Movement", map.Water.WaveTextures[3].NormalMovement);
-		Shader.SetGlobalVector("normalRepeatRate", new Vector4(map.Water.WaveTextures[0].NormalRepeat, map.Water.WaveTextures[1].NormalRepeat, map.Water.WaveTextures[2].NormalRepeat, map.Water.WaveTextures[3].NormalRepeat));
+		SetWaterTextures();
 
 
 		SetWater();
@@ -333,6 +308,7 @@ public class ScmapEditor : MonoBehaviour
 	#region Water
 	public void SetWater()
 	{
+		WaterLevel.gameObject.SetActive(map.Water.HasWater);
 		WaterLevel.transform.position = Vector3.up * (map.Water.Elevation / 10.0f);
 
 		WaterMaterial.SetColor("waterColor", new Color(map.Water.SurfaceColor.x, map.Water.SurfaceColor.y, map.Water.SurfaceColor.z, 1));
@@ -353,8 +329,35 @@ public class ScmapEditor : MonoBehaviour
 		TerrainMaterial.SetFloat("_WaterLevel", map.Water.Elevation / 10.0f);
 		TerrainMaterial.SetFloat("_DepthLevel", map.Water.ElevationDeep / 10.0f);
 		TerrainMaterial.SetFloat("_AbyssLevel", map.Water.ElevationAbyss / 10.0f);
-		TerrainMaterial.SetInt("_Water", MapLuaParser.Water ? 1 : 0);
+		TerrainMaterial.SetInt("_Water", map.Water.HasWater ? 1 : 0);
+	}
 
+	public void SetWaterTextures()
+	{
+		Texture2D WaterRamp = GetGamedataFile.LoadTexture2DFromGamedata("textures.scd", map.Water.TexPathWaterRamp);
+		WaterRamp.wrapMode = TextureWrapMode.Clamp;
+		TerrainMaterial.SetTexture("_WaterRam", WaterRamp);
+
+		const int WaterAnisoLevel = 4;
+
+		Texture2D WaterNormal = GetGamedataFile.LoadTexture2DFromGamedata("textures.scd", map.Water.WaveTextures[0].TexPath);
+		WaterNormal.anisoLevel = WaterAnisoLevel;
+		WaterMaterial.SetTexture("NormalSampler0", WaterNormal);
+		WaterNormal = GetGamedataFile.LoadTexture2DFromGamedata("textures.scd", map.Water.WaveTextures[1].TexPath);
+		WaterNormal.anisoLevel = WaterAnisoLevel;
+		WaterMaterial.SetTexture("NormalSampler1", WaterNormal);
+		WaterNormal = GetGamedataFile.LoadTexture2DFromGamedata("textures.scd", map.Water.WaveTextures[2].TexPath);
+		WaterNormal.anisoLevel = WaterAnisoLevel;
+		WaterMaterial.SetTexture("NormalSampler2", WaterNormal);
+		WaterNormal = GetGamedataFile.LoadTexture2DFromGamedata("textures.scd", map.Water.WaveTextures[3].TexPath);
+		WaterNormal.anisoLevel = WaterAnisoLevel;
+		WaterMaterial.SetTexture("NormalSampler3", WaterNormal);
+
+		Shader.SetGlobalVector("normal1Movement", map.Water.WaveTextures[0].NormalMovement);
+		Shader.SetGlobalVector("normal2Movement", map.Water.WaveTextures[1].NormalMovement);
+		Shader.SetGlobalVector("normal3Movement", map.Water.WaveTextures[2].NormalMovement);
+		Shader.SetGlobalVector("normal4Movement", map.Water.WaveTextures[3].NormalMovement);
+		Shader.SetGlobalVector("normalRepeatRate", new Vector4(map.Water.WaveTextures[0].NormalRepeat, map.Water.WaveTextures[1].NormalRepeat, map.Water.WaveTextures[2].NormalRepeat, map.Water.WaveTextures[3].NormalRepeat));
 	}
 
 	#endregion
@@ -703,13 +706,13 @@ public class ScmapEditor : MonoBehaviour
 		if (SampleHeight)
 			Pos.y = Current.Teren.SampleHeight(Pos);
 		if (MinimumWaterLevel)
-			Pos.y = Mathf.Clamp(Pos.y, Current.WaterLevel.localPosition.y, 10000);
+			Pos.y = Mathf.Clamp(Pos.y, GetWaterLevel(), 10000);
 		return Pos;
 	}
 
 	public static Vector3 ClampToWater(Vector3 Pos)
 	{
-		Pos.y = Mathf.Clamp(Pos.y, Current.WaterLevel.localPosition.y, 10000);
+		Pos.y = Mathf.Clamp(Pos.y, GetWaterLevel(), 10000);
 		return Pos;
 	}
 
@@ -724,6 +727,13 @@ public class ScmapEditor : MonoBehaviour
 		Pos.z /= 10.0f;
 
 		return Pos;
+	}
+
+	public static float GetWaterLevel()
+	{
+		if (!Current.map.Water.HasWater)
+			return 0;
+		return Current.WaterLevel.localPosition.y;
 	}
 
 	#endregion

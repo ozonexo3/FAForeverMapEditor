@@ -395,7 +395,6 @@ namespace MapLua
 				LuaTable[] FactionsTables = LuaParser.Read.TableArrayFromTable(
 					LuaFile.GetTable(TABLE_SCENARIOINFO + "." + ScenarioInfo.KEY_CONFIGURATIONS + "." + ConfKeys[Ct] + "." + Configuration.KEY_FACTIONS)
 					);
-				Debug.Log("factions: " + FactionsTables.Length);
 				Data.Configurations[Ct].factions = new Factions[FactionsTables.Length];
 
 				for(int i = 0; i < Data.Configurations[Ct].factions.Length; i++)

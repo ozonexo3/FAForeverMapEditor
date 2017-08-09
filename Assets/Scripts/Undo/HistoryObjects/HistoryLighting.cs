@@ -22,17 +22,9 @@ public class HistoryLighting : HistoryObject {
 			SunMultipiler = Mathf.Clamp(float.Parse(LightMenu.LightMultipiler.text), 0, 2);
 
 
-			SunColor.x = Mathf.Clamp(float.Parse(LightMenu.LightColorR.text), 0, 2);
-			SunColor.y = Mathf.Clamp(float.Parse(LightMenu.LightColorG.text), 0, 2);
-			SunColor.z = Mathf.Clamp(float.Parse(LightMenu.LightColorB.text), 0, 2);
-
-			AmbientColor.x = Mathf.Clamp(float.Parse(LightMenu.AmbienceColorR.text), 0, 2);
-			AmbientColor.y = Mathf.Clamp(float.Parse(LightMenu.AmbienceColorG.text), 0, 2);
-			AmbientColor.z = Mathf.Clamp(float.Parse(LightMenu.AmbienceColorB.text), 0, 2);
-
-			ShadowColor.x = Mathf.Clamp(float.Parse(LightMenu.ShadowColorR.text), 0, 2);
-			ShadowColor.y = Mathf.Clamp(float.Parse(LightMenu.ShadowColorG.text), 0, 2);
-			ShadowColor.z = Mathf.Clamp(float.Parse(LightMenu.ShadowColorB.text), 0, 2);
+			SunColor = LightMenu.LightColor.GetVectorValue();
+			AmbientColor = LightMenu.AmbienceColor.GetVectorValue();
+			ShadowColor = LightMenu.ShadowColor.GetVectorValue();
 
 		}
 		else
@@ -41,17 +33,9 @@ public class HistoryLighting : HistoryObject {
 			DA = LightMenu.DA_Slider.value;
 			SunMultipiler = LightMenu.LightMultipilerSlider.value;
 
-			SunColor.x = LightMenu.LightColorR_Slider.value;
-			SunColor.y = LightMenu.LightColorG_Slider.value;
-			SunColor.z = LightMenu.LightColorB_Slider.value;
-
-			AmbientColor.x = LightMenu.AmbienceColorR_Slider.value;
-			AmbientColor.y = LightMenu.AmbienceColorG_Slider.value;
-			AmbientColor.z = LightMenu.AmbienceColorB_Slider.value;
-
-			ShadowColor.x = LightMenu.ShadowColorR_Slider.value;
-			ShadowColor.y = LightMenu.ShadowColorG_Slider.value;
-			ShadowColor.z = LightMenu.ShadowColorB_Slider.value;
+			SunColor = LightMenu.LightColor.GetVectorValue();
+			AmbientColor = LightMenu.AmbienceColor.GetVectorValue();
+			ShadowColor = LightMenu.ShadowColor.GetVectorValue();
 		}
 
 	}
@@ -75,6 +59,11 @@ public class HistoryLighting : HistoryObject {
 		LightMenu.DA_Slider.value = DA;
 		LightMenu.LightMultipilerSlider.value = SunMultipiler;
 
+		LightMenu.LightColor.SetColorField(SunColor.x, SunColor.y, SunColor.z, null);
+		LightMenu.AmbienceColor.SetColorField(AmbientColor.x, AmbientColor.y, AmbientColor.z, null);
+		LightMenu.ShadowColor.SetColorField(ShadowColor.x, ShadowColor.y, ShadowColor.z, null);
+
+		/*
 		LightMenu.LightColorR_Slider.value = SunColor.x;
 		LightMenu.LightColorG_Slider.value = SunColor.y;
 		LightMenu.LightColorB_Slider.value = SunColor.z;
@@ -86,6 +75,7 @@ public class HistoryLighting : HistoryObject {
 		LightMenu.ShadowColorR_Slider.value = ShadowColor.x;
 		LightMenu.ShadowColorG_Slider.value = ShadowColor.y;
 		LightMenu.ShadowColorB_Slider.value = ShadowColor.z;
+		*/
 
 		LightMenu.IgnoreUpdate = false;
 

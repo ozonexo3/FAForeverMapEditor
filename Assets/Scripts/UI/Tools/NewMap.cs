@@ -49,12 +49,12 @@ namespace EditMap
 
 		public void WaterChange()
 		{
-			int water = int.Parse(WaterElv.text);
-			int depth = int.Parse(DepthElevation.text);
-			int abyss = int.Parse(AbyssElevation.text);
+			float water = float.Parse(WaterElv.text);
+			float depth = float.Parse(DepthElevation.text);
+			float abyss = float.Parse(AbyssElevation.text);
 
-			if (water < 1)
-				water = 1;
+			if (water < 0)
+				water = 0;
 			else if (water > 128)
 				water = 128;
 

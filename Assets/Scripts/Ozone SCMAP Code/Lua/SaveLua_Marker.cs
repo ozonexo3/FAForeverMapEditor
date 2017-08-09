@@ -165,6 +165,23 @@ namespace MapLua
 					return MarkerLayers.Other;
 			}
 
+			public void ForceDefaultValues()
+			{
+				if (MarkerType == MarkerTypes.BlankMarker)
+					color = "ff800080";
+				else if (MarkerType == MarkerTypes.Mass)
+				{
+					orientation = Vector3.zero;
+					color = "ff808080";
+				}
+				else if (MarkerType == MarkerTypes.Hydrocarbon)
+				{
+					orientation = Vector3.zero;
+					color = "ff008000";
+				}
+
+			}
+
 			public Marker()
 			{
 			}
@@ -344,9 +361,11 @@ namespace MapLua
 
 			public void SaveMarkerValues(LuaParser.Creator LuaFile)
 			{
+
 				position = ScmapEditor.WorldPosToScmap(MarkerObj.transform.position);
 				orientation = MarkerObj.transform.eulerAngles;
-				//position = ScmapEditor.MapWorldPosInSave(MarkerObj.transform.position);
+
+				ForceDefaultValues();
 
 				if (AllowByType(KEY_SIZE))
 					LuaFile.AddLine(LuaParser.Write.FloatToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_SIZE), size));

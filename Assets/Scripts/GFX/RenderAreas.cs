@@ -14,7 +14,7 @@ public class RenderAreas : MonoBehaviour {
 
 		if (MapLuaParser.Current.SaveLuaFile.Data.areas.Length == 0)
 			return;
-		float Height = ScmapEditor.Current.WaterLevel.localPosition.y;
+		float Height = ScmapEditor.GetWaterLevel();
 
 		GL.PushMatrix();
 		// Set transformation matrix for drawing to
