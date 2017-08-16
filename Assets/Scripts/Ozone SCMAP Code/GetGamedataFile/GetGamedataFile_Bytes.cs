@@ -79,19 +79,26 @@ public partial struct GetGamedataFile
 
 		if (zipEntry2 == null)
 		{
-			Debug.LogWarning("Zip Entry is empty for: " + LocalPath);
-			return null;
+
+			int FoundEntry = ScdFiles[ScdId].zf.FindEntry(LocalPath, true);
+
+			if (FoundEntry >= 0 && FoundEntry < ScdFiles[ScdId].zf.Count)
+				zipEntry2 = ScdFiles[ScdId].zf[FoundEntry];
+
+			if (zipEntry2 == null)
+			{
+				Debug.LogWarning("Zip Entry is empty for: " + LocalPath);
+
+				return null;
+			}
 		}
 
 		byte[] FinalBytes = new byte[4096]; // 4K is optimum
 
-		if (zipEntry2 != null)
-		{
-			Stream s = ScdFiles[ScdId].zf.GetInputStream(zipEntry2);
-			FinalBytes = new byte[zipEntry2.Size];
-			s.Read(FinalBytes, 0, FinalBytes.Length);
-			s.Close();
-		}
+		Stream s = ScdFiles[ScdId].zf.GetInputStream(zipEntry2);
+		FinalBytes = new byte[zipEntry2.Size];
+		s.Read(FinalBytes, 0, FinalBytes.Length);
+		s.Close();
 
 		/*try
 		{

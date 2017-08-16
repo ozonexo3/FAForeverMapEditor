@@ -201,8 +201,8 @@ Shader "MapEditor/FaWater" {
 			float4 reflectedPixels = tex2D( ReflectionSampler, refractionPos );
 
 
-			fresnelPower = 1.1;
-			fresnelBias = 0;
+			//fresnelPower = 1.1;
+			//fresnelBias = 0;
 
 	   		float  NDotL = saturate( dot(-viewVector, N) );
 			float fresnel = tex2D( FresnelSampler, float2(waterDepth, NDotL) ).r;
@@ -229,7 +229,7 @@ Shader "MapEditor/FaWater" {
 		    skyreflectionAmount *= saturate(waterDepth * depthReflectionAmount);
 		    
 		   	// lerp the reflection into the refraction   
-			refractedPixels = lerp( refractedPixels, reflectedPixels, saturate(skyreflectionAmount * saturate(waterDepth * depthReflectionAmount) * fresnel));
+			refractedPixels = lerp( refractedPixels, reflectedPixels, saturate(skyreflectionAmount * fresnel) * 2);
 			//refractedPixels = 
 			
 			// add in the sky reflection
@@ -241,7 +241,11 @@ Shader "MapEditor/FaWater" {
 		    
 
     		float4 returnPixels = refractedPixels;
+
 			returnPixels.a = waterDepth;
+
+
+
 			o.Albedo = 0;
 			o.Emission = returnPixels.rgb;
 			o.Alpha = returnPixels.a;

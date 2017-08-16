@@ -26,7 +26,7 @@ public class ResourceObject : MonoBehaviour {
 	}
 	public void OnBeginDrag(){
 		ResourceBrowser.DragedObject = this;
-
-		Cursor.SetCursor ((Texture2D)GetComponent<RawImage> ().texture, Vector2.zero, CursorMode.Auto);
+		//Cursor.SetCursor ((Texture2D)GetComponent<RawImage> ().texture, Vector2.zero, CursorMode.Auto);
+		Cursor.SetCursor(ResourceBrowser.Current.CursorImage, Vector2.zero, CursorMode.Auto);
 	}
 }

@@ -26,6 +26,7 @@ public class ResourceBrowser : MonoBehaviour
 	public Dropdown EnvType;
 	public Dropdown Category;
 	public GameObject Loading;
+	public Texture2D CursorImage;
 
 
 	[Header("Loaded assets")]
@@ -62,6 +63,7 @@ public class ResourceBrowser : MonoBehaviour
 			return;
 		SelectedObject = "";
 		StopCoroutine("GenerateList");
+		DontReload = false;
 		Pivot.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
 		StartCoroutine("GenerateList");
 	}
