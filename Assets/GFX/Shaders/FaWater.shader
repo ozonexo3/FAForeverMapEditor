@@ -145,8 +145,8 @@ Shader "MapEditor/FaWater" {
 	    	// calculate the depth of water at this pixel, we use this to decide
 			// how to shade and it should become lesser as we get shallower
 			// so that we don't have a sharp line
-	    	float4 waterTexture = tex2D( _UtilitySamplerC, IN.uv_UtilitySamplerC * float2(-1, 1) );
-			float waterDepth = waterTexture.g;
+	    	float4 waterTexture = tex2D( _UtilitySamplerC, IN.uv_UtilitySamplerC * float2(-1, 1) + float2(1 / (_WaterScaleX * 1) + 1, 1 / (_WaterScaleZ * 1)) );
+			float waterDepth = waterTexture.g * 10;
 			
 	        // calculate the correct viewvector
 			float3 viewVector = normalize(IN.mViewVec);
@@ -213,7 +213,7 @@ Shader "MapEditor/FaWater" {
 
 			float SunDotR = dot(-R, SunDirection);
 			SunDotR = pow(SunDotR, fresnelPower) + fresnelBias;
-    		float3 sunReflection = pow( saturate(SunDotR), SunShininess) * sunColor.rgb;
+    		float3 sunReflection = pow( saturate(SunDotR), SunShininess) * sunColor.rgb * 2;
     		// lerp the reflections together
    			reflectedPixels = lerp( skyReflection, reflectedPixels, saturate(unitreflectionAmount * reflectedPixels.w));
    			
@@ -222,14 +222,14 @@ Shader "MapEditor/FaWater" {
 			float waterLerp2 = clamp(waterDepth, waterLerp.x, waterLerp.y);
 			
 			// lerp in the color
-			refractedPixels.xyz = lerp( refractedPixels.xyz, waterColor.rgb, waterLerp2);
+			refractedPixels.xyz = lerp( refractedPixels.xyz, waterColor.rgb * 2, waterLerp2);
 			
 			// implement the water depth into the reflection
 		    float depthReflectionAmount = 10;
 		    skyreflectionAmount *= saturate(waterDepth * depthReflectionAmount);
 		    
 		   	// lerp the reflection into the refraction   
-			refractedPixels = lerp( refractedPixels, reflectedPixels, saturate(skyreflectionAmount * fresnel) * 2);
+			refractedPixels = lerp( refractedPixels, reflectedPixels, saturate(skyreflectionAmount * fresnel));
 			//refractedPixels = 
 			
 			// add in the sky reflection
@@ -243,7 +243,7 @@ Shader "MapEditor/FaWater" {
     		float4 returnPixels = refractedPixels;
 
 			returnPixels.a = waterDepth;
-
+			clip(waterDepth - 0.01);
 
 
 			o.Albedo = 0;

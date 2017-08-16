@@ -94,6 +94,8 @@ Properties {
 	_GridScale ("Grid Scale", Range (0, 2048)) = 512
 	_GridTexture ("Grid Texture", 2D) = "white" {}
 	_GridCamDist ("Grid Scale", Range (0, 10)) = 5
+	_WaterScaleX ("Water Scale X", float) = 1024
+		_WaterScaleZ ("Water Scale Z", float) = 1024
 }
 	
 	SubShader {
@@ -123,11 +125,12 @@ Properties {
 
 			void surf(Input IN, inout SurfaceOutput o) {
 
-				float4 splat_control = saturate(tex2D(_ControlXP, IN.uv_Control * half2(1, -1)) * 2 - 1);
-				float4 splat_control2 = saturate(tex2D(_Control2XP, IN.uv_Control * half2(1, -1)) * 2 - 1);
+				float2 UV = IN.uv_Control * half2(1, -1)  + half2(0, 1);
+
+				float4 splat_control = saturate(tex2D(_ControlXP, UV) * 2 - 1);
+				float4 splat_control2 = saturate(tex2D(_Control2XP, UV) * 2 - 1);
 				float4 col;
 
-				float2 UV = IN.uv_Control * half2(1, -1);
 
 				col = tex2D(_SplatLower, UV * _LowerScale);
 
@@ -213,6 +216,7 @@ Properties {
 
 			half _LowerScale;
 			fixed _TTerrainXP;
+			float _WaterScaleX, _WaterScaleZ;
 
 			float4 LightingSimpleLambert (SurfaceOutput s, float3 lightDir, half atten) {
 			              float NdotL = dot (lightDir, s.Normal);
@@ -257,12 +261,12 @@ Properties {
 
 			void surf (Input IN, inout SurfaceOutput o) {
 
-				float4 waterTexture = tex2D( _UtilitySamplerC, IN.uv_Control * float2(-1, 1) );
+				float4 waterTexture = tex2D( _UtilitySamplerC, IN.uv_Control * float2(1, -1) + float2(1 / (_WaterScaleX * 1), 1 / (_WaterScaleZ * 1) + 1));
 
 				//float WaterDepth = (_WaterLevel - IN.worldPos.y) / (_WaterLevel - _AbyssLevel);
 				float WaterDepth = waterTexture.g;
 
-				float2 UV = IN.uv_Control * fixed2(1, -1);
+				float2 UV = IN.uv_Control * fixed2(1, -1) + half2(0, 1);
 				float4 splat_control = saturate(tex2D (_ControlXP, UV) * 2 - 1);
 				float4 splat_control2 = saturate(tex2D (_Control2XP, UV) * 2 - 1);
 

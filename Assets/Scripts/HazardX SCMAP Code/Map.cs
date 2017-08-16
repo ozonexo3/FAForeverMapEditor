@@ -792,6 +792,8 @@ public class Map
 			TexturemapTex2.SetPixels(Pixels);
 			TexturemapTex2.Apply();
         }
+		TexturemapTex.wrapMode = TextureWrapMode.Clamp;
+		TexturemapTex2.wrapMode = TextureWrapMode.Clamp;
 
 		NormalmapHeader = GetGamedataFile.GetDdsFormat(NormalmapData);
 		NormalmapHeader.Format = TextureFormat.DXT5;
@@ -805,7 +807,7 @@ public class Map
 
 		UncompressedWatermapTex = new Texture2D (WatermapTex.width, WatermapTex.height, TextureFormat.RGBA32, false);
 		UncompressedWatermapTex.SetPixels (WatermapTex.GetPixels ());
-
+		UncompressedWatermapTex.wrapMode = TextureWrapMode.Clamp;
 
 		UncompressedWatermapTex.Apply ();
 

@@ -26,7 +26,7 @@ public struct GenerateWaterTex {
 				i = x + y * WaterTex.width;
 				//i++;
 
-				WaterDepth = Map.Data.GetInterpolatedHeight (x / Width, 1f - y / Height);
+				WaterDepth = Map.Data.GetInterpolatedHeight ((x + 0.5f) / (Width + 1), 1f - (y + 0.5f) / (Height + 1));
 
 				WaterDepth = (WaterHeight - WaterDepth) / WaterHeight;
 				WaterDepth /= DeepDifference;

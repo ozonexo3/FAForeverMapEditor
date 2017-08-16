@@ -169,6 +169,8 @@ public class ScmapEditor : MonoBehaviour
 		WaterMaterial.SetTexture("_UtilitySamplerC", map.UncompressedWatermapTex);
 		WaterMaterial.SetFloat("_WaterScaleX", xRes);
 		WaterMaterial.SetFloat("_WaterScaleZ", zRes);
+		TerrainMaterial.SetFloat("_WaterScaleX", xRes);
+		TerrainMaterial.SetFloat("_WaterScaleZ", zRes);
 
 		//*****************************************
 		// ***** Set Terrain proportives
@@ -311,8 +313,8 @@ public class ScmapEditor : MonoBehaviour
 		WaterLevel.gameObject.SetActive(map.Water.HasWater);
 		WaterLevel.transform.position = Vector3.up * (map.Water.Elevation / 10.0f);
 
-		WaterMaterial.SetColor("waterColor", new Color(map.Water.SurfaceColor.x, map.Water.SurfaceColor.y, map.Water.SurfaceColor.z, 1));
-		WaterMaterial.SetColor("sunColor", new Color(map.Water.SunColor.x, map.Water.SunColor.y, map.Water.SunColor.z, 1));
+		WaterMaterial.SetColor("waterColor", new Color(map.Water.SurfaceColor.x * 0.5f, map.Water.SurfaceColor.y * 0.5f, map.Water.SurfaceColor.z * 0.5f, 1));
+		WaterMaterial.SetColor("sunColor", new Color(map.Water.SunColor.x * 0.5f, map.Water.SunColor.y * 0.5f, map.Water.SunColor.z * 0.5f, 1));
 
 		Shader.SetGlobalVector("waterLerp", map.Water.ColorLerp);
 		Shader.SetGlobalVector("SunDirection", new Vector3(map.Water.SunDirection.x, map.Water.SunDirection.y, -map.Water.SunDirection.z));
@@ -321,8 +323,7 @@ public class ScmapEditor : MonoBehaviour
 		Shader.SetGlobalFloat("unitreflectionAmount", map.Water.UnitReflection);
 		Shader.SetGlobalFloat("skyreflectionAmount", map.Water.SkyReflection);
 		Shader.SetGlobalFloat("refractionScale", map.Water.RefractionScale);
-		WaterMaterial.SetColor("sunColor", new Color(map.Water.SunColor.x, map.Water.SunColor.y, map.Water.SunColor.z, 1));
-		WaterMaterial.SetColor("waterColor", new Color(map.Water.SurfaceColor.x, map.Water.SurfaceColor.y, map.Water.SurfaceColor.z, 1));
+
 
 		//Shader.SetGlobalVector("waterLerp", map.Water.WaveTextures);
 

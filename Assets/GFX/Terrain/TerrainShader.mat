@@ -223,12 +223,12 @@ Material:
     - _AreaY: 0.3
     - _Brush: 0
     - _BrushSize: 0
-    - _BrushUvX: 0.13831615
-    - _BrushUvY: 0.52917075
+    - _BrushUvX: 0.26437792
+    - _BrushUvY: 0.56584746
     - _DeepLevel: 1.675625
     - _DepthLevel: 5.5
     - _Grid: 0
-    - _GridCamDist: 7.3392844
+    - _GridCamDist: 0.4931144
     - _GridScale: 102.4
     - _LightingMultiplier: 1.8299999
     - _LowerScale: 256
@@ -256,6 +256,8 @@ Material:
     - _UpperScaleNormal: 1024
     - _Water: 1
     - _WaterLevel: 6.35
+    - _WaterScaleX: 1024
+    - _WaterScaleZ: 1024
     m_Colors:
     - _Abyss: {r: 0.005190316, g: 0.051962737, b: 0.2352941, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
