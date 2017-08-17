@@ -474,7 +474,8 @@ namespace EditMap
 
 		public void RegenerateMaps()
 		{
-			GenerateWaterTex.Generate(ref Map.map.UncompressedWatermapTex, Map);
+			GenerateControlTex.GenerateWater(ref Map.map.UncompressedWatermapTex);
+			GenerateControlTex.GenerateNormal(ref Map.map.UncompressedNormalmapTex);
 		}
 
 		#region Brush Update

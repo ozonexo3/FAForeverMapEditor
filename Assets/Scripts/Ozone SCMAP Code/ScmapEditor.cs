@@ -165,6 +165,7 @@ public class ScmapEditor : MonoBehaviour
 		float yRes = (float)map.HeightScale; ;
 		float HeightResize = 512 * 40;
 
+		TerrainMaterial.SetTexture("_TerrainNormal", map.UncompressedNormalmapTex);
 		TerrainMaterial.SetTexture("_UtilitySamplerC", map.UncompressedWatermapTex);
 		WaterMaterial.SetTexture("_UtilitySamplerC", map.UncompressedWatermapTex);
 		WaterMaterial.SetFloat("_WaterScaleX", xRes);
@@ -226,7 +227,7 @@ public class ScmapEditor : MonoBehaviour
 		Teren.gameObject.name = "TERRAIN";
 		Teren.materialType = Terrain.MaterialType.Custom;
 		Teren.materialTemplate = TerrainMaterial;
-		Teren.heightmapPixelError = 2f;
+		Teren.heightmapPixelError = 8f;
 		Teren.basemapDistance = 10000;
 		Teren.castShadows = false;
 		Teren.drawTreesAndFoliage = false;
@@ -300,7 +301,6 @@ public class ScmapEditor : MonoBehaviour
 		Data.SetHeights(0, 0, heights);
 
 		Teren.gameObject.layer = 8;
-		//Teren.heightmapPixelError = 0; // Force terrain pixel error to 0, to get more sharp terrain
 
 		SetTextures();
 		yield return null;
@@ -499,6 +499,12 @@ public class ScmapEditor : MonoBehaviour
 		map.WatermapTex.Apply();
 		map.WatermapTex.Compress(true);
 		map.WatermapTex.Apply();
+
+		map.NormalmapTex = new Texture2D(map.UncompressedNormalmapTex.width, map.UncompressedNormalmapTex.height, map.UncompressedNormalmapTex.format, false);
+		map.NormalmapTex.SetPixels(map.UncompressedNormalmapTex.GetPixels());
+		map.NormalmapTex.Apply();
+		map.NormalmapTex.Compress(true);
+		map.NormalmapTex.Apply();
 
 
 		for (int i = 0; i < map.Layers.Count; i++)

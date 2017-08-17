@@ -800,6 +800,11 @@ public class Map
 		NormalmapTex = TextureLoader.LoadTextureDXT(NormalmapData, NormalmapHeader);
 		NormalmapData = new byte[0];
 
+		UncompressedNormalmapTex = new Texture2D(NormalmapTex.width, NormalmapTex.height, TextureFormat.RGBA32, false);
+		UncompressedNormalmapTex.SetPixels(NormalmapTex.GetPixels());
+		UncompressedNormalmapTex.wrapMode = TextureWrapMode.Clamp;
+		UncompressedNormalmapTex.Apply();
+
 		WatermapHeader = GetGamedataFile.GetDdsFormat(WatermapData);
 		WatermapHeader.Format = TextureFormat.DXT5;
 		WatermapTex = TextureLoader.LoadTextureDXT(WatermapData, WatermapHeader);
@@ -815,8 +820,9 @@ public class Map
     }
 
 	public Texture2D UncompressedWatermapTex;
+	public Texture2D UncompressedNormalmapTex;
 
-    public void SaveMapInformation(string Filename, int randomSeed)
+	public void SaveMapInformation(string Filename, int randomSeed)
     {
         System.IO.StreamWriter fs = new System.IO.StreamWriter(Filename, false);
         fs.WriteLine("FA Map Information");

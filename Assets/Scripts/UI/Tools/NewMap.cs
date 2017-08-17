@@ -35,10 +35,7 @@ namespace EditMap
 			Width.value = 3;
 			Height.value = 3;
 			InitialHeight.text = "64";
-
 		}
-
-
 
 		public void ToggleWater()
 		{

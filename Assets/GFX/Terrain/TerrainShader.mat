@@ -206,6 +206,10 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _TerrainNormal:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _UtilitySamplerC:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -222,13 +226,13 @@ Material:
     - _AreaX: 0.4
     - _AreaY: 0.3
     - _Brush: 0
-    - _BrushSize: 0
-    - _BrushUvX: 0.26437792
-    - _BrushUvY: 0.56584746
+    - _BrushSize: 21
+    - _BrushUvX: 0.57744503
+    - _BrushUvY: 0.48263624
     - _DeepLevel: 1.675625
     - _DepthLevel: 5.5
     - _Grid: 0
-    - _GridCamDist: 0.4931144
+    - _GridCamDist: 0.6915137
     - _GridScale: 102.4
     - _LightingMultiplier: 1.8299999
     - _LowerScale: 256

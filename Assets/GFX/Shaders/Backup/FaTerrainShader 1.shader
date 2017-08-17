@@ -51,6 +51,7 @@ Properties {
 	_Splat7Scale ("Splat8 Level", Range (1, 1024)) = 10
 
 	// set by terrain engine
+	_TerrainNormal ("Terrain Normal", 2D) = "bump" {}
 	_SplatNormal0 ("Normal 1 (A)", 2D) = "bump" {}
 	_SplatNormal1 ("Normal 2 (B)", 2D) = "bump" {}
 	_SplatNormal2 ("Normal 3 (G)", 2D) = "bump" {}
@@ -154,7 +155,7 @@ Properties {
 				//col = splat_control.r;
 
 				o.Albedo = col;	
-				o.Emission = 0;
+				//o.Emission = 0;
 				o.Gloss = 0;
 				o.Specular = 0;
 				o.Alpha = 0.0;
@@ -180,6 +181,7 @@ Properties {
 
 			void vert (inout appdata_full v, out Input o){
 				UNITY_INITIALIZE_OUTPUT(Input,o);
+				v.normal = float3(0,1,0);
 				v.tangent.xyz = cross(v.normal, float3(0,0,1));
 				v.tangent.w = -1;
 				//o.normal = v.normal;
@@ -209,6 +211,7 @@ Properties {
 			sampler2D _ControlXP;
 			sampler2D _Control2XP;
 			sampler2D _UtilitySamplerC;
+			sampler2D _TerrainNormal;
 			sampler2D _SplatNormal3;
 			sampler2D _SplatNormal0, _SplatNormal1, _SplatNormal2, _NormalLower;
 			sampler2D _SplatNormal4, _SplatNormal5, _SplatNormal6, _SplatNormal7;
@@ -293,7 +296,10 @@ Properties {
 				//nrm.rgb = nrm.rgb * 2 - half3(1, 1, 1);
 				//nrm.rg *= 3;
 				//nrm.rgb = normalize(nrm.rgb);
-				o.Normal = UnpackNormalDXT5nmScaled(nrm.rgbg, 2);
+				//o.Normal = UnpackNormalDXT5nm(tex2D(_TerrainNormal, UV ));
+				//o.Normal = (UnpackNormalDXT5nm(tex2D(_TerrainNormal, UV )) + UnpackNormalDXT5nmScaled(nrm.rgbg, 2));
+				half4 TerrainNormal = tex2D(_TerrainNormal, UV );
+				o.Normal = UnpackNormalDXT5nm( half4(TerrainNormal.r, 1 - TerrainNormal.g, TerrainNormal.b, TerrainNormal.a)  + nrm.rgbg * 2 - 1);
 
 				if(_Slope > 0){
 					if(IN.worldPos.y < _WaterLevel){
