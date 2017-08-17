@@ -11,10 +11,22 @@ public class GenerateControlTex : MonoBehaviour
 		Current = this;
 	}
 
-	public static void GenerateWater(ref Texture2D WaterTex){
-		return;
+	static bool GeneratingWaterTex = false;
+	static bool BufforWaterTex = false;
 
-		Color[] AllColors = WaterTex.GetPixels ();
+	public static void GenerateWater(ref Texture2D WaterTex){
+		if (GeneratingWaterTex)
+		{
+			BufforWaterTex = true;
+		}
+		else
+			Current.StartCoroutine(Current.GeneratingWater());
+	}
+
+	public IEnumerator GeneratingWater()
+	{
+		GeneratingWaterTex = true;
+		Color[] AllColors = ScmapEditor.Current.map.UncompressedWatermapTex.GetPixels();
 
 		float WaterHeight = ScmapEditor.Current.map.Water.Elevation * 0.1f;
 		if (WaterHeight == 0)
@@ -23,28 +35,47 @@ public class GenerateControlTex : MonoBehaviour
 
 		float DeepDifference = (WaterHeight - WaterDeep) / WaterHeight;
 
-		float Width = WaterTex.width;
-		float Height = WaterTex.height;
+		int Width = ScmapEditor.Current.map.UncompressedWatermapTex.width;
+		int Height = ScmapEditor.Current.map.UncompressedWatermapTex.height;
 		int i = 0;
 		int x = 0;
 		int y = 0;
 		float WaterDepth = 0;
+		int counter = 0;
 
-		for (x = 0; x < Width; x++) {
-			for (y = 0; y < Height; y++) {
-				i = x + y * WaterTex.width;
+		for (x = 0; x < Width; x++)
+		{
+			for (y = 0; y < Height; y++)
+			{
+				i = x + y * Width;
 
-				WaterDepth = ScmapEditor.Current.Data.GetInterpolatedHeight ((x + 0.5f) / (Width + 1), 1f - (y + 0.5f) / (Height + 1));
+				WaterDepth = ScmapEditor.Current.Data.GetInterpolatedHeight((x + 0.5f) / (Width + 1f), 1f - (y + 0.5f) / (Height + 1f));
 
 				WaterDepth = (WaterHeight - WaterDepth) / WaterHeight;
 				WaterDepth /= DeepDifference;
 
-				AllColors [i] = new Color (AllColors [i].r, Mathf.Clamp01 (WaterDepth), (1f - Mathf.Clamp01(WaterDepth * 100f)) , 0);
+				AllColors[i] = new Color(AllColors[i].r, Mathf.Clamp01(WaterDepth), (1f - Mathf.Clamp01(WaterDepth * 100f)), 0);
+
+				counter++;
+				if (counter > 50000)
+				{
+					counter = 0;
+					yield return null;
+				}
 			}
 		}
 
-		WaterTex.SetPixels(AllColors) ;
-		WaterTex.Apply (false);
+		ScmapEditor.Current.map.UncompressedWatermapTex.SetPixels(AllColors);
+		ScmapEditor.Current.map.UncompressedWatermapTex.Apply(false);
+
+		yield return null;
+		GeneratingWaterTex = false;
+
+		if (BufforWaterTex)
+		{
+			BufforWaterTex = false;
+			Current.StartCoroutine(Current.GeneratingWater());
+		}
 	}
 
 	public static void GenerateNormal(ref Texture2D NormalTexture)
@@ -87,6 +118,7 @@ public class GenerateControlTex : MonoBehaviour
 	public IEnumerator GeneratingNormal()
 	{
 		GeneratingNormalTex = true;
+		ScmapEditor.Current.TerrainMaterial.SetFloat("_GeneratingNormal", 1);
 		Color[] AllColors = ScmapEditor.Current.map.UncompressedNormalmapTex.GetPixels();
 
 		float Width = ScmapEditor.Current.map.UncompressedNormalmapTex.width;
@@ -123,6 +155,7 @@ public class GenerateControlTex : MonoBehaviour
 
 		yield return null;
 		GeneratingNormalTex = false;
+		ScmapEditor.Current.TerrainMaterial.SetFloat("_GeneratingNormal", 0);
 
 		if (BufforNormalTex)
 		{

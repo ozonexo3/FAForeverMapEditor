@@ -209,6 +209,7 @@ namespace EditMap
 					{
 						if (UpdateBrushPosition(true))
 						{
+							ScmapEditor.Current.TerrainMaterial.SetFloat("_GeneratingNormal", 1);
 							PaintStarted = true;
 							SymmetryPaint();
 						}

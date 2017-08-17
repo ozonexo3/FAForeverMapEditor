@@ -227,7 +227,7 @@ public class ScmapEditor : MonoBehaviour
 		Teren.gameObject.name = "TERRAIN";
 		Teren.materialType = Terrain.MaterialType.Custom;
 		Teren.materialTemplate = TerrainMaterial;
-		Teren.heightmapPixelError = 8f;
+		Teren.heightmapPixelError = 4f;
 		Teren.basemapDistance = 10000;
 		Teren.castShadows = false;
 		Teren.drawTreesAndFoliage = false;
@@ -323,6 +323,9 @@ public class ScmapEditor : MonoBehaviour
 		Shader.SetGlobalFloat("unitreflectionAmount", map.Water.UnitReflection);
 		Shader.SetGlobalFloat("skyreflectionAmount", map.Water.SkyReflection);
 		Shader.SetGlobalFloat("refractionScale", map.Water.RefractionScale);
+
+		Shader.SetGlobalFloat("fresnelPower", map.Water.FresnelPower);
+		Shader.SetGlobalFloat("fresnelBias", map.Water.FresnelBias);
 
 
 		//Shader.SetGlobalVector("waterLerp", map.Water.WaveTextures);

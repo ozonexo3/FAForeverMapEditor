@@ -178,7 +178,7 @@ Shader "MapEditor/FaWater" {
 		  	N = lerp(up, N, waterTexture.r);
 		    
 		    // calculate the reflection vector
-			float3 R = reflect( IN.mViewVec, N );
+			float3 R = reflect( viewVector, N );
 	    
 	        // calculate the sky reflection color
 			float4 skyReflection = texCUBE( SkySampler, R );
@@ -206,14 +206,13 @@ Shader "MapEditor/FaWater" {
 
 	   		float  NDotL = saturate( dot(-viewVector, N) );
 			float fresnel = tex2D( FresnelSampler, float2(waterDepth, NDotL) ).r;
-			//fresnel = pow(fresnel, fresnelPower);
+			fresnel = pow(fresnel, fresnelPower) + fresnelBias;
 
 			// figure out the sun reflection
+			float SunDotR = saturate(dot(-R, SunDirection));
+			//SunDotR = pow(SunDotR, fresnelPower);
+    		float3 sunReflection = pow( SunDotR, SunShininess) * sunColor.rgb * 2;
 
-
-			float SunDotR = dot(-R, SunDirection);
-			SunDotR = pow(SunDotR, fresnelPower) + fresnelBias;
-    		float3 sunReflection = pow( saturate(SunDotR), SunShininess) * sunColor.rgb * 2;
     		// lerp the reflections together
    			reflectedPixels = lerp( skyReflection, reflectedPixels, saturate(unitreflectionAmount * reflectedPixels.w));
    			
@@ -233,7 +232,8 @@ Shader "MapEditor/FaWater" {
 			//refractedPixels = 
 			
 			// add in the sky reflection
-		    refractedPixels.xyz += sunReflection * fresnel;
+			sunReflection = sunReflection * fresnel;
+		    refractedPixels.xyz += sunReflection;
 
 			// Lerp in a wave crest
 			waveCrestColor = float3(1,1,1);

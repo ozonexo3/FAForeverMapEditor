@@ -87,8 +87,7 @@ public partial struct GetGamedataFile
 
 			if (zipEntry2 == null)
 			{
-				Debug.LogWarning("Zip Entry is empty for: " + LocalPath);
-
+				//Debug.LogWarning("Zip Entry is empty for: " + LocalPath);
 				return null;
 			}
 		}

@@ -51,6 +51,7 @@ Properties {
 	_Splat7Scale ("Splat8 Level", Range (1, 1024)) = 10
 
 	// set by terrain engine
+	[MaterialToggle] _GeneratingNormal("Generating Normal", Int) = 0
 	_TerrainNormal ("Terrain Normal", 2D) = "bump" {}
 	_SplatNormal0 ("Normal 1 (A)", 2D) = "bump" {}
 	_SplatNormal1 ("Normal 2 (B)", 2D) = "bump" {}
@@ -179,13 +180,18 @@ Properties {
 				float4 grabUV;
 			};
 
+			half _GeneratingNormal;
+
 			void vert (inout appdata_full v, out Input o){
 				UNITY_INITIALIZE_OUTPUT(Input,o);
-				v.normal = float3(0,1,0);
+
+				o.SlopeLerp = dot(v.normal, half3(0,1,0));
+
+				if(_GeneratingNormal == 0)
+					v.normal = float3(0,1,0);
 				v.tangent.xyz = cross(v.normal, float3(0,0,1));
 				v.tangent.w = -1;
 				//o.normal = v.normal;
-				o.SlopeLerp = dot(v.normal, half3(0,1,0));
 				 float4 hpos = UnityObjectToClipPos (v.vertex);
 		         o.grabUV = ComputeGrabScreenPos(hpos);
 				//v.color = _Abyss;
@@ -298,19 +304,32 @@ Properties {
 				//nrm.rgb = normalize(nrm.rgb);
 				//o.Normal = UnpackNormalDXT5nm(tex2D(_TerrainNormal, UV ));
 				//o.Normal = (UnpackNormalDXT5nm(tex2D(_TerrainNormal, UV )) + UnpackNormalDXT5nmScaled(nrm.rgbg, 2));
-				half4 TerrainNormal = tex2D(_TerrainNormal, UV );
-				o.Normal = UnpackNormalDXT5nm( half4(TerrainNormal.r, 1 - TerrainNormal.g, TerrainNormal.b, TerrainNormal.a)  + nrm.rgbg * 2 - 1);
+				if(_GeneratingNormal == 0){
+					half4 TerrainNormal = tex2D(_TerrainNormal, UV );
+					half3 TerrainNormalVector = UnpackNormalDXT5nm( half4(TerrainNormal.r, 1 - TerrainNormal.g, TerrainNormal.b, TerrainNormal.a));
+					IN.SlopeLerp = dot(TerrainNormalVector, half3(0,0,1));
+					//o.Albedo = IN.SlopeLerp;
+					o.Normal = BlendNormals(TerrainNormalVector , UnpackNormalDXT5nmScaled(nrm.rgbg, 2));
+
+				}
+				else
+					o.Normal = UnpackNormalDXT5nmScaled(nrm.rgbg, 2);
+
 
 				if(_Slope > 0){
+					o.Normal = half3(0,0,1);
+
 					if(IN.worldPos.y < _WaterLevel){
 						if(IN.SlopeLerp > 0.75) col.rgb = half3(0,0.4,1);
 						else col.rgb = half3(0.6,0,1);
 					}
-					else if(IN.SlopeLerp > 0.99) col.rgb = half3(0,0.8,0);
-					else if(IN.SlopeLerp > 0.85) col.rgb = half3(0.5,1,0);
+					else if(IN.SlopeLerp > 0.999) col.rgb = half3(0,0.8,0);
+					else if(IN.SlopeLerp > 0.95) col.rgb = half3(0.3,0.89,0);
+					else if(IN.SlopeLerp > 0.80) col.rgb = half3(0.5,0.8,0);
 					else col.rgb = half3(1,0,0);
 					//col.rgb = lerp(half3(1,0,0), half3(0,1,0), IN.SlopeLerp);
 					o.Albedo = col;
+					
 				}
 				else if(_Water > 0) o.Albedo = ApplyWaterColor(WaterDepth, col.rgb);	
 				else o.Albedo = col;

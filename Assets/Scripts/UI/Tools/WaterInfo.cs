@@ -19,6 +19,14 @@ namespace EditMap
 		public InputField ColorLerpXElevation;
 		public InputField ColorLerpYElevation;
 		public UiColor WaterColor;
+		public UiColor SunColor;
+
+		public InputField SunStrength;
+		public InputField SunShininess;
+		public InputField SunReflection;
+
+		public InputField FresnelPower;
+		public InputField FresnelBias;
 
 		bool Loading = false;
 		private void OnEnable()
@@ -33,7 +41,15 @@ namespace EditMap
 			ColorLerpXElevation.text = ScmapEditor.Current.map.Water.ColorLerp.x.ToString();
 			ColorLerpYElevation.text = ScmapEditor.Current.map.Water.ColorLerp.y.ToString();
 
-			WaterColor.SetColorField(ScmapEditor.Current.map.Water.SurfaceColor.x, ScmapEditor.Current.map.Water.SurfaceColor.y, ScmapEditor.Current.map.Water.SurfaceColor.z, ElevationChanged);
+			WaterColor.SetColorField(ScmapEditor.Current.map.Water.SurfaceColor.x, ScmapEditor.Current.map.Water.SurfaceColor.y, ScmapEditor.Current.map.Water.SurfaceColor.z, WaterSettingsChanged);
+			SunColor.SetColorField(ScmapEditor.Current.map.Water.SunColor.x, ScmapEditor.Current.map.Water.SunColor.y, ScmapEditor.Current.map.Water.SunColor.z, WaterSettingsChanged);
+
+			SunStrength.text = ScmapEditor.Current.map.Water.SunStrength.ToString();
+			SunShininess.text = ScmapEditor.Current.map.Water.SunShininess.ToString();
+			SunReflection.text = ScmapEditor.Current.map.Water.SunReflection.ToString();
+
+			FresnelPower.text = ScmapEditor.Current.map.Water.FresnelPower.ToString();
+			FresnelBias.text = ScmapEditor.Current.map.Water.FresnelBias.ToString();
 
 			WaterSettings.interactable = HasWater.isOn;
 
@@ -74,18 +90,31 @@ namespace EditMap
 			DepthElevation.text = depth.ToString();
 			AbyssElevation.text = abyss.ToString();
 
-
-			ScmapEditor.Current.map.Water.ColorLerp.x = float.Parse(ColorLerpXElevation.text);
-			ScmapEditor.Current.map.Water.ColorLerp.y = float.Parse(ColorLerpYElevation.text);
-
-			ScmapEditor.Current.map.Water.SurfaceColor = WaterColor.GetVectorValue();
-
-
 			ScmapEditor.Current.SetWater();
 
 			TerrainMenu.RegenerateMaps();
 
 			WaterSettings.interactable = HasWater.isOn;
+		}
+
+		public void WaterSettingsChanged()
+		{
+			if (Loading)
+				return;
+			ScmapEditor.Current.map.Water.ColorLerp.x = float.Parse(ColorLerpXElevation.text);
+			ScmapEditor.Current.map.Water.ColorLerp.y = float.Parse(ColorLerpYElevation.text);
+
+			ScmapEditor.Current.map.Water.SurfaceColor = WaterColor.GetVectorValue();
+			ScmapEditor.Current.map.Water.SunColor = SunColor.GetVectorValue();
+
+			ScmapEditor.Current.map.Water.SunStrength = float.Parse(SunStrength.text);
+			ScmapEditor.Current.map.Water.SunShininess = float.Parse(SunShininess.text);
+			ScmapEditor.Current.map.Water.SunReflection = float.Parse(SunReflection.text);
+
+			ScmapEditor.Current.map.Water.FresnelPower = float.Parse(FresnelPower.text);
+			ScmapEditor.Current.map.Water.FresnelBias = float.Parse(FresnelBias.text);
+
+			ScmapEditor.Current.SetWater();
 		}
 	}
 }

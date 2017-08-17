@@ -220,7 +220,9 @@ public partial struct GetGamedataFile
 						ToReturn.BP.LODs[i].AlbedoName = LodTableValues[i].RawGet("AlbedoName").ToString();
 
 					if (LodTableValues[i].RawGet("NormalsName") != null)
+					{
 						ToReturn.BP.LODs[i].NormalsName = LodTableValues[i].RawGet("NormalsName").ToString();
+					}
 
 					if (LodTableValues[i].RawGet("ShaderName") != null)
 						ToReturn.BP.LODs[i].ShaderName = LodTableValues[i].RawGet("ShaderName").ToString();
@@ -277,7 +279,7 @@ public partial struct GetGamedataFile
 			ToReturn.BP.LODs[i].Mat.SetTexture("_MainTex", ToReturn.BP.LODs[i].Albedo);
 
 
-			if (ToReturn.BP.LODs[i].NormalsName.Length == 0)
+			if (ToReturn.BP.LODs[i].NormalsName.Length == 0 && i == 0)
 			{
 				ToReturn.BP.LODs[i].NormalsName = LocalPath.Replace("prop.bp", "normalsTS.dds");
 			}
@@ -286,10 +288,11 @@ public partial struct GetGamedataFile
 				ToReturn.BP.LODs[i].NormalsName = OffsetRelativePath(LocalPath, ToReturn.BP.LODs[i].NormalsName, true);
 			}
 
-			ToReturn.BP.LODs[i].Normal = LoadTexture2DFromGamedata(scd, ToReturn.BP.LODs[i].NormalsName, true);
-			//if (ToReturn.BP.LODs[i].Normal != null)
-			//	ToReturn.BP.LODs[i].Normal.mipMapBias = PropTexturesMipMapBias;
-			ToReturn.BP.LODs[i].Mat.SetTexture("_BumpMap", ToReturn.BP.LODs[i].Normal);
+			if (!string.IsNullOrEmpty(ToReturn.BP.LODs[i].NormalsName))
+			{
+				ToReturn.BP.LODs[i].Normal = LoadTexture2DFromGamedata(scd, ToReturn.BP.LODs[i].NormalsName, true);
+				ToReturn.BP.LODs[i].Mat.SetTexture("_BumpMap", ToReturn.BP.LODs[i].Normal);
+			}
 
 		}
 
