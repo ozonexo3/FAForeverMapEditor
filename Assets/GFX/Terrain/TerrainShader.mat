@@ -102,6 +102,10 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _SlopeTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _Splat0:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -227,13 +231,13 @@ Material:
     - _AreaY: 0.3
     - _Brush: 0
     - _BrushSize: 0
-    - _BrushUvX: 0.044613022
-    - _BrushUvY: 0.56266886
+    - _BrushUvX: 0.35589236
+    - _BrushUvY: 0.45247158
     - _DeepLevel: 1.675625
     - _DepthLevel: 5.5
     - _GeneratingNormal: 0
     - _Grid: 0
-    - _GridCamDist: 7.339286
+    - _GridCamDist: 3.1107125
     - _GridScale: 102.4
     - _LightingMultiplier: 1.8299999
     - _LowerScale: 256
@@ -259,6 +263,7 @@ Material:
     - _TTerrainXP: 1
     - _UpperScale: 8
     - _UpperScaleNormal: 1024
+    - _UseSlopeTex: 0
     - _Water: 1
     - _WaterLevel: 6.35
     - _WaterScaleX: 1024

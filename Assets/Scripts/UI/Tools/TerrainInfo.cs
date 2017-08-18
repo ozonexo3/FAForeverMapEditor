@@ -83,6 +83,15 @@ namespace EditMap
 				Selection[i].SetActive(false);
 			}
 
+			if(CurrentPage == 0)
+			{
+				TerrainMaterial.SetInt("_Brush", 1);
+			}
+			else
+			{
+				TerrainMaterial.SetInt("_Brush", 0);
+			}
+
 			Page[CurrentPage].SetActive(true);
 			Selection[CurrentPage].SetActive(true);
 			TerrainPageChange = false;
@@ -153,6 +162,9 @@ namespace EditMap
 		{
 			Invert = Input.GetKey(KeyCode.LeftAlt);
 			Smooth = Input.GetKey(KeyCode.LeftShift);
+
+			if (CurrentPage != 0)
+				return;
 
 			if (PaintStarted && Input.GetMouseButtonUp(0))
 			{
@@ -475,8 +487,10 @@ namespace EditMap
 
 		public void RegenerateMaps()
 		{
-			GenerateControlTex.GenerateWater(ref Map.map.UncompressedWatermapTex);
-			GenerateControlTex.GenerateNormal(ref Map.map.UncompressedNormalmapTex);
+			GenerateControlTex.GenerateWater();
+			GenerateControlTex.GenerateNormal();
+			if (ScmapEditor.Current.Slope)
+				GenerateControlTex.Current.GenerateSlopeTexture();
 		}
 
 		#region Brush Update

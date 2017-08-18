@@ -32,7 +32,8 @@ public class ScmapEditor : MonoBehaviour
 
 	float[,] heights = new float[1, 1];
 	bool Grid;
-	bool Slope;
+	[HideInInspector]
+	public bool Slope;
 	//string Shader;
 	//public		TerrainMesh		TerrainM;
 
@@ -759,6 +760,12 @@ public class ScmapEditor : MonoBehaviour
 	{
 		Slope = To;
 		TerrainMaterial.SetInt("_Slope", Slope ? 1 : 0);
+		if (To)
+		{
+			GenerateControlTex.Current.GenerateSlopeTexture();
+
+		}
+
 	}
 
 	public void ToogleShader()

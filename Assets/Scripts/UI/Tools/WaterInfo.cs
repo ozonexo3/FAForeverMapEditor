@@ -28,6 +28,10 @@ namespace EditMap
 		public InputField FresnelPower;
 		public InputField FresnelBias;
 
+		public InputField UnitReflection;
+		public InputField SkyReflection;
+		public InputField RefractionScale;
+
 		bool Loading = false;
 		private void OnEnable()
 		{
@@ -50,6 +54,10 @@ namespace EditMap
 
 			FresnelPower.text = ScmapEditor.Current.map.Water.FresnelPower.ToString();
 			FresnelBias.text = ScmapEditor.Current.map.Water.FresnelBias.ToString();
+
+			UnitReflection.text = ScmapEditor.Current.map.Water.UnitReflection.ToString();
+			SkyReflection.text = ScmapEditor.Current.map.Water.SkyReflection.ToString();
+			RefractionScale.text = ScmapEditor.Current.map.Water.RefractionScale.ToString();
 
 			WaterSettings.interactable = HasWater.isOn;
 
@@ -113,6 +121,10 @@ namespace EditMap
 
 			ScmapEditor.Current.map.Water.FresnelPower = float.Parse(FresnelPower.text);
 			ScmapEditor.Current.map.Water.FresnelBias = float.Parse(FresnelBias.text);
+
+			ScmapEditor.Current.map.Water.UnitReflection = float.Parse(UnitReflection.text);
+			ScmapEditor.Current.map.Water.SkyReflection = float.Parse(SkyReflection.text);
+			ScmapEditor.Current.map.Water.RefractionScale = float.Parse(RefractionScale.text);
 
 			ScmapEditor.Current.SetWater();
 		}

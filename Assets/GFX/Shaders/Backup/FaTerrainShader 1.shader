@@ -7,6 +7,8 @@ Properties {
 	[MaterialToggle] _Water("Has Water", Int) = 0
 	[MaterialToggle] _Grid("Grid", Int) = 0
 	[MaterialToggle] _Slope("Slope", Int) = 0
+	[MaterialToggle] _UseSlopeTex("Use Slope Data", Int) = 0
+	_SlopeTex ("Slope data", 2D) = "black" {}
 	[MaterialToggle] _TTerrainXP("_TTerrainXP", Int) = 0
 	
 	_LightingMultiplier ("LightingMultiplier ", Range (0, 10)) = 1
@@ -206,7 +208,7 @@ Properties {
 			fixed4 _Deep;
 			int _Water;
 
-			int _Slope;
+			int _Slope, _UseSlopeTex;
 
 
 			half _LightingMultiplier;
@@ -319,21 +321,23 @@ Properties {
 				if(_Slope > 0){
 					o.Normal = half3(0,0,1);
 
-					if(IN.worldPos.y < _WaterLevel){
-						if(IN.SlopeLerp > 0.75) col.rgb = half3(0,0.4,1);
-						else col.rgb = half3(0.6,0,1);
+					if(_UseSlopeTex > 0){
+						o.Albedo = 0;
 					}
-					else if(IN.SlopeLerp > 0.999) col.rgb = half3(0,0.8,0);
-					else if(IN.SlopeLerp > 0.95) col.rgb = half3(0.3,0.89,0);
-					else if(IN.SlopeLerp > 0.80) col.rgb = half3(0.5,0.8,0);
-					else col.rgb = half3(1,0,0);
-					//col.rgb = lerp(half3(1,0,0), half3(0,1,0), IN.SlopeLerp);
-					o.Albedo = col;
-					
+					else{
+						if(IN.worldPos.y < _WaterLevel){
+							if(IN.SlopeLerp > 0.75) col.rgb = half3(0,0.4,1);
+							else col.rgb = half3(0.6,0,1);
+						}
+						else if(IN.SlopeLerp > 0.999) col.rgb = half3(0,0.8,0);
+						else if(IN.SlopeLerp > 0.95) col.rgb = half3(0.3,0.89,0);
+						else if(IN.SlopeLerp > 0.80) col.rgb = half3(0.5,0.8,0);
+						else col.rgb = half3(1,0,0);
+						o.Albedo = col;
+						}
 				}
 				else if(_Water > 0) o.Albedo = ApplyWaterColor(WaterDepth, col.rgb);	
 				else o.Albedo = col;
-
 
 
 				//o.Albedo = 0.5;
@@ -345,6 +349,31 @@ Properties {
 				o.Alpha = 0.0;
 			}
 			ENDCG  
+
+			Blend One One
+			CGPROGRAM
+			#pragma surface surf Lambert nofog
+			
+				struct Input {
+				float2 uv_Control : TEXCOORD0;
+					float3 worldPos;
+				};
+				
+			int _Slope, _UseSlopeTex;
+			sampler2D _SlopeTex;
+			half _GridScale;
+			
+				void surf (Input IN, inout SurfaceOutput o) {
+					o.Albedo = fixed4(0,0,0,1);
+					//o.Emission = fixed4(1,1,1,1);
+					if(_Slope > 0 && _UseSlopeTex > 0){
+						float2 UV = IN.uv_Control * fixed2(1, 1) + half2(0, 0) - float2(-0.05, -0.05) / _GridScale;
+
+						float4 splat_control = tex2D (_SlopeTex, UV);
+						o.Emission = splat_control.rgb;
+					}
+				}
+		        ENDCG
 
 			Blend One One
 			CGPROGRAM
