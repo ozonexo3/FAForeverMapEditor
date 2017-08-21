@@ -126,13 +126,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="FAForeverMapEditor.csproj">
-      <Project>{726F1A7D-6B82-7E5C-457A-25BF0902FEF2}</Project>
-      <Name>FAForeverMapEditor</Name>
-    </ProjectReference>
     <ProjectReference Include="FAForeverMapEditor.Plugins.csproj">
       <Project>{D12FDEA9-1D2C-B9CE-C96B-D95DAD860558}</Project>
       <Name>FAForeverMapEditor.Plugins</Name>
+    </ProjectReference>
+    <ProjectReference Include="FAForeverMapEditor.csproj">
+      <Project>{726F1A7D-6B82-7E5C-457A-25BF0902FEF2}</Project>
+      <Name>FAForeverMapEditor</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

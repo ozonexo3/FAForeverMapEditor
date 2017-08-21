@@ -34,6 +34,17 @@ Properties {
 	_ControlXP ("ControlXP (RGBA)", 2D) = "black" {}
 	_Control2XP ("Control2XP (RGBA)", 2D) = "black" {}
 
+	
+	[MaterialToggle] _HideSplat0("Hide splat 2", Int) = 0
+	[MaterialToggle] _HideSplat1("Hide splat 2", Int) = 0
+	[MaterialToggle] _HideSplat2("Hide splat 3", Int) = 0
+	[MaterialToggle] _HideSplat3("Hide splat 4", Int) = 0
+	[MaterialToggle] _HideSplat4("Hide splat 5", Int) = 0
+	[MaterialToggle] _HideSplat5("Hide splat 6", Int) = 0
+	[MaterialToggle] _HideSplat6("Hide splat 7", Int) = 0
+	[MaterialToggle] _HideSplat7("Hide splat 8", Int) = 0
+	[MaterialToggle] _HideSplat8("Hide splat Upper", Int) = 0
+
 	_Splat0XP ("Layer 1 (R)", 2D) = "black" {}
 	_Splat1XP ("Layer 2 (G)", 2D) = "black" {}
 	_Splat2XP ("Layer 3 (B)", 2D) = "black" {}
@@ -116,6 +127,8 @@ Properties {
 			half _Splat0Scale, _Splat1Scale, _Splat2Scale, _Splat3Scale, _Splat4Scale, _Splat5Scale, _Splat6Scale, _Splat7Scale;
 			fixed _TTerrainXP;
 
+			int _HideSplat0, _HideSplat1, _HideSplat2, _HideSplat3, _HideSplat4, _HideSplat5, _HideSplat6, _HideSplat7, _HideSplat8;
+
 			half4 LightingEmpty (SurfaceOutput s, half3 lightDir, half atten) {
 						half4 c;
 			              c.rgb = s.Albedo;
@@ -138,22 +151,31 @@ Properties {
 
 				col = tex2D(_SplatLower, UV * _LowerScale);
 
-
-				col = lerp(col, tex2D(_Splat0XP, UV * _Splat0Scale), splat_control.r);
-				col = lerp(col, tex2D(_Splat1XP, UV * _Splat1Scale), splat_control.g);
-				col = lerp(col, tex2D(_Splat2XP, UV * _Splat2Scale), splat_control.b);
-				col = lerp(col, tex2D(_Splat3XP, UV * _Splat3Scale), splat_control.a);
+				if(_HideSplat0 == 0)
+					col = lerp(col, tex2D(_Splat0XP, UV * _Splat0Scale), splat_control.r);
+				if(_HideSplat1 == 0)
+					col = lerp(col, tex2D(_Splat1XP, UV * _Splat1Scale), splat_control.g);
+				if(_HideSplat2 == 0)
+					col = lerp(col, tex2D(_Splat2XP, UV * _Splat2Scale), splat_control.b);
+				if(_HideSplat3 == 0)
+					col = lerp(col, tex2D(_Splat3XP, UV * _Splat3Scale), splat_control.a);
 				//col = tex2D (_Splat3XP, UV * _LowerScale);
 
 				if (_TTerrainXP > 0) {
+					if(_HideSplat4 == 0)
 					col = lerp(col, tex2D(_Splat4XP, UV * _Splat4Scale), splat_control2.r);
+					if(_HideSplat5 == 0)
 					col = lerp(col, tex2D(_Splat5XP, UV * _Splat5Scale), splat_control2.g);
+					if(_HideSplat6 == 0)
 					col = lerp(col, tex2D(_Splat6XP, UV * _Splat6Scale), splat_control2.b);
+					if(_HideSplat7 == 0)
 					col = lerp(col, tex2D(_Splat7XP, UV * _Splat7Scale), splat_control2.a);
 				}
 
-				float4 UpperAlbedo = tex2D (_SplatUpper, UV * _UpperScale);
-				col = lerp(col, UpperAlbedo, UpperAlbedo.a);
+				if(_HideSplat8 == 0){
+					float4 UpperAlbedo = tex2D (_SplatUpper, UV * _UpperScale);
+					col = lerp(col, UpperAlbedo, UpperAlbedo.a);
+				}
 
 				//col = splat_control.r;
 
@@ -225,6 +247,8 @@ Properties {
 			sampler2D _SplatNormal4, _SplatNormal5, _SplatNormal6, _SplatNormal7;
 			half _Splat0ScaleNormal, _Splat1ScaleNormal, _Splat2ScaleNormal, _Splat3ScaleNormal, _Splat4ScaleNormal, _Splat5ScaleNormal, _Splat6ScaleNormal, _Splat7ScaleNormal;
 
+			int _HideSplat0, _HideSplat1, _HideSplat2, _HideSplat3, _HideSplat4, _HideSplat5, _HideSplat6, _HideSplat7;
+
 			half _LowerScale;
 			fixed _TTerrainXP;
 			float _WaterScaleX, _WaterScaleZ;
@@ -285,15 +309,23 @@ Properties {
 				half4 nrm;
 				//UV *= 0.01;
 				nrm = tex2D (_NormalLower, UV * _LowerScale);
+				if(_HideSplat0 == 0)
 				nrm = lerp(nrm, tex2D (_SplatNormal0, UV * _Splat0ScaleNormal), splat_control.r);
+				if(_HideSplat1 == 0)
 				nrm =  lerp(nrm, tex2D (_SplatNormal1, UV * _Splat1ScaleNormal), splat_control.g);
+				if(_HideSplat2 == 0)
 				nrm =  lerp(nrm, tex2D (_SplatNormal2, UV * _Splat2ScaleNormal), splat_control.b);
+				if(_HideSplat3 == 0)
 				nrm =  lerp(nrm, tex2D (_SplatNormal3, UV * _Splat3ScaleNormal), splat_control.a);
 
 				if (_TTerrainXP > 0) {
+					if(_HideSplat4 == 0)
 					nrm = lerp(nrm, tex2D(_SplatNormal4, UV * _Splat4ScaleNormal), splat_control2.r);
+					if(_HideSplat5 == 0)
 					nrm = lerp(nrm, tex2D(_SplatNormal5, UV * _Splat5ScaleNormal), splat_control2.g);
+					if(_HideSplat6 == 0)
 					nrm = lerp(nrm, tex2D(_SplatNormal6, UV * _Splat6ScaleNormal), splat_control2.b);
+					if(_HideSplat7 == 0)
 					nrm = lerp(nrm, tex2D(_SplatNormal7, UV * _Splat7ScaleNormal), splat_control2.a);
 				}
 

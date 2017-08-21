@@ -103,6 +103,17 @@ namespace EditMap
 			public RawImage Stratum2_Mask;
 			public RawImage Stratum1_Mask;
 			public RawImage Stratum0_Mask;
+
+			[Header("Mask")]
+			public Text Stratum9_Visible;
+			public Text Stratum8_Visible;
+			public Text Stratum7_Visible;
+			public Text Stratum6_Visible;
+			public Text Stratum5_Visible;
+			public Text Stratum4_Visible;
+			public Text Stratum3_Visible;
+			public Text Stratum2_Visible;
+			public Text Stratum1_Visible;
 		}
 		#endregion
 
@@ -242,6 +253,33 @@ namespace EditMap
 		}
 
 		#region Stratums
+		public void VisibleStratums()
+		{
+			ScmapEditor.Current.TerrainMaterial.SetInt("_HideSplat0", StratumHide[1]?1:0);
+			ScmapEditor.Current.TerrainMaterial.SetInt("_HideSplat1", StratumHide[2] ? 1 : 0);
+			ScmapEditor.Current.TerrainMaterial.SetInt("_HideSplat2", StratumHide[3] ? 1 : 0);
+			ScmapEditor.Current.TerrainMaterial.SetInt("_HideSplat3", StratumHide[4] ? 1 : 0);
+			ScmapEditor.Current.TerrainMaterial.SetInt("_HideSplat4", StratumHide[5] ? 1 : 0);
+			ScmapEditor.Current.TerrainMaterial.SetInt("_HideSplat5", StratumHide[6] ? 1 : 0);
+			ScmapEditor.Current.TerrainMaterial.SetInt("_HideSplat6", StratumHide[7] ? 1 : 0);
+			ScmapEditor.Current.TerrainMaterial.SetInt("_HideSplat7", StratumHide[8] ? 1 : 0);
+			ScmapEditor.Current.TerrainMaterial.SetInt("_HideSplat8", StratumHide[9] ? 1 : 0);
+
+
+			const string TextVisible = "V";
+			const string TextHiden = "H";
+
+			StratumSettings.Stratum1_Visible.text = StratumHide[1] ? TextHiden : TextVisible;
+			StratumSettings.Stratum2_Visible.text = StratumHide[2] ? TextHiden : TextVisible;
+			StratumSettings.Stratum3_Visible.text = StratumHide[3] ? TextHiden : TextVisible;
+			StratumSettings.Stratum4_Visible.text = StratumHide[4] ? TextHiden : TextVisible;
+			StratumSettings.Stratum5_Visible.text = StratumHide[5] ? TextHiden : TextVisible;
+			StratumSettings.Stratum6_Visible.text = StratumHide[6] ? TextHiden : TextVisible;
+			StratumSettings.Stratum7_Visible.text = StratumHide[7] ? TextHiden : TextVisible;
+			StratumSettings.Stratum8_Visible.text = StratumHide[8] ? TextHiden : TextVisible;
+			StratumSettings.Stratum9_Visible.text = StratumHide[9] ? TextHiden : TextVisible;
+		}
+
 		public void ReloadStratums()
 		{
 			StratumSettings.Stratum0_Albedo.texture = Map.Textures[0].Albedo;
@@ -313,6 +351,8 @@ namespace EditMap
 		{
 			StratumHide[id] = !StratumHide[id];
 			// TODO Update Terrain Shader To Hide Stratum
+
+			VisibleStratums();
 		}
 
 		#endregion
