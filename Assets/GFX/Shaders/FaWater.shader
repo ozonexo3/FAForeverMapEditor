@@ -7,7 +7,7 @@ Shader "MapEditor/FaWater" {
 		waterColor  ("waterColor", Color) = (0.0, 0.7, 1.5, 1)
 		sunColor  ("Sun Color", Color) = (1.1, 0.7, 0.5, 1)
 		//SunDirection  ("Sun Color", float3) = float3( -0.2 , -0.967, -0.453)
-		_UtilitySamplerC ("_UtilitySamplerC", 2D) = "white" {}
+		//_UtilitySamplerC ("_UtilitySamplerC", 2D) = "white" {}
 		_WaterData ("Water Data", 2D) = "white" {}
 		SkySampler("SkySampler", CUBE) = "" {}
 		ReflectionSampler ("ReflectionSampler", 2D) = "white" {}

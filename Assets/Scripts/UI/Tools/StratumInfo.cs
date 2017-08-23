@@ -877,6 +877,166 @@ namespace EditMap
 		}
 		#endregion
 
+
+#region ColorTransfer
+		Color[] GetPixels(int layer)
+		{
+			if (layer > 4)
+			{
+				return Map.map.TexturemapTex2.GetPixels();
+			}
+			else
+			{
+				return Map.map.TexturemapTex.GetPixels();
+			}
+		}
+
+		void SetPixels(int layer, Color[] Colors)
+		{
+			if (layer > 4)
+			{
+				Map.map.TexturemapTex2.SetPixels(Colors);
+				Map.map.TexturemapTex2.Apply(false);
+			}
+			else
+			{
+				Map.map.TexturemapTex.SetPixels(Colors);
+				Map.map.TexturemapTex.Apply(false);
+			}
+		}
+
+		float GetChannelByLayer(int layer, Color color)
+		{
+			if (layer == 1 || layer == 5)
+				return color.r;
+			else if (layer == 2 || layer == 6)
+				return color.g;
+			else if (layer == 3 || layer == 7)
+				return color.b;
+			else if (layer == 4 || layer == 8)
+				return color.a;
+			else
+				return 0;
+		}
+
+		void SetChannelByLayer(int layer, ref Color color, float channel)
+		{
+			if (layer == 1 || layer == 5)
+				color.r = channel;
+			else if (layer == 2 || layer == 6)
+				color.g = channel;
+			else if (layer == 3 || layer == 7)
+				color.b = channel;
+			else if (layer == 4 || layer == 8)
+				color.a = channel;
+		}
+
+#endregion
+
+		#region Reorder
+		public void MoveSelectedUp()
+		{
+			if (Selected <= 0 || Selected >= 8)
+				return;
+
+			int NewSelected = Selected + 1;
+
+			Color[] StratumData = GetPixels(Selected);
+
+			if (Selected == 4)
+			{ // Different tex
+				Color[] StratumDataPrev = GetPixels(NewSelected);
+
+
+				for (int i = 0; i < StratumData.Length; i++)
+				{
+					float from = GetChannelByLayer(NewSelected, StratumDataPrev[i]);
+					SetChannelByLayer(NewSelected, ref StratumDataPrev[i], GetChannelByLayer(Selected, StratumData[i]));
+					SetChannelByLayer(Selected, ref StratumData[i], from);
+				}
+
+
+				SetPixels(Selected, StratumData);
+				SetPixels(NewSelected, StratumDataPrev);
+			}
+			else
+			{ // Same
+				for (int i = 0; i < StratumData.Length; i++)
+				{
+					float from = GetChannelByLayer(NewSelected, StratumData[i]);
+					SetChannelByLayer(NewSelected, ref StratumData[i], GetChannelByLayer(Selected, StratumData[i]));
+					SetChannelByLayer(Selected, ref StratumData[i], from);
+				}
+
+
+				SetPixels(NewSelected, StratumData);
+
+			}
+
+
+			ScmapEditor.TerrainTexture Prev = Map.Textures[Selected];
+			Map.Textures[Selected] = Map.Textures[NewSelected];
+			Map.Textures[NewSelected] = Prev;
+
+			Map.SetTextures(Selected);
+
+			ReloadStratums();
+			SelectStratum(NewSelected);
+		}
+
+		public void MoveSelectedDown()
+		{
+			if (Selected <= 1 || Selected >= 9)
+				return;
+
+			int NewSelected = Selected - 1;
+
+			Color[] StratumData = GetPixels(Selected);
+
+			if(Selected == 5)
+			{ // Different tex
+				Color[] StratumDataPrev = GetPixels(NewSelected);
+
+
+				for (int i = 0; i < StratumData.Length; i++)
+				{
+					float from = GetChannelByLayer(NewSelected, StratumDataPrev[i]);
+					SetChannelByLayer(NewSelected, ref StratumDataPrev[i], GetChannelByLayer(Selected, StratumData[i]));
+					SetChannelByLayer(Selected, ref StratumData[i], from);
+				}
+
+
+				SetPixels(Selected, StratumData);
+				SetPixels(NewSelected, StratumDataPrev);
+			}
+			else
+			{ // Same
+				for(int i = 0; i < StratumData.Length; i++)
+				{
+					float from = GetChannelByLayer(NewSelected, StratumData[i]);
+					SetChannelByLayer(NewSelected, ref StratumData[i], GetChannelByLayer(Selected, StratumData[i]));
+					SetChannelByLayer(Selected, ref StratumData[i], from);
+				}
+
+
+				SetPixels(NewSelected, StratumData);
+
+			}
+
+
+			ScmapEditor.TerrainTexture Prev = Map.Textures[Selected];
+			Map.Textures[Selected] = Map.Textures[NewSelected];
+			Map.Textures[NewSelected] = Prev;
+
+			Map.SetTextures(Selected);
+
+			ReloadStratums();
+			SelectStratum(NewSelected);
+		}
+
+		#endregion
+
+
 		#region Import/Export
 
 		public void ImportStratumMask()
@@ -886,7 +1046,8 @@ namespace EditMap
 
 			var extensions = new[]
 			{
-				new ExtensionFilter("Image", "bmp")
+				new ExtensionFilter("Stratum mask", new string[]{"bmp", "raw" })
+				//new ExtensionFilter("Stratum mask", "raw, bmp")
 			};
 
 			var paths = StandaloneFileBrowser.OpenFilePanel("Import stratum mask", EnvPaths.GetMapsPath(), extensions, false);
@@ -957,6 +1118,55 @@ namespace EditMap
 				}
 				else if(paths[0].ToLower().EndsWith("raw"))
 				{
+					int h = Map.map.TexturemapTex.width;
+					int w = Map.map.TexturemapTex.height;
+					int i = 0;
+
+					Color[] data;
+
+					if (Selected > 4)
+						data = Map.map.TexturemapTex2.GetPixels();
+					else
+						data = Map.map.TexturemapTex.GetPixels();
+
+
+					//byte[,] data = new byte[h, w];
+					using (var file = System.IO.File.OpenRead(paths[0]))
+					using (var reader = new System.IO.BinaryReader(file))
+					{
+						for (int y = 0; y < h; y++)
+						{
+							for (int x = 0; x < w; x++)
+							{
+								i = x + y * w;
+
+								//data[y, x] = reader.ReadByte();
+
+								if (Selected == 1 || Selected == 5)
+									data[i].r = reader.ReadByte() / 255f;
+								else if (Selected == 2 || Selected == 6)
+									data[i].g = reader.ReadByte() / 255f;
+								else if (Selected == 3 || Selected == 7)
+									data[i].b = reader.ReadByte() / 255f;
+								else if (Selected == 4 || Selected == 8)
+									data[i].a = reader.ReadByte() / 255f;
+
+							}
+						}
+					}
+
+					if (Selected > 4)
+					{
+						Map.map.TexturemapTex2.SetPixels(data);
+						Map.map.TexturemapTex2.Apply(false);
+					}
+					else
+					{
+						Map.map.TexturemapTex.SetPixels(data);
+						Map.map.TexturemapTex.Apply(false);
+					}
+
+
 
 				}
 				else
@@ -970,6 +1180,85 @@ namespace EditMap
 
 				ReloadStratums();
 			}
+		}
+
+		public void ExportStratumMask()
+		{
+			if (Selected <= 0 || Selected > 8)
+				return;
+
+
+			var extensions = new[]
+{
+				new ExtensionFilter("Stratum mask", "raw")
+			};
+
+			var path = StandaloneFileBrowser.SaveFilePanel("Import stratum mask", EnvPaths.GetMapsPath(), "stratum_" + Selected, extensions);
+
+			/*
+			System.Windows.Forms.OpenFileDialog FolderDialog = new System.Windows.Forms.OpenFileDialog();
+
+			FolderDialog.Filter = "BMP (*.bmp)|*.bmp|All files (*.*)|*.*";
+			FolderDialog.FilterIndex = 0;
+			FolderDialog.RestoreDirectory = true;
+			FolderDialog.InitialDirectory = EnvPaths.GetMapsPath();
+			*/
+
+			if (!string.IsNullOrEmpty(path))
+			//if (FolderDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+			{
+				//string Filename = EnvPaths.GetMapsPath() + MapLuaParser.Current.FolderName + "/heightmap.raw";
+
+				int h = Map.map.TexturemapTex.width;
+				int w = Map.map.TexturemapTex.height;
+				int x = 0;
+				int y = 0;
+				int i = 0;
+
+				//float[,] data = Map.Teren.terrainData.GetHeights(0, 0, w, h);
+				Color[] data;
+
+				if (Selected > 4)
+					data = Map.map.TexturemapTex2.GetPixels();
+				else
+					data = Map.map.TexturemapTex.GetPixels();
+
+				using (BinaryWriter writer = new BinaryWriter(new System.IO.FileStream(path, System.IO.FileMode.Create)))
+				{
+					for (y = 0; y < h; y++)
+					{
+						for (x = 0; x < w; x++)
+						{
+							i = x + y * w;
+
+							//uint ThisPixel = (uint)(data[y, x] * 0xFFFF);
+							byte ThisPixel = 0;
+
+							if (Selected == 1 || Selected == 5)
+								ThisPixel = (byte)(data[i].r * 255);
+							else if (Selected == 2 || Selected == 6)
+								ThisPixel = (byte)(data[i].g * 255);
+							else if (Selected == 3 || Selected == 7)
+								ThisPixel = (byte)(data[i].b * 255);
+							else if (Selected == 4 || Selected == 8)
+								ThisPixel = (byte)(data[i].a * 255);
+
+							
+
+							if (Selected == 1 || Selected == 5)
+								writer.Write(ThisPixel);
+							else if (Selected == 2 || Selected == 6)
+								writer.Write(ThisPixel);
+							else if (Selected == 3 || Selected == 7)
+								writer.Write(ThisPixel);
+							else if (Selected == 4 || Selected == 8)
+								writer.Write(ThisPixel);
+						}
+					}
+					writer.Close();
+				}
+			}
+
 		}
 
 

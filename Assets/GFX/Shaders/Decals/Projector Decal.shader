@@ -9,7 +9,9 @@ Shader "Projector/Decal" {
 	Properties {
 		_Color ("Main Color", Color) = (1,1,1,1)
 		_ShadowTex ("Cookie", 2D) = "black" {}
-		_BumpMap("Bump", 2D) = "Bump" {}
+		//_BumpMap("Bump", 2D) = "Bump" {}
+		_CutOffLODD ("CutOffLOD", float) = 0
+		_NearCutOffLOD ("NearCutOffLOD", float) = 0
 	}
 	 
 	Subshader {
@@ -33,9 +35,9 @@ Shader "Projector/Decal" {
 				float4 pos : SV_POSITION;
 				fixed4 diff : COLOR0;
 				float3 worldPos : TEXCOORD1;
-				half3 tspace0 : TEXCOORD2;
-				half3 tspace1 : TEXCOORD3;
-				half3 tspace2 : TEXCOORD4;
+				//half3 tspace0 : TEXCOORD2;
+				//half3 tspace1 : TEXCOORD3;
+				//half3 tspace2 : TEXCOORD4;
 				half3 worldNormal : TEXCOORD5;
 			};
 			
@@ -50,12 +52,12 @@ Shader "Projector/Decal" {
 
 				o.worldPos = mul(unity_ObjectToWorld, vertex).xyz;
 				half3 wNormal = UnityObjectToWorldNormal(normal);
-				half3 wTangent = UnityObjectToWorldDir(tangent.xyz);
-				half tangentSign = tangent.w * unity_WorldTransformParams.w;
-				half3 wBitangent = cross(wNormal, wTangent) * tangentSign;
-				o.tspace0 = half3(wTangent.x, wBitangent.x, wNormal.x);
-				o.tspace1 = half3(wTangent.y, wBitangent.y, wNormal.y);
-				o.tspace2 = half3(wTangent.z, wBitangent.z, wNormal.z);
+				////half3 wTangent = UnityObjectToWorldDir(tangent.xyz);
+				//half tangentSign = tangent.w * unity_WorldTransformParams.w;
+				//half3 wBitangent = cross(wNormal, wTangent) * tangentSign;
+				//o.tspace0 = half3(wTangent.x, wBitangent.x, wNormal.x);
+				//o.tspace1 = half3(wTangent.y, wBitangent.y, wNormal.y);
+				//o.tspace2 = half3(wTangent.z, wBitangent.z, wNormal.z);
 
 
 				o.worldNormal = UnityObjectToWorldNormal(normal);
@@ -69,11 +71,24 @@ Shader "Projector/Decal" {
 			
 			fixed4 _Color;
 			sampler2D _ShadowTex;
-			sampler2D _BumpMap;
+			sampler2D _WaterRam;
+			sampler2D _UtilitySamplerC;
+			//sampler2D _BumpMap;
+
+
+			half _LightingMultiplier;
+			fixed4 _SunColor;
+			fixed4 _SunAmbience;
+			fixed4 _ShadowColor;
+
+			float3 ApplyWaterColor( float depth, float3  inColor){
+				float4 wcolor = tex2D(_WaterRam, float2(depth,0));
+				return lerp( inColor.rgb, wcolor.rgb, wcolor.a );
+			}
 			
 			fixed4 frag (v2f i) : SV_Target
 			{
-
+			/*
 				half3 tnormal = UnpackNormal(tex2Dproj(_BumpMap, UNITY_PROJ_COORD(i.uvShadow)));
 				half3 worldNormal;
 				worldNormal.x = dot(i.tspace0, tnormal);
@@ -81,12 +96,27 @@ Shader "Projector/Decal" {
 				worldNormal.z = dot(i.tspace2, tnormal);
 
 				float NormalAlpha = dot(worldNormal, i.worldNormal);
+				*/
 
-				half nl = max(0, dot(worldNormal, _WorldSpaceLightPos0.xyz));
+				//half nl = max(0, dot(i.worldNormal, _WorldSpaceLightPos0.xyz));
+				//fixed4 texS = tex2Dproj (_ShadowTex, UNITY_PROJ_COORD(i.uvShadow)) * _Color;
+				//texS.rgb *= i.diff.rgb * nl;
 
-				fixed4 texS = tex2Dproj (_ShadowTex, UNITY_PROJ_COORD(i.uvShadow));
+				fixed4 texS = tex2Dproj (_ShadowTex, UNITY_PROJ_COORD(i.uvShadow)) * _Color;
 
-				texS.rgb *= i.diff.rgb * nl;
+				half NdotL = max(0, dot(i.worldNormal, _WorldSpaceLightPos0.xyz));
+				half atten = 1;
+
+				float3 light =  _SunColor.rgb * 2 * saturate(NdotL) * atten + _SunAmbience.rgb * 2;
+			    light = _LightingMultiplier * light + _ShadowColor.rgb * 2 * (1 - light);
+
+
+				float4 waterTexture = tex2D( _UtilitySamplerC, i.worldPos.xz * half2(0.009765, -0.009765) + half2(0, 0));
+				texS.rgb = ApplyWaterColor( waterTexture.g, texS.rgb);	
+				//texS.rgb = waterTexture.g;
+
+			    texS.rgb *= light;
+
 
 				// OnlyNormal
 				//texS.rgb = i.diff.rgb * nl - 1;

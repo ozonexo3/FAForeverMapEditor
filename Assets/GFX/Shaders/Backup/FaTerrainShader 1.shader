@@ -11,14 +11,14 @@ Properties {
 	_SlopeTex ("Slope data", 2D) = "black" {}
 	[MaterialToggle] _TTerrainXP("_TTerrainXP", Int) = 0
 	
-	_LightingMultiplier ("LightingMultiplier ", Range (0, 10)) = 1
-	_SunColor ("Sun Color", Color) = (0.5, 0.5, 0.5, 1)
-	_SunAmbience ("Ambience Color", Color) = (0.5, 0.5, 0.5, 1)
-	_ShadowColor ("Shadow Color", Color) = (0.5, 0.5, 0.5, 1)
+	//_LightingMultiplier ("LightingMultiplier ", Range (0, 10)) = 1
+	//_SunColor ("Sun Color", Color) = (0.5, 0.5, 0.5, 1)
+	//_SunAmbience ("Ambience Color", Color) = (0.5, 0.5, 0.5, 1)
+	//_ShadowColor ("Shadow Color", Color) = (0.5, 0.5, 0.5, 1)
 	
 
-	_WaterRam ("Water Ramp (RGBA)", 2D) = "blue" {}
-	_UtilitySamplerC ("_UtilitySamplerC", 2D) = "white" {}
+	//_WaterRam ("Water Ramp (RGBA)", 2D) = "blue" {}
+	//_UtilitySamplerC ("_UtilitySamplerC", 2D) = "white" {}
 	_WaterLevel ("Water Level", float) = 0.078125
 	_DepthLevel ("Depth Level", float) = 0.078125
 	_AbyssLevel ("Abyss Level", float) = 0.078125

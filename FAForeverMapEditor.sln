@@ -1,13 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2017
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FAForeverMapEditor.Plugins", "FAForeverMapEditor.Plugins.csproj", "{D12FDEA9-1D2C-B9CE-C96B-D95DAD860558}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FAForeverMapEditor", "FAForeverMapEditor.csproj", "{726F1A7D-6B82-7E5C-457A-25BF0902FEF2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FAForeverMapEditor.Editor.Plugins", "FAForeverMapEditor.Editor.Plugins.csproj", "{28BBF88D-3822-47DD-6333-51DF06861A06}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FAForeverMapEditor.Plugins", "FAForeverMapEditor.Plugins.csproj", "{D12FDEA9-1D2C-B9CE-C96B-D95DAD860558}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FAForeverMapEditor.Editor", "FAForeverMapEditor.Editor.csproj", "{A7FE3FE6-27C6-EFE4-A771-5044D500E8E3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FAForeverMapEditor.Editor.Plugins", "FAForeverMapEditor.Editor.Plugins.csproj", "{28BBF88D-3822-47DD-6333-51DF06861A06}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,22 +15,22 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{D12FDEA9-1D2C-B9CE-C96B-D95DAD860558}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D12FDEA9-1D2C-B9CE-C96B-D95DAD860558}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D12FDEA9-1D2C-B9CE-C96B-D95DAD860558}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D12FDEA9-1D2C-B9CE-C96B-D95DAD860558}.Release|Any CPU.Build.0 = Release|Any CPU
 		{726F1A7D-6B82-7E5C-457A-25BF0902FEF2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{726F1A7D-6B82-7E5C-457A-25BF0902FEF2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{726F1A7D-6B82-7E5C-457A-25BF0902FEF2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{726F1A7D-6B82-7E5C-457A-25BF0902FEF2}.Release|Any CPU.Build.0 = Release|Any CPU
-		{28BBF88D-3822-47DD-6333-51DF06861A06}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{28BBF88D-3822-47DD-6333-51DF06861A06}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{28BBF88D-3822-47DD-6333-51DF06861A06}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{28BBF88D-3822-47DD-6333-51DF06861A06}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D12FDEA9-1D2C-B9CE-C96B-D95DAD860558}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D12FDEA9-1D2C-B9CE-C96B-D95DAD860558}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D12FDEA9-1D2C-B9CE-C96B-D95DAD860558}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D12FDEA9-1D2C-B9CE-C96B-D95DAD860558}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A7FE3FE6-27C6-EFE4-A771-5044D500E8E3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A7FE3FE6-27C6-EFE4-A771-5044D500E8E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A7FE3FE6-27C6-EFE4-A771-5044D500E8E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A7FE3FE6-27C6-EFE4-A771-5044D500E8E3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{28BBF88D-3822-47DD-6333-51DF06861A06}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{28BBF88D-3822-47DD-6333-51DF06861A06}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{28BBF88D-3822-47DD-6333-51DF06861A06}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{28BBF88D-3822-47DD-6333-51DF06861A06}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

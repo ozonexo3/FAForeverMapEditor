@@ -4,8 +4,10 @@ using System.Collections;
 
 public class EditorVersion : MonoBehaviour {
 
+	public const string EditorBuildVersion = "v0.509 Alpha";
+
 	void Start () {
-		GetComponent<Text>().text = "v0.508 Alpha";
+		GetComponent<Text>().text = EditorBuildVersion;
 	}
 
 }

@@ -9,6 +9,8 @@ Shader "Projector/Decal Bump" {
 	Properties {
 		_Color ("Main Color", Color) = (1,1,1,1)
 		_BumpMap("Bump", 2D) = "Bump" {}
+		_CutOffLODD ("CutOffLOD", float) = 0
+		_NearCutOffLOD ("NearCutOffLOD", float) = 0
 	}
 	 
 	Subshader {

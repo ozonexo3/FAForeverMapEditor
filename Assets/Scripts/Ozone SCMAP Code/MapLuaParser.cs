@@ -37,6 +37,7 @@ public class MapLuaParser : MonoBehaviour {
 	//public		GetGamedataFile	Gamedata;
 	public		GenericInfoPopup	InfoPopup;
 	public PropsInfo PropsMenu;
+	public DecalsInfo DecalsMenu;
 	public static		bool			Water;
 
 
@@ -143,6 +144,7 @@ public class MapLuaParser : MonoBehaviour {
 
 	bool loadSave = true;
 	bool LoadProps = true;
+	bool LoadDecals = true;
 
 	bool LoadingMapProcess = false;
 	IEnumerator LoadingFile(){
@@ -248,6 +250,23 @@ public class MapLuaParser : MonoBehaviour {
 
 				PropsMenu.gameObject.SetActive(false);
 			}
+
+			if (LoadDecals)
+			{
+				DecalsMenu.gameObject.SetActive(true);
+
+				//DecalsMenu.AllowBrushUpdate = false;
+				DecalsMenu.StartCoroutine(DecalsMenu.LoadDecals());
+				while (DecalsMenu.LoadingDecals)
+				{
+					InfoPopup.Show(true, "Loading map...\n( Loading decals " + DecalsMenu.LoadedCount + "/" + ScmapEditor.Current.map.Decals.Count + ")");
+					yield return null;
+				}
+
+				DecalsMenu.gameObject.SetActive(false);
+			}
+
+			
 
 			InfoPopup.Show (false);
 

@@ -20,6 +20,9 @@ public class PropData : MonoBehaviour {
 	public InputField RotationMin;
 	public InputField RotationMax;
 
+	public InputField Chance;
+
+
 	public void SetPropList(int _ID, string name, float mass, float energy, int count, string path){
 		ID = _ID;
 		NameField.text = name;
