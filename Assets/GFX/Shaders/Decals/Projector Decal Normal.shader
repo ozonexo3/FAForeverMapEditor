@@ -50,7 +50,9 @@ Shader "Projector/Decal Bump" {
 
 
 				o.worldPos = mul(unity_ObjectToWorld, vertex).xyz;
-				half3 wNormal = UnityObjectToWorldNormal(normal);
+								o.worldNormal = UnityObjectToWorldNormal(normal);
+
+				half3 wNormal = UnityObjectToWorldNormal(half3(0,1,0));
 				half3 wTangent = UnityObjectToWorldDir(tangent.xyz);
 				half tangentSign = tangent.w * unity_WorldTransformParams.w;
 				half3 wBitangent = cross(wNormal, wTangent) * tangentSign;
@@ -59,7 +61,6 @@ Shader "Projector/Decal Bump" {
 				o.tspace2 = half3(wTangent.z, wBitangent.z, wNormal.z);
 
 
-				o.worldNormal = UnityObjectToWorldNormal(normal);
 				// dot product between normal and light direction for
 				// standard diffuse (Lambert) lighting
 				// factor in the light color
@@ -70,11 +71,19 @@ Shader "Projector/Decal Bump" {
 			
 			fixed4 _Color;
 			sampler2D _BumpMap;
+
+			
+			half _LightingMultiplier;
+			fixed4 _SunColor;
+			fixed4 _SunAmbience;
+			fixed4 _ShadowColor;
 			
 			fixed4 frag (v2f i) : SV_Target
 			{
 
-				half3 tnormal = UnpackNormal(tex2Dproj(_BumpMap, UNITY_PROJ_COORD(i.uvShadow)));
+				half3 tnormal = UnpackNormalDXT5nm(tex2Dproj(_BumpMap, UNITY_PROJ_COORD(i.uvShadow)));
+
+				tnormal = UnityObjectToWorldNormal(tnormal);
 				half3 worldNormal;
 				worldNormal.x = dot(i.tspace0, tnormal);
 				worldNormal.y = dot(i.tspace1, tnormal);
@@ -90,14 +99,25 @@ Shader "Projector/Decal Bump" {
 				if (nl < 0.5)
 					texS.rgb = 0;
 				else
-					texS.rgb = i.diff.rgb;
+					texS.rgb = _SunColor;
+
+
+				half atten = 1;
+				float3 light =  _SunColor.rgb * 2 * saturate(nl) * atten + _SunAmbience.rgb * 2;
+			    light = _LightingMultiplier * light + _ShadowColor.rgb * 2 * (1 - light);
+				texS.rgb = light * 2 - 1;
 
 				//texS.rgb = i.diff.rgb * nl - 1;
 				//texS.a = (1 - NormalAlpha) * 2;
 				//texS.a = abs(nl - 0.5) * (1 - NormalAlpha) * 2;
 
-				texS.a = abs(nl - 0.5) * (NormalAlpha) ;
+				//texS.a = abs(nl - 0.5) * (NormalAlpha) ;
+				//texS.a = abs( (texS.r - 1)) * NormalAlpha;
 
+				texS.rgb = tnormal;
+				texS.a = (1 - tnormal.z) * 10;
+
+				texS.a = 1;
 				//texS.rgb = NormalAlpha;
 				//texS.a = NormalAlpha;
 
@@ -105,7 +125,7 @@ Shader "Projector/Decal Bump" {
 				clip(min(UvTest.r, UvTest.g));
 				clip(min(1 - UvTest.r, 1 - UvTest.g));
 
-				clip(texS.a - 0.02);
+				//clip(texS.a - 0.02);
 				return texS;
 			}
 			ENDCG

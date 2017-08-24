@@ -9,6 +9,7 @@ Shader "Projector/Decal" {
 	Properties {
 		_Color ("Main Color", Color) = (1,1,1,1)
 		_ShadowTex ("Cookie", 2D) = "black" {}
+		_SpecularTex ("Specular", 2D) = "black" {}
 		//_BumpMap("Bump", 2D) = "Bump" {}
 		_CutOffLOD ("CutOffLOD", float) = 0
 		_NearCutOffLOD ("NearCutOffLOD", float) = 0
@@ -118,7 +119,7 @@ Shader "Projector/Decal" {
 				texS.rgb = ApplyWaterColor( waterTexture.g, texS.rgb);	
 				//texS.rgb = waterTexture.g;
 
-			    texS.rgb *= light;
+			   // texS.rgb *= light;
 
 
 				// OnlyNormal

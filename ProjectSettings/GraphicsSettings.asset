@@ -5,8 +5,8 @@ GraphicsSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 12
   m_Deferred:
-    m_Mode: 1
-    m_Shader: {fileID: 69, guid: 0000000000000000f000000000000000, type: 0}
+    m_Mode: 2
+    m_Shader: {fileID: 4800000, guid: 1070857f4547f784c82bc2f780f26d01, type: 3}
   m_DeferredReflections:
     m_Mode: 1
     m_Shader: {fileID: 74, guid: 0000000000000000f000000000000000, type: 0}
@@ -45,7 +45,7 @@ GraphicsSettings:
   m_DefaultRenderingPath: 1
   m_DefaultMobileRenderingPath: 1
   m_TierSettings:
-  - serializedVersion: 4
+  - serializedVersion: 5
     m_BuildTarget: 1
     m_Tier: 0
     m_Settings:
@@ -58,9 +58,11 @@ GraphicsSettings:
       useHDR: 0
       useDetailNormalMap: 0
       useCascadedShadowMaps: 1
+      prefer32BitShadowMaps: 0
+      enableLPPV: 0
       useDitherMaskForAlphaBlendedShadows: 1
     m_Automatic: 0
-  - serializedVersion: 4
+  - serializedVersion: 5
     m_BuildTarget: 1
     m_Tier: 1
     m_Settings:
@@ -73,9 +75,11 @@ GraphicsSettings:
       useHDR: 0
       useDetailNormalMap: 0
       useCascadedShadowMaps: 1
+      prefer32BitShadowMaps: 0
+      enableLPPV: 0
       useDitherMaskForAlphaBlendedShadows: 1
     m_Automatic: 0
-  - serializedVersion: 4
+  - serializedVersion: 5
     m_BuildTarget: 1
     m_Tier: 2
     m_Settings:
@@ -88,6 +92,8 @@ GraphicsSettings:
       useHDR: 0
       useDetailNormalMap: 0
       useCascadedShadowMaps: 1
+      prefer32BitShadowMaps: 0
+      enableLPPV: 0
       useDitherMaskForAlphaBlendedShadows: 1
     m_Automatic: 0
   m_LightmapStripping: 0

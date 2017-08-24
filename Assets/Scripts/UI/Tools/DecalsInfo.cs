@@ -60,23 +60,32 @@ namespace EditMap
 
 			Debug.Log("Decals count: " + Count);
 
-			Quaternion ProjectorRot = Quaternion.Euler(Vector3.right * 90);
+			Quaternion ProjectorRot = Quaternion.Euler(new Vector3(90, 180, 180));
 
 			for (int i = 0; i < Count; i++)
 			{
+				//if (ScmapEditor.Current.map.Decals[i].Type != TerrainDecalType.TYPE_ALBEDO && ScmapEditor.Current.map.Decals[i].Type != TerrainDecalType.TYPE_NORMALS)
 				if (ScmapEditor.Current.map.Decals[i].Type != TerrainDecalType.TYPE_ALBEDO)
 					continue;
 
 				GameObject NewDecalObject = Instantiate(DecalPrefab, DecalPivot);
-				Vector3 pos = ScmapEditor.ScmapPosToWorld(new Vector3(ScmapEditor.Current.map.Decals[i].Position.x, ScmapEditor.Current.map.Decals[i].Position.y, ScmapEditor.Current.map.Decals[i].Position.z));
+				Transform Tr = NewDecalObject.transform;
+				//Vector3 pos = ScmapEditor.ScmapPosToWorld(new Vector3(ScmapEditor.Current.map.Decals[i].Position.x, ScmapEditor.Current.map.Decals[i].Position.y, ScmapEditor.Current.map.Decals[i].Position.z));
 				//pos = new Vector3(pos.z, pos.y, pos.x);
-				NewDecalObject.transform.localPosition = pos;
-				NewDecalObject.transform.localRotation = Quaternion.Euler(ScmapEditor.Current.map.Decals[i].Rotation * Mathf.Rad2Deg) * ProjectorRot;
+				Tr.localPosition = ScmapEditor.ScmapPosToWorld(ScmapEditor.Current.map.Decals[i].Position);
+				Tr.localRotation = Quaternion.Euler(ScmapEditor.Current.map.Decals[i].Rotation * Mathf.Rad2Deg) * ProjectorRot;
 
-				Quaternion PosRotation = Quaternion.Euler(Vector3.up * ScmapEditor.Current.map.Decals[i].Rotation.y);
+				Quaternion PosRotation = Quaternion.Euler(Vector3.up * Tr.eulerAngles.y);
 
-				NewDecalObject.transform.localPosition += (PosRotation * Vector3.forward) * (ScmapEditor.Current.map.Decals[i].Scale.y * 0.05f);
-				NewDecalObject.transform.localPosition += (PosRotation * Vector3.right) * (ScmapEditor.Current.map.Decals[i].Scale.x * 0.05f);
+				Vector3 Up = Tr.up;
+				Up.y = 0;
+				Up.Normalize();
+				Vector3 right = Tr.right;
+				right.y = 0;
+				right.Normalize();
+
+				NewDecalObject.transform.localPosition -= Up * (ScmapEditor.Current.map.Decals[i].Scale.y * 0.05f);
+				NewDecalObject.transform.localPosition += right * (ScmapEditor.Current.map.Decals[i].Scale.x * 0.05f);
 				//NewDecalObject.transform.localScale = ScmapEditor.Current.map.Decals[i].Scale * 0.1f;
 
 				//float ScaleMin = Mathf.Min(ScmapEditor.Current.map.Decals[i].Scale.x, ScmapEditor.Current.map.Decals[i].Scale.y);
@@ -96,7 +105,7 @@ namespace EditMap
 					mat.SetFloat("_CutOffLOD", ScmapEditor.Current.map.Decals[i].CutOffLOD);
 					mat.SetFloat("_NearCutOffLOD", ScmapEditor.Current.map.Decals[i].NearCutOffLOD);
 					AssignTextureFromPath(ref mat, "_ShadowTex", ScmapEditor.Current.map.Decals[i].TexPathes[0]);
-					//AssignTextureFromPath(ref mat, "_BumpMap", ScmapEditor.Current.map.Decals[i].TexPathes[1]);
+					AssignTextureFromPath(ref mat, "_SpecularTex", ScmapEditor.Current.map.Decals[i].TexPathes[1]);
 
 
 					proj.material = mat;
