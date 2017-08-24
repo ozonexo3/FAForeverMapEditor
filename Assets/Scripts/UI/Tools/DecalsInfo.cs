@@ -68,15 +68,22 @@ namespace EditMap
 					continue;
 
 				GameObject NewDecalObject = Instantiate(DecalPrefab, DecalPivot);
-				NewDecalObject.transform.localPosition = ScmapEditor.ScmapPosToWorld(ScmapEditor.Current.map.Decals[i].Position);
-				NewDecalObject.transform.localRotation = Quaternion.Euler(ScmapEditor.Current.map.Decals[i].Rotation) * ProjectorRot;
+				Vector3 pos = ScmapEditor.ScmapPosToWorld(new Vector3(ScmapEditor.Current.map.Decals[i].Position.x, ScmapEditor.Current.map.Decals[i].Position.y, ScmapEditor.Current.map.Decals[i].Position.z));
+				//pos = new Vector3(pos.z, pos.y, pos.x);
+				NewDecalObject.transform.localPosition = pos;
+				NewDecalObject.transform.localRotation = Quaternion.Euler(ScmapEditor.Current.map.Decals[i].Rotation * Mathf.Rad2Deg) * ProjectorRot;
+
+				Quaternion PosRotation = Quaternion.Euler(Vector3.up * ScmapEditor.Current.map.Decals[i].Rotation.y);
+
+				NewDecalObject.transform.localPosition += (PosRotation * Vector3.forward) * (ScmapEditor.Current.map.Decals[i].Scale.y * 0.05f);
+				NewDecalObject.transform.localPosition += (PosRotation * Vector3.right) * (ScmapEditor.Current.map.Decals[i].Scale.x * 0.05f);
 				//NewDecalObject.transform.localScale = ScmapEditor.Current.map.Decals[i].Scale * 0.1f;
 
 				//float ScaleMin = Mathf.Min(ScmapEditor.Current.map.Decals[i].Scale.x, ScmapEditor.Current.map.Decals[i].Scale.y);
 				//float ScaleMax = Mathf.Min(ScmapEditor.Current.map.Decals[i].Scale.x, ScmapEditor.Current.map.Decals[i].Scale.y);
 
 				Projector proj = NewDecalObject.GetComponent<Projector>();
-				proj.orthographicSize = ScmapEditor.Current.map.Decals[i].Scale.y * 0.1f;
+				proj.orthographicSize = ScmapEditor.Current.map.Decals[i].Scale.y * 0.05f;
 				proj.aspectRatio = (ScmapEditor.Current.map.Decals[i].Scale.x / ScmapEditor.Current.map.Decals[i].Scale.y);
 				// ?
 				proj.nearClipPlane = ScmapEditor.Current.map.Decals[i].Scale.z * -0.05f;
@@ -85,11 +92,15 @@ namespace EditMap
 				if (ScmapEditor.Current.map.Decals[i].Type == TerrainDecalType.TYPE_ALBEDO)
 				{
 					Material mat = new Material(AlbedoMaterial);
-					proj.material = mat;
-					AssignTextureFromPath(ref mat, "_ShadowTex", ScmapEditor.Current.map.Decals[i].TexPathes[0]);
-					//AssignTextureFromPath(ref mat, "_BumpMap", ScmapEditor.Current.map.Decals[i].TexPathes[1]);
+
 					mat.SetFloat("_CutOffLOD", ScmapEditor.Current.map.Decals[i].CutOffLOD);
 					mat.SetFloat("_NearCutOffLOD", ScmapEditor.Current.map.Decals[i].NearCutOffLOD);
+					AssignTextureFromPath(ref mat, "_ShadowTex", ScmapEditor.Current.map.Decals[i].TexPathes[0]);
+					//AssignTextureFromPath(ref mat, "_BumpMap", ScmapEditor.Current.map.Decals[i].TexPathes[1]);
+
+
+					proj.material = mat;
+
 				}
 				else if (ScmapEditor.Current.map.Decals[i].Type == TerrainDecalType.TYPE_NORMALS)
 				{

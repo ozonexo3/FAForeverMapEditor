@@ -10,7 +10,7 @@ Shader "Projector/Decal" {
 		_Color ("Main Color", Color) = (1,1,1,1)
 		_ShadowTex ("Cookie", 2D) = "black" {}
 		//_BumpMap("Bump", 2D) = "Bump" {}
-		_CutOffLODD ("CutOffLOD", float) = 0
+		_CutOffLOD ("CutOffLOD", float) = 0
 		_NearCutOffLOD ("NearCutOffLOD", float) = 0
 	}
 	 
@@ -102,7 +102,10 @@ Shader "Projector/Decal" {
 				//fixed4 texS = tex2Dproj (_ShadowTex, UNITY_PROJ_COORD(i.uvShadow)) * _Color;
 				//texS.rgb *= i.diff.rgb * nl;
 
-				fixed4 texS = tex2Dproj (_ShadowTex, UNITY_PROJ_COORD(i.uvShadow)) * _Color;
+				float4 ProjCoords = UNITY_PROJ_COORD(i.uvShadow);
+				ProjCoords = float4(ProjCoords.x, 1 - ProjCoords.y, ProjCoords.z, ProjCoords.w);
+
+				fixed4 texS = tex2Dproj (_ShadowTex, ProjCoords) * _Color;
 
 				half NdotL = max(0, dot(i.worldNormal, _WorldSpaceLightPos0.xyz));
 				half atten = 1;

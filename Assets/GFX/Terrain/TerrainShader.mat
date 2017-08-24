@@ -237,7 +237,7 @@ Material:
     - _DepthLevel: 1.5
     - _GeneratingNormal: 0
     - _Grid: 0
-    - _GridCamDist: 0.69151366
+    - _GridCamDist: 0.49311337
     - _GridScale: 102.4
     - _HideSplat0: 0
     - _HideSplat1: 0
@@ -261,14 +261,14 @@ Material:
     - _Splat2ScaleNormal: 512
     - _Splat3Scale: 170.66667
     - _Splat3ScaleNormal: 256
-    - _Splat4Scale: 256
-    - _Splat4ScaleNormal: 256
-    - _Splat5Scale: 256
-    - _Splat5ScaleNormal: 256
-    - _Splat6Scale: 256
-    - _Splat6ScaleNormal: 256
-    - _Splat7Scale: 256
-    - _Splat7ScaleNormal: 256
+    - _Splat4Scale: 1024
+    - _Splat4ScaleNormal: 1024
+    - _Splat5Scale: 1024
+    - _Splat5ScaleNormal: 1024
+    - _Splat6Scale: 1024
+    - _Splat6ScaleNormal: 1024
+    - _Splat7Scale: 1024
+    - _Splat7ScaleNormal: 1024
     - _TTerrainXP: 0
     - _UpperScale: 8
     - _UpperScaleNormal: 1024
