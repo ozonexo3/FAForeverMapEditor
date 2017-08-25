@@ -203,8 +203,8 @@ Properties {
 			#pragma target 4.0
 			#pragma exclude_renderers gles
 			#include "UnityLightingCommon.cginc"
-#include "UnityGBuffer.cginc"
-#include "UnityGlobalIllumination.cginc"
+			#include "UnityGBuffer.cginc"
+			#include "UnityGlobalIllumination.cginc"
 
 			struct Input {
 				float2 uv_Control : TEXCOORD0;
@@ -240,7 +240,12 @@ Properties {
 			int _Water;
 
 			int _Slope, _UseSlopeTex;
+			sampler2D _SlopeTex;
 
+			int _Grid;
+			half _GridScale;
+			half _GridCamDist;
+			sampler2D _GridTexture;
 
 			half _LightingMultiplier;
 			fixed4 _SunColor;
@@ -482,11 +487,16 @@ Properties {
 					o.Normal = UnpackNormalDXT5nmScaled(nrm.rgbg, 2);
 
 
+				half3 Emit = _SunAmbience.rgb * 2;
+
 				if(_Slope > 0){
 					o.Normal = half3(0,0,1);
 
 					if(_UseSlopeTex > 0){
-						o.Albedo = 0;
+						col = 0;
+						float2 UV2 = IN.uv_Control * fixed2(1, 1) + half2(0, 0) - float2(-0.05, -0.05) / _GridScale;
+						float4 splat_control = tex2D (_SlopeTex, UV2);
+						Emit = splat_control.rgb;
 					}
 					else{
 						if(IN.worldPos.y < _WaterLevel){
@@ -500,10 +510,12 @@ Properties {
 						o.Albedo = col;
 						}
 				}
-				else if(_Water > 0) o.Albedo = ApplyWaterColor(WaterDepth, col.rgb);	
-				else o.Albedo = col;
+				else if(_Water > 0) col.rgb = ApplyWaterColor(WaterDepth, col.rgb);	
+				
+				
+				o.Albedo = col;
 
-				o.Emission = _SunAmbience.rgb * 2;
+				o.Emission = Emit;
 
 				//o.Albedo = 0.5;
 				//o.Emission = tex2D (_SplatNormal3, UV * 10 );

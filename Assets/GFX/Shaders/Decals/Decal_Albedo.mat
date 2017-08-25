@@ -7,7 +7,7 @@ Material:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_Name: Decal_Albedo
-  m_Shader: {fileID: 4800000, guid: 8180a5215a1da91488edc8317d1813d2, type: 3}
+  m_Shader: {fileID: 4800000, guid: 25d06cf01869f48869c0990c92478af8, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
@@ -46,7 +46,12 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _SpecularTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     m_Floats:
+    - _CutOffLOD: 0
     - _Glossiness: 0.5
     - _Metallic: 0
     - _NearCutOffLOD: 0

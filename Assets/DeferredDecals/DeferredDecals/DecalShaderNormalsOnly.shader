@@ -22,7 +22,7 @@ Shader "Decal/DecalShader Normals"
 			//Blend SrcAlpha OneMinusSrcAlpha
 
 			CGPROGRAM
-			#pragma target 3.0
+			#pragma target 4.0
 			#pragma vertex vert
 			#pragma fragment frag
 			#pragma exclude_renderers nomrt
@@ -50,6 +50,10 @@ Shader "Decal/DecalShader Normals"
 				o.orientation = mul ((float3x3)unity_ObjectToWorld, float3(0,1,0));
 				o.orientationX = mul ((float3x3)unity_ObjectToWorld, float3(1,0,0));
 				o.orientationZ = mul ((float3x3)unity_ObjectToWorld, float3(0,0,1));
+				o.orientation = float3(0,1,0);
+				//o.orientationX = float3(1,0,0);
+				//o.orientationZ = float3(0,0,1);
+
 				return o;
 			}
 
@@ -61,6 +65,11 @@ Shader "Decal/DecalShader Normals"
 			sampler2D _BumpMap;
 			sampler2D_float _CameraDepthTexture;
 			sampler2D _NormalsCopy;
+
+
+		half3 BlendNormals (half3 a, half3 b){
+			return a + b * 0.5 - 0.5;
+		}
 
 			//void frag(
 			//	v2f i,
@@ -92,14 +101,26 @@ Shader "Decal/DecalShader Normals"
 				fixed4 col = tex2D (_MainTex, i.uv);
 				clip (col.a - 0.2);
 
-				fixed3 nor = UnpackNormal(tex2D(_BumpMap, i.uv));
+				fixed3 nor = UnpackNormalDXT5nm(tex2D(_BumpMap, half2(i.uv.x, 1 - i.uv.y)));
+
+				clip( (1 - nor.b) - 0.001);
+
 				//nor = fixed3(0,0,1);
 				half3x3 norMat = half3x3(i.orientationX, i.orientationZ, i.orientation);
 				nor = mul (nor, norMat);
-				return fixed4(nor*0.5+0.5,1);
+
+
+				//return wnormal + fixed4(nor*0.5+0.5,1);
+
+				//wnormal += nor - 0.5;
+				wnormal = BlendNormals( wnormal, nor);
+				//wnormal = normalize(wnormal);
+
+				return half4(wnormal * 0.5 + 0.5, 1);
 			}
 			ENDCG
 		}		
+
 
 	}
 

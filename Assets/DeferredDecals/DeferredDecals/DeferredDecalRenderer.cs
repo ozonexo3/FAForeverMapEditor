@@ -122,7 +122,9 @@ public class DeferredDecalRenderer : MonoBehaviour
 		}*/
 		for (int i = 0; i < NormalDecals.Length; i++)
 		{
+			//buf.Blit(BuiltinRenderTextureType.GBuffer2, normalsID);
 			buf.DrawMesh(m_CubeMesh, NormalDecals[i].transform.localToWorldMatrix, NormalDecals[i].m_Material);
+
 		}
 		/*
 		// render diffuse+normals decals into two MRTs

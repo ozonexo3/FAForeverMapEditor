@@ -7,7 +7,7 @@ Material:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_Name: Decal_Normal
-  m_Shader: {fileID: 4800000, guid: 7c226b7ac251eb24484cdfccf8233749, type: 3}
+  m_Shader: {fileID: 4800000, guid: 2f2792b9c785145dea85e725435fabf6, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
@@ -47,8 +47,10 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
+    - _CutOffLODD: 0
     - _Glossiness: 0.5
     - _Metallic: 0
+    - _NearCutOffLOD: 0
     m_Colors:
     - BumpMapScale: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}

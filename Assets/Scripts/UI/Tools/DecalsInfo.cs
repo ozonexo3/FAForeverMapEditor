@@ -16,6 +16,8 @@ namespace EditMap
 		public GameObject DecalPrefab;
 		public GameObject DecalBumpPrefab;
 
+		public DeferredDecalRenderer DecalRenderer;
+
 		public Material AlbedoMaterial;
 		public Material NormalMaterial;
 
@@ -60,12 +62,15 @@ namespace EditMap
 
 			Debug.Log("Decals count: " + Count);
 
-			Quaternion ProjectorRot = Quaternion.Euler(new Vector3(90, 180, 180));
+			Quaternion ProjectorRot = Quaternion.Euler(new Vector3(0, 0, 0)); // 90 180 180
+
+			List<DefDecal> AlbedoDecals = new List<DefDecal>();
+			List<DefDecal> NormalDecals = new List<DefDecal>();
 
 			for (int i = 0; i < Count; i++)
 			{
-				//if (ScmapEditor.Current.map.Decals[i].Type != TerrainDecalType.TYPE_ALBEDO && ScmapEditor.Current.map.Decals[i].Type != TerrainDecalType.TYPE_NORMALS)
-				if (ScmapEditor.Current.map.Decals[i].Type != TerrainDecalType.TYPE_ALBEDO)
+				if (ScmapEditor.Current.map.Decals[i].Type != TerrainDecalType.TYPE_ALBEDO && ScmapEditor.Current.map.Decals[i].Type != TerrainDecalType.TYPE_NORMALS)
+				//if (ScmapEditor.Current.map.Decals[i].Type != TerrainDecalType.TYPE_ALBEDO)
 					continue;
 
 				GameObject NewDecalObject = Instantiate(DecalPrefab, DecalPivot);
@@ -77,7 +82,7 @@ namespace EditMap
 
 				Quaternion PosRotation = Quaternion.Euler(Vector3.up * Tr.eulerAngles.y);
 
-				Vector3 Up = Tr.up;
+				Vector3 Up = Tr.forward;
 				Up.y = 0;
 				Up.Normalize();
 				Vector3 right = Tr.right;
@@ -86,38 +91,62 @@ namespace EditMap
 
 				NewDecalObject.transform.localPosition -= Up * (ScmapEditor.Current.map.Decals[i].Scale.y * 0.05f);
 				NewDecalObject.transform.localPosition += right * (ScmapEditor.Current.map.Decals[i].Scale.x * 0.05f);
-				//NewDecalObject.transform.localScale = ScmapEditor.Current.map.Decals[i].Scale * 0.1f;
+				NewDecalObject.transform.localScale = new Vector3(ScmapEditor.Current.map.Decals[i].Scale.x * 0.1f, ScmapEditor.Current.map.Decals[i].Scale.y * 0.1f, ScmapEditor.Current.map.Decals[i].Scale.z * 0.1f);
 
 				//float ScaleMin = Mathf.Min(ScmapEditor.Current.map.Decals[i].Scale.x, ScmapEditor.Current.map.Decals[i].Scale.y);
 				//float ScaleMax = Mathf.Min(ScmapEditor.Current.map.Decals[i].Scale.x, ScmapEditor.Current.map.Decals[i].Scale.y);
 
-				Projector proj = NewDecalObject.GetComponent<Projector>();
+				DefDecal Dec = NewDecalObject.GetComponent<DefDecal>();
+
+
+				/*Projector proj = NewDecalObject.GetComponent<Projector>();
 				proj.orthographicSize = ScmapEditor.Current.map.Decals[i].Scale.y * 0.05f;
 				proj.aspectRatio = (ScmapEditor.Current.map.Decals[i].Scale.x / ScmapEditor.Current.map.Decals[i].Scale.y);
 				// ?
 				proj.nearClipPlane = ScmapEditor.Current.map.Decals[i].Scale.z * -0.05f;
-				proj.farClipPlane = ScmapEditor.Current.map.Decals[i].Scale.z * 0.05f;
+				proj.farClipPlane = ScmapEditor.Current.map.Decals[i].Scale.z * 0.05f;*/
 
 				if (ScmapEditor.Current.map.Decals[i].Type == TerrainDecalType.TYPE_ALBEDO)
 				{
+					Dec.m_Kind = DefDecal.Kind.DiffuseOnly;
+
 					Material mat = new Material(AlbedoMaterial);
 
 					mat.SetFloat("_CutOffLOD", ScmapEditor.Current.map.Decals[i].CutOffLOD);
 					mat.SetFloat("_NearCutOffLOD", ScmapEditor.Current.map.Decals[i].NearCutOffLOD);
-					AssignTextureFromPath(ref mat, "_ShadowTex", ScmapEditor.Current.map.Decals[i].TexPathes[0]);
+					AssignTextureFromPath(ref mat, "_MainTex", ScmapEditor.Current.map.Decals[i].TexPathes[0]);
 					AssignTextureFromPath(ref mat, "_SpecularTex", ScmapEditor.Current.map.Decals[i].TexPathes[1]);
 
 
-					proj.material = mat;
-
+					//proj.material = mat;
+					Dec.m_Material = mat;
+					Dec.OnEnable();
+					AlbedoDecals.Add(Dec);
 				}
 				else if (ScmapEditor.Current.map.Decals[i].Type == TerrainDecalType.TYPE_NORMALS)
 				{
+					/*
 					Material mat = new Material(NormalMaterial);
 					proj.material = mat;
 					AssignTextureFromPath(ref mat, "_BumpMap", ScmapEditor.Current.map.Decals[i].TexPathes[0]);
 					mat.SetFloat("_CutOffLOD", ScmapEditor.Current.map.Decals[i].CutOffLOD * 0.1f);
 					mat.SetFloat("_NearCutOffLOD", ScmapEditor.Current.map.Decals[i].NearCutOffLOD * 0.1f);
+					*/
+					Dec.m_Kind = DefDecal.Kind.NormalsOnly;
+
+					Material mat = new Material(NormalMaterial);
+
+					mat.SetFloat("_CutOffLOD", ScmapEditor.Current.map.Decals[i].CutOffLOD);
+					mat.SetFloat("_NearCutOffLOD", ScmapEditor.Current.map.Decals[i].NearCutOffLOD);
+					AssignTextureFromPath(ref mat, "_BumpMap", ScmapEditor.Current.map.Decals[i].TexPathes[0]);
+					//AssignTextureFromPath(ref mat, "_SpecularTex", ScmapEditor.Current.map.Decals[i].TexPathes[1]);
+
+
+					//proj.material = mat;
+					Dec.m_Material = mat;
+					Dec.OnEnable();
+
+					NormalDecals.Add(Dec);
 				}
 
 				LoadedCount++;
@@ -128,6 +157,9 @@ namespace EditMap
 					yield return null;
 				}
 			}
+
+			DecalRenderer.DiffuseDecals = AlbedoDecals.ToArray();
+			DecalRenderer.NormalDecals = NormalDecals.ToArray();
 
 			yield return null;
 			LoadingDecals = false;

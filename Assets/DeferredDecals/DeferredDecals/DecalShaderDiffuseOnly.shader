@@ -11,6 +11,7 @@ Shader "Decal/DecalShader"
 	Properties
 	{
 		_MainTex ("Diffuse", 2D) = "white" {}
+		_SpecularTex ("Specular", 2D) = "white" {}
 	}
 	SubShader
 	{
@@ -56,6 +57,9 @@ Shader "Decal/DecalShader"
 			sampler2D_float _CameraDepthTexture;
 			sampler2D _NormalsCopy;
 
+			sampler2D _WaterRam;
+			sampler2D _UtilitySamplerC;
+
 			//void frag(
 			//	v2f i,
 			//	out half4 outDiffuse : COLOR0,			// RT0: diffuse color (rgb), --unused-- (a)
@@ -63,6 +67,12 @@ Shader "Decal/DecalShader"
 			//	out half4 outNormal : COLOR2,			// RT2: normal (rgb), --unused-- (a)
 			//	out half4 outEmission : COLOR3			// RT3: emission (rgb), --unused-- (a)
 			//)
+
+			float3 ApplyWaterColor( float depth, float3  inColor){
+				float4 wcolor = tex2D(_WaterRam, float2(depth,0));
+				return lerp( inColor.rgb, wcolor.rgb, wcolor.a );
+			}
+
 			fixed4 frag(v2f i) : SV_Target
 			{
 				i.ray = i.ray * (_ProjectionParams.z / i.ray.z);
@@ -83,7 +93,15 @@ Shader "Decal/DecalShader"
 				//fixed3 wnormal = normal.rgb * 2.0 - 1.0;
 				//clip (dot(wnormal, i.orientation) - 0.3);
 
-				fixed4 col = tex2D (_MainTex, i.uv);
+				
+				
+				fixed4 col = tex2D (_MainTex, half2(i.uv.x, 1 - i.uv.y));
+
+				float4 waterTexture = tex2D( _UtilitySamplerC, wpos.xz * half2(0.009765, -0.009765) + half2(0, 0));
+				col.rgb = ApplyWaterColor( waterTexture.g, col.rgb);	
+
+				//col.rgb = wpos * 0.009;
+
 				return col;
 			}
 			ENDCG
