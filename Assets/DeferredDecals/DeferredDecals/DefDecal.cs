@@ -11,6 +11,7 @@ public class DefDecal : MonoBehaviour
 	}
 	public Kind m_Kind;
 	public Material m_Material;
+	public Mesh Model;
 
 	public void OnEnable()
 	{

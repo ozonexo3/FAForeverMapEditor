@@ -50,6 +50,8 @@ public class DeferredDecalRenderer : MonoBehaviour
 	public DefDecal[] DiffuseDecals;
 	public DefDecal[] NormalDecals;
 
+	//public Mesh GeneratedMesh;
+
 	public void OnDisable()
 	{
 		foreach (var cam in m_Cameras)
@@ -62,6 +64,39 @@ public class DeferredDecalRenderer : MonoBehaviour
 
 		m_Cameras = new Dictionary<Camera, CommandBuffer>();
 	}
+
+	/*
+	public void OnEnable()
+	{
+		GeneratedMesh = new Mesh();
+		const int LayersCount = 20;
+		Vector3[] Verts = new Vector3[LayersCount * 4];
+		int[] Indices = new int[LayersCount * 6];
+
+		for(int i = 0; i < LayersCount; i++)
+		{
+			float Height = i / (float)(LayersCount - 1);
+			Height = 1 - Height;
+			Height -= 0.5f;
+			Verts[i * 4 + 0] = new Vector3(-0.5f, Height, -0.5f);
+			Verts[i * 4 + 1] = new Vector3(0.5f, Height, -0.5f);
+			Verts[i * 4 + 2] = new Vector3(-0.5f, Height, 0.5f);
+			Verts[i * 4 + 3] = new Vector3(0.5f, Height, 0.5f);
+
+			Indices[i * 6 + 0] = i * 4 + 0;
+			Indices[i * 6 + 1] = i * 4 + 2;
+			Indices[i * 6 + 2] = i * 4 + 1;
+
+			Indices[i * 6 + 3] = i * 4 + 3;
+			Indices[i * 6 + 4] = i * 4 + 1;
+			Indices[i * 6 + 5] = i * 4 + 2;
+
+		}
+		GeneratedMesh.vertices = Verts;
+		GeneratedMesh.triangles = Indices;
+
+	}
+	*/
 
 	public void OnWillRenderObject()
 	{

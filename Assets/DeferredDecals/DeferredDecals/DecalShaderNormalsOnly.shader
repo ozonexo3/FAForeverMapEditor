@@ -19,7 +19,8 @@ Shader "Decal/DecalShader Normals"
 		{
 			Fog { Mode Off } // no fog in g-buffers pass
 			ZWrite Off
-			//Blend SrcAlpha OneMinusSrcAlpha
+			
+			Blend SrcAlpha OneMinusSrcAlpha
 
 			CGPROGRAM
 			#pragma target 4.0
@@ -44,8 +45,9 @@ Shader "Decal/DecalShader Normals"
 			{
 				v2f o;
 				o.pos = UnityObjectToClipPos (float4(v,1));
-				o.uv = v.xz+0.5;
+				o.uv = v.xz + 0.5;
 				o.screenUV = ComputeScreenPos (o.pos);
+
 				o.ray = mul (UNITY_MATRIX_MV, float4(v,1)).xyz * float3(-1,-1,1);
 				o.orientation = mul ((float3x3)unity_ObjectToWorld, float3(0,1,0));
 				o.orientationX = mul ((float3x3)unity_ObjectToWorld, float3(1,0,0));
@@ -102,8 +104,13 @@ Shader "Decal/DecalShader Normals"
 				clip (col.a - 0.2);
 
 				fixed3 nor = UnpackNormalDXT5nm(tex2D(_BumpMap, half2(i.uv.x, 1 - i.uv.y)));
+				fixed alpha = abs(nor.x) + abs(nor.y);
+				alpha = clamp(alpha * 4, 0, 1);
+				nor.y = -nor.y;
+
 
 				clip( (1 - nor.b) - 0.001);
+				clip(alpha - 0.5);
 
 				//nor = fixed3(0,0,1);
 				half3x3 norMat = half3x3(i.orientationX, i.orientationZ, i.orientation);
@@ -116,7 +123,7 @@ Shader "Decal/DecalShader Normals"
 				wnormal = BlendNormals( wnormal, nor);
 				//wnormal = normalize(wnormal);
 
-				return half4(wnormal * 0.5 + 0.5, 1);
+				return half4(wnormal * 0.5 + 0.5, alpha);
 			}
 			ENDCG
 		}		

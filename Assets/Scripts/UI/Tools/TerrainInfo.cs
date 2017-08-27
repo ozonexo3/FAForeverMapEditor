@@ -4,6 +4,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.IO;
+using System.Text;
+using System.Runtime.InteropServices;
+using SFB;
 
 namespace EditMap
 {
@@ -384,13 +387,15 @@ namespace EditMap
 
 			string Filename = EnvPaths.GetMapsPath() + MapLuaParser.Current.FolderName + "/heightmap.raw";
 
+
+
 			int h = Map.Teren.terrainData.heightmapWidth;
 			int w = Map.Teren.terrainData.heightmapWidth;
 
 			float[,] data = Map.Teren.terrainData.GetHeights(0, 0, w, h);
 
 			Texture2D ExportAs = new Texture2D(Map.Teren.terrainData.heightmapWidth, Map.Teren.terrainData.heightmapWidth, TextureFormat.RGB24, false);
-			Debug.Log(data[128, 128]);
+			//Debug.Log(data[128, 128]);
 			//Debug.Log(data[256,256]);
 
 			float Prop = (float)scale / (float)Map.Teren.terrainData.heightmapWidth;
@@ -454,13 +459,28 @@ namespace EditMap
 
 		public void ImportHeightmap()
 		{
+			string Filename = EnvPaths.GetMapsPath() + MapLuaParser.Current.FolderName + "/heightmap.raw";
+			//string Filename = EnvPaths.GetMapsPath() + MapLuaParser.Current.FolderName + "/heightmap.raw";
+
+			var extensions = new[]
+			{
+				new ExtensionFilter("Heightmap", new string[]{"raw" })
+				//new ExtensionFilter("Stratum mask", "raw, bmp")
+			};
+
+			var paths = StandaloneFileBrowser.OpenFilePanel("Import stratum mask", EnvPaths.GetMapsPath() + MapLuaParser.Current.FolderName, extensions, false);
+
+
+			if (paths == null || paths.Length == 0 || string.IsNullOrEmpty(paths[0]))
+				return;
+
+			Filename = paths[0];
 
 			int h = Map.Teren.terrainData.heightmapHeight;
 			int w = Map.Teren.terrainData.heightmapWidth;
 			beginHeights = Map.Teren.terrainData.GetHeights(0, 0, w, h);
 			MapLuaParser.Current.History.RegisterTerrainHeightmapChange(beginHeights);
 
-			string Filename = EnvPaths.GetMapsPath() + MapLuaParser.Current.FolderName + "/heightmap.raw";
 			if (!File.Exists(Filename))
 			{
 				Debug.Log("File not exist: " + Filename);
@@ -468,6 +488,8 @@ namespace EditMap
 			}
 
 			float[,] data = new float[h, w];
+			Debug.Log((float)0xFFFF);
+			float HeightOffset = 64 * 64 * 16; // 0xFFFF
 			using (var file = System.IO.File.OpenRead(Filename))
 			using (var reader = new System.IO.BinaryReader(file))
 			{
@@ -475,8 +497,8 @@ namespace EditMap
 				{
 					for (int x = 0; x < w; x++)
 					{
-						float v = (float)reader.ReadUInt16() / 0xFFFF;
-						data[y, x] = v;
+						float v = (float)reader.ReadUInt16() / HeightOffset;
+						data[h - (y + 1), x] = v ;
 					}
 				}
 			}

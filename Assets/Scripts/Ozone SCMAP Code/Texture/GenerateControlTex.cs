@@ -173,6 +173,10 @@ public class GenerateControlTex : MonoBehaviour
 	static bool GeneratingSlopeTex = false;
 	static bool BufforSlopeTex = false;
 
+	public float FlatHeight = 0.000045f;
+	public float NonFlatHeight = 0.0022f;
+	public float UnpassableHeight = 0.005f;
+
 	IEnumerator GeneratingSlope()
 	{
 		GeneratingSlopeTex = true;
@@ -191,9 +195,6 @@ public class GenerateControlTex : MonoBehaviour
 		int i = 0;
 		int counter = 0;
 
-		const float FlatHeight = 0.00005f;
-		const float NonFlatHeight = 0.0022f;
-		const float UnpassableHeight = 0.0045f;
 
 		for (x = 0; x < ScmapEditor.Current.map.Width; x++)
 		{

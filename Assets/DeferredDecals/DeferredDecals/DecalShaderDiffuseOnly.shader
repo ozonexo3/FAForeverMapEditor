@@ -17,9 +17,13 @@ Shader "Decal/DecalShader"
 	{
 		Pass
 		{
+		Tags { "Queue"="Transparent" "IgnoreProjector"="True" "RenderType"="Transparent" }
 			Fog { Mode Off } // no fog in g-buffers pass
 			ZWrite Off
 			Blend SrcAlpha OneMinusSrcAlpha
+			//ZTest  Always
+			//Cull Back
+			//Offset -10000, -1
 
 			CGPROGRAM
 			#pragma target 3.0
@@ -41,9 +45,13 @@ Shader "Decal/DecalShader"
 			v2f vert (float3 v : POSITION)
 			{
 				v2f o;
+				//v.y = 0;
 				o.pos = UnityObjectToClipPos (float4(v,1));
+								
 				o.uv = v.xz+0.5;
 				o.screenUV = ComputeScreenPos (o.pos);
+
+
 				o.ray = mul (UNITY_MATRIX_MV, float4(v,1)).xyz * float3(-1,-1,1);
 				o.orientation = mul ((float3x3)unity_ObjectToWorld, float3(0,1,0));
 				return o;
