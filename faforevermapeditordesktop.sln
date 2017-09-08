@@ -1,0 +1,38 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2017
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "faforevermapeditordesktop.Plugins", "faforevermapeditordesktop.Plugins.csproj", "{420FD094-A2C4-5D83-9C81-32786B3845FB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "faforevermapeditordesktop", "faforevermapeditordesktop.csproj", "{4E1CCE99-EFEC-946E-44EF-9270C310D349}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "faforevermapeditordesktop.Editor.Plugins", "faforevermapeditordesktop.Editor.Plugins.csproj", "{94B059C3-586E-DD6D-2061-0C61CF3C01D3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "faforevermapeditordesktop.Editor", "faforevermapeditordesktop.Editor.csproj", "{DE4FE955-8EDD-CA02-52AB-BED9FE4AB387}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{420FD094-A2C4-5D83-9C81-32786B3845FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{420FD094-A2C4-5D83-9C81-32786B3845FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{420FD094-A2C4-5D83-9C81-32786B3845FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{420FD094-A2C4-5D83-9C81-32786B3845FB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4E1CCE99-EFEC-946E-44EF-9270C310D349}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4E1CCE99-EFEC-946E-44EF-9270C310D349}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4E1CCE99-EFEC-946E-44EF-9270C310D349}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4E1CCE99-EFEC-946E-44EF-9270C310D349}.Release|Any CPU.Build.0 = Release|Any CPU
+		{94B059C3-586E-DD6D-2061-0C61CF3C01D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{94B059C3-586E-DD6D-2061-0C61CF3C01D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{94B059C3-586E-DD6D-2061-0C61CF3C01D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{94B059C3-586E-DD6D-2061-0C61CF3C01D3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DE4FE955-8EDD-CA02-52AB-BED9FE4AB387}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DE4FE955-8EDD-CA02-52AB-BED9FE4AB387}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DE4FE955-8EDD-CA02-52AB-BED9FE4AB387}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DE4FE955-8EDD-CA02-52AB-BED9FE4AB387}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

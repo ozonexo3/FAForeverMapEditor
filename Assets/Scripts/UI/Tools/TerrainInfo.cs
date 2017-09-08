@@ -388,17 +388,13 @@ namespace EditMap
 			string Filename = EnvPaths.GetMapsPath() + MapLuaParser.Current.FolderName + "/heightmap.raw";
 
 
-
 			int h = Map.Teren.terrainData.heightmapWidth;
 			int w = Map.Teren.terrainData.heightmapWidth;
 
 			float[,] data = Map.Teren.terrainData.GetHeights(0, 0, w, h);
 
 			Texture2D ExportAs = new Texture2D(Map.Teren.terrainData.heightmapWidth, Map.Teren.terrainData.heightmapWidth, TextureFormat.RGB24, false);
-			//Debug.Log(data[128, 128]);
-			//Debug.Log(data[256,256]);
 
-			float Prop = (float)scale / (float)Map.Teren.terrainData.heightmapWidth;
 			float HeightValue = 1;
 			HeightValue = float.Parse(TerrainScale_HeightValue.text);
 			if (HeightValue < 0) HeightValue = 1;
@@ -407,7 +403,6 @@ namespace EditMap
 			{
 				for (int x = 0; x < w; x++)
 				{
-					//Debug.Log(data[y,x]);
 					float Value = data[y, x] / (1f / 255f);
 
 					if (TerrainScale_Height.isOn)
@@ -416,12 +411,6 @@ namespace EditMap
 					}
 					float ColorR = (Mathf.Floor(Value) * (1f / 255f));
 					float ColorG = (Value - Mathf.Floor(Value));
-
-					if (x == 128 && y == 128)
-					{
-						Debug.Log(Value);
-						Debug.Log(ColorR + ", " + ColorG);
-					}
 
 					ExportAs.SetPixel(h - y - 1, x, new Color(ColorR, ColorG, 0));
 				}
@@ -435,9 +424,6 @@ namespace EditMap
 
 			h = scale;
 			w = scale;
-			Debug.Log(Prop);
-			//ExportAs.Resize(scale, scale);
-			//ExportAs.Apply();
 
 			using (BinaryWriter writer = new BinaryWriter(new System.IO.FileStream(Filename, System.IO.FileMode.Create)))
 			{
@@ -579,43 +565,20 @@ namespace EditMap
 		#endregion
 
 
+		#region Painting
 		bool Painting = false;
 		void SymmetryPaint()
 		{
 			Painting = true;
 			BrushGenerator.Current.GenerateSymmetry(BrushPos);
-			/*
 
-			float[,] AllHeights = Map.Teren.terrainData.GetHeights (0, 0, Map.Teren.terrainData.heightmapWidth, Map.Teren.terrainData.heightmapHeight);
-
-			TerrainBrush.size = (int)BrushSizeSlider.value;
-			TerrainBrush.strength = BrushStrengthSlider.value;
-			TerrainBrush.Invert = Invert;
-			TerrainBrush.MinMax = new Vector2 (Min, Max);
-
-			if (Smooth || SelectedBrush == 2) {
-				TerrainBrush.BrushType = PaintWithBrush.BrushTypes.Smooth;
-			} else if (SelectedBrush == 3) {
-				TerrainBrush.BrushType = PaintWithBrush.BrushTypes.Sharpen;
-			}
-			else{
-				TerrainBrush.BrushType = PaintWithBrush.BrushTypes.Standard;
-				}
-
-			PaintWithBrush.PaintWithSymmetry (ref AllHeights, TerrainBrush);
-
-			Map.Teren.terrainData.SetHeights (0, 0, AllHeights);
-	*/
 			for (int i = 0; i < BrushGenerator.Current.PaintPositions.Length; i++)
 			{
 				Paint(BrushGenerator.Current.PaintPositions[i], i);
 
 			}
-
 		}
 
-
-		#region Old Painting
 		void Paint(Vector3 AtPosition, int id = 0)
 		{
 			int BrushPaintType = 0;
