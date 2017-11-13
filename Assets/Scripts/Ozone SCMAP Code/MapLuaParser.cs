@@ -257,7 +257,7 @@ public class MapLuaParser : MonoBehaviour {
 
 				//DecalsMenu.AllowBrushUpdate = false;
 				DecalsMenu.StartCoroutine(DecalsMenu.LoadDecals());
-				while (DecalsMenu.LoadingDecals)
+				while (DecalsInfo.LoadingDecals)
 				{
 					InfoPopup.Show(true, "Loading map...\n( Loading decals " + DecalsMenu.LoadedCount + "/" + ScmapEditor.Current.map.Decals.Count + ")");
 					yield return null;

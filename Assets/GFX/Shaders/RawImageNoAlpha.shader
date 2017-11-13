@@ -50,7 +50,7 @@ Shader "UI/RawImageChannel"
 			#pragma vertex vert
 			#pragma fragment frag
 			#include "UnityCG.cginc"
-			#pragma target 4.0
+			#pragma target 3.0
 			#pragma exclude_renderers gles
 			
 			struct appdata_t

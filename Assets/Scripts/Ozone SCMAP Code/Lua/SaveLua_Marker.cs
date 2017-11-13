@@ -81,7 +81,7 @@ namespace MapLua
 			public const string KEY_GRAPH = "graph";
 			public const string KEY_ADJACENTTO = "adjacentTo";
 
-			public const string KEY_CLOUDCOUNT = "cloudCount", KEY_CLOUDEMITTERSCALE = "cloudEmitterScale", KEY_CLOUDEMITTERSCALERANGE = "cloudEmitterScaleRange", 
+			public const string KEY_CLOUDCOUNT = "cloudCount", KEY_CLOUDEMITTERSCALE = "cloudEmitterScale", KEY_CLOUDEMITTERSCALERANGE = "cloudEmitterScaleRange",
 				KEY_CLOUDCOUNTRANGE = "cloudCountRange", KEY_CLOUDSPREAD = "cloudSpread", KEY_CLOUDHEIGHTRANGE = "cloudHeightRange",
 				KEY_SPAWNCHANCE = "spawnChance", KEY_FORCETYPE = "ForceType", KEY_CLOUDHEIGHT = "cloudHeight";
 
@@ -98,7 +98,7 @@ namespace MapLua
 				ProtectedExperimentalConstruction,
 				ExpansionArea, LargeExpansionArea, NavalArea,
 				RallyPoint, NavalRallyPoint,
-				LandPathNode, AirPathNode, WaterPathNode, AmphibiousPathNode,
+				LandPathNode, AirPathNode, WaterPathNode, AmphibiousPathNode, AutoPathNode,
 				NavalLink,
 				TransportMarker,
 				Island,
@@ -132,7 +132,7 @@ namespace MapLua
 					return Key == KEY_SIZE || Key == KEY_RESOURCE || Key == KEY_AMOUNT;
 				else if (MarkerType == MarkerTypes.BlankMarker)
 					return false;
-				else if (MarkerType == MarkerTypes.LandPathNode || MarkerType == MarkerTypes.AirPathNode || MarkerType == MarkerTypes.WaterPathNode || MarkerType == MarkerTypes.AmphibiousPathNode)
+				else if (MarkerType == MarkerTypes.LandPathNode || MarkerType == MarkerTypes.AirPathNode || MarkerType == MarkerTypes.WaterPathNode || MarkerType == MarkerTypes.AmphibiousPathNode || MarkerType == MarkerTypes.AutoPathNode)
 					return Key == KEY_HINT || Key == KEY_GRAPH || Key == KEY_ADJACENTTO;
 				else if (MarkerType == MarkerTypes.NavalLink)
 					return false;
@@ -144,7 +144,7 @@ namespace MapLua
 					return Key == KEY_CLOUDCOUNT || Key == KEY_CLOUDEMITTERSCALE || Key == KEY_CLOUDEMITTERSCALERANGE || Key == KEY_CLOUDCOUNTRANGE || Key == KEY_CLOUDSPREAD || Key == KEY_CLOUDHEIGHTRANGE
 						|| Key == KEY_SPAWNCHANCE || Key == KEY_FORCETYPE || Key == KEY_CLOUDHEIGHT;
 				else if (MarkerType == MarkerTypes.WeatherDefinition)
-					return Key == KEY_WEATHERDRIFTDIRECTION || Key == KEY_MAPSTYLE 
+					return Key == KEY_WEATHERDRIFTDIRECTION || Key == KEY_MAPSTYLE
 						|| Key == KEY_WEATHERTYPE01 || Key == KEY_WEATHERTYPE02 || Key == KEY_WEATHERTYPE03 || Key == KEY_WEATHERTYPE04
 						|| Key == KEY_WEATHERTYPE01CHANCE || Key == KEY_WEATHERTYPE02CHANCE || Key == KEY_WEATHERTYPE03CHANCE || Key == KEY_WEATHERTYPE04CHANCE;
 				else //Unknown
@@ -155,9 +155,9 @@ namespace MapLua
 			{
 				if (Type == MarkerTypes.BlankMarker || Type == MarkerTypes.Mass || Type == MarkerTypes.Hydrocarbon || Type == MarkerTypes.CameraInfo)
 					return MarkerLayers.NoAI;
-				else if (Type == MarkerTypes.LandPathNode || Type == MarkerTypes.RallyPoint || Type == MarkerTypes.AmphibiousPathNode)
+				else if (Type == MarkerTypes.LandPathNode || Type == MarkerTypes.RallyPoint || Type == MarkerTypes.AmphibiousPathNode || Type == MarkerTypes.AutoPathNode)
 					return MarkerLayers.Land;
-				else if (Type == MarkerTypes.WaterPathNode || Type == MarkerTypes.NavalRallyPoint || Type == MarkerTypes.NavalLink)
+				else if (Type == MarkerTypes.WaterPathNode || Type == MarkerTypes.NavalRallyPoint || Type == MarkerTypes.NavalLink || Type == MarkerTypes.AutoPathNode)
 					return MarkerLayers.Naval;
 				else if (Type == MarkerTypes.AirPathNode)
 					return MarkerLayers.Air;
@@ -224,6 +224,60 @@ namespace MapLua
 				}
 			}
 
+			public Marker(Marker CopyMarker, string NewName = "")
+			{
+				ConnectedToChains = new List<Chain>();
+				AdjacentToMarker = new List<Marker>();
+
+				for (int i = 0; i < CopyMarker.ConnectedToChains.Count; i++)
+					ConnectedToChains.Add(CopyMarker.ConnectedToChains[i]);
+
+				for (int i = 0; i < CopyMarker.AdjacentToMarker.Count; i++)
+					AdjacentToMarker.Add(CopyMarker.AdjacentToMarker[i]);
+
+				if (string.IsNullOrEmpty(NewName))
+				{
+					Name = GetLowestName(CopyMarker.MarkerType);
+					RegisterMarkerName(Name);
+				}
+				else
+					Name = NewName;
+
+
+				size = CopyMarker.size;
+				amount = CopyMarker.amount;
+
+
+				position = ScmapEditor.WorldPosToScmap(CopyMarker.MarkerObj.transform.position);
+				orientation = CopyMarker.MarkerObj.Tr.eulerAngles;
+				prop = "/env/common/props/markers/M_Blank_prop.bp";
+
+				MarkerType = CopyMarker.MarkerType;
+				type = MarkerTypeToString(CopyMarker.MarkerType);
+
+				if (MarkerType == MarkerTypes.Mass)
+				{
+					resource = true;
+					//amount = 100;
+					prop = "/env/common/props/markers/M_Mass_prop.bp";
+					color = "ff808080";
+				}
+				else if (MarkerType == MarkerTypes.Hydrocarbon)
+				{
+					//size = 3;
+					resource = true;
+					//amount = 100;
+					prop = "/env/common/props/markers/M_Hydrocarbon_prop.bp";
+					color = "ff808080";
+				}
+				else if (MarkerType == MarkerTypes.CameraInfo)
+				{
+					canSyncCamera = CopyMarker.canSyncCamera;
+					canSetCamera = CopyMarker.canSetCamera;
+					zoom = CopyMarker.zoom;
+				}
+			}
+
 			public Marker(string name, LuaTable Table)
 			{
 				// Create marker from table
@@ -237,7 +291,7 @@ namespace MapLua
 				{
 					switch (Keys[k])
 					{
-#region Search For Keys
+						#region Search For Keys
 						case KEY_POSITION:
 							position = LuaParser.Read.Vector3FromTable(Table, KEY_POSITION);
 							break;
@@ -283,7 +337,7 @@ namespace MapLua
 						case KEY_CANSYNCCAMERA:
 							canSyncCamera = LuaParser.Read.BoolFromTable(Table, KEY_CANSYNCCAMERA);
 							break;
-							// Weather Generator
+						// Weather Generator
 						case KEY_CLOUDCOUNT:
 							cloudCount = LuaParser.Read.FloatFromTable(Table, KEY_CLOUDCOUNT);
 							break;
@@ -354,113 +408,201 @@ namespace MapLua
 				}
 			}
 
+			public Marker AutoMarker_Land;
+			public Marker AutoMarker_Water;
+			public Marker AutoMarker_Amphibious;
+
 			public static MarkerTypes StringToMarkerType(string value)
 			{
 				return (MarkerTypes)System.Enum.Parse(typeof(MarkerTypes), value.Replace(" ", ""));
 			}
 
+			public bool IsOnWater()
+			{
+				return ScmapEditor.Current.Teren.SampleHeight(MarkerObj.transform.position) < ScmapEditor.GetWaterLevel() && ScmapEditor.Current.map.Water.HasWater;
+			}
+
 			public void SaveMarkerValues(LuaParser.Creator LuaFile)
 			{
 
-				position = ScmapEditor.WorldPosToScmap(MarkerObj.transform.position);
-				orientation = MarkerObj.transform.eulerAngles;
-
-				ForceDefaultValues();
-
-				if (AllowByType(KEY_SIZE))
-					LuaFile.AddLine(LuaParser.Write.FloatToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_SIZE), size));
-				if (AllowByType(KEY_RESOURCE))
-					LuaFile.AddLine(LuaParser.Write.BoolToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_RESOURCE), resource));
-				if (AllowByType(KEY_AMOUNT))
-					LuaFile.AddLine(LuaParser.Write.FloatToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_AMOUNT), amount));
-
-				LuaFile.AddLine(LuaParser.Write.StringToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_COLOR), color));
-
-				if (AllowByType(KEY_EDITORICON))
-					LuaFile.AddLine(LuaParser.Write.StringToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_EDITORICON), editorIcon));
-				if (AllowByType(KEY_HINT))
-					LuaFile.AddLine(LuaParser.Write.BoolToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_HINT), hint));
-
-				if (AllowByType(KEY_ADJACENTTO))
+				if (MarkerType == MarkerTypes.AutoPathNode)
 				{
-					if (string.IsNullOrEmpty(graph))
-					{
-						switch (MarkerType)
+					// Convert to Land/Amphibious/Naval markers
+
+					if (IsOnWater())
+					{ // Water
+						for (int i = 0; i < AutoMarker_Water.AdjacentToMarker.Count; i++)
+							if (AutoMarker_Water.AdjacentToMarker[i].MarkerType == MarkerTypes.AutoPathNode)
+							{
+								if (AutoMarker_Water.AdjacentToMarker[i].AutoMarker_Water != null)
+									AutoMarker_Water.AdjacentToMarker[i] = AutoMarker_Water.AdjacentToMarker[i].AutoMarker_Water;
+								else
+								{
+									AutoMarker_Water.AdjacentToMarker.RemoveAt(i);
+									i--;
+								}
+
+							}
+
+						AutoMarker_Water.SaveMarkerValues(LuaFile);
+					}
+					else
+					{ // Land
+						for (int i = 0; i < AutoMarker_Land.AdjacentToMarker.Count; i++)
+							if (AutoMarker_Land.AdjacentToMarker[i].MarkerType == MarkerTypes.AutoPathNode)
+							{
+								if (AutoMarker_Land.AdjacentToMarker[i].AutoMarker_Land != null)
+									AutoMarker_Land.AdjacentToMarker[i] = AutoMarker_Land.AdjacentToMarker[i].AutoMarker_Land;
+								else
+								{
+									AutoMarker_Land.AdjacentToMarker.RemoveAt(i);
+									i--;
+								}
+
+							}
+
+						AutoMarker_Land.SaveMarkerValues(LuaFile);
+					}
+
+					// Amphibious
+					for (int i = 0; i < AutoMarker_Amphibious.AdjacentToMarker.Count; i++)
+						if (AutoMarker_Amphibious.AdjacentToMarker[i].MarkerType == MarkerTypes.AutoPathNode)
 						{
-							case MarkerTypes.LandPathNode:
-								graph = "DefaultLand";
-								break;
-							case MarkerTypes.AmphibiousPathNode:
-								graph = "DefaultAmphibious";
-								break;
-							case MarkerTypes.WaterPathNode:
-								graph = "DefaultWater";
-								break;
-							case MarkerTypes.AirPathNode:
-								graph = "DefaultAmphibious";
-								break;
+							if (AutoMarker_Amphibious.AdjacentToMarker[i].AutoMarker_Amphibious != null)
+								AutoMarker_Amphibious.AdjacentToMarker[i] = AutoMarker_Amphibious.AdjacentToMarker[i].AutoMarker_Amphibious;
+							else
+								{
+								AutoMarker_Amphibious.AdjacentToMarker.RemoveAt(i);
+								i--;
+							}
 						}
-					}
 
-					LuaFile.AddLine(LuaParser.Write.StringToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_GRAPH), graph));
+					AutoMarker_Amphibious.SaveMarkerValues(LuaFile);
+				}
+				else
+				{
 
-
-					adjacentTo = "";
-					for(int i = 0; i < AdjacentToMarker.Count; i++)
+					if (MarkerObj != null)
 					{
-						if (i > 0)
-							adjacentTo += " ";
-						adjacentTo += AdjacentToMarker[i].Name;
+						position = ScmapEditor.WorldPosToScmap(MarkerObj.transform.position);
+						orientation = MarkerObj.transform.eulerAngles;
 					}
 
-					LuaFile.AddLine(LuaParser.Write.StringToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_ADJACENTTO), adjacentTo));
+					ForceDefaultValues();
+
+					LuaFile.OpenTab(LuaParser.Write.PropertiveToLua(Name) + LuaParser.Write.OpenBracketValue);
+
+
+					if (AllowByType(KEY_SIZE))
+						LuaFile.AddLine(LuaParser.Write.FloatToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_SIZE), size));
+					if (AllowByType(KEY_RESOURCE))
+						LuaFile.AddLine(LuaParser.Write.BoolToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_RESOURCE), resource));
+					if (AllowByType(KEY_AMOUNT))
+						LuaFile.AddLine(LuaParser.Write.FloatToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_AMOUNT), amount));
+
+					LuaFile.AddLine(LuaParser.Write.StringToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_COLOR), color));
+
+					if (AllowByType(KEY_EDITORICON))
+						LuaFile.AddLine(LuaParser.Write.StringToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_EDITORICON), editorIcon));
+					if (AllowByType(KEY_HINT))
+						LuaFile.AddLine(LuaParser.Write.BoolToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_HINT), hint));
+
+					if (AllowByType(KEY_ADJACENTTO))
+					{
+						if (string.IsNullOrEmpty(graph))
+						{
+							switch (MarkerType)
+							{
+								case MarkerTypes.LandPathNode:
+									graph = "DefaultLand";
+									break;
+								case MarkerTypes.AmphibiousPathNode:
+									graph = "DefaultAmphibious";
+									break;
+								case MarkerTypes.WaterPathNode:
+									graph = "DefaultWater";
+									break;
+								case MarkerTypes.AirPathNode:
+									graph = "DefaultAmphibious";
+									break;
+							}
+						}
+
+						LuaFile.AddLine(LuaParser.Write.StringToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_GRAPH), graph));
+
+
+						adjacentTo = "";
+						for (int i = 0; i < AdjacentToMarker.Count; i++)
+						{
+							if (i > 0)
+								adjacentTo += " ";
+
+							/*if (AdjacentToMarker[i].MarkerType == MarkerTypes.AutoPathNode)
+							{
+								if (MarkerType == MarkerTypes.LandPathNode)
+									adjacentTo += AdjacentToMarker[i].AutoMarker_Land.Name;
+								else if (MarkerType == MarkerTypes.WaterPathNode)
+									adjacentTo += AdjacentToMarker[i].AutoMarker_Water.Name;
+								else if (MarkerType == MarkerTypes.AmphibiousPathNode)
+									adjacentTo += AdjacentToMarker[i].AutoMarker_Amphibious.Name;
+								else
+									adjacentTo += AdjacentToMarker[i].Name;
+							}
+							else*/
+								adjacentTo += AdjacentToMarker[i].Name;
+						}
+
+						LuaFile.AddLine(LuaParser.Write.StringToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_ADJACENTTO), adjacentTo));
+					}
+
+					//Type
+					LuaFile.AddLine(LuaParser.Write.StringToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_TYPE), MarkerTypeToString(MarkerType)));
+					LuaFile.AddLine(LuaParser.Write.StringToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_PROP), prop));
+
+					if (AllowByType(KEY_ZOOM))
+						LuaFile.AddLine(LuaParser.Write.FloatToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_ZOOM), zoom));
+					if (AllowByType(KEY_CANSETCAMERA))
+						LuaFile.AddLine(LuaParser.Write.BoolToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_CANSETCAMERA), canSetCamera));
+					if (AllowByType(KEY_CANSYNCCAMERA))
+						LuaFile.AddLine(LuaParser.Write.BoolToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_CANSYNCCAMERA), canSyncCamera));
+
+					if (MarkerType == MarkerTypes.WeatherGenerator)
+					{
+						LuaFile.AddLine(LuaParser.Write.FloatToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_CLOUDCOUNT), cloudCount));
+						LuaFile.AddLine(LuaParser.Write.FloatToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_CLOUDCOUNTRANGE), cloudCountRange));
+
+						LuaFile.AddLine(LuaParser.Write.FloatToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_CLOUDEMITTERSCALE), cloudEmitterScale));
+						LuaFile.AddLine(LuaParser.Write.FloatToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_CLOUDEMITTERSCALERANGE), cloudEmitterScaleRange));
+
+						LuaFile.AddLine(LuaParser.Write.FloatToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_CLOUDHEIGHT), cloudHeight));
+						LuaFile.AddLine(LuaParser.Write.FloatToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_CLOUDHEIGHTRANGE), cloudHeightRange));
+
+						LuaFile.AddLine(LuaParser.Write.FloatToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_CLOUDSPREAD), cloudSpread));
+						LuaFile.AddLine(LuaParser.Write.FloatToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_SPAWNCHANCE), spawnChance));
+						LuaFile.AddLine(LuaParser.Write.StringToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_FORCETYPE), ForceType));
+					}
+					else if (MarkerType == MarkerTypes.WeatherDefinition)
+					{
+						LuaFile.AddLine(LuaParser.Write.Vector3ToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_WEATHERDRIFTDIRECTION), WeatherDriftDirection));
+						LuaFile.AddLine(LuaParser.Write.StringToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_MAPSTYLE), MapStyle));
+
+						LuaFile.AddLine(LuaParser.Write.StringToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_WEATHERTYPE01), WeatherType01));
+						LuaFile.AddLine(LuaParser.Write.StringToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_WEATHERTYPE02), WeatherType02));
+						LuaFile.AddLine(LuaParser.Write.StringToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_WEATHERTYPE03), WeatherType03));
+						LuaFile.AddLine(LuaParser.Write.StringToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_WEATHERTYPE04), WeatherType04));
+
+						LuaFile.AddLine(LuaParser.Write.FloatToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_WEATHERTYPE01CHANCE), WeatherType01Chance));
+						LuaFile.AddLine(LuaParser.Write.FloatToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_WEATHERTYPE02CHANCE), WeatherType02Chance));
+						LuaFile.AddLine(LuaParser.Write.FloatToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_WEATHERTYPE03CHANCE), WeatherType03Chance));
+						LuaFile.AddLine(LuaParser.Write.FloatToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_WEATHERTYPE04CHANCE), WeatherType04Chance));
+					}
+
+					//Transform
+					LuaFile.AddLine(LuaParser.Write.Vector3ToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_POSITION), position));
+					LuaFile.AddLine(LuaParser.Write.Vector3ToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_ORIENTATION), orientation));
+
+					LuaFile.CloseTab(LuaParser.Write.EndBracketNext);
 				}
-
-				//Type
-				LuaFile.AddLine(LuaParser.Write.StringToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_TYPE), MarkerTypeToString(MarkerType)));
-				LuaFile.AddLine(LuaParser.Write.StringToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_PROP), prop));
-
-				if (AllowByType(KEY_ZOOM))
-					LuaFile.AddLine(LuaParser.Write.FloatToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_ZOOM), zoom));
-				if (AllowByType(KEY_CANSETCAMERA))
-					LuaFile.AddLine(LuaParser.Write.BoolToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_CANSETCAMERA), canSetCamera));
-				if (AllowByType(KEY_CANSYNCCAMERA))
-					LuaFile.AddLine(LuaParser.Write.BoolToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_CANSYNCCAMERA), canSyncCamera));
-
-				if(MarkerType == MarkerTypes.WeatherGenerator)
-				{
-					LuaFile.AddLine(LuaParser.Write.FloatToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_CLOUDCOUNT), cloudCount));
-					LuaFile.AddLine(LuaParser.Write.FloatToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_CLOUDCOUNTRANGE), cloudCountRange));
-
-					LuaFile.AddLine(LuaParser.Write.FloatToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_CLOUDEMITTERSCALE), cloudEmitterScale));
-					LuaFile.AddLine(LuaParser.Write.FloatToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_CLOUDEMITTERSCALERANGE), cloudEmitterScaleRange));
-
-					LuaFile.AddLine(LuaParser.Write.FloatToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_CLOUDHEIGHT), cloudHeight));
-					LuaFile.AddLine(LuaParser.Write.FloatToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_CLOUDHEIGHTRANGE), cloudHeightRange));
-
-					LuaFile.AddLine(LuaParser.Write.FloatToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_CLOUDSPREAD), cloudSpread));
-					LuaFile.AddLine(LuaParser.Write.FloatToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_SPAWNCHANCE), spawnChance));
-					LuaFile.AddLine(LuaParser.Write.StringToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_FORCETYPE), ForceType));
-				}
-				else if(MarkerType == MarkerTypes.WeatherDefinition)
-				{
-					LuaFile.AddLine(LuaParser.Write.Vector3ToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_WEATHERDRIFTDIRECTION), WeatherDriftDirection));
-					LuaFile.AddLine(LuaParser.Write.StringToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_MAPSTYLE), MapStyle));
-
-					LuaFile.AddLine(LuaParser.Write.StringToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_WEATHERTYPE01), WeatherType01));
-					LuaFile.AddLine(LuaParser.Write.StringToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_WEATHERTYPE02), WeatherType02));
-					LuaFile.AddLine(LuaParser.Write.StringToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_WEATHERTYPE03), WeatherType03));
-					LuaFile.AddLine(LuaParser.Write.StringToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_WEATHERTYPE04), WeatherType04));
-
-					LuaFile.AddLine(LuaParser.Write.FloatToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_WEATHERTYPE01CHANCE), WeatherType01Chance));
-					LuaFile.AddLine(LuaParser.Write.FloatToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_WEATHERTYPE02CHANCE), WeatherType02Chance));
-					LuaFile.AddLine(LuaParser.Write.FloatToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_WEATHERTYPE03CHANCE), WeatherType03Chance));
-					LuaFile.AddLine(LuaParser.Write.FloatToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_WEATHERTYPE04CHANCE), WeatherType04Chance));
-				}
-
-				//Transform
-				LuaFile.AddLine(LuaParser.Write.Vector3ToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_POSITION), position));
-				LuaFile.AddLine(LuaParser.Write.Vector3ToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_ORIENTATION), orientation));
 			}
 
 
@@ -522,11 +664,9 @@ namespace MapLua
 					{
 						int ConM = MarkerIdByName(mc, Names[e], Mcount);
 
-						if(ConM >= 0)
+						if (ConM >= 0)
 						{
-
 							MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers[m].AdjacentToMarker.Add(MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers[ConM]);
-
 						}
 
 					}
@@ -543,6 +683,48 @@ namespace MapLua
 			}
 			return -1;
 		}
+
+		public void GenerateAutoMarkers()
+		{
+			for (int mc = 0; mc < Data.MasterChains.Length; mc++)
+			{
+
+				if (Data.MasterChains[mc].Markers == null)
+					Data.MasterChains[mc].Markers = new List<Marker>();
+
+				int Mcount = Data.MasterChains[mc].Markers.Count;
+				for (int m = 0; m < Mcount; m++)
+				{
+					if(Data.MasterChains[mc].Markers[m].MarkerType == Marker.MarkerTypes.AutoPathNode)
+					{
+						if (Data.MasterChains[mc].Markers[m].IsOnWater())
+						{
+							if (Data.MasterChains[mc].Markers[m].AutoMarker_Water != null)
+								Data.MasterChains[mc].Markers[m].AutoMarker_Water = null;
+
+							Data.MasterChains[mc].Markers[m].AutoMarker_Water = new Marker(Data.MasterChains[mc].Markers[m], "APM_Water_" + Data.MasterChains[mc].Markers[m].Name);
+							Data.MasterChains[mc].Markers[m].AutoMarker_Water.MarkerType = Marker.MarkerTypes.WaterPathNode;
+						}
+						else
+						{
+							if (Data.MasterChains[mc].Markers[m].AutoMarker_Land != null)
+								Data.MasterChains[mc].Markers[m].AutoMarker_Land = null;
+							Data.MasterChains[mc].Markers[m].AutoMarker_Land = new Marker(Data.MasterChains[mc].Markers[m], "APM_Land_" + Data.MasterChains[mc].Markers[m].Name);
+							Data.MasterChains[mc].Markers[m].AutoMarker_Land.MarkerType = Marker.MarkerTypes.LandPathNode;
+						}
+
+
+						if (Data.MasterChains[mc].Markers[m].AutoMarker_Amphibious != null)
+							Data.MasterChains[mc].Markers[m].AutoMarker_Amphibious = null;
+						Data.MasterChains[mc].Markers[m].AutoMarker_Amphibious = new Marker(Data.MasterChains[mc].Markers[m], "APM_Amphibious_" + Data.MasterChains[mc].Markers[m].Name);
+						Data.MasterChains[mc].Markers[m].AutoMarker_Amphibious.MarkerType = Marker.MarkerTypes.AmphibiousPathNode;
+					}
+
+
+				}
+			}
+		}
+
 
 	}
 }

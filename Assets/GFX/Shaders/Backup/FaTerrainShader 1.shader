@@ -200,7 +200,7 @@ Properties {
 
 			#pragma surface surf SimpleLambert vertex:vert  fullforwardshadows addshadow nometa
 			//#pragma debug
-			#pragma target 4.0
+			#pragma target 3.0
 			#pragma exclude_renderers gles
 			#include "UnityLightingCommon.cginc"
 			#include "UnityGBuffer.cginc"

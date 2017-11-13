@@ -2,7 +2,7 @@
 using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
-
+using OzoneDecals;
 
 namespace EditMap
 {
@@ -45,7 +45,7 @@ namespace EditMap
 
 		}
 
-		public bool LoadingDecals;
+		public static bool LoadingDecals;
 		public int LoadedCount = 0;
 		public IEnumerator LoadDecals()
 		{
@@ -58,14 +58,16 @@ namespace EditMap
 			const int YieldStep = 100;
 			int LoadCounter = YieldStep;
 			int Count = Props.Count;
+			//if(Count > 100)
+			//Count = 100;
 			LoadedCount = 0;
 
 			Debug.Log("Decals count: " + Count);
 
 			Quaternion ProjectorRot = Quaternion.Euler(new Vector3(0, 0, 0)); // 90 180 180
 
-			List<DefDecal> AlbedoDecals = new List<DefDecal>();
-			List<DefDecal> NormalDecals = new List<DefDecal>();
+			//List<DefDecal> AlbedoDecals = new List<DefDecal>();
+			//List<DefDecal> NormalDecals = new List<DefDecal>();
 
 			for (int i = 0; i < Count; i++)
 			{
@@ -96,15 +98,49 @@ namespace EditMap
 				//float ScaleMin = Mathf.Min(ScmapEditor.Current.map.Decals[i].Scale.x, ScmapEditor.Current.map.Decals[i].Scale.y);
 				//float ScaleMax = Mathf.Min(ScmapEditor.Current.map.Decals[i].Scale.x, ScmapEditor.Current.map.Decals[i].Scale.y);
 
+				OzoneDecal Dec = NewDecalObject.GetComponent<OzoneDecal>();
+
+				if (ScmapEditor.Current.map.Decals[i].Type == TerrainDecalType.TYPE_ALBEDO)
+				{
+					Material mat = new Material(AlbedoMaterial);
+					AssignTextureFromPath(ref mat, "_MainTex", ScmapEditor.Current.map.Decals[i].TexPathes[0]);
+					Dec.DrawAlbedo = true;
+					Dec.DrawNormal = false;
+					Dec.Material = mat;
+
+				}
+				else if (ScmapEditor.Current.map.Decals[i].Type == TerrainDecalType.TYPE_NORMALS)
+				{
+					Material mat = new Material(NormalMaterial);
+					Dec.Material = mat;
+					AssignTextureFromPath(ref mat, "_NormalTex", ScmapEditor.Current.map.Decals[i].TexPathes[0]);
+					Dec.DrawAlbedo = false;
+					Dec.DrawNormal = true;
+				}
+				else if (ScmapEditor.Current.map.Decals[i].Type == TerrainDecalType.TYPE_NORMALS_ALPHA)
+				{
+					Material mat = new Material(NormalMaterial);
+					Dec.Material = mat;
+					AssignTextureFromPath(ref mat, "_NormalTex", ScmapEditor.Current.map.Decals[i].TexPathes[0]);
+					Dec.DrawAlbedo = false;
+					Dec.DrawNormal = true;
+				}
+				else
+				{
+					Material mat = new Material(AlbedoMaterial);
+					Dec.Material = mat;
+					AssignTextureFromPath(ref mat, "_MainTex", ScmapEditor.Current.map.Decals[i].TexPathes[0]);
+					Dec.DrawAlbedo = true;
+					Dec.DrawNormal = false;
+
+					Debug.Log(ScmapEditor.Current.map.Decals[i].Type);
+
+				}
+
+				/*
 				DefDecal Dec = NewDecalObject.GetComponent<DefDecal>();
 
 
-				/*Projector proj = NewDecalObject.GetComponent<Projector>();
-				proj.orthographicSize = ScmapEditor.Current.map.Decals[i].Scale.y * 0.05f;
-				proj.aspectRatio = (ScmapEditor.Current.map.Decals[i].Scale.x / ScmapEditor.Current.map.Decals[i].Scale.y);
-				// ?
-				proj.nearClipPlane = ScmapEditor.Current.map.Decals[i].Scale.z * -0.05f;
-				proj.farClipPlane = ScmapEditor.Current.map.Decals[i].Scale.z * 0.05f;*/
 
 				if (ScmapEditor.Current.map.Decals[i].Type == TerrainDecalType.TYPE_ALBEDO)
 				{
@@ -125,13 +161,6 @@ namespace EditMap
 				}
 				else if (ScmapEditor.Current.map.Decals[i].Type == TerrainDecalType.TYPE_NORMALS)
 				{
-					/*
-					Material mat = new Material(NormalMaterial);
-					proj.material = mat;
-					AssignTextureFromPath(ref mat, "_BumpMap", ScmapEditor.Current.map.Decals[i].TexPathes[0]);
-					mat.SetFloat("_CutOffLOD", ScmapEditor.Current.map.Decals[i].CutOffLOD * 0.1f);
-					mat.SetFloat("_NearCutOffLOD", ScmapEditor.Current.map.Decals[i].NearCutOffLOD * 0.1f);
-					*/
 					Dec.m_Kind = DefDecal.Kind.NormalsOnly;
 
 					Material mat = new Material(NormalMaterial);
@@ -148,6 +177,7 @@ namespace EditMap
 
 					NormalDecals.Add(Dec);
 				}
+				*/
 
 				LoadedCount++;
 				LoadCounter--;
@@ -158,8 +188,8 @@ namespace EditMap
 				}
 			}
 
-			DecalRenderer.DiffuseDecals = AlbedoDecals.ToArray();
-			DecalRenderer.NormalDecals = NormalDecals.ToArray();
+			//DecalRenderer.DiffuseDecals = AlbedoDecals.ToArray();
+			//DecalRenderer.NormalDecals = NormalDecals.ToArray();
 
 			yield return null;
 			LoadingDecals = false;

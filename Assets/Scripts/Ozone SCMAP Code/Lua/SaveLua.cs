@@ -161,7 +161,22 @@ namespace MapLua
 				Data.MasterChains[mc].Markers = new List<Marker>();
 				for(int m = 0; m < MarkersTabs.Length; m++)
 				{
-					Data.MasterChains[mc].Markers.Add(new Marker(MarkersNames[m], MarkersTabs[m]));
+					Marker LoadedMarker = new Marker(MarkersNames[m], MarkersTabs[m]);
+
+					
+					if (LoadedMarker.MarkerType == Marker.MarkerTypes.LandPathNode && LoadedMarker.Name.StartsWith("APM_Land_")
+						|| LoadedMarker.MarkerType == Marker.MarkerTypes.WaterPathNode && LoadedMarker.Name.StartsWith("APM_Water_")
+						)
+						continue;
+					else if (LoadedMarker.MarkerType == Marker.MarkerTypes.LandPathNode && LoadedMarker.Name.StartsWith("APM_Land_"))
+					{
+						LoadedMarker.MarkerType = Marker.MarkerTypes.AutoPathNode;
+						LoadedMarker.Name = LoadedMarker.Name.Replace("APM_Amphibious_", "");
+						LoadedMarker.adjacentTo = LoadedMarker.adjacentTo.Replace("APM_Amphibious_", "");
+					}
+					
+
+					Data.MasterChains[mc].Markers.Add(LoadedMarker);
 				}
 				AllLoadedMarkers.AddRange(Data.MasterChains[mc].Markers);
 			}
@@ -261,6 +276,8 @@ namespace MapLua
 
 
 				//Markers
+				GenerateAutoMarkers();
+
 				LuaFile.AddSaveComent("");
 				LuaFile.AddSaveComent("Markers");
 				LuaFile.AddSaveComent("");
@@ -278,9 +295,9 @@ namespace MapLua
 								int Mcount = Data.MasterChains[mc].Markers.Count;
 								for (int m = 0; m < Mcount; m++)
 								{
-									LuaFile.OpenTab(LuaParser.Write.PropertiveToLua(Data.MasterChains[mc].Markers[m].Name) + LuaParser.Write.OpenBracketValue);
+									//LuaFile.OpenTab(LuaParser.Write.PropertiveToLua(Data.MasterChains[mc].Markers[m].Name) + LuaParser.Write.OpenBracketValue);
 									Data.MasterChains[mc].Markers[m].SaveMarkerValues(LuaFile);
-									LuaFile.CloseTab(LuaParser.Write.EndBracketNext);
+									//LuaFile.CloseTab(LuaParser.Write.EndBracketNext);
 								}
 							}
 							LuaFile.CloseTab(LuaParser.Write.EndBracketNext);
