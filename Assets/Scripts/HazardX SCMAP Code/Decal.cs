@@ -7,21 +7,38 @@
 
 using System;
 using UnityEngine;
+using System.Collections.Generic;
 
 public class Decal
 {
 
-    public Vector3 Position;
+	public TerrainDecalType Type;
 
+	public Vector3 Position;
     public Vector3 Rotation;
-    public TerrainDecalType Type;
+	public Vector3 Scale;
 
     public string[] TexPathes = new string[2];
-    public Vector3 Scale;
     public float CutOffLOD;
     public float NearCutOffLOD;
 
     public int OwnerArmy = -1;
+
+	public DecalSharedSettings Shared;
+
+
+	public class DecalSharedSettings
+	{
+		public Material SharedMaterial;
+		public List<int> Ids;
+
+		public DecalSharedSettings()
+		{
+			SharedMaterial = null;
+			Ids = new List<int>();
+		}
+	}
+
     public void Load(BinaryReader Stream)
     {
         int id = Stream.ReadInt32();
@@ -60,5 +77,36 @@ public class Decal
         Stream.Write(NearCutOffLOD);
         Stream.Write(OwnerArmy);
     }
+
+	public bool Compare(Decal other, bool compareTransform = false)
+	{
+		if (compareTransform)
+		{
+			if (Position.x != other.Position.x || Position.y != other.Position.y || Position.z != other.Position.z)
+				return false;
+			if (Rotation.x != other.Rotation.x || Rotation.y != other.Rotation.y || Rotation.z != other.Rotation.z)
+				return false;
+			if (Scale.x != other.Scale.x || Scale.y != other.Scale.y || Scale.z != other.Scale.z)
+				return false;
+		}
+
+		if (Type != other.Type)
+			return false;
+		if (CutOffLOD != other.CutOffLOD)
+			return false;
+		if (NearCutOffLOD != other.NearCutOffLOD)
+			return false;
+		if (OwnerArmy != other.OwnerArmy)
+			return false;
+
+		if (TexPathes.Length != other.TexPathes.Length)
+			return false;
+
+		for (int i = 0; i < TexPathes.Length; i++)
+			if (TexPathes[i] != other.TexPathes[i])
+				return false;
+
+		return true;
+	}
 
 }

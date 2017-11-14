@@ -245,7 +245,7 @@ Material:
     - _DepthLevel: 1.5
     - _GeneratingNormal: 0
     - _Grid: 0
-    - _GridCamDist: 7.339286
+    - _GridCamDist: 0.22248545
     - _GridScale: 102.4
     - _HideSplat0: 0
     - _HideSplat1: 0
