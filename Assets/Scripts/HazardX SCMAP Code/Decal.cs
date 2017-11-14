@@ -19,8 +19,8 @@ public class Decal
 	public Vector3 Scale;
 
     public string[] TexPathes = new string[2];
-    public float CutOffLOD;
-    public float NearCutOffLOD;
+    public float CutOffLOD = 1f;
+    public float NearCutOffLOD = 0.9f;
 
     public int OwnerArmy = -1;
 

@@ -12,6 +12,9 @@ namespace OzoneDecals
 		public bool DrawAlbedo = true;
 		public bool DrawNormal = true;
 
+		public float CutOffLOD;
+		public float NearCutOffLOD;
+
 		[HideInInspector]
 		public Transform tr;
 

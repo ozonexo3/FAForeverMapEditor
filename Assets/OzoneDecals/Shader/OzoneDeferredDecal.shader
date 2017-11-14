@@ -17,6 +17,9 @@ Shader "Ozone/Deferred Decal"
 
 		_NormalBlendMode("Normal Blend Mode", Float) = 0
 		_AngleLimit("Angle Limit", Float) = 0.5
+
+		_CutOffLOD("CutOffLOD", Float) = 0.5
+		_NearCutOffLOD("NearCutOffLOD", Float) = 0.5
 	}
 
 	// Use custom GUI for the decal shader
@@ -65,20 +68,19 @@ Shader "Ozone/Deferred Decal"
 				float4 waterTexture = tex2D( _UtilitySamplerC, wpos.xz * half2(0.009765, -0.009765) + half2(0, 0));
 				color.rgb = ApplyWaterColor( waterTexture.g, color.rgb);	
 
+				color.a *= blend;
+				//color.rgb = blend * 1000;
 
 				// Write albedo, premultiply for proper blending
 				outAlbedo = float4(color.rgb * color.a, color.a);
-
-				// Apply light probes and ambient light
-				color *= float4(ShadeSH9(float4(gbuffer_normal, 1.0f)), 1.0f);
+	
+				color *= 1 - float4(ShadeSH9(float4(gbuffer_normal, 1.0f)), 1.0f);
 
 				// Handle logarithmic encoding in Gamma space
 #ifndef UNITY_HDR_ON
+				color *= float4(ShadeSH9(float4(gbuffer_normal, 1.0f)), 1.0f);
 				color.rgb = exp2(-color.rgb);
-#else
-
 #endif
-
 
 				// Write emission, premultiply for proper blending
 				outEmission = float4(color.rgb * color.a, color.a);
@@ -139,7 +141,7 @@ Shader "Ozone/Deferred Decal"
 				normal = normalize(normal);
 				
 				// Clip to blend it with other normal maps
-				clip(0.95 -  dot(normal, half3(0,1,0)));
+				clip(0.995 -  dot(normal, half3(0,0,1)));
 				//clip(0.5 - normal.y);
 
 				normal = mul(normal, half3x3(i.decalTangent, decalBitangent, i.decalNormal));

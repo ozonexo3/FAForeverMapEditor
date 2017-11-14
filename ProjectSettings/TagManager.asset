@@ -8,6 +8,7 @@ TagManager:
   - SelectionRing
   - MirrorSelectionRing
   - Marker
+  - Decal
   layers:
   - Default
   - TransparentFX

@@ -38,7 +38,7 @@ Shader "MapEditor/FaWater" {
 		#pragma surface surf Empty vertex:vert alpha noambient
 			#pragma target 4.0
 			#pragma exclude_renderers gles
-
+			#pragma multi_compile ___ UNITY_HDR_ON
 
 
 		//************ Water Params
@@ -155,6 +155,10 @@ Shader "MapEditor/FaWater" {
 
 			// calculate the background pixel
 			float4 backGroundPixels = tex2Dproj( _WaterGrabTexture, UNITY_PROJ_COORD(IN.grabUV) );
+
+			#ifdef UNITY_HDR_ON
+			backGroundPixels.rgb = exp2(-backGroundPixels.rgb);
+			#endif
 			//float4 col = tex2Dproj( _MyGrabTexture3, UNITY_PROJ_COORD(IN.grabUV));
 
 			float mask = saturate(backGroundPixels.a * 255);

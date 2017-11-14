@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.IO;
 using System.Text;
-using System.Runtime.InteropServices;
 using SFB;
 
 namespace EditMap

@@ -319,12 +319,13 @@ Properties {
 			}
 
 			inline fixed4 LightingSimpleLambert_PrePass (SurfaceOutput s, half4 light)
-{
-    fixed4 c;
-    c.rgb = s.Albedo * light.rgb;
-    c.a = s.Alpha;
-    return c;
-}
+			{
+				fixed4 c;
+				c.rgb = s.Albedo * light.rgb;
+				c.rgb = s.Albedo;
+				c.a = s.Alpha;
+				return c;
+			}
 
 			inline fixed4 LightingSimpleLambert (SurfaceOutput s, UnityGI gi)
 			{
@@ -499,7 +500,8 @@ Properties {
 					o.Normal = UnpackNormalDXT5nmScaled(nrm.rgbg, 2);
 
 
-				half3 Emit = _SunAmbience.rgb * 2;
+				//half3 Emit = _SunAmbience.rgb * 2;
+				half3 Emit = 0;
 
 				if(_Slope > 0){
 					o.Normal = half3(0,0,1);

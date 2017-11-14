@@ -9,14 +9,10 @@ namespace EditMap
 	public partial class DecalsInfo : MonoBehaviour
 	{
 
-
 		public static DecalsInfo Current;
 
 		public Transform DecalPivot;
 		public GameObject DecalPrefab;
-		public GameObject DecalBumpPrefab;
-
-		public DeferredDecalRenderer DecalRenderer;
 
 		public Material AlbedoMaterial;
 		public Material NormalMaterial;
@@ -54,7 +50,7 @@ namespace EditMap
 
 			List<Decal> Props = ScmapEditor.Current.map.Decals;
 			LoadedTextures = new Dictionary<string, Texture2D>();
-			const int YieldStep = 100;
+			const int YieldStep = 500;
 			int LoadCounter = YieldStep;
 			int Count = Props.Count;
 			//if(Count > 100)
@@ -78,7 +74,7 @@ namespace EditMap
 				Tr.localPosition = ScmapEditor.ScmapPosToWorld(ScmapEditor.Current.map.Decals[i].Position);
 				Tr.localRotation = Quaternion.Euler(ScmapEditor.Current.map.Decals[i].Rotation * Mathf.Rad2Deg) * ProjectorRot;
 
-				Quaternion PosRotation = Quaternion.Euler(Vector3.up * Tr.eulerAngles.y);
+				//Quaternion PosRotation = Quaternion.Euler(Vector3.up * Tr.eulerAngles.y);
 
 				Vector3 Up = Tr.forward;
 				Up.y = 0;
@@ -93,6 +89,10 @@ namespace EditMap
 
 
 				OzoneDecal Dec = NewDecalObject.GetComponent<OzoneDecal>();
+				Dec.CutOffLOD = (ScmapEditor.Current.map.Decals[i].CutOffLOD - OzoneDecalRenderer.CameraNear) / OzoneDecalRenderer.CameraFar;
+				Dec.NearCutOffLOD = (ScmapEditor.Current.map.Decals[i].NearCutOffLOD) / OzoneDecalRenderer.CameraFar;
+				//Dec.NearCutOffLOD
+
 
 				if (ScmapEditor.Current.map.Decals[i].Type == TerrainDecalType.TYPE_NORMALS)
 				{
@@ -153,11 +153,8 @@ namespace EditMap
 					mat.SetTexture(property, Tex);
 				}
 
-				
 			}
-
 		}
-
 
 
 	}

@@ -31,7 +31,9 @@ namespace OzoneDecals
 
 			CreateBuffer(ref _bufferDeferred, _camera, _Name, _camEvent);
 
-			UseInstancing = false;
+			//UseInstancing = false;
+
+
 			_bufferDeferred.Clear();
 			DrawDeferredDecals_Albedo(_camera);
 			DrawDeferredDecals_Normal(_camera);
@@ -68,17 +70,26 @@ namespace OzoneDecals
 						if (UseInstancing)
 						{
 							_matrices[n] = decal.tr.localToWorldMatrix;
+							_NearCutOffLODValues[n] = decal.NearCutOffLOD;
+							_CutOffLODValues[n] = decal.CutOffLOD;
 							++n;
 
 							if (n == 1023)
 							{
-								_bufferDeferred.DrawMeshInstanced(_cubeMesh, 0, material, 0, _matrices, n);
+								_instancedBlock.Clear();
+								_instancedBlock.SetFloatArray("_NearCutOffLOD", _NearCutOffLODValues);
+								_instancedBlock.SetFloatArray("_CutOffLOD", _CutOffLODValues);
+								_bufferDeferred.DrawMeshInstanced(_cubeMesh, 0, material, 0, _matrices, n, _instancedBlock);
 								n = 0;
 							}
 						}
 						else
 #endif
 						{
+							_directBlock.Clear();
+							_directBlock.SetFloat("_NearCutOffLOD", decal.NearCutOffLOD);
+							_directBlock.SetFloat("_CutOffLOD", decal.CutOffLOD);
+
 							_bufferDeferred.DrawMesh(_cubeMesh, decal.tr.localToWorldMatrix, material, 0, 0, _directBlock);
 						}
 					}
@@ -87,7 +98,10 @@ namespace OzoneDecals
 #if UNITY_5_5_OR_NEWER
 				if (UseInstancing && n > 0)
 				{
-					_bufferDeferred.DrawMeshInstanced(_cubeMesh, 0, material, 0, _matrices, n);
+					_instancedBlock.Clear();
+					_instancedBlock.SetFloatArray("_NearCutOffLOD", _NearCutOffLODValues);
+					_instancedBlock.SetFloatArray("_CutOffLOD", _CutOffLODValues);
+					_bufferDeferred.DrawMeshInstanced(_cubeMesh, 0, material, 0, _matrices, n, _instancedBlock);
 				}
 #endif
 			}
@@ -144,7 +158,10 @@ namespace OzoneDecals
 									_bufferDeferred.Blit(BuiltinRenderTextureType.GBuffer2, copy2id);
 
 									_bufferDeferred.SetRenderTarget(_normalRenderTarget, BuiltinRenderTextureType.CameraTarget);
-									_bufferDeferred.DrawMeshInstanced(_cubeMesh, 0, material, 1, _matrices, n); 
+									_instancedBlock.Clear();
+									_instancedBlock.SetFloatArray("_NearCutOffLOD", _NearCutOffLODValues);
+									_instancedBlock.SetFloatArray("_CutOffLOD", _CutOffLODValues);
+									_bufferDeferred.DrawMeshInstanced(_cubeMesh, 0, material, 1, _matrices, n, _instancedBlock);
 									n = 0;
 								}
 							}
@@ -158,7 +175,11 @@ namespace OzoneDecals
 								}
 
 								_bufferDeferred.SetRenderTarget(_normalRenderTarget, BuiltinRenderTextureType.CameraTarget);
-								_bufferDeferred.DrawMesh(_cubeMesh, decal.tr.localToWorldMatrix, material, 0, 1);
+								_directBlock.Clear();
+								_directBlock.SetFloat("_NearCutOffLOD", decal.NearCutOffLOD);
+								_directBlock.SetFloat("_CutOffLOD", decal.CutOffLOD);
+
+								_bufferDeferred.DrawMesh(_cubeMesh, decal.tr.localToWorldMatrix, material, 0, 1, _directBlock);
 								++n;
 							}
 						}
@@ -174,7 +195,10 @@ namespace OzoneDecals
 
 					_bufferDeferred.SetRenderTarget(_normalRenderTarget, BuiltinRenderTextureType.CameraTarget);
 
-					_bufferDeferred.DrawMeshInstanced(_cubeMesh, 0, material, 1, _matrices, n);
+					_instancedBlock.Clear();
+					_instancedBlock.SetFloatArray("_NearCutOffLOD", _NearCutOffLODValues);
+					_instancedBlock.SetFloatArray("_CutOffLOD", _CutOffLODValues);
+					_bufferDeferred.DrawMeshInstanced(_cubeMesh, 0, material, 1, _matrices, n, _instancedBlock);
 				}
 #endif
 			}

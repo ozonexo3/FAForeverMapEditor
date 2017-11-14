@@ -9,7 +9,8 @@ namespace OzoneDecals {
 		public static OzoneDecalRenderer Current;
 		void Awake()
 		{
-			Current = this;
+			if (GetComponent<Camera>() == Camera.main)
+				Current = this;
 		}
 
 		protected const string _Name = "Ozone Decals Rendering";
@@ -32,20 +33,37 @@ namespace OzoneDecals {
 		protected Material _materialLimitToGameObjects;
 		protected static Vector4[] _avCoeff = new Vector4[7];
 
+		protected float[] _CutOffLODValues;
+		protected float[] _NearCutOffLODValues;
+
 		public Mesh cubeMesh;
+
+		public static float CameraNear;
+		public static float CameraFar;
 
 		private void OnEnable()
 		{
-			Current = this;
+			_camera = GetComponent<Camera>();
+			if (GetComponent<Camera>() == Camera.main)
+			{
+				Current = this;
+
+				CameraNear = _camera.nearClipPlane;
+				CameraFar = _camera.farClipPlane - CameraNear;
+			}
+
 			_Decals = new Dictionary<Material, HashSet<OzoneDecal>>();
 			_decalComponent = new List<OzoneDecal>();
 			//_meshFilterComponent = new List<MeshFilter>();
 
 			_matrices = new Matrix4x4[1023];
+			_CutOffLODValues = new float[1023];
+			_NearCutOffLODValues = new float[1023];
 
 			_instancedBlock = new MaterialPropertyBlock();
 			_directBlock = new MaterialPropertyBlock();
-			_camera = GetComponent<Camera>();
+			
+
 			//_cubeMesh = cubeMesh;
 			_cubeMesh = Resources.Load<Mesh>("DecalCube");
 			_normalRenderTarget = new RenderTargetIdentifier[] { BuiltinRenderTextureType.GBuffer1, BuiltinRenderTextureType.GBuffer2 };
