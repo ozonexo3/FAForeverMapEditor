@@ -24,6 +24,10 @@
 			float2 uv_MainTex;
 		};
 
+		//fixed4 _SunColor;
+		//fixed4 _SunAmbience;
+		//fixed4 _ShadowColor;
+
 		//half _Glossiness;
 		//half _Metallic;
 		//fixed4 _Color;
@@ -41,6 +45,7 @@
 			o.Albedo = c.rgb;
 			o.Normal = UnpackNormal( tex2D (_BumpMap, IN.uv_MainTex) );
 
+			//o.Emission = _SunAmbience;
 
 			// Metallic and smoothness come from slider variables
 			//o.Metallic = _Metallic;

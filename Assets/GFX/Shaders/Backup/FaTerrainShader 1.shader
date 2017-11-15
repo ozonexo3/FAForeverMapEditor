@@ -196,11 +196,11 @@ Properties {
 		}   */
 
 			CGPROGRAM
-						#define UNITY_BRDF_PBS BRDF3_Unity_PBS
+			#define UNITY_BRDF_PBS BRDF3_Unity_PBS
 
 			#pragma surface surf SimpleLambert vertex:vert  fullforwardshadows addshadow nometa
 			//#pragma debug
-			#pragma target 3.0
+			#pragma target 3.5
 			#pragma exclude_renderers gles
 			#include "UnityLightingCommon.cginc"
 			#include "UnityGBuffer.cginc"

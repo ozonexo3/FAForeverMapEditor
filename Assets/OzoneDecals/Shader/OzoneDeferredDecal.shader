@@ -39,6 +39,7 @@ Shader "Ozone/Deferred Decal"
 			CGPROGRAM
 			#pragma vertex vert
 			#pragma fragment frag
+			#pragma target 3.5
 			#pragma multi_compile ___ UNITY_HDR_ON
 			#pragma multi_compile_instancing
 			#include "DecalsCommon.cginc"
@@ -97,6 +98,7 @@ Shader "Ozone/Deferred Decal"
 			CGPROGRAM
 			#pragma vertex vert
 			#pragma fragment frag
+			#pragma target 3.5
 			#pragma multi_compile_instancing
 			#include "UnityStandardUtils.cginc"
 			#include "DecalsCommon.cginc"

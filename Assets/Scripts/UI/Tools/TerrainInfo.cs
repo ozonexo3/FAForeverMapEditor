@@ -2,6 +2,7 @@
 using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
+using B83.Image.BMP;
 using System.Runtime.InteropServices;
 using System.IO;
 using System.Text;
@@ -357,6 +358,8 @@ namespace EditMap
 			RegenerateMaps();
 		}
 
+		public const uint HeightConversion = 256 * (256 + 64); //0xFFFF
+
 		public void ExportHeightmap()
 		{
 			string Filename = EnvPaths.GetMapsPath() + MapLuaParser.Current.FolderName + "/heightmap.raw";
@@ -386,7 +389,7 @@ namespace EditMap
 				{
 					for (int x = 0; x < w; x++)
 					{
-						uint ThisPixel = (uint)(data[y, x] * 0xFFFF);
+						uint ThisPixel = (uint)(data[h - (y + 1), x] * HeightConversion);
 						writer.Write(System.BitConverter.GetBytes(System.BitConverter.ToUInt16(System.BitConverter.GetBytes(ThisPixel), 0)));
 					}
 				}
@@ -429,7 +432,7 @@ namespace EditMap
 			{
 				for (int x = 0; x < w; x++)
 				{
-					float Value = data[y, x] / (1f / 255f);
+					float Value = data[y, x] / HeightConversion;
 
 					if (TerrainScale_Height.isOn)
 					{
@@ -438,7 +441,7 @@ namespace EditMap
 					float ColorR = (Mathf.Floor(Value) * (1f / 255f));
 					float ColorG = (Value - Mathf.Floor(Value));
 
-					ExportAs.SetPixel(h - y - 1, x, new Color(ColorR, ColorG, 0));
+					ExportAs.SetPixel(h - (y + 1), x, new Color(ColorR, ColorG, 0));
 				}
 			}
 			ExportAs.Apply();
@@ -457,9 +460,9 @@ namespace EditMap
 				{
 					for (int x = 0; x < w; x++)
 					{
-						Color pixel = ExportAs.GetPixel(y, x);
+						Color pixel = ExportAs.GetPixel(h - (y + 1), x);
 						float value = (pixel.r + pixel.g * (1f / 255f));
-						uint ThisPixel = (uint)(value * 0xFFFF);
+						uint ThisPixel = (uint)(value * HeightConversion);
 						writer.Write(System.BitConverter.GetBytes(System.BitConverter.ToUInt16(System.BitConverter.GetBytes(ThisPixel), 0)));
 					}
 				}
@@ -476,7 +479,7 @@ namespace EditMap
 
 			var extensions = new[]
 			{
-				new ExtensionFilter("Heightmap", new string[]{"raw" })
+				new ExtensionFilter("Heightmap", new string[]{"raw", "bmp" })
 				//new ExtensionFilter("Stratum mask", "raw, bmp")
 			};
 
@@ -486,31 +489,60 @@ namespace EditMap
 			if (paths == null || paths.Length == 0 || string.IsNullOrEmpty(paths[0]))
 				return;
 
-			Filename = paths[0];
 
 			int h = Map.Teren.terrainData.heightmapHeight;
 			int w = Map.Teren.terrainData.heightmapWidth;
 			beginHeights = Map.Teren.terrainData.GetHeights(0, 0, w, h);
 			MapLuaParser.Current.History.RegisterTerrainHeightmapChange(beginHeights);
 
-			if (!File.Exists(Filename))
-			{
-				Debug.Log("File not exist: " + Filename);
-				return;
-			}
 
 			float[,] data = new float[h, w];
-			Debug.Log((float)0xFFFF);
-			float HeightOffset = 64 * 64 * 16; // 0xFFFF
-			using (var file = System.IO.File.OpenRead(Filename))
-			using (var reader = new System.IO.BinaryReader(file))
+			float[,] old = Map.Teren.terrainData.GetHeights(0, 0, w, h);
+
+			if (paths[0].ToLower().EndsWith("bmp"))
 			{
+				BMPLoader loader = new BMPLoader();
+				BMPImage img = loader.LoadBMP(paths[0]);
+				Debug.Log(img.info.compressionMethod + ", " + img.info.nBitsPerPixel + ", " + img.rMask + ", " + img.imageData[0].r);
+				Texture2D ImportedImage = img.ToTexture2D();
+
+
+				if (ImportedImage.width != h || ImportedImage.height != w)
+				{
+					Debug.Log("Wrong size");
+					//ImportedImage.Resize(Map.map.TexturemapTex.width, Map.map.TexturemapTex.height);
+					TextureScale.Bilinear(ImportedImage, h, w);
+					ImportedImage.Apply(false);
+				}
+
+				//ImportedImage = TextureFlip.FlipTextureVertical(ImportedImage, false);
+				Color[] ImportedColors = ImportedImage.GetPixels();
+
+				Debug.Log(((float)ImportedColors[128 + 128 * w].r / old[128, 128]) * 100000f);
+				Debug.Log(((256 * 256) / (float)HeightConversion) * 100);
+
 				for (int y = 0; y < h; y++)
 				{
 					for (int x = 0; x < w; x++)
 					{
-						float v = (float)reader.ReadUInt16() / HeightOffset;
-						data[h - (y + 1), x] = v ;
+						//data[y, x] = ((float)ImportedColors[x + y * w].r * 128f) / (float)(256 * (256 + 64));
+						data[y, x] = (float)ImportedColors[x + y * w].r / 0.567f; // 0.58
+					}
+				}
+			}
+			else
+			{
+
+				using (var file = System.IO.File.OpenRead(paths[0]))
+				using (var reader = new System.IO.BinaryReader(file))
+				{
+					for (int y = 0; y < h; y++)
+					{
+						for (int x = 0; x < w; x++)
+						{
+							float v = (float)reader.ReadUInt16() / (float)HeightConversion;
+							data[h - (y + 1), x] = v;
+						}
 					}
 				}
 			}
