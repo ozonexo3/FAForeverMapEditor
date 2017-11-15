@@ -405,6 +405,19 @@ namespace MapLua
 
 			}
 
+			if(Data.Configurations == null || Data.Configurations.Length == 0)
+			{
+				Data.Configurations = new Configuration[1];
+				Data.Configurations[0] = new Configuration();
+				Data.Configurations[0].name = "standard";
+				Data.Configurations[0].Teams = new Team[1];
+				Data.Configurations[0].Teams[0] = new Team();
+				Data.Configurations[0].Teams[0].name = "FFA";
+				Data.Configurations[0].Teams[0].Armys = new List<Army>();
+				Data.Configurations[0].ExtraArmys = new List<Army>();
+				Data.Configurations[0].customprops = new CustomProps[0];
+			}
+
 
 			//All NoRushOffsets
 			Data.norushradius = LuaParser.Read.FloatFromTable(ScenarioInfoTab, NoRusnOffset.VALUE_RADIUS, NoRusnOffset.DefaultRadius);

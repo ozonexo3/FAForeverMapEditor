@@ -66,7 +66,7 @@ namespace OzoneDecals
 
 		void OnDrawGizmos()
 		{
-			Gizmos.matrix = transform.localToWorldMatrix;
+			Gizmos.matrix = Matrix4x4.TRS(transform.position, transform.rotation, new Vector3(transform.localScale.x, 0.5f, transform.localScale.z));
 			Gizmos.color = colorUnselectedFill;
 			Gizmos.DrawCube(Vector3.zero, Vector3.one);
 
@@ -76,7 +76,7 @@ namespace OzoneDecals
 
 		void OnDrawGizmosSelected()
 		{
-			Gizmos.matrix = transform.localToWorldMatrix;
+			Gizmos.matrix = Matrix4x4.TRS(transform.position, transform.rotation, new Vector3(transform.localScale.x, 0.5f, transform.localScale.z));
 			Gizmos.color = colorSelected;
 			Gizmos.DrawWireCube(Vector3.zero, Vector3.one);
 		}

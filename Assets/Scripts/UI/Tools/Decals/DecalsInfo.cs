@@ -85,7 +85,7 @@ namespace EditMap
 
 				NewDecalObject.transform.localPosition -= Up * (ScmapEditor.Current.map.Decals[i].Scale.y * 0.05f);
 				NewDecalObject.transform.localPosition += right * (ScmapEditor.Current.map.Decals[i].Scale.x * 0.05f);
-				NewDecalObject.transform.localScale = new Vector3(ScmapEditor.Current.map.Decals[i].Scale.x * 0.1f, ScmapEditor.Current.map.Decals[i].Scale.y * 0.1f, ScmapEditor.Current.map.Decals[i].Scale.z * 0.1f);
+				NewDecalObject.transform.localScale = new Vector3(ScmapEditor.Current.map.Decals[i].Scale.x * 0.1f, 5 , ScmapEditor.Current.map.Decals[i].Scale.z * 0.1f); //ScmapEditor.Current.map.Decals[i].Scale.y * 0.1f
 
 
 				OzoneDecal Dec = NewDecalObject.GetComponent<OzoneDecal>();
