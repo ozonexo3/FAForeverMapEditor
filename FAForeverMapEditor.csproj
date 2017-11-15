@@ -93,15 +93,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Decalicious\Example\Scripts\ChangeDecal.cs" />
-    <Compile Include="Assets\Decalicious\Example\Scripts\IInteract.cs" />
-    <Compile Include="Assets\Decalicious\Example\Scripts\PickupWeapon.cs" />
-    <Compile Include="Assets\Decalicious\Example\Scripts\PlayerController.cs" />
-    <Compile Include="Assets\Decalicious\Example\Scripts\ShootDecal.cs" />
-    <Compile Include="Assets\Decalicious\Example\Scripts\SinMove.cs" />
-    <Compile Include="Assets\Decalicious\Example\Scripts\SwingIt.cs" />
-    <Compile Include="Assets\Decalicious\Scripts\Decal.cs" />
-    <Compile Include="Assets\Decalicious\Scripts\DecaliciousRenderer.cs" />
     <Compile Include="Assets\LUA\KeraLua\CharPtr.cs" />
     <Compile Include="Assets\LUA\KeraLua\DynamicLibraryPath.cs" />
     <Compile Include="Assets\LUA\KeraLua\Lua.cs" />
@@ -395,11 +386,6 @@
     <Compile Include="Assets\StandaloneFileBrowser\StandaloneFileBrowserWindows.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Assets\Decalicious\Example\README.txt" />
-    <None Include="Assets\Decalicious\Resources\DecaliciousGameObjectID.shader" />
-    <None Include="Assets\Decalicious\Shader\DecaliciousCommon.cginc" />
-    <None Include="Assets\Decalicious\Shader\DecaliciousDeferredDecal.shader" />
-    <None Include="Assets\Decalicious\Shader\DecaliciousUnlitDecal.shader" />
     <None Include="Assets\GFX\Shaders\Backup\FaTerrainShader 1.shader" />
     <None Include="Assets\GFX\Shaders\Backup\FaTerrainShader_UI.shader" />
     <None Include="Assets\GFX\Shaders\Backup\FaWater 1.shader" />

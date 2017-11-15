@@ -143,9 +143,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Decalicious\Editor\DecalEditor.cs" />
-    <Compile Include="Assets\Decalicious\Editor\DecaliciousRendererEditor.cs" />
-    <Compile Include="Assets\Decalicious\Editor\DecalShaderGUI.cs" />
     <Compile Include="Assets\Editor\BuildWithResources.cs" />
     <Compile Include="Assets\PostProcessing\Editor\Attributes\PostProcessingModelEditorAttribute.cs" />
     <Compile Include="Assets\PostProcessing\Editor\Models\AmbientOcclusionModelEditor.cs" />
@@ -183,11 +180,6 @@
     <Compile Include="Assets\PostProcessing\Editor\Utils\ReflectionUtils.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Assets\Decalicious\Example\README.txt" />
-    <None Include="Assets\Decalicious\Resources\DecaliciousGameObjectID.shader" />
-    <None Include="Assets\Decalicious\Shader\DecaliciousCommon.cginc" />
-    <None Include="Assets\Decalicious\Shader\DecaliciousDeferredDecal.shader" />
-    <None Include="Assets\Decalicious\Shader\DecaliciousUnlitDecal.shader" />
     <None Include="Assets\GFX\Shaders\Backup\FaTerrainShader 1.shader" />
     <None Include="Assets\GFX\Shaders\Backup\FaTerrainShader_UI.shader" />
     <None Include="Assets\GFX\Shaders\Backup\FaWater 1.shader" />
