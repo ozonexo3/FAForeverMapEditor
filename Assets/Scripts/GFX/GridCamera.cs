@@ -9,6 +9,8 @@ public class GridCamera : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		GridTexture.mipMapBias = -0.3f;
+		GridTexture.filterMode = FilterMode.Bilinear;
+		GridTexture.anisoLevel = 2;
 		InvokeRepeating("UpdateGrid", 0, 0.333f);
 	}
 	

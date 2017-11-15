@@ -167,6 +167,7 @@ public class Map
 		NormalmapTex = new Texture2D(Width, Height, TextureFormat.DXT5, false);
 		WatermapTex = new Texture2D(Width, Height, TextureFormat.DXT5, false);
 		UncompressedWatermapTex = new Texture2D(WatermapTex.width, WatermapTex.height, TextureFormat.RGBA32, false);
+		UncompressedNormalmapTex = new Texture2D(NormalmapTex.width, NormalmapTex.height, TextureFormat.RGBA32, false);
 		WaterDataTexture = new Texture2D(Width, Height, TextureFormat.RGB24, false);
 
 		Color SplatTextureColor = new Color(0, 0, 0, 0);

@@ -9,11 +9,19 @@ namespace OzoneDecals
 	public class OzoneDecal : MonoBehaviour
 	{
 		public Material Material;
-		public bool DrawAlbedo = true;
-		public bool DrawNormal = true;
+		public bool DrawAlbedo = false;
+		public bool DrawNormal = false;
+		public bool HighQualityBlending;
 
 		public float CutOffLOD;
 		public float NearCutOffLOD;
+		public float WorldCutoffDistance;
+
+		public string Text0Path = "";
+		public string Text1Path = "";
+
+		[HideInInspector]
+		public float LastDistance = 0;
 
 		[HideInInspector]
 		public Transform tr;
@@ -25,6 +33,7 @@ namespace OzoneDecals
 
 		MeshFilter mf;
 		MeshRenderer mr;
+		public LODGroup lg;
 
 		private void Start()
 		{
@@ -52,6 +61,11 @@ namespace OzoneDecals
 				return;
 
 			if (Camera.current == null)
+				return;
+
+			LastDistance = OzoneDecalRenderer.DecalDist(tr);
+
+			if (LastDistance > WorldCutoffDistance)
 				return;
 
 			OzoneDecalRenderer.AddDecal(this, Camera.current);

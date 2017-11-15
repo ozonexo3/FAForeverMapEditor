@@ -455,6 +455,9 @@ public class ScmapEditor : MonoBehaviour
 				NormalArray.SetPixels(BlinearTex.GetPixels(), i);
 			}
 
+			NormalArray.filterMode = FilterMode.Bilinear;
+			NormalArray.anisoLevel = 4;
+
 			NormalArray.Apply();
 
 			TerrainMaterial.SetTexture("_SplatNormalArray", NormalArray);

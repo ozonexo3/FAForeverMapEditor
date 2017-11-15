@@ -22,6 +22,7 @@ namespace OzoneDecals {
 		protected const CameraEvent _camEvent = CameraEvent.BeforeReflections;
 
 		protected Camera _camera;
+		protected Transform _camTr;
 		protected bool _camLastKnownHDR;
 		protected static Mesh _cubeMesh = null;
 
@@ -50,6 +51,8 @@ namespace OzoneDecals {
 
 				CameraNear = _camera.nearClipPlane;
 				CameraFar = _camera.farClipPlane - CameraNear;
+				_camTr = _camera.transform;
+
 			}
 
 			_Decals = new Dictionary<Material, HashSet<OzoneDecal>>();

@@ -377,18 +377,17 @@ Properties {
 
 			inline fixed3 UnpackNormalDXT5nmScaled (fixed4 packednormal, fixed scale)
 {
-			   fixed3 normal;
-			   normal.xy = packednormal.wy * 2 - 1;
-			#if defined(SHADER_API_FLASH)
-			   // Flash does not have efficient saturate(), and dot() seems to require an extra register.
-			   normal.z = sqrt(1 - normal.x*normal.x - normal.y * normal.y);
-			#else
-			   normal.z = sqrt(1 - saturate(dot(normal.xy, normal.xy)));
-			#endif
+			   fixed3 normal = 0;
+			   normal.xz = packednormal.wy * 2 - 1;
 
-			 normal.xy *= scale;
+
+
+			   normal.y = sqrt(1 - saturate(dot(normal.xz, normal.xz)));
+
+				normal.xz *= scale;
+
 			
-			   return normal;
+			   return normal.xzy;
 			}
 
 			void surf (Input IN, inout SurfaceOutput o) {
@@ -479,6 +478,8 @@ Properties {
 					nrm = lerp(nrm, UNITY_SAMPLE_TEX2DARRAY(_SplatNormalArray, float3(UV * _Splat7ScaleNormal, 7)), splat_control2.a);
 				}
 
+
+
 				//nrm = tex2D (_NormalLower, UV * 1000);
 				//nrm.rg *= 5;
 				//nrm.b = 1;
@@ -493,12 +494,15 @@ Properties {
 					half3 TerrainNormalVector = UnpackNormalDXT5nm( half4(TerrainNormal.r, 1 - TerrainNormal.g, TerrainNormal.b, TerrainNormal.a));
 					IN.SlopeLerp = dot(TerrainNormalVector, half3(0,0,1));
 					//o.Albedo = IN.SlopeLerp;
-					o.Normal = BlendNormals(TerrainNormalVector , UnpackNormalDXT5nmScaled(nrm.rgbg, 2));
+					o.Normal = BlendNormals(TerrainNormalVector , UnpackNormalDXT5nmScaled(nrm.rgbg, 1));
 
 				}
 				else
-					o.Normal = UnpackNormalDXT5nmScaled(nrm.rgbg, 2);
+					o.Normal = UnpackNormalDXT5nmScaled(nrm.rgbg, 1);
 
+
+				//				o.Normal.y *= 0.5f;
+				//o.Normal = normalize(o.Normal);
 
 				//half3 Emit = _SunAmbience.rgb * 2;
 				half3 Emit = 0;

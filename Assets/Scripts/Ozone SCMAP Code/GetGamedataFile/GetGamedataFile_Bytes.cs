@@ -38,6 +38,11 @@ public partial struct GetGamedataFile
 			Init = true;
 		}
 
+		if (LocalPath.StartsWith("/maps"))
+		{
+			return LoadBytes(LocalPath); 
+		}
+
 
 		if (string.IsNullOrEmpty(LocalPath)) return null;
 
@@ -129,4 +134,8 @@ public partial struct GetGamedataFile
 		return FinalBytes;
 	}
 
+	public static byte[] LoadBytes(string mapPath)
+	{
+		return System.IO.File.ReadAllBytes(mapPath.Replace("/maps", MapLuaParser.Current.FolderParentPath));
+	}
 }

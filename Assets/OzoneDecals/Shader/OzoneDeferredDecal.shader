@@ -12,14 +12,14 @@ Shader "Ozone/Deferred Decal"
 		_MainTex("Albedo", 2D) = "white" {}
 		[HDR] _Color("Albedo (Multiplier)", Color) = (1,1,1,1)
 
-		[Normal] _NormalTex ("Normal", 2D) = "bump" {}
+		[Normal] _NormalTex ("Normal", 2D) = "yellow" {}
 		_NormalMultiplier ("Normal (Multiplier)", Float) = 1.0
 
 		_NormalBlendMode("Normal Blend Mode", Float) = 0
 		_AngleLimit("Angle Limit", Float) = 0.5
 
-		_CutOffLOD("CutOffLOD", Float) = 0.5
-		_NearCutOffLOD("NearCutOffLOD", Float) = 0.5
+		[PerRendererData] _CutOffLOD("CutOffLOD", Float) = 0.5
+		[PerRendererData] _NearCutOffLOD("NearCutOffLOD", Float) = 0.5
 	}
 
 	// Use custom GUI for the decal shader
@@ -131,17 +131,18 @@ Shader "Ozone/Deferred Decal"
 				float4 decalRaw = tex2D(_NormalTex, texUV);
 				float3 normal;
 				normal.xz = decalRaw.ag * 2 - 1;
-				normal.y = sqrt(1 - dot(normal.xz,normal.xz));
+				normal.y = sqrt(1 - dot(normal.xz,normal.xz)) ;
 
 				
 
 				normal = UnpackNormalDXT5nm(tex2D(_NormalTex, texUV));
-				normal.xy *= 0.5;
+				normal.y *= 0.5;
+				normal.xy *= blend;
 
 				normal = normalize(normal);
 				
 				// Clip to blend it with other normal maps
-				clip(0.995 -  dot(normal, half3(0,0,1)));
+				clip(0.999 -  dot(normal, half3(0,0,1)));
 				//clip(0.5 - normal.y);
 
 				normal = mul(normal, half3x3(i.decalTangent, decalBitangent, i.decalNormal));

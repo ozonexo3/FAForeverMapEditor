@@ -139,6 +139,7 @@ public class CameraControler : MonoBehaviour {
 	}
 
 	void LateUpdate(){
+		/*
 		float WaterHeight = ScmapEditor.GetWaterLevel();
 		Vector3 ReflPos = transform.position;
 		ReflPos.y = ReflPos.y - WaterHeight;
@@ -150,6 +151,7 @@ public class CameraControler : MonoBehaviour {
 		LookDir *= -1;
 		//LookDir.y *= -1;
 		ReflectionCamera.rotation = Quaternion.LookRotation(LookDir, Vector3.up);
+		*/
 	}
 
 	float ZoomCamPos(){

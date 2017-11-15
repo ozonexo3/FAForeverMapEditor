@@ -89,10 +89,15 @@ namespace EditMap
 
 
 				OzoneDecal Dec = NewDecalObject.GetComponent<OzoneDecal>();
+				Dec.WorldCutoffDistance = ScmapEditor.Current.map.Decals[i].CutOffLOD * 0.1f;
 				Dec.CutOffLOD = (ScmapEditor.Current.map.Decals[i].CutOffLOD - OzoneDecalRenderer.CameraNear) / OzoneDecalRenderer.CameraFar;
+				Dec.CutOffLOD *= 0.1f;
 				Dec.NearCutOffLOD = (ScmapEditor.Current.map.Decals[i].NearCutOffLOD) / OzoneDecalRenderer.CameraFar;
+				Dec.NearCutOffLOD *= 0.1f;
 				//Dec.NearCutOffLOD
 
+				Dec.Text0Path = ScmapEditor.Current.map.Decals[i].TexPathes[0];
+				Dec.Text1Path = ScmapEditor.Current.map.Decals[i].TexPathes[1];
 
 				if (ScmapEditor.Current.map.Decals[i].Type == TerrainDecalType.TYPE_NORMALS)
 				{
@@ -104,6 +109,8 @@ namespace EditMap
 
 					Dec.DrawAlbedo = false;
 					Dec.DrawNormal = true;
+					Dec.HighQualityBlending = true;
+
 					Dec.Material = ScmapEditor.Current.map.Decals[i].Shared.SharedMaterial;
 				}
 				else // Albedo
@@ -112,6 +119,8 @@ namespace EditMap
 					{
 						ScmapEditor.Current.map.Decals[i].Shared.SharedMaterial = new Material(AlbedoMaterial);
 						AssignTextureFromPath(ref ScmapEditor.Current.map.Decals[i].Shared.SharedMaterial, "_MainTex", ScmapEditor.Current.map.Decals[i].TexPathes[0]);
+
+
 					}
 
 					Dec.DrawAlbedo = true;

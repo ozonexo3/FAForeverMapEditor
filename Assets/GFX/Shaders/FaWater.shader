@@ -101,8 +101,8 @@ Shader "MapEditor/FaWater" {
 		void vert (inout appdata_full v, out Input o){
 			UNITY_INITIALIZE_OUTPUT(Input,o);
 	        o.position = UnityObjectToClipPos (v.vertex);
-	        o.mScreenPos = ComputeScreenPos(o.position);
-	        o.mScreenPos.xy /=  o.mScreenPos.w;
+	        o.mScreenPos = ComputeNonStereoScreenPos(o.position);
+	        //o.mScreenPos.xy /=  o.mScreenPos.w;
 	        //o.mScreenPos.xy /= _ScreenParams.xy * 0.1;
 	        
 	        //o.mTexUV = v.texcoord0;
@@ -133,6 +133,7 @@ Shader "MapEditor/FaWater" {
 	    uniform sampler2D _UtilitySamplerC;
 	    uniform sampler2D RefractionSampler;
 	    sampler2D  ReflectionSampler;
+		sampler2D _ReflectionTexture;
 	    uniform sampler2D FresnelSampler;
 	    uniform sampler2D NormalSampler0, NormalSampler1, NormalSampler2, NormalSampler3;
 		//samplerCUBE _Reflection;
@@ -151,7 +152,7 @@ Shader "MapEditor/FaWater" {
 	        // calculate the correct viewvector
 			float3 viewVector = normalize(IN.mViewVec);
 			
-		    float2 screenPos = UNITY_PROJ_COORD(IN.mScreenPos.xy);
+		    float2 screenPos = UNITY_PROJ_COORD(IN.mScreenPos.xy / IN.mScreenPos.w);
 
 			// calculate the background pixel
 			float4 backGroundPixels = tex2Dproj( _WaterGrabTexture, UNITY_PROJ_COORD(IN.grabUV) );
@@ -189,9 +190,9 @@ Shader "MapEditor/FaWater" {
 	    		    	
 	    	// get the correct coordinate for sampling refraction and reflection
 			float OneOverW = 1 / IN.mScreenPos.w;
-		    float2 refractionPos = screenPos;
-			refractionPos.y = 1 - refractionPos.y;
-		    refractionPos -= refractionScale * N.xz * OneOverW;
+		   // float2 refractionPos = screenPos;
+			//refractionPos.y = 1 - refractionPos.y;
+		    //refractionPos -= refractionScale * N.xz * OneOverW;
 	    	
 	    	// calculate the refract pixel, corrected for fetching a non-refractable pixel
 		    float4 refractedPixels = tex2Dproj( _WaterGrabTexture, UNITY_PROJ_COORD(IN.grabUV));
@@ -202,7 +203,10 @@ Shader "MapEditor/FaWater" {
 		    refractedPixels.xyz = lerp(refractedPixels, backGroundPixels, saturate((IN.AddVar.x - 40) / 30 ) ).xyz; //255
 
 
-			float4 reflectedPixels = tex2D( ReflectionSampler, refractionPos );
+			//float4 reflectedPixels = tex2D( _ReflectionTexture, refractionPos );
+			float4 refractionPos = IN.mScreenPos; 
+			refractionPos.xy -= refractionScale * N.xz * OneOverW;
+			float4 reflectedPixels = tex2Dproj( _ReflectionTexture, UNITY_PROJ_COORD(refractionPos) );
 
 
 			//fresnelPower = 1.1;

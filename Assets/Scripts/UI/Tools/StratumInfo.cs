@@ -385,6 +385,8 @@ namespace EditMap
 			TerrainMaterial.SetInt("_Brush", 1);
 			BrushGenerator.Current.Brushes[SelectedFalloff].wrapMode = TextureWrapMode.Clamp;
 			BrushGenerator.Current.Brushes[SelectedFalloff].mipMapBias = -1f;
+			BrushGenerator.Current.Brushes[SelectedFalloff].filterMode = FilterMode.Bilinear;
+			BrushGenerator.Current.Brushes[SelectedFalloff].anisoLevel = 2;
 			TerrainMaterial.SetTexture("_BrushTex", (Texture)BrushGenerator.Current.Brushes[SelectedFalloff]);
 		}
 
@@ -564,6 +566,8 @@ namespace EditMap
 			SelectedFalloff = id;
 			BrushGenerator.Current.Brushes[SelectedFalloff].wrapMode = TextureWrapMode.Clamp;
 			BrushGenerator.Current.Brushes[SelectedFalloff].mipMapBias = -1f;
+			BrushGenerator.Current.Brushes[SelectedFalloff].filterMode = FilterMode.Bilinear;
+			BrushGenerator.Current.Brushes[SelectedFalloff].anisoLevel = 2;
 			LastRotation = int.Parse(BrushRotation.text);
 			if (LastRotation == 0)
 			{

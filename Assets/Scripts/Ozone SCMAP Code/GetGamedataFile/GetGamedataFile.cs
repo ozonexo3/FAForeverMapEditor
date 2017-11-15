@@ -13,7 +13,7 @@ public partial struct GetGamedataFile
 	static bool IsDxt3 = false;
 
 	public static float MipmapBias = 0.0f;
-	public static int AnisoLevel = 2;
+	public static int AnisoLevel = 6;
 
 	public static Texture2D LoadTexture2DFromGamedata(string scd, string LocalPath, bool NormalMap = false)
 	{

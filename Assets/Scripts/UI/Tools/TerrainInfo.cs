@@ -59,6 +59,8 @@ namespace EditMap
 			TerrainMaterial.SetInt("_Brush", 1);
 			BrushGenerator.Current.Brushes[SelectedFalloff].wrapMode = TextureWrapMode.Clamp;
 			BrushGenerator.Current.Brushes[SelectedFalloff].mipMapBias = -1f;
+			BrushGenerator.Current.Brushes[SelectedFalloff].filterMode = FilterMode.Bilinear;
+			BrushGenerator.Current.Brushes[SelectedFalloff].anisoLevel = 2;
 			TerrainMaterial.SetTexture("_BrushTex", (Texture)BrushGenerator.Current.Brushes[SelectedFalloff]);
 		}
 
@@ -358,13 +360,27 @@ namespace EditMap
 		public void ExportHeightmap()
 		{
 			string Filename = EnvPaths.GetMapsPath() + MapLuaParser.Current.FolderName + "/heightmap.raw";
+			//string Filename = EnvPaths.GetMapsPath() + MapLuaParser.Current.FolderName + "/heightmap.raw";
+
+			var extensions = new[]
+			{
+				new ExtensionFilter("Heightmap", new string[]{"raw" })
+				//new ExtensionFilter("Stratum mask", "raw, bmp")
+			};
+
+			var paths = StandaloneFileBrowser.SaveFilePanel("Import stratum mask", EnvPaths.GetMapsPath() + MapLuaParser.Current.FolderName, "heightmap", extensions);
+
+
+			if (paths == null || string.IsNullOrEmpty(paths))
+				return;
+			
 
 			int h = Map.Teren.terrainData.heightmapHeight;
 			int w = Map.Teren.terrainData.heightmapWidth;
 
 			float[,] data = Map.Teren.terrainData.GetHeights(0, 0, w, h);
 
-			using (BinaryWriter writer = new BinaryWriter(new System.IO.FileStream(Filename, System.IO.FileMode.Create)))
+			using (BinaryWriter writer = new BinaryWriter(new System.IO.FileStream(paths, System.IO.FileMode.Create)))
 			{
 				for (int y = 0; y < h; y++)
 				{
@@ -386,6 +402,17 @@ namespace EditMap
 
 			string Filename = EnvPaths.GetMapsPath() + MapLuaParser.Current.FolderName + "/heightmap.raw";
 
+			var extensions = new[]
+{
+				new ExtensionFilter("Heightmap", new string[]{"raw" })
+				//new ExtensionFilter("Stratum mask", "raw, bmp")
+			};
+
+			var paths = StandaloneFileBrowser.SaveFilePanel("Import stratum mask", EnvPaths.GetMapsPath() + MapLuaParser.Current.FolderName, "heightmap", extensions);
+
+
+			if (paths == null || string.IsNullOrEmpty(paths))
+				return;
 
 			int h = Map.Teren.terrainData.heightmapWidth;
 			int w = Map.Teren.terrainData.heightmapWidth;
@@ -424,7 +451,7 @@ namespace EditMap
 			h = scale;
 			w = scale;
 
-			using (BinaryWriter writer = new BinaryWriter(new System.IO.FileStream(Filename, System.IO.FileMode.Create)))
+			using (BinaryWriter writer = new BinaryWriter(new System.IO.FileStream(paths, System.IO.FileMode.Create)))
 			{
 				for (int y = 0; y < h; y++)
 				{
@@ -513,6 +540,8 @@ namespace EditMap
 			SelectedFalloff = id;
 			BrushGenerator.Current.Brushes[SelectedFalloff].wrapMode = TextureWrapMode.Clamp;
 			BrushGenerator.Current.Brushes[SelectedFalloff].mipMapBias = -1f;
+			BrushGenerator.Current.Brushes[SelectedFalloff].filterMode = FilterMode.Bilinear;
+			BrushGenerator.Current.Brushes[SelectedFalloff].anisoLevel = 2;
 			LastRotation = int.Parse(BrushRotation.text);
 			if (LastRotation == 0)
 			{
