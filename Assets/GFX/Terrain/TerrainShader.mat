@@ -233,10 +233,10 @@ Material:
     m_Floats:
     - _AbyssLevel: 0.25
     - _Area: 0
-    - _AreaHeight: 102
-    - _AreaWidht: 102.1
-    - _AreaX: 0.4
-    - _AreaY: 0.3
+    - _AreaHeight: 51.1
+    - _AreaWidht: 51.2
+    - _AreaX: 0.1
+    - _AreaY: 0
     - _Brush: 0
     - _BrushSize: 0
     - _BrushUvX: 0.6206362
@@ -245,7 +245,7 @@ Material:
     - _DepthLevel: 1.5
     - _GeneratingNormal: 0
     - _Grid: 0
-    - _GridCamDist: 0.3385996
+    - _GridCamDist: 0.2224854
     - _GridScale: 102.4
     - _HideSplat0: 0
     - _HideSplat1: 0

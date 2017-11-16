@@ -5,21 +5,17 @@
 
 #include "UnityCG.cginc"
 
-sampler2D _MaskTex;
-int _MaskNormals;
+//sampler2D _MaskTex;
+//int _MaskNormals;
 
 sampler2D _MainTex;
 float4 _MainTex_ST;
-float4 _Color;
 
 sampler2D _NormalTex;
 float _NormalMultiplier;
 
 float _AngleLimit;
 
-int _DecalBlendMode;
-int _DecalSrcBlend;
-int _DecalDstBlend;
 int _NormalBlendMode;
 
 sampler2D _CameraDepthTexture;

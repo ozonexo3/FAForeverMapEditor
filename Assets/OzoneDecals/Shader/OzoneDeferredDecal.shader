@@ -5,12 +5,13 @@ Shader "Ozone/Deferred Decal"
 {
 	Properties
 	{
-		//_MaskTex("Mask", 2D) = "white" {}
+		_Mask("Mask", 2D) = "white" {}
 		//[PerRendererData] _MaskMultiplier("Mask (Multiplier)", Float) = 1.0
 		//_MaskNormals("Mask Normals?", Float) = 1.0
 
 		_MainTex("Albedo", 2D) = "white" {}
 		[HDR] _Color("Albedo (Multiplier)", Color) = (1,1,1,1)
+		_Glow("Glow", 2D) = "black" {}
 
 		[Normal] _NormalTex ("Normal", 2D) = "yellow" {}
 		_NormalMultiplier ("Normal (Multiplier)", Float) = 1.0
@@ -44,6 +45,10 @@ Shader "Ozone/Deferred Decal"
 			#pragma multi_compile_instancing
 			#include "DecalsCommon.cginc"
 
+//			float4 _Color;
+
+			sampler2D _Mask;
+			sampler2D _Glow;
 			sampler2D _WaterRam;
 			sampler2D _UtilitySamplerC;
 
@@ -63,13 +68,13 @@ Shader "Ozone/Deferred Decal"
 				//clip(dot(gbuffer_normal, i.decalNormal) - _AngleLimit); // 60 degree clamp
 
 				// Get color from texture and property
-				float4 color = tex2D(_MainTex, texUV) * _Color;
+				float4 color = tex2D(_MainTex, texUV);// * _Color;
 
 				
 				float4 waterTexture = tex2D( _UtilitySamplerC, wpos.xz * half2(0.009765, -0.009765) + half2(0, 0));
 				color.rgb = ApplyWaterColor( waterTexture.g, color.rgb);	
 
-				color.a *= blend;
+				color.a *= blend * tex2D(_Mask, texUV).r;
 				//color.rgb = blend * 1000;
 
 				// Write albedo, premultiply for proper blending
@@ -84,7 +89,7 @@ Shader "Ozone/Deferred Decal"
 #endif
 
 				// Write emission, premultiply for proper blending
-				outEmission = float4(color.rgb * color.a, color.a);
+				outEmission = float4(color.rgb * color.a, color.a) + tex2D(_Glow, texUV);
 			}
 			ENDCG
 		}

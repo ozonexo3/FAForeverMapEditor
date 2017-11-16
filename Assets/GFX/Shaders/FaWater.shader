@@ -219,7 +219,7 @@ Shader "MapEditor/FaWater" {
 			// figure out the sun reflection
 			float SunDotR = saturate(dot(-R, SunDirection));
 			//SunDotR = pow(SunDotR, fresnelPower);
-    		float3 sunReflection = pow( SunDotR, SunShininess) * sunColor.rgb * 2;
+    		float3 sunReflection = pow( SunDotR, SunShininess) * sunColor.rgb;
 
     		// lerp the reflections together
    			reflectedPixels = lerp( skyReflection, reflectedPixels, saturate(unitreflectionAmount * reflectedPixels.w));
@@ -240,7 +240,7 @@ Shader "MapEditor/FaWater" {
 			//refractedPixels = 
 			
 			// add in the sky reflection
-			sunReflection = sunReflection * fresnel;
+			sunReflection = sunReflection * (1 - fresnel);
 		    refractedPixels.xyz += sunReflection;
 
 			// Lerp in a wave crest

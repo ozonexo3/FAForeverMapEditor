@@ -17,8 +17,10 @@ namespace OzoneDecals
 		public float NearCutOffLOD;
 		public float WorldCutoffDistance;
 
+#if UNITY_EDITOR
 		public string Text0Path = "";
 		public string Text1Path = "";
+#endif
 
 		[HideInInspector]
 		public float LastDistance = 0;

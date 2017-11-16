@@ -65,7 +65,9 @@ namespace EditMap
 
 			for (int i = 0; i < Count; i++)
 			{
-				if (ScmapEditor.Current.map.Decals[i].Type != TerrainDecalType.TYPE_ALBEDO && ScmapEditor.Current.map.Decals[i].Type != TerrainDecalType.TYPE_NORMALS)
+				if (ScmapEditor.Current.map.Decals[i].Type != TerrainDecalType.TYPE_ALBEDO
+					&& ScmapEditor.Current.map.Decals[i].Type != TerrainDecalType.TYPE_NORMALS && ScmapEditor.Current.map.Decals[i].Type != TerrainDecalType.TYPE_NORMALS_ALPHA
+					&& ScmapEditor.Current.map.Decals[i].Type != TerrainDecalType.TYPE_GLOW && ScmapEditor.Current.map.Decals[i].Type != TerrainDecalType.TYPE_GLOW_MASK)
 					continue;
 
 				GameObject NewDecalObject = Instantiate(DecalPrefab, DecalPivot);
@@ -96,8 +98,10 @@ namespace EditMap
 				Dec.NearCutOffLOD *= 0.1f;
 				//Dec.NearCutOffLOD
 
+#if UNITY_EDITOR
 				Dec.Text0Path = ScmapEditor.Current.map.Decals[i].TexPathes[0];
 				Dec.Text1Path = ScmapEditor.Current.map.Decals[i].TexPathes[1];
+#endif
 
 				if (ScmapEditor.Current.map.Decals[i].Type == TerrainDecalType.TYPE_NORMALS)
 				{
@@ -113,14 +117,27 @@ namespace EditMap
 
 					Dec.Material = ScmapEditor.Current.map.Decals[i].Shared.SharedMaterial;
 				}
+				else if(ScmapEditor.Current.map.Decals[i].Type == TerrainDecalType.TYPE_GLOW
+					|| ScmapEditor.Current.map.Decals[i].Type == TerrainDecalType.TYPE_GLOW_MASK)
+				{
+					if (ScmapEditor.Current.map.Decals[i].Shared.SharedMaterial == null)
+					{
+						ScmapEditor.Current.map.Decals[i].Shared.SharedMaterial = new Material(AlbedoMaterial);
+						AssignTextureFromPath(ref ScmapEditor.Current.map.Decals[i].Shared.SharedMaterial, "_MainTex", ScmapEditor.Current.map.Decals[i].TexPathes[0]);
+						AssignTextureFromPath(ref ScmapEditor.Current.map.Decals[i].Shared.SharedMaterial, "_Glow", ScmapEditor.Current.map.Decals[i].TexPathes[1]);
+					}
+
+					Dec.DrawAlbedo = true;
+					Dec.DrawNormal = false;
+					Dec.Material = ScmapEditor.Current.map.Decals[i].Shared.SharedMaterial;
+				}
 				else // Albedo
 				{
 					if (ScmapEditor.Current.map.Decals[i].Shared.SharedMaterial == null)
 					{
 						ScmapEditor.Current.map.Decals[i].Shared.SharedMaterial = new Material(AlbedoMaterial);
 						AssignTextureFromPath(ref ScmapEditor.Current.map.Decals[i].Shared.SharedMaterial, "_MainTex", ScmapEditor.Current.map.Decals[i].TexPathes[0]);
-
-
+						AssignTextureFromPath(ref ScmapEditor.Current.map.Decals[i].Shared.SharedMaterial, "_Mask", ScmapEditor.Current.map.Decals[i].TexPathes[1]);
 					}
 
 					Dec.DrawAlbedo = true;
