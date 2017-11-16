@@ -228,7 +228,7 @@ public class ScmapEditor : MonoBehaviour
 		Teren.gameObject.name = "TERRAIN";
 		Teren.materialType = Terrain.MaterialType.Custom;
 		Teren.materialTemplate = TerrainMaterial;
-		Teren.heightmapPixelError = 4f;
+		Teren.heightmapPixelError = 5f;
 		Teren.basemapDistance = 10000;
 		Teren.castShadows = false;
 		Teren.drawTreesAndFoliage = false;

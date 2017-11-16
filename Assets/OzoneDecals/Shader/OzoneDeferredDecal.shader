@@ -75,12 +75,15 @@ Shader "Ozone/Deferred Decal"
 				color.rgb = ApplyWaterColor( waterTexture.g, color.rgb);	
 
 				color.a *= blend * tex2D(_Mask, texUV).r;
+								float RawAlpha = color.a;
+
 				//color.rgb = blend * 1000;
 
 				// Write albedo, premultiply for proper blending
 				outAlbedo = float4(color.rgb * color.a, color.a);
-	
 				color *= 1 - float4(ShadeSH9(float4(gbuffer_normal, 1.0f)), 1.0f);
+
+				//color.rgb = 10000 * RawAlpha;
 
 				// Handle logarithmic encoding in Gamma space
 #ifndef UNITY_HDR_ON
@@ -89,7 +92,11 @@ Shader "Ozone/Deferred Decal"
 #endif
 
 				// Write emission, premultiply for proper blending
-				outEmission = float4(color.rgb * color.a, color.a) + tex2D(_Glow, texUV);
+				//outEmission = float4(color.rgb * color.a, color.a) + tex2D(_Glow, texUV);
+				outEmission = tex2D(_CameraGBufferTexture4Copy, uv);
+				outEmission.rgb += tex2D(_Glow, texUV).rgb * 10000;
+				//outEmission.rgb = 0.2;
+				//outEmission.a = 1;
 			}
 			ENDCG
 		}

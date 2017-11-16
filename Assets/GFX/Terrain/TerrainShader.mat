@@ -233,19 +233,19 @@ Material:
     m_Floats:
     - _AbyssLevel: 0.25
     - _Area: 0
-    - _AreaHeight: 51.1
-    - _AreaWidht: 51.2
-    - _AreaX: 0.1
-    - _AreaY: 0
+    - _AreaHeight: 102
+    - _AreaWidht: 102.1
+    - _AreaX: 0.4
+    - _AreaY: 0.3
     - _Brush: 0
     - _BrushSize: 0
-    - _BrushUvX: 0.6206362
-    - _BrushUvY: 0.9622109
+    - _BrushUvX: 0.5059321
+    - _BrushUvY: 0.35838947
     - _DeepLevel: 1.675625
     - _DepthLevel: 1.5
     - _GeneratingNormal: 0
     - _Grid: 0
-    - _GridCamDist: 0.2224854
+    - _GridCamDist: 2.5338
     - _GridScale: 102.4
     - _HideSplat0: 0
     - _HideSplat1: 0
@@ -269,14 +269,14 @@ Material:
     - _Splat2ScaleNormal: 512
     - _Splat3Scale: 170.66667
     - _Splat3ScaleNormal: 256
-    - _Splat4Scale: 1024
-    - _Splat4ScaleNormal: 1024
-    - _Splat5Scale: 1024
-    - _Splat5ScaleNormal: 1024
-    - _Splat6Scale: 1024
-    - _Splat6ScaleNormal: 1024
-    - _Splat7Scale: 1024
-    - _Splat7ScaleNormal: 1024
+    - _Splat4Scale: 256
+    - _Splat4ScaleNormal: 256
+    - _Splat5Scale: 256
+    - _Splat5ScaleNormal: 256
+    - _Splat6Scale: 256
+    - _Splat6ScaleNormal: 256
+    - _Splat7Scale: 256
+    - _Splat7ScaleNormal: 256
     - _TTerrainXP: 0
     - _UpperScale: 8
     - _UpperScaleNormal: 1024

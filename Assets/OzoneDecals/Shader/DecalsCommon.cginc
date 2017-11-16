@@ -21,6 +21,8 @@ int _NormalBlendMode;
 sampler2D _CameraDepthTexture;
 sampler2D _CameraGBufferTexture2;
 sampler2D _CameraGBufferTexture2Copy;
+sampler2D _CameraGBufferTexture0Copy;
+sampler2D _CameraGBufferTexture4Copy;
 
 struct appdata
 {

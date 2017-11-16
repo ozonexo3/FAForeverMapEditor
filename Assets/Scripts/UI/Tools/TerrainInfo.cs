@@ -236,7 +236,6 @@ namespace EditMap
 						if (UpdateBrushPosition(false))
 						{
 							SymmetryPaint();
-							PropsRenderer.Current.UpdatePropsHeights();
 						}
 					}
 					else
@@ -247,7 +246,6 @@ namespace EditMap
 					if (Painting && Input.GetMouseButtonUp(0))
 					{
 						RegenerateMaps();
-						PropsRenderer.Current.UpdatePropsHeights();
 					}
 				}
 			}
@@ -362,7 +360,7 @@ namespace EditMap
 
 		public void ExportHeightmap()
 		{
-			string Filename = EnvPaths.GetMapsPath() + MapLuaParser.Current.FolderName + "/heightmap.raw";
+			//string Filename = EnvPaths.GetMapsPath() + MapLuaParser.Current.FolderName + "/heightmap.raw";
 			//string Filename = EnvPaths.GetMapsPath() + MapLuaParser.Current.FolderName + "/heightmap.raw";
 
 			var extensions = new[]
@@ -403,7 +401,7 @@ namespace EditMap
 			int scale = int.Parse(TerrainScale.text);
 			scale = Mathf.Clamp(scale, 129, 2049);
 
-			string Filename = EnvPaths.GetMapsPath() + MapLuaParser.Current.FolderName + "/heightmap.raw";
+			//string Filename = EnvPaths.GetMapsPath() + MapLuaParser.Current.FolderName + "/heightmap.raw";
 
 			var extensions = new[]
 {
@@ -474,7 +472,7 @@ namespace EditMap
 
 		public void ImportHeightmap()
 		{
-			string Filename = EnvPaths.GetMapsPath() + MapLuaParser.Current.FolderName + "/heightmap.raw";
+			//string Filename = EnvPaths.GetMapsPath() + MapLuaParser.Current.FolderName + "/heightmap.raw";
 			//string Filename = EnvPaths.GetMapsPath() + MapLuaParser.Current.FolderName + "/heightmap.raw";
 
 			var extensions = new[]
@@ -728,7 +726,7 @@ namespace EditMap
 					{
 						switch (BrushPaintType)
 						{
-							case 1:
+							case 1: // Smooth
 								CenterHeight = GetNearValues(ref heights, i, j);
 
 								PixelPower = Mathf.Pow(Mathf.Abs(heights[i, j] - CenterHeight), 0.5f) * 10 * Mathf.Clamp01(size / 10f);
@@ -736,12 +734,12 @@ namespace EditMap
 
 								heights[i, j] = Mathf.Lerp(heights[i, j], CenterHeight, BrushStrengthSlider.value * 0.4f * Mathf.Pow(SambleBrush, 2) * PixelPower);
 								break;
-							case 2:
+							case 2: // Sharp
 								PixelPower = heights[i, j] - CenterHeight;
 								heights[i, j] += Mathf.Lerp(PixelPower, 0, PixelPower * 10) * BrushStrengthSlider.value * 0.01f * Mathf.Pow(SambleBrush, 2);
 								break;
 							default:
-								heights[i, j] += SambleBrush * BrushStrengthSlider.value * 0.0002f * (Invert ? (-1) : 1);
+								heights[i, j] += SambleBrush * BrushStrengthSlider.value * 0.00005f * (Invert ? (-1) : 1);
 								break;
 						}
 
@@ -770,13 +768,22 @@ namespace EditMap
 			if (!TerainChanged)
 			{
 				beginHeights = Map.Teren.terrainData.GetHeights(0, 0, hmWidth, hmHeight);
-
+				
 				TerainChanged = true;
 			}
 
 			Map.Teren.terrainData.SetHeightsDelayLOD(posXInTerrain - offset + OffsetLeft, posYInTerrain - offset + OffsetDown, heights);
 
+			//Markers.MarkersControler.UpdateMarkersHeights();
+
+			OnTerrainChanged();
+		}
+
+
+		public void OnTerrainChanged()
+		{
 			Markers.MarkersControler.UpdateMarkersHeights();
+			PropsRenderer.Current.UpdatePropsHeights();
 		}
 
 		float GetNearValues(ref float[,] heigths, int x, int y, int range = 1)

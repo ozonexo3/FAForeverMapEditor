@@ -26,6 +26,7 @@ namespace OzoneDecals
 				{
 					buffer = new CommandBuffer();
 					buffer.name = name;
+					//buffer.
 					cam.AddCommandBuffer(evt, buffer);
 				}
 			}

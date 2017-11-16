@@ -147,6 +147,8 @@ Shader "MapEditor/FaWater" {
 			// how to shade and it should become lesser as we get shallower
 			// so that we don't have a sharp line
 	    	float4 waterTexture = tex2D( _UtilitySamplerC, IN.uv_UtilitySamplerC * float2(-1, 1) + float2(1 / (_WaterScaleX * 1) + 1, 1 / (_WaterScaleZ * 1)) );
+			
+			
 			float waterDepth = waterTexture.g * 10;
 			
 	        // calculate the correct viewvector
@@ -158,7 +160,7 @@ Shader "MapEditor/FaWater" {
 			float4 backGroundPixels = tex2Dproj( _WaterGrabTexture, UNITY_PROJ_COORD(IN.grabUV) );
 
 			#ifdef UNITY_HDR_ON
-			backGroundPixels.rgb = exp2(-backGroundPixels.rgb);
+			//backGroundPixels.rgb = exp2(-backGroundPixels.rgb);
 			#endif
 			//float4 col = tex2Dproj( _MyGrabTexture3, UNITY_PROJ_COORD(IN.grabUV));
 
@@ -207,7 +209,7 @@ Shader "MapEditor/FaWater" {
 			float4 refractionPos = IN.mScreenPos; 
 			refractionPos.xy -= refractionScale * N.xz * OneOverW;
 			float4 reflectedPixels = tex2Dproj( _ReflectionTexture, UNITY_PROJ_COORD(refractionPos) );
-
+			reflectedPixels.rgb = exp2(-reflectedPixels.rgb);
 
 			//fresnelPower = 1.1;
 			//fresnelBias = 0;
@@ -255,6 +257,7 @@ Shader "MapEditor/FaWater" {
 
 
 			o.Albedo = 0;
+			//color.rgb = exp2(-color.rgb);
 			o.Emission = returnPixels.rgb;
 			o.Alpha = returnPixels.a;
 	    }
