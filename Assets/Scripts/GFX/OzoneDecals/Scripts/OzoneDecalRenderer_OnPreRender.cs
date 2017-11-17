@@ -15,47 +15,52 @@ namespace OzoneDecals
 			if (DecalsInfo.LoadingDecals)
 				return;
 
+			if (RenderCamera == null)
+				return;
 
+			RenderForCamera(RenderCamera);
+		}
+
+		private void RenderForCamera(Camera cam)
+		{
 #if UNITY_EDITOR
 			if (_cubeMesh == null)
 				return;
 #endif
 
-			if (_albedoRenderTarget == null || _camera.allowHDR != _camLastKnownHDR)
-			{
-				_camLastKnownHDR = _camera.allowHDR;
-				_albedoRenderTarget = new RenderTargetIdentifier[] { BuiltinRenderTextureType.GBuffer0, BuiltinRenderTextureType.CameraTarget };
-			}
+			if (_Decals.Count == 0)
+				return;
 
-
-			CreateBuffer(ref _bufferDeferred, _camera, _Name, _camEvent);
+			CreateBuffer(ref _bufferDeferred, cam, _Name, _camEvent);
 
 			//UseInstancing = false;
 
 
 			_bufferDeferred.Clear();
-			DrawDeferredDecals_Albedo(_camera);
-			DrawDeferredDecals_Normal(_camera);
+			DrawDeferredDecals_Albedo(cam);
+			DrawDeferredDecals_Normal(cam);
 
 			// Clear 
 			var decalEnum = _Decals.GetEnumerator();
 			while (decalEnum.MoveNext())
 				decalEnum.Current.Value.Clear();
 
+			HasEmission = false;
+			HasSpecular = false;
 		}
+
 
 		private void DrawDeferredDecals_Albedo(Camera cam)
 		{
-			if (_Decals.Count == 0)
-				return;
+			_bufferDeferred.SetRenderTarget(_albedoRenderTarget, BuiltinRenderTextureType.CameraTarget);
 
-			//_bufferDeferred.SetRenderTarget(_albedoRenderTarget, BuiltinRenderTextureType.CameraTarget);
+			//var copy1id = Shader.PropertyToID("_CameraGBufferTexture0Copy");
+			//_bufferDeferred.GetTemporaryRT(copy1id, -1, -1, 0, FilterMode.Point, RenderTextureFormat.ARGB32);
+			//_bufferDeferred.Blit(BuiltinRenderTextureType.GBuffer0, copy1id);
 
-			var copy1id = Shader.PropertyToID("_CameraGBufferTexture0Copy");
-			_bufferDeferred.GetTemporaryRT(copy1id, -1, -1, 0, FilterMode.Point, RenderTextureFormat.ARGB32);
-
-			var copy2id = Shader.PropertyToID("_CameraGBufferTexture4Copy");
-			_bufferDeferred.GetTemporaryRT(copy2id, -1, -1, 0, FilterMode.Point, RenderTextureFormat.ARGB2101010);
+			HasEmission = true;
+			//var copy2id = Shader.PropertyToID("_CameraGBufferTexture4Copy");
+			//_bufferDeferred.GetTemporaryRT(copy2id, -1, -1, 0, FilterMode.Point, RenderTextureFormat.ARGB2101010);
 
 			var allDecalEnum = _Decals.GetEnumerator();
 			while (allDecalEnum.MoveNext())
@@ -81,9 +86,9 @@ namespace OzoneDecals
 
 							if (n == 1023)
 							{
-								_bufferDeferred.Blit(BuiltinRenderTextureType.GBuffer0, copy1id);
-								_bufferDeferred.Blit(BuiltinRenderTextureType.CameraTarget, copy2id);
-								_bufferDeferred.SetRenderTarget(_albedoRenderTarget, BuiltinRenderTextureType.CameraTarget);
+								//_bufferDeferred.Blit(BuiltinRenderTextureType.GBuffer0, copy1id);
+								//_bufferDeferred.Blit(BuiltinRenderTextureType.CameraTarget, copy2id);
+								//_bufferDeferred.SetRenderTarget(_albedoRenderTarget, BuiltinRenderTextureType.CameraTarget);
 
 								_instancedBlock.Clear();
 								_instancedBlock.SetFloatArray("_NearCutOffLOD", _NearCutOffLODValues);
@@ -94,8 +99,8 @@ namespace OzoneDecals
 						}
 						else
 						{
-							if(n == 0)
-								_bufferDeferred.Blit(BuiltinRenderTextureType.CameraTarget, copy2id);
+							//if(n == 0)
+								//_bufferDeferred.Blit(BuiltinRenderTextureType.CameraTarget, copy2id);
 
 							_directBlock.Clear();
 							_directBlock.SetFloat("_NearCutOffLOD", decal.NearCutOffLOD);
@@ -108,8 +113,8 @@ namespace OzoneDecals
 
 				if (UseInstancing && n > 0)
 				{
-					_bufferDeferred.Blit(BuiltinRenderTextureType.CameraTarget, copy2id);
-					_bufferDeferred.SetRenderTarget(_albedoRenderTarget, BuiltinRenderTextureType.CameraTarget);
+					//_bufferDeferred.Blit(BuiltinRenderTextureType.CameraTarget, copy2id);
+					//_bufferDeferred.SetRenderTarget(_albedoRenderTarget, BuiltinRenderTextureType.CameraTarget);
 
 					_instancedBlock.Clear();
 					_instancedBlock.SetFloatArray("_NearCutOffLOD", _NearCutOffLODValues);
@@ -124,8 +129,6 @@ namespace OzoneDecals
 
 		private void DrawDeferredDecals_Normal(Camera cam)
 		{
-			if (_Decals.Count == 0)
-				return;
 
 			int hqCount = 0;
 

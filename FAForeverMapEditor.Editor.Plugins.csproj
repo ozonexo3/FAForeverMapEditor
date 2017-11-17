@@ -163,14 +163,13 @@
     <None Include="Assets\GFX\Shaders\FaTerrainShader.shader" />
     <None Include="Assets\GFX\Shaders\FaWater.shader" />
     <None Include="Assets\GFX\Shaders\MarkerShader.shader" />
+    <None Include="Assets\GFX\Shaders\OnRendererShader.shader" />
     <None Include="Assets\GFX\Shaders\PropShader.shader" />
-    <None Include="Assets\GFX\Shaders\RawImageChannel.shader" />
-    <None Include="Assets\GFX\Shaders\RawImageNoAlpha.shader" />
     <None Include="Assets\GFX\Shaders\Selection.shader" />
+    <None Include="Assets\GFX\Shaders\UI\RawImageChannel.shader" />
+    <None Include="Assets\GFX\Shaders\UI\RawImageNoAlpha.shader" />
     <None Include="Assets\GFX\Shaders\UI\UI-Add.shader" />
     <None Include="Assets\GFX\Shaders\Unlit-Color.shader" />
-    <None Include="Assets\OzoneDecals\Shader\DecalsCommon.cginc" />
-    <None Include="Assets\OzoneDecals\Shader\OzoneDeferredDecal.shader" />
     <None Include="Assets\PostProcessing\Editor Resources\Monitors\HistogramCompute.compute" />
     <None Include="Assets\PostProcessing\Editor Resources\Monitors\HistogramRender.shader" />
     <None Include="Assets\PostProcessing\Editor Resources\Monitors\ParadeRender.shader" />
@@ -216,6 +215,9 @@
     <None Include="Assets\Resources\UnityDeprecatedEX.cginc" />
     <None Include="Assets\Resources\UnityPBSLighting.cginc" />
     <None Include="Assets\Resources\UnityStandardBRDFCustom.cginc" />
+    <None Include="Assets\Scripts\GFX\OzoneDecals\Shader\DecalsCommon.cginc" />
+    <None Include="Assets\Scripts\GFX\OzoneDecals\Shader\OzoneDeferredDecal.shader" />
+    <None Include="Assets\Scripts\GFX\OzoneGlow\OzoneGlow.shader" />
     <None Include="Assets\Standard Assets\Effects\ImageEffects\Readme.txt" />
     <None Include="Assets\Standard Assets\Effects\ImageEffects\Shaders\BlendModesOverlay.shader" />
     <None Include="Assets\Standard Assets\Effects\ImageEffects\Shaders\BlurEffectConeTaps.shader" />

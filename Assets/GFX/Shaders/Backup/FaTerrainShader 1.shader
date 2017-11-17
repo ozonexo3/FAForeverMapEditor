@@ -1,6 +1,6 @@
 ﻿// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
 
-Shader "MapEditor/FaTerrainShader (backup)" {
+Shader "MapEditor/FaTerrainShader" {
 Properties {
 	_SpecColor ("Specular Color", Color) = (0.5, 0.5, 0.5, 1)
 	_Shininess ("Shininess", Range (0.03, 1)) = 0.078125
@@ -11,14 +11,6 @@ Properties {
 	_SlopeTex ("Slope data", 2D) = "black" {}
 	[MaterialToggle] _TTerrainXP("_TTerrainXP", Int) = 0
 	
-	//_LightingMultiplier ("LightingMultiplier ", Range (0, 10)) = 1
-	//_SunColor ("Sun Color", Color) = (0.5, 0.5, 0.5, 1)
-	//_SunAmbience ("Ambience Color", Color) = (0.5, 0.5, 0.5, 1)
-	//_ShadowColor ("Shadow Color", Color) = (0.5, 0.5, 0.5, 1)
-	
-
-	//_WaterRam ("Water Ramp (RGBA)", 2D) = "blue" {}
-	//_UtilitySamplerC ("_UtilitySamplerC", 2D) = "white" {}
 	_WaterLevel ("Water Level", float) = 0.078125
 	_DepthLevel ("Depth Level", float) = 0.078125
 	_AbyssLevel ("Abyss Level", float) = 0.078125
@@ -48,14 +40,6 @@ Properties {
 	_SplatAlbedoArray ("Albedo array", 2DArray) = "" {}
 	_SplatNormalArray ("Normal array", 2DArray) = "" {}
 
-	//_Splat0XP ("Layer 1 (R)", 2D) = "black" {}
-	//_Splat1XP ("Layer 2 (G)", 2D) = "black" {}
-	//_Splat2XP ("Layer 3 (B)", 2D) = "black" {}
-	//_Splat3XP ("Layer 4 (A)", 2D) = "black" {}
-	//_Splat4XP ("Layer 5 (R)", 2D) = "black" {}
-	//_Splat5XP ("Layer 6 (G)", 2D) = "black" {}
-	//_Splat6XP ("Layer 7 (B)", 2D) = "black" {}
-	//_Splat7XP ("Layer 8 (A)", 2D) = "black" {}
 
 	_Splat0Scale ("Splat1 Level", Range (1, 1024)) = 10
 	_Splat1Scale ("Splat2 Level", Range (1, 1024)) = 10
@@ -69,14 +53,6 @@ Properties {
 	// set by terrain engine
 	[MaterialToggle] _GeneratingNormal("Generating Normal", Int) = 0
 	_TerrainNormal ("Terrain Normal", 2D) = "bump" {}
-	//_SplatNormal0 ("Normal 1 (A)", 2D) = "bump" {}
-	//_SplatNormal1 ("Normal 2 (B)", 2D) = "bump" {}
-	//_SplatNormal2 ("Normal 3 (G)", 2D) = "bump" {}
-	//_SplatNormal3 ("Normal 4 (R)", 2D) = "bump" {}
-	//_SplatNormal4 ("Normal 5 (A)", 2D) = "bump" {}
-	//_SplatNormal5 ("Normal 6 (B)", 2D) = "bump" {}
-	//_SplatNormal6 ("Normal 7 (G)", 2D) = "bump" {}
-	//_SplatNormal7 ("Normal 8 (R)", 2D) = "bump" {}
 	
 
 	_Splat0ScaleNormal ("Splat1 Normal Level", Range (1, 1024)) = 10
@@ -118,82 +94,6 @@ Properties {
 }
 	
 	SubShader {
-	/*
-			CGPROGRAM
-			#pragma surface surf Empty noambient
-			#pragma target 3.0
-
-			sampler2D _ControlXP;
-			sampler2D _Splat0XP, _Splat1XP, _Splat2XP, _Splat3XP, _SplatLower, _SplatUpper;
-			sampler2D _Splat4XP, _Splat5XP, _Splat6XP, _Splat7XP;
-			sampler2D _Control2XP;
-			half _LowerScale, _UpperScale;
-			half _Splat0Scale, _Splat1Scale, _Splat2Scale, _Splat3Scale, _Splat4Scale, _Splat5Scale, _Splat6Scale, _Splat7Scale;
-			fixed _TTerrainXP;
-
-			int _HideSplat0, _HideSplat1, _HideSplat2, _HideSplat3, _HideSplat4, _HideSplat5, _HideSplat6, _HideSplat7, _HideSplat8;
-
-			half4 LightingEmpty (SurfaceOutput s, half3 lightDir, half atten) {
-						half4 c;
-			              c.rgb = s.Albedo;
-			              c.a = 0;
-			              return c;
-			          }
-
-			struct Input {
-				float2 uv_Control : TEXCOORD0;
-			};
-
-			void surf(Input IN, inout SurfaceOutput o) {
-
-				float2 UV = IN.uv_Control * half2(1, -1)  + half2(0, 1);
-
-				float4 splat_control = saturate(tex2D(_ControlXP, UV) * 2 - 1);
-				float4 splat_control2 = saturate(tex2D(_Control2XP, UV) * 2 - 1);
-				float4 col;
-
-
-				col = tex2D(_SplatLower, UV * _LowerScale);
-
-				if(_HideSplat0 == 0)
-					col = lerp(col, tex2D(_Splat0XP, UV * _Splat0Scale), splat_control.r);
-				if(_HideSplat1 == 0)
-					col = lerp(col, tex2D(_Splat1XP, UV * _Splat1Scale), splat_control.g);
-				if(_HideSplat2 == 0)
-					col = lerp(col, tex2D(_Splat2XP, UV * _Splat2Scale), splat_control.b);
-				if(_HideSplat3 == 0)
-					col = lerp(col, tex2D(_Splat3XP, UV * _Splat3Scale), splat_control.a);
-				//col = tex2D (_Splat3XP, UV * _LowerScale);
-
-				if (_TTerrainXP > 0) {
-					if(_HideSplat4 == 0)
-					col = lerp(col, tex2D(_Splat4XP, UV * _Splat4Scale), splat_control2.r);
-					if(_HideSplat5 == 0)
-					col = lerp(col, tex2D(_Splat5XP, UV * _Splat5Scale), splat_control2.g);
-					if(_HideSplat6 == 0)
-					col = lerp(col, tex2D(_Splat6XP, UV * _Splat6Scale), splat_control2.b);
-					if(_HideSplat7 == 0)
-					col = lerp(col, tex2D(_Splat7XP, UV * _Splat7Scale), splat_control2.a);
-				}
-
-				if(_HideSplat8 == 0){
-					float4 UpperAlbedo = tex2D (_SplatUpper, UV * _UpperScale);
-					col = lerp(col, UpperAlbedo, UpperAlbedo.a);
-				}
-
-				//col = splat_control.r;
-
-				o.Albedo = col;	
-				//o.Emission = 0;
-				o.Gloss = 0;
-				o.Specular = 0;
-				o.Alpha = 0.0;
-			}
-			ENDCG  
-		GrabPass 
-		{
-		 "_MyGrabTexture3"
-		}   */
 
 			CGPROGRAM
 			#define UNITY_BRDF_PBS BRDF3_Unity_PBS
@@ -247,14 +147,14 @@ Properties {
 			half _GridCamDist;
 			sampler2D _GridTexture;
 
-			half _LightingMultiplier;
-			fixed4 _SunColor;
-			fixed4 _SunAmbience;
-			fixed4 _ShadowColor;
-
+			uniform half _LightingMultiplier;
+			uniform fixed4 _SunColor;
+			uniform fixed4 _SunAmbience;
+			uniform fixed4 _ShadowColor;
+			//uniform
 			sampler2D _ControlXP;
 			sampler2D _Control2XP;
-			sampler2D _UtilitySamplerC;
+			uniform sampler2D _UtilitySamplerC;
 			sampler2D _TerrainNormal;
 			sampler2D _SplatLower, _SplatUpper;
 			sampler2D  _NormalLower;

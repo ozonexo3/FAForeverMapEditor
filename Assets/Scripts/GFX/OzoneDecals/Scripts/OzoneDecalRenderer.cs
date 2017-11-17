@@ -21,7 +21,8 @@ namespace OzoneDecals {
 		//protected List<MeshFilter> _meshFilterComponent;
 		protected const CameraEvent _camEvent = CameraEvent.BeforeReflections;
 
-		protected Camera _camera;
+		protected Camera RenderCamera;
+
 		protected Transform _camTr;
 		protected bool _camLastKnownHDR;
 		protected static Mesh _cubeMesh = null;
@@ -44,14 +45,14 @@ namespace OzoneDecals {
 
 		private void OnEnable()
 		{
-			_camera = GetComponent<Camera>();
-			if (GetComponent<Camera>() == Camera.main)
+			RenderCamera = GetComponent<Camera>();
+			if (RenderCamera == Camera.main)
 			{
 				Current = this;
 
-				CameraNear = _camera.nearClipPlane;
-				CameraFar = _camera.farClipPlane - CameraNear;
-				_camTr = _camera.transform;
+				CameraNear = RenderCamera.nearClipPlane;
+				CameraFar = RenderCamera.farClipPlane - CameraNear;
+				_camTr = RenderCamera.transform;
 
 			}
 
@@ -70,6 +71,7 @@ namespace OzoneDecals {
 			//_cubeMesh = cubeMesh;
 			_cubeMesh = Resources.Load<Mesh>("DecalCube");
 			_normalRenderTarget = new RenderTargetIdentifier[] { BuiltinRenderTextureType.GBuffer1, BuiltinRenderTextureType.GBuffer2 };
+			_albedoRenderTarget = new RenderTargetIdentifier[] { BuiltinRenderTextureType.GBuffer0, BuiltinRenderTextureType.GBuffer1 }; // , 
 		}
 
 		private void OnDisable()
@@ -89,14 +91,14 @@ namespace OzoneDecals {
 			
 
 #if UNITY_EDITOR
-			if(Cam != Current._camera)
+			if(Cam != Current.RenderCamera && Cam.name == "SceneCamera")
 			{
 				// Is Editor
 				OzoneDecalRenderer renderer = Cam.GetComponent<OzoneDecalRenderer>();
 				if (renderer == null)
 					renderer = Cam.gameObject.AddComponent<OzoneDecalRenderer>();
 
-				//renderer.AddDecalToRenderer(d);
+				renderer.AddDecalToRenderer(d);
 			}
 			else
 #endif
@@ -106,8 +108,13 @@ namespace OzoneDecals {
 
 		}
 
+		bool HasSpecular;
+		bool HasEmission;
+
 		void AddDecalToRenderer(OzoneDecal d)
 		{
+			HasEmission = HasEmission || d.HasEmission;
+
 			if (!_Decals.ContainsKey(d.Material))
 			{
 				_Decals.Add(d.Material, new HashSet<OzoneDecal>() { d });

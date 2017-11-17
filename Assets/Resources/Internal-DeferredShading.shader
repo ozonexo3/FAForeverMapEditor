@@ -41,10 +41,10 @@ sampler2D _CameraGBufferTexture0;
 sampler2D _CameraGBufferTexture1;
 sampler2D _CameraGBufferTexture2;
 
-			half _LightingMultiplier;
-			fixed4 _SunColor;
-			fixed4 _SunAmbience;
-			fixed4 _ShadowColor;
+uniform half _LightingMultiplier;
+uniform fixed4 _SunColor;
+uniform fixed4 _SunAmbience;
+uniform fixed4 _ShadowColor;
 
 half4 CalculateLight (unity_v2f_deferred i)
 {

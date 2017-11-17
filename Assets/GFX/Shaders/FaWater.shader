@@ -149,7 +149,7 @@ Shader "MapEditor/FaWater" {
 	    	float4 waterTexture = tex2D( _UtilitySamplerC, IN.uv_UtilitySamplerC * float2(-1, 1) + float2(1 / (_WaterScaleX * 1) + 1, 1 / (_WaterScaleZ * 1)) );
 			
 			
-			float waterDepth = waterTexture.g * 10;
+			float waterDepth = clamp( waterTexture.g * 10, 0, 1);
 			
 	        // calculate the correct viewvector
 			float3 viewVector = normalize(IN.mViewVec);
@@ -203,13 +203,14 @@ Shader "MapEditor/FaWater" {
 		    // we multiply by a large number and then saturate
 		    // this will also help in the case where we filter to an intermediate value
 		    refractedPixels.xyz = lerp(refractedPixels, backGroundPixels, saturate((IN.AddVar.x - 40) / 30 ) ).xyz; //255
-
+			//refractedPixels.xyz = 0; //<<<
+			//refractedPixels.a = 0; //<<<
 
 			//float4 reflectedPixels = tex2D( _ReflectionTexture, refractionPos );
 			float4 refractionPos = IN.mScreenPos; 
 			refractionPos.xy -= refractionScale * N.xz * OneOverW;
 			float4 reflectedPixels = tex2Dproj( _ReflectionTexture, UNITY_PROJ_COORD(refractionPos) );
-			reflectedPixels.rgb = exp2(-reflectedPixels.rgb);
+			//reflectedPixels.rgb = exp2(-reflectedPixels.rgb);
 
 			//fresnelPower = 1.1;
 			//fresnelBias = 0;
@@ -259,6 +260,7 @@ Shader "MapEditor/FaWater" {
 			o.Albedo = 0;
 			//color.rgb = exp2(-color.rgb);
 			o.Emission = returnPixels.rgb;
+			//o.Emission = 0;
 			o.Alpha = returnPixels.a;
 	    }
     ENDCG  

@@ -12,6 +12,8 @@ namespace OzoneDecals
 		public bool DrawAlbedo = false;
 		public bool DrawNormal = false;
 		public bool HighQualityBlending;
+		public bool HasEmission;
+		public bool HasSpecular;
 
 		public float CutOffLOD;
 		public float NearCutOffLOD;

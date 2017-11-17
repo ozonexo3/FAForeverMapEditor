@@ -58,13 +58,13 @@ Shader "Ozone/Deferred Decal"
 				return lerp( inColor.rgb, wcolor.rgb, wcolor.a );
 			}
 
-			void frag(v2f i, out float4 outAlbedo : SV_Target0, out float4 outEmission : SV_Target1)
+			void frag(v2f i, out float4 outAlbedo : SV_Target0, out float4 outGlow : SV_Target1) // 
 			{
 				// Common header for all fragment shaders
 				DEFERRED_FRAG_HEADER
 
 				// Get normal from GBuffer
-				float3 gbuffer_normal = tex2D(_CameraGBufferTexture2, uv) * 2.0f - 1.0f;
+				//float3 gbuffer_normal = tex2D(_CameraGBufferTexture2, uv) * 2.0f - 1.0f;
 				//clip(dot(gbuffer_normal, i.decalNormal) - _AngleLimit); // 60 degree clamp
 
 				// Get color from texture and property
@@ -79,24 +79,34 @@ Shader "Ozone/Deferred Decal"
 
 				//color.rgb = blend * 1000;
 
+
 				// Write albedo, premultiply for proper blending
 				outAlbedo = float4(color.rgb * color.a, color.a);
-				color *= 1 - float4(ShadeSH9(float4(gbuffer_normal, 1.0f)), 1.0f);
+				//color *= 1 - float4(ShadeSH9(float4(gbuffer_normal, 1.0f)), 1.0f);
 
 				//color.rgb = 10000 * RawAlpha;
 
 				// Handle logarithmic encoding in Gamma space
 #ifndef UNITY_HDR_ON
-				color *= float4(ShadeSH9(float4(gbuffer_normal, 1.0f)), 1.0f);
-				color.rgb = exp2(-color.rgb);
+				//color *= float4(ShadeSH9(float4(gbuffer_normal, 1.0f)), 1.0f);
+				//color.rgb = exp2(-color.rgb);
 #endif
 
 				// Write emission, premultiply for proper blending
 				//outEmission = float4(color.rgb * color.a, color.a) + tex2D(_Glow, texUV);
-				outEmission = tex2D(_CameraGBufferTexture4Copy, uv);
-				outEmission.rgb += tex2D(_Glow, texUV).rgb * 10000;
+
+				//outAlbedo = tex2D(_CameraGBufferTexture4Copy, uv);
+				//outAlbedo.rgb = lerp(outAlbedo.rgb, color.rgb * color.a, color.a);
+
+				//outEmission = tex2D(_CameraGBufferTexture4Copy, uv);
+				//outEmission.rgb = lerp(outEmission.rgb, outAlbedo.rgb, outAlbedo.a);
+
 				//outEmission.rgb = 0.2;
 				//outEmission.a = 1;
+
+				//outEmission.rgb = color.rgb * tex2D(_Glow, texUV).rgb * (blend * 5 * RawAlpha);
+				//outEmission.a = RawAlpha;
+				outGlow = float4(1,0,0,RawAlpha);
 			}
 			ENDCG
 		}

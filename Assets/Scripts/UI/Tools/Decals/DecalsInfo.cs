@@ -174,6 +174,8 @@ namespace EditMap
 					//Paths.Add(path);
 					Texture2D Tex = GetGamedataFile.LoadTexture2DFromGamedata("env.scd", path);
 
+					Tex.wrapMode = TextureWrapMode.Clamp;
+
 					LoadedTextures.Add(path, Tex);
 
 					mat.SetTexture(property, Tex);
