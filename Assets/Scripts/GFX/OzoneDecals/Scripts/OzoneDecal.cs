@@ -8,6 +8,8 @@ namespace OzoneDecals
 	[ExecuteInEditMode]
 	public class OzoneDecal : MonoBehaviour
 	{
+		public Decal Component;
+
 		public Material Material;
 		public bool DrawAlbedo = false;
 		public bool DrawNormal = false;
@@ -33,17 +35,49 @@ namespace OzoneDecals
 		void OnEnable()
 		{
 			tr = transform;
+			DecalsControler.AddDecal(this);
+		}
+
+		private void OnDisable()
+		{
+			DecalsControler.RemoveDecal(this);
 		}
 
 		MeshFilter mf;
 		MeshRenderer mr;
 		public LODGroup lg;
 
-		private void Start()
+
+		
+		static Vector3 PivotPointLocal = new Vector3(-0.5f, 0, 0.5f);
+
+		public Vector3 GetPivotPoint()
 		{
-			//OzoneDecalRenderer.AddDecal(this, Camera.main);
+			return tr.TransformPoint(PivotPointLocal);
+		}
+
+
+		public void MovePivotPoint(Vector3 pos)
+		{
+
+			//Vector3 Up = Tr.forward;
+			//Up.y = 0;
+			//Up.Normalize();
+			//Vector3 right = Tr.right;
+
+			tr.localPosition = tr.TransformPoint(tr.InverseTransformPoint(pos) - PivotPointLocal);
+		}
+
+		public void Bake()
+		{
+			Component.Position = ScmapEditor.WorldPosToScmap( GetPivotPoint());
+			Component.Scale = tr.localScale * 10f;
+			Component.Rotation = tr.localEulerAngles * Mathf.Deg2Rad;
+
+			//Component.CutOffLOD = WorldCutoffDistance * 10;
 
 		}
+		
 
 		void Reset()
 		{
@@ -79,7 +113,7 @@ namespace OzoneDecals
 
 #region Editor
 		static Color colorSelected = new Color(1, 0.8f, 0.0f, 0.7f);
-		static Color colorUnselected = new Color(0.5f, 0.5f, 0.5f, 0.5f);
+		static Color colorUnselected = new Color(0.7f, 0.7f, 0.7f, 0.6f);
 		static Color colorUnselectedFill = new Color(0, 0, 0, 0.0f);
 
 		void OnDrawGizmos()

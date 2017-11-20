@@ -1087,9 +1087,11 @@ public class Map
         _with2.Write(Unknown7);
         //?
         _with2.Write(Unknown8);
-        //?
+		//?
 
-        _with2.Write(Decals.Count);
+		Decals = DecalsControler.GetAllDecals();
+
+		_with2.Write(Decals.Count);
         for (int i = 0; i < Decals.Count; i++)
         {
             Decals[i].Save(Stream, i);

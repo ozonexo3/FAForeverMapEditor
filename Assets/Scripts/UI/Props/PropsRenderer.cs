@@ -7,30 +7,40 @@ public class PropsRenderer : MonoBehaviour {
 
 	public static PropsRenderer Current;
 
-	bool Updating = false;
-	Coroutine Cor;
+	static bool Updating = false;
+	static bool BufforUpdate = false;
+	static Coroutine UpdateProcess;
 
 	private void Awake()
 	{
 		Current = this;
 	}
 
-	public void UpdatePropsHeights()
+	public static bool IsUpdating
 	{
-		if (Updating)
+		get
 		{
-		}
-		else
-		{
-			Updating = true;
-			Cor = StartCoroutine(PropsUpdater());
+			return Updating;
 		}
 	}
 
-	public void StopPropsUpdate()
+	public void UpdatePropsHeights()
 	{
-		if(Updating)
-		StopCoroutine(Cor);
+		if (Updating)
+			BufforUpdate = true;
+		else
+		{
+			Updating = true;
+			UpdateProcess = StartCoroutine(PropsUpdater());
+		}
+	}
+
+
+
+	public static void StopPropsUpdate()
+	{
+		if(UpdateProcess != null)
+			Current.StopCoroutine(UpdateProcess);
 	}
 
 
@@ -67,5 +77,11 @@ public class PropsRenderer : MonoBehaviour {
 
 		yield return null;
 		Updating = false;
+
+		if (BufforUpdate)
+		{
+			BufforUpdate = false;
+			UpdatePropsHeights();
+		}
 	}
 }

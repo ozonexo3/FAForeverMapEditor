@@ -45,12 +45,34 @@ namespace OzoneDecals
 			while (decalEnum.MoveNext())
 				decalEnum.Current.Value.Clear();
 
+			_DecalsAlbedo.Clear();
+
 			HasEmission = false;
 			HasSpecular = false;
 		}
 
-
+		const bool AllowAlbedoInstancing = false;
 		private void DrawDeferredDecals_Albedo(Camera cam)
+		{
+			_bufferDeferred.SetRenderTarget(_albedoRenderTarget, BuiltinRenderTextureType.CameraTarget);
+
+			var decalListEnum = _DecalsAlbedo.GetEnumerator();
+			while (decalListEnum.MoveNext())
+			{
+				OzoneDecal decal = decalListEnum.Current;
+
+				if (decal != null && decal.DrawAlbedo)
+				{
+					_directBlock.Clear();
+					_directBlock.SetFloat("_NearCutOffLOD", decal.NearCutOffLOD);
+					_directBlock.SetFloat("_CutOffLOD", decal.CutOffLOD);
+
+					_bufferDeferred.DrawMesh(_cubeMesh, decal.tr.localToWorldMatrix, decal.Material, 0, 0, _directBlock);
+				}
+			}
+		}
+
+		private void DrawDeferredDecals_AlbedoInstanced(Camera cam)
 		{
 			_bufferDeferred.SetRenderTarget(_albedoRenderTarget, BuiltinRenderTextureType.CameraTarget);
 
@@ -77,7 +99,7 @@ namespace OzoneDecals
 
 					if (decal != null && decal.DrawAlbedo)
 					{
-						if (UseInstancing)
+						if (UseInstancing && AllowAlbedoInstancing)
 						{
 							_matrices[n] = decal.tr.localToWorldMatrix;
 							_NearCutOffLODValues[n] = decal.NearCutOffLOD;
@@ -111,7 +133,7 @@ namespace OzoneDecals
 					}
 				}
 
-				if (UseInstancing && n > 0)
+				if (UseInstancing && AllowAlbedoInstancing && n > 0)
 				{
 					//_bufferDeferred.Blit(BuiltinRenderTextureType.CameraTarget, copy2id);
 					//_bufferDeferred.SetRenderTarget(_albedoRenderTarget, BuiltinRenderTextureType.CameraTarget);
@@ -126,6 +148,7 @@ namespace OzoneDecals
 
 		const float HightQualityBlendingDistance = 15;
 		const int HightQualityMaxCount = 15;
+
 
 		private void DrawDeferredDecals_Normal(Camera cam)
 		{

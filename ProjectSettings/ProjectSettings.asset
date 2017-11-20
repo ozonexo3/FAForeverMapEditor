@@ -289,6 +289,9 @@ PlayerSettings:
   - m_BuildTarget: LinuxStandaloneSupport
     m_APIs: 11000000
     m_Automatic: 1
+  - m_BuildTarget: WindowsStandaloneSupport
+    m_APIs: 0200000001000000
+    m_Automatic: 1
   m_BuildTargetVRSettings:
   - m_BuildTarget: Android
     m_Enabled: 0

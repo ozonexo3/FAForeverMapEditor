@@ -139,6 +139,8 @@ namespace EditMap
 		#region Loading Assets
 		public static void UnloadProps()
 		{
+			PropsRenderer.StopPropsUpdate();
+
 			if (AllPropsTypes != null && AllPropsTypes.Count > 0)
 				for (int i = 0; i < AllPropsTypes.Count; i++)
 				{

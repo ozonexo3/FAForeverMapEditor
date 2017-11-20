@@ -155,7 +155,7 @@ namespace Selection
 
 				RemoveAction(SelectedObjectsList, true);
 
-				Active = false;
+				Active = AffectedGameObjects.Length > 0;
 
 				CleanIfInactive();
 			}

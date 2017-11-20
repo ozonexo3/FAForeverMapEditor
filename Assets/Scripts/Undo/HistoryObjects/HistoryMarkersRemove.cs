@@ -43,12 +43,19 @@ public class HistoryMarkersRemove : HistoryObject
 			if (!NewMarkersList.Contains(MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers[i]))
 			{
 				if (MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers[i].MarkerObj)
+				{
+					MapLua.SaveLua.RemoveMarkerName(MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers[i].Name);
 					Destroy(MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers[i].MarkerObj.gameObject);
-
+				}
 			}
 		}
 
 		MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers = AllMarkers.ToList();
+
+		for (int i = 0; i < AllMarkers.Length; i++)
+		{
+			MapLua.SaveLua.RegisterMarkerName(AllMarkers[i].Name);
+		}
 
 		MarkersControler.RegenerateMarkers();
 

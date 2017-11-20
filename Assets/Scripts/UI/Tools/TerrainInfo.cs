@@ -477,7 +477,7 @@ namespace EditMap
 
 			var extensions = new[]
 			{
-				new ExtensionFilter("Heightmap", new string[]{"raw", "bmp" })
+				new ExtensionFilter("Heightmap", new string[]{"raw", "r16", "bmp" })
 				//new ExtensionFilter("Stratum mask", "raw, bmp")
 			};
 
@@ -784,6 +784,7 @@ namespace EditMap
 		{
 			Markers.MarkersControler.UpdateMarkersHeights();
 			PropsRenderer.Current.UpdatePropsHeights();
+			DecalsControler.UpdateDecals();
 		}
 
 		float GetNearValues(ref float[,] heigths, int x, int y, int range = 1)

@@ -266,7 +266,6 @@ public class MapLuaParser : MonoBehaviour {
 				DecalsMenu.gameObject.SetActive(false);
 			}
 
-			
 
 			InfoPopup.Show (false);
 
@@ -324,6 +323,8 @@ public class MapLuaParser : MonoBehaviour {
 		if (!MapLuaParser.Current.MapLoaded())
 			return;
 
+
+
 		BackupFiles = Backup;
 
 		Debug.Log("Save map");
@@ -338,6 +339,15 @@ public class MapLuaParser : MonoBehaviour {
 	public IEnumerator SaveMapProcess(){
 
 		yield return null;
+
+
+		// Wait for all process to finish
+		while (Markers.MarkersControler.IsUpdating)
+			yield return null;
+		while (PropsRenderer.IsUpdating)
+			yield return null;
+		while (DecalsControler.IsUpdating)
+			yield return null;
 
 		string BackupId = System.DateTime.Now.Month.ToString() +System.DateTime.Now.Day.ToString() + System.DateTime.Now.Hour.ToString() + System.DateTime.Now.Minute.ToString() + System.DateTime.Now.Second.ToString();
 		BackupPath = FolderParentPath + FolderName + "/Backup_" + BackupId;

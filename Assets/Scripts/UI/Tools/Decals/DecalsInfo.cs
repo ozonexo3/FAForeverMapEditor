@@ -59,7 +59,7 @@ namespace EditMap
 
 			Debug.Log("Decals count: " + Count);
 
-			Quaternion ProjectorRot = Quaternion.Euler(new Vector3(0, 0, 0)); // 90 180 180
+			//Quaternion ProjectorRot = Quaternion.Euler(new Vector3(0, 0, 0)); // 90 180 180
 
 
 
@@ -71,78 +71,83 @@ namespace EditMap
 					continue;
 
 				GameObject NewDecalObject = Instantiate(DecalPrefab, DecalPivot);
-				Transform Tr = NewDecalObject.transform;
+				OzoneDecal Dec = NewDecalObject.GetComponent<OzoneDecal>();
+				Dec.Component = ScmapEditor.Current.map.Decals[i];
+				Dec.tr = NewDecalObject.transform;
 
-				Tr.localPosition = ScmapEditor.ScmapPosToWorld(ScmapEditor.Current.map.Decals[i].Position);
-				Tr.localRotation = Quaternion.Euler(ScmapEditor.Current.map.Decals[i].Rotation * Mathf.Rad2Deg) * ProjectorRot;
+				Dec.tr.localRotation = Quaternion.Euler(Dec.Component.Rotation * Mathf.Rad2Deg); // * ProjectorRot;
+				Dec.tr.localScale = new Vector3(Dec.Component.Scale.x * 0.1f, 5, Dec.Component.Scale.z * 0.1f); //Dec.Component.Scale.y * 0.1f
+
+				//Dec.tr.localPosition = ScmapEditor.ScmapPosToWorld(Dec.Component.Position);
 
 				//Quaternion PosRotation = Quaternion.Euler(Vector3.up * Tr.eulerAngles.y);
 
-				Vector3 Up = Tr.forward;
-				Up.y = 0;
-				Up.Normalize();
-				Vector3 right = Tr.right;
-				right.y = 0;
-				right.Normalize();
+				//Vector3 Up = Dec.tr.forward;
+				//Up.y = 0;
+				//Up.Normalize();
+				//Vector3 right = Dec.tr.right;
+				//right.y = 0;
+				//right.Normalize();
 
-				NewDecalObject.transform.localPosition -= Up * (ScmapEditor.Current.map.Decals[i].Scale.y * 0.05f);
-				NewDecalObject.transform.localPosition += right * (ScmapEditor.Current.map.Decals[i].Scale.x * 0.05f);
-				NewDecalObject.transform.localScale = new Vector3(ScmapEditor.Current.map.Decals[i].Scale.x * 0.1f, 5 , ScmapEditor.Current.map.Decals[i].Scale.z * 0.1f); //ScmapEditor.Current.map.Decals[i].Scale.y * 0.1f
+				//Dec.tr.localPosition -= Up * (Dec.Component.Scale.y * 0.05f);
+				//Dec.tr.localPosition += right * (Dec.Component.Scale.x * 0.05f);
+
+				Dec.MovePivotPoint(ScmapEditor.ScmapPosToWorld(Dec.Component.Position));
 
 
-				OzoneDecal Dec = NewDecalObject.GetComponent<OzoneDecal>();
-				Dec.WorldCutoffDistance = ScmapEditor.Current.map.Decals[i].CutOffLOD * 0.1f;
-				Dec.CutOffLOD = (ScmapEditor.Current.map.Decals[i].CutOffLOD - OzoneDecalRenderer.CameraNear) / OzoneDecalRenderer.CameraFar;
+
+				Dec.WorldCutoffDistance = Dec.Component.CutOffLOD * 0.1f;
+				Dec.CutOffLOD = (Dec.Component.CutOffLOD - OzoneDecalRenderer.CameraNear) / OzoneDecalRenderer.CameraFar;
 				Dec.CutOffLOD *= 0.1f;
-				Dec.NearCutOffLOD = (ScmapEditor.Current.map.Decals[i].NearCutOffLOD) / OzoneDecalRenderer.CameraFar;
+				Dec.NearCutOffLOD = (Dec.Component.NearCutOffLOD) / OzoneDecalRenderer.CameraFar;
 				Dec.NearCutOffLOD *= 0.1f;
 				//Dec.NearCutOffLOD
 
 #if UNITY_EDITOR
-				Dec.Text0Path = ScmapEditor.Current.map.Decals[i].TexPathes[0];
-				Dec.Text1Path = ScmapEditor.Current.map.Decals[i].TexPathes[1];
+				Dec.Text0Path = Dec.Component.TexPathes[0];
+				Dec.Text1Path = Dec.Component.TexPathes[1];
 #endif
 
-				if (ScmapEditor.Current.map.Decals[i].Type == TerrainDecalType.TYPE_NORMALS)
+				if (Dec.Component.Type == TerrainDecalType.TYPE_NORMALS)
 				{
-					if (ScmapEditor.Current.map.Decals[i].Shared.SharedMaterial == null)
+					if (Dec.Component.Shared.SharedMaterial == null)
 					{
-						ScmapEditor.Current.map.Decals[i].Shared.SharedMaterial = new Material(AlbedoMaterial);
-						AssignTextureFromPath(ref ScmapEditor.Current.map.Decals[i].Shared.SharedMaterial, "_NormalTex", ScmapEditor.Current.map.Decals[i].TexPathes[0]);
+						Dec.Component.Shared.SharedMaterial = new Material(AlbedoMaterial);
+						AssignTextureFromPath(ref Dec.Component.Shared.SharedMaterial, "_NormalTex", Dec.Component.TexPathes[0]);
 					}
 
 					Dec.DrawAlbedo = false;
 					Dec.DrawNormal = true;
 					Dec.HighQualityBlending = true;
 
-					Dec.Material = ScmapEditor.Current.map.Decals[i].Shared.SharedMaterial;
+					Dec.Material = Dec.Component.Shared.SharedMaterial;
 				}
-				else if(ScmapEditor.Current.map.Decals[i].Type == TerrainDecalType.TYPE_GLOW
-					|| ScmapEditor.Current.map.Decals[i].Type == TerrainDecalType.TYPE_GLOW_MASK)
+				else if(Dec.Component.Type == TerrainDecalType.TYPE_GLOW
+					|| Dec.Component.Type == TerrainDecalType.TYPE_GLOW_MASK)
 				{
-					if (ScmapEditor.Current.map.Decals[i].Shared.SharedMaterial == null)
+					if (Dec.Component.Shared.SharedMaterial == null)
 					{
-						ScmapEditor.Current.map.Decals[i].Shared.SharedMaterial = new Material(AlbedoMaterial);
-						AssignTextureFromPath(ref ScmapEditor.Current.map.Decals[i].Shared.SharedMaterial, "_MainTex", ScmapEditor.Current.map.Decals[i].TexPathes[0]);
-						AssignTextureFromPath(ref ScmapEditor.Current.map.Decals[i].Shared.SharedMaterial, "_Glow", ScmapEditor.Current.map.Decals[i].TexPathes[1]);
+						Dec.Component.Shared.SharedMaterial = new Material(AlbedoMaterial);
+						AssignTextureFromPath(ref Dec.Component.Shared.SharedMaterial, "_MainTex", Dec.Component.TexPathes[0]);
+						AssignTextureFromPath(ref Dec.Component.Shared.SharedMaterial, "_Glow", Dec.Component.TexPathes[1]);
 					}
 
 					Dec.DrawAlbedo = true;
 					Dec.DrawNormal = false;
-					Dec.Material = ScmapEditor.Current.map.Decals[i].Shared.SharedMaterial;
+					Dec.Material = Dec.Component.Shared.SharedMaterial;
 				}
 				else // Albedo
 				{
-					if (ScmapEditor.Current.map.Decals[i].Shared.SharedMaterial == null)
+					if (Dec.Component.Shared.SharedMaterial == null)
 					{
-						ScmapEditor.Current.map.Decals[i].Shared.SharedMaterial = new Material(AlbedoMaterial);
-						AssignTextureFromPath(ref ScmapEditor.Current.map.Decals[i].Shared.SharedMaterial, "_MainTex", ScmapEditor.Current.map.Decals[i].TexPathes[0]);
-						AssignTextureFromPath(ref ScmapEditor.Current.map.Decals[i].Shared.SharedMaterial, "_Mask", ScmapEditor.Current.map.Decals[i].TexPathes[1]);
+						Dec.Component.Shared.SharedMaterial = new Material(AlbedoMaterial);
+						AssignTextureFromPath(ref Dec.Component.Shared.SharedMaterial, "_MainTex", Dec.Component.TexPathes[0]);
+						AssignTextureFromPath(ref Dec.Component.Shared.SharedMaterial, "_Mask", Dec.Component.TexPathes[1]);
 					}
 
 					Dec.DrawAlbedo = true;
 					Dec.DrawNormal = false;
-					Dec.Material = ScmapEditor.Current.map.Decals[i].Shared.SharedMaterial;
+					Dec.Material = Dec.Component.Shared.SharedMaterial;
 				}
 
 				LoadedCount++;
@@ -173,7 +178,9 @@ namespace EditMap
 				{
 					//Paths.Add(path);
 					Texture2D Tex = GetGamedataFile.LoadTexture2DFromGamedata("env.scd", path);
-
+					//Tex.mipMapBias = 0.6f;
+					//Tex.anisoLevel = 4;
+					//Tex.filterMode = FilterMode.Bilinear;
 					Tex.wrapMode = TextureWrapMode.Clamp;
 
 					LoadedTextures.Add(path, Tex);

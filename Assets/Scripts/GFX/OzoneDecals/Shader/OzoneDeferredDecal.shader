@@ -115,7 +115,7 @@ Shader "Ozone/Deferred Decal"
 		Pass
 		{
 			// Manual blending
-			Blend Off
+			Blend One OneMinusSrcAlpha
 
 			CGPROGRAM
 			#pragma vertex vert
@@ -166,8 +166,10 @@ Shader "Ozone/Deferred Decal"
 				normal = normalize(normal);
 				
 				// Clip to blend it with other normal maps
-				clip(0.999 -  dot(normal, half3(0,0,1)));
+				float AlphaNormal = clamp(dot(normal, half3(0,0,1)) * 10, 0, 1);
+				//clip(0.999 -  AlphaNormal);
 				//clip(0.5 - normal.y);
+				clip(AlphaNormal - 0.1);
 
 				normal = mul(normal, half3x3(i.decalTangent, decalBitangent, i.decalNormal));
 
@@ -179,7 +181,7 @@ Shader "Ozone/Deferred Decal"
 
 
 				// Write normal
-				outNormal = float4(normal * 0.5f + 0.5f, 1);
+				outNormal = float4(normal * 0.5f + 0.5f, AlphaNormal);
 			}
 			ENDCG
 		}

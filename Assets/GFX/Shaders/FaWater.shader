@@ -243,8 +243,8 @@ Shader "MapEditor/FaWater" {
 			//refractedPixels = 
 			
 			// add in the sky reflection
-			sunReflection = sunReflection * (1 - fresnel);
-		    refractedPixels.xyz += sunReflection;
+			sunReflection = sunReflection * (fresnel);
+		    refractedPixels.xyz += sunReflection * 2;
 
 			// Lerp in a wave crest
 			waveCrestColor = float3(1,1,1);

@@ -115,6 +115,9 @@ namespace Markers
 
 		public static void UnloadMarkers()
 		{
+			if (UpdateProcess != null)
+				Current.StopCoroutine(UpdateProcess);
+
 			Clear();
 
 			if (MapLuaParser.Current.SaveLuaFile == null || MapLuaParser.Current.SaveLuaFile.Data == null || MapLuaParser.Current.SaveLuaFile.Data.MasterChains == null)
@@ -146,7 +149,7 @@ namespace Markers
 
 		public static void Clear()
 		{
-			for(int i = 0; i < Current.MasterChains.Length; i++)
+			for (int i = 0; i < Current.MasterChains.Length; i++)
 			{
 				Destroy(Current.MasterChains[i].gameObject);
 			}
@@ -334,22 +337,30 @@ namespace Markers
 
 
 
-#region Update
+		#region Update
 
-		static bool UpdatingMarkers = false;
-		static bool BufforMarkersUpdate = false;
+		public static bool IsUpdating
+		{
+			get
+			{
+				return Updating;
+			}
+		}
+
+		static bool Updating = false;
+		static bool BufforUpdate = false;
+		static Coroutine UpdateProcess;
 		public static void UpdateMarkersHeights()
 		{
-			//TODO
-			if (!UpdatingMarkers)
+			if (!Updating)
 			{
-				UpdatingMarkers = true;
-				Current.StartCoroutine(Current.UpdatingMarkersHeights());
+				Updating = true;
+				UpdateProcess = Current.StartCoroutine(Current.UpdatingMarkersHeights());
 			}
 			else
-				BufforMarkersUpdate = true;
-
+				BufforUpdate = true;
 		}
+
 
 		public IEnumerator UpdatingMarkersHeights()
 		{
@@ -378,12 +389,13 @@ namespace Markers
 					}
 				}
 			}
-			UpdatingMarkers = false;
 
 			yield return null;
-			if (BufforMarkersUpdate)
+			UpdateProcess = null;
+			Updating = false;
+			if (BufforUpdate)
 			{
-				BufforMarkersUpdate = false;
+				BufforUpdate = false;
 				UpdateMarkersHeights();
 			}
 		}

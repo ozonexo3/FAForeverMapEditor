@@ -446,7 +446,7 @@ namespace MapLua
 
 			LuaFile.OpenTab(TABLE_SCENARIOINFO + LuaParser.Write.OpenBracketValue);
 			{
-				LuaFile.AddLine(LuaParser.Write.StringToLua(ScenarioInfo.KEY_NAME, Data.name));
+				LuaFile.AddLine(LuaParser.Write.DescriptionToLua(ScenarioInfo.KEY_NAME, Data.name));
 				LuaFile.AddLine(LuaParser.Write.DescriptionToLua(ScenarioInfo.KEY_DESCRIPTION, Data.description.Replace("\n", "\\n")));
 				LuaFile.AddLine(LuaParser.Write.StringToLua(ScenarioInfo.KEY_PREVIEW, Data.preview));
 

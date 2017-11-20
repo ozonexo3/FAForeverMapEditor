@@ -17,6 +17,7 @@ namespace OzoneDecals {
 
 		protected CommandBuffer _bufferDeferred = null;
 		protected Dictionary<Material, HashSet<OzoneDecal>> _Decals;
+		protected HashSet<OzoneDecal> _DecalsAlbedo;
 		protected List<OzoneDecal> _decalComponent;
 		//protected List<MeshFilter> _meshFilterComponent;
 		protected const CameraEvent _camEvent = CameraEvent.BeforeReflections;
@@ -57,6 +58,7 @@ namespace OzoneDecals {
 			}
 
 			_Decals = new Dictionary<Material, HashSet<OzoneDecal>>();
+			_DecalsAlbedo = new HashSet<OzoneDecal>();
 			_decalComponent = new List<OzoneDecal>();
 			//_meshFilterComponent = new List<MeshFilter>();
 
@@ -88,8 +90,6 @@ namespace OzoneDecals {
 			if (Current == null || Cam == null)
 				return;
 
-			
-
 #if UNITY_EDITOR
 			if(Cam != Current.RenderCamera && Cam.name == "SceneCamera")
 			{
@@ -115,13 +115,20 @@ namespace OzoneDecals {
 		{
 			HasEmission = HasEmission || d.HasEmission;
 
-			if (!_Decals.ContainsKey(d.Material))
+			if (d.DrawAlbedo)
 			{
-				_Decals.Add(d.Material, new HashSet<OzoneDecal>() { d });
+				_DecalsAlbedo.Add(d);
 			}
 			else
 			{
-				_Decals[d.Material].Add(d);
+				if (!_Decals.ContainsKey(d.Material))
+				{
+					_Decals.Add(d.Material, new HashSet<OzoneDecal>() { d });
+				}
+				else
+				{
+					_Decals[d.Material].Add(d);
+				}
 			}
 		}
 	}

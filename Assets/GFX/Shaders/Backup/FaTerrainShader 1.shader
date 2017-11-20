@@ -278,13 +278,13 @@ Properties {
 			inline fixed3 UnpackNormalDXT5nmScaled (fixed4 packednormal, fixed scale)
 {
 			   fixed3 normal = 0;
-			   normal.xz = packednormal.wy * 2 - 1;
+			   normal.xz = packednormal.wx * 2 - 1;
 
 
 
 			   normal.y = sqrt(1 - saturate(dot(normal.xz, normal.xz)));
 
-				normal.xz *= scale;
+			normal.xz *= scale;
 
 			
 			   return normal.xzy;
@@ -297,10 +297,11 @@ Properties {
 				//float WaterDepth = (_WaterLevel - IN.worldPos.y) / (_WaterLevel - _AbyssLevel);
 				float WaterDepth = waterTexture.g;
 
+				float2 UVCtrl = IN.uv_Control * fixed2(1, -1) + half2(0, 1);
 				float2 UV = IN.uv_Control * fixed2(1, -1) + half2(0, 1);
 				//float2 UV = IN.uv_Control * half2(1, -1)  + half2(0, 1);
-				float4 splat_control = saturate(tex2D (_ControlXP, UV) * 2 - 1);
-				float4 splat_control2 = saturate(tex2D (_Control2XP, UV) * 2 - 1);
+				float4 splat_control = saturate(tex2D (_ControlXP, UVCtrl) * 2 - 1);
+				float4 splat_control2 = saturate(tex2D (_Control2XP, UVCtrl) * 2 - 1);
 
 				//float4 col = tex2Dproj( _MyGrabTexture3, UNITY_PROJ_COORD(IN.grabUV));
 
@@ -390,7 +391,7 @@ Properties {
 				//o.Normal = UnpackNormalDXT5nm(tex2D(_TerrainNormal, UV ));
 				//o.Normal = (UnpackNormalDXT5nm(tex2D(_TerrainNormal, UV )) + UnpackNormalDXT5nmScaled(nrm.rgbg, 2));
 				if(_GeneratingNormal == 0){
-					half4 TerrainNormal = tex2D(_TerrainNormal, UV );
+					half4 TerrainNormal = tex2D(_TerrainNormal, UVCtrl );
 					half3 TerrainNormalVector = UnpackNormalDXT5nm( half4(TerrainNormal.r, 1 - TerrainNormal.g, TerrainNormal.b, TerrainNormal.a));
 					IN.SlopeLerp = dot(TerrainNormalVector, half3(0,0,1));
 					//o.Albedo = IN.SlopeLerp;

@@ -304,6 +304,12 @@ public class ScmapEditor : MonoBehaviour
 		Teren.gameObject.layer = 8;
 
 		SetTextures();
+
+		if (Slope)
+		{
+			ToogleSlope(Slope);
+		}
+
 		yield return null;
 		Debug.Log("Scmap load complited");
 	}
@@ -406,21 +412,91 @@ public class ScmapEditor : MonoBehaviour
 			//TerrainMaterial.SetTexture("_Splat6XP", Textures[7].Albedo);
 			//TerrainMaterial.SetTexture("_Splat7XP", Textures[8].Albedo);
 
-			Texture2DArray AlbedoArray = new Texture2DArray(1024, 1024, 8, TextureFormat.RGBA32, true);
-			Texture2D BlinearTex;
+			int AlbedoSize = 256;
 
+			for (int i = 0; i < 8; i++)
+			{
+				if(Textures[i + 1].Albedo.width > AlbedoSize)
+				{
+					AlbedoSize = Textures[i + 1].Albedo.width;
+				}
+				if (Textures[i + 1].Albedo.height > AlbedoSize)
+				{
+					AlbedoSize = Textures[i + 1].Albedo.height;
+				}
+			}
+
+
+
+
+			Texture2DArray AlbedoArray = new Texture2DArray(AlbedoSize, AlbedoSize, 8, TextureFormat.RGBA32, true);
+			//Texture2D BlinearTex;
+
+			int MipMapCount = 10;
 			for (int i = 0; i < 8; i++)
 			{
 				if (Textures[i + 1].Albedo == null)
 					continue;
-				BlinearTex = new Texture2D(Textures[i + 1].Albedo.width, Textures[i + 1].Albedo.height, TextureFormat.RGBA32, true);
-				BlinearTex.SetPixels(Textures[i + 1].Albedo.GetPixels());
-				BlinearTex.Apply(true);
-				TextureScale.Bilinear(BlinearTex, 1024, 1024);
-				AlbedoArray.SetPixels(BlinearTex.GetPixels(), i);
+
+				if (Textures[i + 1].Albedo.width != AlbedoSize || Textures[i + 1].Albedo.height != AlbedoSize)
+				{
+					/*
+					BlinearTex = new Texture2D(Textures[i + 1].Albedo.width, Textures[i + 1].Albedo.height, TextureFormat.RGBA32, true);
+					for (int m = 0; m < Textures[i + 1].Albedo.mipmapCount; m++)
+					{
+						BlinearTex.SetPixels(Textures[i + 1].Albedo.GetPixels(m), m);
+					}
+					BlinearTex.Apply(true);
+					TextureScale.Bilinear(BlinearTex, AlbedoWidth, AlbedoHeight);
+					BlinearTex.Apply(true);
+					*/
+
+					Textures[i + 1].Albedo = TextureScale.Bilinear(Textures[i + 1].Albedo, AlbedoSize, AlbedoSize);
+					/*
+					for (int m = 0; m < BlinearTex.mipmapCount; m++)
+					{
+						AlbedoArray.SetPixels(BlinearTex.GetPixels(m), i, m);
+					}*/
+				}
+				else
+				{
+					
+				}
+
+				//BlinearTex = new Texture2D(AlbedoSize, AlbedoSize, TextureFormat.RGBA32, true);
+				//Graphics.ConvertTexture(Textures[i + 1].Albedo, BlinearTex);
+				//BlinearTex.Apply(true);
+
+				//Graphics.tex
+
+				//Debug.Log( Graphics.ConvertTexture(BlinearTex, 0, AlbedoArray, i));
+
+				//Graphics.CopyTexture(BlinearTex, 0, AlbedoArray, i);
+
+				if (i == 0)
+
+				MipMapCount = Textures[i + 1].Albedo.mipmapCount;
+
+				if (MipMapCount != Textures[i + 1].Albedo.mipmapCount)
+					Debug.LogWarning("Wrong mipmap Count for texture" + Textures[i + 1].AlbedoPath);
+				for (int m = 0; m < MipMapCount; m++)
+				{
+					//Graphics.CopyTexture(Textures[i + 1].Albedo, 0, m, AlbedoArray, i, m);
+					AlbedoArray.SetPixels(Textures[i + 1].Albedo.GetPixels(m), i, m);
+					//else
+					//	Graphics.CopyTexture(Textures[i + 1].Albedo, 0, m, AlbedoArray, i, m);
+				}
+
+
+
+
 			}
 
-			AlbedoArray.Apply();
+			//AlbedoArray.mipMapBias = 0.5f;
+			AlbedoArray.filterMode = FilterMode.Bilinear;
+			AlbedoArray.anisoLevel = 4;
+
+			AlbedoArray.Apply(true);
 
 			TerrainMaterial.SetTexture("_SplatAlbedoArray", AlbedoArray);
 
@@ -442,23 +518,61 @@ public class ScmapEditor : MonoBehaviour
 			//TerrainMaterial.SetTexture("_SplatNormal6", Textures[7].Normal);
 			//TerrainMaterial.SetTexture("_SplatNormal7", Textures[8].Normal);
 
-			Texture2DArray NormalArray = new Texture2DArray(1024, 1024, 8, TextureFormat.RGBA32, true);
+
+			AlbedoSize = 256;
+
+			for (int i = 0; i < 8; i++)
+			{
+				if (Textures[i + 1].Normal.width > AlbedoSize)
+				{
+					AlbedoSize = Textures[i + 1].Normal.width;
+				}
+				if (Textures[i + 1].Normal.height > AlbedoSize)
+				{
+					AlbedoSize = Textures[i + 1].Normal.height;
+				}
+			}
+
+			Texture2DArray NormalArray = new Texture2DArray(AlbedoSize, AlbedoSize, 8, TextureFormat.RGBA32, true);
 
 			for(int i = 0; i < 8; i++)
 			{
 				if (Textures[i + 1].Normal == null)
 					continue;
-				BlinearTex = new Texture2D(Textures[i + 1].Normal.width, Textures[i + 1].Normal.height, TextureFormat.RGBA32, true);
-				BlinearTex.SetPixels(Textures[i + 1].Normal.GetPixels());
-				BlinearTex.Apply(true);
-				TextureScale.Bilinear(BlinearTex, 1024, 1024);
-				NormalArray.SetPixels(BlinearTex.GetPixels(), i);
+
+				if (Textures[i + 1].Normal.width != 1024 || Textures[i + 1].Normal.height != 1024)
+				{
+					/*
+					BlinearTex = new Texture2D(Textures[i + 1].Normal.width, Textures[i + 1].Normal.height, TextureFormat.RGBA32, true);
+					BlinearTex.SetPixels(Textures[i + 1].Normal.GetPixels());
+					BlinearTex.Apply(true);
+					TextureScale.Bilinear(BlinearTex, 1024, 1024);
+					*/
+
+					Textures[i + 1].Normal = TextureScale.Bilinear(Textures[i + 1].Normal, AlbedoSize, AlbedoSize);
+
+					/*
+					for (int m = 0; m < BlinearTex.mipmapCount; m++)
+					{
+						NormalArray.SetPixels(BlinearTex.GetPixels(m), i, m);
+					}
+					*/
+				}
+				else
+				{
+					
+				}
+
+				for (int m = 0; m < Textures[i + 1].Normal.mipmapCount; m++)
+				{
+					NormalArray.SetPixels(Textures[i + 1].Normal.GetPixels(m), i, m);
+				}
 			}
 
+			//NormalArray.mipMapBias = -0.5f;
 			NormalArray.filterMode = FilterMode.Bilinear;
 			NormalArray.anisoLevel = 4;
-
-			NormalArray.Apply();
+			NormalArray.Apply(true);
 
 			TerrainMaterial.SetTexture("_SplatNormalArray", NormalArray);
 
@@ -665,6 +779,7 @@ public class ScmapEditor : MonoBehaviour
 
 		EditMap.PropsInfo.UnloadProps();
 		Markers.MarkersControler.UnloadMarkers();
+		DecalsControler.Current.UnloadDecals();
 	}
 	#endregion
 

@@ -27,73 +27,116 @@ public class TextureScale
 		ThreadedScale (tex, newWidth, newHeight, false);
 	}
 
-	public static void Bilinear (Texture2D tex, int newWidth, int newHeight)
+	public static Texture2D Bilinear (Texture2D tex, int newWidth, int newHeight)
 	{
-		ThreadedScale (tex, newWidth, newHeight, true);
+		return ThreadedScale (tex, newWidth, newHeight, true);
 	}
 
-	private static void ThreadedScale (Texture2D tex, int newWidth, int newHeight, bool useBilinear)
+
+	private static Texture2D ThreadedScale (Texture2D tex, int newWidth, int newHeight, bool useBilinear)
 	{
-		texColors = tex.GetPixels();
-		newColors = new Color[newWidth * newHeight];
-		if (useBilinear)
-		{
-			ratioX = 1.0f / ((float)newWidth / (tex.width-1));
-			ratioY = 1.0f / ((float)newHeight / (tex.height-1));
-		}
-		else {
-			ratioX = ((float)tex.width) / newWidth;
-			ratioY = ((float)tex.height) / newHeight;
-		}
-		w = tex.width;
-		w2 = newWidth;
-		var cores = Mathf.Min(SystemInfo.processorCount, newHeight);
-		var slice = newHeight/cores;
+		Texture2D NewTex = new Texture2D(newWidth, newHeight, TextureFormat.RGBA32, tex.mipmapCount > 1);
 
-		finishCount = 0;
-		if (mutex == null) {
-			mutex = new Mutex(false);
-		}
-		if (cores > 1)
+		int texWidth = tex.width;
+		int texHeight = tex.height;
+
+		//Debug.Log(tex.mipmapCount);
+
+		for (int m = 0; m < tex.mipmapCount; m++)
 		{
-			int i = 0;
-			ThreadData threadData;
-			for (i = 0; i < cores-1; i++) {
-				threadData = new ThreadData(slice * i, slice * (i + 1));
-				ParameterizedThreadStart ts = useBilinear ? new ParameterizedThreadStart(BilinearScale) : new ParameterizedThreadStart(PointScale);
-				Thread thread = new Thread(ts);
-				thread.Start(threadData);
+
+			texColors = tex.GetPixels(m);
+			newColors = NewTex.GetPixels(m);
+
+			if (m > 0) {
+				if (newWidth == 1 || newHeight == 1)
+					break;
+
+				newWidth /= 2;
+				newHeight /= 2;
+				texWidth /= 2;
+				texHeight /= 2;
 			}
-			threadData = new ThreadData(slice*i, newHeight);
+
+			//Debug.Log(m + " : " + texWidth + " > " + newWidth);
+
+			if (texWidth == 1)
+			{
+				for (int i = 0; i < newColors.Length; i++)
+					newColors[i] = texColors[0];
+
+
+				NewTex.SetPixels(newColors, m);
+				break;
+			}
+
+
 			if (useBilinear)
 			{
-				BilinearScale(threadData);
+				ratioX = 1.0f / ((float)newWidth / (texWidth - 1));
+				ratioY = 1.0f / ((float)newHeight / (texHeight - 1));
 			}
 			else
 			{
-				PointScale(threadData);
+				ratioX = ((float)texWidth) / newWidth;
+				ratioY = ((float)texHeight) / newHeight;
 			}
-			while (finishCount < cores)
+			w = texWidth;
+			w2 = newWidth;
+			var cores = Mathf.Min(SystemInfo.processorCount, newHeight);
+			var slice = newHeight / cores;
+
+			finishCount = 0;
+			if (mutex == null)
 			{
-				Thread.Sleep(1);
+				mutex = new Mutex(false);
 			}
-		}
-		else
-		{
-			ThreadData threadData = new ThreadData(0, newHeight);
-			if (useBilinear)
+			if (cores > 1)
 			{
-				BilinearScale(threadData);
+				int i = 0;
+				ThreadData threadData;
+				for (i = 0; i < cores - 1; i++)
+				{
+					threadData = new ThreadData(slice * i, slice * (i + 1));
+					ParameterizedThreadStart ts = useBilinear ? new ParameterizedThreadStart(BilinearScale) : new ParameterizedThreadStart(PointScale);
+					Thread thread = new Thread(ts);
+					thread.Start(threadData);
+				}
+				threadData = new ThreadData(slice * i, newHeight);
+				if (useBilinear)
+				{
+					BilinearScale(threadData);
+				}
+				else
+				{
+					PointScale(threadData);
+				}
+				while (finishCount < cores)
+				{
+					Thread.Sleep(1);
+				}
 			}
 			else
 			{
-				PointScale(threadData);
+				ThreadData threadData = new ThreadData(0, newHeight);
+				if (useBilinear)
+				{
+					BilinearScale(threadData);
+				}
+				else
+				{
+					PointScale(threadData);
+				}
 			}
+
+			NewTex.SetPixels(newColors, m);
 		}
 
-		tex.Resize(newWidth, newHeight);
-		tex.SetPixels(newColors);
-		tex.Apply();
+
+		//tex.Resize(newWidth, newHeight);
+		//tex.SetPixels(newColors);
+		NewTex.Apply(true);
+		return NewTex;
 	}
 
 	public static void BilinearScale (System.Object obj)
