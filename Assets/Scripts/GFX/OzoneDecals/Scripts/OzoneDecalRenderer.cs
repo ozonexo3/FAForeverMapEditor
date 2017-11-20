@@ -91,7 +91,7 @@ namespace OzoneDecals {
 				return;
 
 #if UNITY_EDITOR
-			if(Cam != Current.RenderCamera && Cam.name == "SceneCamera")
+			if(false && Cam != Current.RenderCamera && Cam.name == "SceneCamera")
 			{
 				// Is Editor
 				OzoneDecalRenderer renderer = Cam.GetComponent<OzoneDecalRenderer>();
@@ -108,13 +108,8 @@ namespace OzoneDecals {
 
 		}
 
-		bool HasSpecular;
-		bool HasEmission;
-
 		void AddDecalToRenderer(OzoneDecal d)
 		{
-			HasEmission = HasEmission || d.HasEmission;
-
 			if (d.DrawAlbedo)
 			{
 				_DecalsAlbedo.Add(d);

@@ -9,6 +9,7 @@ public class CameraControler : MonoBehaviour {
 
 	public static			CameraControler		Current;
 
+	public Camera Cam;
 	public			Undo				History;
 	public			MapHelperGui		HUD;
 	public			Editing				Edit;
@@ -71,19 +72,19 @@ public class CameraControler : MonoBehaviour {
 
 	public void RenderCamera(int resWidth, int resHeight, string path){
 		// Set Camera
-		Camera.main.orthographic = true;
-		Camera.main.orthographicSize = MapSize * 0.05f;
+		Cam.orthographic = true;
+		Cam.orthographicSize = MapSize * 0.05f;
 		Pivot.localPosition = new Vector3(MapSize * 0.05f, 0, -MapSize * 0.05f);
 		Pivot.rotation = Quaternion.identity;
 
 		// Take Screenshoot
 		RenderTexture rt = new RenderTexture(resWidth, resHeight, 24);
-		Camera.main.targetTexture = rt;
+		Cam.targetTexture = rt;
 		Texture2D screenShot = new Texture2D(resWidth, resHeight, TextureFormat.RGB24, false);
-		Camera.main.Render();
+		Cam.Render();
 		RenderTexture.active = rt;
 		screenShot.ReadPixels(new Rect(0, 0, resWidth, resHeight), 0, 0);
-		Camera.main.targetTexture = null;
+		Cam.targetTexture = null;
 		RenderTexture.active = null; // JC: added to avoid errors
 		Destroy(rt);
 		byte[] bytes;
@@ -92,7 +93,7 @@ public class CameraControler : MonoBehaviour {
 		System.IO.File.WriteAllBytes(path, bytes);
 
 		// Restart Camera
-		Camera.main.orthographic = false;
+		Cam.orthographic = false;
 		RestartCam();
 	}
 
@@ -163,17 +164,17 @@ public class CameraControler : MonoBehaviour {
 		if (Edit.MauseOnGameplay)
 		{
 
-			Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+			Ray ray = Cam.ScreenPointToRay(Input.mousePosition);
 			RaycastHit hit;
 			if (Physics.Raycast(ray, out hit, 1000, Mask))
 			{
 
 				if (Input.GetAxis("Mouse ScrollWheel") > 0 && zoomIn > 0)
 				{
-				zoomIn -= Input.GetAxis("Mouse ScrollWheel") * 0.5f * 1;
+				zoomIn -= Input.GetAxis("Mouse ScrollWheel") * 0.25f * 1;
 
 				
-					Pos += (hit.point - Pos) * Mathf.Lerp(0.22f, 0.12f, ZoomCamPos()) * 1;
+					Pos += (hit.point - Pos) * Mathf.Lerp(0.22f, 0.12f, ZoomCamPos()) * 1.14f;
 					ClampPosY();
 				}
 				else if (Input.GetAxis("Mouse ScrollWheel") < 0)

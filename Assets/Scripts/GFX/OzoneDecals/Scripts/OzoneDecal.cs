@@ -96,11 +96,11 @@ namespace OzoneDecals
 
 		void OnWillRenderObject()
 		{
-			if (Material == null)
-				return;
+			//if (Material == null)
+			//	return;
 
-			if (Camera.current == null)
-				return;
+			//if (Camera.current == null)
+			//	return;
 
 			//LastDistance = OzoneDecalRenderer.DecalDist(tr);
 
