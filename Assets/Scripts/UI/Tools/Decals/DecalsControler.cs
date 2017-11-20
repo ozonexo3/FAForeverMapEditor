@@ -32,13 +32,29 @@ public class DecalsControler : MonoBehaviour {
 	public static void AddDecal(OzoneDecal dc)
 	{
 		if (!Current.AllDecals.Contains(dc))
+		{
 			Current.AllDecals.Add(dc);
+			OzoneDecalRenderer.AddAlbedoDecal(dc);
+		}
 	}
 
 	public static void RemoveDecal(OzoneDecal dc)
 	{
 		if (Current.AllDecals.Contains(dc))
+		{
 			Current.AllDecals.Remove(dc);
+			OzoneDecalRenderer.RemoveAlbedoDecal(dc);
+		}
+	}
+
+	private void Update()
+	{
+		int count = AllDecals.Count;
+
+		for(int i = 0; i < count; i++)
+		{
+			AllDecals[i].LastDistance = OzoneDecalRenderer.DecalDist(AllDecals[i].tr);
+		}
 	}
 
 

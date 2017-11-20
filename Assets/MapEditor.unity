@@ -19956,6 +19956,33 @@ MonoBehaviour:
       m_TypeName: UnityEngine.EventSystems.EventTrigger+TriggerEvent, UnityEngine.UI,
         Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   delegates: []
+--- !u!84 &312684114
+RenderTexture:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: 
+  m_ImageContentsHash:
+    serializedVersion: 2
+    Hash: 00000000000000000000000000000000
+  m_Width: 256
+  m_Height: 256
+  m_AntiAliasing: 1
+  m_DepthFormat: 1
+  m_ColorFormat: 0
+  m_MipMap: 0
+  m_GenerateMips: 1
+  m_SRGB: 0
+  m_TextureSettings:
+    serializedVersion: 2
+    m_FilterMode: 1
+    m_Aniso: 0
+    m_MipBias: 0
+    m_WrapU: 1
+    m_WrapV: 1
+    m_WrapW: 1
+  m_Dimension: 2
+  m_VolumeDepth: 1
 --- !u!1 &312959791
 GameObject:
   m_ObjectHideFlags: 0
@@ -33779,9 +33806,9 @@ Camera:
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 3840
-  m_RenderingPath: 3
-  m_TargetTexture: {fileID: 1900738029}
+    m_Bits: 2560
+  m_RenderingPath: 1
+  m_TargetTexture: {fileID: 312684114}
   m_TargetDisplay: 0
   m_TargetEye: 3
   m_HDR: 0
@@ -47977,7 +48004,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &786801687
 Transform:
   m_ObjectHideFlags: 0
@@ -47997,7 +48024,7 @@ Camera:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 786801686}
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 2
   m_ClearFlags: 3
   m_BackGroundColor: {r: 0.05882353, g: 0.05882353, b: 0.05882353, a: 0.019607844}
@@ -111860,10 +111887,11 @@ MonoBehaviour:
   MainCamera: {fileID: 436319623}
   reflectionCamera: {fileID: 540705720}
   clipPlaneOffset: 0.02
-  TextureSize: 512
+  TextureSize: 256
   MinRenderDeltaTime: 0
   WaterLevel: {fileID: 1035241564}
   RenderDistance: 50
+  IsDirty: 0
 --- !u!1 &1887498200
 GameObject:
   m_ObjectHideFlags: 0
@@ -112706,33 +112734,6 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1900542398}
---- !u!84 &1900738029
-RenderTexture:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_Name: 
-  m_ImageContentsHash:
-    serializedVersion: 2
-    Hash: 00000000000000000000000000000000
-  m_Width: 512
-  m_Height: 512
-  m_AntiAliasing: 1
-  m_DepthFormat: 1
-  m_ColorFormat: 0
-  m_MipMap: 0
-  m_GenerateMips: 1
-  m_SRGB: 0
-  m_TextureSettings:
-    serializedVersion: 2
-    m_FilterMode: 1
-    m_Aniso: 0
-    m_MipBias: 0
-    m_WrapU: 1
-    m_WrapV: 1
-    m_WrapW: 1
-  m_Dimension: 2
-  m_VolumeDepth: 1
 --- !u!1 &1906476526
 GameObject:
   m_ObjectHideFlags: 0
@@ -115911,6 +115912,7 @@ MonoBehaviour:
   MinRenderDeltaTime: 0
   WaterLevel: {fileID: 1035241564}
   RenderDistance: 50
+  IsDirty: 0
 --- !u!1 &1964942037
 GameObject:
   m_ObjectHideFlags: 0

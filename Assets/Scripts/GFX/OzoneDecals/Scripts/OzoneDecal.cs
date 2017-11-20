@@ -92,6 +92,7 @@ namespace OzoneDecals
 			mr.reflectionProbeUsage = ReflectionProbeUsage.Off;
 		}
 
+		public bool IsVisible;
 
 		void OnWillRenderObject()
 		{
@@ -101,12 +102,24 @@ namespace OzoneDecals
 			if (Camera.current == null)
 				return;
 
-			LastDistance = OzoneDecalRenderer.DecalDist(tr);
+			//LastDistance = OzoneDecalRenderer.DecalDist(tr);
 
 			if (LastDistance > WorldCutoffDistance)
 				return;
 
 			OzoneDecalRenderer.AddDecal(this, Camera.current);
+			/*
+			if (DrawAlbedo)
+			{
+				IsVisible = true;
+
+
+			}
+			else
+			{
+
+			}
+			*/
 		}
 
 

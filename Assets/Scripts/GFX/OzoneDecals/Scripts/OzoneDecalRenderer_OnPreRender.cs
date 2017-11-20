@@ -45,7 +45,7 @@ namespace OzoneDecals
 			while (decalEnum.MoveNext())
 				decalEnum.Current.Value.Clear();
 
-			_DecalsAlbedo.Clear();
+			//_DecalsAlbedo.Clear();
 
 			HasEmission = false;
 			HasSpecular = false;
@@ -61,8 +61,9 @@ namespace OzoneDecals
 			{
 				OzoneDecal decal = decalListEnum.Current;
 
-				if (decal != null && decal.DrawAlbedo)
+				if (decal != null && decal.IsVisible && decal.DrawAlbedo)
 				{
+					decal.IsVisible = false;
 					_directBlock.Clear();
 					_directBlock.SetFloat("_NearCutOffLOD", decal.NearCutOffLOD);
 					_directBlock.SetFloat("_CutOffLOD", decal.CutOffLOD);
@@ -147,7 +148,7 @@ namespace OzoneDecals
 		}
 
 		const float HightQualityBlendingDistance = 15;
-		const int HightQualityMaxCount = 15;
+		const int HightQualityMaxCount = 0;
 
 
 		private void DrawDeferredDecals_Normal(Camera cam)
@@ -203,7 +204,7 @@ namespace OzoneDecals
 								if (n == 1023)
 								{
 									//_bufferDeferred.Blit(BuiltinRenderTextureType.GBuffer1, copy1id);
-									_bufferDeferred.Blit(BuiltinRenderTextureType.GBuffer2, copy2id);
+									//_bufferDeferred.Blit(BuiltinRenderTextureType.GBuffer2, copy2id);
 
 									_bufferDeferred.SetRenderTarget(_normalRenderTarget, BuiltinRenderTextureType.CameraTarget);
 									_instancedBlock.Clear();
@@ -219,7 +220,7 @@ namespace OzoneDecals
 								{
 									// Create of copy of GBuffer1 (specular / smoothness) and GBuffer 2 (normal)
 									//_bufferDeferred.Blit(BuiltinRenderTextureType.GBuffer1, copy1id);
-									_bufferDeferred.Blit(BuiltinRenderTextureType.GBuffer2, copy2id);
+									//_bufferDeferred.Blit(BuiltinRenderTextureType.GBuffer2, copy2id);
 								}
 
 								_bufferDeferred.SetRenderTarget(_normalRenderTarget, BuiltinRenderTextureType.CameraTarget);
@@ -239,7 +240,7 @@ namespace OzoneDecals
 				{
 					// Create of copy of GBuffer1 (specular / smoothness) and GBuffer 2 (normal)
 					//_bufferDeferred.Blit(BuiltinRenderTextureType.GBuffer1, copy1id);
-					_bufferDeferred.Blit(BuiltinRenderTextureType.GBuffer2, copy2id);
+					//_bufferDeferred.Blit(BuiltinRenderTextureType.GBuffer2, copy2id);
 
 					_bufferDeferred.SetRenderTarget(_normalRenderTarget, BuiltinRenderTextureType.CameraTarget);
 

@@ -131,5 +131,16 @@ namespace OzoneDecals {
 				}
 			}
 		}
+
+
+		public static void AddAlbedoDecal(OzoneDecal d)
+		{
+			//Current._DecalsAlbedo.Add(d);
+		}
+
+		public static void RemoveAlbedoDecal(OzoneDecal d)
+		{
+			//Current._DecalsAlbedo.Remove(d);
+		}
 	}
 }

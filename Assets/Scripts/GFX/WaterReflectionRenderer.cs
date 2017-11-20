@@ -48,8 +48,11 @@ namespace FX
 
 			pos.x = 0;
 			pos.z = 0;
-
 		}
+
+		public bool IsDirty = false;
+
+		Vector3 LastReflectionPos = Vector3.zero;
 
 #if !UNITY_EDITOR
 		float Timer = 0;
@@ -89,6 +92,10 @@ namespace FX
 			Vector3 oldpos = MainCameraTr.position;
 			//oldpos.y = 0;
 			Vector3 newpos = reflection.MultiplyPoint(oldpos);
+
+			if (LastReflectionPos.x != newpos.x && LastReflectionPos.z != newpos.z && LastReflectionPos.y != newpos.y)
+				return;
+
 			reflectionCamera.worldToCameraMatrix = MainCamera.worldToCameraMatrix * reflection;
 
 			if (reflectionCamera.targetTexture == null || RT.width != TextureSize || RT.height != TextureSize)
