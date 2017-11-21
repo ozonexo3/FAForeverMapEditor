@@ -76,7 +76,7 @@ namespace EditMap
 				Dec.tr = NewDecalObject.transform;
 
 				Dec.tr.localRotation = Quaternion.Euler(Dec.Component.Rotation * Mathf.Rad2Deg); // * ProjectorRot;
-				Dec.tr.localScale = new Vector3(Dec.Component.Scale.x * 0.1f, 5, Dec.Component.Scale.z * 0.1f); //Dec.Component.Scale.y * 0.1f
+				Dec.tr.localScale = new Vector3(Dec.Component.Scale.x * 0.1f, Dec.Component.Scale.x * 0.1f, Dec.Component.Scale.z * 0.1f); //Dec.Component.Scale.y * 0.1f
 
 				//Dec.tr.localPosition = ScmapEditor.ScmapPosToWorld(Dec.Component.Position);
 
@@ -95,7 +95,7 @@ namespace EditMap
 				Dec.MovePivotPoint(ScmapEditor.ScmapPosToWorld(Dec.Component.Position));
 
 
-
+				//Dec.WorldCutoffDistance = 20;
 				Dec.WorldCutoffDistance = Dec.Component.CutOffLOD * 0.1f;
 				Dec.CutOffLOD = (Dec.Component.CutOffLOD - OzoneDecalRenderer.CameraNear) / OzoneDecalRenderer.CameraFar;
 				Dec.CutOffLOD *= 0.1f;
@@ -107,6 +107,17 @@ namespace EditMap
 				Dec.Text0Path = Dec.Component.TexPathes[0];
 				Dec.Text1Path = Dec.Component.TexPathes[1];
 #endif
+
+				Plane plane = new Plane(CameraControler.Current.Cam.transform.forward, CameraControler.Current.Cam.transform.position);
+				float dist = plane.GetDistanceToPoint(transform.position);
+
+				LOD[] Old = Dec.lg.GetLODs();
+				//float FrustumHeight = (Dec.Component.Scale.z * 0.1f) * 2 * Dec.WorldCutoffDistance * Mathf.Tan(CameraControler.Current.Cam.fieldOfView * 0.5f * Mathf.Deg2Rad);
+				float FrustumHeight = FrustumHeightAtDistance(Dec.WorldCutoffDistance);
+
+				Dec.FrustumSize = (Dec.Component.Scale.z * 0.11f) / FrustumHeight;
+				Old[0].screenRelativeTransitionHeight = Dec.FrustumSize;
+				Dec.lg.SetLODs(Old);
 
 				if (Dec.Component.Type == TerrainDecalType.TYPE_NORMALS)
 				{
@@ -161,6 +172,11 @@ namespace EditMap
 
 			yield return null;
 			LoadingDecals = false;
+		}
+
+		public static float FrustumHeightAtDistance(float distance)
+		{
+			return 2.0f * distance * Mathf.Tan(40 * 0.5f * Mathf.Deg2Rad);
 		}
 
 		#endregion

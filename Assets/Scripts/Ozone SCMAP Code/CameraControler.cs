@@ -38,6 +38,7 @@ public class CameraControler : MonoBehaviour {
 
 	const float CameraMinOffset = 0.5f;
 
+	float MaxY = 100;
 	public void RestartCam(){
 		if(!Terrain.activeTerrain) return;
 		Pos = Vector3.zero + Vector3.right * MapSize / 20.0f - Vector3.forward * MapSize / 20.0f;
@@ -46,10 +47,12 @@ public class CameraControler : MonoBehaviour {
 		Rot = Vector3.zero;
 
 		zoomIn = 1;
-
+		MaxY = ZoomCamPos() * MapSize / 7 + CameraMinOffset;
 		transform.localPosition = new Vector3(transform.localPosition.x, ZoomCamPos() * MapSize / 7 + CameraMinOffset, transform.localPosition.z);
 		Pivot.localRotation = Quaternion.Euler(Rot);
 		Pivot.localPosition = Pos;
+
+		RealCamPos = transform.localPosition;
 
 		//TargetWorldPos = new Vector3(MapSize * 0.05f, 100, MapSize * -0.05f);
 		//CamWorldPos = TargetWorldPos;
@@ -284,12 +287,16 @@ public class CameraControler : MonoBehaviour {
 
 	float MoveDirection;
 	Vector3 TransformDirection;
+	Vector3 RealCamPos;
 	bool LastForward = false;
+
+	Vector3 DebugDrawPoint1 = Vector3.zero;
+	Vector3 DebugDrawPoint2 = Vector3.zero;
 	void CameraMovement(){
+		Debug.DrawLine(DebugDrawPoint1, DebugDrawPoint2);
 
 		if (Edit.MauseOnGameplay)
 		{
-
 			Ray ray = Cam.ScreenPointToRay(Input.mousePosition);
 			RaycastHit hit;
 			if (Physics.Raycast(ray, out hit, 1000, Mask))
@@ -308,13 +315,13 @@ public class CameraControler : MonoBehaviour {
 				}
 				*/
 
-				if (Input.GetAxis("Mouse ScrollWheel") < 0 && transform.localPosition.y < 170)
+				if (Input.GetAxis("Mouse ScrollWheel") < 0 && transform.localPosition.y < MaxY)
 				{
 					MoveDirection += Input.GetAxis("Mouse ScrollWheel") * 1;
 					//TransformDirection = ray.direction;
 					if (!LastForward)
 						TransformDirection = Vector3.zero;
-					TransformDirection += transform.forward * Input.GetAxis("Mouse ScrollWheel");
+					RealCamPos += Pivot.InverseTransformDirection(transform.forward) * Input.GetAxis("Mouse ScrollWheel") * CamSpeed();
 					LastForward = true;
 				}
 				else if (Input.GetAxis("Mouse ScrollWheel") > 0 && transform.localPosition.y > 1)
@@ -322,7 +329,22 @@ public class CameraControler : MonoBehaviour {
 					MoveDirection += Input.GetAxis("Mouse ScrollWheel") * 1;
 					if (LastForward)
 						TransformDirection = Vector3.zero;
-					TransformDirection += ray.direction * Input.GetAxis("Mouse ScrollWheel");
+
+
+					Vector3 Ray = Pivot.InverseTransformVector(ray.direction);
+
+					float CamChange = Mathf.Lerp(1, 1.5f, (Rot.x / -90));
+					Ray.z *= CamChange;
+					Ray.x *= Mathf.Lerp(1, 0.85f, (Rot.x / -90));
+					Ray.Normalize();
+
+					RealCamPos += Ray * Input.GetAxis("Mouse ScrollWheel") * CamSpeed();
+
+					
+
+					DebugDrawPoint1 = transform.position;
+					DebugDrawPoint2 = transform.position + ray.direction * 100;
+					
 					LastForward = false;
 				}
 				
@@ -381,29 +403,72 @@ public class CameraControler : MonoBehaviour {
 		}
 
 
-
+		/*
 		if (TransformDirection.sqrMagnitude > 0)
 		{
 
 
-
-			transform.position += TransformDirection * Time.deltaTime * CamSpeed();
-
-			Ray ray = Cam.ScreenPointToRay(new Vector2(Screen.width * 0.5f, Screen.height * 0.5f));
-			RaycastHit hit;
-			if (Physics.Raycast(ray, out hit, 1000, Mask))
-			{
-				Pos = hit.point;
-				Pivot.transform.position = hit.point;
-				if(transform.localPosition.y < 1 || transform.localPosition.y > 170)
-					TransformDirection = Vector3.zero;
-
-				transform.localPosition = new Vector3(0, Mathf.Clamp(transform.localPosition.y, 1, 170), 0);
-			}
+			RealCamPos += TransformDirection * CamSpeed();
+			
 
 			TransformDirection = Vector3.Lerp(TransformDirection, Vector3.zero, Time.deltaTime * 10);
 			if (TransformDirection.magnitude < 0.01f)
 				TransformDirection = Vector3.zero;
+		}*/
+
+
+		float Mag = Vector3.Distance(transform.localPosition, RealCamPos);
+		if(Mag < 0.02f)
+		{
+			RealCamPos = transform.localPosition;
+			Mag = 0;
+		}
+		if (Mag > 0)
+		{
+			
+			if (RealCamPos.y < 1 || RealCamPos.y > MaxY)
+			{
+				RealCamPos.y = Mathf.Clamp(transform.localPosition.y, 1, MaxY);
+				RealCamPos.x = transform.localPosition.x;
+				RealCamPos.z = transform.localPosition.z;
+			}
+
+			transform.localPosition = Vector3.Lerp(transform.localPosition, RealCamPos, Time.deltaTime * 14);
+
+			Ray ray = new Ray(transform.position, transform.forward);
+			RaycastHit hit;
+			if (Physics.Raycast(ray, out hit, 1000, Mask))
+			{
+				Vector3 PreviousPos = Pivot.transform.position;
+				Pos = hit.point;
+				Pivot.transform.position = hit.point;
+
+				Vector3 Offset = transform.InverseTransformVector(hit.point - PreviousPos);
+				Offset.x = 0;
+				Offset.z = 0;
+				Offset = transform.InverseTransformVector(Offset);
+				//Debug.Log(Offset);
+				RealCamPos.y -= Offset.y;
+				transform.localPosition -= Vector3.up * Offset.y;
+
+				if (transform.localPosition.y < 1 || transform.localPosition.y > MaxY)
+				{
+					transform.localPosition = new Vector3(0, Mathf.Clamp(transform.localPosition.y, 1, MaxY), 0);
+					RealCamPos = transform.localPosition;
+				}
+				else
+				{
+					//	transform.localPosition = new Vector3(0, Mathf.Clamp(transform.localPosition.y, 1, MaxY), 0);
+
+					Vector3 LocalPos = transform.localPosition;
+					LocalPos.z -= transform.localPosition.z;
+					RealCamPos.z -= transform.localPosition.z;
+
+					LocalPos.x -= transform.localPosition.x;
+					RealCamPos.x -= transform.localPosition.x;
+					transform.localPosition = LocalPos;
+				}
+			}
 		}
 		/*
 		else if (MoveDirection < 0)
@@ -435,16 +500,19 @@ public class CameraControler : MonoBehaviour {
 		else
 		{
 			Pivot.localRotation = Quaternion.Lerp(Pivot.localRotation, Quaternion.Euler(Rot), Time.deltaTime * 10);
-			Pivot.localPosition = Vector3.Lerp(Pivot.localPosition, Pos, Time.deltaTime * 18);
+			
 		}
-		
+
+		Pivot.localPosition = Vector3.Lerp(Pivot.localPosition, Pos, Time.deltaTime * 18);
+
 		//transform.localPosition = Vector3.Lerp(transform.localPosition, new Vector3(transform.localPosition.x, ZoomCamPos() * MapSize / 7 + CameraMinOffset, transform.localPosition.z), Time.deltaTime * 20);
 	}
 
 	float CamSpeed()
 	{
-		//return Mathf.Lerp(150, 3000, Mathf.Pow(transform.localPosition.y / 150f, 2));
-		return Mathf.Lerp(150, 3000, transform.localPosition.y / 150f);
+		//return Mathf.Lerp(150, 3000, Mathf.Pow(transform.localPosition.y / 150, 1.2f));
+		return Mathf.Lerp(15f, 300, Mathf.Pow(transform.localPosition.y / 150, 1.2f));
+		//return Mathf.Lerp(120, 3000, transform.localPosition.y / 150f);
 	}
 
 	void ClampPosY()

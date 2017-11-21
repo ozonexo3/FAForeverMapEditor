@@ -26884,7 +26884,7 @@ MonoBehaviour:
   Rot: {x: 0, y: 0, z: 0}
   Mask:
     serializedVersion: 2
-    m_Bits: 256
+    m_Bits: 272
   ReflectionCamera: {fileID: 540705719}
   CursorInfo: {fileID: 1496874219}
 --- !u!81 &436319620
@@ -26912,6 +26912,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3c8a33d7e7a20dd4aaea8c743303fc62, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _camTr: {fileID: 436319616}
   cubeMesh: {fileID: 4300000, guid: ab0a37b4be73267489ca5dfc562f9524, type: 2}
   UseInstancing: 1
 --- !u!20 &436319623
@@ -33764,7 +33765,7 @@ Camera:
   m_GameObject: {fileID: 540705718}
   m_Enabled: 0
   serializedVersion: 2
-  m_ClearFlags: 2
+  m_ClearFlags: 3
   m_BackGroundColor: {r: 0, g: 0, b: 0, a: 0}
   m_NormalizedViewPortRect:
     serializedVersion: 2
@@ -33782,7 +33783,7 @@ Camera:
     serializedVersion: 2
     m_Bits: 2560
   m_RenderingPath: 1
-  m_TargetTexture: {fileID: 1184778116}
+  m_TargetTexture: {fileID: 1012570925}
   m_TargetDisplay: 0
   m_TargetEye: 3
   m_HDR: 0
@@ -43552,7 +43553,7 @@ Prefab:
     - target: {fileID: 205490010641979160, guid: 0f85931f0ee0c944283691a1b137c8fd,
         type: 2}
       propertyPath: m_LODs.Array.data[0].screenRelativeHeight
-      value: 0.07710218
+      value: 0.23586911
       objectReference: {fileID: 0}
     - target: {fileID: 114023126448705506, guid: 0f85931f0ee0c944283691a1b137c8fd,
         type: 2}
@@ -44879,6 +44880,22 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 730962029}
+--- !u!1 &733525539 stripped
+GameObject:
+  m_PrefabParentObject: {fileID: 100000, guid: 06b33172c38967643ac26a63c15d3e49, type: 3}
+  m_PrefabInternal: {fileID: 832278799}
+--- !u!65 &733525540
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 733525539}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1, y: 0.5, z: 1}
+  m_Center: {x: 0.5, y: -0.25, z: -0.5}
 --- !u!1 &733768641
 GameObject:
   m_ObjectHideFlags: 0
@@ -50937,7 +50954,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: 06b33172c38967643ac26a63c15d3e49, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: 06b33172c38967643ac26a63c15d3e49, type: 3}
       propertyPath: m_Name
@@ -60971,6 +60988,33 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1012003633}
+--- !u!84 &1012570925
+RenderTexture:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: 
+  m_ImageContentsHash:
+    serializedVersion: 2
+    Hash: 00000000000000000000000000000000
+  m_Width: 256
+  m_Height: 256
+  m_AntiAliasing: 1
+  m_DepthFormat: 1
+  m_ColorFormat: 0
+  m_MipMap: 0
+  m_GenerateMips: 1
+  m_SRGB: 0
+  m_TextureSettings:
+    serializedVersion: 2
+    m_FilterMode: 1
+    m_Aniso: 0
+    m_MipBias: 0
+    m_WrapU: 1
+    m_WrapV: 1
+    m_WrapW: 1
+  m_Dimension: 2
+  m_VolumeDepth: 1
 --- !u!1 &1013408409
 GameObject:
   m_ObjectHideFlags: 0
@@ -70776,33 +70820,6 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1182827732}
---- !u!84 &1184778116
-RenderTexture:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_Name: 
-  m_ImageContentsHash:
-    serializedVersion: 2
-    Hash: 00000000000000000000000000000000
-  m_Width: 256
-  m_Height: 256
-  m_AntiAliasing: 1
-  m_DepthFormat: 1
-  m_ColorFormat: 0
-  m_MipMap: 0
-  m_GenerateMips: 1
-  m_SRGB: 0
-  m_TextureSettings:
-    serializedVersion: 2
-    m_FilterMode: 1
-    m_Aniso: 0
-    m_MipBias: 0
-    m_WrapU: 1
-    m_WrapV: 1
-    m_WrapW: 1
-  m_Dimension: 2
-  m_VolumeDepth: 1
 --- !u!1 &1185803445
 GameObject:
   m_ObjectHideFlags: 0

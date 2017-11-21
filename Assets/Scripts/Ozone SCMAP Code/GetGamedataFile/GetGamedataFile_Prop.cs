@@ -47,16 +47,21 @@ public partial struct GetGamedataFile
 
 					//DeltaSize *= 5;
 
-					NewProp.Lodg.RecalculateBounds();
+					//NewProp.Lodg.RecalculateBounds();
+					/*
 					DeltaSize = NewProp.Lodg.size * Mathf.Max(scale.x, scale.y, scale.z) * 0.6f;
 					DeltaSize -= 0.04f;
 
 					if (DeltaSize < 0.01f)
 						DeltaSize = 0.01f;
+						*/
+					Vector3 bs = BP.LODs[0].Mesh.bounds.size;
+					DeltaSize = Mathf.Max(scale.x * bs.x, scale.y * bs.y, scale.z * bs.z);
 				}
 
 				Lods = NewProp.Lodg.GetLODs();
-				Lods[0].screenRelativeTransitionHeight = Mathf.Lerp(0.018f, 0.31f, DeltaSize);
+				//Lods[0].screenRelativeTransitionHeight = Mathf.Lerp(0.018f, 0.31f, DeltaSize);
+				Lods[0].screenRelativeTransitionHeight = DeltaSize / DecalsInfo.FrustumHeightAtDistance(25);
 				NewProp.Lodg.SetLODs(Lods);
 
 				NewProp.Tr.localPosition = position;

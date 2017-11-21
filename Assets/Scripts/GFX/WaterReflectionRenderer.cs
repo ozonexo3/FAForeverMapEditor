@@ -142,7 +142,7 @@ namespace FX
 			if (reflectionCamera.targetTexture != null)
 				reflectionCamera.targetTexture.Release();
 
-			RT = new RenderTexture(TextureSize, TextureSize, 16);
+			RT = new RenderTexture(TextureSize, TextureSize, 16, RenderTextureFormat.ARGB32);
 			RT.isPowerOfTwo = true;
 		}
 

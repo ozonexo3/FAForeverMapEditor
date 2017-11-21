@@ -24,7 +24,8 @@ namespace OzoneDecals {
 
 		protected Camera RenderCamera;
 
-		protected Transform _camTr;
+		[HideInInspector]
+		public Transform _camTr;
 		protected bool _camLastKnownHDR;
 		protected static Mesh _cubeMesh = null;
 

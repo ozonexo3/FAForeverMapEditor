@@ -160,7 +160,7 @@ namespace OzoneDecals
 			var copy2id = Shader.PropertyToID("_CameraGBufferTexture2Copy");
 			_bufferDeferred.GetTemporaryRT(copy2id, -1, -1, 0, FilterMode.Bilinear, RenderTextureFormat.ARGB32);
 
-			//_bufferDeferred.Blit(BuiltinRenderTextureType.GBuffer2, copy2id);
+			_bufferDeferred.Blit(BuiltinRenderTextureType.GBuffer2, copy2id);
 
 			var allDecalEnum = _Decals.GetEnumerator();
 			while (allDecalEnum.MoveNext())
@@ -202,7 +202,7 @@ namespace OzoneDecals
 								if (n == 1023)
 								{
 									//_bufferDeferred.Blit(BuiltinRenderTextureType.GBuffer1, copy1id);
-									_bufferDeferred.Blit(BuiltinRenderTextureType.GBuffer2, copy2id);
+									//_bufferDeferred.Blit(BuiltinRenderTextureType.GBuffer2, copy2id);
 
 									_bufferDeferred.SetRenderTarget(_normalRenderTarget, BuiltinRenderTextureType.CameraTarget);
 									_instancedBlock.Clear();
@@ -238,7 +238,7 @@ namespace OzoneDecals
 				{
 					// Create of copy of GBuffer1 (specular / smoothness) and GBuffer 2 (normal)
 					//_bufferDeferred.Blit(BuiltinRenderTextureType.GBuffer1, copy1id);
-					_bufferDeferred.Blit(BuiltinRenderTextureType.GBuffer2, copy2id);
+					//_bufferDeferred.Blit(BuiltinRenderTextureType.GBuffer2, copy2id);
 
 					_bufferDeferred.SetRenderTarget(_normalRenderTarget, BuiltinRenderTextureType.CameraTarget);
 
@@ -254,6 +254,7 @@ namespace OzoneDecals
 
 		public static float DecalDist(Transform tr)
 		{
+			//return tr.localPosition - Current
 			return Current._camTr.InverseTransformPoint(tr.position).z;
 		}
 

@@ -65,12 +65,14 @@ float2 uv = i.uv.xy / i.uv.w; \
 float depth = SAMPLE_DEPTH_TEXTURE(_CameraDepthTexture, uv); \
 depth = Linear01Depth(depth); \
 float CutoffDistance = UNITY_ACCESS_INSTANCED_PROP(_CutOffLOD) * 0.4; \
-float blend = clamp((UNITY_ACCESS_INSTANCED_PROP(_CutOffLOD) - depth) / CutoffDistance, 0, 1 ); \
+float blend = clamp((UNITY_ACCESS_INSTANCED_PROP(_CutOffLOD) - (depth)) / CutoffDistance, 0, 1 ); \
+blend = smoothstep(UNITY_ACCESS_INSTANCED_PROP(_CutOffLOD) * 1.5, CutoffDistance, depth); \
 CutoffDistance = UNITY_ACCESS_INSTANCED_PROP(_NearCutOffLOD); \
 blend *= clamp((depth - CutoffDistance) / CutoffDistance, 0, 1 ); \
 float4 vpos = float4(i.ray * depth,1); \
 float3 wpos = mul(unity_CameraToWorld, vpos).xyz; \
 float3 clipPos = mul(unity_WorldToObject, float4(wpos, 1)).xyz; \
+clipPos.y *= 0.2f; \
 clip(0.5f - abs(clipPos.xyz)); \
 float2 texUV = TRANSFORM_TEX((clipPos.xz + 0.5), _MainTex); \
 texUV = half2(texUV.x, 1 - texUV.y);

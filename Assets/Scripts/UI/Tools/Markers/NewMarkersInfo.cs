@@ -23,6 +23,7 @@ namespace EditMap
 
 		void OnEnable()
 		{
+			Selection.SelectionManager.Current.DisableLayer = 9;
 			Selection.SelectionManager.Current.SetRemoveAction(DestroyMarkers);
 			Selection.SelectionManager.Current.SetSelectionChangeAction(SelectMarkers);
 

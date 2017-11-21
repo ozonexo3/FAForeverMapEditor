@@ -28,6 +28,16 @@ public class DecalsControler : MonoBehaviour {
 		return ToReturn;
 	}
 
+	public static GameObject[] GetAllDecalsGo()
+	{
+		GameObject[] ToReturn = new GameObject[Current.AllDecals.Count];
+		for (int i = 0; i < ToReturn.Length; i++)
+		{
+			ToReturn[i] = Current.AllDecals[i].gameObject;
+		}
+		return ToReturn;
+	}
+
 
 	public static void AddDecal(OzoneDecal dc)
 	{
@@ -50,11 +60,13 @@ public class DecalsControler : MonoBehaviour {
 	private void Update()
 	{
 		int count = AllDecals.Count;
-
-		for(int i = 0; i < count; i++)
+		Vector3 LastPos = OzoneDecalRenderer.Current._camTr.position;
+		/*
+		for (int i = 0; i < count; i++)
 		{
-			AllDecals[i].LastDistance = OzoneDecalRenderer.DecalDist(AllDecals[i].tr);
+			AllDecals[i].LastDistance = (AllDecals[i].tr.localPosition - LastPos).sqrMagnitude;
 		}
+		*/
 	}
 
 

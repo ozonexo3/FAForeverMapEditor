@@ -218,6 +218,7 @@ Shader "MapEditor/FaWater" {
 	   		float  NDotL = saturate( dot(-viewVector, N) );
 			float fresnel = tex2D( FresnelSampler, float2(waterDepth, NDotL) ).r;
 			fresnel = pow(fresnel, fresnelPower) + fresnelBias;
+			//fresnel = pow(fresnel, 0.454545);
 
 			// figure out the sun reflection
 			float SunDotR = saturate(dot(-R, SunDirection));
@@ -226,6 +227,7 @@ Shader "MapEditor/FaWater" {
 
     		// lerp the reflections together
    			reflectedPixels = lerp( skyReflection, reflectedPixels, saturate(unitreflectionAmount * reflectedPixels.w));
+			//reflectedPixels = skyReflection;
    			
    			// we want to lerp in some of the water color based on depth, but
 			// not totally on depth as it gets clamped
@@ -240,6 +242,7 @@ Shader "MapEditor/FaWater" {
 		    
 		   	// lerp the reflection into the refraction   
 			refractedPixels = lerp( refractedPixels, reflectedPixels, saturate(skyreflectionAmount * fresnel));
+			//refractedPixels = skyReflection;
 			//refractedPixels = 
 			
 			// add in the sky reflection

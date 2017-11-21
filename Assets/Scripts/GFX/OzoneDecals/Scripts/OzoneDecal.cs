@@ -20,6 +20,7 @@ namespace OzoneDecals
 		public float CutOffLOD;
 		public float NearCutOffLOD;
 		public float WorldCutoffDistance;
+		public float FrustumSize;
 
 #if UNITY_EDITOR
 		public string Text0Path = "";
@@ -104,8 +105,8 @@ namespace OzoneDecals
 
 			//LastDistance = OzoneDecalRenderer.DecalDist(tr);
 
-			if (LastDistance > WorldCutoffDistance)
-				return;
+			//if (LastDistance > WorldCutoffDistance * WorldCutoffDistance)
+			//	return;
 
 			OzoneDecalRenderer.AddDecal(this, Camera.current);
 			/*
