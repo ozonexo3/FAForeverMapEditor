@@ -113,9 +113,9 @@ namespace EditMap
 
 				LOD[] Old = Dec.lg.GetLODs();
 				//float FrustumHeight = (Dec.Component.Scale.z * 0.1f) * 2 * Dec.WorldCutoffDistance * Mathf.Tan(CameraControler.Current.Cam.fieldOfView * 0.5f * Mathf.Deg2Rad);
-				float FrustumHeight = FrustumHeightAtDistance(Dec.WorldCutoffDistance);
+				float FrustumHeight = FrustumHeightAtDistance(Dec.WorldCutoffDistance * 1.02f);
 
-				Dec.FrustumSize = (Dec.Component.Scale.z * 0.11f) / FrustumHeight;
+				Dec.FrustumSize = (Dec.Component.Scale.z * 0.1f) / FrustumHeight;
 				Old[0].screenRelativeTransitionHeight = Dec.FrustumSize;
 				Dec.lg.SetLODs(Old);
 

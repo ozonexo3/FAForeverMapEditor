@@ -57,7 +57,7 @@ namespace Selection
 			if (Input.GetMouseButtonDown(0))
 			{
 
-				Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+				Ray ray = CameraControler.Current.Cam.ScreenPointToRay(Input.mousePosition);
 				RaycastHit hit;
 				if (Physics.Raycast(ray, out hit, 1000, ControlerLayers))
 				{
@@ -161,7 +161,7 @@ namespace Selection
 		{
 			if (!AllowSelection)
 				return;
-			Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+			Ray ray = CameraControler.Current.Cam.ScreenPointToRay(Input.mousePosition);
 			RaycastHit hit;
 			if (Physics.Raycast(ray, out hit, 1000, SelectionLayers))
 			{
@@ -388,7 +388,7 @@ namespace Selection
 				Draged = true;
 			}
 
-			Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+			Ray ray = CameraControler.Current.Cam.ScreenPointToRay(Input.mousePosition);
 			Vector3 NewPos = PosOnControler(ray);
 			Vector3 Offset = NewPos - ControlerClickPoint;
 

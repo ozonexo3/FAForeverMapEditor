@@ -23,51 +23,69 @@ public partial struct GetGamedataFile
 			NewProp.gameObject.name = BP.Name;
 
 			if (BP.LODs.Length > 0)
-			{ 
-				if(BP.LODs[0].Mesh)
+			{
+				if (BP.LODs[0].Mesh)
+				{
 					NewProp.Mf.sharedMesh = BP.LODs[0].Mesh;
-				NewProp.Mr.sharedMaterial = BP.LODs[0].Mat;
+					NewProp.Mr.sharedMaterial = BP.LODs[0].Mat;
+				}
+				bool Lod1Exist = BP.LODs.Length > 1 && BP.LODs[1].Mesh != null;
+				if (Lod1Exist)
+				{
+					NewProp.Mf1.sharedMesh = BP.LODs[1].Mesh;
+					NewProp.Mr1.sharedMaterial = BP.LODs[1].Mat;
+				}
+				else
+				{
+					NewProp.Mf1.gameObject.SetActive(false);
+				}
+				bool Lod2Exist = BP.LODs.Length > 2 && BP.LODs[2].Mesh != null;
+				if (Lod2Exist)
+				{
+					NewProp.Mf2.sharedMesh = BP.LODs[2].Mesh;
+					NewProp.Mr2.sharedMaterial = BP.LODs[2].Mat;
+				}
+				else
+				{
+					NewProp.Mf2.gameObject.SetActive(false);
+				}
 
 				scale.x *= BP.LocalScale.x;
 				scale.y *= BP.LocalScale.y;
 				scale.z *= BP.LocalScale.z;
 				NewProp.Tr.localScale = scale;
+				Lods = NewProp.Lodg.GetLODs();
 
 				float DeltaSize = 0.01f;
 				if (BP.LODs[0].Mesh != null)
 				{
-					
-					//Vector3 RealSize = NewProp.Mf.sharedMesh.bounds.size;
-					//RealSize.x *= scale.x;
-					//RealSize.y *= scale.y;
-					//RealSize.z *= scale.z;
-
-					//DeltaSize = Mathf.Max(RealSize.x, RealSize.y);
-					//DeltaSize = Mathf.Max(DeltaSize, RealSize.z);
-
-					//DeltaSize *= 5;
-
-					//NewProp.Lodg.RecalculateBounds();
-					/*
-					DeltaSize = NewProp.Lodg.size * Mathf.Max(scale.x, scale.y, scale.z) * 0.6f;
-					DeltaSize -= 0.04f;
-
-					if (DeltaSize < 0.01f)
-						DeltaSize = 0.01f;
-						*/
 					Vector3 bs = BP.LODs[0].Mesh.bounds.size;
 					DeltaSize = Mathf.Max(scale.x * bs.x, scale.y * bs.y, scale.z * bs.z);
+					Lods[0].screenRelativeTransitionHeight = DeltaSize / DecalsInfo.FrustumHeightAtDistance(4);
+				}
+				if (Lod1Exist)
+				{
+					Vector3 bs = BP.LODs[1].Mesh.bounds.size;
+					DeltaSize = Mathf.Max(scale.x * bs.x, scale.y * bs.y, scale.z * bs.z);
+					Lods[1].screenRelativeTransitionHeight = DeltaSize / DecalsInfo.FrustumHeightAtDistance(25);
+				}
+				if (Lod2Exist)
+				{
+					Vector3 bs = BP.LODs[2].Mesh.bounds.size;
+					DeltaSize = Mathf.Max(scale.x * bs.x, scale.y * bs.y, scale.z * bs.z);
+					Lods[2].screenRelativeTransitionHeight = DeltaSize / DecalsInfo.FrustumHeightAtDistance(60);
 				}
 
-				Lods = NewProp.Lodg.GetLODs();
-				//Lods[0].screenRelativeTransitionHeight = Mathf.Lerp(0.018f, 0.31f, DeltaSize);
-				Lods[0].screenRelativeTransitionHeight = DeltaSize / DecalsInfo.FrustumHeightAtDistance(25);
+
+				if(!Lod1Exist && !Lod2Exist)
+					Lods = new LOD[] { Lods[0] };
+				else if(!Lod2Exist)
+					Lods = new LOD[] { Lods[0], Lods[1] };
+
 				NewProp.Lodg.SetLODs(Lods);
 
 				NewProp.Tr.localPosition = position;
 				NewProp.Tr.localRotation = rotation;
-
-
 			}
 			else
 			{
@@ -251,23 +269,15 @@ public partial struct GetGamedataFile
 
 			ToReturn.BP.LODs[i].Mat.name = ToReturn.BP.Name + " mat";
 
-			/*
-			{ // Set AlphaTest standard shader
-				ToReturn.BP.LODs[i].Mat.SetFloat("_Mode", 1);
-				ToReturn.BP.LODs[i].Mat.SetOverrideTag("RenderType", "TransparentCutout");
-				ToReturn.BP.LODs[i].Mat.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.One);
-				ToReturn.BP.LODs[i].Mat.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.Zero);
-				ToReturn.BP.LODs[i].Mat.SetInt("_ZWrite", 1);
-				ToReturn.BP.LODs[i].Mat.EnableKeyword("_ALPHATEST_ON");
-				ToReturn.BP.LODs[i].Mat.DisableKeyword("_ALPHABLEND_ON");
-				ToReturn.BP.LODs[i].Mat.DisableKeyword("_ALPHAPREMULTIPLY_ON");
-				ToReturn.BP.LODs[i].Mat.renderQueue = (int)UnityEngine.Rendering.RenderQueue.AlphaTest;
 
-				ToReturn.BP.LODs[i].Mat.SetColor("_SpecColor", Color.black);
-				ToReturn.BP.LODs[i].Mat.SetFloat("_Glossiness", 1);
-				ToReturn.BP.LODs[i].Mat.enableInstancing = true;
+
+			if(i > 0 && (string.IsNullOrEmpty(ToReturn.BP.LODs[i].AlbedoName) || ToReturn.BP.LODs[i].AlbedoName == ToReturn.BP.LODs[0].AlbedoName)
+				&& (string.IsNullOrEmpty(ToReturn.BP.LODs[i].NormalsName) || ToReturn.BP.LODs[i].NormalsName == ToReturn.BP.LODs[0].NormalsName))
+			{
+
+				ToReturn.BP.LODs[i].Mat = ToReturn.BP.LODs[0].Mat;
+				continue;
 			}
-			*/
 
 			if (ToReturn.BP.LODs[i].AlbedoName.Length == 0)
 			{
@@ -280,8 +290,6 @@ public partial struct GetGamedataFile
 
 			ToReturn.BP.LODs[i].Albedo = LoadTexture2DFromGamedata(scd, ToReturn.BP.LODs[i].AlbedoName, false);
 			ToReturn.BP.LODs[i].Albedo.anisoLevel = 2;
-			//if(ToReturn.BP.LODs[i].Albedo != null)
-			//	ToReturn.BP.LODs[i].Albedo.mipMapBias = PropTexturesMipMapBias;
 			ToReturn.BP.LODs[i].Mat.SetTexture("_MainTex", ToReturn.BP.LODs[i].Albedo);
 
 
