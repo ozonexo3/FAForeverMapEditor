@@ -16,7 +16,7 @@ public partial struct GetGamedataFile
 		public BluePrint BP;
 
 
-		public PropGameObject CreatePropGameObject(Vector3 position, Quaternion rotation, Vector3 scale)
+		public PropGameObject CreatePropGameObject(Vector3 position, Quaternion rotation, Vector3 scale, bool AllowFarLod = true)
 		{
 
 			PropGameObject NewProp = GameObject.Instantiate(PropsInfo.Current.PropObjectPrefab, PropsInfo.Current.PropsParent).GetComponent<PropGameObject>();
@@ -39,7 +39,7 @@ public partial struct GetGamedataFile
 				{
 					NewProp.Mf1.gameObject.SetActive(false);
 				}
-				bool Lod2Exist = BP.LODs.Length > 2 && BP.LODs[2].Mesh != null;
+				bool Lod2Exist = AllowFarLod && BP.LODs.Length > 2 && BP.LODs[2].Mesh != null;
 				if (Lod2Exist)
 				{
 					NewProp.Mf2.sharedMesh = BP.LODs[2].Mesh;
@@ -67,13 +67,13 @@ public partial struct GetGamedataFile
 				{
 					Vector3 bs = BP.LODs[1].Mesh.bounds.size;
 					DeltaSize = Mathf.Max(scale.x * bs.x, scale.y * bs.y, scale.z * bs.z);
-					Lods[1].screenRelativeTransitionHeight = DeltaSize / DecalsInfo.FrustumHeightAtDistance(25);
+					Lods[1].screenRelativeTransitionHeight = DeltaSize / DecalsInfo.FrustumHeightAtDistance(20);
 				}
 				if (Lod2Exist)
 				{
 					Vector3 bs = BP.LODs[2].Mesh.bounds.size;
 					DeltaSize = Mathf.Max(scale.x * bs.x, scale.y * bs.y, scale.z * bs.z);
-					Lods[2].screenRelativeTransitionHeight = DeltaSize / DecalsInfo.FrustumHeightAtDistance(60);
+					Lods[2].screenRelativeTransitionHeight = DeltaSize / DecalsInfo.FrustumHeightAtDistance(55);
 				}
 
 

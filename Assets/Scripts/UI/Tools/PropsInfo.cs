@@ -175,6 +175,8 @@ namespace EditMap
 			int Count = Props.Count;
 			LoadedCount = 0;
 
+			bool AllowFarLod = Count < 10000;
+
 			for (int i = 0; i < Count; i++)
 			{
 				bool NewProp = false;
@@ -214,7 +216,7 @@ namespace EditMap
 					AllPropsTypes[GroupId].PropObject.CreatePropGameObject(
 						ScmapEditor.ScmapPosToWorld(Props[i].Position),
 						MassMath.QuaternionFromRotationMatrix(Props[i].RotationX, Props[i].RotationY, Props[i].RotationZ), 
-						Props[i].Scale
+						Props[i].Scale, AllowFarLod
 						)
 					);
 
