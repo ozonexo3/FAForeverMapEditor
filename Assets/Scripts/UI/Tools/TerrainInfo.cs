@@ -707,57 +707,48 @@ namespace EditMap
 			int SizeLeft = (size - OffsetLeft) - OffsetRight;
 			int x = 0;
 			int y = 0;
-			Color BrushValue = Color.white;
-			float SambleBrush = 0;
+			//Color BrushValue = Color.white;
+			float SampleBrush = 0;
 			float PixelPower = 0;
 
 
+			float BrushStrenghtValue = BrushStrengthSlider.value;
+			float PaintStrength = BrushStrenghtValue * 0.00005f * (Invert ? (-1) : 1);
+			float SizeSmooth = Mathf.Clamp01(size / 10f) * 10;
 
 			for (i = 0; i < SizeDown; i++)
 			{
 				for (j = 0; j < SizeLeft; j++)
 				{
 					// Brush strength
-					x = (int)(((i + OffsetDown) / (float)size) * BrushGenerator.Current.PaintImage[id].width);
-					y = (int)(((j + OffsetLeft) / (float)size) * BrushGenerator.Current.PaintImage[id].height);
-					BrushValue = BrushGenerator.Current.PaintImage[id].GetPixel(y, x);
-					SambleBrush = BrushValue.r;
-					if (SambleBrush >= 0.02f)
+					x = (int)(((i + OffsetDown) / (float)size) * BrushGenerator.Current.PaintImageWidths[id]);
+					y = (int)(((j + OffsetLeft) / (float)size) * BrushGenerator.Current.PaintImageHeights[id]);
+					//BrushValue = BrushGenerator.Current.PaintImage[id].GetPixel(y, x);
+					//BrushValue = BrushGenerator.Current.GetPixel(y, x);
+					//SambleBrush = BrushValue.r;
+					//SampleBrush = BrushGenerator.Current.GetBrushValue(id, y, x);
+					SampleBrush = BrushGenerator.Current.Values[id][y + BrushGenerator.Current.PaintImageWidths[id] * x];
+					if (SampleBrush >= 0.02f)
 					{
 						switch (BrushPaintType)
 						{
 							case 1: // Smooth
 								CenterHeight = GetNearValues(ref heights, i, j);
 
-								PixelPower = Mathf.Pow(Mathf.Abs(heights[i, j] - CenterHeight), 0.5f) * 10 * Mathf.Clamp01(size / 10f);
+								PixelPower = Mathf.Pow(Mathf.Abs(heights[i, j] - CenterHeight), 0.5f) * SizeSmooth;
 								//PixelPower = 10;
 
-								heights[i, j] = Mathf.Lerp(heights[i, j], CenterHeight, BrushStrengthSlider.value * 0.4f * Mathf.Pow(SambleBrush, 2) * PixelPower);
+								heights[i, j] = Mathf.Lerp(heights[i, j], CenterHeight, BrushStrenghtValue * 0.4f * Mathf.Pow(SampleBrush, 2) * PixelPower);
 								break;
 							case 2: // Sharp
 								PixelPower = heights[i, j] - CenterHeight;
-								heights[i, j] += Mathf.Lerp(PixelPower, 0, PixelPower * 10) * BrushStrengthSlider.value * 0.01f * Mathf.Pow(SambleBrush, 2);
+								heights[i, j] += Mathf.Lerp(PixelPower, 0, PixelPower * 10) * BrushStrenghtValue * 0.01f * Mathf.Pow(SampleBrush, 2);
 								break;
 							default:
-								heights[i, j] += SambleBrush * BrushStrengthSlider.value * 0.00005f * (Invert ? (-1) : 1);
+								heights[i, j] += SampleBrush * PaintStrength;
 								break;
 						}
 
-
-						/*if (Smooth || SelectedBrush == 2)
-						{
-							PixelPower = Mathf.Abs(heights[i, j] - CenterHeight);
-							heights[i, j] = Mathf.Lerp(heights[i, j], CenterHeight, BrushStrengthSlider.value * 0.4f * Mathf.Pow(SambleBrush, 2) * PixelPower);
-						}
-						else if (SelectedBrush == 3)
-						{
-							PixelPower = heights[i, j] - CenterHeight;
-							heights[i, j] += Mathf.Lerp(PixelPower, 0, PixelPower * 10) * BrushStrengthSlider.value * 0.01f * Mathf.Pow(SambleBrush, 2);
-						}
-						else
-						{
-							heights[i, j] += SambleBrush * BrushStrengthSlider.value * 0.0002f * (Invert ? (-1) : 1);
-						}*/
 
 						heights[i, j] = Mathf.Clamp(heights[i, j], Min, Max);
 					}

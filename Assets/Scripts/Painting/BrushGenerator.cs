@@ -23,6 +23,20 @@ public class BrushGenerator : MonoBehaviour
 	Vector3 BrushPos;
 	public int LastSym = 0;
 
+	public Color[][] Pixels;
+	public float[][] Values;
+	public int[] PaintImageWidths;
+	public int[] PaintImageHeights;
+
+	public Color GetPixel(int id, int x, int y)
+	{
+		return Pixels[id][x + y];
+	}
+
+	public float GetBrushValue(int id, int x, int y)
+	{
+		return Values[id][x + PaintImageWidths[id] * y];
+	}
 
 	private void Awake()
 	{
@@ -151,6 +165,8 @@ public class BrushGenerator : MonoBehaviour
 				PaintPositions[0] = BrushPos;
 				break;
 		}
+
+
 	}
 
 	public void GenerateRotationSymmetry(Quaternion Rotation)
@@ -280,7 +296,7 @@ public class BrushGenerator : MonoBehaviour
 				break;
 			case 8:
 				int Count = PlayerPrefs.GetInt("SymmetryAngleCount", 2);
-				PaintImage = new Texture2D[Count + 1];
+				PaintImage = new Texture2D[Count];
 				PaintImage[0] = RotatedBrush;
 				float angle = 360.0f / (float)Count;
 				for (int i = 1; i < Count; i++)
@@ -292,6 +308,23 @@ public class BrushGenerator : MonoBehaviour
 				PaintImage = new Texture2D[1];
 				PaintImage[0] = RotatedBrush;
 				break;
+		}
+
+		PaintImageWidths = new int[PaintImage.Length];
+		PaintImageHeights = new int[PaintImage.Length];
+
+		Pixels = new Color[PaintImage.Length][];
+		Values = new float[PaintImage.Length][];
+		for (int i = 0; i < PaintImage.Length; i++)
+		{
+			Pixels[i] = PaintImage[i].GetPixels();
+			Values[i] = new float[Pixels[i].Length];
+			for(int v = 0; v < Values[i].Length; v++)
+			{
+				Values[i][v] = Pixels[i][v].r;
+			}
+			PaintImageWidths[i] = PaintImage[i].width;
+			PaintImageHeights[i] = PaintImage[i].height;
 		}
 	}
 	#endregion

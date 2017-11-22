@@ -705,8 +705,9 @@ namespace EditMap
 			//float CenterHeight = 0;
 			float BrushStrength = Mathf.Pow(BrushStrengthSlider.value * 0.01f, 1);
 			float inverted = (Invert ? (-1) : 1);
-			float SambleBrush = 0;
-			Color BrushValue;
+			BrushStrength *= inverted;
+			float SampleBrush = 0;
+			//Color BrushValue;
 			int x = 0;
 			int y = 0;
 			int i = 0;
@@ -726,23 +727,31 @@ namespace EditMap
 
 			StratumTexSampleHeight = (size - OffsetDown) - OffsetTop;
 
+			int PaintType = PaintChannel;
+			if (LinearBrush.isOn)
+				PaintType += 10;
+
 			for (i = 0; i < (size - OffsetDown) - OffsetTop; i++)
 			{
 				for (j = 0; j < (size - OffsetLeft) - OffsetRight; j++)
 				{
-					float angle = Vector3.Angle(Vector3.up, Map.Teren.terrainData.GetInterpolatedNormal((posXInTerrain - offset + OffsetLeft + i) / (float)hmWidth, 1 - (posYInTerrain - offset + OffsetDown + j) / (float)hmHeight));
-					if ((angle < Min && Min > 0) || (angle > Max && Max < 90))
-						continue;
+
+					if (Min <= 0 && Max >= 0)
+					{
+						float angle = Vector3.Angle(Vector3.up, Map.Teren.terrainData.GetInterpolatedNormal((posXInTerrain - offset + OffsetLeft + i) / (float)hmWidth, 1 - (posYInTerrain - offset + OffsetDown + j) / (float)hmHeight));
+						if ((angle < Min && Min > 0) || (angle > Max && Max < 90))
+							continue;
+					}
 
 					// Brush strength
-					x = (int)(((i + OffsetDown) / (float)size) * BrushGenerator.Current.PaintImage[id].width);
-					y = (int)(((j + OffsetLeft) / (float)size) * BrushGenerator.Current.PaintImage[id].height);
-					BrushValue = BrushGenerator.Current.PaintImage[id].GetPixel(y, x);
-					SambleBrush = BrushValue.r;
+					x = (int)(((i + OffsetDown) / (float)size) * BrushGenerator.Current.PaintImageWidths[id]);
+					y = (int)(((j + OffsetLeft) / (float)size) * BrushGenerator.Current.PaintImageHeights[id]);
+					//BrushValue = BrushGenerator.Current.PaintImage[id].GetPixel(y, x);
+					//SambleBrush = BrushValue.r;
+					SampleBrush = BrushGenerator.Current.Values[id][y + BrushGenerator.Current.PaintImageWidths[id] * x];
 
 
-
-					if (SambleBrush >= 0.02f)
+					if (SampleBrush >= 0.02f)
 					{
 						if (Smooth || SelectedBrush == 2)
 						{
@@ -756,31 +765,33 @@ namespace EditMap
 						}
 						else
 						{
+							int XY = i + j * StratumTexSampleHeight;
+
 							switch (PaintChannel)
 							{
 								case 0:
-									if (LinearBrush.isOn)
-										StratumData[XyToColorId(i, j)].r = ConvertToLinear(StratumData[XyToColorId(i, j)].r, SambleBrush * BrushStrength * inverted);
-									else
-										StratumData[XyToColorId(i, j)].r += SambleBrush * BrushStrength * inverted;
+										StratumData[XY].r += SampleBrush * BrushStrength;
 									break;
 								case 1:
-									if (LinearBrush.isOn)
-										StratumData[XyToColorId(i, j)].g = ConvertToLinear(StratumData[XyToColorId(i, j)].g, SambleBrush * BrushStrength * inverted);
-									else
-										StratumData[XyToColorId(i, j)].g += SambleBrush * BrushStrength * inverted;
+										StratumData[XY].g += SampleBrush * BrushStrength;
 									break;
 								case 2:
-									if (LinearBrush.isOn)
-										StratumData[XyToColorId(i, j)].b = ConvertToLinear(StratumData[XyToColorId(i, j)].b, SambleBrush * BrushStrength * inverted);
-									else
-										StratumData[XyToColorId(i, j)].b += SambleBrush * BrushStrength * inverted;
+										StratumData[XY].b += SampleBrush * BrushStrength;
 									break;
 								case 3:
-									if (LinearBrush.isOn)
-										StratumData[XyToColorId(i, j)].a = ConvertToLinear(StratumData[XyToColorId(i, j)].a, SambleBrush * BrushStrength * inverted);
-									else
-										StratumData[XyToColorId(i, j)].a += SambleBrush * BrushStrength * inverted;
+										StratumData[XY].a += SampleBrush * BrushStrength;
+									break;
+								case 10:
+										StratumData[XY].r = ConvertToLinear(StratumData[XY].r, SampleBrush * BrushStrength);
+									break;
+								case 11:
+										StratumData[XY].g = ConvertToLinear(StratumData[XY].g, SampleBrush * BrushStrength);
+									break;
+								case 12:
+										StratumData[XY].b = ConvertToLinear(StratumData[XY].b, SampleBrush * BrushStrength);
+									break;
+								case 13:
+										StratumData[XY].a = ConvertToLinear(StratumData[XY].a, SampleBrush * BrushStrength);
 									break;
 							}
 							//heights[i,j] += SambleBrush * BrushStrengthSlider.value * 0.0002f * (Invert?(-1):1);

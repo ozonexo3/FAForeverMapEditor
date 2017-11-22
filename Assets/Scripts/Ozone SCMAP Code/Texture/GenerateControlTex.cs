@@ -11,18 +11,26 @@ public class GenerateControlTex : MonoBehaviour
 		Current = this;
 	}
 
-#region Water
+	public static void StopAllTasks()
+	{
+		if (GeneratingNormalTex)
+			Current.StopCoroutine(NormalCoroutine);
+		if(GeneratingWaterTex)
+			Current.StopCoroutine(WaterCoroutine);
+	}
+
+	#region Water
 
 	static bool GeneratingWaterTex = false;
 	static bool BufforWaterTex = false;
-
+	static Coroutine WaterCoroutine;
 	public static void GenerateWater(){
 		if (GeneratingWaterTex)
 		{
 			BufforWaterTex = true;
 		}
 		else
-			Current.StartCoroutine(Current.GeneratingWater());
+			WaterCoroutine = Current.StartCoroutine(Current.GeneratingWater());
 	}
 
 	public IEnumerator GeneratingWater()
@@ -83,6 +91,8 @@ public class GenerateControlTex : MonoBehaviour
 	#endregion
 
 	#region Normal
+
+	static Coroutine NormalCoroutine;
 	public static void GenerateNormal()
 	{
 		if (GeneratingNormalTex)
@@ -90,8 +100,10 @@ public class GenerateControlTex : MonoBehaviour
 			BufforNormalTex = true;
 		}
 		else
-			Current.StartCoroutine(Current.GeneratingNormal());
+			NormalCoroutine = Current.StartCoroutine(Current.GeneratingNormal());
 	}
+
+
 
 
 	static bool GeneratingNormalTex = false;
@@ -122,7 +134,7 @@ public class GenerateControlTex : MonoBehaviour
 				AllColors[i] = new Color(0, 1f - (Normal.z * 0.5f + 0.5f), 0, Normal.x * 0.5f + 0.5f);
 
 				counter++;
-				if(counter > 80000)
+				if(counter > 40000)
 				{
 					counter = 0;
 					yield return null;

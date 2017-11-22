@@ -780,6 +780,7 @@ public class ScmapEditor : MonoBehaviour
 		EditMap.PropsInfo.UnloadProps();
 		Markers.MarkersControler.UnloadMarkers();
 		DecalsControler.Current.UnloadDecals();
+		GenerateControlTex.StopAllTasks();
 	}
 	#endregion
 

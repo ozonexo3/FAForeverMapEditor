@@ -47,6 +47,7 @@ public class PropsRenderer : MonoBehaviour {
 	const int PauseEvery = 1200;
 	IEnumerator PropsUpdater()
 	{
+		yield return null;
 		int step = 0;
 		int count = PropsInfo.AllPropsTypes.Count;
 		int i = 0;
