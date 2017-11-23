@@ -28,6 +28,7 @@ public class CameraControler : MonoBehaviour {
 					Vector2 			prevMausePos = Vector2.zero;
 
 	public			LayerMask			Mask;
+	public LayerMask MaskCursor;
 
 	public			Transform			ReflectionCamera;
 	public			Text				CursorInfo;
@@ -348,8 +349,11 @@ public class CameraControler : MonoBehaviour {
 					LastForward = false;
 				}
 				
+			}
 
 
+			if (Physics.Raycast(ray, out hit, 1000, MaskCursor))
+			{
 				Vector3 GameplayCursorPos = ScmapEditor.WorldPosToScmap(hit.point);
 				GameplayCursorPos.y = hit.point.y * 10;
 				GameplayCursorPos.z = ScmapEditor.Current.map.Height - GameplayCursorPos.z;

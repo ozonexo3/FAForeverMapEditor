@@ -39,7 +39,7 @@ public partial struct GetGamedataFile
 				{
 					NewProp.Mf1.gameObject.SetActive(false);
 				}
-				bool Lod2Exist = AllowFarLod && BP.LODs.Length > 2 && BP.LODs[2].Mesh != null;
+				bool Lod2Exist = Lod1Exist && AllowFarLod && BP.LODs.Length > 2 && BP.LODs[2].Mesh != null;
 				if (Lod2Exist)
 				{
 					NewProp.Mf2.sharedMesh = BP.LODs[2].Mesh;
@@ -61,7 +61,7 @@ public partial struct GetGamedataFile
 				{
 					Vector3 bs = BP.LODs[0].Mesh.bounds.size;
 					DeltaSize = Mathf.Max(scale.x * bs.x, scale.y * bs.y, scale.z * bs.z);
-					Lods[0].screenRelativeTransitionHeight = DeltaSize / DecalsInfo.FrustumHeightAtDistance(4);
+					Lods[0].screenRelativeTransitionHeight = DeltaSize / DecalsInfo.FrustumHeightAtDistance(Lod1Exist?(4):(20));
 				}
 				if (Lod1Exist)
 				{

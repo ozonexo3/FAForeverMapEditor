@@ -235,8 +235,8 @@ namespace EditMap
 					{
 						if (UpdateBrushPosition(false))
 						{
-							SymmetryPaint();
 						}
+						SymmetryPaint();
 					}
 					else
 					{
@@ -596,6 +596,9 @@ namespace EditMap
 			{
 				return false;
 			}
+			float SizeXprop = MapLuaParser.GetMapSizeX() / 512f;
+			float SizeZprop = MapLuaParser.GetMapSizeY() / 512f;
+			float BrushSizeValue = BrushSizeSlider.value;
 
 
 			MouseBeginClick = Input.mousePosition;
@@ -608,11 +611,11 @@ namespace EditMap
 
 				Vector3 tempCoord = Map.Teren.gameObject.transform.InverseTransformPoint(BrushPos);
 				Vector3 coord = Vector3.zero;
-				coord.x = (tempCoord.x - (int)BrushSizeSlider.value * MapLuaParser.GetMapSizeX() * 0.0001f) / Map.Teren.terrainData.size.x; // TODO 0.05 ?? this should be terrain proportion?
+				coord.x = (tempCoord.x - (int)(BrushSizeValue / SizeXprop) * MapLuaParser.GetMapSizeX() * 0.0001f) / Map.Teren.terrainData.size.x; // TODO 0.05 ?? this should be terrain proportion?
 																																						  //coord.y = tempCoord.y / Map.Teren.terrainData.size.y;
-				coord.z = (tempCoord.z - (int)BrushSizeSlider.value * MapLuaParser.GetMapSizeY() * 0.0001f) / Map.Teren.terrainData.size.z;
+				coord.z = (tempCoord.z - (int)(BrushSizeValue / SizeZprop) * MapLuaParser.GetMapSizeY() * 0.0001f) / Map.Teren.terrainData.size.z;
 
-				TerrainMaterial.SetFloat("_BrushSize", BrushSizeSlider.value);
+				TerrainMaterial.SetFloat("_BrushSize", BrushSizeValue / ((SizeXprop + SizeZprop) / 2f));
 				TerrainMaterial.SetFloat("_BrushUvX", coord.x);
 				TerrainMaterial.SetFloat("_BrushUvY", coord.z);
 
@@ -647,6 +650,7 @@ namespace EditMap
 
 			int hmWidth = Map.Teren.terrainData.heightmapWidth;
 			int hmHeight = Map.Teren.terrainData.heightmapHeight;
+			float MaxHeight = Map.Teren.terrainData.size.y;
 
 			Vector3 tempCoord = Map.Teren.gameObject.transform.InverseTransformPoint(AtPosition);
 			Vector3 coord = Vector3.zero;
@@ -728,7 +732,7 @@ namespace EditMap
 					//SambleBrush = BrushValue.r;
 					//SampleBrush = BrushGenerator.Current.GetBrushValue(id, y, x);
 					SampleBrush = BrushGenerator.Current.Values[id][y + BrushGenerator.Current.PaintImageWidths[id] * x];
-					if (SampleBrush >= 0.02f)
+					if (SampleBrush >= 0.003f)
 					{
 						switch (BrushPaintType)
 						{

@@ -224,9 +224,14 @@ namespace EditMap
 						}
 						else if (Input.GetMouseButton(0))
 						{
-							if (CameraControler.Current.DragStartedGameplay && UpdateBrushPosition(false))
+							if (CameraControler.Current.DragStartedGameplay)
 							{
-								SymmetryPaint();
+								if (UpdateBrushPosition(false))
+								{
+									SymmetryPaint();
+								}
+
+								
 							}
 						}
 						else
@@ -593,6 +598,9 @@ namespace EditMap
 				return false;
 			}
 
+			float SizeXprop = MapLuaParser.GetMapSizeX() / 512f;
+			float SizeZprop = MapLuaParser.GetMapSizeY() / 512f;
+			float BrushSizeValue = BrushSizeSlider.value;
 
 			MouseBeginClick = Input.mousePosition;
 			Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -604,11 +612,11 @@ namespace EditMap
 
 				Vector3 tempCoord = Map.Teren.gameObject.transform.InverseTransformPoint(BrushPos);
 				Vector3 coord = Vector3.zero;
-				coord.x = (tempCoord.x - (int)BrushSizeSlider.value * MapLuaParser.GetMapSizeX() * 0.0001f) / Map.Teren.terrainData.size.x; // TODO 0.05 ?? this should be terrain proportion?
-																																						  //coord.y = tempCoord.y / Map.Teren.terrainData.size.y;
-				coord.z = (tempCoord.z - (int)BrushSizeSlider.value * MapLuaParser.GetMapSizeY() * 0.0001f) / Map.Teren.terrainData.size.z;
+				coord.x = (tempCoord.x - (int)(BrushSizeValue / SizeXprop) * MapLuaParser.GetMapSizeX() * 0.0001f) / Map.Teren.terrainData.size.x; // TODO 0.05 ?? this should be terrain proportion?
+																																				   //coord.y = tempCoord.y / Map.Teren.terrainData.size.y;
+				coord.z = (tempCoord.z - (int)(BrushSizeValue / SizeZprop) * MapLuaParser.GetMapSizeY() * 0.0001f) / Map.Teren.terrainData.size.z;
 
-				TerrainMaterial.SetFloat("_BrushSize", BrushSizeSlider.value);
+				TerrainMaterial.SetFloat("_BrushSize", BrushSizeValue / ((SizeXprop + SizeZprop) / 2f));
 				TerrainMaterial.SetFloat("_BrushUvX", coord.x);
 				TerrainMaterial.SetFloat("_BrushUvY", coord.z);
 
@@ -622,7 +630,7 @@ namespace EditMap
 		void SymmetryPaint()
 		{
 
-			size = (int)BrushSizeSlider.value;
+			size = (int)(BrushSizeSlider.value * 0.5f);
 			ScatterValue = float.Parse(Scatter.text);
 			/*if (ScatterValue < 0)
 				ScatterValue = 0;
@@ -635,7 +643,7 @@ namespace EditMap
 				BrushPos += (Quaternion.Euler (Vector3.up * Random.Range (0, 360)) * Vector3.forward) * Mathf.Lerp(ScatterValue, 0, Mathf.Pow(Random.Range(0f, 1f), 2));
 			}*/
 
-			BrushGenerator.Current.GenerateSymmetry(BrushPos, 0, ScatterValue, BrushSizeSlider.value * 0.03f);
+			BrushGenerator.Current.GenerateSymmetry(BrushPos, 0, ScatterValue, size * 0.03f);
 
 			if (Selected == 1 || Selected == 5)
 				PaintChannel = 0;
@@ -703,7 +711,7 @@ namespace EditMap
 			if (posYInTerrain - offset + size > hmHeight) OffsetTop = posYInTerrain - offset + size - hmHeight;
 
 			//float CenterHeight = 0;
-			float BrushStrength = Mathf.Pow(BrushStrengthSlider.value * 0.01f, 1);
+			float BrushStrength = Mathf.Pow(BrushStrengthSlider.value * 0.01f, 1.5f) * 0.6f;
 			float inverted = (Invert ? (-1) : 1);
 			BrushStrength *= inverted;
 			float SampleBrush = 0;
@@ -749,9 +757,9 @@ namespace EditMap
 					//BrushValue = BrushGenerator.Current.PaintImage[id].GetPixel(y, x);
 					//SambleBrush = BrushValue.r;
 					SampleBrush = BrushGenerator.Current.Values[id][y + BrushGenerator.Current.PaintImageWidths[id] * x];
+					SampleBrush = Mathf.Pow(SampleBrush, 0.454545f);
 
-
-					if (SampleBrush >= 0.02f)
+					if (SampleBrush >= 0.003f)
 					{
 						if (Smooth || SelectedBrush == 2)
 						{
@@ -834,6 +842,10 @@ namespace EditMap
 		static float ConvertToLinear(float value, float addValue)
 		{
 			return (Mathf.Clamp01(value * 2 - 1) + addValue) * 0.5f + 0.5f;
+			//return Mathf.Clamp01((Mathf.Clamp01(value * 0.5f + 0.5f) + addValue) * 2f - 1f);
+			//return Mathf.Pow(Mathf.Pow(value, 0.454545f) + addValue, 2.2f);
+			//return value + Mathf.Pow(addValue, 0.454545f);
+			//return value + addValue;
 		}
 
 		#region Select Texture
