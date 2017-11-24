@@ -21,7 +21,7 @@ namespace Selection
 
 		enum DragTypes
 		{
-			None, SelectionBox, MoveX, MoveZ, MoveXZ
+			None, SelectionBox, MoveX, MoveZ, MoveXZ, RotateX, RotateY, ScaleX, ScaleZ, ScaleXYZ
 		}
 
 
@@ -88,8 +88,15 @@ namespace Selection
 						DragType = DragTypes.MoveZ;
 					else if (hit.collider.gameObject.name == "XZ")
 						DragType = DragTypes.MoveXZ;
+					else if (hit.collider.gameObject.name == "RY")
+						DragType = DragTypes.RotateY;
+					else if (hit.collider.gameObject.name == "RX")
+						DragType = DragTypes.RotateX;
 					else
 						DragType = DragTypes.None;
+
+					if (DragType == DragTypes.RotateY || DragType == DragTypes.RotateX)
+						Controler_StoreRotations();
 
 				}
 				else
@@ -130,6 +137,10 @@ namespace Selection
 			{
 				ControlerDrag();
 			}
+			else if(DragType == DragTypes.RotateY)
+			{
+				ControlerDragRotateY();
+			}
 		}
 
 		public void DragEnd()
@@ -143,7 +154,7 @@ namespace Selection
 				UpdateSelectionBox(false);
 				AddSelectionBoxObjects();
 			}
-			else if(DragType == DragTypes.MoveX || DragType == DragTypes.MoveZ || DragType == DragTypes.MoveXZ)
+			else if(DragType == DragTypes.MoveX || DragType == DragTypes.MoveZ || DragType == DragTypes.MoveXZ || DragType == DragTypes.RotateY)
 			{
 				ControlerFinish();
 			}
@@ -198,7 +209,7 @@ namespace Selection
 
 			bool contains = Selection.Ids.Contains(ObjectId);
 			
-			if( contains&& !IsSelectionRemove() && !IsSelectionAdd())
+			if( contains && !IsSelectionRemove() && !IsSelectionAdd())
 			{
 				if(Time.time < LastClickTime + 0.2f)
 					CameraControler.FocusOnObject(Obj);
@@ -393,6 +404,14 @@ namespace Selection
 			}
 		}
 
+		void Controler_StoreRotations()
+		{
+			Selection.StoreRotations();
+			for (int i = 0; i < SymetrySelection.Length; i++)
+			{
+				SymetrySelection[i].StoreRotations();
+			}
+		}
 
 		bool Draged = false;
 		void ControlerDrag()
@@ -428,6 +447,23 @@ namespace Selection
 			//TODO Bake Positions
 			ResetControlerPosition();
 			Draged = false;
+		}
+
+		void ControlerDragRotateY()
+		{
+			if (!Draged)
+			{
+				Undo.Current.RegisterMarkersMove();
+				Draged = true;
+			}
+
+			Ray ray = CameraControler.Current.Cam.ScreenPointToRay(Input.mousePosition);
+			Vector3 NewPos = PosOnControler(ray);
+			Vector3 Offset = NewPos - ControlerClickPoint;
+
+
+
+
 		}
 
 	}

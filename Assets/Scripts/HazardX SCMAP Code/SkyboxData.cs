@@ -37,43 +37,12 @@ public class SkyboxData
 
 	public void Load(BinaryReader Stream)
 	{
-		/*
-		beginvectors = new Vector3[5];
-		BeginFloats = new float[10];
-		BeginInts = new int[8];
-		BeginColors = new Color[5];
-
-		// Find total of 64 bytes
-		// It should be some kind of settings for procedural skybox (colors, coordinates, scale)
-
-		beginvectors[0] = Stream.ReadVector3(); // Good Value - 12 bytes, always (256, 0, 256)
-		BeginFloats[0] = Stream.ReadSingle(); // ? Good value ? - 4 bytes, coordinate??
-
-		BeginInts[0] = Stream.ReadInt32(); // 4 bytes, RGBA Color? always pink
-		BeginColors[0] = Map.Int32ToColor(BeginInts[0], false);
-
-		BeginInts[1] = Stream.ReadInt32(); // 4 bytes, RGBA Color? always green
-		BeginColors[1] = Map.Int32ToColor(BeginInts[1], false);
-
-		BeginInts[2] = Stream.ReadInt32(); // 4 bytes - always 16
-		BeginColors[2] = Map.Int32ToColor(BeginInts[2], false);
-		BeginInts[3] = Stream.ReadInt32(); // 4 bytes - always 6
-		BeginColors[3] = Map.Int32ToColor(BeginInts[3], false);
-
-		//Coordinates? Maybe colors
-		BeginFloats[1] = Stream.ReadSingle(); // 4 bytes
-		BeginFloats[2] = Stream.ReadSingle(); // 4 bytes
-		BeginFloats[3] = Stream.ReadSingle(); // 4 bytes
-		BeginFloats[4] = Stream.ReadSingle(); // 4 bytes
-		BeginFloats[5] = Stream.ReadSingle(); // 4 bytes
-		BeginFloats[6] = Stream.ReadSingle(); // 4 bytes
-		BeginFloats[7] = Stream.ReadSingle(); // 4 bytes
-		BeginFloats[8] = Stream.ReadSingle(); // 4 bytes
-		*/
+		// It should be some kind of settings for procedural skybox (colors, UV coordinates, rect, scale)
 
 		Data = new SkyboxValues();
 
-		Data.BeginBytes = Stream.ReadBytes(64);
+		// Sun and sky settins
+		Data.BeginBytes = Stream.ReadBytes(64); // 16 x 4 bytes?
 
 		// Planet and moon textures
 		Data.Albedo = Stream.ReadStringNull();
@@ -82,22 +51,21 @@ public class SkyboxData
 
 		// This should be settings for planets and moons on skybox
 
-		//Array
+		//Array of layers
+		// Planets, moons
 		Data.Length = Stream.ReadInt32();
 		if(Data.Length > 0)
-			Data.MidBytes = Stream.ReadBytes(Data.Length * 40);
+			Data.MidBytes = Stream.ReadBytes(Data.Length * 40); // 10 x 4 bytes? 5 x 8 bytes?
 
 		//Total of 19 bytes
-		Data.MidBytesStatic = Stream.ReadBytes(19);
-
-
+		Data.MidBytesStatic = Stream.ReadBytes(19); // 4x 4 bytes + RGB (3bytes)?
 
 		//Procedural Clouds Texture
 		Data.Clouds = Stream.ReadStringNull();
 
 		// Find total of 88 bytes
 		// Animation settings and coordinates for procedural clouds
-		Data.EndBytes = Stream.ReadBytes(88);
+		Data.EndBytes = Stream.ReadBytes(88); // 11 x 8 bytes?
 
 	}
 

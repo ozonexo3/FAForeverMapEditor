@@ -51,6 +51,7 @@ public class RenderChainLine : MonoBehaviour {
 		// match our transform
 		GL.MultMatrix(transform.localToWorldMatrix);
 
+
 		// Draw lines
 		GL.Begin(GL.LINES);
 		

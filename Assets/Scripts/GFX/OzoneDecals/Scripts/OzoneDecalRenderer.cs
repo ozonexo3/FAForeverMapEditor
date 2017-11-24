@@ -92,6 +92,7 @@ namespace OzoneDecals {
 				return;
 
 #if UNITY_EDITOR
+			/*
 			if(false && Cam != Current.RenderCamera && Cam.name == "SceneCamera")
 			{
 				// Is Editor
@@ -102,6 +103,7 @@ namespace OzoneDecals {
 				renderer.AddDecalToRenderer(d);
 			}
 			else
+			*/
 #endif
 			{
 				Current.AddDecalToRenderer(d);

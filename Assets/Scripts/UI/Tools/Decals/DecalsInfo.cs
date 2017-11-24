@@ -108,9 +108,6 @@ namespace EditMap
 				Dec.Text1Path = Dec.Component.TexPathes[1];
 #endif
 
-				Plane plane = new Plane(CameraControler.Current.Cam.transform.forward, CameraControler.Current.Cam.transform.position);
-				float dist = plane.GetDistanceToPoint(transform.position);
-
 				LOD[] Old = Dec.lg.GetLODs();
 				//float FrustumHeight = (Dec.Component.Scale.z * 0.1f) * 2 * Dec.WorldCutoffDistance * Mathf.Tan(CameraControler.Current.Cam.fieldOfView * 0.5f * Mathf.Deg2Rad);
 				float FrustumHeight = FrustumHeightAtDistance(Dec.WorldCutoffDistance * 1.02f);

@@ -70,7 +70,7 @@ namespace EditMap
 			TerrainMaterial.SetInt("_Brush", 0);
 		}
 
-		int PreviousPage = 0;
+		//int PreviousPage = 0;
 		int CurrentPage = 0;
 		public static bool TerrainPageChange = false;
 		public void ChangePage(int PageId)
@@ -79,7 +79,7 @@ namespace EditMap
 				return;
 			TerrainPageChange = true;
 
-			PreviousPage = CurrentPage;
+			//PreviousPage = CurrentPage;
 			CurrentPage = PageId;
 
 			for (int i = 0; i < Page.Length; i++)
@@ -650,7 +650,6 @@ namespace EditMap
 
 			int hmWidth = Map.Teren.terrainData.heightmapWidth;
 			int hmHeight = Map.Teren.terrainData.heightmapHeight;
-			float MaxHeight = Map.Teren.terrainData.size.y;
 
 			Vector3 tempCoord = Map.Teren.gameObject.transform.InverseTransformPoint(AtPosition);
 			Vector3 coord = Vector3.zero;

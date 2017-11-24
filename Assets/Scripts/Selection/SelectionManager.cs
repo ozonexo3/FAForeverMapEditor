@@ -64,6 +64,7 @@ namespace Selection
 					AllowSelection = true;
 					AllowSymmetry = false;
 					AllowRemove = false;
+					SelPrefab = 0;
 					break;
 				case SelectionControlTypes.MarkerChain:
 					AllowMove = false;
@@ -75,6 +76,7 @@ namespace Selection
 					AllowSelection = true;
 					AllowSymmetry = false;
 					AllowRemove = false;
+					SelPrefab = 0;
 					break;
 				case SelectionControlTypes.Decal:
 					AllowMove = true;
@@ -86,6 +88,7 @@ namespace Selection
 					AllowSelection = true;
 					AllowSymmetry = false;
 					AllowRemove = false;
+					SelPrefab = 1;
 					break;
 				default:
 					AllowMove = false;
@@ -97,9 +100,11 @@ namespace Selection
 					AllowSelection = false;
 					AllowSymmetry = false;
 					AllowRemove = false;
+					SelPrefab = 0;
 					break;
-
 			}
+			LastControlType = SelectionControlType;
+
 		}
 
 		public bool AllowSelection = true;
@@ -111,7 +116,7 @@ namespace Selection
 		public bool AllowRotation;
 		public bool AllowRotationX;
 		public bool AllowScale;
-
+		int SelPrefab = 0;
 
 
 		public void ClearAffectedGameObjects()

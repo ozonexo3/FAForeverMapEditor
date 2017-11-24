@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.Rendering;
 using EditMap;
 
+#pragma warning disable 0162
 namespace OzoneDecals
 {
 	public partial class OzoneDecalRenderer : MonoBehaviour
@@ -130,7 +131,7 @@ namespace OzoneDecals
 					}
 				}
 
-				if (UseInstancing && AllowAlbedoInstancing && n > 0)
+				if (UseInstancing && n > 0 && AllowAlbedoInstancing)
 				{
 					//_bufferDeferred.Blit(BuiltinRenderTextureType.CameraTarget, copy2id);
 					//_bufferDeferred.SetRenderTarget(_albedoRenderTarget, BuiltinRenderTextureType.CameraTarget);

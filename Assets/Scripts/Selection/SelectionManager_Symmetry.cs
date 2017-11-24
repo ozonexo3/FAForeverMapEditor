@@ -17,6 +17,7 @@ namespace Selection
 			public List<Vector3> Empty = new List<Vector3>();
 			public GameObject[] SelectionRings = new GameObject[0];
 			public Vector3[] Positions;
+			public Quaternion[] Rotations;
 			public Matrix4x4 SymmetryMatrix;
 
 			public void LoadSymetryIds()
@@ -75,6 +76,21 @@ namespace Selection
 				}
 			}
 
+			public void StoreRotations()
+			{
+				int count = Ids.Count;
+				Rotations = new Quaternion[count + Empty.Count];
+				for (int i = 0; i < count; i++)
+				{
+					Rotations[i] = Current.AffectedGameObjects[Ids[i]].transform.localRotation;
+				}
+
+				for (int i = 0; i < Empty.Count; i++)
+				{
+					//Rotations[i + count] = Empty[i];
+				}
+			}
+
 			public void OffsetPosition(Vector3 Offset)
 			{
 				Offset = SymmetryMatrix.MultiplyPoint(Offset);
@@ -102,6 +118,11 @@ namespace Selection
 						SelectionRings[i].transform.localPosition = Current.AffectedGameObjects[Ids[i]].transform.localPosition;
 					}
 				}
+			}
+
+			public void OffsetRotation(Quaternion Offset, Vector3[] PositionOffsets)
+			{
+
 			}
 		}
 

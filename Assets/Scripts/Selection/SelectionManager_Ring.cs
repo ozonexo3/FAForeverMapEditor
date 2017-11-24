@@ -13,9 +13,18 @@ namespace Selection
 		public GameObject Controls_Rotate;
 		public GameObject Controls_RotateX;
 		public GameObject Controls_Scale;
-		public GameObject SmallRing;
-		public GameObject SmallRingSymmetry;
-		public GameObject SmallRingEmpty;
+
+		public RingPrefab[] RingPrefabs;
+
+		[System.Serializable]
+		public class RingPrefab
+		{
+			public GameObject SmallRing;
+			public GameObject SmallRingSymmetry;
+			public GameObject SmallRingEmpty;
+		}
+
+
 
 		List<GameObject> SelectionRings = new List<GameObject>();
 
@@ -51,18 +60,26 @@ namespace Selection
 						NewBounds.Encapsulate(AffectedGameObjects[ID].transform.localPosition);
 					}
 
-					Selection.SelectionRings[i] = Instantiate(SmallRing, transform) as GameObject;
+					Selection.SelectionRings[i] = Instantiate(RingPrefabs[SelPrefab].SmallRing, transform) as GameObject;
 					SelectionRings.Add(Selection.SelectionRings[i]);
 					Selection.SelectionRings[i].transform.localPosition = AffectedGameObjects[ID].transform.localPosition;
 					Selection.SelectionRings[i].SetActive(true);
 
-					MeshRenderer Mr = AffectedGameObjects[ID].GetComponent<MeshRenderer>();
-					if (Mr)
+					if(LastControlType == SelectionControlTypes.Decal)
 					{
-						float ScaleMax = Mathf.Max(Mr.bounds.size.x, Mr.bounds.size.z) + 0.2f;
-						Selection.SelectionRings[i].transform.localScale = new Vector3(ScaleMax, 1, ScaleMax);
-
+						Selection.SelectionRings[i].transform.localScale = AffectedGameObjects[ID].transform.localScale;
+						Selection.SelectionRings[i].transform.localRotation = AffectedGameObjects[ID].transform.localRotation;
 					}
+					else
+					{
+						MeshRenderer Mr = AffectedGameObjects[ID].GetComponent<MeshRenderer>();
+						if (Mr)
+						{
+							float ScaleMax = Mathf.Max(Mr.bounds.size.x, Mr.bounds.size.z) + 0.2f;
+							Selection.SelectionRings[i].transform.localScale = new Vector3(ScaleMax, 1, ScaleMax);
+						}
+					}
+
 				}
 
 				Controls.localPosition = NewBounds.center;
@@ -80,7 +97,7 @@ namespace Selection
 			{
 				int ID = Sel.Ids[i];
 
-				Sel.SelectionRings[i] = Instantiate(SmallRingSymmetry, transform) as GameObject;
+				Sel.SelectionRings[i] = Instantiate(RingPrefabs[SelPrefab].SmallRingSymmetry, transform) as GameObject;
 				SelectionRings.Add(Sel.SelectionRings[i]);
 				Sel.SelectionRings[i].transform.localPosition = AffectedGameObjects[ID].transform.localPosition;
 				Sel.SelectionRings[i].SetActive(true);
@@ -94,7 +111,7 @@ namespace Selection
 			{
 				int i = e + count;
 
-				Sel.SelectionRings[i] = Instantiate(SmallRingEmpty, transform) as GameObject;
+				Sel.SelectionRings[i] = Instantiate(RingPrefabs[SelPrefab].SmallRingEmpty, transform) as GameObject;
 				SelectionRings.Add(Sel.SelectionRings[i]);
 				Sel.SelectionRings[i].transform.localPosition = Sel.Empty[e];
 				Sel.SelectionRings[i].SetActive(true);
@@ -122,7 +139,10 @@ namespace Selection
 			}
 
 			Controls.localPosition = NewBounds.center;
-
+			if (count == 1)
+				Controls.localRotation = AffectedGameObjects[0].transform.localRotation;
+			else
+				Controls.localRotation = Quaternion.identity;
 		}
 		
 	}

@@ -705,36 +705,6 @@ public class Map
 
 			if (VersionMinor >= 60)
 			{
-				/*string DecodedNewVersionData = "";
-
-				for(int i = 0; i < 32; i++)
-				{
-					DecodedNewVersionData += _with1.ReadInt16() + "\n";
-				}
-
-				DecodedNewVersionData += _with1.ReadStringNull() + "\n";
-				DecodedNewVersionData += _with1.ReadStringNull() + "\n";
-
-				for (int i = 0; i < 11; i++)
-				{
-					DecodedNewVersionData += _with1.ReadInt16() + "\n";
-				}
-
-				DecodedNewVersionData += _with1.ReadByte() + "\n";
-
-				DecodedNewVersionData += _with1.ReadStringNull() + "\n";
-
-				for (int i = 0; i < 32; i++)
-				{
-					DecodedNewVersionData += _with1.ReadInt16() + "\n";
-				}
-
-				for (int i = 0; i < 12; i++)
-				{
-					DecodedNewVersionData += _with1.ReadInt16() + "\n";
-				}
-
-				Debug.Log(DecodedNewVersionData);*/
 				AdditionalSkyboxData.Load(_with1);
 			}
 			else
