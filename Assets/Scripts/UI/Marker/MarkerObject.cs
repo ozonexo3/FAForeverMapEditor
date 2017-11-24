@@ -5,16 +5,8 @@ using MapLua;
 
 namespace Markers
 {
-	public class MarkerObject : MonoBehaviour
+	public class MarkerObject : SelectionObject
 	{
-
-		public MeshFilter Mf;
-		public MeshRenderer Mr;
-		public BoxCollider Bc;
-		public Transform Tr;
 		public SaveLua.Marker Owner;
-
-
-
 	}
 }

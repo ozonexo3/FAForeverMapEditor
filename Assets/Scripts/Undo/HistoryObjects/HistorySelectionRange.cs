@@ -31,12 +31,12 @@ public class HistorySelectionRange : HistoryObject
 			MarkersPage = MarkersInfo.Current.PreviousCurrentPage();
 
 
-		Ids = Selection.SelectionManager.Current.Selection.Ids.ToArray();
-		AffectedGameObjects = Selection.SelectionManager.Current.AffectedGameObjects;
-		AllowMove = Selection.SelectionManager.Current.AllowMove;
-		AllowUp = Selection.SelectionManager.Current.AllowUp;
-		AllowRotation = Selection.SelectionManager.Current.AllowRotation;
-		AllowScale = Selection.SelectionManager.Current.AllowScale;
+		Ids = SelectionManager.Current.Selection.Ids.ToArray();
+		AffectedGameObjects = SelectionManager.Current.AffectedGameObjects;
+		AllowMove = SelectionManager.Current.AllowMove;
+		AllowUp = SelectionManager.Current.AllowUp;
+		AllowRotation = SelectionManager.Current.AllowRotation;
+		AllowScale = SelectionManager.Current.AllowScale;
 	}
 
 
@@ -56,9 +56,9 @@ public class HistorySelectionRange : HistoryObject
 			Undo.Current.EditMenu.ChangeCategory(CategoryId);
 		}
 
-		Selection.SelectionManager.Current.SetAffectedGameObjects(AffectedGameObjects, AllowMove, AllowUp, AllowRotation, AllowScale);
-		Selection.SelectionManager.Current.Selection.Ids = Ids.ToList<int>();
-		Selection.SelectionManager.Current.FinishSelectionChange();
+		SelectionManager.Current.SetAffectedGameObjects(AffectedGameObjects, SelectionManager.SelectionControlTypes.Last);
+		SelectionManager.Current.Selection.Ids = Ids.ToList<int>();
+		SelectionManager.Current.FinishSelectionChange();
 
 		if (MenuState == Editing.EditStates.MarkersStat)
 		{

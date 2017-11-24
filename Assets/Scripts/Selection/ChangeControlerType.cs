@@ -9,14 +9,14 @@ namespace Selection
 	{
 
 		public static ChangeControlerType Current;
-		static int ControlerId;
+		public static int ControlerId;
 
 		public GameObject[] Selection;
 		public GameObject SnapSelection;
-
 		public Button Position;
 		public Button Rotation;
 		public Button Scale;
+		public Button Snap;
 
 		public void ChangeControler(int id)
 		{
@@ -24,20 +24,31 @@ namespace Selection
 			Selection[0].SetActive(ControlerId == 0);
 			Selection[1].SetActive(ControlerId == 1);
 			Selection[2].SetActive(ControlerId == 2);
+			SelectionManager.Current.UpdateControler();
 		}
 
 		public void ToggleSnap()
 		{
-			SelectionManager.Current.SnapToGrid = !SelectionManager.Current.SnapToGrid;
-			SnapSelection.SetActive(SelectionManager.Current.SnapToGrid);
+			if(!SelectionManager.Current.AllowSnapToGrid){
+				SelectionManager.Current.SnapToGrid = !SelectionManager.Current.SnapToGrid;
+				SnapSelection.SetActive(SelectionManager.Current.SnapToGrid);
+			}
 		}
 
 		void OnEnable()
 		{
 			Current = this;
 			UpdateButtons();
-			ChangeControler(ControlerId);
+			//ChangeControler(ControlerId);
 			SnapSelection.SetActive(SelectionManager.Current.SnapToGrid);
+		}
+
+		public static void UpdateCurrent()
+		{
+			if (Current == null)
+				return;
+
+			Current.UpdateButtons();
 		}
 
 		public void UpdateButtons()
@@ -48,6 +59,13 @@ namespace Selection
 			Position.interactable = SelectionManager.Current.Active;
 			Rotation.interactable = SelectionManager.Current.AllowRotation;
 			Scale.interactable = SelectionManager.Current.AllowScale;
+
+			Snap.interactable = SelectionManager.Current.AllowSnapToGrid;
+
+			if (!SelectionManager.Current.AllowSnapToGrid)
+			{
+				SelectionManager.Current.SnapToGrid = false;
+			}
 
 			if (!SelectionManager.Current.Active)
 			{

@@ -50,6 +50,8 @@ public partial struct GetGamedataFile
 					NewProp.Mf2.gameObject.SetActive(false);
 				}
 
+				
+
 				scale.x *= BP.LocalScale.x;
 				scale.y *= BP.LocalScale.y;
 				scale.z *= BP.LocalScale.z;
@@ -61,19 +63,19 @@ public partial struct GetGamedataFile
 				{
 					Vector3 bs = BP.LODs[0].Mesh.bounds.size;
 					DeltaSize = Mathf.Max(scale.x * bs.x, scale.y * bs.y, scale.z * bs.z);
-					Lods[0].screenRelativeTransitionHeight = DeltaSize / DecalsInfo.FrustumHeightAtDistance(Lod1Exist?(4):(20));
+					Lods[0].screenRelativeTransitionHeight = DeltaSize / DecalsInfo.FrustumHeightAtDistance(BP.LODs[0].LODCutoff * 0.1f);
 				}
 				if (Lod1Exist)
 				{
 					Vector3 bs = BP.LODs[1].Mesh.bounds.size;
 					DeltaSize = Mathf.Max(scale.x * bs.x, scale.y * bs.y, scale.z * bs.z);
-					Lods[1].screenRelativeTransitionHeight = DeltaSize / DecalsInfo.FrustumHeightAtDistance(20);
+					Lods[1].screenRelativeTransitionHeight = DeltaSize / DecalsInfo.FrustumHeightAtDistance(BP.LODs[1].LODCutoff * 0.1f);
 				}
 				if (Lod2Exist)
 				{
 					Vector3 bs = BP.LODs[2].Mesh.bounds.size;
 					DeltaSize = Mathf.Max(scale.x * bs.x, scale.y * bs.y, scale.z * bs.z);
-					Lods[2].screenRelativeTransitionHeight = DeltaSize / DecalsInfo.FrustumHeightAtDistance(55);
+					Lods[2].screenRelativeTransitionHeight = DeltaSize / DecalsInfo.FrustumHeightAtDistance(BP.LODs[2].LODCutoff * 0.1f);
 				}
 
 

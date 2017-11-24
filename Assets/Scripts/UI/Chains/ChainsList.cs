@@ -54,8 +54,8 @@ namespace EditMap
 
 			Selection.SelectionManager.Current.SetSelectionChangeAction(SelectMarkers);
 
-			Selection.SelectionManager.Current.SetAffectedGameObjects(MarkersControler.GetMarkerObjects(), true, false, false, false);
-			Selection.SelectionManager.Current.SetCustomSettings(true, false, false);
+			Selection.SelectionManager.Current.SetAffectedGameObjects(MarkersControler.GetMarkerObjects(), SelectionManager.SelectionControlTypes.MarkerChain);
+			//Selection.SelectionManager.Current.SetCustomSettings(true, false, false);
 			//ChainSelected = -1;
 
 			UpdateList();
@@ -225,7 +225,7 @@ namespace EditMap
 			ChainSelected = -1;
 			RenderChainConnection.RenderChain = null;
 
-			Selection.SelectionManager.Current.SetCustomSettings(true, false, false);
+			//Selection.SelectionManager.Current.SetCustomSettings(true, false, false);
 			Selection.SelectionManager.Current.CleanSelection();
 
 			UpdateList();
@@ -247,7 +247,7 @@ namespace EditMap
 			ChainSelected = -1;
 			RenderChainConnection.RenderChain = null;
 
-			Selection.SelectionManager.Current.SetCustomSettings(true, false, false);
+			//Selection.SelectionManager.Current.SetCustomSettings(true, false, false);
 			Selection.SelectionManager.Current.CleanSelection();
 
 			UpdateList();
@@ -434,7 +434,8 @@ namespace EditMap
 		{
 			ChainSelected = -1;
 			RenderChainConnection.RenderChain = null;
-			Selection.SelectionManager.Current.SetCustomSettings(true, false, false);
+			//Selection.SelectionManager.Current.SetCustomSettings(true, false, false);
+			SelectionManager.Current.UpdateControler();
 			RenderChainConnection.RenderChain = null;
 			UpdateList();
 		}
@@ -449,8 +450,8 @@ namespace EditMap
 
 		public void SelectChain(int i)
 		{
-			Selection.SelectionManager.Current.SetCustomSettings(true, false, false);
-
+			//Selection.SelectionManager.Current.SetCustomSettings(true, false, false);
+			SelectionManager.Current.UpdateControler();
 			ChainSelected = i;
 
 			MapLuaParser.Current.SaveLuaFile.Data.Chains[ChainSelected].BakeMarkers();

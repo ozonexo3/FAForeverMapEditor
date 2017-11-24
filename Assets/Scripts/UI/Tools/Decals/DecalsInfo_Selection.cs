@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
 using OzoneDecals;
+using Selection;
 
 namespace EditMap
 {
@@ -27,8 +28,8 @@ namespace EditMap
 			}
 			*/
 
-			Selection.SelectionManager.Current.SetAffectedGameObjects(DecalsControler.GetAllDecalsGo(), true, false, true, true);
-			Selection.SelectionManager.Current.SetCustomSettings(true, true, true);
+			SelectionManager.Current.SetAffectedGameObjects(DecalsControler.GetAllDecalsGo(), SelectionManager.SelectionControlTypes.Decal);
+			//SelectionManager.Current.SetCustomSettings(true, true, true);
 
 
 			PlacementManager.Clear();

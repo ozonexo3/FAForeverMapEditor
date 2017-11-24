@@ -8,8 +8,10 @@ namespace Selection
 
 		[Header("Rings")]
 		public Transform Controls;
+		public GameObject Controls_Position;
 		public GameObject Controls_Up;
 		public GameObject Controls_Rotate;
+		public GameObject Controls_RotateX;
 		public GameObject Controls_Scale;
 		public GameObject SmallRing;
 		public GameObject SmallRingSymmetry;
@@ -30,7 +32,7 @@ namespace Selection
 			}
 			else
 			{
-				Controls.gameObject.SetActive(AllowMove || AllowUp);
+				Controls.gameObject.SetActive(true);
 
 				Bounds NewBounds = new Bounds();
 

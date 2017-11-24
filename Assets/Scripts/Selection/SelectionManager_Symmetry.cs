@@ -123,6 +123,7 @@ namespace Selection
 			if(AllowSymmetry)
 				GenerateSymmetry();
 			EditMap.MarkerSelectionOptions.UpdateOptions();
+
 			if(SelectionChangeAction != null)
 				SelectionChangeAction();
 		}

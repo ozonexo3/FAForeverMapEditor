@@ -38,21 +38,90 @@ namespace Selection
 
 		}
 
-		public void ClearAffectedGameObjects()
-		{
-			Undo.Current.RegisterSelectionRangeChange();
-			SetAffectedGameObjects(new GameObject[0], false, false, false, false);
 
+		public enum SelectionControlTypes
+		{
+			None, Last, Marker, MarkerChain, Decal, Units
+		}
+
+		SelectionControlTypes LastControlType;
+		void SetSelectionType(SelectionControlTypes SelectionControlType)
+		{
+			if (LastControlType == SelectionControlType)
+				return;
+
+			FinishSelectionChange();
+
+			switch (SelectionControlType)
+			{
+				case SelectionControlTypes.Marker:
+					AllowMove = true;
+					AllowUp = false;
+					AllowRotation = false;
+					AllowRotationX = false;
+					AllowScale = false;
+					AllowSnapToGrid = true;
+					AllowSelection = true;
+					AllowSymmetry = false;
+					AllowRemove = false;
+					break;
+				case SelectionControlTypes.MarkerChain:
+					AllowMove = false;
+					AllowUp = false;
+					AllowRotation = false;
+					AllowRotationX = false;
+					AllowScale = false;
+					AllowSnapToGrid = true;
+					AllowSelection = true;
+					AllowSymmetry = false;
+					AllowRemove = false;
+					break;
+				case SelectionControlTypes.Decal:
+					AllowMove = true;
+					AllowUp = false;
+					AllowRotation = true;
+					AllowRotationX = true;
+					AllowScale = true;
+					AllowSnapToGrid = false;
+					AllowSelection = true;
+					AllowSymmetry = false;
+					AllowRemove = false;
+					break;
+				default:
+					AllowMove = false;
+					AllowUp = false;
+					AllowRotation = false;
+					AllowRotationX = false;
+					AllowScale = false;
+					AllowSnapToGrid = true;
+					AllowSelection = false;
+					AllowSymmetry = false;
+					AllowRemove = false;
+					break;
+
+			}
 		}
 
 		public bool AllowSelection = true;
 		public bool AllowSymmetry = true;
 		public bool AllowRemove = true;
+		public bool AllowSnapToGrid = true;
 		public bool AllowMove;
 		public bool AllowUp;
 		public bool AllowRotation;
+		public bool AllowRotationX;
 		public bool AllowScale;
 
+
+
+		public void ClearAffectedGameObjects()
+		{
+			Undo.Current.RegisterSelectionRangeChange();
+			SetAffectedGameObjects(new GameObject[0], SelectionControlTypes.None);
+		}
+
+
+		/*
 		public void SetCustomSettings(bool _Selection = true, bool _Symmetry = true, bool _Remove = true)
 		{
 			if (AllowSymmetry != _Selection)
@@ -66,17 +135,14 @@ namespace Selection
 			AllowSymmetry = _Symmetry;
 			AllowRemove = _Remove;
 		}
+		*/
 
-		public void SetAffectedGameObjects(GameObject[] GameObjects, bool _AllowMove = true, bool _AllowUp = false, bool _AllowRotation = false, bool _AllowScale = false)
+		public void SetAffectedGameObjects(GameObject[] GameObjects, SelectionControlTypes SelectionControlType)
 		{
-			AllowMove = _AllowMove;
-			AllowUp = _AllowUp;
-			AllowRotation = _AllowRotation;
-			AllowScale = _AllowScale;
+			if(SelectionControlType != SelectionControlTypes.Last)
+				SetSelectionType(SelectionControlType);
 
-			Controls_Up.SetActive(AllowUp);
-			Controls_Rotate.SetActive(AllowRotation);
-			Controls_Scale.SetActive(AllowScale);
+			ChangeControlerType.UpdateCurrent();
 
 			if (AffectedGameObjects.Length > 0)
 			{
@@ -105,6 +171,8 @@ namespace Selection
 
 			CleanIfInactive();
 		}
+
+
 
 
 		public void CleanSelection()

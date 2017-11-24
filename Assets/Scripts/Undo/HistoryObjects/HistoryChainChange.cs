@@ -34,7 +34,7 @@ public class HistoryChainChange : HistoryObject {
 		MarkersInfo.Current.ChainsInfo.CleanMenu();
 
 
-		Selection.SelectionManager.Current.SetCustomSettings(false, false, false);
+		//Selection.SelectionManager.Current.SetCustomSettings(false, false, false);
 		Selection.SelectionManager.Current.CleanSelection();
 
 		Undo.Current.EditMenu.ChangeCategory(4);

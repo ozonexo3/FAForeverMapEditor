@@ -58,7 +58,7 @@ namespace EditMap
 		{
 			if (Current == null)
 				return;
-			if (!Current.gameObject.activeSelf)
+			if (!Current.gameObject.activeInHierarchy)
 				return;
 			Current.UpdateSelectionOptions();
 		}

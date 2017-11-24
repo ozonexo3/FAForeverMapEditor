@@ -25,6 +25,21 @@ namespace Selection
 		}
 
 
+		#region Controler
+		public void UpdateControler()
+		{
+			Controls_Position.SetActive(AllowMove && ChangeControlerType.ControlerId == 0);
+			Controls_Up.SetActive(AllowUp && ChangeControlerType.ControlerId == 0);
+			Controls_Rotate.SetActive(AllowRotation && ChangeControlerType.ControlerId == 1);
+			Controls_RotateX.SetActive(AllowRotationX && ChangeControlerType.ControlerId == 1);
+			Controls_Scale.SetActive(AllowScale && ChangeControlerType.ControlerId == 2);
+
+			UpdateSelectionRing();
+		}
+
+#endregion
+
+
 		#region Events
 		public bool IsPointerOnGameplay()
 		{

@@ -23,9 +23,9 @@ namespace EditMap
 
 		void OnEnable()
 		{
-			Selection.SelectionManager.Current.DisableLayer = 9;
-			Selection.SelectionManager.Current.SetRemoveAction(DestroyMarkers);
-			Selection.SelectionManager.Current.SetSelectionChangeAction(SelectMarkers);
+			SelectionManager.Current.DisableLayer = 9;
+			SelectionManager.Current.SetRemoveAction(DestroyMarkers);
+			SelectionManager.Current.SetSelectionChangeAction(SelectMarkers);
 
 			if (CreationId >= 0)
 				SelectCreateNew(CreationId);
@@ -54,8 +54,8 @@ namespace EditMap
 				Selection.SelectionManager.Current.CleanSelection();
 			}
 
-			Selection.SelectionManager.Current.SetAffectedGameObjects(MarkersControler.GetMarkerObjects());
-			Selection.SelectionManager.Current.SetCustomSettings(true, true, true);
+			Selection.SelectionManager.Current.SetAffectedGameObjects(MarkersControler.GetMarkerObjects(), SelectionManager.SelectionControlTypes.Marker);
+			//Selection.SelectionManager.Current.SetCustomSettings(true, false, false);
 
 
 			PlacementManager.Clear();
@@ -277,7 +277,7 @@ namespace EditMap
 			if (AnyRemoved)
 			{
 				Selection.SelectionManager.Current.CleanSelection();
-				Selection.SelectionManager.Current.SetAffectedGameObjects(MarkersControler.GetMarkerObjects());
+				Selection.SelectionManager.Current.SetAffectedGameObjects(MarkersControler.GetMarkerObjects(), SelectionManager.SelectionControlTypes.Marker);
 				MarkerSelectionOptions.UpdateOptions();
 
 				RenderMarkersConnections.Current.UpdateConnections();

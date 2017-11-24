@@ -287,6 +287,7 @@
     <Compile Include="Assets\Scripts\Selection\SelectionManager_Controls.cs" />
     <Compile Include="Assets\Scripts\Selection\SelectionManager_Ring.cs" />
     <Compile Include="Assets\Scripts\Selection\SelectionManager_Symmetry.cs" />
+    <Compile Include="Assets\Scripts\Selection\SelectionObject.cs" />
     <Compile Include="Assets\Scripts\Tes\ArrayRange.cs" />
     <Compile Include="Assets\Scripts\Tes\ColorUtils.cs" />
     <Compile Include="Assets\Scripts\Tes\DDSReader.cs" />
