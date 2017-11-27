@@ -131,6 +131,7 @@ public class Undo : MonoBehaviour {
 		//HistorySelectionRange.GenerateUndo(Prefabs.SelectionRange).Register();
 	}
 
+#region Markers
 	public void RegisterMarkersAdd()
 	{
 		HistoryMarkersRemove.GenerateUndo(Prefabs.MarkersRemove).Register();
@@ -170,13 +171,26 @@ public class Undo : MonoBehaviour {
 		LastChainId = ChainId;
 		HistoryMarkersMove.GenerateUndo(Undo.Current.Prefabs.ChainMarkers).Register();
 	}
+	#endregion
 
+	#region Decals
+
+	public void RegisterDecalsMove(bool MoveMenu = true)
+	{
+		HistoryDecalsMove.UndoMenu = MoveMenu;
+		HistoryDecalsMove.GenerateUndo(Prefabs.DecalsMove).Register();
+	}
+	#endregion
+
+	#region Heightmap
 	public static float[,] UndoData_newheights;
 	public void RegisterTerrainHeightmapChange(float[,] newheights){
 		UndoData_newheights = newheights;
 		HistoryTerrainHeight.GenerateUndo (Prefabs.TerrainHeightChange).Register();
 	}
+	#endregion
 
+#region Stratum
 	public static Color[] UndoData_Stratum;
 	public static int UndoData_StratumId;
 	public void RegisterStratumPaint(Color[] colors, int id){
@@ -189,6 +203,7 @@ public class Undo : MonoBehaviour {
 		UndoData_StratumId = stratum;
 		HistoryStratumChange.GenerateUndo (Undo.Current.Prefabs.StratumChange).Register();
 	}
+#endregion
 
 	public static bool Slider = false;
 	public void RegisterLightingChange(bool IsSlider = false)

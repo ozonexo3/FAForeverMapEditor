@@ -29,7 +29,7 @@ namespace Selection
 
 		public void ToggleSnap()
 		{
-			if(!SelectionManager.Current.AllowSnapToGrid){
+			if(SelectionManager.AllowSnapToGrid){
 				SelectionManager.Current.SnapToGrid = !SelectionManager.Current.SnapToGrid;
 				SnapSelection.SetActive(SelectionManager.Current.SnapToGrid);
 			}
@@ -41,6 +41,30 @@ namespace Selection
 			UpdateButtons();
 			//ChangeControler(ControlerId);
 			SnapSelection.SetActive(SelectionManager.Current.SnapToGrid);
+		}
+
+		private void Update()
+		{
+			if (Input.GetKeyDown(KeyCode.W))
+			{
+				if(Position.interactable)
+				ChangeControler(0);
+			}
+			else if (Input.GetKeyDown(KeyCode.E))
+			{
+				if(Rotation.interactable)
+				ChangeControler(1);
+			}
+			else if (Input.GetKeyDown(KeyCode.R))
+			{
+				if(Scale.interactable)
+				ChangeControler(2);
+			}
+			else if (Input.GetKeyDown(KeyCode.T))
+			{
+				if (Snap.interactable)
+					ToggleSnap();
+			}
 		}
 
 		public static void UpdateCurrent()
@@ -57,12 +81,12 @@ namespace Selection
 			//Scale.SetActive(SelectionManager.Current.AllowScale);
 
 			Position.interactable = SelectionManager.Current.Active;
-			Rotation.interactable = SelectionManager.Current.AllowRotation;
-			Scale.interactable = SelectionManager.Current.AllowScale;
+			Rotation.interactable = SelectionManager.AllowRotation;
+			Scale.interactable = SelectionManager.AllowScale;
 
-			Snap.interactable = SelectionManager.Current.AllowSnapToGrid;
+			Snap.interactable = SelectionManager.AllowSnapToGrid;
 
-			if (!SelectionManager.Current.AllowSnapToGrid)
+			if (!SelectionManager.AllowSnapToGrid)
 			{
 				SelectionManager.Current.SnapToGrid = false;
 			}
@@ -73,11 +97,11 @@ namespace Selection
 				Selection[1].SetActive(false);
 				Selection[2].SetActive(false);
 			}
-			else if (ControlerId == 1 && !SelectionManager.Current.AllowRotation)
+			else if (ControlerId == 1 && !SelectionManager.AllowRotation)
 			{
 				ChangeControler(0);
 			}
-			else if (ControlerId == 2 && !SelectionManager.Current.AllowScale)
+			else if (ControlerId == 2 && !SelectionManager.AllowScale)
 			{
 				ChangeControler(0);
 			}

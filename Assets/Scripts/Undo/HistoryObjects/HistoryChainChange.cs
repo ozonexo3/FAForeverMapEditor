@@ -20,7 +20,7 @@ public class HistoryChainChange : HistoryObject {
 
 	public override void DoUndo(){
 		if (!RedoGenerated)
-			HistoryMarkersMove.GenerateRedo (Undo.Current.Prefabs.ChainChange).Register();
+			HistoryChainChange.GenerateRedo (Undo.Current.Prefabs.ChainChange).Register();
 		RedoGenerated = true;
 		DoRedo ();
 	}

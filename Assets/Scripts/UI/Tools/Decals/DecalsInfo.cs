@@ -166,6 +166,7 @@ namespace EditMap
 					yield return null;
 				}
 			}
+			DecalsControler.Sort();
 
 			yield return null;
 			LoadingDecals = false;

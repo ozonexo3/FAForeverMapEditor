@@ -24,7 +24,7 @@ public class HistoryChainMarkers : HistoryObject {
 	public override void DoUndo(){
 		Undo.LastChainId = ChainId;
 		if (!RedoGenerated)
-			HistoryMarkersMove.GenerateRedo (Undo.Current.Prefabs.ChainMarkers).Register();
+			HistoryChainMarkers.GenerateRedo (Undo.Current.Prefabs.ChainMarkers).Register();
 		RedoGenerated = true;
 		DoRedo ();
 	}

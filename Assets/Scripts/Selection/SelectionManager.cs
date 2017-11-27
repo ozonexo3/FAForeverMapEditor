@@ -57,65 +57,79 @@ namespace Selection
 				case SelectionControlTypes.Marker:
 					AllowMove = true;
 					AllowUp = false;
-					AllowRotation = false;
+					AllowRotation = true;
 					AllowRotationX = false;
+					AllowLocalRotation = false;
 					AllowScale = false;
+					AllowCustomScale = false;
 					AllowSnapToGrid = true;
 					AllowSelection = true;
-					AllowSymmetry = false;
-					AllowRemove = false;
+					AllowSymmetry = true;
+					AllowRemove = true;
 					SelPrefab = 0;
+					MinAngle = 90;
 					break;
 				case SelectionControlTypes.MarkerChain:
 					AllowMove = false;
 					AllowUp = false;
-					AllowRotation = false;
+					AllowRotation = true;
 					AllowRotationX = false;
+					AllowLocalRotation = false;
 					AllowScale = false;
+					AllowCustomScale = false;
 					AllowSnapToGrid = true;
 					AllowSelection = true;
 					AllowSymmetry = false;
 					AllowRemove = false;
 					SelPrefab = 0;
+					MinAngle = 90;
 					break;
 				case SelectionControlTypes.Decal:
 					AllowMove = true;
 					AllowUp = false;
 					AllowRotation = true;
 					AllowRotationX = true;
+					AllowLocalRotation = true;
 					AllowScale = true;
+					AllowCustomScale = true;
 					AllowSnapToGrid = false;
 					AllowSelection = true;
-					AllowSymmetry = false;
-					AllowRemove = false;
+					AllowSymmetry = true;
+					AllowRemove = true;
 					SelPrefab = 1;
+					MinAngle = 0;
 					break;
 				default:
 					AllowMove = false;
 					AllowUp = false;
 					AllowRotation = false;
 					AllowRotationX = false;
+					AllowLocalRotation = false;
 					AllowScale = false;
+					AllowCustomScale = false;
 					AllowSnapToGrid = true;
 					AllowSelection = false;
 					AllowSymmetry = false;
 					AllowRemove = false;
 					SelPrefab = 0;
+					MinAngle = 0;
 					break;
 			}
 			LastControlType = SelectionControlType;
 
 		}
 
-		public bool AllowSelection = true;
-		public bool AllowSymmetry = true;
-		public bool AllowRemove = true;
-		public bool AllowSnapToGrid = true;
-		public bool AllowMove;
-		public bool AllowUp;
-		public bool AllowRotation;
-		public bool AllowRotationX;
-		public bool AllowScale;
+		public static bool AllowSelection = true;
+		public static bool AllowSymmetry = true;
+		public static bool AllowRemove = true;
+		public static bool AllowSnapToGrid = true;
+		public static bool AllowMove;
+		public static bool AllowUp;
+		public static bool AllowRotation;
+		public static bool AllowRotationX;
+		public static bool AllowLocalRotation;
+		public static bool AllowScale;
+		public static bool AllowCustomScale;
 		int SelPrefab = 0;
 
 

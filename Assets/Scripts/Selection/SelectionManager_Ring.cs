@@ -83,6 +83,10 @@ namespace Selection
 				}
 
 				Controls.localPosition = NewBounds.center;
+				if (LastControlType == SelectionControlTypes.Decal && count == 1)
+					Controls.localRotation = AffectedGameObjects[Selection.Ids[0]].transform.localRotation;
+				else
+					Controls.localRotation = Quaternion.identity;
 				//float Size = Mathf.Clamp(Mathf.Max(NewBounds.size.x, NewBounds.size.z), 0.2f, 10000);
 				//Ring.localScale = new Vector3(Size, 1, Size);
 			}
@@ -102,9 +106,17 @@ namespace Selection
 				Sel.SelectionRings[i].transform.localPosition = AffectedGameObjects[ID].transform.localPosition;
 				Sel.SelectionRings[i].SetActive(true);
 
-				MeshRenderer Mr = AffectedGameObjects[ID].GetComponent<MeshRenderer>();
-				if (Mr)
-					Sel.SelectionRings[i].transform.localScale = new Vector3(Mr.bounds.size.x + 0.2f, 1, Mr.bounds.size.z + 0.2f);
+				if (LastControlType == SelectionControlTypes.Decal)
+				{
+					Sel.SelectionRings[i].transform.localScale = AffectedGameObjects[ID].transform.localScale;
+					Sel.SelectionRings[i].transform.localRotation = AffectedGameObjects[ID].transform.localRotation;
+				}
+				else
+				{
+					MeshRenderer Mr = AffectedGameObjects[ID].GetComponent<MeshRenderer>();
+					if (Mr)
+						Sel.SelectionRings[i].transform.localScale = new Vector3(Mr.bounds.size.x + 0.2f, 1, Mr.bounds.size.z + 0.2f);
+				}
 			}
 
 			for(int e = 0; e < count2; e++)
@@ -139,8 +151,8 @@ namespace Selection
 			}
 
 			Controls.localPosition = NewBounds.center;
-			if (count == 1)
-				Controls.localRotation = AffectedGameObjects[0].transform.localRotation;
+			if (LastControlType == SelectionControlTypes.Decal && count == 1)
+				Controls.localRotation = AffectedGameObjects[Selection.Ids[0]].transform.localRotation;
 			else
 				Controls.localRotation = Quaternion.identity;
 		}

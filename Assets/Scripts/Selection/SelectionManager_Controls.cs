@@ -16,6 +16,7 @@ namespace Selection
 		DragTypes DragType;
 		Vector3 BeginMousePos = Vector3.zero;
 		Vector3 ControlerBegin = Vector3.zero;
+		Quaternion ControlerBeginRot = Quaternion.identity;
 		Vector3 ControlerClickPoint = Vector3.zero;
 		bool DragStarted = false;
 
@@ -34,7 +35,7 @@ namespace Selection
 			Controls_RotateX.SetActive(AllowRotationX && ChangeControlerType.ControlerId == 1);
 			Controls_Scale.SetActive(AllowScale && ChangeControlerType.ControlerId == 2);
 
-			UpdateSelectionRing();
+			//FinishSelectionChange();
 		}
 
 #endregion
@@ -80,23 +81,44 @@ namespace Selection
 					Controler_StorePositions();
 
 					ControlerClickPoint = PosOnControler(ray);
-					ControlerBegin = Controls.position;
+					ControlerBegin = Controls.localPosition;
+					ControlerBeginRot = Controls.localRotation;
 
-					if (hit.collider.gameObject.name == "X")
-						DragType = DragTypes.MoveX;
-					else if (hit.collider.gameObject.name == "Z")
-						DragType = DragTypes.MoveZ;
-					else if (hit.collider.gameObject.name == "XZ")
-						DragType = DragTypes.MoveXZ;
-					else if (hit.collider.gameObject.name == "RY")
-						DragType = DragTypes.RotateY;
-					else if (hit.collider.gameObject.name == "RX")
-						DragType = DragTypes.RotateX;
-					else
-						DragType = DragTypes.None;
+					switch (hit.collider.gameObject.name)
+					{
+						case "X":
+							DragType = DragTypes.MoveX;
+							break;
+						case "Z":
+							DragType = DragTypes.MoveZ;
+							break;
+						case "XZ":
+							DragType = DragTypes.MoveXZ;
+							break;
+						case "RY":
+							DragType = DragTypes.RotateY;
+							break;
+						case "RX":
+							DragType = DragTypes.RotateX;
+							break;
+						case "SX":
+							DragType = DragTypes.ScaleX;
+							break;
+						case "SZ":
+							DragType = DragTypes.ScaleZ;
+							break;
+						case "SXZ":
+							DragType = DragTypes.ScaleXYZ;
+							break;
+						default:
+							DragType = DragTypes.None;
+							break;
+					}
 
 					if (DragType == DragTypes.RotateY || DragType == DragTypes.RotateX)
 						Controler_StoreRotations();
+					else if (DragType == DragTypes.ScaleX || DragType == DragTypes.ScaleZ || DragType == DragTypes.ScaleXYZ)
+						Controler_StoreScales();
 
 				}
 				else
@@ -106,7 +128,6 @@ namespace Selection
 			}
 			else
 				DragType = DragTypes.None;
-			//TODO Add Move/Rotate/Scale
 		}
 
 		public void DragBegin()
@@ -140,6 +161,10 @@ namespace Selection
 			else if(DragType == DragTypes.RotateY)
 			{
 				ControlerDragRotateY();
+			}
+			else if(DragType == DragTypes.ScaleX || DragType == DragTypes.ScaleZ || DragType == DragTypes.ScaleXYZ)
+			{
+				ControlerDragScale();
 			}
 		}
 
@@ -396,7 +421,6 @@ namespace Selection
 
 		void Controler_StorePositions()
 		{
-
 			Selection.StorePositions();
 			for(int i = 0; i < SymetrySelection.Length; i++)
 			{
@@ -413,12 +437,33 @@ namespace Selection
 			}
 		}
 
+		void Controler_StoreScales()
+		{
+			Selection.StoreScales();
+			for (int i = 0; i < SymetrySelection.Length; i++)
+			{
+				SymetrySelection[i].StoreScales();
+			}
+		}
+
+		void UndoRegisterMove()
+		{
+			if(LastControlType == SelectionControlTypes.Marker || LastControlType == SelectionControlTypes.MarkerChain)
+			{
+				Undo.Current.RegisterMarkersMove();
+			}
+			else if(LastControlType == SelectionControlTypes.Decal)
+			{
+				Undo.Current.RegisterDecalsMove();
+			}
+		}
+
 		bool Draged = false;
 		void ControlerDrag()
 		{
 			if (!Draged)
 			{
-				Undo.Current.RegisterMarkersMove();
+				UndoRegisterMove();
 				Draged = true;
 			}
 
@@ -449,21 +494,86 @@ namespace Selection
 			Draged = false;
 		}
 
+
+		int MinAngle = 0;
 		void ControlerDragRotateY()
 		{
 			if (!Draged)
 			{
-				Undo.Current.RegisterMarkersMove();
+				UndoRegisterMove();
 				Draged = true;
 			}
 
 			Ray ray = CameraControler.Current.Cam.ScreenPointToRay(Input.mousePosition);
 			Vector3 NewPos = PosOnControler(ray);
-			Vector3 Offset = NewPos - ControlerClickPoint;
+			//Vector3 Offset = NewPos - ControlerClickPoint;
+
+			float Angle = MassMath.AngleSigned(ControlerClickPoint - Controls.localPosition, NewPos - Controls.localPosition, Vector3.up);
+			if (MinAngle > 0)
+			{
+				Angle += 180;
+				Angle = (int)(Angle / MinAngle) * MinAngle;
+				Angle -= 180;
+			}
 
 
+			Quaternion Rot = Quaternion.Euler(Vector3.up * Angle);
+			Quaternion RotInverse = Quaternion.Euler(Vector3.down * Angle);
+
+			Controls.localRotation = Rot * ControlerBeginRot;
 
 
+			Selection.OffsetRotation(Controls.position, Rot);
+			for (int i = 0; i < SymetrySelection.Length; i++)
+			{
+				if (SymetrySelection[i].InverseRotation)
+					SymetrySelection[i].OffsetRotation(Controls.position, RotInverse);
+				else
+					SymetrySelection[i].OffsetRotation(Controls.position, Rot);
+			}
+		}
+
+		void ControlerDragScale()
+		{
+			if (!Draged)
+			{
+				UndoRegisterMove();
+				Draged = true;
+			}
+
+
+			Ray ray = CameraControler.Current.Cam.ScreenPointToRay(Input.mousePosition);
+			Vector3 NewPos = PosOnControler(ray);
+
+			Vector3 ScaledPos = Controls.InverseTransformVector(NewPos - ControlerClickPoint) * 10;
+
+			//Debug.Log("DragScale " + ScaledPos);
+			//ScaledPos = Vector3.one + Vector3.one * Mathf.Clamp(Mathf.Max(ScaledPos.x, ScaledPos.z), -0.9f, 100);
+
+			Vector3 Scale = Vector3.one;
+
+			if (DragType == DragTypes.ScaleXYZ || !AllowCustomScale || Selection.Ids.Count > 1)
+			{
+				Scale += Vector3.one * Mathf.Clamp((ScaledPos.x + ScaledPos.z) / 2f, -0.9f, 100);
+			}
+			else if (DragType == DragTypes.ScaleX)
+			{
+				//ScaledPos.y = 1;
+				Scale.x += Mathf.Clamp(ScaledPos.x, -0.9f, 100);
+				//ScaledPos.z = 1;
+			}
+			else if (DragType == DragTypes.ScaleZ)
+			{
+				//ScaledPos.y = 1;
+				Scale.z += Mathf.Clamp(ScaledPos.z, -0.9f, 100);
+				//ScaledPos.x = 1;
+			}
+
+			Selection.OffsetScale(Controls.position, Scale);
+			for (int i = 0; i < SymetrySelection.Length; i++)
+			{
+				SymetrySelection[i].OffsetScale(Controls.position, Scale);
+			}
 		}
 
 	}

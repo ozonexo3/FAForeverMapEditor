@@ -8,18 +8,21 @@ public class HistoryMarkersMove : HistoryObject {
 
 
 	// MarkersPos
-	Vector3[]							MarkersPosSelection; 
-		public static bool UndoMenu;
-		public bool UndoToMarkerMenu;
+	Vector3[]							MarkersPosSelection;
+	Quaternion[] MarkersRotSelection;
+	public static bool UndoMenu;
+	public bool UndoToMarkerMenu;
 
 	public override void Register(){
 
 		int mc = 0;
 		UndoToMarkerMenu = UndoMenu;
 		MarkersPosSelection = new Vector3[MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers.Count];
+		MarkersRotSelection = new Quaternion[MarkersPosSelection.Length];
 		for (int i = 0; i < MarkersPosSelection.Length; i++)
 		{
 			MarkersPosSelection[i] = MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers[i].MarkerObj.Tr.localPosition;
+			MarkersRotSelection[i] = MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers[i].MarkerObj.Tr.localRotation;
 		}
 
 			/*
@@ -62,6 +65,7 @@ public class HistoryMarkersMove : HistoryObject {
 		for (int i = 0; i < MarkersPosSelection.Length; i++)
 		{
 			MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers[i].MarkerObj.Tr.localPosition = MarkersPosSelection[i];
+			MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers[i].MarkerObj.Tr.localRotation = MarkersRotSelection[i];
 		}
 
 		if (UndoToMarkerMenu)

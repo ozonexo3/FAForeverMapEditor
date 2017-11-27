@@ -15,10 +15,6 @@ public class HistorySelectionRange : HistoryObject
 
 	public int[] Ids;
 	public GameObject[] AffectedGameObjects;
-	public bool AllowMove;
-	public bool AllowUp;
-	public bool AllowRotation;
-	public bool AllowScale;
 
 	public static bool DoingRedo = false;
 
@@ -33,10 +29,7 @@ public class HistorySelectionRange : HistoryObject
 
 		Ids = SelectionManager.Current.Selection.Ids.ToArray();
 		AffectedGameObjects = SelectionManager.Current.AffectedGameObjects;
-		AllowMove = SelectionManager.Current.AllowMove;
-		AllowUp = SelectionManager.Current.AllowUp;
-		AllowRotation = SelectionManager.Current.AllowRotation;
-		AllowScale = SelectionManager.Current.AllowScale;
+
 	}
 
 

@@ -57,18 +57,81 @@ public class DecalsControler : MonoBehaviour {
 		}
 	}
 
-	private void Update()
+	public static void MoveUp(OzoneDecal dc)
 	{
-		int count = AllDecals.Count;
-		Vector3 LastPos = OzoneDecalRenderer.Current._camTr.position;
-		/*
-		for (int i = 0; i < count; i++)
+		if (!Current.AllDecals.Contains(dc))
+			Debug.LogError("Decal not exist in all decals list");
+		int id = Current.AllDecals.IndexOf(dc);
+
+		if (id < Current.AllDecals.Count - 1)
 		{
-			AllDecals[i].LastDistance = (AllDecals[i].tr.localPosition - LastPos).sqrMagnitude;
+			Current.AllDecals.RemoveAt(id);
+			Current.AllDecals.Insert(id + 1, dc);
+			Debug.Log("Move Up from: " + id +", to " + Current.AllDecals.IndexOf(dc));
+
 		}
-		*/
 	}
 
+	public static void MoveDown(OzoneDecal dc)
+	{
+		if (!Current.AllDecals.Contains(dc))
+			Debug.LogError("Decal not exist in all decals list");
+		int id = Current.AllDecals.IndexOf(dc);
+
+		if (id > 0)
+		{
+			Debug.Log("Move Down");
+			Current.AllDecals.RemoveAt(id);
+			Current.AllDecals.Insert(id - 1, dc);
+		}
+	}
+
+	public static void MoveBottom(OzoneDecal dc)
+	{
+		if (!Current.AllDecals.Contains(dc))
+			Debug.LogError("Decal not exist in all decals list");
+		int id = Current.AllDecals.IndexOf(dc);
+
+
+		if (id > 0)
+		{
+			Debug.Log("MoveBottom");
+
+			Current.AllDecals.RemoveAt(id);
+			Current.AllDecals.Insert(0, dc);
+		}
+	}
+
+	public static void MoveTop(OzoneDecal dc)
+	{
+		if (!Current.AllDecals.Contains(dc))
+			Debug.LogError("Decal not exist in all decals list");
+
+		int id = Current.AllDecals.IndexOf(dc);
+
+		if (id < Current.AllDecals.Count - 1)
+		{
+			Debug.Log("MoveTop");
+
+			Current.AllDecals.RemoveAt(id);
+			Current.AllDecals.Insert(Current.AllDecals.Count - 1, dc);
+		}
+	}
+
+	public static void Sort()
+	{
+		int count = Current.AllDecals.Count;
+
+		for (int i = 0; i < count; i++)
+		{
+			Current.AllDecals[i].tr.SetSiblingIndex(i);
+		}
+		Current.gameObject.SetActive(false);
+		Current.gameObject.SetActive(true);
+	}
+
+
+	#region Loading
 
 	public void UnloadDecals()
 	{
@@ -138,5 +201,5 @@ public class DecalsControler : MonoBehaviour {
 			UpdateDecals();
 		}
 	}
-
+#endregion
 }

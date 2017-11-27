@@ -18,7 +18,9 @@ namespace Selection
 			public GameObject[] SelectionRings = new GameObject[0];
 			public Vector3[] Positions;
 			public Quaternion[] Rotations;
+			public Vector3[] Scales;
 			public Matrix4x4 SymmetryMatrix;
+			public bool InverseRotation = false;
 
 			public void LoadSymetryIds()
 			{
@@ -34,6 +36,8 @@ namespace Selection
 				int ClosestO;
 				float ClosestDist;
 
+				float Tolerance = Current.LastTolerance * Current.LastTolerance;
+
 				for (i = 0; i < count; i++)
 				{
 					ID = Current.Selection.Ids[i];
@@ -45,8 +49,8 @@ namespace Selection
 					{
 						if (o == ID)
 							continue;
-						Dist = Vector3.Distance(Current.AffectedGameObjects[o].transform.localPosition, SearchPos);
-						if (Dist <= Current.LastTolerance && Dist < ClosestDist)
+						Dist = (Current.AffectedGameObjects[o].transform.localPosition - SearchPos).sqrMagnitude;
+						if (Dist <= Tolerance && Dist < ClosestDist)
 						{
 							ClosestO = o;
 							ClosestDist = Dist;
@@ -87,7 +91,24 @@ namespace Selection
 
 				for (int i = 0; i < Empty.Count; i++)
 				{
-					//Rotations[i + count] = Empty[i];
+					Rotations[i] = Quaternion.identity;
+				}
+			}
+
+
+			public void StoreScales()
+			{
+				int count = Ids.Count;
+				Scales = new Vector3[count + Empty.Count];
+				for (int i = 0; i < count; i++)
+				{
+					Scales[i] = Current.AffectedGameObjects[Ids[i]].transform.localScale;
+				}
+
+				for (int i = 0; i < Empty.Count; i++)
+				{
+					Scales[i + count] = Vector3.one;
+
 				}
 			}
 
@@ -99,6 +120,7 @@ namespace Selection
 				{
 					for (int i = 0; i < Positions.Length; i++)
 					{
+						/*
 						if (i >= count)
 						{
 							SelectionRings[i].transform.localPosition = ScmapEditor.SnapToGridCenter(Positions[i] + Offset, true, Current.SnapToWater);
@@ -107,6 +129,14 @@ namespace Selection
 						{
 							Current.AffectedGameObjects[Ids[i]].transform.localPosition = ScmapEditor.SnapToGridCenter(Positions[i] + Offset, true, Current.SnapToWater);
 							SelectionRings[i].transform.localPosition = Current.AffectedGameObjects[Ids[i]].transform.localPosition;
+						}*/
+						Vector3 NewPos = ScmapEditor.SnapToGridCenter(Positions[i] + Offset, true, Current.SnapToWater);
+
+						SelectionRings[i].transform.localPosition = NewPos;
+
+						if (i < count)
+						{
+							Current.AffectedGameObjects[Ids[i]].transform.localPosition = NewPos;
 						}
 					}
 				}
@@ -114,16 +144,79 @@ namespace Selection
 				{
 					for (int i = 0; i < Positions.Length; i++)
 					{
-						Current.AffectedGameObjects[Ids[i]].transform.localPosition = Positions[i] + Offset;
-						SelectionRings[i].transform.localPosition = Current.AffectedGameObjects[Ids[i]].transform.localPosition;
+						Vector3 NewPos = Positions[i] + Offset;
+
+						SelectionRings[i].transform.localPosition = NewPos;
+
+						if (i < count)
+						{
+							Current.AffectedGameObjects[Ids[i]].transform.localPosition = NewPos;
+						}
 					}
 				}
 			}
 
-			public void OffsetRotation(Quaternion Offset, Vector3[] PositionOffsets)
+			public void OffsetRotation(Vector3 Around, Quaternion Offset)
 			{
+				Around = SymmetryMatrix.MultiplyPoint(Around - MapLuaParser.Current.MapCenterPoint) + MapLuaParser.Current.MapCenterPoint;
 
+				int count = Ids.Count;
+				for (int i = 0; i < Positions.Length; i++)
+				{
+					Vector3 NewPos = Offset * (Positions[i] - Around) + Around;
+					SelectionRings[i].transform.localPosition = NewPos;
+					Quaternion NewRot = Offset * Rotations[i];
+					if (AllowLocalRotation)
+						SelectionRings[i].transform.localRotation = NewRot;
+
+					if (i < count)
+					{
+						Current.AffectedGameObjects[Ids[i]].transform.localPosition = NewPos;
+						if(AllowLocalRotation)
+						Current.AffectedGameObjects[Ids[i]].transform.localRotation = NewRot;
+					}
+				}
 			}
+
+			public void OffsetScale(Vector3 Around, Vector3 Offset)
+			{
+				Around = SymmetryMatrix.MultiplyPoint(Around - MapLuaParser.Current.MapCenterPoint) + MapLuaParser.Current.MapCenterPoint;
+
+				int count = Ids.Count;
+				for (int i = 0; i < Positions.Length; i++)
+				{
+					Vector3 NewPos = (Positions[i] - Around);
+					//NewPos.x *= (Offset.x + 1f) / 2f;
+					//NewPos.z *= (Offset.z + 1f) / 2f;
+					NewPos.x *= Offset.z;
+					NewPos.z *= Offset.x;
+					NewPos += Around;
+
+					SelectionRings[i].transform.localPosition = NewPos;
+					Vector3 NewScale = Scales[i];
+					NewScale.x *= Offset.x;
+					NewScale.y *= Offset.y;
+					NewScale.z *= Offset.z;
+					ClampVectorFast(ref NewScale, 0.01f);
+					SelectionRings[i].transform.localScale = NewScale;
+
+					if (i < count)
+					{
+						Current.AffectedGameObjects[Ids[i]].transform.localPosition = NewPos;
+						Current.AffectedGameObjects[Ids[i]].transform.localScale = NewScale;
+					}
+				}
+			}
+		}
+
+		static void ClampVectorFast(ref Vector3 vec, float minValue)
+		{
+			if (vec.x < minValue)
+				vec.x = minValue;
+			if (vec.z < minValue)
+				vec.z = minValue;
+			if (vec.y < minValue)
+				vec.y = minValue;
 		}
 
 		public int GetIdOfObject(GameObject Obj)
@@ -163,6 +256,7 @@ namespace Selection
 					SymetrySelection = new SelectedObjects[1];
 					SymetrySelection[0] = new SelectedObjects();
 					SymetrySelection[0].SymmetryMatrix = Matrix4x4.TRS(Vector3.zero, Quaternion.identity, new Vector3(-1, 1, 1));
+					SymetrySelection[0].InverseRotation = true;
 					SymetrySelection[0].LoadSymetryIds();
 					GenerateSymmetrySelectionRing(SymetrySelection[0]);
 					break;
@@ -170,6 +264,7 @@ namespace Selection
 					SymetrySelection = new SelectedObjects[1];
 					SymetrySelection[0] = new SelectedObjects();
 					SymetrySelection[0].SymmetryMatrix = Matrix4x4.TRS(Vector3.zero, Quaternion.identity, new Vector3(1, 1, -1));
+					SymetrySelection[0].InverseRotation = true;
 					SymetrySelection[0].LoadSymetryIds();
 					GenerateSymmetrySelectionRing(SymetrySelection[0]);
 					break;
@@ -177,6 +272,7 @@ namespace Selection
 					SymetrySelection = new SelectedObjects[1];
 					SymetrySelection[0] = new SelectedObjects();
 					SymetrySelection[0].SymmetryMatrix = Matrix4x4.TRS(Vector3.zero, Quaternion.identity, new Vector3(-1, 1, -1));
+					SymetrySelection[0].InverseRotation = false;
 					SymetrySelection[0].LoadSymetryIds();
 					GenerateSymmetrySelectionRing(SymetrySelection[0]);
 					break;
@@ -184,16 +280,19 @@ namespace Selection
 					SymetrySelection = new SelectedObjects[3];
 					SymetrySelection[0] = new SelectedObjects();
 					SymetrySelection[0].SymmetryMatrix = Matrix4x4.TRS(Vector3.zero, Quaternion.identity, new Vector3(-1, 1, 1));
+					SymetrySelection[0].InverseRotation = true;
 					SymetrySelection[0].LoadSymetryIds();
 					GenerateSymmetrySelectionRing(SymetrySelection[0]);
 
 					SymetrySelection[1] = new SelectedObjects();
 					SymetrySelection[1].SymmetryMatrix = Matrix4x4.TRS(Vector3.zero, Quaternion.identity, new Vector3(1, 1, -1));
+					SymetrySelection[1].InverseRotation = true;
 					SymetrySelection[1].LoadSymetryIds();
 					GenerateSymmetrySelectionRing(SymetrySelection[1]);
 
 					SymetrySelection[2] = new SelectedObjects();
 					SymetrySelection[2].SymmetryMatrix = Matrix4x4.TRS(Vector3.zero, Quaternion.identity, new Vector3(-1, 1, -1));
+					SymetrySelection[2].InverseRotation = false;
 					SymetrySelection[2].LoadSymetryIds();
 					GenerateSymmetrySelectionRing(SymetrySelection[2]);
 					break;
@@ -201,6 +300,7 @@ namespace Selection
 					SymetrySelection = new SelectedObjects[1];
 					SymetrySelection[0] = new SelectedObjects();
 					SymetrySelection[0].SymmetryMatrix = Matrix4x4.TRS(Vector3.zero, Quaternion.Euler(Vector3.up * 90), new Vector3(-1, 1, 1));
+					SymetrySelection[0].InverseRotation = true;
 					SymetrySelection[0].LoadSymetryIds();
 					GenerateSymmetrySelectionRing(SymetrySelection[0]);
 					break;
@@ -208,6 +308,7 @@ namespace Selection
 					SymetrySelection = new SelectedObjects[1];
 					SymetrySelection[0] = new SelectedObjects();
 					SymetrySelection[0].SymmetryMatrix = Matrix4x4.TRS(Vector3.zero, Quaternion.Euler(Vector3.down * 90), new Vector3(-1, 1, 1));
+					SymetrySelection[0].InverseRotation = true;
 					SymetrySelection[0].LoadSymetryIds();
 					GenerateSymmetrySelectionRing(SymetrySelection[0]);
 					break;
@@ -215,11 +316,13 @@ namespace Selection
 					SymetrySelection = new SelectedObjects[2];
 					SymetrySelection[0] = new SelectedObjects();
 					SymetrySelection[0].SymmetryMatrix = Matrix4x4.TRS(Vector3.zero, Quaternion.Euler(Vector3.up * 90), new Vector3(-1, 1, 1));
+					SymetrySelection[0].InverseRotation = true;
 					SymetrySelection[0].LoadSymetryIds();
 					GenerateSymmetrySelectionRing(SymetrySelection[0]);
 
 					SymetrySelection[1] = new SelectedObjects();
 					SymetrySelection[1].SymmetryMatrix = Matrix4x4.TRS(Vector3.zero, Quaternion.Euler(Vector3.down * 90), new Vector3(-1, 1, 1));
+					SymetrySelection[1].InverseRotation = true;
 					SymetrySelection[1].LoadSymetryIds();
 					GenerateSymmetrySelectionRing(SymetrySelection[1]);
 
@@ -233,6 +336,7 @@ namespace Selection
 					{
 						SymetrySelection[i] = new SelectedObjects();
 						SymetrySelection[i].SymmetryMatrix = Matrix4x4.TRS(Vector3.zero, Quaternion.Euler(Vector3.up * (angle * (i + 1))), Vector3.one);
+						SymetrySelection[i].InverseRotation = false;
 						SymetrySelection[i].LoadSymetryIds();
 						GenerateSymmetrySelectionRing(SymetrySelection[i]);
 					}

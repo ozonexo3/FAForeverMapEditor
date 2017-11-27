@@ -23,7 +23,9 @@ GameObject:
   - component: {fileID: 33602097551335958}
   - component: {fileID: 114023126448705506}
   - component: {fileID: 205490010641979160}
-  m_Layer: 8
+  - component: {fileID: 65709400124148018}
+  - component: {fileID: 64060146748922218}
+  m_Layer: 14
   m_Name: Decal
   m_TagString: Decal
   m_Icon: {fileID: 0}
@@ -36,7 +38,7 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1999517744816086}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
@@ -81,6 +83,32 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1999517744816086}
   m_Mesh: {fileID: 4300000, guid: ab0a37b4be73267489ca5dfc562f9524, type: 2}
+--- !u!64 &64060146748922218
+MeshCollider:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1999517744816086}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Convex: 1
+  m_InflateMesh: 0
+  m_SkinWidth: 0.01
+  m_Mesh: {fileID: 4300000, guid: 58838a3f1c1de8b44a30b7d69c480e5c, type: 3}
+--- !u!65 &65709400124148018
+BoxCollider:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1999517744816086}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 0
+  serializedVersion: 2
+  m_Size: {x: 1, y: 0.1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &114023126448705506
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -95,9 +123,19 @@ MonoBehaviour:
   Material: {fileID: 0}
   DrawAlbedo: 0
   DrawNormal: 0
+  HighQualityBlending: 0
+  HasEmission: 0
+  HasSpecular: 0
   CutOffLOD: 0
   NearCutOffLOD: 0
-  tr: {fileID: 0}
+  WorldCutoffDistance: 0
+  FrustumSize: 0
+  Text0Path: 
+  Text1Path: 
+  LastDistance: 0
+  tr: {fileID: 4473904394920242}
+  lg: {fileID: 205490010641979160}
+  IsVisible: 0
 --- !u!205 &205490010641979160
 LODGroup:
   m_ObjectHideFlags: 1
@@ -110,7 +148,8 @@ LODGroup:
   m_FadeMode: 0
   m_AnimateCrossFading: 0
   m_LODs:
-  - screenRelativeHeight: 0.07632049
+  - screenRelativeHeight: 0.23586911
     fadeTransitionWidth: 0
-    renderers: []
+    renderers:
+    - renderer: {fileID: 23462308272178864}
   m_Enabled: 1

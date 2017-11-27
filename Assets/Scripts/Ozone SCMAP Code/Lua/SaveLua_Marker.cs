@@ -610,7 +610,7 @@ namespace MapLua
 		#endregion
 
 
-		static List<string> AllExistingNames = new List<string>();
+		static HashSet<string> AllExistingNames = new HashSet<string>();
 
 		public static void RegisterMarkerName(string MarkerName)
 		{
@@ -621,7 +621,6 @@ namespace MapLua
 		public static void RemoveMarkerName(string MarkerName)
 		{
 			AllExistingNames.Remove(MarkerName);
-
 		}
 
 		public static bool NameExist(string name)
