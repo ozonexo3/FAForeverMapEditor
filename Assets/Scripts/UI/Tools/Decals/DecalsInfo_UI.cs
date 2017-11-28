@@ -9,6 +9,9 @@ namespace EditMap
 	public partial class DecalsInfo : MonoBehaviour
 	{
 
+		public DecalSettings DecalSettingsUi;
+
+
 		public void MoveUp()
 		{
 			if (SelectionManager.Current.Selection.Ids.Count == 0)

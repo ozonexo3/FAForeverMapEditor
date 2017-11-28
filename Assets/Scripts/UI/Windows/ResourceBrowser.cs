@@ -396,7 +396,7 @@ public class ResourceBrowser : MonoBehaviour
 
 		try
 		{
-			LoadedTex = GetGamedataFile.LoadTexture2DFromGamedata("env.scd", localpath, false);
+			LoadedTex = GetGamedataFile.LoadTexture2DFromGamedata("env.scd", localpath, false, false);
 		}
 		catch (System.Exception e)
 		{

@@ -40,19 +40,24 @@ namespace EditMap
 		}
 
 
+
+		public void SelectDetails()
+		{
+			if (SelectionManager.Current.AffectedGameObjects.Length == 0 || SelectionManager.Current.Selection.Ids.Count == 0)
+				DecalSettingsUi.Load(null);
+			else
+				DecalSettingsUi.Load(SelectionManager.Current.AffectedGameObjects[SelectionManager.Current.Selection.Ids[0]].GetComponent<OzoneDecal>().Component.Shared);
+
+		}
+
 		public void DestroyDetails(List<GameObject> MarkerObjects, bool RegisterUndo = true)
 		{
 
 		}
 
-		public void SelectDetails()
-		{
-
-
-		}
-
 		public void Place(Vector3[] Positions, Quaternion[] Rotations)
 		{
+
 		}
 
 

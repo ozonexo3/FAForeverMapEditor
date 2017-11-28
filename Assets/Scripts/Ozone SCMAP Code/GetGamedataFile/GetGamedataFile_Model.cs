@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using System;
 using System.IO;
 
@@ -275,8 +276,18 @@ public partial struct GetGamedataFile
 
 	#endregion
 
+	static Dictionary<string, Mesh> LoadedMeshes = new Dictionary<string, Mesh>();
+	public static void CleanMeshMemory()
+	{
+		LoadedMeshes = new Dictionary<string, Mesh>();
+	}
+
 	public static Mesh LoadModel(string scd, string LocalPath)
 	{
+		string ModelKey = scd + "_" + LocalPath;
+		if (LoadedMeshes.ContainsKey(ModelKey))
+			return LoadedMeshes[ModelKey];
+
 		byte[] FinalMeshBytes = LoadBytes(scd, LocalPath);
 
 		if (FinalMeshBytes == null || FinalMeshBytes.Length == 0)
@@ -304,6 +315,8 @@ public partial struct GetGamedataFile
 
 		ToReturn.RecalculateBounds();
 		ToReturn.RecalculateNormals();
+
+		LoadedMeshes.Add(ModelKey, ToReturn);
 
 		return ToReturn;
 	}

@@ -15,7 +15,7 @@ namespace EditMap
 
 		public StratumSettingsUi StratumSettings;
 		public Editing Edit;
-		public ScmapEditor Map;
+		//public ScmapEditor Map;
 
 		public int Selected = 0;
 		public GameObject[] Stratum_Selections;
@@ -287,46 +287,46 @@ namespace EditMap
 
 		public void ReloadStratums()
 		{
-			StratumSettings.Stratum0_Albedo.texture = Map.Textures[0].Albedo;
-			StratumSettings.Stratum0_Normal.texture = Map.Textures[0].Normal;
+			StratumSettings.Stratum0_Albedo.texture = ScmapEditor.Current.Textures[0].Albedo;
+			StratumSettings.Stratum0_Normal.texture = ScmapEditor.Current.Textures[0].Normal;
 
-			StratumSettings.Stratum1_Albedo.texture = Map.Textures[1].Albedo;
-			StratumSettings.Stratum1_Normal.texture = Map.Textures[1].Normal;
+			StratumSettings.Stratum1_Albedo.texture = ScmapEditor.Current.Textures[1].Albedo;
+			StratumSettings.Stratum1_Normal.texture = ScmapEditor.Current.Textures[1].Normal;
 
-			StratumSettings.Stratum2_Albedo.texture = Map.Textures[2].Albedo;
-			StratumSettings.Stratum2_Normal.texture = Map.Textures[2].Normal;
+			StratumSettings.Stratum2_Albedo.texture = ScmapEditor.Current.Textures[2].Albedo;
+			StratumSettings.Stratum2_Normal.texture = ScmapEditor.Current.Textures[2].Normal;
 
-			StratumSettings.Stratum3_Albedo.texture = Map.Textures[3].Albedo;
-			StratumSettings.Stratum3_Normal.texture = Map.Textures[3].Normal;
+			StratumSettings.Stratum3_Albedo.texture = ScmapEditor.Current.Textures[3].Albedo;
+			StratumSettings.Stratum3_Normal.texture = ScmapEditor.Current.Textures[3].Normal;
 
-			StratumSettings.Stratum4_Albedo.texture = Map.Textures[4].Albedo;
-			StratumSettings.Stratum4_Normal.texture = Map.Textures[4].Normal;
+			StratumSettings.Stratum4_Albedo.texture = ScmapEditor.Current.Textures[4].Albedo;
+			StratumSettings.Stratum4_Normal.texture = ScmapEditor.Current.Textures[4].Normal;
 
-			StratumSettings.Stratum5_Albedo.texture = Map.Textures[5].Albedo;
-			StratumSettings.Stratum5_Normal.texture = Map.Textures[5].Normal;
+			StratumSettings.Stratum5_Albedo.texture = ScmapEditor.Current.Textures[5].Albedo;
+			StratumSettings.Stratum5_Normal.texture = ScmapEditor.Current.Textures[5].Normal;
 
-			StratumSettings.Stratum6_Albedo.texture = Map.Textures[6].Albedo;
-			StratumSettings.Stratum6_Normal.texture = Map.Textures[6].Normal;
+			StratumSettings.Stratum6_Albedo.texture = ScmapEditor.Current.Textures[6].Albedo;
+			StratumSettings.Stratum6_Normal.texture = ScmapEditor.Current.Textures[6].Normal;
 
-			StratumSettings.Stratum7_Albedo.texture = Map.Textures[7].Albedo;
-			StratumSettings.Stratum7_Normal.texture = Map.Textures[7].Normal;
+			StratumSettings.Stratum7_Albedo.texture = ScmapEditor.Current.Textures[7].Albedo;
+			StratumSettings.Stratum7_Normal.texture = ScmapEditor.Current.Textures[7].Normal;
 
-			StratumSettings.Stratum8_Albedo.texture = Map.Textures[8].Albedo;
-			StratumSettings.Stratum8_Normal.texture = Map.Textures[8].Normal;
+			StratumSettings.Stratum8_Albedo.texture = ScmapEditor.Current.Textures[8].Albedo;
+			StratumSettings.Stratum8_Normal.texture = ScmapEditor.Current.Textures[8].Normal;
 
-			StratumSettings.Stratum9_Albedo.texture = Map.Textures[9].Albedo;
-			StratumSettings.Stratum9_Normal.texture = Map.Textures[9].Normal;
+			StratumSettings.Stratum9_Albedo.texture = ScmapEditor.Current.Textures[9].Albedo;
+			StratumSettings.Stratum9_Normal.texture = ScmapEditor.Current.Textures[9].Normal;
 
 
-			StratumSettings.Stratum1_Mask.texture = Map.map.TexturemapTex;
-			StratumSettings.Stratum2_Mask.texture = Map.map.TexturemapTex;
-			StratumSettings.Stratum3_Mask.texture = Map.map.TexturemapTex;
-			StratumSettings.Stratum4_Mask.texture = Map.map.TexturemapTex;
+			StratumSettings.Stratum1_Mask.texture = ScmapEditor.Current.map.TexturemapTex;
+			StratumSettings.Stratum2_Mask.texture = ScmapEditor.Current.map.TexturemapTex;
+			StratumSettings.Stratum3_Mask.texture = ScmapEditor.Current.map.TexturemapTex;
+			StratumSettings.Stratum4_Mask.texture = ScmapEditor.Current.map.TexturemapTex;
 
-			StratumSettings.Stratum5_Mask.texture = Map.map.TexturemapTex2;
-			StratumSettings.Stratum6_Mask.texture = Map.map.TexturemapTex2;
-			StratumSettings.Stratum7_Mask.texture = Map.map.TexturemapTex2;
-			StratumSettings.Stratum8_Mask.texture = Map.map.TexturemapTex2;
+			StratumSettings.Stratum5_Mask.texture = ScmapEditor.Current.map.TexturemapTex2;
+			StratumSettings.Stratum6_Mask.texture = ScmapEditor.Current.map.TexturemapTex2;
+			StratumSettings.Stratum7_Mask.texture = ScmapEditor.Current.map.TexturemapTex2;
+			StratumSettings.Stratum8_Mask.texture = ScmapEditor.Current.map.TexturemapTex2;
 		}
 
 		bool LoadingStratum = false;
@@ -339,15 +339,15 @@ namespace EditMap
 
 			Stratum_Selections[Selected].SetActive(true);
 
-			Stratum_Albedo.texture = Map.Textures[Selected].Albedo;
-			Stratum_Normal.texture = Map.Textures[Selected].Normal;
+			Stratum_Albedo.texture = ScmapEditor.Current.Textures[Selected].Albedo;
+			Stratum_Normal.texture = ScmapEditor.Current.Textures[Selected].Normal;
 
 
-			Stratum_Albedo_Slider.value = Map.Textures[Selected].AlbedoScale;
-			Stratum_Albedo_Input.text = Map.Textures[Selected].AlbedoScale.ToString();
+			Stratum_Albedo_Slider.value = ScmapEditor.Current.Textures[Selected].AlbedoScale;
+			Stratum_Albedo_Input.text = ScmapEditor.Current.Textures[Selected].AlbedoScale.ToString();
 
-			Stratum_Normal_Slider.value = Map.Textures[Selected].NormalScale;
-			Stratum_Normal_Input.text = Map.Textures[Selected].NormalScale.ToString();
+			Stratum_Normal_Slider.value = ScmapEditor.Current.Textures[Selected].NormalScale;
+			Stratum_Normal_Input.text = ScmapEditor.Current.Textures[Selected].NormalScale.ToString();
 			LoadingStratum = false;
 		}
 
@@ -444,14 +444,14 @@ namespace EditMap
 				}
 				if (!LoadingStratum)
 				{
-					Map.Textures[Selected].AlbedoScale = Stratum_Albedo_Slider.value;
-					Map.Textures[Selected].NormalScale = Stratum_Normal_Slider.value;
+					ScmapEditor.Current.Textures[Selected].AlbedoScale = Stratum_Albedo_Slider.value;
+					ScmapEditor.Current.Textures[Selected].NormalScale = Stratum_Normal_Slider.value;
 				}
 
 				//Map.map.Layers [Selected].ScaleTexture = Map.Textures [Selected].AlbedoScale;
 				//Map.map.Layers [Selected].ScaleNormalmap = Map.Textures [Selected].NormalScale;
 
-				Map.UpdateScales(Selected);
+				ScmapEditor.Current.UpdateScales(Selected);
 
 			}
 			else if (Page_Paint.activeSelf)
@@ -608,13 +608,13 @@ namespace EditMap
 			if (Physics.Raycast(ray, out hit, 2000, TerrainMask))
 			{
 				BrushPos = hit.point;
-				BrushPos.y = Map.Teren.SampleHeight(BrushPos);
+				BrushPos.y = ScmapEditor.Current.Teren.SampleHeight(BrushPos);
 
-				Vector3 tempCoord = Map.Teren.gameObject.transform.InverseTransformPoint(BrushPos);
+				Vector3 tempCoord = ScmapEditor.Current.Teren.gameObject.transform.InverseTransformPoint(BrushPos);
 				Vector3 coord = Vector3.zero;
-				coord.x = (tempCoord.x - (int)(BrushSizeValue / SizeXprop) * MapLuaParser.GetMapSizeX() * 0.0001f) / Map.Teren.terrainData.size.x; // TODO 0.05 ?? this should be terrain proportion?
+				coord.x = (tempCoord.x - (int)(BrushSizeValue / SizeXprop) * MapLuaParser.GetMapSizeX() * 0.0001f) / ScmapEditor.Current.Teren.terrainData.size.x; // TODO 0.05 ?? this should be terrain proportion?
 																																				   //coord.y = tempCoord.y / Map.Teren.terrainData.size.y;
-				coord.z = (tempCoord.z - (int)(BrushSizeValue / SizeZprop) * MapLuaParser.GetMapSizeY() * 0.0001f) / Map.Teren.terrainData.size.z;
+				coord.z = (tempCoord.z - (int)(BrushSizeValue / SizeZprop) * MapLuaParser.GetMapSizeY() * 0.0001f) / ScmapEditor.Current.Teren.terrainData.size.z;
 
 				TerrainMaterial.SetFloat("_BrushSize", BrushSizeValue / ((SizeXprop + SizeZprop) / 2f));
 				TerrainMaterial.SetFloat("_BrushUvX", coord.x);
@@ -661,11 +661,11 @@ namespace EditMap
 
 			if (Selected > 0 && Selected < 5)
 			{
-				Map.map.TexturemapTex.Apply();
+				ScmapEditor.Current.map.TexturemapTex.Apply();
 			}
 			else if (Selected > 4 && Selected < 9)
 			{
-				Map.map.TexturemapTex2.Apply();
+				ScmapEditor.Current.map.TexturemapTex2.Apply();
 			}
 		}
 
@@ -677,14 +677,14 @@ namespace EditMap
 		void Paint(Vector3 AtPosition, int id = 0)
 		{
 
-			int hmWidth = Map.map.TexturemapTex.width;
-			int hmHeight = Map.map.TexturemapTex.height;
+			int hmWidth = ScmapEditor.Current.map.TexturemapTex.width;
+			int hmHeight = ScmapEditor.Current.map.TexturemapTex.height;
 
-			Vector3 tempCoord = Map.Teren.gameObject.transform.InverseTransformPoint(AtPosition);
+			Vector3 tempCoord = ScmapEditor.Current.Teren.gameObject.transform.InverseTransformPoint(AtPosition);
 			Vector3 coord = Vector3.zero;
-			coord.x = tempCoord.x / Map.Teren.terrainData.size.x;
+			coord.x = tempCoord.x / ScmapEditor.Current.Teren.terrainData.size.x;
 			//coord.y = tempCoord.y / Map.Teren.terrainData.size.y;
-			coord.z = 1 - tempCoord.z / Map.Teren.terrainData.size.z;
+			coord.z = 1 - tempCoord.z / ScmapEditor.Current.Teren.terrainData.size.z;
 
 			if (coord.x > 1) return;
 			if (coord.x < 0) return;
@@ -723,11 +723,11 @@ namespace EditMap
 
 			if (Selected > 0 && Selected < 5)
 			{
-				StratumData = Map.map.TexturemapTex.GetPixels(posXInTerrain - offset + OffsetLeft, posYInTerrain - offset + OffsetDown, (size - OffsetLeft) - OffsetRight, (size - OffsetDown) - OffsetTop);
+				StratumData = ScmapEditor.Current.map.TexturemapTex.GetPixels(posXInTerrain - offset + OffsetLeft, posYInTerrain - offset + OffsetDown, (size - OffsetLeft) - OffsetRight, (size - OffsetDown) - OffsetTop);
 			}
 			else if (Selected > 4 && Selected < 9)
 			{
-				StratumData = Map.map.TexturemapTex2.GetPixels(posXInTerrain - offset + OffsetLeft, posYInTerrain - offset + OffsetDown, (size - OffsetLeft) - OffsetRight, (size - OffsetDown) - OffsetTop);
+				StratumData = ScmapEditor.Current.map.TexturemapTex2.GetPixels(posXInTerrain - offset + OffsetLeft, posYInTerrain - offset + OffsetDown, (size - OffsetLeft) - OffsetRight, (size - OffsetDown) - OffsetTop);
 			}
 			else
 				return;
@@ -746,7 +746,7 @@ namespace EditMap
 
 					if (Min <= 0 && Max >= 0)
 					{
-						float angle = Vector3.Angle(Vector3.up, Map.Teren.terrainData.GetInterpolatedNormal((posXInTerrain - offset + OffsetLeft + i) / (float)hmWidth, 1 - (posYInTerrain - offset + OffsetDown + j) / (float)hmHeight));
+						float angle = Vector3.Angle(Vector3.up, ScmapEditor.Current.Teren.terrainData.GetInterpolatedNormal((posXInTerrain - offset + OffsetLeft + i) / (float)hmWidth, 1 - (posYInTerrain - offset + OffsetDown + j) / (float)hmHeight));
 						if ((angle < Min && Min > 0) || (angle > Max && Max < 90))
 							continue;
 					}
@@ -814,22 +814,22 @@ namespace EditMap
 			{
 				if (Selected > 0 && Selected < 5)
 				{
-					beginColors = Map.map.TexturemapTex.GetPixels();
+					beginColors = ScmapEditor.Current.map.TexturemapTex.GetPixels();
 				}
 				else if (Selected > 4 && Selected < 9)
 				{
-					beginColors = Map.map.TexturemapTex2.GetPixels();
+					beginColors = ScmapEditor.Current.map.TexturemapTex2.GetPixels();
 				}
 
 				TerainChanged = true;
 			}
 			if (Selected > 0 && Selected < 5)
 			{
-				Map.map.TexturemapTex.SetPixels(posXInTerrain - offset + OffsetLeft, posYInTerrain - offset + OffsetDown, (size - OffsetLeft) - OffsetRight, (size - OffsetDown) - OffsetTop, StratumData);
+				ScmapEditor.Current.map.TexturemapTex.SetPixels(posXInTerrain - offset + OffsetLeft, posYInTerrain - offset + OffsetDown, (size - OffsetLeft) - OffsetRight, (size - OffsetDown) - OffsetTop, StratumData);
 			}
 			else
 			{
-				Map.map.TexturemapTex2.SetPixels(posXInTerrain - offset + OffsetLeft, posYInTerrain - offset + OffsetDown, (size - OffsetLeft) - OffsetRight, (size - OffsetDown) - OffsetTop, StratumData);
+				ScmapEditor.Current.map.TexturemapTex2.SetPixels(posXInTerrain - offset + OffsetLeft, posYInTerrain - offset + OffsetDown, (size - OffsetLeft) - OffsetRight, (size - OffsetDown) - OffsetTop, StratumData);
 			}
 			//Map.map.TexturemapTex.SetPixels(StratumData);
 		}
@@ -858,13 +858,13 @@ namespace EditMap
 				Undo.RegisterStratumChange(Selected);
 				Debug.Log(ResourceBrowser.Current.LoadedPaths[ResourceBrowser.DragedObject.InstanceId]);
 
-				Map.Textures[Selected].Albedo = ResourceBrowser.Current.LoadedTextures[ResourceBrowser.DragedObject.InstanceId];
-				Map.Textures[Selected].AlbedoPath = ResourceBrowser.Current.LoadedPaths[ResourceBrowser.DragedObject.InstanceId];
+				ScmapEditor.Current.Textures[Selected].Albedo = ResourceBrowser.Current.LoadedTextures[ResourceBrowser.DragedObject.InstanceId];
+				ScmapEditor.Current.Textures[Selected].AlbedoPath = ResourceBrowser.Current.LoadedPaths[ResourceBrowser.DragedObject.InstanceId];
 
 				//Map.map.Layers [Selected].PathTexture = Map.Textures [Selected].AlbedoPath;
 
 
-				Map.SetTextures(Selected);
+				ScmapEditor.Current.SetTextures(Selected);
 				ReloadStratums();
 				SelectStratum(Selected);
 			}
@@ -881,13 +881,13 @@ namespace EditMap
 				Debug.Log(ResourceBrowser.Current.LoadedPaths[ResourceBrowser.DragedObject.InstanceId]);
 
 				//Map.Textures [Selected].Normal = ResourceBrowser.Current.LoadedTextures [ResourceBrowser.DragedObject.InstanceId];
-				Map.Textures[Selected].NormalPath = ResourceBrowser.Current.LoadedPaths[ResourceBrowser.DragedObject.InstanceId];
+				ScmapEditor.Current.Textures[Selected].NormalPath = ResourceBrowser.Current.LoadedPaths[ResourceBrowser.DragedObject.InstanceId];
 
-				GetGamedataFile.LoadTextureFromGamedata("env.scd", Map.Textures[Selected].NormalPath, Selected, true);
+				GetGamedataFile.LoadTextureFromGamedata("env.scd", ScmapEditor.Current.Textures[Selected].NormalPath, Selected, true);
 
 				//Map.map.Layers [Selected].PathNormalmap = Map.Textures [Selected].NormalPath;
 
-				Map.SetTextures(Selected);
+				ScmapEditor.Current.SetTextures(Selected);
 				ReloadStratums();
 				SelectStratum(Selected);
 			}
@@ -895,12 +895,12 @@ namespace EditMap
 
 		public void ClickAlbedo()
 		{
-			Map.ResBrowser.LoadStratumTexture(Map.Textures[Selected].AlbedoPath);
+			ScmapEditor.Current.ResBrowser.LoadStratumTexture(ScmapEditor.Current.Textures[Selected].AlbedoPath);
 		}
 
 		public void ClickNormal()
 		{
-			Map.ResBrowser.LoadStratumTexture(Map.Textures[Selected].NormalPath);
+			ScmapEditor.Current.ResBrowser.LoadStratumTexture(ScmapEditor.Current.Textures[Selected].NormalPath);
 		}
 		#endregion
 
@@ -910,11 +910,11 @@ namespace EditMap
 		{
 			if (layer > 4)
 			{
-				return Map.map.TexturemapTex2.GetPixels();
+				return ScmapEditor.Current.map.TexturemapTex2.GetPixels();
 			}
 			else
 			{
-				return Map.map.TexturemapTex.GetPixels();
+				return ScmapEditor.Current.map.TexturemapTex.GetPixels();
 			}
 		}
 
@@ -922,13 +922,13 @@ namespace EditMap
 		{
 			if (layer > 4)
 			{
-				Map.map.TexturemapTex2.SetPixels(Colors);
-				Map.map.TexturemapTex2.Apply(false);
+				ScmapEditor.Current.map.TexturemapTex2.SetPixels(Colors);
+				ScmapEditor.Current.map.TexturemapTex2.Apply(false);
 			}
 			else
 			{
-				Map.map.TexturemapTex.SetPixels(Colors);
-				Map.map.TexturemapTex.Apply(false);
+				ScmapEditor.Current.map.TexturemapTex.SetPixels(Colors);
+				ScmapEditor.Current.map.TexturemapTex.Apply(false);
 			}
 		}
 
@@ -1001,11 +1001,11 @@ namespace EditMap
 			}
 
 
-			ScmapEditor.TerrainTexture Prev = Map.Textures[Selected];
-			Map.Textures[Selected] = Map.Textures[NewSelected];
-			Map.Textures[NewSelected] = Prev;
+			ScmapEditor.TerrainTexture Prev = ScmapEditor.Current.Textures[Selected];
+			ScmapEditor.Current.Textures[Selected] = ScmapEditor.Current.Textures[NewSelected];
+			ScmapEditor.Current.Textures[NewSelected] = Prev;
 
-			Map.SetTextures(Selected);
+			ScmapEditor.Current.SetTextures(Selected);
 
 			ReloadStratums();
 			SelectStratum(NewSelected);
@@ -1051,11 +1051,11 @@ namespace EditMap
 			}
 
 
-			ScmapEditor.TerrainTexture Prev = Map.Textures[Selected];
-			Map.Textures[Selected] = Map.Textures[NewSelected];
-			Map.Textures[NewSelected] = Prev;
+			ScmapEditor.TerrainTexture Prev = ScmapEditor.Current.Textures[Selected];
+			ScmapEditor.Current.Textures[Selected] = ScmapEditor.Current.Textures[NewSelected];
+			ScmapEditor.Current.Textures[NewSelected] = Prev;
 
-			Map.SetTextures(Selected);
+			ScmapEditor.Current.SetTextures(Selected);
 
 			ReloadStratums();
 			SelectStratum(NewSelected);
@@ -1099,18 +1099,18 @@ namespace EditMap
 					Color[] StratumData;
 					if (Selected > 4)
 					{
-						StratumData = Map.map.TexturemapTex2.GetPixels();
+						StratumData = ScmapEditor.Current.map.TexturemapTex2.GetPixels();
 					}
 					else
 					{
-						StratumData = Map.map.TexturemapTex.GetPixels();
+						StratumData = ScmapEditor.Current.map.TexturemapTex.GetPixels();
 					}
 
 					Texture2D ImportedImage = img.ToTexture2D();
-					if(ImportedImage.width != Map.map.TexturemapTex.width || ImportedImage.height != Map.map.TexturemapTex.height)
+					if(ImportedImage.width != ScmapEditor.Current.map.TexturemapTex.width || ImportedImage.height != ScmapEditor.Current.map.TexturemapTex.height)
 					{
 						//ImportedImage.Resize(Map.map.TexturemapTex.width, Map.map.TexturemapTex.height);
-						TextureScale.Bilinear(ImportedImage, Map.map.TexturemapTex.width, Map.map.TexturemapTex.height);
+						TextureScale.Bilinear(ImportedImage, ScmapEditor.Current.map.TexturemapTex.width, ScmapEditor.Current.map.TexturemapTex.height);
 						ImportedImage.Apply(false);
 					}
 
@@ -1133,28 +1133,28 @@ namespace EditMap
 
 					if (Selected > 4)
 					{
-						Map.map.TexturemapTex2.SetPixels(StratumData);
-						Map.map.TexturemapTex2.Apply(false);
+						ScmapEditor.Current.map.TexturemapTex2.SetPixels(StratumData);
+						ScmapEditor.Current.map.TexturemapTex2.Apply(false);
 					}
 					else
 					{
-						Map.map.TexturemapTex.SetPixels(StratumData);
-						Map.map.TexturemapTex.Apply(false);
+						ScmapEditor.Current.map.TexturemapTex.SetPixels(StratumData);
+						ScmapEditor.Current.map.TexturemapTex.Apply(false);
 					}
 
 				}
 				else if(paths[0].ToLower().EndsWith("raw"))
 				{
-					int h = Map.map.TexturemapTex.width;
-					int w = Map.map.TexturemapTex.height;
+					int h = ScmapEditor.Current.map.TexturemapTex.width;
+					int w = ScmapEditor.Current.map.TexturemapTex.height;
 					int i = 0;
 
 					Color[] data;
 
 					if (Selected > 4)
-						data = Map.map.TexturemapTex2.GetPixels();
+						data = ScmapEditor.Current.map.TexturemapTex2.GetPixels();
 					else
-						data = Map.map.TexturemapTex.GetPixels();
+						data = ScmapEditor.Current.map.TexturemapTex.GetPixels();
 
 
 					//byte[,] data = new byte[h, w];
@@ -1184,13 +1184,13 @@ namespace EditMap
 
 					if (Selected > 4)
 					{
-						Map.map.TexturemapTex2.SetPixels(data);
-						Map.map.TexturemapTex2.Apply(false);
+						ScmapEditor.Current.map.TexturemapTex2.SetPixels(data);
+						ScmapEditor.Current.map.TexturemapTex2.Apply(false);
 					}
 					else
 					{
-						Map.map.TexturemapTex.SetPixels(data);
-						Map.map.TexturemapTex.Apply(false);
+						ScmapEditor.Current.map.TexturemapTex.SetPixels(data);
+						ScmapEditor.Current.map.TexturemapTex.Apply(false);
 					}
 
 
@@ -1203,7 +1203,7 @@ namespace EditMap
 				}
 
 
-				Map.SetTextures(Selected);
+				ScmapEditor.Current.SetTextures(Selected);
 
 				ReloadStratums();
 			}
@@ -1236,8 +1236,8 @@ namespace EditMap
 			{
 				//string Filename = EnvPaths.GetMapsPath() + MapLuaParser.Current.FolderName + "/heightmap.raw";
 
-				int h = Map.map.TexturemapTex.width;
-				int w = Map.map.TexturemapTex.height;
+				int h = ScmapEditor.Current.map.TexturemapTex.width;
+				int w = ScmapEditor.Current.map.TexturemapTex.height;
 				int x = 0;
 				int y = 0;
 				int i = 0;
@@ -1246,9 +1246,9 @@ namespace EditMap
 				Color[] data;
 
 				if (Selected > 4)
-					data = Map.map.TexturemapTex2.GetPixels();
+					data = ScmapEditor.Current.map.TexturemapTex2.GetPixels();
 				else
-					data = Map.map.TexturemapTex.GetPixels();
+					data = ScmapEditor.Current.map.TexturemapTex.GetPixels();
 
 				using (BinaryWriter writer = new BinaryWriter(new System.IO.FileStream(path, System.IO.FileMode.Create)))
 				{
@@ -1311,7 +1311,7 @@ namespace EditMap
 			if(!string.IsNullOrEmpty(paths))
 			//if (FolderDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
 			{
-				string data = UnityEngine.JsonUtility.ToJson(Map.Textures[Selected]);
+				string data = UnityEngine.JsonUtility.ToJson(ScmapEditor.Current.Textures[Selected]);
 
 				File.WriteAllText(paths, data);
 			}
@@ -1345,12 +1345,12 @@ namespace EditMap
 
 				ScmapEditor.TerrainTexture NewTexture = UnityEngine.JsonUtility.FromJson<ScmapEditor.TerrainTexture>(data);
 
-				Map.Textures[Selected] = NewTexture;
+				ScmapEditor.Current.Textures[Selected] = NewTexture;
 
-				GetGamedataFile.LoadTextureFromGamedata("env.scd", Map.Textures[Selected].AlbedoPath, Selected, false);
-				GetGamedataFile.LoadTextureFromGamedata("env.scd", Map.Textures[Selected].NormalPath, Selected, true);
+				GetGamedataFile.LoadTextureFromGamedata("env.scd", ScmapEditor.Current.Textures[Selected].AlbedoPath, Selected, false);
+				GetGamedataFile.LoadTextureFromGamedata("env.scd", ScmapEditor.Current.Textures[Selected].NormalPath, Selected, true);
 
-				Map.SetTextures(Selected);
+				ScmapEditor.Current.SetTextures(Selected);
 
 				ReloadStratums();
 			}
@@ -1391,16 +1391,16 @@ namespace EditMap
 			{
 
 				StratumTemplate NewTemplate = new StratumTemplate();
-				NewTemplate.Stratum0 = Map.Textures[0];
-				NewTemplate.Stratum1 = Map.Textures[1];
-				NewTemplate.Stratum2 = Map.Textures[2];
-				NewTemplate.Stratum3 = Map.Textures[3];
-				NewTemplate.Stratum4 = Map.Textures[4];
-				NewTemplate.Stratum5 = Map.Textures[5];
-				NewTemplate.Stratum6 = Map.Textures[6];
-				NewTemplate.Stratum7 = Map.Textures[7];
-				NewTemplate.Stratum8 = Map.Textures[8];
-				NewTemplate.Stratum9 = Map.Textures[9];
+				NewTemplate.Stratum0 = ScmapEditor.Current.Textures[0];
+				NewTemplate.Stratum1 = ScmapEditor.Current.Textures[1];
+				NewTemplate.Stratum2 = ScmapEditor.Current.Textures[2];
+				NewTemplate.Stratum3 = ScmapEditor.Current.Textures[3];
+				NewTemplate.Stratum4 = ScmapEditor.Current.Textures[4];
+				NewTemplate.Stratum5 = ScmapEditor.Current.Textures[5];
+				NewTemplate.Stratum6 = ScmapEditor.Current.Textures[6];
+				NewTemplate.Stratum7 = ScmapEditor.Current.Textures[7];
+				NewTemplate.Stratum8 = ScmapEditor.Current.Textures[8];
+				NewTemplate.Stratum9 = ScmapEditor.Current.Textures[9];
 
 				string data = UnityEngine.JsonUtility.ToJson(NewTemplate);
 
@@ -1432,39 +1432,39 @@ namespace EditMap
 
 				StratumTemplate NewTemplate = UnityEngine.JsonUtility.FromJson<StratumTemplate>(data);
 
-				Map.Textures[0] = NewTemplate.Stratum0;
-				Map.Textures[1] = NewTemplate.Stratum1;
-				Map.Textures[2] = NewTemplate.Stratum2;
-				Map.Textures[3] = NewTemplate.Stratum3;
-				Map.Textures[4] = NewTemplate.Stratum4;
-				Map.Textures[5] = NewTemplate.Stratum5;
-				Map.Textures[6] = NewTemplate.Stratum6;
-				Map.Textures[7] = NewTemplate.Stratum7;
-				Map.Textures[8] = NewTemplate.Stratum8;
-				Map.Textures[9] = NewTemplate.Stratum9;
+				ScmapEditor.Current.Textures[0] = NewTemplate.Stratum0;
+				ScmapEditor.Current.Textures[1] = NewTemplate.Stratum1;
+				ScmapEditor.Current.Textures[2] = NewTemplate.Stratum2;
+				ScmapEditor.Current.Textures[3] = NewTemplate.Stratum3;
+				ScmapEditor.Current.Textures[4] = NewTemplate.Stratum4;
+				ScmapEditor.Current.Textures[5] = NewTemplate.Stratum5;
+				ScmapEditor.Current.Textures[6] = NewTemplate.Stratum6;
+				ScmapEditor.Current.Textures[7] = NewTemplate.Stratum7;
+				ScmapEditor.Current.Textures[8] = NewTemplate.Stratum8;
+				ScmapEditor.Current.Textures[9] = NewTemplate.Stratum9;
 
 				//Map.Gamedata.LoadTextureFromGamedata("env.scd", Map.Textures[Selected].AlbedoPath, Selected, false);
 				//Map.Gamedata.LoadTextureFromGamedata("env.scd", Map.Textures[Selected].NormalPath, Selected, true);
 
-				for (int i = 0; i < Map.Textures.Length; i++)
+				for (int i = 0; i < ScmapEditor.Current.Textures.Length; i++)
 				{
-					Map.Textures[i].AlbedoPath = Map.map.Layers[i].PathTexture;
-					Map.Textures[i].NormalPath = Map.map.Layers[i].PathNormalmap;
-					if (Map.Textures[i].AlbedoPath.StartsWith("/"))
+					ScmapEditor.Current.Textures[i].AlbedoPath = ScmapEditor.Current.map.Layers[i].PathTexture;
+					ScmapEditor.Current.Textures[i].NormalPath = ScmapEditor.Current.map.Layers[i].PathNormalmap;
+					if (ScmapEditor.Current.Textures[i].AlbedoPath.StartsWith("/"))
 					{
-						Map.Textures[i].AlbedoPath = Map.Textures[i].AlbedoPath.Remove(0, 1);
+						ScmapEditor.Current.Textures[i].AlbedoPath = ScmapEditor.Current.Textures[i].AlbedoPath.Remove(0, 1);
 					}
-					if (Map.Textures[i].NormalPath.StartsWith("/"))
+					if (ScmapEditor.Current.Textures[i].NormalPath.StartsWith("/"))
 					{
-						Map.Textures[i].NormalPath = Map.Textures[i].NormalPath.Remove(0, 1);
+						ScmapEditor.Current.Textures[i].NormalPath = ScmapEditor.Current.Textures[i].NormalPath.Remove(0, 1);
 					}
-					Map.Textures[i].AlbedoScale = Map.map.Layers[i].ScaleTexture;
-					Map.Textures[i].NormalScale = Map.map.Layers[i].ScaleNormalmap;
+					ScmapEditor.Current.Textures[i].AlbedoScale = ScmapEditor.Current.map.Layers[i].ScaleTexture;
+					ScmapEditor.Current.Textures[i].NormalScale = ScmapEditor.Current.map.Layers[i].ScaleNormalmap;
 
-					GetGamedataFile.LoadTextureFromGamedata("env.scd", Map.Textures[i].AlbedoPath, i, false);
-					GetGamedataFile.LoadTextureFromGamedata("env.scd", Map.Textures[i].NormalPath, i, true);
+					GetGamedataFile.LoadTextureFromGamedata("env.scd", ScmapEditor.Current.Textures[i].AlbedoPath, i, false);
+					GetGamedataFile.LoadTextureFromGamedata("env.scd", ScmapEditor.Current.Textures[i].NormalPath, i, true);
 
-					Map.SetTextures(i);
+					ScmapEditor.Current.SetTextures(i);
 				}
 
 				ReloadStratums();

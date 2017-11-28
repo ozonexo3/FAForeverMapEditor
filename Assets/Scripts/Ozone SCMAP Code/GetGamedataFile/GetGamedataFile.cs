@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using System;
 using System.IO;
 
@@ -15,8 +16,20 @@ public partial struct GetGamedataFile
 	public static float MipmapBias = 0.0f;
 	public static int AnisoLevel = 6;
 
-	public static Texture2D LoadTexture2DFromGamedata(string scd, string LocalPath, bool NormalMap = false)
+	static Dictionary<string, Texture2D> LoadedTextures = new Dictionary<string, Texture2D>();
+	public static void CleanTextureMemory()
 	{
+		LoadedTextures = new Dictionary<string, Texture2D>();
+	}
+
+	public static Texture2D LoadTexture2DFromGamedata(string scd, string LocalPath, bool NormalMap = false, bool StoreInMemory = true)
+	{
+		string TextureKey = scd + "_" + LocalPath;
+
+		if (LoadedTextures.ContainsKey(TextureKey))
+			return LoadedTextures[TextureKey];
+
+
 		byte[] FinalTextureData2 = LoadBytes(scd, LocalPath);
 
 		if (FinalTextureData2 == null || FinalTextureData2.Length == 0)
@@ -106,6 +119,9 @@ public partial struct GetGamedataFile
 		texture.filterMode = FilterMode.Bilinear;
 		texture.anisoLevel = AnisoLevel;
 		texture.Apply(true);
+
+		if(StoreInMemory)
+			LoadedTextures.Add(TextureKey, texture);
 
 		return texture;
 	}

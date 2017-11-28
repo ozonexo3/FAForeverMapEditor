@@ -27,7 +27,6 @@ namespace EditMap
 			public Texture2D Normal;
 		}
 
-		Dictionary<string, Texture2D> LoadedTextures;
 
 		void Awake()
 		{
@@ -37,6 +36,7 @@ namespace EditMap
 		#region Loading Assets
 		public static void UnloadDecals()
 		{
+			Decal.AllDecalsShared = new HashSet<Decal.DecalSharedSettings>();
 
 		}
 
@@ -44,12 +44,13 @@ namespace EditMap
 		public int LoadedCount = 0;
 		public IEnumerator LoadDecals()
 		{
+			Current = this;
 			LoadingDecals = true;
 			UnloadDecals();
 			MargeDecals();
 
 			List<Decal> Props = ScmapEditor.Current.map.Decals;
-			LoadedTextures = new Dictionary<string, Texture2D>();
+			//LoadedTextures = new Dictionary<string, Texture2D>();
 			const int YieldStep = 500;
 			int LoadCounter = YieldStep;
 			int Count = Props.Count;
@@ -96,11 +97,13 @@ namespace EditMap
 
 
 				//Dec.WorldCutoffDistance = 20;
-				Dec.WorldCutoffDistance = Dec.Component.CutOffLOD * 0.1f;
+				//Dec.WorldCutoffDistance = Dec.Component.CutOffLOD * 0.1f;
+				/*
 				Dec.CutOffLOD = (Dec.Component.CutOffLOD - OzoneDecalRenderer.CameraNear) / OzoneDecalRenderer.CameraFar;
 				Dec.CutOffLOD *= 0.1f;
 				Dec.NearCutOffLOD = (Dec.Component.NearCutOffLOD) / OzoneDecalRenderer.CameraFar;
 				Dec.NearCutOffLOD *= 0.1f;
+				*/
 				//Dec.NearCutOffLOD
 
 #if UNITY_EDITOR
@@ -110,53 +113,17 @@ namespace EditMap
 
 				LOD[] Old = Dec.lg.GetLODs();
 				//float FrustumHeight = (Dec.Component.Scale.z * 0.1f) * 2 * Dec.WorldCutoffDistance * Mathf.Tan(CameraControler.Current.Cam.fieldOfView * 0.5f * Mathf.Deg2Rad);
-				float FrustumHeight = FrustumHeightAtDistance(Dec.WorldCutoffDistance * 1.02f);
+				//float FrustumHeight = FrustumHeightAtDistance(Dec.WorldCutoffDistance * 1.02f);
 
-				Dec.FrustumSize = (Dec.Component.Scale.z * 0.1f) / FrustumHeight;
-				Old[0].screenRelativeTransitionHeight = Dec.FrustumSize;
+				//Dec.FrustumSize = (Dec.Component.Scale.z * 0.1f) / FrustumHeight;
+				//Old[0].screenRelativeTransitionHeight = Dec.FrustumSize;
+				Old[0].screenRelativeTransitionHeight = (Dec.Component.Scale.z * 0.1f) / FrustumHeightAtDistance(Dec.Component.CutOffLOD * 0.102f);
 				Dec.lg.SetLODs(Old);
 
-				if (Dec.Component.Type == TerrainDecalType.TYPE_NORMALS)
-				{
-					if (Dec.Component.Shared.SharedMaterial == null)
-					{
-						Dec.Component.Shared.SharedMaterial = new Material(AlbedoMaterial);
-						AssignTextureFromPath(ref Dec.Component.Shared.SharedMaterial, "_NormalTex", Dec.Component.TexPathes[0]);
-					}
+				if (Dec.Component.Shared.SharedMaterial == null)
+					Dec.Component.Shared.UpdateMaterial();
 
-					Dec.DrawAlbedo = false;
-					Dec.DrawNormal = true;
-					Dec.HighQualityBlending = true;
-
-					Dec.Material = Dec.Component.Shared.SharedMaterial;
-				}
-				else if(Dec.Component.Type == TerrainDecalType.TYPE_GLOW
-					|| Dec.Component.Type == TerrainDecalType.TYPE_GLOW_MASK)
-				{
-					if (Dec.Component.Shared.SharedMaterial == null)
-					{
-						Dec.Component.Shared.SharedMaterial = new Material(AlbedoMaterial);
-						AssignTextureFromPath(ref Dec.Component.Shared.SharedMaterial, "_MainTex", Dec.Component.TexPathes[0]);
-						AssignTextureFromPath(ref Dec.Component.Shared.SharedMaterial, "_Glow", Dec.Component.TexPathes[1]);
-					}
-
-					Dec.DrawAlbedo = true;
-					Dec.DrawNormal = false;
-					Dec.Material = Dec.Component.Shared.SharedMaterial;
-				}
-				else // Albedo
-				{
-					if (Dec.Component.Shared.SharedMaterial == null)
-					{
-						Dec.Component.Shared.SharedMaterial = new Material(AlbedoMaterial);
-						AssignTextureFromPath(ref Dec.Component.Shared.SharedMaterial, "_MainTex", Dec.Component.TexPathes[0]);
-						AssignTextureFromPath(ref Dec.Component.Shared.SharedMaterial, "_Mask", Dec.Component.TexPathes[1]);
-					}
-
-					Dec.DrawAlbedo = true;
-					Dec.DrawNormal = false;
-					Dec.Material = Dec.Component.Shared.SharedMaterial;
-				}
+				Dec.Material = Dec.Component.Shared.SharedMaterial;
 
 				LoadedCount++;
 				LoadCounter--;
@@ -179,11 +146,13 @@ namespace EditMap
 
 		#endregion
 
-		void AssignTextureFromPath(ref Material mat, string property, string path)
+		/*
+		static Dictionary<string, Texture2D> LoadedTextures;
+
+		public static Texture2D AssignTextureFromPath(ref Material mat, string property, string path)
 		{
 			if (!string.IsNullOrEmpty(path))
 			{
-
 				if (LoadedTextures.ContainsKey(path))
 				{
 					mat.SetTexture(property, LoadedTextures[path]);
@@ -200,11 +169,23 @@ namespace EditMap
 					LoadedTextures.Add(path, Tex);
 
 					mat.SetTexture(property, Tex);
+					return Tex;
 				}
-
 			}
+			return null;
 		}
+		*/
 
+		public static Texture2D AssignTextureFromPath(ref Material mat, string property, string path)
+		{
+			Texture2D Tex = GetGamedataFile.LoadTexture2DFromGamedata("env.scd", path);
+			//Tex.mipMapBias = 0.6f;
+			//Tex.anisoLevel = 4;
+			//Tex.filterMode = FilterMode.Bilinear;
+			//Tex.wrapMode = TextureWrapMode.Clamp;
+			mat.SetTexture(property, Tex);
+			return Tex;
+		}
 
 	}
 }

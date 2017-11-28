@@ -246,6 +246,7 @@
     <Compile Include="Assets\Scripts\HazardX SCMAP Code\BinaryWriter.cs" />
     <Compile Include="Assets\Scripts\HazardX SCMAP Code\Decal.cs" />
     <Compile Include="Assets\Scripts\HazardX SCMAP Code\DecalGroup.cs" />
+    <Compile Include="Assets\Scripts\HazardX SCMAP Code\DecalShared.cs" />
     <Compile Include="Assets\Scripts\HazardX SCMAP Code\Layer.cs" />
     <Compile Include="Assets\Scripts\HazardX SCMAP Code\Map.cs" />
     <Compile Include="Assets\Scripts\HazardX SCMAP Code\Prop.cs" />
@@ -334,10 +335,12 @@
     <Compile Include="Assets\Scripts\UI\Tools\AreaInfo.cs" />
     <Compile Include="Assets\Scripts\UI\Tools\ArmyInfo.cs" />
     <Compile Include="Assets\Scripts\UI\Tools\Decals\DecalsControler.cs" />
+    <Compile Include="Assets\Scripts\UI\Tools\Decals\DecalSettings.cs" />
     <Compile Include="Assets\Scripts\UI\Tools\Decals\DecalsInfo.cs" />
     <Compile Include="Assets\Scripts\UI\Tools\Decals\DecalsInfo_Marge.cs" />
     <Compile Include="Assets\Scripts\UI\Tools\Decals\DecalsInfo_Selection.cs" />
     <Compile Include="Assets\Scripts\UI\Tools\Decals\DecalsInfo_UI.cs" />
+    <Compile Include="Assets\Scripts\UI\Tools\Decals\DecalsList.cs" />
     <Compile Include="Assets\Scripts\UI\Tools\LightingInfo.cs" />
     <Compile Include="Assets\Scripts\UI\Tools\MapInfo.cs" />
     <Compile Include="Assets\Scripts\UI\Tools\Markers\MarkerLayersInfo.cs" />

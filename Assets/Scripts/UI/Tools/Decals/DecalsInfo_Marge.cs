@@ -23,6 +23,7 @@ namespace EditMap
 				if(i == 0)
 				{
 					Current[i].Shared = new Decal.DecalSharedSettings();
+					Current[i].Shared.Load(Current[i]);
 					Current[i].Shared.Ids.Add(i);
 					NewDecals.Add(Current[i]);
 					nCount++;
@@ -43,8 +44,10 @@ namespace EditMap
 					if (!found)
 					{
 						Current[i].Shared = new Decal.DecalSharedSettings();
+						Current[i].Shared.Load(Current[i]);
 						Current[i].Shared.Ids.Add(i);
 						NewDecals.Add(Current[i]);
+						Decal.AllDecalsShared.Add(Current[i].Shared);
 						nCount++;
 					}
 				}

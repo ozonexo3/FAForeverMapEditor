@@ -11,16 +11,16 @@ namespace OzoneDecals
 		public Decal Component;
 
 		public Material Material;
-		public bool DrawAlbedo = false;
-		public bool DrawNormal = false;
-		public bool HighQualityBlending;
-		public bool HasEmission;
-		public bool HasSpecular;
+		//public bool DrawAlbedo = false;
+		//public bool DrawNormal = false;
+		//public bool HighQualityBlending;
+		//public bool HasEmission;
+		//public bool HasSpecular;
 
-		public float CutOffLOD;
-		public float NearCutOffLOD;
-		public float WorldCutoffDistance;
-		public float FrustumSize;
+		//public float CutOffLOD;
+		//public float NearCutOffLOD;
+		//public float WorldCutoffDistance;
+		//public float FrustumSize;
 
 #if UNITY_EDITOR
 		public string Text0Path = "";
