@@ -19,3 +19,18 @@ public enum TerrainDecalType:int
    TYPE_GLOW_MASK,
    TYPE_FORCE_DWORD,
 }
+
+
+public enum TerrainDecalTypeString : int
+{
+	UNDEFINED,
+	ALBEDO,
+	NORMALS,
+	WATER_MASK,
+	WATER_ALBEDO,
+	WATER_NORMALS,
+	GLOW,
+	NORMALS_ALPHA,
+	GLOW_MASK,
+	FORCE_DWORD,
+}

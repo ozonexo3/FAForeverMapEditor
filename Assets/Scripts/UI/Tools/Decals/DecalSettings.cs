@@ -92,13 +92,13 @@ namespace EditMap
 		public void ClickTex1()
 		{
 			if(!string.IsNullOrEmpty(Texture1Path.text))
-				ResourceBrowser.Current.LoadStratumTexture(Texture1Path.text);
+				ResourceBrowser.Current.LoadStratumTexture(Texture1Path.text.Remove(0,1));
 		}
 
 		public void ClickTex2()
 		{
 			if (!string.IsNullOrEmpty(Texture2Path.text))
-				ResourceBrowser.Current.LoadStratumTexture(Texture2Path.text);
+				ResourceBrowser.Current.LoadStratumTexture(Texture2Path.text.Remove(0, 1));
 		}
 
 		public void DropTex1()
@@ -106,13 +106,15 @@ namespace EditMap
 
 			if (Loaded == null || !ResourceBrowser.Current.gameObject.activeSelf && ResourceBrowser.DragedObject)
 				return;
-			if (ResourceBrowser.SelectedCategory == 0 || ResourceBrowser.SelectedCategory == 1)
+			if (ResourceBrowser.SelectedCategory == 2)
 			{
 				//TODO Undo.RegisterStratumChange(Selected);
 				Debug.Log(ResourceBrowser.Current.LoadedPaths[ResourceBrowser.DragedObject.InstanceId]);
 
 				Loaded.Tex1Path = ResourceBrowser.Current.LoadedPaths[ResourceBrowser.DragedObject.InstanceId];
 				Loaded.UpdateMaterial();
+				Load(Loaded);
+				DecalsInfo.Current.DecalsList.OnTexturesChanged();
 				//ScmapEditor.Current.Textures[Selected].Albedo = ResourceBrowser.Current.LoadedTextures[ResourceBrowser.DragedObject.InstanceId];
 				//ScmapEditor.Current.Textures[Selected].AlbedoPath = ResourceBrowser.Current.LoadedPaths[ResourceBrowser.DragedObject.InstanceId];
 
@@ -124,13 +126,15 @@ namespace EditMap
 		{
 			if (Loaded == null || !ResourceBrowser.Current.gameObject.activeSelf && ResourceBrowser.DragedObject)
 				return;
-			if (ResourceBrowser.SelectedCategory == 0 || ResourceBrowser.SelectedCategory == 1)
+			if (ResourceBrowser.SelectedCategory == 2)
 			{
 				//TODO Undo.RegisterStratumChange(Selected);
 				Debug.Log(ResourceBrowser.Current.LoadedPaths[ResourceBrowser.DragedObject.InstanceId]);
 
 				Loaded.Tex2Path = ResourceBrowser.Current.LoadedPaths[ResourceBrowser.DragedObject.InstanceId];
 				Loaded.UpdateMaterial();
+				Load(Loaded);
+				DecalsInfo.Current.DecalsList.OnTexturesChanged();
 				//ScmapEditor.Current.Textures[Selected].Albedo = ResourceBrowser.Current.LoadedTextures[ResourceBrowser.DragedObject.InstanceId];
 				//ScmapEditor.Current.Textures[Selected].AlbedoPath = ResourceBrowser.Current.LoadedPaths[ResourceBrowser.DragedObject.InstanceId];
 

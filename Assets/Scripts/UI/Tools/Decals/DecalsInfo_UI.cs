@@ -10,6 +10,7 @@ namespace EditMap
 	{
 
 		public DecalSettings DecalSettingsUi;
+		public DecalsList DecalsList;
 
 
 		public void MoveUp()

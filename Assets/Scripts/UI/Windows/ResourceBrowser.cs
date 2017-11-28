@@ -229,6 +229,11 @@ public class ResourceBrowser : MonoBehaviour
 			gameObject.SetActive(true);
 	}
 
+	public void LoadDecalTexture(string path)
+	{
+
+	}
+
 	#region Generate List of Assets
 
 	void Clean()

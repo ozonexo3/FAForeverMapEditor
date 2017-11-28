@@ -48,6 +48,7 @@ namespace EditMap
 			else
 				DecalSettingsUi.Load(SelectionManager.Current.AffectedGameObjects[SelectionManager.Current.Selection.Ids[0]].GetComponent<OzoneDecal>().Component.Shared);
 
+			DecalsList.UpdateSelection();
 		}
 
 		public void DestroyDetails(List<GameObject> MarkerObjects, bool RegisterUndo = true)
