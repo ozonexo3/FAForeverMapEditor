@@ -27,6 +27,12 @@ namespace Selection
 			SelectionManager.Current.UpdateControler();
 		}
 
+		public static void ChangeCurrentControler(int id)
+		{
+			if (Current)
+				Current.ChangeControler(id);
+		}
+
 		public void ToggleSnap()
 		{
 			if(SelectionManager.AllowSnapToGrid){

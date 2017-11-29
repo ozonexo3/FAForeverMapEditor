@@ -15,6 +15,8 @@ public class PlacementManager : MonoBehaviour {
 
 
 	static System.Action<Vector3[], Quaternion[]> CurrentPlaceAction;
+	public static System.Action<GameObject> InstantiateAction;
+	public static int MinRotAngle = 90;
 	public GameObject PlacementObject;
 	public LayerMask RaycastMask;
 	public Camera Cam;
@@ -26,10 +28,13 @@ public class PlacementManager : MonoBehaviour {
 		Clear();
 
 		Current.PlacementObject = Instantiate(Prefab) as GameObject;
+		if (InstantiateAction != null)
+			InstantiateAction(Current.PlacementObject);
 		Current.PlacementObject.SetActive(false);
 		CurrentPlaceAction = PlaceAction;
 		Current.GenerateSymmetry();
 		Current.enabled = true;
+		ChangeControlerType.ChangeCurrentControler(0);
 	}
 
 	public static void Clear()
@@ -44,6 +49,10 @@ public class PlacementManager : MonoBehaviour {
 
 	}
 
+	Vector3 RotationStartMousePos;
+	Vector3 StartRotation;
+	Vector3 LastHitPoint;
+	Vector3 StartScale;
 	void Update () {
 
 		if (!PlacementObject)
@@ -71,28 +80,85 @@ public class PlacementManager : MonoBehaviour {
 
 
 			// Rotate
-			if (Input.GetKeyDown(KeyCode.R))
+			bool Rotating = false;
+			if (SelectionManager.AllowRotation)
 			{
-				PlaceAngle += 90;
-				if (PlaceAngle >= 360)
-					PlaceAngle = 0;
-				PlacementObject.transform.rotation = Quaternion.Euler(Vector3.up * PlaceAngle);
+				if (Input.GetKeyDown(KeyCode.E))
+				{
+					if (MinRotAngle > 1)
+					{
+						PlaceAngle += MinRotAngle;
+						if (PlaceAngle >= 360)
+							PlaceAngle = 0;
+						PlacementObject.transform.rotation = Quaternion.Euler(Vector3.up * PlaceAngle);
+					}
+					else
+					{
+						RotationStartMousePos = Input.mousePosition;
+						StartRotation = PlacementObject.transform.eulerAngles;
+					}
+				}
+				else if (Input.GetKeyUp(KeyCode.E))
+				{
+					ChangeControlerType.ChangeCurrentControler(0);
+				}
+				else if (Input.GetKey(KeyCode.E))
+				{
+					Rotating = true;
+					PlacementObject.transform.eulerAngles = StartRotation + Vector3.up * (Input.mousePosition.x - RotationStartMousePos.x);
+				}
 			}
 
+			//Scale
+			bool Scaling = false;
+			if (!Rotating && SelectionManager.AllowScale)
+			{
+				if (Input.GetKeyDown(KeyCode.R))
+				{
+					RotationStartMousePos = Input.mousePosition;
+					StartScale = PlacementObject.transform.localScale;
+					LastHitPoint = hit.point;
+				}
+				else if (Input.GetKeyUp(KeyCode.R))
+				{
+					ChangeControlerType.ChangeCurrentControler(0);
+				}
+				else if (Input.GetKey(KeyCode.R))
+				{
+					Scaling = true;
 
-			if (SelectionManager.Current.SnapToGrid)
-				PlacementObject.transform.position = ScmapEditor.SnapToGridCenter(hit.point, true, SelectionManager.Current.SnapToWater);
-			else if(SelectionManager.Current.SnapToWater)
-				PlacementObject.transform.position = ScmapEditor.ClampToWater(hit.point);
-			else
-				PlacementObject.transform.position = hit.point;
+					Vector3 Scale = StartScale;
+					float ScalingScale = (Scale.x + Scale.y + Scale.z) / 3f;
+					float ScalePower = (Input.mousePosition.x - RotationStartMousePos.x) * 0.003f * ScalingScale;
+
+					Scale.x = Mathf.Clamp(Scale.x + ScalePower, 0.005f, 100);
+					Scale.y = Mathf.Clamp(Scale.y + ScalePower, 0.005f, 100);
+					Scale.z = Mathf.Clamp(Scale.z + ScalePower, 0.005f, 100);
+					PlacementObject.transform.localScale = Scale;
+				}
+			}
+
+			if (!Rotating)
+			{
+				Vector3 Point = hit.point;
+				if (Scaling)
+					Point = LastHitPoint;
+
+				if (SelectionManager.Current.SnapToGrid)
+					PlacementObject.transform.position = ScmapEditor.SnapToGridCenter(Point, true, SelectionManager.Current.SnapToWater);
+				else if (SelectionManager.Current.SnapToWater)
+					PlacementObject.transform.position = ScmapEditor.ClampToWater(Point);
+				else
+					PlacementObject.transform.position = Point;
+			}
 
 			for (int i = 0; i < PlacementSymmetry.Length; i++)
 			{
 				Vector3 SymmetryPoint = SymmetryMatrix[i].MultiplyPoint(PlacementObject.transform.position - MapLuaParser.Current.MapCenterPoint) + MapLuaParser.Current.MapCenterPoint;
 
-				PlacementSymmetry[i].transform.position = SymmetryPoint;
-				PlacementSymmetry[i].transform.rotation = PlacementObject.transform.rotation * MassMath.QuaternionFromMatrix(SymmetryMatrix[i]);
+				PlacementSymmetry[i].transform.localPosition = SymmetryPoint;
+				PlacementSymmetry[i].transform.localRotation = PlacementObject.transform.localRotation * MassMath.QuaternionFromMatrix(SymmetryMatrix[i]);
+				PlacementSymmetry[i].transform.localScale = PlacementObject.transform.localScale;
 
 			}
 
@@ -198,6 +264,8 @@ public class PlacementManager : MonoBehaviour {
 		for(int i = 0; i < PlacementSymmetry.Length; i++)
 		{
 			PlacementSymmetry[i] = Instantiate(PlacementObject) as GameObject;
+			if(InstantiateAction != null)
+				InstantiateAction(PlacementSymmetry[i]);
 		}
 
 

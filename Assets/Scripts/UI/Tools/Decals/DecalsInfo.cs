@@ -113,18 +113,9 @@ namespace EditMap
 #endif
 
 				LOD[] Old = Dec.lg.GetLODs();
-				//float FrustumHeight = (Dec.Component.Scale.z * 0.1f) * 2 * Dec.WorldCutoffDistance * Mathf.Tan(CameraControler.Current.Cam.fieldOfView * 0.5f * Mathf.Deg2Rad);
-				//float FrustumHeight = FrustumHeightAtDistance(Dec.WorldCutoffDistance * 1.02f);
-
-				//Dec.FrustumSize = (Dec.Component.Scale.z * 0.1f) / FrustumHeight;
-				//Old[0].screenRelativeTransitionHeight = Dec.FrustumSize;
-				Old[0].screenRelativeTransitionHeight = (Component.Scale.z * 0.1f) / FrustumHeightAtDistance(Component.CutOffLOD * 0.102f);
+				Old[0].screenRelativeTransitionHeight = Dec.tr.localScale.z / FrustumHeightAtDistance(Component.CutOffLOD * 0.102f);
 				Dec.lg.SetLODs(Old);
 
-				/*
-				if (Dec.Shared.SharedMaterial == null)
-					Dec.Shared.UpdateMaterial();
-					*/
 
 				Dec.Material = Dec.Shared.SharedMaterial;
 
@@ -145,6 +136,11 @@ namespace EditMap
 		public static float FrustumHeightAtDistance(float distance)
 		{
 			return 2.0f * distance * Mathf.Tan(40 * 0.5f * Mathf.Deg2Rad);
+		}
+
+		public static void SnapDecal(OzoneDecal Dec)
+		{
+
 		}
 
 		#endregion

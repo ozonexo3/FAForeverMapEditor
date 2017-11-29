@@ -8,6 +8,7 @@ public partial class Decal {
 
 	public static HashSet<DecalSharedSettings> AllDecalsShared = new HashSet<DecalSharedSettings>();
 
+	[System.Serializable, PreferBinarySerialization]
 	public class DecalSharedSettings
 	{
 		public TerrainDecalType Type;

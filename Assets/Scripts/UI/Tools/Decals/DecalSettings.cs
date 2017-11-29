@@ -159,7 +159,9 @@ namespace EditMap
 			if (Creating)
 			{
 				//TODO Enter Creating mode
-				Selection.SelectionManager.Current.ClearAffectedGameObjects();
+				Selection.SelectionManager.Current.ClearAffectedGameObjects(false);
+				PlacementManager.InstantiateAction = CreatePrefabAction;
+				PlacementManager.MinRotAngle = 0;
 				PlacementManager.BeginPlacement(GetCreationObject(), Place);
 			}
 			else
@@ -179,17 +181,27 @@ namespace EditMap
 
 		}
 
+		public GameObject CreationPrefab;
 		GameObject CreationGameObject;
 		GameObject GetCreationObject()
 		{
 			if (!CreationGameObject)
-				CreationGameObject = Instantiate(DecalsInfo.Current.DecalPrefab);
-
-			OzoneDecal od = CreationGameObject.GetComponent<OzoneDecal>();
-			od.Material = Loaded.SharedMaterial;
-			od.lg.ForceLOD(0);
-
+			{
+				CreationGameObject = Instantiate(CreationPrefab);
+				CreationGameObject.SetActive(false);
+				CreatePrefabAction(CreationGameObject);
+			}
 			return CreationGameObject;
+		}
+
+		void CreatePrefabAction(GameObject InstancedPrefab)
+		{
+			OzoneDecal od = CreationGameObject.GetComponent<OzoneDecal>();
+			od.Shared = Loaded;
+			od.Material = Loaded.SharedMaterial;
+			LOD[] Old = od.lg.GetLODs();
+			Old[0].screenRelativeTransitionHeight = od.tr.localScale.z / DecalsInfo.FrustumHeightAtDistance(od.Shared.CutOffLOD * 0.102f);
+			od.lg.SetLODs(Old);
 		}
 	}
 

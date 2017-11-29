@@ -265,8 +265,8 @@ Material:
     - _Splat0ScaleNormal: 256
     - _Splat1Scale: 292.57144
     - _Splat1ScaleNormal: 89.04348
-    - _Splat2Scale: 60.952385
-    - _Splat2ScaleNormal: 512
+    - _Splat2Scale: 292.57144
+    - _Splat2ScaleNormal: 89.04348
     - _Splat3Scale: 170.66667
     - _Splat3ScaleNormal: 256
     - _Splat4Scale: 256

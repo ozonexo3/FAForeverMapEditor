@@ -68,7 +68,9 @@ namespace EditMap
 
 		void GoToCreation()
 		{
-			Selection.SelectionManager.Current.ClearAffectedGameObjects();
+			Selection.SelectionManager.Current.ClearAffectedGameObjects(false);
+			PlacementManager.InstantiateAction = null;
+			PlacementManager.MinRotAngle = 90;
 			PlacementManager.BeginPlacement(GetCreationObject(), Place);
 			if (ChangeControlerType.Current)
 				ChangeControlerType.Current.UpdateButtons();

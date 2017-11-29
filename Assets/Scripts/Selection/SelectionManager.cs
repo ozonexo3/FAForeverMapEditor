@@ -133,10 +133,13 @@ namespace Selection
 		int SelPrefab = 0;
 
 
-		public void ClearAffectedGameObjects()
+		public void ClearAffectedGameObjects(bool ResetTools = true)
 		{
 			Undo.Current.RegisterSelectionRangeChange();
-			SetAffectedGameObjects(new GameObject[0], SelectionControlTypes.None);
+			if(ResetTools)
+				SetAffectedGameObjects(new GameObject[0], SelectionControlTypes.None);
+			else
+				SetAffectedGameObjects(new GameObject[0], SelectionControlTypes.Last);
 		}
 
 
