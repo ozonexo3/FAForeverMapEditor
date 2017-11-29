@@ -8,7 +8,8 @@ namespace OzoneDecals
 	[ExecuteInEditMode]
 	public class OzoneDecal : MonoBehaviour
 	{
-		public Decal Component;
+		//public Decal Component;
+		public Decal.DecalSharedSettings Shared;
 
 		public Material Material;
 		//public bool DrawAlbedo = false;
@@ -69,14 +70,17 @@ namespace OzoneDecals
 			tr.localPosition = tr.TransformPoint(tr.InverseTransformPoint(pos) - PivotPointLocal);
 		}
 
-		public void Bake()
+		public Decal Bake()
 		{
+			Decal Component = new Decal();
+
+			//TODO
 			Component.Position = ScmapEditor.WorldPosToScmap( GetPivotPoint());
 			Component.Scale = tr.localScale * 10f;
 			Component.Rotation = tr.localEulerAngles * Mathf.Deg2Rad;
 
 			//Component.CutOffLOD = WorldCutoffDistance * 10;
-
+			return Component;
 		}
 		
 

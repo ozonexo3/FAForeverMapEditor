@@ -73,11 +73,12 @@ namespace EditMap
 
 				GameObject NewDecalObject = Instantiate(DecalPrefab, DecalPivot);
 				OzoneDecal Dec = NewDecalObject.GetComponent<OzoneDecal>();
-				Dec.Component = ScmapEditor.Current.map.Decals[i];
+				Decal Component = ScmapEditor.Current.map.Decals[i];
+				Dec.Shared = Component.Shared;
 				Dec.tr = NewDecalObject.transform;
 
-				Dec.tr.localRotation = Quaternion.Euler(Dec.Component.Rotation * Mathf.Rad2Deg); // * ProjectorRot;
-				Dec.tr.localScale = new Vector3(Dec.Component.Scale.x * 0.1f, Dec.Component.Scale.x * 0.1f, Dec.Component.Scale.z * 0.1f); //Dec.Component.Scale.y * 0.1f
+				Dec.tr.localRotation = Quaternion.Euler(Component.Rotation * Mathf.Rad2Deg); // * ProjectorRot;
+				Dec.tr.localScale = new Vector3(Component.Scale.x * 0.1f, Component.Scale.x * 0.1f, Component.Scale.z * 0.1f); //Dec.Component.Scale.y * 0.1f
 
 				//Dec.tr.localPosition = ScmapEditor.ScmapPosToWorld(Dec.Component.Position);
 
@@ -93,7 +94,7 @@ namespace EditMap
 				//Dec.tr.localPosition -= Up * (Dec.Component.Scale.y * 0.05f);
 				//Dec.tr.localPosition += right * (Dec.Component.Scale.x * 0.05f);
 
-				Dec.MovePivotPoint(ScmapEditor.ScmapPosToWorld(Dec.Component.Position));
+				Dec.MovePivotPoint(ScmapEditor.ScmapPosToWorld(Component.Position));
 
 
 				//Dec.WorldCutoffDistance = 20;
@@ -107,8 +108,8 @@ namespace EditMap
 				//Dec.NearCutOffLOD
 
 #if UNITY_EDITOR
-				Dec.Text0Path = Dec.Component.TexPathes[0];
-				Dec.Text1Path = Dec.Component.TexPathes[1];
+				Dec.Text0Path = Component.TexPathes[0];
+				Dec.Text1Path = Component.TexPathes[1];
 #endif
 
 				LOD[] Old = Dec.lg.GetLODs();
@@ -117,13 +118,15 @@ namespace EditMap
 
 				//Dec.FrustumSize = (Dec.Component.Scale.z * 0.1f) / FrustumHeight;
 				//Old[0].screenRelativeTransitionHeight = Dec.FrustumSize;
-				Old[0].screenRelativeTransitionHeight = (Dec.Component.Scale.z * 0.1f) / FrustumHeightAtDistance(Dec.Component.CutOffLOD * 0.102f);
+				Old[0].screenRelativeTransitionHeight = (Component.Scale.z * 0.1f) / FrustumHeightAtDistance(Component.CutOffLOD * 0.102f);
 				Dec.lg.SetLODs(Old);
 
-				if (Dec.Component.Shared.SharedMaterial == null)
-					Dec.Component.Shared.UpdateMaterial();
+				/*
+				if (Dec.Shared.SharedMaterial == null)
+					Dec.Shared.UpdateMaterial();
+					*/
 
-				Dec.Material = Dec.Component.Shared.SharedMaterial;
+				Dec.Material = Dec.Shared.SharedMaterial;
 
 				LoadedCount++;
 				LoadCounter--;

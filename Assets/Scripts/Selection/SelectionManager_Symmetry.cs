@@ -58,7 +58,10 @@ namespace Selection
 					}
 
 					if (ClosestO >= 0)
-						Ids.Add(ClosestO);
+					{
+						if(!Current.Selection.Ids.Contains(ClosestO))
+							Ids.Add(ClosestO);
+					}
 					else
 						Empty.Add(SearchPos);
 				}

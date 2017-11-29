@@ -21,8 +21,8 @@ public class DecalsControler : MonoBehaviour {
 
 		for (int i = 0; i < Count; i++)
 		{
-			Current.AllDecals[i].Bake();
-			ToReturn.Add(Current.AllDecals[i].Component);
+			//Current.AllDecals[i].Bake();
+			ToReturn.Add(Current.AllDecals[i].Bake());
 		}
 
 		return ToReturn;

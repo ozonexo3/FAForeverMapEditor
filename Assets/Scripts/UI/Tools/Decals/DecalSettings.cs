@@ -15,12 +15,16 @@ namespace EditMap
 		public InputField CutOff;
 		public InputField NearCutOff;
 		public Dropdown DecalType;
+		public Button CreateBtn;
+		public GameObject CreateSelected;
 
 		static Decal.DecalSharedSettings Loaded;
 
 		bool Loading = false;
 		public void Load(Decal.DecalSharedSettings DecalSettings)
 		{
+			if (Creating)
+				return;
 			Loading = true;
 			Loaded = DecalSettings;
 
@@ -34,6 +38,8 @@ namespace EditMap
 
 				CutOff.text = "0";
 				NearCutOff.text = "0";
+				CreateBtn.interactable = false;
+				CreateSelected.SetActive(false);
 			}
 			else
 			{
@@ -45,6 +51,8 @@ namespace EditMap
 
 				CutOff.text = DecalSettings.CutOffLOD.ToString();
 				NearCutOff.text = DecalSettings.NearCutOffLOD.ToString();
+
+				CreateBtn.interactable = true;
 
 				switch (DecalSettings.Type)
 				{
@@ -140,6 +148,48 @@ namespace EditMap
 
 				//Map.map.Layers [Selected].PathTexture = Map.Textures [Selected].AlbedoPath;
 			}
+		}
+
+
+		bool Creating = false;
+		public void OnClickCreate()
+		{
+			Creating = !Creating;
+			CreateSelected.SetActive(Creating);
+			if (Creating)
+			{
+				//TODO Enter Creating mode
+				Selection.SelectionManager.Current.ClearAffectedGameObjects();
+				PlacementManager.BeginPlacement(GetCreationObject(), Place);
+			}
+			else
+			{
+				//TODO Exit Creating mode
+				if (CreationGameObject)
+					Destroy(CreationGameObject);
+
+				DecalsInfo.Current.GoToSelection();
+			}
+		}
+
+		public void Place(Vector3[] Positions, Quaternion[] Rotations)
+		{
+			//TODO Create Objects
+
+
+		}
+
+		GameObject CreationGameObject;
+		GameObject GetCreationObject()
+		{
+			if (!CreationGameObject)
+				CreationGameObject = Instantiate(DecalsInfo.Current.DecalPrefab);
+
+			OzoneDecal od = CreationGameObject.GetComponent<OzoneDecal>();
+			od.Material = Loaded.SharedMaterial;
+			od.lg.ForceLOD(0);
+
+			return CreationGameObject;
 		}
 	}
 

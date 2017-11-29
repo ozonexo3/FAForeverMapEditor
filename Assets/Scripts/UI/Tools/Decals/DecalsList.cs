@@ -101,7 +101,7 @@ namespace EditMap
 				HashSet<Decal.DecalSharedSettings> SelectedShared = new HashSet<Decal.DecalSharedSettings>();
 				for (int i = 0; i < SelectedCount; i++)
 				{
-					SelectedShared.Add(SelectionManager.Current.AffectedGameObjects[SelectionManager.Current.Selection.Ids[i]].GetComponent<OzoneDecal>().Component.Shared);
+					SelectedShared.Add(SelectionManager.Current.AffectedGameObjects[SelectionManager.Current.Selection.Ids[i]].GetComponent<OzoneDecal>().Shared);
 				}
 
 				var ListEnum = AllListObjects.GetEnumerator();
@@ -118,12 +118,36 @@ namespace EditMap
 
 		public void OnClickType(ListObject ob)
 		{
-			DecalsInfo.Current.DecalSettingsUi.Load(AllObjects[ob.InstanceId].GetComponent<ListObjectDecal>().Setting);
+			Decal.DecalSharedSettings dss = AllObjects[ob.InstanceId].GetComponent<ListObjectDecal>().Setting;
+			DecalsInfo.Current.DecalSettingsUi.Load(dss);
+
+			/*
+			SelectionManager.Current.CleanSelection();
+
+			for(int i = 0; i < SelectionManager.Current.AffectedGameObjects.Length; i++)
+			{
+				if (SelectionManager.Current.AffectedGameObjects[i].GetComponent<OzoneDecal>().Component.Shared == dss)
+					SelectionManager.Current.SelectObjectAdd(SelectionManager.Current.AffectedGameObjects[i]);
+			}
+			*/
 		}
 
 		public void OnDropObject(ListObject ob)
 		{
 
+		}
+
+		public void OnClickGroup(ListObject ob)
+		{
+			Decal.DecalSharedSettings dss = AllObjects[ob.InstanceId].GetComponent<ListObjectDecal>().Setting;
+
+			SelectionManager.Current.CleanSelection();
+
+			for (int i = 0; i < SelectionManager.Current.AffectedGameObjects.Length; i++)
+			{
+				if (SelectionManager.Current.AffectedGameObjects[i].GetComponent<OzoneDecal>().Shared == dss)
+					SelectionManager.Current.SelectObjectAdd(SelectionManager.Current.AffectedGameObjects[i]);
+			}
 		}
 
 	}
