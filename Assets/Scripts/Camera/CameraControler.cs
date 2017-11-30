@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using EditMap;
 using Selection;
 
-public class CameraControler : MonoBehaviour {
+public partial class CameraControler : MonoBehaviour {
 
 	public static			CameraControler		Current;
 
@@ -54,6 +54,11 @@ public class CameraControler : MonoBehaviour {
 		Pivot.localPosition = Pos;
 
 		RealCamPos = transform.localPosition;
+
+		LastLocalCamPos = transform.localPosition;
+		TargetLocalCamPos = transform.localPosition;
+		PanOffsetX = Vector3.zero;
+		PanOffsetZ = Vector3.zero;
 
 		//TargetWorldPos = new Vector3(MapSize * 0.05f, 100, MapSize * -0.05f);
 		//CamWorldPos = TargetWorldPos;
@@ -125,7 +130,7 @@ public class CameraControler : MonoBehaviour {
 
 		if (HUD.MapLoaded)
 		{
-			CameraMovement();
+			UberCameraMovement();
 		}
 
 		if (Menu.IsMenuOpen())
@@ -334,10 +339,12 @@ public class CameraControler : MonoBehaviour {
 
 					Vector3 Ray = Pivot.InverseTransformVector(ray.direction);
 
+					/*
 					float CamChange = Mathf.Lerp(1, 1.5f, (Rot.x / -90));
 					Ray.z *= CamChange;
 					Ray.x *= Mathf.Lerp(1, 0.85f, (Rot.x / -90));
 					Ray.Normalize();
+					*/
 
 					RealCamPos += Ray * Input.GetAxis("Mouse ScrollWheel") * CamSpeed();
 

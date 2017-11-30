@@ -217,6 +217,7 @@ MonoBehaviour:
     Ids: 
     DrawAlbedo: 0
     DrawNormal: 0
+  CreationObject: 1
   Material: {fileID: 0}
   Text0Path: 
   Text1Path: 

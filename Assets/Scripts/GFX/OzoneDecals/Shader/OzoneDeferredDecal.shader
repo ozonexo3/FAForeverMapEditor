@@ -166,14 +166,14 @@ Shader "Ozone/Deferred Decal"
 				normal.xy *= blend;
 
 				normal = normalize(normal);
-				float AlphaNormal = clamp(1 - normal.z * 1, 0, 1) * blend;
+				float AlphaNormal = saturate(1 - normal.z * 1) * blend;
 
 				
 				// Clip to blend it with other normal maps
 				//float AlphaNormal = clamp(dot(normal, half3(0,0,1)) * 10, 0, 1);
 				//clip(0.999 -  AlphaNormal);
 				//clip(0.5 - normal.y);
-				clip(AlphaNormal - 0.1);
+				clip(AlphaNormal - 0.05);
 
 				normal = mul(normal, half3x3(i.decalTangent, decalBitangent, i.decalNormal));
 
@@ -185,7 +185,7 @@ Shader "Ozone/Deferred Decal"
 
 
 				// Write normal
-				outNormal = float4(normal * 0.5 + 0.5, AlphaNormal);
+				outNormal = float4(normal * 0.5 + 0.5, saturate(AlphaNormal));
 			}
 			ENDCG
 		}

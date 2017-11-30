@@ -10,6 +10,7 @@ namespace OzoneDecals
 	{
 		//public Decal Component;
 		public Decal.DecalSharedSettings Shared;
+		public bool CreationObject;
 
 		public Material Material;
 		//public bool DrawAlbedo = false;
@@ -37,12 +38,14 @@ namespace OzoneDecals
 		void OnEnable()
 		{
 			tr = transform;
+			if(!CreationObject)
 			DecalsControler.AddDecal(this);
 		}
 
 		private void OnDisable()
 		{
-			DecalsControler.RemoveDecal(this);
+			if (!CreationObject)
+				DecalsControler.RemoveDecal(this);
 		}
 
 		MeshFilter mf;
