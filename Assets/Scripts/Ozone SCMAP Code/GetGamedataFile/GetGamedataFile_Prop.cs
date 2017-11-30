@@ -294,8 +294,11 @@ public partial struct GetGamedataFile
 			ToReturn.BP.LODs[i].Albedo.anisoLevel = 2;
 			ToReturn.BP.LODs[i].Mat.SetTexture("_MainTex", ToReturn.BP.LODs[i].Albedo);
 
-
-			if (ToReturn.BP.LODs[i].NormalsName.Length == 0 && i == 0)
+			if (ToReturn.BP.LODs[i].ShaderName == "VertexNormal")
+			{
+				ToReturn.BP.LODs[i].NormalsName = "";
+			}
+			else if (ToReturn.BP.LODs[i].NormalsName.Length == 0 && i == 0)
 			{
 				ToReturn.BP.LODs[i].NormalsName = LocalPath.Replace("prop.bp", "normalsTS.dds");
 			}

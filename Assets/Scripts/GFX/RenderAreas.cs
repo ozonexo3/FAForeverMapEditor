@@ -9,7 +9,7 @@ public class RenderAreas : MonoBehaviour {
 
 	public void OnRenderObject()
 	{
-		if (Camera.current != RenderCamera)
+		if (Camera.current != RenderCamera || ScmapEditor.Current == null || ScmapEditor.Current.Teren == null)
 			return;
 
 		if (MapLuaParser.Current.SaveLuaFile.Data.areas.Length == 0)

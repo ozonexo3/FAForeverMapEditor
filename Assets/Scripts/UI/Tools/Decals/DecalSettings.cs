@@ -150,6 +150,16 @@ namespace EditMap
 			}
 		}
 
+		public void SampleCutoffFromCamera()
+		{
+
+		}
+
+		public void SampleNearCutoffFromCamera()
+		{
+
+		}
+
 
 		bool Creating = false;
 		public void OnClickCreate()

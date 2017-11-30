@@ -113,6 +113,13 @@ namespace EditMap
 
 			Directory.CreateDirectory(MapPath + MapLuaParser.Current.FolderName);
 
+			int NewMapWidth = SizeByValue(Width.value);
+			int NewMapHeight = SizeByValue(Height.value);
+
+			int NewMapSize = NewMapWidth;
+			if (NewMapHeight > NewMapSize)
+				NewMapSize = NewMapHeight;
+
 			MapLuaParser.Current.ScenarioLuaFile.Data = new MapLua.ScenarioLua.ScenarioInfo();
 			MapLuaParser.Current.ScenarioLuaFile.Data.Configurations = new MapLua.ScenarioLua.Configuration[1];
 			MapLuaParser.Current.ScenarioLuaFile.Data.Configurations[0] = new MapLua.ScenarioLua.Configuration();
@@ -125,8 +132,8 @@ namespace EditMap
 			MapLuaParser.Current.ScenarioLuaFile.Data.description = Desc.text;
 			MapLuaParser.Current.ScenarioLuaFile.Data.Size = new int[2];
 			MapLuaParser.Current.ScenarioLuaFile.Data.type = MapType.options[MapType.value].text.ToLower();
-			MapLuaParser.Current.ScenarioLuaFile.Data.Size[0] = SizeByValue(Width.value);
-			MapLuaParser.Current.ScenarioLuaFile.Data.Size[1] = SizeByValue(Height.value);
+			MapLuaParser.Current.ScenarioLuaFile.Data.Size[0] = NewMapSize;
+			MapLuaParser.Current.ScenarioLuaFile.Data.Size[1] = NewMapSize;
 			MapLuaParser.Current.ScenarioLuaFile.Data.save = "/maps/" + FolderName  + "/" + FileName + "_save.lua";
 			MapLuaParser.Current.ScenarioLuaFile.Data.script = "/maps/" + FolderName + "/" + FileName + "_script.lua";
 			MapLuaParser.Current.ScenarioLuaFile.Data.map = "/maps/" + FolderName + "/" + FileName + ".scmap";
@@ -138,12 +145,33 @@ namespace EditMap
 
 			MapLuaParser.Current.SaveLuaFile.Data.MasterChains[0].Markers = new List<MapLua.SaveLua.Marker>();
 
+			MapLuaParser.Current.SaveLuaFile.Data.areas = new MapLua.SaveLua.Areas[1];
+			MapLuaParser.Current.SaveLuaFile.Data.areas[0] = new MapLua.SaveLua.Areas();
+			MapLuaParser.Current.SaveLuaFile.Data.areas[0].Name = "AREA_1";
+			if (NewMapWidth == NewMapHeight)
+				MapLuaParser.Current.SaveLuaFile.Data.areas[0].rectangle = new Rect(0, 0, NewMapWidth, NewMapHeight);
+			else
+			{
+				if(NewMapWidth > NewMapHeight) // Horizontal
+				{
+					int Offset = (NewMapWidth - NewMapHeight) / 2;
+					MapLuaParser.Current.SaveLuaFile.Data.areas[0].rectangle = new Rect(0, Offset, NewMapWidth, NewMapHeight + Offset);
+				}
+				else // Vertical
+				{
+					int Offset = (NewMapHeight - NewMapWidth) / 2;
+					MapLuaParser.Current.SaveLuaFile.Data.areas[0].rectangle = new Rect(Offset, 0, NewMapWidth + Offset, NewMapHeight);
+				}
+			}
+
+
 			ScmapEditor.Current.map = new Map(MapLuaParser.Current.ScenarioLuaFile.Data.Size[0], MapLuaParser.Current.ScenarioLuaFile.Data.Size[1], int.Parse(InitialHeight.text), 
 				Water.isOn, int.Parse(WaterElv.text), int.Parse(DepthElevation.text), int.Parse(AbyssElevation.text));
 
 
 
 			MapLuaParser.Current.SaveMap(false);
+			MapLuaParser.Current.SaveScriptLua(1);
 			Debug.Log(FolderName);
 			MapLuaParser.Current.LoadFile();
 			Debug.Log(FolderName);

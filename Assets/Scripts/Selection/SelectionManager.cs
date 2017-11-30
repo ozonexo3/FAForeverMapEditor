@@ -214,7 +214,7 @@ namespace Selection
 
 
 		#region Action Events
-		private System.Action<List<GameObject>, bool> RemoveAction;
+		static System.Action<List<GameObject>, bool> RemoveAction;
 		public void SetRemoveAction(System.Action<List<GameObject>, bool> Action)
 		{
 			RemoveAction = Action;
@@ -251,10 +251,16 @@ namespace Selection
 			}
 		}
 
-		private System.Action SelectionChangeAction;
+		static System.Action SelectionChangeAction;
 		public void SetSelectionChangeAction(System.Action Action)
 		{
 			SelectionChangeAction = Action;
+		}
+
+		static System.Action<Transform> CustomSnapAction;
+		public void SetCustomSnapAction(System.Action<Transform> Action)
+		{
+			CustomSnapAction = Action;
 		}
 
 		#endregion

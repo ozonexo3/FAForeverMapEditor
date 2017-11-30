@@ -12,9 +12,10 @@ namespace EditMap
 
 		private void OnEnable()
 		{
-			Selection.SelectionManager.Current.DisableLayer = 14;
-			Selection.SelectionManager.Current.SetRemoveAction(DestroyDetails);
-			Selection.SelectionManager.Current.SetSelectionChangeAction(SelectDetails);
+			SelectionManager.Current.DisableLayer = 14;
+			SelectionManager.Current.SetRemoveAction(DestroyDetails);
+			SelectionManager.Current.SetSelectionChangeAction(SelectDetails);
+			SelectionManager.Current.SetCustomSnapAction(OzoneDecal.SnapToGround);
 
 			GoToSelection();
 		}
@@ -51,6 +52,12 @@ namespace EditMap
 			DecalsList.UpdateSelection();
 		}
 
+		public void CustomSnapAction(Transform tr)
+		{
+			OzoneDecal.SnapToGround(tr);
+
+		}
+
 		public void DestroyDetails(List<GameObject> MarkerObjects, bool RegisterUndo = true)
 		{
 
@@ -58,7 +65,6 @@ namespace EditMap
 
 		public void Place(Vector3[] Positions, Quaternion[] Rotations)
 		{
-
 		}
 
 

@@ -420,7 +420,9 @@ public class MapLuaParser : MonoBehaviour {
 		string FileName = ScenarioLuaFile.Data.script;
 		char[] NameSeparator = ("/").ToCharArray();
 		string[] Names = FileName.Split(NameSeparator);
-		System.IO.File.Move(SaveFilePath, BackupPath + "/" + Names[Names.Length - 1]);
+
+		if (System.IO.File.Exists(SaveFilePath))
+			System.IO.File.Move(SaveFilePath, BackupPath + "/" + Names[Names.Length - 1]);
 		
 		System.IO.File.WriteAllText(SaveFilePath, SaveData);
 	}

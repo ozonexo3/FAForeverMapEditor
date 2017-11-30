@@ -46,13 +46,13 @@ public class BuildWithResources : MonoBehaviour
 	[MenuItem("Build/Do Action")]
 	public static void ChangeModelVerts()
 	{
-		Mesh LoadedMesh = Resources.Load<Mesh>("DecalCubeProject");
+		Mesh LoadedMesh = Resources.Load<Mesh>("DecalCube2");
 
 		Vector3[] NewVerts = LoadedMesh.vertices;
 
 		for(int i = 0; i < NewVerts.Length; i++)
 		{
-			NewVerts[i].y *= 5;
+			NewVerts[i].y *= 2;
 		}
 
 		LoadedMesh.vertices = NewVerts;

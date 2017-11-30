@@ -40,8 +40,6 @@ namespace OzoneDecals {
 		protected float[] _CutOffLODValues;
 		protected float[] _NearCutOffLODValues;
 
-		public Mesh cubeMesh;
-
 		public static float CameraNear;
 		public static float CameraFar;
 
@@ -72,7 +70,7 @@ namespace OzoneDecals {
 			
 
 			//_cubeMesh = cubeMesh;
-			_cubeMesh = Resources.Load<Mesh>("DecalCube");
+			_cubeMesh = Resources.Load<Mesh>("DecalCubeProject");
 			_normalRenderTarget = new RenderTargetIdentifier[] { BuiltinRenderTextureType.GBuffer1, BuiltinRenderTextureType.GBuffer2 };
 			_albedoRenderTarget = new RenderTargetIdentifier[] { BuiltinRenderTextureType.GBuffer0, BuiltinRenderTextureType.GBuffer1 }; // , 
 		}

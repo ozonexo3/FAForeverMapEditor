@@ -18,6 +18,8 @@ namespace Selection
 		public Button Scale;
 		public Button Snap;
 
+		public bool DefaultSnap = true;
+
 		public void ChangeControler(int id)
 		{
 			ControlerId = id;
@@ -38,6 +40,8 @@ namespace Selection
 			if(SelectionManager.AllowSnapToGrid){
 				SelectionManager.Current.SnapToGrid = !SelectionManager.Current.SnapToGrid;
 				SnapSelection.SetActive(SelectionManager.Current.SnapToGrid);
+				DefaultSnap = SelectionManager.Current.SnapToGrid;
+
 			}
 		}
 
@@ -46,7 +50,12 @@ namespace Selection
 			Current = this;
 			UpdateButtons();
 			//ChangeControler(ControlerId);
+			if (SelectionManager.AllowSnapToGrid)
+			{
+				SelectionManager.Current.SnapToGrid = DefaultSnap;
+			}
 			SnapSelection.SetActive(SelectionManager.Current.SnapToGrid);
+
 		}
 
 		private void Update()

@@ -71,7 +71,7 @@ blend *= clamp((depth - CutoffDistance) / CutoffDistance, 0, 1 ); \
 float4 vpos = float4(i.ray * depth,1); \
 float3 wpos = mul(unity_CameraToWorld, vpos).xyz; \
 float3 clipPos = mul(unity_WorldToObject, float4(wpos, 1)).xyz; \
-clipPos.y *= 0.2f; \
+clipPos.y *= 0.2; \
 clip(0.5f - abs(clipPos.xyz)); \
 float2 texUV = TRANSFORM_TEX((clipPos.xz + 0.5), _MainTex); \
 texUV = half2(texUV.x, 1 - texUV.y);

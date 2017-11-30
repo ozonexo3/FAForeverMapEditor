@@ -26,6 +26,7 @@ namespace EditMap
 			SelectionManager.Current.DisableLayer = 9;
 			SelectionManager.Current.SetRemoveAction(DestroyMarkers);
 			SelectionManager.Current.SetSelectionChangeAction(SelectMarkers);
+			SelectionManager.Current.SetCustomSnapAction(null);
 
 			if (CreationId >= 0)
 				SelectCreateNew(CreationId);

@@ -136,6 +136,11 @@ namespace Selection
 						Vector3 NewPos = ScmapEditor.SnapToGridCenter(Positions[i] + Offset, true, Current.SnapToWater);
 
 						SelectionRings[i].transform.localPosition = NewPos;
+						if (CustomSnapAction != null)
+						{
+							CustomSnapAction(SelectionRings[i].transform);
+							NewPos = SelectionRings[i].transform.localPosition;
+						}
 
 						if (i < count)
 						{
@@ -150,6 +155,11 @@ namespace Selection
 						Vector3 NewPos = Positions[i] + Offset;
 
 						SelectionRings[i].transform.localPosition = NewPos;
+						if(CustomSnapAction != null)
+						{
+							CustomSnapAction(SelectionRings[i].transform);
+							NewPos = SelectionRings[i].transform.localPosition;
+						}
 
 						if (i < count)
 						{
@@ -171,6 +181,13 @@ namespace Selection
 					Quaternion NewRot = Offset * Rotations[i];
 					if (AllowLocalRotation)
 						SelectionRings[i].transform.localRotation = NewRot;
+
+					if (CustomSnapAction != null)
+					{
+						CustomSnapAction(SelectionRings[i].transform);
+						NewPos = SelectionRings[i].transform.localPosition;
+						NewRot = SelectionRings[i].transform.localRotation;
+					}
 
 					if (i < count)
 					{
@@ -202,6 +219,13 @@ namespace Selection
 					NewScale.z *= Offset.z;
 					ClampVectorFast(ref NewScale, 0.01f);
 					SelectionRings[i].transform.localScale = NewScale;
+
+					if (CustomSnapAction != null)
+					{
+						CustomSnapAction(SelectionRings[i].transform);
+						NewPos = SelectionRings[i].transform.localPosition;
+						NewScale = SelectionRings[i].transform.localScale;
+					}
 
 					if (i < count)
 					{

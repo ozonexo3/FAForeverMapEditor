@@ -58,16 +58,16 @@ namespace OzoneDecals
 			return tr.TransformPoint(PivotPointLocal);
 		}
 
-
-		public void MovePivotPoint(Vector3 pos)
+		public void MovePivotPoint(Vector3 Pos)
 		{
+			tr.localPosition = tr.TransformPoint(tr.InverseTransformPoint(Pos) - PivotPointLocal);
+		}
 
-			//Vector3 Up = Tr.forward;
-			//Up.y = 0;
-			//Up.Normalize();
-			//Vector3 right = Tr.right;
-
-			tr.localPosition = tr.TransformPoint(tr.InverseTransformPoint(pos) - PivotPointLocal);
+		public static void SnapToGround(Transform tr)
+		{
+			Vector3 Pos = tr.TransformPoint(PivotPointLocal);
+			Pos.y = ScmapEditor.Current.Teren.SampleHeight(Pos);
+			tr.localPosition = tr.TransformPoint(tr.InverseTransformPoint(Pos) - PivotPointLocal);
 		}
 
 		public Decal Bake()
