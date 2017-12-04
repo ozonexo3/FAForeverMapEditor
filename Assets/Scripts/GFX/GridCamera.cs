@@ -4,18 +4,41 @@ using System.Collections;
 public class GridCamera : MonoBehaviour {
 
 	public 	Texture		GridTexture;
-	public	Material	GridMaterial;
+	//public	Material	GridMaterial;
+	Transform tr;
 
-	// Use this for initialization
 	void Start () {
 		GridTexture.mipMapBias = -0.3f;
 		GridTexture.filterMode = FilterMode.Bilinear;
 		GridTexture.anisoLevel = 2;
-		InvokeRepeating("UpdateGrid", 0, 0.333f);
+		tr = transform;
+		//InvokeRepeating("UpdateGrid", 0, 0.333f);
+		UpdateTimer = 0;
 	}
-	
-	// Update is called once per frame
+
+	float LastDist = -10000;
 	void UpdateGrid () {
-		GridMaterial.SetFloat("_GridCamDist", transform.localPosition.y / 20);
+		float dist = tr.localPosition.y / 20;
+
+		if (dist != LastDist) {
+			LastDist = dist;
+			Shader.SetGlobalFloat("_GridCamDist", dist);
+		}
+	}
+
+	const float UpdateStep = 0.25f;
+	float UpdateTimer = 0;
+	private void LateUpdate()
+	{
+		UpdateTimer += Time.unscaledDeltaTime;
+
+		if (UpdateTimer > UpdateStep)
+		{
+			UpdateGrid();
+			UpdateTimer -= UpdateStep;
+
+			if (UpdateTimer > UpdateStep)
+				UpdateTimer = 0;
+		}
 	}
 }

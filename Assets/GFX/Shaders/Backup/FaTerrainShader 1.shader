@@ -88,7 +88,7 @@ Properties {
 
 	_GridScale ("Grid Scale", Range (0, 2048)) = 512
 	_GridTexture ("Grid Texture", 2D) = "white" {}
-	_GridCamDist ("Grid Scale", Range (0, 10)) = 5
+	//_GridCamDist ("Grid Scale", Range (0, 10)) = 5
 	_WaterScaleX ("Water Scale X", float) = 1024
 		_WaterScaleZ ("Water Scale Z", float) = 1024
 }
