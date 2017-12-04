@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
+using Ozone.UI;
 
 namespace EditMap
 {
@@ -8,9 +9,9 @@ namespace EditMap
 	{
 
 		public MapLuaParser Scenario;
-		public InputField Name;
-		public InputField Desc;
-		public InputField Version;
+		public UiTextField Name;
+		public UiTextField Desc;
+		public UiTextField Version;
 		public Toggle[] ScriptToggles;
 		public Toggle SaveAsFa;
 
@@ -62,9 +63,13 @@ namespace EditMap
 
 		public void UpdateFields()
 		{
-			Name.text = Scenario.ScenarioLuaFile.Data.name;
-			Desc.text = Scenario.ScenarioLuaFile.Data.description;
-			Version.text = Scenario.ScenarioLuaFile.Data.map_version.ToString();
+			Name.SetValue(Scenario.ScenarioLuaFile.Data.name);
+			Name.SetValue(Scenario.ScenarioLuaFile.Data.description);
+			Name.SetValue(Scenario.ScenarioLuaFile.Data.map_version.ToString());
+
+			//Name.text = Scenario.ScenarioLuaFile.Data.name;
+			//Desc.text = Scenario.ScenarioLuaFile.Data.description;
+			//Version.text = Scenario.ScenarioLuaFile.Data.map_version.ToString();
 		}
 
 		public void UpdateScriptToggles(int id)

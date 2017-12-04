@@ -239,12 +239,12 @@ Material:
     - _AreaY: 0
     - _Brush: 0
     - _BrushSize: 0
-    - _BrushUvX: 0.3187507
-    - _BrushUvY: 0.208072
+    - _BrushUvX: 0.19343078
+    - _BrushUvY: 0.29325542
     - _DeepLevel: 1.675625
     - _DepthLevel: 1.5
     - _GeneratingNormal: 0
-    - _Grid: 1
+    - _Grid: 0
     - _GridCamDist: 0.049673967
     - _GridScale: 102.4
     - _HideSplat0: 0

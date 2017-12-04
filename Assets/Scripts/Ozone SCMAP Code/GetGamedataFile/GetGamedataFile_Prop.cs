@@ -181,7 +181,7 @@ public partial struct GetGamedataFile
 
 		try
 		{
-			BP.DoString(MapLuaParser.GetLoadedFileFunctions() + BluePrintString);
+			BP.DoString(MapLuaParser.Current.SaveLuaHeader.text + BluePrintString);
 		}
 		catch (NLua.Exceptions.LuaException e)
 		{

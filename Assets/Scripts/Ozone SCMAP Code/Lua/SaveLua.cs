@@ -104,8 +104,10 @@ namespace MapLua
 
 			loadedFileSave = System.IO.File.ReadAllText(MapLuaParser.Current.ScenarioLuaFile.Data.save.Replace("/maps/", MapPath), encodeType);
 
-			string loadedFileFunctions = LuaParser.Read.GetStructureText("lua_variable_functions.lua");
-			string loadedFileEndFunctions = LuaParser.Read.GetStructureText("lua_variable_end_functions.lua");
+			//string loadedFileFunctions = LuaParser.Read.GetStructureText("lua_variable_functions.lua");
+			//string loadedFileEndFunctions = LuaParser.Read.GetStructureText("lua_variable_end_functions.lua");
+			string loadedFileFunctions = MapLuaParser.Current.SaveLuaHeader.text;
+			string loadedFileEndFunctions = MapLuaParser.Current.SaveLuaFooter.text;
 			loadedFileSave = loadedFileFunctions + loadedFileSave + loadedFileEndFunctions;
 
 			LuaFile = new Lua();

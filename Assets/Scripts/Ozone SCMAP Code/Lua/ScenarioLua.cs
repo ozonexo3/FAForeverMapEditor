@@ -317,7 +317,7 @@ namespace MapLua
 			LuaFile.LoadCLRPackage();
 			try
 			{
-				LuaFile.DoString(MapLuaParser.GetLoadedFileFunctions() + loadedFile);
+				LuaFile.DoString(MapLuaParser.Current.SaveLuaHeader.text + loadedFile);
 			}
 			catch (NLua.Exceptions.LuaException e)
 			{

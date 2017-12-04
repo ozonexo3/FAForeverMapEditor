@@ -210,8 +210,14 @@ public partial class CameraControler : MonoBehaviour {
 		RaycastHit hit;
 		if (Physics.Raycast(ray, out hit, MaxDistance, Mask))
 		{
-			return Mathf.Lerp(15f, 300, Mathf.Pow(hit.distance / 150, 1.2f)) * 1.2f;
-
+			//return Mathf.Lerp(15f, 300, Mathf.Pow(hit.distance / 150, 1.2f)) * 1.2f;
+			//return Mathf.Pow(hit.distance / 1000f, 2f) * 1000f;
+			//float Value = Mathf.Lerp(15f, 2048, hit.distance / 2048f);
+			float Value = hit.distance * 2.6f;
+			if (Value < 5)
+				Value = 5;
+			Debug.Log(hit.distance + ", " + Value);
+			return Value;
 		}
 		return 0;
 	}

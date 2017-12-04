@@ -41,13 +41,18 @@ public class SkyboxData
 
 		Data = new SkyboxValues();
 
-		// Sun and sky settins
+		// Float - 4bytes
+		// Int32 - 4bytes
+		// Short - 2bytes
+		// Color RGB - 3 bytes
+		// Color RGBA - 4 bytes
+
+		// Sun and sky gradient settins ?
 		Data.BeginBytes = Stream.ReadBytes(64); // 16 x 4 bytes?
 
 		// Planet and moon textures
 		Data.Albedo = Stream.ReadStringNull();
 		Data.Glow = Stream.ReadStringNull();
-
 
 		// This should be settings for planets and moons on skybox
 

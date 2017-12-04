@@ -14,52 +14,32 @@ public class MapLuaParser : MonoBehaviour {
 
 	public static MapLuaParser Current;
 
+	[Header("LUA")]
 	public ScenarioLua ScenarioLuaFile;
 	public SaveLua SaveLuaFile;
+	public TextAsset SaveLuaHeader;
+	public TextAsset SaveLuaFooter;
+	public TextAsset DefaultScript;
 
 	#region Variables
-	[Header("Objects")]
-	//public		MarkersRenderer	MarkerRend;
-	public		Editing			EditMenu;
-	public GameObject Background;
+	[Header("Core")]
+	public ScmapEditor HeightmapControler;
+	public Editing			EditMenu;
 	public		Undo			History;
 	public		MapHelperGui	HelperGui;
-	public string FolderParentPath;
+
+	[Header("Map")]
+	public		string			FolderParentPath;
 	public		string			FolderName;
 	public		string			ScenarioFileName;
-	//public		Scenario		ScenarioData;
-	//public		GameObject[]	Prefabs;
-	//public		Transform		MarkersParent;
-	//public		GameObject		MapElements;
-	//public		Transform[]		MapBorders;
-	public		CameraControler	CamControll;
-	public		ScmapEditor		HeightmapControler;
-	//public		GetGamedataFile	Gamedata;
-	public		GenericInfoPopup	InfoPopup;
-	public PropsInfo PropsMenu;
-	public DecalsInfo DecalsMenu;
-	public static		bool			Water;
 
+	//public		CameraControler	CamControll;
+	[Header("UI")]
+	public GameObject Background;
+	public GenericInfoPopup	InfoPopup;
+	public		PropsInfo PropsMenu;
+	public		DecalsInfo DecalsMenu;
 
-	//[Header("Local Data")]
-	//public		List<Mex>		Mexes = new List<Mex>();
-	//public		List<Hydro>		Hydros = new List<Hydro>();
-	//public		List<Army>		ARMY_ = new List<Army>();
-	//public		List<Marker>	SiMarkers = new List<Marker>();
-	//public int ArmyHidenCount = 0;
-
-	//public		List<int>		MexesTrash;
-	//public		List<int>		HydrosTrash;
-	//public		List<int>		ArmiesTrash;
-	//public		List<int>		AiTrash;
-
-	//public		List<SaveArmy> 		SaveArmys = new List<SaveArmy>();
-
-	//public		int MexTotalCount = 0;
-	//public		int HydrosTotalCount = 0;
-	//public		int SiTotalCount = 0;
-
-	//[HideInInspector]
 	[Header("Local Data")]
 	public		Vector3			MapCenterPoint;
 
@@ -207,8 +187,8 @@ public class MapLuaParser : MonoBehaviour {
 			}
 
 
-			CamControll.MapSize = Mathf.Max(ScenarioLuaFile.Data.Size[0], ScenarioLuaFile.Data.Size[1]);
-			CamControll.RestartCam();
+			CameraControler.Current.MapSize = Mathf.Max(ScenarioLuaFile.Data.Size[0], ScenarioLuaFile.Data.Size[1]);
+			CameraControler.Current.RestartCam();
 
 
 			InfoPopup.Show(true, "Loading map...\n(" + ScenarioLuaFile.Data.map + ")");
@@ -217,7 +197,7 @@ public class MapLuaParser : MonoBehaviour {
 			// SCMAP
 			var LoadScmapFile = HeightmapControler.StartCoroutine ("LoadScmapFile");
 			yield return LoadScmapFile;
-			CamControll.RestartCam ();
+			CameraControler.Current.RestartCam ();
 
 			EditMenu.MapInfoMenu.SaveAsFa.isOn = HeightmapControler.map.VersionMinor >= 60;
 
@@ -281,19 +261,6 @@ public class MapLuaParser : MonoBehaviour {
 	}
 
 	#endregion
-
-
-	public static string loadedFileFunctions = "";
-
-	public static string GetLoadedFileFunctions()
-	{
-		if (loadedFileFunctions.Length == 0)
-		{
-			loadedFileFunctions = System.IO.File.ReadAllText(StructurePath + "lua_variable_functions.lua", System.Text.Encoding.ASCII);
-		}
-		return loadedFileFunctions;
-	}
-
 
 	#region Load Save Lua
 	void SetSaveLua()
@@ -402,9 +369,11 @@ public class MapLuaParser : MonoBehaviour {
 
 
 	public void SaveScriptLua(int ID = 0){
-		string SaveData = "";
+		string SaveData = DefaultScript.text;
+
+		/*
 		string loadedFile = "";
-		
+
 		System.Text.Encoding encodeType = System.Text.Encoding.ASCII;
 		string loc = "";
 		if(ID == 0) return;
@@ -414,6 +383,7 @@ public class MapLuaParser : MonoBehaviour {
 		loadedFile = System.IO.File.ReadAllText(loc, encodeType);
 
 		SaveData = loadedFile;
+		*/
 
 		string SaveFilePath = ScenarioLuaFile.Data.script.Replace("/maps/", FolderParentPath);
 
