@@ -234,13 +234,13 @@ Material:
     - _AbyssLevel: 0.25
     - _Area: 0
     - _AreaHeight: 102.4
-    - _AreaWidht: 64
-    - _AreaX: 38.4
+    - _AreaWidht: 102.4
+    - _AreaX: 0
     - _AreaY: 0
     - _Brush: 0
-    - _BrushSize: 56
-    - _BrushUvX: 0.3526443
-    - _BrushUvY: 0.54884833
+    - _BrushSize: 19
+    - _BrushUvX: 0.14168128
+    - _BrushUvY: 0.3049595
     - _DeepLevel: 1.675625
     - _DepthLevel: 1.5
     - _GeneratingNormal: 0

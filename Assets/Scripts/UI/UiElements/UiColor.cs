@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 public class UiColor : MonoBehaviour
@@ -16,7 +17,9 @@ public class UiColor : MonoBehaviour
 	public Slider GreenSlider;
 	public Slider BlueSlider;
 
-	System.Action FieldChangedAction;
+	public UnityEvent OnValueChanged;
+
+	//System.Action FieldChangedAction;
 	bool Loading = false;
 
 	void ClampValues()
@@ -36,12 +39,12 @@ public class UiColor : MonoBehaviour
 		return new Vector3(RedSlider.value, GreenSlider.value, BlueSlider.value);
 	}
 
-	public void SetColorField(float R, float G, float B, System.Action ChangeAction)
+	public void SetColorField(float R, float G, float B)
 	{
 		ClampValues();
 		Loading = true;
-		if(FieldChangedAction == null)
-			FieldChangedAction = ChangeAction;
+		//if(FieldChangedAction == null)
+		//	FieldChangedAction = ChangeAction;
 
 		RedSlider.value = R;
 		GreenSlider.value = G;
@@ -57,11 +60,11 @@ public class UiColor : MonoBehaviour
 	}
 
 
-	public void SetColorField(Color BeginColor, System.Action ChangeAction)
+	public void SetColorField(Color BeginColor)
 	{
 		ClampValues();
 		Loading = true;
-		FieldChangedAction = ChangeAction;
+		//FieldChangedAction = ChangeAction;
 
 		RedSlider.value = BeginColor.r;
 		GreenSlider.value = BeginColor.g;
@@ -95,7 +98,8 @@ public class UiColor : MonoBehaviour
 		Loading = false;
 
 		UpdateGfx();
-		FieldChangedAction();
+		//FieldChangedAction();
+		OnValueChanged.Invoke();
 	}
 
 	public void SliderUpdate()
@@ -108,7 +112,8 @@ public class UiColor : MonoBehaviour
 		Blue.text = BlueSlider.value.ToString();
 
 		UpdateGfx();
-		FieldChangedAction();
+		//FieldChangedAction();
+		OnValueChanged.Invoke();
 	}
 
 	void UpdateGfx()

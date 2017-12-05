@@ -73,9 +73,17 @@ namespace Ozone.UI
 			if (SliderUi)
 			{
 				if (InputFieldUi.contentType == InputField.ContentType.IntegerNumber)
+				{
 					LastValue = int.Parse(InputFieldUi.text);
+					LastValue = Mathf.Clamp(LastValue, SliderUi.minValue, SliderUi.maxValue);
+					InputFieldUi.text = LastValue.ToString();
+				}
 				else if (InputFieldUi.contentType == InputField.ContentType.DecimalNumber)
+				{
 					LastValue = float.Parse(InputFieldUi.text);
+					LastValue = Mathf.Clamp(LastValue, SliderUi.minValue, SliderUi.maxValue);
+					InputFieldUi.text = LastValue.ToString();
+				}
 
 				SliderUi.value = LastValue;
 			}

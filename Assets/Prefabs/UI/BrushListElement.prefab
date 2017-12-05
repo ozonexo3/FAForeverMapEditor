@@ -5,11 +5,11 @@ GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 224: {fileID: 22453680}
-  - 222: {fileID: 22222616}
-  - 114: {fileID: 11441130}
+  - component: {fileID: 22453680}
+  - component: {fileID: 22222616}
+  - component: {fileID: 11441130}
   m_Layer: 5
   m_Name: Label
   m_TagString: Untagged
@@ -22,11 +22,11 @@ GameObject:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 224: {fileID: 22452822}
-  - 222: {fileID: 22292098}
-  - 114: {fileID: 11468982}
+  - component: {fileID: 22452822}
+  - component: {fileID: 22292098}
+  - component: {fileID: 11468982}
   m_Layer: 5
   m_Name: Checkmark
   m_TagString: Untagged
@@ -39,11 +39,11 @@ GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 224: {fileID: 22498064}
-  - 222: {fileID: 22244866}
-  - 114: {fileID: 11415322}
+  - component: {fileID: 22498064}
+  - component: {fileID: 22244866}
+  - component: {fileID: 11415322}
   m_Layer: 5
   m_Name: Background
   m_TagString: Untagged
@@ -56,11 +56,12 @@ GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 224: {fileID: 22426618}
-  - 114: {fileID: 11476078}
-  - 114: {fileID: 11496866}
+  - component: {fileID: 22426618}
+  - component: {fileID: 11476078}
+  - component: {fileID: 11496866}
+  - component: {fileID: 114880601756657272}
   m_Layer: 5
   m_Name: BrushListElement
   m_TagString: Untagged
@@ -114,11 +115,11 @@ MonoBehaviour:
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_FontData:
-    m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 16
+    m_Font: {fileID: 12800000, guid: ba878bb41b1a125448c85ae6644d5b6a, type: 3}
+    m_FontSize: 14
     m_FontStyle: 0
     m_BestFit: 0
-    m_MinSize: 10
+    m_MinSize: 1
     m_MaxSize: 40
     m_Alignment: 3
     m_AlignByGeometry: 0
@@ -226,6 +227,7 @@ MonoBehaviour:
   ThisToggle: {fileID: 11476078}
   BrushImage: {fileID: 11415322}
   Controler: {fileID: 0}
+  Controler2: {fileID: 0}
 --- !u!222 &22222616
 CanvasRenderer:
   m_ObjectHideFlags: 1
@@ -258,10 +260,11 @@ RectTransform:
   - {fileID: 22453680}
   m_Father: {fileID: 0}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 50}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!224 &22452822
 RectTransform:
@@ -275,6 +278,7 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 22498064}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
@@ -292,6 +296,7 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 22426618}
   m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 27.6, y: -0.2}
@@ -310,6 +315,7 @@ RectTransform:
   - {fileID: 22452822}
   m_Father: {fileID: 22426618}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
@@ -326,3 +332,22 @@ Prefab:
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 156696}
   m_IsPrefabParent: 1
+--- !u!114 &114880601756657272
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 156696}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 1679637790, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IgnoreLayout: 0
+  m_MinWidth: -1
+  m_MinHeight: -1
+  m_PreferredWidth: -1
+  m_PreferredHeight: 50
+  m_FlexibleWidth: -1
+  m_FlexibleHeight: -1
+  m_LayoutPriority: 1

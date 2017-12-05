@@ -330,7 +330,7 @@ MonoBehaviour:
     m_NormalColor: {r: 0.35294116, g: 0.35294116, b: 0.35294116, a: 1}
     m_HighlightedColor: {r: 0.47058824, g: 0.47058824, b: 0.47058824, a: 1}
     m_PressedColor: {r: 0, g: 0.53200006, b: 1, a: 1}
-    m_DisabledColor: {r: 0.3529412, g: 0.3529412, b: 0.3529412, a: 0.19607843}
+    m_DisabledColor: {r: 0.15294118, g: 0.15294118, b: 0.15294118, a: 0.5019608}
     m_ColorMultiplier: 2
     m_FadeDuration: 0.1
   m_SpriteState:
@@ -411,6 +411,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8c60df5520bfea740b1f3db0c3478272, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  FieldType: 1
+  BeginValue: 0
   InputFieldUi: {fileID: 114161430723240616}
   SliderUi: {fileID: 114487296845569024}
   OnValueChanged:
@@ -434,8 +436,6 @@ MonoBehaviour:
         m_CallState: 2
     m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
-  FieldType: 1
-  LastValue: 0
 --- !u!114 &114716506670742826
 MonoBehaviour:
   m_ObjectHideFlags: 1

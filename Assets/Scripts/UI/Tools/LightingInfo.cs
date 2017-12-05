@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using Ozone.UI;
 
 namespace EditMap
 {
@@ -11,45 +12,23 @@ namespace EditMap
 
 		public ScmapEditor Scmap;
 
-		public InputField RA;
-		public Slider RA_Slider;
-		public InputField DA;
-		public Slider DA_Slider;
+		public UiTextField RA;
+		//public Slider RA_Slider;
+		public UiTextField DA;
+		//public Slider DA_Slider;
 
-		public InputField LightMultipiler;
-		public Slider LightMultipilerSlider;
+		public UiTextField LightMultipiler;
+		//public Slider LightMultipilerSlider;
 
 		public UiColor LightColor;
 		public UiColor AmbienceColor;
 		public UiColor ShadowColor;
 
-		/*
-		public InputField LightColorR;
-		public Slider LightColorR_Slider;
-		public InputField LightColorG;
-		public Slider LightColorG_Slider;
-		public InputField LightColorB;
-		public Slider LightColorB_Slider;
 
-		public InputField AmbienceColorR;
-		public Slider AmbienceColorR_Slider;
-		public InputField AmbienceColorG;
-		public Slider AmbienceColorG_Slider;
-		public InputField AmbienceColorB;
-		public Slider AmbienceColorB_Slider;
-
-		public InputField ShadowColorR;
-		public Slider ShadowColorR_Slider;
-		public InputField ShadowColorG;
-		public Slider ShadowColorG_Slider;
-		public InputField ShadowColorB;
-		public Slider ShadowColorB_Slider;
-		*/
-
-		public InputField Glow;
-		public Slider Glow_Slider;
-		public InputField Bloom;
-		public Slider Bloom_Slider;
+		public UiTextField Glow;
+		//public Slider Glow_Slider;
+		public UiTextField Bloom;
+		//public Slider Bloom_Slider;
 
 		// Use this for initialization
 		[HideInInspector]
@@ -63,7 +42,6 @@ namespace EditMap
 		}
 
 
-
 		public void LoadValues()
 		{
 			//Quaternion CheckRot = Quaternion.LookRotation(Scmap.map.SunDirection);
@@ -75,35 +53,22 @@ namespace EditMap
 			RaHold *= 10;
 			RaHold = (int)RaHold;
 			RaHold /= 10f;
-			RA_Slider.value = RaHold;
-
+			//RA_Slider.value = RaHold;
+			RA.SetValue(RaHold);
 
 			//float DAHold = 360 - CheckRot.eulerAngles.x;
 			float DAHold = CheckRot.eulerAngles.x;
 			DAHold *= 10;
 			DAHold = (int)DAHold;
 			DAHold /= 10f;
-			DA_Slider.value = DAHold;
+			//DA_Slider.value = DAHold;
+			DA.SetValue(RaHold);
 
-			LightMultipilerSlider.value = Scmap.map.LightingMultiplier;
+			LightMultipiler.SetValue(Scmap.map.LightingMultiplier);
 
-			LightColor.SetColorField(Scmap.map.SunColor.x, Scmap.map.SunColor.y, Scmap.map.SunColor.z, UpdateColors);
-			AmbienceColor.SetColorField(Scmap.map.SunAmbience.x, Scmap.map.SunAmbience.y, Scmap.map.SunAmbience.z, UpdateColors);
-			ShadowColor.SetColorField(Scmap.map.ShadowFillColor.x, Scmap.map.ShadowFillColor.y, Scmap.map.ShadowFillColor.z, UpdateColors);
-
-			/*
-			LightColorR_Slider.value = Scmap.map.SunColor.x;
-			LightColorG_Slider.value = Scmap.map.SunColor.y;
-			LightColorB_Slider.value = Scmap.map.SunColor.z;
-
-			AmbienceColorR_Slider.value = Scmap.map.SunAmbience.x;
-			AmbienceColorG_Slider.value = Scmap.map.SunAmbience.y;
-			AmbienceColorB_Slider.value = Scmap.map.SunAmbience.z;
-
-			ShadowColorR_Slider.value = Scmap.map.ShadowFillColor.x;
-			ShadowColorG_Slider.value = Scmap.map.ShadowFillColor.y;
-			ShadowColorB_Slider.value = Scmap.map.ShadowFillColor.z;
-			*/
+			LightColor.SetColorField(Scmap.map.SunColor.x, Scmap.map.SunColor.y, Scmap.map.SunColor.z); // UpdateColors
+			AmbienceColor.SetColorField(Scmap.map.SunAmbience.x, Scmap.map.SunAmbience.y, Scmap.map.SunAmbience.z); // UpdateColors
+			ShadowColor.SetColorField(Scmap.map.ShadowFillColor.x, Scmap.map.ShadowFillColor.y, Scmap.map.ShadowFillColor.z); // UpdateColors
 
 			IgnoreUpdate = false;
 			//UpdateMenu(true);
@@ -145,30 +110,14 @@ namespace EditMap
 				if (!UndoChange)
 					SliderDrag = true;
 
-				LightMultipiler.text = LightMultipilerSlider.value.ToString("n2");
+				//LightMultipiler.text = LightMultipilerSlider.value.ToString("n2");
 
 				//Debug.Log( RA_Slider.value.ToString("n1") );
-				RA.text = RA_Slider.value.ToString("n1");
+				//RA.text = RA_Slider.value.ToString("n1");
 				//Debug.Log(RA.text);
-				DA.text = DA_Slider.value.ToString("n1");
+				//DA.text = DA_Slider.value.ToString("n1");
 
-				/*
-				LightColorR.text = LightColorR_Slider.value.ToString("n2");
-				LightColorG.text = LightColorG_Slider.value.ToString("n2");
-				LightColorB.text = LightColorB_Slider.value.ToString("n2");
-
-				AmbienceColorR.text = AmbienceColorR_Slider.value.ToString("n2");
-				AmbienceColorG.text = AmbienceColorG_Slider.value.ToString("n2");
-				AmbienceColorB.text = AmbienceColorB_Slider.value.ToString("n2");
-
-				ShadowColorR.text = ShadowColorR_Slider.value.ToString("n2");
-				ShadowColorG.text = ShadowColorG_Slider.value.ToString("n2");
-				ShadowColorB.text = ShadowColorB_Slider.value.ToString("n2");
-				*/
-
-				Bloom.text = Scmap.map.Bloom.ToString("n2");
-
-
+				Bloom.SetValue(Scmap.map.Bloom);
 
 				//Glow.text = Glow_Slider.value.ToString ();
 				//Bloom.text = Bloom_Slider.value.ToString ();
@@ -177,48 +126,25 @@ namespace EditMap
 			else
 			{
 				IgnoreUpdate = true;
-				LightMultipilerSlider.value = Mathf.Clamp(float.Parse(LightMultipiler.text), 0, 2);
-				LightMultipiler.text = LightMultipilerSlider.value.ToString();
+				//LightMultipilerSlider.value = Mathf.Clamp(float.Parse(LightMultipiler.text), 0, 2);
+				//LightMultipiler.text = LightMultipilerSlider.value.ToString();
 
 				//Debug.Log(RA.text);
-				RA_Slider.value = Mathf.Clamp(float.Parse(RA.text), -180, 180);
-				RA.text = RA_Slider.value.ToString();
+				//RA_Slider.value = Mathf.Clamp(float.Parse(RA.text), -180, 180);
+				//RA.text = RA_Slider.value.ToString();
 
-				DA_Slider.value = Mathf.Clamp(float.Parse(DA.text), 0, 90);
-				DA.text = DA_Slider.value.ToString();
-
-				/*
-				LightColorR_Slider.value = Mathf.Clamp(float.Parse(LightColorR.text), 0, 2);
-				LightColorR.text = LightColorR_Slider.value.ToString("n2");
-				LightColorG_Slider.value = Mathf.Clamp(float.Parse(LightColorG.text), 0, 2);
-				LightColorG.text = LightColorG_Slider.value.ToString("n2");
-				LightColorB_Slider.value = Mathf.Clamp(float.Parse(LightColorB.text), 0, 2);
-				LightColorB.text = LightColorB_Slider.value.ToString("n2");
-
-				AmbienceColorR_Slider.value = Mathf.Clamp(float.Parse(AmbienceColorR.text), 0, 2);
-				AmbienceColorR.text = AmbienceColorR_Slider.value.ToString("n2");
-				AmbienceColorG_Slider.value = Mathf.Clamp(float.Parse(AmbienceColorG.text), 0, 2);
-				AmbienceColorG.text = AmbienceColorG_Slider.value.ToString("n2");
-				AmbienceColorB_Slider.value = Mathf.Clamp(float.Parse(AmbienceColorB.text), 0, 2);
-				AmbienceColorB.text = AmbienceColorB_Slider.value.ToString("n2");
-
-				ShadowColorR_Slider.value = Mathf.Clamp(float.Parse(ShadowColorR.text), 0, 2);
-				ShadowColorR.text = ShadowColorR_Slider.value.ToString("n2");
-				ShadowColorG_Slider.value = Mathf.Clamp(float.Parse(ShadowColorG.text), 0, 2);
-				ShadowColorG.text = ShadowColorG_Slider.value.ToString("n2");
-				ShadowColorB_Slider.value = Mathf.Clamp(float.Parse(ShadowColorB.text), 0, 2);
-				ShadowColorB.text = ShadowColorB_Slider.value.ToString("n2");
-				*/
+				//DA_Slider.value = Mathf.Clamp(float.Parse(DA.text), 0, 90);
+				//DA.text = DA_Slider.value.ToString();
 
 
 				//Glow_Slider.value = Mathf.Clamp (float.Parse (Glow.text), 0, 2);
 				//Glow.text = Glow_Slider.value.ToString ();
 
 				//Bloom_Slider.value = Mathf.Clamp (float.Parse (Bloom.text), 0, 2);
-				Scmap.map.Bloom = Mathf.Clamp(float.Parse(Bloom.text), 0, 2);
+				Scmap.map.Bloom = Bloom.value;
 
-				RA_Value = (int)Mathf.Clamp(float.Parse(RA.text), -180, 180);
-				DA_Value = (int)Mathf.Clamp(float.Parse(DA.text), 0, 90);
+				RA_Value = RA.intValue;
+				DA_Value = RA.intValue;
 
 				IgnoreUpdate = false;
 				UpdateLightingData();
@@ -232,7 +158,7 @@ namespace EditMap
 		{
 			if (Scmap.map == null) return;
 
-			Scmap.map.LightingMultiplier = LightMultipilerSlider.value;
+			Scmap.map.LightingMultiplier = LightMultipiler.value;
 
 			Scmap.map.SunColor = LightColor.GetVectorValue();
 			Scmap.map.SunAmbience = AmbienceColor.GetVectorValue();
@@ -241,7 +167,7 @@ namespace EditMap
 			Scmap.UpdateBloom();
 
 			// Set light
-			Scmap.Sun.transform.rotation = Quaternion.Euler(new Vector3(DA_Slider.value, -360 + RA_Slider.value, 0));
+			Scmap.Sun.transform.rotation = Quaternion.Euler(new Vector3(DA.value, -360 + RA.value, 0));
 
 			Scmap.map.SunDirection = Scmap.Sun.transform.rotation * Vector3.back;
 
