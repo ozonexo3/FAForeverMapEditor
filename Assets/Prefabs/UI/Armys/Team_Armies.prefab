@@ -73,7 +73,6 @@ GameObject:
   - component: {fileID: 224933338935707656}
   - component: {fileID: 222181082527020804}
   - component: {fileID: 114345592022788356}
-  - component: {fileID: 114486547267872870}
   m_Layer: 5
   m_Name: Text
   m_TagString: Untagged
@@ -110,14 +109,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.5019608, g: 0.5019608, b: 0.5019608, a: 1}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300000, guid: 004fcd85e90bb654392361e14a461b0a, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 64a6191ada4e90446bb848c4d4d395a8, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -172,7 +171,7 @@ MonoBehaviour:
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_FontData:
-    m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
+    m_Font: {fileID: 12800000, guid: ba878bb41b1a125448c85ae6644d5b6a, type: 3}
     m_FontSize: 16
     m_FontStyle: 0
     m_BestFit: 0
@@ -207,20 +206,6 @@ MonoBehaviour:
   m_ChildForceExpandHeight: 1
   m_ChildControlWidth: 1
   m_ChildControlHeight: 1
---- !u!114 &114486547267872870
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1523559373167422}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 1573420865, guid: f70555f144d8491a825f0804e09c671c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_EffectColor: {r: 0, g: 0, b: 0, a: 0.659}
-  m_EffectDistance: {x: 1, y: -1}
-  m_UseGraphicAlpha: 1
 --- !u!114 &114597467269642876
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -249,7 +234,7 @@ MonoBehaviour:
     m_Left: 30
     m_Right: 10
     m_Top: 0
-    m_Bottom: 30
+    m_Bottom: 26
   m_ChildAlignment: 0
   m_Spacing: 4
   m_ChildForceExpandWidth: 1
@@ -274,6 +259,7 @@ MonoBehaviour:
   m_PreferredHeight: -1
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
+  m_LayoutPriority: 1
 --- !u!114 &114871115598688024
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -293,11 +279,11 @@ MonoBehaviour:
     m_SelectOnRight: {fileID: 0}
   m_Transition: 1
   m_Colors:
-    m_NormalColor: {r: 0.4852941, g: 0.4852941, b: 0.4852941, a: 1}
-    m_HighlightedColor: {r: 0.48291522, g: 0.53861415, b: 0.5661765, a: 1}
-    m_PressedColor: {r: 0.7058823, g: 0.7058823, b: 0.7058823, a: 1}
+    m_NormalColor: {r: 0.35294116, g: 0.35294116, b: 0.35294116, a: 1}
+    m_HighlightedColor: {r: 0.47058824, g: 0.47058824, b: 0.47058824, a: 1}
+    m_PressedColor: {r: 0, g: 0.53200006, b: 1, a: 1}
     m_DisabledColor: {r: 0, g: 0, b: 0, a: 0.5019608}
-    m_ColorMultiplier: 1
+    m_ColorMultiplier: 2
     m_FadeDuration: 0.1
   m_SpriteState:
     m_HighlightedSprite: {fileID: 0}
@@ -361,8 +347,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: 14.90007, y: 0}
-  m_SizeDelta: {x: -30.200012, y: 26}
+  m_AnchoredPosition: {x: 15, y: 0}
+  m_SizeDelta: {x: -30, y: 20}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!224 &224384143404239682
 RectTransform:

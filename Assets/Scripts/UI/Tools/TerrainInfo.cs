@@ -7,6 +7,7 @@ using System.Runtime.InteropServices;
 using System.IO;
 using System.Text;
 using SFB;
+using Ozone.UI;
 
 namespace EditMap
 {
@@ -19,15 +20,19 @@ namespace EditMap
 		public Editing Edit;
 		public ScmapEditor Map;
 		public Camera GameplayCamera;
-		public Slider BrushSizeSlider;
-		public InputField BrushSize;
-		public Slider BrushStrengthSlider;
-		public InputField BrushStrength;
-		public Slider BrushRotationSlider;
-		public InputField BrushRotation;
 
-		public InputField BrushMini;
-		public InputField BrushMax;
+		public UiTextField BrushSize;
+		public UiTextField BrushStrength;
+
+		//public Slider BrushSizeSlider;
+		//public InputField BrushSize;
+		//public Slider BrushStrengthSlider;
+		//public InputField BrushStrength;
+		//public Slider BrushRotationSlider;
+		public UiTextField BrushRotation;
+
+		public UiTextField BrushMini;
+		public UiTextField BrushMax;
 
 		public InputField TerrainSet;
 		public InputField TerrainAdd;
@@ -185,7 +190,7 @@ namespace EditMap
 					{
 						ChangingStrength = true;
 						BeginMousePos = Input.mousePosition;
-						StrengthBeginValue = BrushStrengthSlider.value;
+						StrengthBeginValue = BrushStrength.value;
 					}
 					else if (Input.GetMouseButtonUp(0))
 					{
@@ -193,7 +198,8 @@ namespace EditMap
 					}
 					if (ChangingStrength)
 					{
-						BrushStrengthSlider.value = Mathf.Clamp(StrengthBeginValue - (BeginMousePos.x - Input.mousePosition.x), 0, 100);
+						BrushStrength.SetValue((int)Mathf.Clamp(StrengthBeginValue - (BeginMousePos.x - Input.mousePosition.x), 0, 100));
+						//BrushStrengthSlider.value = Mathf.Clamp(StrengthBeginValue - (BeginMousePos.x - Input.mousePosition.x), 0, 100);
 						UpdateMenu(true);
 						//UpdateBrushPosition(true);
 
@@ -206,7 +212,7 @@ namespace EditMap
 					{
 						ChangingSize = true;
 						BeginMousePos = Input.mousePosition;
-						SizeBeginValue = BrushSizeSlider.value;
+						SizeBeginValue = BrushSize.value;
 					}
 					else if (Input.GetMouseButtonUp(0))
 					{
@@ -214,7 +220,8 @@ namespace EditMap
 					}
 					if (ChangingSize)
 					{
-						BrushSizeSlider.value = Mathf.Clamp(SizeBeginValue - (BeginMousePos.x - Input.mousePosition.x), 1, 256);
+						BrushSize.SetValue(Mathf.Clamp(SizeBeginValue - (BeginMousePos.x - Input.mousePosition.x), 1, 256));
+						//BrushSizeSlider.value = Mathf.Clamp(SizeBeginValue - (BeginMousePos.x - Input.mousePosition.x), 1, 256);
 						UpdateMenu(true);
 						UpdateBrushPosition(true);
 
@@ -268,36 +275,36 @@ namespace EditMap
 		{
 			if (Slider)
 			{
-				BrushSize.text = BrushSizeSlider.value.ToString();
-				BrushStrength.text = BrushStrengthSlider.value.ToString();
+				//BrushSize.text = BrushSizeSlider.value.ToString();
+				//BrushStrength.text = BrushStrengthSlider.value.ToString();
 				//BrushRotation.text = BrushRotationSlider.value.ToString();
 			}
 			else
 			{
-				BrushSizeSlider.value = float.Parse(BrushSize.text);
-				BrushStrengthSlider.value = int.Parse(BrushStrength.text);
+				//BrushSizeSlider.value = float.Parse(BrushSize.text);
+				//BrushStrengthSlider.value = int.Parse(BrushStrength.text);
 				//BrushRotationSlider.value = int.Parse(BrushRotation.text);
 			}
 
-			BrushSizeSlider.value = Mathf.Clamp(BrushSizeSlider.value, 1, 256);
-			BrushStrengthSlider.value = (int)Mathf.Clamp(BrushStrengthSlider.value, 0, 100);
+			//BrushSizeSlider.value = Mathf.Clamp(BrushSizeSlider.value, 1, 256);
+			//BrushStrengthSlider.value = (int)Mathf.Clamp(BrushStrengthSlider.value, 0, 100);
 			//BrushRotationSlider.value = (int)Mathf.Clamp(BrushStrengthSlider.value, -360, 360);
 
-			BrushSize.text = BrushSizeSlider.value.ToString();
-			BrushStrength.text = BrushStrengthSlider.value.ToString();
+			//BrushSize.text = BrushSizeSlider.value.ToString();
+			//BrushStrength.text = BrushStrengthSlider.value.ToString();
 			//BrushRotation.text = BrushRotationSlider.value.ToString();
 
 			//float TerrainHeight = ScmapEditor.Current.Data.size.y;
 
-			Min = int.Parse(BrushMini.text) / ScmapEditor.Current.Data.size.y;
-			Max = int.Parse(BrushMax.text) / ScmapEditor.Current.Data.size.y;
+			Min = BrushMini.intValue / ScmapEditor.Current.Data.size.y;
+			Max = BrushMax.intValue / ScmapEditor.Current.Data.size.y;
 
 			Min /= 10f;
 			Max /= 10f;
 
-			if (LastRotation != int.Parse(BrushRotation.text))
+			if (LastRotation != BrushRotation.intValue)
 			{
-				LastRotation = int.Parse(BrushRotation.text);
+				LastRotation = BrushRotation.intValue;
 				if (LastRotation == 0)
 				{
 					BrushGenerator.Current.RotatedBrush = BrushGenerator.Current.Brushes[SelectedFalloff];
@@ -310,7 +317,6 @@ namespace EditMap
 				TerrainMaterial.SetTexture("_BrushTex", (Texture)BrushGenerator.Current.RotatedBrush);
 				BrushGenerator.Current.GeneratePaintBrushesh();
 			}
-			TerrainMaterial.SetFloat("_BrushSize", BrushSizeSlider.value);
 		}
 		#endregion
 
@@ -572,7 +578,7 @@ namespace EditMap
 			BrushGenerator.Current.Brushes[SelectedFalloff].mipMapBias = -1f;
 			BrushGenerator.Current.Brushes[SelectedFalloff].filterMode = FilterMode.Bilinear;
 			BrushGenerator.Current.Brushes[SelectedFalloff].anisoLevel = 2;
-			LastRotation = int.Parse(BrushRotation.text);
+			LastRotation = BrushRotation.intValue;
 			if (LastRotation == 0)
 			{
 				BrushGenerator.Current.RotatedBrush = BrushGenerator.Current.Brushes[SelectedFalloff];
@@ -598,7 +604,7 @@ namespace EditMap
 			}
 			float SizeXprop = MapLuaParser.GetMapSizeX() / 512f;
 			float SizeZprop = MapLuaParser.GetMapSizeY() / 512f;
-			float BrushSizeValue = BrushSizeSlider.value;
+			float BrushSizeValue = BrushSize.value;
 
 
 			MouseBeginClick = Input.mousePosition;
@@ -666,7 +672,7 @@ namespace EditMap
 			int posXInTerrain = (int)(coord.x * hmWidth);
 			int posYInTerrain = (int)(coord.z * hmHeight);
 			// we set an offset so that all the raising terrain is under this game object
-			int size = (int)BrushSizeSlider.value;
+			int size = BrushSize.intValue;
 
 			if (BrushPaintType == 2 && size < 8)
 				size = 8;
@@ -715,7 +721,7 @@ namespace EditMap
 			float PixelPower = 0;
 
 
-			float BrushStrenghtValue = BrushStrengthSlider.value;
+			float BrushStrenghtValue = BrushStrength.value;
 			float PaintStrength = BrushStrenghtValue * 0.00005f * (Invert ? (-1) : 1);
 			float SizeSmooth = Mathf.Clamp01(size / 10f) * 10;
 

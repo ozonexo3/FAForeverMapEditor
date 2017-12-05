@@ -216,7 +216,6 @@ public partial class CameraControler : MonoBehaviour {
 			float Value = hit.distance * 2.6f;
 			if (Value < 5)
 				Value = 5;
-			Debug.Log(hit.distance + ", " + Value);
 			return Value;
 		}
 		return 0;

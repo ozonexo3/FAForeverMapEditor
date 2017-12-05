@@ -238,9 +238,9 @@ Material:
     - _AreaX: 38.4
     - _AreaY: 0
     - _Brush: 0
-    - _BrushSize: 0
-    - _BrushUvX: 0.19343078
-    - _BrushUvY: 0.29325542
+    - _BrushSize: 56
+    - _BrushUvX: 0.3526443
+    - _BrushUvY: 0.54884833
     - _DeepLevel: 1.675625
     - _DepthLevel: 1.5
     - _GeneratingNormal: 0
