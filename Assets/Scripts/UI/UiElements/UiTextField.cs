@@ -11,6 +11,7 @@ namespace Ozone.UI
 		[Header("Config")]
 		public FieldTypes FieldType;
 		public float BeginValue;
+		public string Format = "N2";
 
 		[Header("UI")]
 		public InputField	InputFieldUi;
@@ -82,7 +83,7 @@ namespace Ozone.UI
 				{
 					LastValue = float.Parse(InputFieldUi.text);
 					LastValue = Mathf.Clamp(LastValue, SliderUi.minValue, SliderUi.maxValue);
-					InputFieldUi.text = LastValue.ToString();
+					InputFieldUi.text = LastValue.ToString(Format);
 				}
 
 				SliderUi.value = LastValue;

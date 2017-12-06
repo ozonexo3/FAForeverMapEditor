@@ -2,6 +2,7 @@
 using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
+using Ozone.UI;
 using System.IO;
 using B83.Image.BMP;
 using System.Text;
@@ -23,10 +24,12 @@ namespace EditMap
 
 		public RawImage Stratum_Albedo;
 		public RawImage Stratum_Normal;
-		public Slider Stratum_Albedo_Slider;
-		public InputField Stratum_Albedo_Input;
-		public Slider Stratum_Normal_Slider;
-		public InputField Stratum_Normal_Input;
+		public UiTextField Stratum_Albedo_Input;
+		public UiTextField Stratum_Normal_Input;
+		//public Slider Stratum_Albedo_Slider;
+		//public InputField Stratum_Albedo_Input;
+		//public Slider Stratum_Normal_Slider;
+		//public InputField Stratum_Normal_Input;
 
 		public GameObject Page_Stratum;
 		public GameObject Page_StratumSelected;
@@ -39,17 +42,17 @@ namespace EditMap
 
 		// Brush
 		[Header("Brush")]
-		public Slider BrushSizeSlider;
-		public InputField BrushSize;
-		public Slider BrushStrengthSlider;
-		public InputField BrushStrength;
-		public Slider BrushRotationSlider;
-		public InputField BrushRotation;
+		//public Slider BrushSizeSlider;
+		public UiTextField BrushSize;
+		//public Slider BrushStrengthSlider;
+		public UiTextField BrushStrength;
+		//public Slider BrushRotationSlider;
+		public UiTextField BrushRotation;
 
-		public InputField BrushMini;
-		public InputField BrushMax;
+		public UiTextField BrushMini;
+		public UiTextField BrushMax;
 
-		public InputField Scatter;
+		public UiTextField Scatter;
 
 		public Toggle LinearBrush;
 		public Toggle TTerrainXP;
@@ -178,7 +181,7 @@ namespace EditMap
 						{
 							ChangingStrength = true;
 							BeginMousePos = Input.mousePosition;
-							StrengthBeginValue = BrushStrengthSlider.value;
+							StrengthBeginValue = BrushStrength.value;
 						}
 						else if (Input.GetMouseButtonUp(0))
 						{
@@ -186,7 +189,8 @@ namespace EditMap
 						}
 						if (ChangingStrength)
 						{
-							BrushStrengthSlider.value = Mathf.Clamp(StrengthBeginValue - (int)((BeginMousePos.x - Input.mousePosition.x) * 0.1f), 0, 100);
+							//BrushStrengthSlider.value = Mathf.Clamp(StrengthBeginValue - (int)((BeginMousePos.x - Input.mousePosition.x) * 0.1f), 0, 100);
+							BrushStrength.SetValue(Mathf.Clamp(StrengthBeginValue - (int)((BeginMousePos.x - Input.mousePosition.x) * 0.1f), 0, 100));
 							UpdateStratumMenu(true);
 							//UpdateBrushPosition(true);
 
@@ -199,7 +203,7 @@ namespace EditMap
 						{
 							ChangingSize = true;
 							BeginMousePos = Input.mousePosition;
-							SizeBeginValue = BrushSizeSlider.value;
+							SizeBeginValue = BrushSize.value;
 						}
 						else if (Input.GetMouseButtonUp(0))
 						{
@@ -207,7 +211,7 @@ namespace EditMap
 						}
 						if (ChangingSize)
 						{
-							BrushSizeSlider.value = Mathf.Clamp(SizeBeginValue - (int)((BeginMousePos.x - Input.mousePosition.x) * 0.4f), 1, 256);
+							BrushSize.SetValue(Mathf.Clamp(SizeBeginValue - (int)((BeginMousePos.x - Input.mousePosition.x) * 0.4f), 1, 256));
 							UpdateStratumMenu(true);
 							UpdateBrushPosition(true);
 
@@ -343,11 +347,11 @@ namespace EditMap
 			Stratum_Normal.texture = ScmapEditor.Current.Textures[Selected].Normal;
 
 
-			Stratum_Albedo_Slider.value = ScmapEditor.Current.Textures[Selected].AlbedoScale;
-			Stratum_Albedo_Input.text = ScmapEditor.Current.Textures[Selected].AlbedoScale.ToString();
+			//Stratum_Albedo_Slider.value = ScmapEditor.Current.Textures[Selected].AlbedoScale;
+			Stratum_Albedo_Input.SetValue(ScmapEditor.Current.Textures[Selected].AlbedoScale);
 
-			Stratum_Normal_Slider.value = ScmapEditor.Current.Textures[Selected].NormalScale;
-			Stratum_Normal_Input.text = ScmapEditor.Current.Textures[Selected].NormalScale.ToString();
+			//Stratum_Normal_Slider.value = ScmapEditor.Current.Textures[Selected].NormalScale;
+			Stratum_Normal_Input.SetValue(ScmapEditor.Current.Textures[Selected].NormalScale);
 			LoadingStratum = false;
 		}
 
@@ -429,8 +433,8 @@ namespace EditMap
 					}
 					if (!LoadingStratum)
 					{
-						Stratum_Albedo_Input.text = Stratum_Albedo_Slider.value.ToString();
-						Stratum_Normal_Input.text = Stratum_Normal_Slider.value.ToString();
+						//Stratum_Albedo_Input.text = Stratum_Albedo_Slider.value.ToString();
+						//Stratum_Normal_Input.text = Stratum_Normal_Slider.value.ToString();
 					}
 				}
 				else
@@ -438,14 +442,14 @@ namespace EditMap
 					if (!LoadingStratum)
 					{
 						Undo.RegisterStratumChange(Selected);
-						Stratum_Albedo_Slider.value = float.Parse(Stratum_Albedo_Input.text);
-						Stratum_Normal_Slider.value = float.Parse(Stratum_Normal_Input.text);
+						//Stratum_Albedo_Slider.value = float.Parse(Stratum_Albedo_Input.text);
+						//Stratum_Normal_Slider.value = float.Parse(Stratum_Normal_Input.text);
 					}
 				}
 				if (!LoadingStratum)
 				{
-					ScmapEditor.Current.Textures[Selected].AlbedoScale = Stratum_Albedo_Slider.value;
-					ScmapEditor.Current.Textures[Selected].NormalScale = Stratum_Normal_Slider.value;
+					ScmapEditor.Current.Textures[Selected].AlbedoScale = Stratum_Albedo_Input.value;
+					ScmapEditor.Current.Textures[Selected].NormalScale = Stratum_Normal_Input.value;
 				}
 
 				//Map.map.Layers [Selected].ScaleTexture = Map.Textures [Selected].AlbedoScale;
@@ -458,37 +462,40 @@ namespace EditMap
 			{
 				if (Slider)
 				{
-					BrushSize.text = BrushSizeSlider.value.ToString();
-					BrushStrength.text = BrushStrengthSlider.value.ToString();
+					//BrushSize.text = BrushSizeSlider.value.ToString();
+					//BrushStrength.text = BrushStrengthSlider.value.ToString();
 					//BrushRotation.text = BrushRotationSlider.value.ToString();
 				}
 				else
 				{
-					BrushSizeSlider.value = float.Parse(BrushSize.text);
-					BrushStrengthSlider.value = int.Parse(BrushStrength.text);
+					//BrushSizeSlider.value = float.Parse(BrushSize.text);
+					//BrushStrengthSlider.value = int.Parse(BrushStrength.text);
 					//BrushRotationSlider.value = int.Parse(BrushRotation.text);
 				}
 
-				BrushSizeSlider.value = Mathf.Clamp(BrushSizeSlider.value, 1, 256);
-				BrushStrengthSlider.value = (int)Mathf.Clamp(BrushStrengthSlider.value, 0, 100);
+				//BrushSizeSlider.value = Mathf.Clamp(BrushSizeSlider.value, 1, 256);
+				//BrushStrengthSlider.value = (int)Mathf.Clamp(BrushStrengthSlider.value, 0, 100);
 				//BrushRotationSlider.value = (int)Mathf.Clamp(BrushStrengthSlider.value, -360, 360);
 
-				BrushSize.text = BrushSizeSlider.value.ToString();
-				BrushStrength.text = BrushStrengthSlider.value.ToString();
+				//BrushSize.text = BrushSizeSlider.value.ToString();
+				//BrushStrength.text = BrushStrengthSlider.value.ToString();
 				//BrushRotation.text = BrushRotationSlider.value.ToString();
 
-				Min = int.Parse(BrushMini.text);
-				Max = int.Parse(BrushMax.text);
+				Min = BrushMini.intValue;
+				Max = BrushMax.intValue;
 
 				Min = Mathf.Clamp(Min, 0, Max);
 				Max = Mathf.Clamp(Max, Min, 90);
 
-				BrushMini.text = Min.ToString("0");
-				BrushMax.text = Max.ToString("0");
+				BrushMini.SetValue(Min);
+				BrushMax.SetValue(Max);
 
-				if (LastRotation != int.Parse(BrushRotation.text))
+				//BrushMini.text = Min.ToString("0");
+				//BrushMax.text = Max.ToString("0");
+
+				if (LastRotation != BrushRotation.intValue)
 				{
-					LastRotation = int.Parse(BrushRotation.text);
+					LastRotation = BrushRotation.intValue;
 					if (LastRotation == 0)
 					{
 						BrushGenerator.Current.RotatedBrush = BrushGenerator.Current.Brushes[SelectedFalloff];
@@ -501,7 +508,7 @@ namespace EditMap
 					TerrainMaterial.SetTexture("_BrushTex", (Texture)BrushGenerator.Current.RotatedBrush);
 					BrushGenerator.Current.GeneratePaintBrushesh();
 				}
-				TerrainMaterial.SetFloat("_BrushSize", BrushSizeSlider.value);
+				//TerrainMaterial.SetFloat("_BrushSize", BrushSize.value);
 			}
 		}
 		#endregion
@@ -573,7 +580,7 @@ namespace EditMap
 			BrushGenerator.Current.Brushes[SelectedFalloff].mipMapBias = -1f;
 			BrushGenerator.Current.Brushes[SelectedFalloff].filterMode = FilterMode.Bilinear;
 			BrushGenerator.Current.Brushes[SelectedFalloff].anisoLevel = 2;
-			LastRotation = int.Parse(BrushRotation.text);
+			LastRotation = BrushRotation.intValue;
 			if (LastRotation == 0)
 			{
 				BrushGenerator.Current.RotatedBrush = BrushGenerator.Current.Brushes[SelectedFalloff];
@@ -600,7 +607,7 @@ namespace EditMap
 
 			float SizeXprop = MapLuaParser.GetMapSizeX() / 512f;
 			float SizeZprop = MapLuaParser.GetMapSizeY() / 512f;
-			float BrushSizeValue = BrushSizeSlider.value;
+			float BrushSizeValue = BrushSize.value;
 
 			MouseBeginClick = Input.mousePosition;
 			Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -630,7 +637,7 @@ namespace EditMap
 		void SymmetryPaint()
 		{
 
-			size = (int)(BrushSizeSlider.value * 0.5f);
+			size = (int)(BrushSize.value * 0.5f);
 			ScatterValue = float.Parse(Scatter.text);
 			/*if (ScatterValue < 0)
 				ScatterValue = 0;
@@ -711,9 +718,9 @@ namespace EditMap
 			if (posYInTerrain - offset + size > hmHeight) OffsetTop = posYInTerrain - offset + size - hmHeight;
 
 			//float CenterHeight = 0;
-			float BrushStrength = Mathf.Pow(BrushStrengthSlider.value * 0.01f, 1.5f) * 0.6f;
+			float LocalBrushStrength = Mathf.Pow(BrushStrength.value * 0.01f, 1.5f) * 0.6f;
 			float inverted = (Invert ? (-1) : 1);
-			BrushStrength *= inverted;
+			LocalBrushStrength *= inverted;
 			float SampleBrush = 0;
 			//Color BrushValue;
 			int x = 0;
@@ -778,28 +785,28 @@ namespace EditMap
 							switch (PaintChannel)
 							{
 								case 0:
-										StratumData[XY].r += SampleBrush * BrushStrength;
+										StratumData[XY].r += SampleBrush * LocalBrushStrength;
 									break;
 								case 1:
-										StratumData[XY].g += SampleBrush * BrushStrength;
+										StratumData[XY].g += SampleBrush * LocalBrushStrength;
 									break;
 								case 2:
-										StratumData[XY].b += SampleBrush * BrushStrength;
+										StratumData[XY].b += SampleBrush * LocalBrushStrength;
 									break;
 								case 3:
-										StratumData[XY].a += SampleBrush * BrushStrength;
+										StratumData[XY].a += SampleBrush * LocalBrushStrength;
 									break;
 								case 10:
-										StratumData[XY].r = ConvertToLinear(StratumData[XY].r, SampleBrush * BrushStrength);
+										StratumData[XY].r = ConvertToLinear(StratumData[XY].r, SampleBrush * LocalBrushStrength);
 									break;
 								case 11:
-										StratumData[XY].g = ConvertToLinear(StratumData[XY].g, SampleBrush * BrushStrength);
+										StratumData[XY].g = ConvertToLinear(StratumData[XY].g, SampleBrush * LocalBrushStrength);
 									break;
 								case 12:
-										StratumData[XY].b = ConvertToLinear(StratumData[XY].b, SampleBrush * BrushStrength);
+										StratumData[XY].b = ConvertToLinear(StratumData[XY].b, SampleBrush * LocalBrushStrength);
 									break;
 								case 13:
-										StratumData[XY].a = ConvertToLinear(StratumData[XY].a, SampleBrush * BrushStrength);
+										StratumData[XY].a = ConvertToLinear(StratumData[XY].a, SampleBrush * LocalBrushStrength);
 									break;
 							}
 							//heights[i,j] += SambleBrush * BrushStrengthSlider.value * 0.0002f * (Invert?(-1):1);
