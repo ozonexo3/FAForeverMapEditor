@@ -2,7 +2,7 @@
 using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
-
+using Ozone.UI;
 
 namespace EditMap
 {
@@ -25,13 +25,13 @@ namespace EditMap
 		public Transform PropsParent;
 
 		[Header("Brush")]
-		public Slider BrushSizeSlider;
-		public InputField BrushSize;
-		public Slider BrushStrengthSlider;
-		public InputField BrushStrength;
-		public InputField BrushMini;
-		public InputField BrushMax;
-		public InputField Scatter;
+		//public Slider BrushSizeSlider;
+		public UiTextField BrushSize;
+		//public Slider BrushStrengthSlider;
+		public UiTextField BrushStrength;
+		public UiTextField BrushMini;
+		public UiTextField BrushMax;
+		public UiTextField Scatter;
 		public Toggle AllowWaterLevel;
 		public Toggle SnapToGround;
 		public LayerMask TerrainMask;
@@ -385,13 +385,15 @@ namespace EditMap
 			if (InforeUpdate)
 				return;
 
+			UpdateBrushPosition(true);
+			/*
 			if (Slider)
 			{
 				InforeUpdate = true;
 				UpdateBrushPosition(true);
 
-				BrushSize.text =  BrushSizeSlider.value.ToString();
-				BrushStrength.text = BrushStrengthSlider.value.ToString();
+				//BrushSize.text =  BrushSizeSlider.value.ToString();
+				//BrushStrength.text = BrushStrengthSlider.value.ToString();
 
 				InforeUpdate = false;
 			}
@@ -399,13 +401,13 @@ namespace EditMap
 			{
 				InforeUpdate = true;
 				
-				BrushSizeSlider.value = Mathf.Clamp(LuaParser.Read.StringToFloat(BrushSize.text), MinimumBrushSize, MaximumBrushSize);
-				BrushStrengthSlider.value = Mathf.Clamp(LuaParser.Read.StringToFloat(BrushStrength.text), 0, 100);
+				//BrushSizeSlider.value = Mathf.Clamp(LuaParser.Read.StringToFloat(BrushSize.text), MinimumBrushSize, MaximumBrushSize);
+				//BrushStrengthSlider.value = Mathf.Clamp(LuaParser.Read.StringToFloat(BrushStrength.text), 0, 100);
 
 				InforeUpdate = false;
 				UpdateBrushMenu(true);
 			}
-
+			*/
 		}
 
 
@@ -434,7 +436,7 @@ namespace EditMap
 					{
 						ChangingStrength = true;
 						BeginMousePos = Input.mousePosition;
-						StrengthBeginValue = BrushStrengthSlider.value;
+						StrengthBeginValue = BrushStrength.value;
 					}
 					else if (Input.GetMouseButtonUp(0))
 					{
@@ -442,7 +444,7 @@ namespace EditMap
 					}
 					if (ChangingStrength)
 					{
-						BrushStrengthSlider.value = Mathf.Clamp(StrengthBeginValue - (int)((BeginMousePos.x - Input.mousePosition.x) * 0.1f), 0, 100);
+						BrushStrength.SetValue( Mathf.Clamp(StrengthBeginValue - (int)((BeginMousePos.x - Input.mousePosition.x) * 0.1f), 0, 100));
 						UpdateBrushMenu(true);
 
 					}
@@ -454,7 +456,7 @@ namespace EditMap
 					{
 						ChangingSize = true;
 						BeginMousePos = Input.mousePosition;
-						SizeBeginValue = BrushSizeSlider.value;
+						SizeBeginValue = BrushSize.value;
 					}
 					else if (Input.GetMouseButtonUp(0))
 					{
@@ -462,10 +464,9 @@ namespace EditMap
 					}
 					if (ChangingSize)
 					{
-						BrushSizeSlider.value = Mathf.Clamp(SizeBeginValue - (int)((BeginMousePos.x - Input.mousePosition.x) * 4f) * 0.025f, MinimumBrushSize, MaximumBrushSize);
-						UpdateBrushMenu(true);
-						
-
+						BrushSize.SetValue( Mathf.Clamp(SizeBeginValue - (int)((BeginMousePos.x - Input.mousePosition.x) * 4f) * 0.075f, MinimumBrushSize, MaximumBrushSize));
+						//BrushSize.SetValue(Mathf.Clamp(SizeBeginValue - (int)((BeginMousePos.x - Input.mousePosition.x) * 0.4f), 0, 256));
+						UpdateBrushPosition(true, true, true);
 					}
 				}
 				else
@@ -497,7 +498,7 @@ namespace EditMap
 		const float MinimumRenderBrushSize = 0.1f;
 		const float MinimumBrushSize = 0.0f;
 		const float MaximumBrushSize = 256;
-		bool UpdateBrushPosition(bool Forced = false)
+		bool UpdateBrushPosition(bool Forced = false, bool Size = true, bool Position = true)
 		{
 			//Debug.Log(Vector3.Distance(MouseBeginClick, Input.mousePosition));
 			if (Forced || Vector3.Distance(MouseBeginClick, Input.mousePosition) > 1) { }
@@ -506,27 +507,30 @@ namespace EditMap
 				return false;
 			}
 
+			float SizeXprop = MapLuaParser.GetMapSizeX() / 512f;
+			float SizeZprop = MapLuaParser.GetMapSizeY() / 512f;
+			float BrushSizeValue = BrushSize.value;
+			if(Size)
+				TerrainMaterial.SetFloat("_BrushSize", BrushSizeValue / ((SizeXprop + SizeZprop) / 2f));
+
 
 			MouseBeginClick = Input.mousePosition;
 			Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 			RaycastHit hit;
-			if (Physics.Raycast(ray, out hit, 2000, TerrainMask))
+			if (Position && Physics.Raycast(ray, out hit, 2000, TerrainMask))
 			{
 				BrushPos = hit.point;
-				if (SnapToGround.isOn && BrushSizeSlider.value < 1.5f)
-					BrushPos = Vector3.Lerp(ScmapEditor.SnapToSmallGridCenter(BrushPos), BrushPos, (BrushSizeSlider.value - 0.2f) / 1.5f);
+				if (SnapToGround.isOn && BrushSize.value < 1.5f)
+					BrushPos = Vector3.Lerp(ScmapEditor.SnapToSmallGridCenter(BrushPos), BrushPos, (BrushSize.value - 0.2f) / 1.5f);
 				BrushPos.y = ScmapEditor.Current.Teren.SampleHeight(BrushPos);
 
 				Vector3 tempCoord = ScmapEditor.Current.Teren.gameObject.transform.InverseTransformPoint(BrushPos);
 				Vector3 coord = Vector3.zero;
+				float SizeX = (int)((BrushSizeValue / SizeXprop) * 100) * 0.01f;
+				float SizeZ = (int)((BrushSizeValue / SizeZprop) * 100) * 0.01f;
+				coord.x = (tempCoord.x - SizeX * MapLuaParser.GetMapSizeX() * 0.0001f) / ScmapEditor.Current.Teren.terrainData.size.x;
+				coord.z = (tempCoord.z - SizeZ * MapLuaParser.GetMapSizeY() * 0.0001f) / ScmapEditor.Current.Teren.terrainData.size.z;
 
-				float SizeValue = Mathf.Clamp(BrushSizeSlider.value, MinimumRenderBrushSize * 2, MaximumBrushSize);
-
-				coord.x = (tempCoord.x - SizeValue * MapLuaParser.GetMapSizeX() * 0.0001f) / ScmapEditor.Current.Teren.terrainData.size.x; // TODO 0.05 ?? this should be terrain proportion?
-																																										  //coord.y = tempCoord.y / Map.Teren.terrainData.size.y;
-				coord.z = (tempCoord.z - SizeValue * MapLuaParser.GetMapSizeY() * 0.0001f) / ScmapEditor.Current.Teren.terrainData.size.z;
-
-				TerrainMaterial.SetFloat("_BrushSize", SizeValue);
 				TerrainMaterial.SetFloat("_BrushUvX", coord.x);
 				TerrainMaterial.SetFloat("_BrushUvY", coord.z);
 
@@ -555,7 +559,11 @@ namespace EditMap
 				return;
 			}
 
-			size = BrushSizeSlider.value * MapLuaParser.GetMapSizeX() * 0.0001f;
+			//size = BrushSize.value * MapLuaParser.GetMapSizeX() * 0.0001f;
+			//float SizeXprop = MapLuaParser.GetMapSizeX() / 512f;
+			//float SizeZprop = MapLuaParser.GetMapSizeY() / 512f;
+			//size = BrushSize.value / ((SizeXprop + SizeZprop) / 2f);
+			size = BrushSize.value * 0.05f;
 
 			//float BrushField = Mathf.PI * (size * size);
 			//BrushField /= 16f;
@@ -564,7 +572,7 @@ namespace EditMap
 
 			// Check if paint
 			StepCount --;
-			if (StepCount >= Mathf.Lerp(BrushStrengthSlider.value, 100, Mathf.Sqrt(size / 7f)) && !forced)
+			if (StepCount >= Mathf.Lerp(BrushStrength.value, 100, Mathf.Sqrt(size / 7f)) && !forced)
 				return;
 
 			StepCount = 100;
@@ -582,7 +590,7 @@ namespace EditMap
 			{
 				float Tolerance = SymmetryWindow.GetTolerance();
 
-				BrushGenerator.Current.GenerateSymmetry(BrushPos, 0, float.Parse(Scatter.text), size);
+				BrushGenerator.Current.GenerateSymmetry(BrushPos, 0, Scatter.value, size);
 
 				float SearchSize = Mathf.Clamp(size, MinimumRenderBrushSize, MaximumBrushSize);
 
@@ -622,7 +630,7 @@ namespace EditMap
 				RandomProp = Random.Range(0, Count);
 				RandomScale = Random.Range(LuaParser.Read.StringToFloat(PaintButtons[RandomProp].ScaleMin.text), LuaParser.Read.StringToFloat(PaintButtons[RandomProp].ScaleMax.text));
 
-				BrushGenerator.Current.GenerateSymmetry(BrushPos, size, float.Parse(Scatter.text), size);
+				BrushGenerator.Current.GenerateSymmetry(BrushPos, size, Scatter.value, size);
 
 				float RotMin = LuaParser.Read.StringToFloat(PaintButtons[RandomProp].RotationMin.text);
 				float RotMax = LuaParser.Read.StringToFloat(PaintButtons[RandomProp].RotationMax.text);
@@ -649,8 +657,8 @@ namespace EditMap
 				}
 
 				//float BrushSlope = ScmapEditor.Current.Teren.
-				int Min = int.Parse( BrushMini.text);
-				int Max = int.Parse(BrushMax.text);
+				int Min = BrushMini.intValue;
+				int Max = BrushMax.intValue;
 
 				if (Min > 0 || Max < 90)
 				{
@@ -717,6 +725,16 @@ namespace EditMap
 
 
 		public void UpdatePropsHeight()
+		{
+
+		}
+
+		public void ImportPropsSet()
+		{
+
+		}
+
+		public void ExportPropsSet()
 		{
 
 		}

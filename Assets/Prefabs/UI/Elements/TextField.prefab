@@ -244,6 +244,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8c60df5520bfea740b1f3db0c3478272, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  FieldType: 0
+  BeginValue: 0
+  Format: 
   InputFieldUi: {fileID: 114166052291976760}
   SliderUi: {fileID: 0}
   OnValueChanged:

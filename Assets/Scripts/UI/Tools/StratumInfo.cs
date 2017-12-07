@@ -619,9 +619,10 @@ namespace EditMap
 
 				Vector3 tempCoord = ScmapEditor.Current.Teren.gameObject.transform.InverseTransformPoint(BrushPos);
 				Vector3 coord = Vector3.zero;
-				coord.x = (tempCoord.x - (int)(BrushSizeValue / SizeXprop) * MapLuaParser.GetMapSizeX() * 0.0001f) / ScmapEditor.Current.Teren.terrainData.size.x; // TODO 0.05 ?? this should be terrain proportion?
-																																				   //coord.y = tempCoord.y / Map.Teren.terrainData.size.y;
-				coord.z = (tempCoord.z - (int)(BrushSizeValue / SizeZprop) * MapLuaParser.GetMapSizeY() * 0.0001f) / ScmapEditor.Current.Teren.terrainData.size.z;
+				float SizeX = (int)((BrushSizeValue / SizeXprop) * 100) * 0.01f;
+				float SizeZ = (int)((BrushSizeValue / SizeZprop) * 100) * 0.01f;
+				coord.x = (tempCoord.x - SizeX * MapLuaParser.GetMapSizeX() * 0.0001f) / ScmapEditor.Current.Teren.terrainData.size.x;
+				coord.z = (tempCoord.z - SizeZ * MapLuaParser.GetMapSizeY() * 0.0001f) / ScmapEditor.Current.Teren.terrainData.size.z;
 
 				TerrainMaterial.SetFloat("_BrushSize", BrushSizeValue / ((SizeXprop + SizeZprop) / 2f));
 				TerrainMaterial.SetFloat("_BrushUvX", coord.x);

@@ -18,7 +18,6 @@ namespace EditMap
 		public GameObject[] Page;
 
 		public Editing Edit;
-		public ScmapEditor Map;
 		public Camera GameplayCamera;
 
 		public UiTextField BrushSize;
@@ -178,7 +177,7 @@ namespace EditMap
 
 			if (PaintStarted && Input.GetMouseButtonUp(0))
 			{
-				Map.Teren.ApplyDelayedHeightmapModification();
+				ScmapEditor.Current.Teren.ApplyDelayedHeightmapModification();
 			}
 
 			if (Edit.MauseOnGameplay || ChangingStrength || ChangingSize)
@@ -324,41 +323,41 @@ namespace EditMap
 
 		public void SetTerrainHeight()
 		{
-			int h = Map.Teren.terrainData.heightmapHeight;
-			int w = Map.Teren.terrainData.heightmapWidth;
-			beginHeights = Map.Teren.terrainData.GetHeights(0, 0, w, h);
+			int h = ScmapEditor.Current.Teren.terrainData.heightmapHeight;
+			int w = ScmapEditor.Current.Teren.terrainData.heightmapWidth;
+			beginHeights = ScmapEditor.Current.Teren.terrainData.GetHeights(0, 0, w, h);
 			MapLuaParser.Current.History.RegisterTerrainHeightmapChange(beginHeights);
 
-			float[,] heights = Map.Teren.terrainData.GetHeights(0, 0, Map.Teren.terrainData.heightmapWidth, Map.Teren.terrainData.heightmapHeight);
+			float[,] heights = ScmapEditor.Current.Teren.terrainData.GetHeights(0, 0, ScmapEditor.Current.Teren.terrainData.heightmapWidth, ScmapEditor.Current.Teren.terrainData.heightmapHeight);
 
-			for (int i = 0; i < Map.Teren.terrainData.heightmapWidth; i++)
+			for (int i = 0; i < ScmapEditor.Current.Teren.terrainData.heightmapWidth; i++)
 			{
-				for (int j = 0; j < Map.Teren.terrainData.heightmapWidth; j++)
+				for (int j = 0; j < ScmapEditor.Current.Teren.terrainData.heightmapWidth; j++)
 				{
 					heights[i, j] = int.Parse(TerrainAdd.text) / 128f;
 				}
 			}
-			Map.Teren.terrainData.SetHeights(0, 0, heights);
+			ScmapEditor.Current.Teren.terrainData.SetHeights(0, 0, heights);
 			RegenerateMaps();
 		}
 
 		public void AddTerrainHeight()
 		{
-			int h = Map.Teren.terrainData.heightmapHeight;
-			int w = Map.Teren.terrainData.heightmapWidth;
-			beginHeights = Map.Teren.terrainData.GetHeights(0, 0, w, h);
+			int h = ScmapEditor.Current.Teren.terrainData.heightmapHeight;
+			int w = ScmapEditor.Current.Teren.terrainData.heightmapWidth;
+			beginHeights = ScmapEditor.Current.Teren.terrainData.GetHeights(0, 0, w, h);
 			MapLuaParser.Current.History.RegisterTerrainHeightmapChange(beginHeights);
 
-			float[,] heights = Map.Teren.terrainData.GetHeights(0, 0, Map.Teren.terrainData.heightmapWidth, Map.Teren.terrainData.heightmapHeight);
+			float[,] heights = ScmapEditor.Current.Teren.terrainData.GetHeights(0, 0, ScmapEditor.Current.Teren.terrainData.heightmapWidth, ScmapEditor.Current.Teren.terrainData.heightmapHeight);
 
-			for (int i = 0; i < Map.Teren.terrainData.heightmapWidth; i++)
+			for (int i = 0; i < ScmapEditor.Current.Teren.terrainData.heightmapWidth; i++)
 			{
-				for (int j = 0; j < Map.Teren.terrainData.heightmapWidth; j++)
+				for (int j = 0; j < ScmapEditor.Current.Teren.terrainData.heightmapWidth; j++)
 				{
 					heights[i, j] += int.Parse(TerrainAdd.text) / 128f;
 				}
 			}
-			Map.Teren.terrainData.SetHeights(0, 0, heights);
+			ScmapEditor.Current.Teren.terrainData.SetHeights(0, 0, heights);
 			RegenerateMaps();
 		}
 
@@ -382,10 +381,10 @@ namespace EditMap
 				return;
 			
 
-			int h = Map.Teren.terrainData.heightmapHeight;
-			int w = Map.Teren.terrainData.heightmapWidth;
+			int h = ScmapEditor.Current.Teren.terrainData.heightmapHeight;
+			int w = ScmapEditor.Current.Teren.terrainData.heightmapWidth;
 
-			float[,] data = Map.Teren.terrainData.GetHeights(0, 0, w, h);
+			float[,] data = ScmapEditor.Current.Teren.terrainData.GetHeights(0, 0, w, h);
 
 			using (BinaryWriter writer = new BinaryWriter(new System.IO.FileStream(paths, System.IO.FileMode.Create)))
 			{
@@ -421,12 +420,12 @@ namespace EditMap
 			if (paths == null || string.IsNullOrEmpty(paths))
 				return;
 
-			int h = Map.Teren.terrainData.heightmapWidth;
-			int w = Map.Teren.terrainData.heightmapWidth;
+			int h = ScmapEditor.Current.Teren.terrainData.heightmapWidth;
+			int w = ScmapEditor.Current.Teren.terrainData.heightmapWidth;
 
-			float[,] data = Map.Teren.terrainData.GetHeights(0, 0, w, h);
+			float[,] data = ScmapEditor.Current.Teren.terrainData.GetHeights(0, 0, w, h);
 
-			Texture2D ExportAs = new Texture2D(Map.Teren.terrainData.heightmapWidth, Map.Teren.terrainData.heightmapWidth, TextureFormat.RGB24, false);
+			Texture2D ExportAs = new Texture2D(ScmapEditor.Current.Teren.terrainData.heightmapWidth, ScmapEditor.Current.Teren.terrainData.heightmapWidth, TextureFormat.RGB24, false);
 
 			float HeightValue = 1;
 			HeightValue = float.Parse(TerrainScale_HeightValue.text);
@@ -494,14 +493,14 @@ namespace EditMap
 				return;
 
 
-			int h = Map.Teren.terrainData.heightmapHeight;
-			int w = Map.Teren.terrainData.heightmapWidth;
-			beginHeights = Map.Teren.terrainData.GetHeights(0, 0, w, h);
+			int h = ScmapEditor.Current.Teren.terrainData.heightmapHeight;
+			int w = ScmapEditor.Current.Teren.terrainData.heightmapWidth;
+			beginHeights = ScmapEditor.Current.Teren.terrainData.GetHeights(0, 0, w, h);
 			MapLuaParser.Current.History.RegisterTerrainHeightmapChange(beginHeights);
 
 
 			float[,] data = new float[h, w];
-			float[,] old = Map.Teren.terrainData.GetHeights(0, 0, w, h);
+			float[,] old = ScmapEditor.Current.Teren.terrainData.GetHeights(0, 0, w, h);
 
 			if (paths[0].ToLower().EndsWith("bmp"))
 			{
@@ -550,7 +549,7 @@ namespace EditMap
 					}
 				}
 			}
-			Map.Teren.terrainData.SetHeights(0, 0, data);
+			ScmapEditor.Current.Teren.terrainData.SetHeights(0, 0, data);
 			RegenerateMaps();
 		}
 		#endregion
@@ -613,13 +612,15 @@ namespace EditMap
 			if (Physics.Raycast(ray, out hit, 2000, TerrainMask))
 			{
 				BrushPos = hit.point;
-				BrushPos.y = Map.Teren.SampleHeight(BrushPos);
+				BrushPos.y = ScmapEditor.Current.Teren.SampleHeight(BrushPos);
 
-				Vector3 tempCoord = Map.Teren.gameObject.transform.InverseTransformPoint(BrushPos);
+				Vector3 tempCoord = ScmapEditor.Current.Teren.gameObject.transform.InverseTransformPoint(BrushPos);
 				Vector3 coord = Vector3.zero;
-				coord.x = (tempCoord.x - (int)(BrushSizeValue / SizeXprop) * MapLuaParser.GetMapSizeX() * 0.0001f) / Map.Teren.terrainData.size.x; // TODO 0.05 ?? this should be terrain proportion?
-																																						  //coord.y = tempCoord.y / Map.Teren.terrainData.size.y;
-				coord.z = (tempCoord.z - (int)(BrushSizeValue / SizeZprop) * MapLuaParser.GetMapSizeY() * 0.0001f) / Map.Teren.terrainData.size.z;
+
+				float SizeX = (int)((BrushSizeValue / SizeXprop) * 100) * 0.01f;
+				float SizeZ = (int)((BrushSizeValue / SizeZprop) * 100) * 0.01f;
+				coord.x = (tempCoord.x - SizeX * MapLuaParser.GetMapSizeX() * 0.0001f) / ScmapEditor.Current.Teren.terrainData.size.x;
+				coord.z = (tempCoord.z - SizeZ * MapLuaParser.GetMapSizeY() * 0.0001f) / ScmapEditor.Current.Teren.terrainData.size.z;
 
 				TerrainMaterial.SetFloat("_BrushSize", BrushSizeValue / ((SizeXprop + SizeZprop) / 2f));
 				TerrainMaterial.SetFloat("_BrushUvX", coord.x);
@@ -654,14 +655,14 @@ namespace EditMap
 			else if (SelectedBrush == 3)
 				BrushPaintType = 2;
 
-			int hmWidth = Map.Teren.terrainData.heightmapWidth;
-			int hmHeight = Map.Teren.terrainData.heightmapHeight;
+			int hmWidth = ScmapEditor.Current.Teren.terrainData.heightmapWidth;
+			int hmHeight = ScmapEditor.Current.Teren.terrainData.heightmapHeight;
 
-			Vector3 tempCoord = Map.Teren.gameObject.transform.InverseTransformPoint(AtPosition);
+			Vector3 tempCoord = ScmapEditor.Current.Teren.gameObject.transform.InverseTransformPoint(AtPosition);
 			Vector3 coord = Vector3.zero;
-			coord.x = tempCoord.x / Map.Teren.terrainData.size.x;
-			//coord.y = tempCoord.y / Map.Teren.terrainData.size.y;
-			coord.z = tempCoord.z / Map.Teren.terrainData.size.z;
+			coord.x = tempCoord.x / ScmapEditor.Current.Teren.terrainData.size.x;
+			//coord.y = tempCoord.y / ScmapEditor.Current.Teren.terrainData.size.y;
+			coord.z = tempCoord.z / ScmapEditor.Current.Teren.terrainData.size.z;
 
 			if (coord.x > 1) return;
 			if (coord.x < 0) return;
@@ -685,15 +686,15 @@ namespace EditMap
 			int OffsetLeft = 0;
 			if (posXInTerrain - offset < 0) OffsetLeft = Mathf.Abs(posXInTerrain - offset);
 			int OffsetRight = 0;
-			if (posXInTerrain - offset + size > Map.Teren.terrainData.heightmapWidth) OffsetRight = posXInTerrain - offset + size - Map.Teren.terrainData.heightmapWidth;
+			if (posXInTerrain - offset + size > ScmapEditor.Current.Teren.terrainData.heightmapWidth) OffsetRight = posXInTerrain - offset + size - ScmapEditor.Current.Teren.terrainData.heightmapWidth;
 
 			// Vertical Brush Offsets
 			int OffsetDown = 0;
 			if (posYInTerrain - offset < 0) OffsetDown = Mathf.Abs(posYInTerrain - offset);
 			int OffsetTop = 0;
-			if (posYInTerrain - offset + size > Map.Teren.terrainData.heightmapWidth) OffsetTop = posYInTerrain - offset + size - Map.Teren.terrainData.heightmapWidth;
+			if (posYInTerrain - offset + size > ScmapEditor.Current.Teren.terrainData.heightmapWidth) OffsetTop = posYInTerrain - offset + size - ScmapEditor.Current.Teren.terrainData.heightmapWidth;
 
-			float[,] heights = Map.Teren.terrainData.GetHeights(posXInTerrain - offset + OffsetLeft, posYInTerrain - offset + OffsetDown, (size - OffsetLeft) - OffsetRight, (size - OffsetDown) - OffsetTop);
+			float[,] heights = ScmapEditor.Current.Teren.terrainData.GetHeights(posXInTerrain - offset + OffsetLeft, posYInTerrain - offset + OffsetDown, (size - OffsetLeft) - OffsetRight, (size - OffsetDown) - OffsetTop);
 			float CenterHeight = 0;
 
 			int i = 0;
@@ -767,12 +768,12 @@ namespace EditMap
 			// set the new height
 			if (!TerainChanged)
 			{
-				beginHeights = Map.Teren.terrainData.GetHeights(0, 0, hmWidth, hmHeight);
+				beginHeights = ScmapEditor.Current.Teren.terrainData.GetHeights(0, 0, hmWidth, hmHeight);
 				
 				TerainChanged = true;
 			}
 
-			Map.Teren.terrainData.SetHeightsDelayLOD(posXInTerrain - offset + OffsetLeft, posYInTerrain - offset + OffsetDown, heights);
+			ScmapEditor.Current.Teren.terrainData.SetHeightsDelayLOD(posXInTerrain - offset + OffsetLeft, posYInTerrain - offset + OffsetDown, heights);
 
 			//Markers.MarkersControler.UpdateMarkersHeights();
 

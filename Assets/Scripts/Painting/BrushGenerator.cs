@@ -104,9 +104,14 @@ public class BrushGenerator : MonoBehaviour
 
 		if (Size > 0)
 		{
+			/*
 			BrushPos += (Quaternion.Euler(Vector3.up * Random.Range(0, 360)) * Vector3.forward *
 				(Size * Mathf.Lerp(1, 0, Mathf.Pow(Random.Range(0f, 1f), 2f)))
 				);
+				*/
+				Vector2 BrushCircle = Random.insideUnitCircle * Size;
+			BrushPos.x += BrushCircle.x;
+			BrushPos.z += BrushCircle.y;
 		}
 
 		switch (LastSym)

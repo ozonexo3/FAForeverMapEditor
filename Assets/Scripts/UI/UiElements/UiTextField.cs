@@ -28,7 +28,7 @@ namespace Ozone.UI
 			Text, Float, Int
 		}
 
-		private void OnEnable()
+		private void Start()
 		{
 			if (FieldType == FieldTypes.Float)
 				SetValue(BeginValue);
@@ -49,7 +49,7 @@ namespace Ozone.UI
 		{
 			if (ChangingValue)
 				return;
-			UpdateSliderValue();
+			UpdateSliderValue(true);
 			OnEndEdit.Invoke();
 		}
 
@@ -60,15 +60,22 @@ namespace Ozone.UI
 
 			ChangingValue = true;
 			LastValue = SliderUi.value;
-			InputFieldUi.text = LastValue.ToString();
+			InputFieldUi.text = LastValue.ToString(Format);
+			if (InputFieldUi.contentType == InputField.ContentType.IntegerNumber)
+				SliderUi.value = int.Parse(InputFieldUi.text);
+			if (InputFieldUi.contentType == InputField.ContentType.DecimalNumber)
+				LastValue = float.Parse(InputFieldUi.text);
+
+			//SliderUi.value = LastValue;
+
 			ChangingValue = false;
 
 			OnValueChangedInvoke();
 		}
-#endregion
+		#endregion
 
 
-		void UpdateSliderValue()
+		void UpdateSliderValue(bool ClampText = false)
 		{
 			ChangingValue = true;
 			if (SliderUi)
@@ -77,13 +84,15 @@ namespace Ozone.UI
 				{
 					LastValue = int.Parse(InputFieldUi.text);
 					LastValue = Mathf.Clamp(LastValue, SliderUi.minValue, SliderUi.maxValue);
+					if(ClampText)
 					InputFieldUi.text = LastValue.ToString();
 				}
 				else if (InputFieldUi.contentType == InputField.ContentType.DecimalNumber)
 				{
 					LastValue = float.Parse(InputFieldUi.text);
 					LastValue = Mathf.Clamp(LastValue, SliderUi.minValue, SliderUi.maxValue);
-					InputFieldUi.text = LastValue.ToString(Format);
+					if(ClampText)
+						InputFieldUi.text = LastValue.ToString(Format);
 				}
 
 				SliderUi.value = LastValue;
@@ -105,8 +114,11 @@ namespace Ozone.UI
 			ChangingValue = !AllowInvoke;
 			LastValue = value;
 			if (SliderUi)
+			{
+				LastValue = Mathf.Clamp(LastValue, SliderUi.minValue, SliderUi.maxValue);
 				SliderUi.value = LastValue;
-			InputFieldUi.text = LastValue.ToString();
+			}
+			InputFieldUi.text = LastValue.ToString(Format);
 			ChangingValue = false;
 		}
 
@@ -115,8 +127,11 @@ namespace Ozone.UI
 			ChangingValue = !AllowInvoke;
 			LastValue = value;
 			if (SliderUi)
+			{
+				LastValue = Mathf.Clamp(LastValue, SliderUi.minValue, SliderUi.maxValue);
 				SliderUi.value = LastValue;
-			InputFieldUi.text = LastValue.ToString();
+			}
+			InputFieldUi.text = LastValue.ToString(Format);
 			ChangingValue = false;
 		}
 		#endregion
