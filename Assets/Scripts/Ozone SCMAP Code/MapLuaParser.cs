@@ -10,7 +10,8 @@ using EditMap;
 using NLua;
 using MapLua;
 
-public class MapLuaParser : MonoBehaviour {
+public class MapLuaParser : MonoBehaviour
+{
 
 	public static MapLuaParser Current;
 
@@ -24,48 +25,49 @@ public class MapLuaParser : MonoBehaviour {
 	#region Variables
 	[Header("Core")]
 	public ScmapEditor HeightmapControler;
-	public Editing			EditMenu;
-	public		Undo			History;
-	public		MapHelperGui	HelperGui;
+	public Editing EditMenu;
+	public Undo History;
+	public MapHelperGui HelperGui;
 
 	[Header("Map")]
-	public		string			FolderParentPath;
-	public		string			FolderName;
-	public		string			ScenarioFileName;
+	public string FolderParentPath;
+	public string FolderName;
+	public string ScenarioFileName;
 
 	//public		CameraControler	CamControll;
 	[Header("UI")]
 	public GameObject Background;
-	public GenericInfoPopup	InfoPopup;
-	public		PropsInfo PropsMenu;
-	public		DecalsInfo DecalsMenu;
+	public GenericInfoPopup InfoPopup;
+	public PropsInfo PropsMenu;
+	public DecalsInfo DecalsMenu;
 
 	[Header("Local Data")]
-	public		Vector3			MapCenterPoint;
+	public Vector3 MapCenterPoint;
 
-	public		int				ScriptId = 0;
+	public int ScriptId = 0;
 
-	public static string			BackupPath;
-	public static string			StructurePath;
+	public static string BackupPath;
+	public static string StructurePath;
 
 
 	#endregion
 
 
-	void Awake(){
+	void Awake()
+	{
 		ICSharpCode.SharpZipLib.Zip.ZipConstants.DefaultCodePage = 0;
 
-		#if UNITY_EDITOR
+#if UNITY_EDITOR
 		//PlayerPrefs.DeleteAll();
-		#endif
+#endif
 
-		EnvPaths.GenerateDefaultPaths ();
+		EnvPaths.GenerateDefaultPaths();
 
 		Current = this;
-		StructurePath = Application.dataPath + "/Structure/";;
-		#if UNITY_EDITOR
+		StructurePath = Application.dataPath + "/Structure/"; ;
+#if UNITY_EDITOR
 		StructurePath = StructurePath.Replace("Assets", "");
-		#endif
+#endif
 
 	}
 
@@ -86,7 +88,8 @@ public class MapLuaParser : MonoBehaviour {
 
 	#region Loading
 
-	public IEnumerator ForceLoadMapAtPath(string path){
+	public IEnumerator ForceLoadMapAtPath(string path)
+	{
 		path = path.Replace("\\", "/");
 		Debug.Log("Load from: " + path);
 
@@ -113,7 +116,8 @@ public class MapLuaParser : MonoBehaviour {
 		//PlayerPrefs.SetString("MapsPath", LastMapPatch);
 	}
 
-	public void LoadFile(){
+	public void LoadFile()
+	{
 		if (LoadingMapProcess)
 			return;
 
@@ -127,44 +131,56 @@ public class MapLuaParser : MonoBehaviour {
 	bool LoadDecals = true;
 
 	bool LoadingMapProcess = false;
-	IEnumerator LoadingFile(){
+	IEnumerator LoadingFile()
+	{
 
 		while (SavingMapProcess)
 			yield return null;
 
 		bool AllFilesExists = true;
 		string Error = "";
-		if (!System.IO.Directory.Exists (FolderParentPath)) {
-			Error = "Map folder not exist: " + FolderParentPath;
-			Debug.LogError (Error);
-			AllFilesExists = false;
-		}
-
-		if (AllFilesExists && !System.IO.File.Exists (FolderParentPath + FolderName + "/" + ScenarioFileName + ".lua")) {
-			Error = "Scenario.lua not exist: " + FolderParentPath + FolderName + "/" + ScenarioFileName + ".lua";
-			Debug.LogError (Error);
-			AllFilesExists = false;
-		}
-		string ScenarioText = System.IO.File.ReadAllText(FolderParentPath + FolderName + "/" + ScenarioFileName + ".lua");
-		if (AllFilesExists && !ScenarioText.StartsWith("version = 3"))
+		if (!System.IO.Directory.Exists(FolderParentPath))
 		{
-			//Debug.Log(ScenarioText);
-			Error = "Selected file is not a proper scenario.lua file";
+			Error = "Map folder not exist: " + FolderParentPath;
 			Debug.LogError(Error);
 			AllFilesExists = false;
 		}
 
-		if(AllFilesExists && !System.IO.File.Exists(EnvPaths.GetGamedataPath() + "/env.scd")){
+		if (AllFilesExists && !System.IO.File.Exists(FolderParentPath + FolderName + "/" + ScenarioFileName + ".lua"))
+		{
+			AllFilesExists = SearchForScenario();
+
+			if (!AllFilesExists)
+			{
+				Error = "Scenario.lua not exist: " + FolderParentPath + FolderName + "/" + ScenarioFileName + ".lua";
+				Debug.LogError(Error);
+			}
+		}
+		string ScenarioText = System.IO.File.ReadAllText(FolderParentPath + FolderName + "/" + ScenarioFileName + ".lua");
+		if (AllFilesExists && !ScenarioText.StartsWith("version = 3"))
+		{
+			AllFilesExists = SearchForScenario();
+
+			if (!AllFilesExists)
+			{
+				Error = "Selected file is not a proper scenario.lua file. ";
+				Debug.LogError(Error);
+			}
+		}
+
+		if (AllFilesExists && !System.IO.File.Exists(EnvPaths.GetGamedataPath() + "/env.scd"))
+		{
 			Error = "No source files in gamedata folder: " + EnvPaths.GetGamedataPath();
-			Debug.LogError (Error);
+			Debug.LogError(Error);
 			AllFilesExists = false;
 		}
 
-		if (AllFilesExists) {
+		if (AllFilesExists)
+		{
 			// Begin load
 			LoadRecentMaps.MoveLastMaps(ScenarioFileName, FolderName, FolderParentPath);
 			LoadingMapProcess = true;
-			InfoPopup.Show (true, "Loading map...\n( " + ScenarioFileName + ".lua" + " )");
+			InfoPopup.Show(true, "Loading map...\n( " + ScenarioFileName + ".lua" + " )");
 			EditMenu.gameObject.SetActive(true);
 			Background.SetActive(false);
 			yield return null;
@@ -178,7 +194,8 @@ public class MapLuaParser : MonoBehaviour {
 			}
 
 			// Scenario LUA
-			if (ScenarioLuaFile.Load(FolderName, ScenarioFileName, FolderParentPath)){
+			if (ScenarioLuaFile.Load(FolderName, ScenarioFileName, FolderParentPath))
+			{
 				//Map Loaded
 			}
 			else
@@ -195,9 +212,9 @@ public class MapLuaParser : MonoBehaviour {
 			yield return null;
 
 			// SCMAP
-			var LoadScmapFile = HeightmapControler.StartCoroutine ("LoadScmapFile");
+			var LoadScmapFile = HeightmapControler.StartCoroutine("LoadScmapFile");
 			yield return LoadScmapFile;
-			CameraControler.Current.RestartCam ();
+			CameraControler.Current.RestartCam();
 
 			EditMenu.MapInfoMenu.SaveAsFa.isOn = HeightmapControler.map.VersionMinor >= 60;
 
@@ -205,7 +222,8 @@ public class MapLuaParser : MonoBehaviour {
 			InfoPopup.Show(true, "Loading map...\n(" + ScenarioLuaFile.Data.save + ")");
 			yield return null;
 
-			if (loadSave) {
+			if (loadSave)
+			{
 				// Save LUA
 				SaveLuaFile.Load();
 				SetSaveLua();
@@ -217,7 +235,8 @@ public class MapLuaParser : MonoBehaviour {
 			HelperGui.MapLoaded = true;
 
 			// Load Props
-			if (LoadProps) {
+			if (LoadProps)
+			{
 				PropsMenu.gameObject.SetActive(true);
 
 				PropsMenu.AllowBrushUpdate = false;
@@ -247,17 +266,41 @@ public class MapLuaParser : MonoBehaviour {
 			}
 
 
-			InfoPopup.Show (false);
+			InfoPopup.Show(false);
 
 			RenderMarkersConnections.Current.UpdateConnections();
 
-			EditMenu.Categorys [0].GetComponent<MapInfo> ().UpdateFields ();
+			EditMenu.Categorys[0].GetComponent<MapInfo>().UpdateFields();
 			LoadingMapProcess = false;
 		}
-		else {
-			HelperGui.ReturnLoadingWithError (Error);
+		else
+		{
+			HelperGui.ReturnLoadingWithError(Error);
 		}
 
+	}
+
+	bool SearchForScenario()
+	{
+		string[] AllFiles = System.IO.Directory.GetFiles(FolderParentPath + FolderName + "/");
+		for (int i = 0; i < AllFiles.Length; i++)
+		{
+			if (AllFiles[i].ToLower().EndsWith(".lua"))
+			{
+				if (System.IO.File.ReadAllText(AllFiles[i]).StartsWith("version = 3"))
+				{
+					//Found Other Proper File
+					Debug.Log(AllFiles[i]);
+
+					string[] Names = AllFiles[i].Replace("\\", "/").Split("/".ToCharArray());
+					ScenarioFileName = Names[Names.Length - 1].Replace(".lua", "");
+					Debug.Log(ScenarioFileName);
+
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 
 	#endregion
@@ -303,7 +346,8 @@ public class MapLuaParser : MonoBehaviour {
 	}
 
 	public static bool SavingMapProcess = false;
-	public IEnumerator SaveMapProcess(){
+	public IEnumerator SaveMapProcess()
+	{
 
 		yield return null;
 
@@ -316,16 +360,16 @@ public class MapLuaParser : MonoBehaviour {
 		while (DecalsControler.IsUpdating)
 			yield return null;
 
-		string BackupId = System.DateTime.Now.Month.ToString() +System.DateTime.Now.Day.ToString() + System.DateTime.Now.Hour.ToString() + System.DateTime.Now.Minute.ToString() + System.DateTime.Now.Second.ToString();
+		string BackupId = System.DateTime.Now.Month.ToString() + System.DateTime.Now.Day.ToString() + System.DateTime.Now.Hour.ToString() + System.DateTime.Now.Minute.ToString() + System.DateTime.Now.Second.ToString();
 		BackupPath = FolderParentPath + FolderName + "/Backup_" + BackupId;
 
-		if(BackupFiles)
+		if (BackupFiles)
 			System.IO.Directory.CreateDirectory(BackupPath);
 		yield return null;
 
 		// Scenario.lua
 		string ScenarioFilePath = FolderParentPath + FolderName + "/" + ScenarioFileName + ".lua";
-		if(BackupFiles && System.IO.File.Exists(ScenarioFilePath))
+		if (BackupFiles && System.IO.File.Exists(ScenarioFilePath))
 			System.IO.File.Move(ScenarioFilePath, BackupPath + "/" + ScenarioFileName + ".lua");
 		ScenarioLuaFile.Save(ScenarioFilePath);
 		yield return null;
@@ -352,7 +396,8 @@ public class MapLuaParser : MonoBehaviour {
 		SavingMapProcess = false;
 	}
 
-	public void SaveScmap(){
+	public void SaveScmap()
+	{
 
 		string MapFilePath = ScenarioLuaFile.Data.map.Replace("/maps/", FolderParentPath);
 
@@ -360,15 +405,16 @@ public class MapLuaParser : MonoBehaviour {
 		char[] NameSeparator = ("/").ToCharArray();
 		string[] Names = FileName.Split(NameSeparator);
 		//Debug.Log(BackupPath + "/" + Names[Names.Length - 1]);
-		if(BackupFiles && System.IO.File.Exists(MapFilePath))
+		if (BackupFiles && System.IO.File.Exists(MapFilePath))
 			System.IO.File.Move(MapFilePath, BackupPath + "/" + Names[Names.Length - 1]);
-			 
+
 
 		HeightmapControler.SaveScmapFile();
 	}
 
 
-	public void SaveScriptLua(int ID = 0){
+	public void SaveScriptLua(int ID = 0)
+	{
 		string SaveData = DefaultScript.text;
 
 		/*
@@ -393,7 +439,7 @@ public class MapLuaParser : MonoBehaviour {
 
 		if (System.IO.File.Exists(SaveFilePath))
 			System.IO.File.Move(SaveFilePath, BackupPath + "/" + Names[Names.Length - 1]);
-		
+
 		System.IO.File.WriteAllText(SaveFilePath, SaveData);
 	}
 
@@ -401,8 +447,9 @@ public class MapLuaParser : MonoBehaviour {
 
 
 	#region Map functions
-	public void SortArmys(){
-	
+	public void SortArmys()
+	{
+
 	}
 
 	public Rect GetAreaRect()
@@ -447,8 +494,9 @@ public class MapLuaParser : MonoBehaviour {
 
 	}
 
-	public void UpdateArea(){
-		if(SaveLuaFile.Data.areas.Length > 0 && !AreaInfo.HideArea)
+	public void UpdateArea()
+	{
+		if (SaveLuaFile.Data.areas.Length > 0 && !AreaInfo.HideArea)
 		{
 			//int bigestAreaId = 0;
 			Rect bigestAreaRect = GetAreaRect();

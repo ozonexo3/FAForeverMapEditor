@@ -228,7 +228,7 @@ namespace EditMap
 				}
 				else
 				{
-					if (Input.GetMouseButtonDown(0))
+					if (Edit.MauseOnGameplay && Input.GetMouseButtonDown(0))
 					{
 						if (UpdateBrushPosition(true))
 						{
@@ -239,10 +239,17 @@ namespace EditMap
 					}
 					else if (Input.GetMouseButton(0))
 					{
-						if (UpdateBrushPosition(false))
+						if (CameraControler.Current.DragStartedGameplay)
 						{
+							if (UpdateBrushPosition(false))
+							{
+							}
+							SymmetryPaint();
 						}
-						SymmetryPaint();
+					}
+					else if (Input.GetMouseButtonUp(0))
+					{
+						PaintStarted = false;
 					}
 					else
 					{

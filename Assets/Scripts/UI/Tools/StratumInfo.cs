@@ -219,7 +219,7 @@ namespace EditMap
 					}
 					else
 					{
-						if (Input.GetMouseButtonDown(0))
+						if (Edit.MauseOnGameplay && Input.GetMouseButtonDown(0))
 						{
 							if (CameraControler.Current.DragStartedGameplay && UpdateBrushPosition(true))
 							{
@@ -234,8 +234,6 @@ namespace EditMap
 								{
 									SymmetryPaint();
 								}
-
-								
 							}
 						}
 						else
