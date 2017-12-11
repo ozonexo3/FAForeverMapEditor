@@ -13,7 +13,8 @@ public partial class CameraControler : MonoBehaviour {
 
 	const float ScrollStep = 0.033f;
 	const float MinDistance = 1;
-	static float MaxDistance = 1200;
+	static float MaxDistance = 1100;
+	static float MaxRaycastDistance = 1500;
 
 	const float SmoothZoom = 14;
 	const float SmoothPan = 16;
@@ -31,7 +32,7 @@ public partial class CameraControler : MonoBehaviour {
 			{
 				if (MouseScrollSteps > 0)
 				{ // In
-					if (transform.localPosition.y > MinDistance && Physics.Raycast(ray, out hit, MaxDistance, Mask))
+					if (transform.localPosition.y > MinDistance && Physics.Raycast(ray, out hit, MaxRaycastDistance, Mask))
 					{
 						Vector3 Ray = Pivot.InverseTransformDirection(ray.direction);
 						TargetLocalCamPos += Ray * ScrollStep * SampleCamSpeed();
@@ -79,7 +80,7 @@ public partial class CameraControler : MonoBehaviour {
 
 		//LastLocalCamPos = Vector3.Lerp(LastLocalCamPos, TargetLocalCamPos, Time.unscaledDeltaTime * SmoothZoom);
 		Vector3 Velocity = Vector3.zero;
-		LastLocalCamPos = Vector3.SmoothDamp(LastLocalCamPos, TargetLocalCamPos, ref Velocity, 0.05f, 8000, Time.unscaledDeltaTime);
+		LastLocalCamPos = Vector3.SmoothDamp(LastLocalCamPos, TargetLocalCamPos, ref Velocity, 0.043f, 10000, Time.unscaledDeltaTime);
 		transform.localPosition = LastLocalCamPos;
 
 
@@ -114,7 +115,7 @@ public partial class CameraControler : MonoBehaviour {
 
 		Ray ray3 = new Ray(PivotPos, Cam.transform.forward);
 		RaycastHit hit3;
-		if (Physics.Raycast(ray3, out hit3, MaxDistance, Mask))
+		if (Physics.Raycast(ray3, out hit3, MaxRaycastDistance, Mask))
 		{
 			LastLocalCamPos += Pivot.InverseTransformVector(PanOffsetX) * Time.unscaledDeltaTime;
 			TargetLocalCamPos += Pivot.InverseTransformVector(PanOffsetX) * Time.unscaledDeltaTime;
@@ -124,7 +125,7 @@ public partial class CameraControler : MonoBehaviour {
 		PivotPos = transform.position;
 		PivotPos += PanOffsetZ * Time.unscaledDeltaTime;
 		ray3 = new Ray(PivotPos, Cam.transform.forward);
-		if (Physics.Raycast(ray3, out hit3, MaxDistance, Mask))
+		if (Physics.Raycast(ray3, out hit3, MaxRaycastDistance, Mask))
 		{
 			LastLocalCamPos += Pivot.InverseTransformVector(PanOffsetZ) * Time.unscaledDeltaTime;
 			TargetLocalCamPos += Pivot.InverseTransformVector(PanOffsetZ) * Time.unscaledDeltaTime;
@@ -155,7 +156,7 @@ public partial class CameraControler : MonoBehaviour {
 
 		Ray ray2 = new Ray(transform.position, Cam.transform.forward);
 		RaycastHit hit2;
-		if (Physics.Raycast(ray2, out hit2, MaxDistance, Mask))
+		if (Physics.Raycast(ray2, out hit2, MaxRaycastDistance, Mask))
 		{
 			SetNewPivotPos(hit2.point);
 			//ClampPosY();
@@ -185,7 +186,7 @@ public partial class CameraControler : MonoBehaviour {
 
 		Ray ray = Cam.ScreenPointToRay(Input.mousePosition);
 		RaycastHit hit;
-		if (Physics.Raycast(ray, out hit, MaxDistance, MaskCursor))
+		if (Physics.Raycast(ray, out hit, MaxRaycastDistance, MaskCursor))
 		{
 			Vector3 GameplayCursorPos = ScmapEditor.WorldPosToScmap(hit.point);
 			GameplayCursorPos.y = hit.point.y * 10;
@@ -210,7 +211,7 @@ public partial class CameraControler : MonoBehaviour {
 	{
 		Ray ray = new Ray(Pivot.TransformPoint(TargetLocalCamPos), transform.forward);
 		RaycastHit hit;
-		if (Physics.Raycast(ray, out hit, MaxDistance, Mask))
+		if (Physics.Raycast(ray, out hit, MaxRaycastDistance, Mask))
 		{
 			//return Mathf.Lerp(15f, 300, Mathf.Pow(hit.distance / 150, 1.2f)) * 1.2f;
 			//return Mathf.Pow(hit.distance / 1000f, 2f) * 1000f;

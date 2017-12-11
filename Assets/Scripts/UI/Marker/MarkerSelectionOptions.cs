@@ -368,7 +368,7 @@ namespace EditMap
 					return;
 				}
 			}
-			Undo.Current.RegisterMarkerChange();
+			Undo.Current.RegisterMarkerChange(new SaveLua.Marker[] { SelectedGameObjects[0].GetComponent<MarkerObject>().Owner });
 
 			MapLua.SaveLua.RemoveMarkerName(SelectedGameObjects[0].name);
 			MapLua.SaveLua.RegisterMarkerName(NameToChange);
@@ -384,14 +384,29 @@ namespace EditMap
 			Loading = false;
 		}
 
+		SaveLua.Marker[] AllMarkers
+		{
+			get
+			{
+				SaveLua.Marker[] ToReturn = new SaveLua.Marker[SelectedGameObjects.Count];
+				for (int i = 0; i < Count; i++)
+				{
+					ToReturn[i] = SelectedGameObjects[i].GetComponent<MarkerObject>().Owner;
+				}
+				return ToReturn;
+			}
+		}
+
 		public void CameraZoomChanged()
 		{
-			if (Loading)
+			if (Loading || Count <= 0)
 				return;
 			Loading = true;
 			float ReadValue = LuaParser.Read.StringToFloat(Camera_Zoom.text, -1);
 
-			if(ReadValue >= 0)
+			Undo.Current.RegisterMarkerChange(AllMarkers);
+
+			if (ReadValue >= 0)
 			{
 				for (int i = 0; i < Count; i++)
 				{
@@ -415,9 +430,11 @@ namespace EditMap
 
 		public void ToggleCameraSet()
 		{
-			if (Loading)
+			if (Loading || Count <= 0)
 				return;
 			Camera_Set.graphic.color = CheckmarkNormal;
+
+			Undo.Current.RegisterMarkerChange(AllMarkers);
 
 			for (int i = 0; i < Count; i++)
 			{
@@ -427,9 +444,11 @@ namespace EditMap
 
 		public void ToggleCameraSync()
 		{
-			if (Loading)
+			if (Loading || Count <= 0)
 				return;
 			Camera_Sync.graphic.color = CheckmarkNormal;
+
+			Undo.Current.RegisterMarkerChange(AllMarkers);
 
 			for (int i = 0; i < Count; i++)
 			{
@@ -446,10 +465,12 @@ namespace EditMap
 
 		public void SizeChanged()
 		{
-			if (Loading)
+			if (Loading || Count <= 0)
 				return;
 			Loading = true;
 			float ReadValue = LuaParser.Read.StringToFloat(SizeField.text, -1);
+
+			Undo.Current.RegisterMarkerChange(AllMarkers);
 
 			if (ReadValue >= 0)
 			{
@@ -475,10 +496,12 @@ namespace EditMap
 
 		public void AmountChanged()
 		{
-			if (Loading)
+			if (Loading || Count <= 0)
 				return;
 			Loading = true;
 			float ReadValue = LuaParser.Read.StringToFloat(AmountField.text, -1);
+
+			Undo.Current.RegisterMarkerChange(AllMarkers);
 
 			if (ReadValue >= 0)
 			{

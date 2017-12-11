@@ -78,11 +78,17 @@ namespace OzoneDecals
 			Decal Component = new Decal();
 
 			//TODO
+			Component.Type = Shared.Type;
 			Component.Position = ScmapEditor.WorldPosToScmap( GetPivotPoint());
 			Component.Scale = tr.localScale * 10f;
 			Component.Rotation = tr.localEulerAngles * Mathf.Deg2Rad;
 
-			//Component.CutOffLOD = WorldCutoffDistance * 10;
+			Component.CutOffLOD = Shared.CutOffLOD;
+			Component.NearCutOffLOD = Shared.NearCutOffLOD;
+			Component.TexPathes = new string[2];
+			Component.TexPathes[0] = Shared.Tex1Path;
+			Component.TexPathes[1] = Shared.Tex2Path;
+
 			return Component;
 		}
 		

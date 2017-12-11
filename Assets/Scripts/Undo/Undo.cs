@@ -147,16 +147,8 @@ public class Undo : MonoBehaviour {
 		HistoryMarkersMove.GenerateUndo (Prefabs.MarkersMove).Register();
 	}
 
-	public void RegisterMarkerSelection(){
-		if(RegisterMarkersDelete){
-			RegisterMarkersDelete = false;
-			return;
-		}
-		HistoryMarkersSelection.GenerateUndo (Prefabs.MarkersSelection).Register();
-	}
-
-
-	public void RegisterMarkerChange(){
+	public void RegisterMarkerChange(MapLua.SaveLua.Marker[] AllMarkers){
+		HistoryMarkersChange.RegisterMarkers = AllMarkers;
 		HistoryMarkersChange.GenerateUndo (Prefabs.MarkersChange).Register();
 	}
 
@@ -179,6 +171,21 @@ public class Undo : MonoBehaviour {
 	{
 		HistoryDecalsMove.UndoMenu = MoveMenu;
 		HistoryDecalsMove.GenerateUndo(Prefabs.DecalsMove).Register();
+	}
+
+	public void RegisterDecalsAdd()
+	{
+
+	}
+
+	public void RegisterDecalsRemove()
+	{
+
+	}
+
+	public void RegisterDecalsChange()
+	{
+
 	}
 	#endregion
 
