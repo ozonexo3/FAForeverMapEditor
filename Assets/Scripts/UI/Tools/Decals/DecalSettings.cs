@@ -20,6 +20,14 @@ namespace EditMap
 
 		static Decal.DecalSharedSettings Loaded;
 
+		public static Decal.DecalSharedSettings GetLoaded
+		{
+			get
+			{
+				return Loaded;
+			}
+		}
+
 		bool Loading = false;
 		public void Load(Decal.DecalSharedSettings DecalSettings)
 		{
@@ -172,7 +180,7 @@ namespace EditMap
 				Selection.SelectionManager.Current.ClearAffectedGameObjects(false);
 				PlacementManager.InstantiateAction = CreatePrefabAction;
 				PlacementManager.MinRotAngle = 0;
-				PlacementManager.BeginPlacement(GetCreationObject(), Place);
+				PlacementManager.BeginPlacement(GetCreationObject(), DecalsInfo.Current.Place);
 			}
 			else
 			{
@@ -184,12 +192,7 @@ namespace EditMap
 			}
 		}
 
-		public void Place(Vector3[] Positions, Quaternion[] Rotations)
-		{
-			//TODO Create Objects
 
-
-		}
 
 		public GameObject CreationPrefab;
 		GameObject CreationGameObject;

@@ -157,18 +157,35 @@ namespace Markers
 		}
 
 
-		public static GameObject[] GetMarkerObjects()
+		public static GameObject[] GetMarkerObjects(out int[] Types)
 		{
 			List<GameObject> AllGameObjects = new List<GameObject>();
+			List<int> AllTypes = new List<int>();
 			for (int mc = 0; mc < MapLuaParser.Current.SaveLuaFile.Data.MasterChains.Length; mc++)
 			{
 				int Mcount = MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers.Count;
 				for (int m = 0; m < Mcount; m++)
 				{
 					AllGameObjects.Add(MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers[m].MarkerObj.gameObject);
+					AllTypes.Add((int)MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers[m].MarkerType);
 				}
 			}
+			Types = AllTypes.ToArray();
 			return AllGameObjects.ToArray();
+		}
+
+		public static int[] GetMarkerTypes()
+		{
+			List<int> AllTypes = new List<int>();
+			for (int mc = 0; mc < MapLuaParser.Current.SaveLuaFile.Data.MasterChains.Length; mc++)
+			{
+				int Mcount = MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers.Count;
+				for (int m = 0; m < Mcount; m++)
+				{
+					AllTypes.Add((int)MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers[m].MarkerType);
+				}
+			}
+			return AllTypes.ToArray();
 		}
 
 

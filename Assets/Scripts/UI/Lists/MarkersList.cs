@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using EditMap;
+using UnityEngine.UI;
 
 public class MarkersList : MonoBehaviour
 {
@@ -14,6 +15,8 @@ public class MarkersList : MonoBehaviour
 	public RectTransform Pivot;
 	public GameObject ListPrefab;
 	public List<ListObject> AllFields = new List<ListObject>();
+	public VerticalLayoutGroup Layout;
+	public ContentSizeFitter SizeFitter;
 
 	public Sprite[] Icons;
 
@@ -31,7 +34,6 @@ public class MarkersList : MonoBehaviour
 		else if (Generating)
 		{
 			StopCoroutine(GeneratingEnum);
-			Generating = false;
 		}
 	}
 
@@ -69,7 +71,7 @@ public class MarkersList : MonoBehaviour
 					// Focus on
 					Vector3 Pos = AllFields[g].GetComponent<RectTransform>().localPosition;
 					Pos.y = 0 - Pos.y;
-					Pos.y += 250;
+					Pos.y -= 120;
 					Pos.x = 0;
 					Pivot.localPosition = Pos;
 
@@ -113,10 +115,10 @@ public class MarkersList : MonoBehaviour
 		if (Generating)
 		{
 			StopCoroutine(GeneratingEnum);
-			Generating = false;
 		}
 
 		AllFields = new List<ListObject>();
+		AllFields.Capacity = 2048;
 
 		foreach (RectTransform child in Pivot)
 		{
@@ -137,7 +139,14 @@ public class MarkersList : MonoBehaviour
 
 
 	bool Buffor = false;
-	bool Generating = false;
+	bool Generating
+	{
+		get
+		{
+			return GeneratingEnum != null;
+		}
+
+	}
 	Coroutine GeneratingEnum;
 	void GenerateList()
 	{
@@ -153,7 +162,6 @@ public class MarkersList : MonoBehaviour
 		}
 		else
 		{
-			Generating = true;
 			GeneratingEnum = StartCoroutine(GenerateingList());
 		}
 	}
@@ -248,9 +256,16 @@ public class MarkersList : MonoBehaviour
 		Generated = true;
 		GeneratedCount = AllFields.Count;
 
+
+		Layout.enabled = true;
+		SizeFitter.enabled = true;
+
 		yield return null;
 
-		Generating = false;
+		Layout.enabled = false;
+		SizeFitter.enabled = false;
+
+		GeneratingEnum = null;
 		if (Buffor)
 		{
 			Buffor = false;
@@ -263,5 +278,10 @@ public class MarkersList : MonoBehaviour
 			UpdateSelection();
 		}
 
+	}
+
+	public void OnScroll()
+	{
+		Pivot.localPosition = new Vector3(0, (int)Pivot.localPosition.y, 0);
 	}
 }

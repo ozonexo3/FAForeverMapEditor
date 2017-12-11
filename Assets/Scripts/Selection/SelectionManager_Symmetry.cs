@@ -47,7 +47,7 @@ namespace Selection
 
 					for (o = 0; o < Current.AffectedGameObjects.Length; o++)
 					{
-						if (o == ID)
+						if (o == ID || (Current.AffectedTypes.Length > 0 && Current.AffectedTypes[o] != Current.AffectedTypes[ID]))
 							continue;
 						Dist = (Current.AffectedGameObjects[o].transform.localPosition - SearchPos).sqrMagnitude;
 						if (Dist <= Tolerance && Dist < ClosestDist)

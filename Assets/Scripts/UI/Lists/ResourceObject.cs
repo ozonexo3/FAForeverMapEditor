@@ -12,6 +12,7 @@ public class ResourceObject : MonoBehaviour {
 	public RawImage[] RawImages;
 
 	public Text[] CustomTexts;
+	public UI3DMesh MeshView;
 
 	public void SetImages(Texture2D Tex){
 		//Tex.Resize (256, 256);

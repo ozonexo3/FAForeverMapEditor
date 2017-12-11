@@ -52,9 +52,11 @@ namespace EditMap
 		void OnEnable()
 		{
 
-			Selection.SelectionManager.Current.SetSelectionChangeAction(SelectMarkers);
+			SelectionManager.Current.SetSelectionChangeAction(SelectMarkers);
 
-			Selection.SelectionManager.Current.SetAffectedGameObjects(MarkersControler.GetMarkerObjects(), SelectionManager.SelectionControlTypes.MarkerChain);
+			int[] Types;
+			SelectionManager.Current.SetAffectedGameObjects(MarkersControler.GetMarkerObjects(out Types), SelectionManager.SelectionControlTypes.MarkerChain);
+			SelectionManager.Current.SetAffectedTypes(Types);
 			//Selection.SelectionManager.Current.SetCustomSettings(true, false, false);
 			//ChainSelected = -1;
 
@@ -106,6 +108,7 @@ namespace EditMap
 		void Clean()
 		{
 			AllFields = new List<ListObject>();
+			AllFields.Capacity = 1024;
 
 			foreach (RectTransform child in Pivot)
 			{

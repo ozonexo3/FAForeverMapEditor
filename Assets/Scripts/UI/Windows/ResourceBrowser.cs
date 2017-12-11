@@ -21,12 +21,15 @@ public class ResourceBrowser : MonoBehaviour
 	public GameObject Prefab_Texture;
 	public GameObject Prefab_Decal;
 	public GameObject Prefab_Prop;
+	public Material PropMaterial;
 	public Transform Pivot;
 	public ScrollRect SRect;
 	public Dropdown EnvType;
 	public Dropdown Category;
 	public GameObject Loading;
 	public Texture2D CursorImage;
+	public LayoutGroup Layout;
+	public ContentSizeFitter SizeFitter;
 
 
 	[Header("Loaded assets")]
@@ -260,6 +263,8 @@ public class ResourceBrowser : MonoBehaviour
 
 		int Counter = 0;
 		int Id = 0;
+		Layout.enabled = true;
+		SizeFitter.enabled = true;
 
 		if (LoadedEnvPaths[EnvType.value] == CurrentMapFolderPath)
 		{
@@ -353,7 +358,11 @@ public class ResourceBrowser : MonoBehaviour
 				}
 			}
 		}
+		
 		yield return null;
+		Layout.enabled = false;
+		SizeFitter.enabled = false;
+
 		Generating = false;
 		Loading.SetActive(false);
 	}
@@ -395,7 +404,7 @@ public class ResourceBrowser : MonoBehaviour
 	bool GenerateTextureButton(string localpath, string LocalName, GameObject Prefab)
 	{
 
-		if (!LocalName.EndsWith(".dds"))
+		if (!LocalName.ToLower().EndsWith(".dds"))
 			return true;
 		Texture2D LoadedTex;
 
@@ -409,6 +418,12 @@ public class ResourceBrowser : MonoBehaviour
 			Debug.LogError("Can't load DDS texture: " + e);
 		}
 
+		string TexPath = "";
+		if (localpath.EndsWith(".dds"))
+			TexPath = LocalName.Replace(".dds", "");
+		else if (localpath.EndsWith(".DDS"))
+			TexPath = LocalName.Replace(".DDS", "");
+
 
 		GameObject NewButton = Instantiate(Prefab) as GameObject;
 		NewButton.transform.SetParent(Pivot, false);
@@ -416,7 +431,7 @@ public class ResourceBrowser : MonoBehaviour
 		//NewButton.GetComponent<ResourceObject> ().Controler = this;
 		NewButton.GetComponent<ResourceObject>().SetImages(LoadedTex);
 		NewButton.GetComponent<ResourceObject>().InstanceId = LoadedTextures.Count;
-		NewButton.GetComponent<ResourceObject>().NameField.text = LocalName.Replace(".dds", "");
+		NewButton.GetComponent<ResourceObject>().NameField.text = TexPath;
 		LoadedTextures.Add(LoadedTex);
 		LoadedPaths.Add(localpath);
 
@@ -433,10 +448,14 @@ public class ResourceBrowser : MonoBehaviour
 
 	bool GeneratePropButton(string localpath, string LocalName, GameObject Prefab)
 	{
-		if (!localpath.EndsWith(".bp"))
+		if (!localpath.ToLower().EndsWith(".bp"))
 			return false;
 
-		string PropPath = LocalName.Replace(".bp", "");
+		string PropPath = "";
+		if (localpath.EndsWith(".bp"))
+			PropPath = LocalName.Replace(".bp", "");
+		else if (localpath.EndsWith(".BP"))
+			PropPath = LocalName.Replace(".BP", "");
 
 		GetGamedataFile.PropObject LoadedProp = GetGamedataFile.LoadProp("env.scd", localpath);
 
@@ -445,23 +464,36 @@ public class ResourceBrowser : MonoBehaviour
 		NewButton.transform.SetParent(Pivot, false);
 
 		if (LoadedProp.BP.LODs.Length > 0 && LoadedProp.BP.LODs[0].Albedo)
+		{
 			NewButton.GetComponent<RawImage>().texture = LoadedProp.BP.LODs[0].Albedo;
 
-		//NewButton.GetComponent<ResourceObject> ().Controler = this;
-		NewButton.GetComponent<ResourceObject>().InstanceId = LoadedPaths.Count;
-		NewButton.GetComponent<ResourceObject>().NameField.text = LoadedProp.BP.Name;
-		PropPath = PropPath.Replace(LoadedProp.BP.Name, "");
-		NewButton.GetComponent<ResourceObject>().CustomTexts[2].text = PropPath;
+		}
 
-		NewButton.GetComponent<ResourceObject>().CustomTexts[0].text = LoadedProp.BP.ReclaimMassMax.ToString();
-		NewButton.GetComponent<ResourceObject>().CustomTexts[1].text = LoadedProp.BP.ReclaimEnergyMax.ToString();
+		//NewButton.GetComponent<ResourceObject> ().Controler = this;
+		ResourceObject Ro = NewButton.GetComponent<ResourceObject>();
+
+		/*
+		if (LoadedProp.BP.LODs.Length > 0 && LoadedProp.BP.LODs[0].Albedo)
+		{
+			Ro.MeshView.TheMesh = LoadedProp.BP.LODs[0].Mesh;
+			Ro.MeshView.Material = new Material(PropMaterial);
+			Ro.MeshView.Material.SetTexture("_MainTex", LoadedProp.BP.LODs[0].Albedo);
+		}*/
+
+		Ro.InstanceId = LoadedPaths.Count;
+		Ro.NameField.text = LoadedProp.BP.Name;
+		PropPath = PropPath.Replace(LoadedProp.BP.Name, "");
+		Ro.CustomTexts[2].text = PropPath;
+
+		Ro.CustomTexts[0].text = LoadedProp.BP.ReclaimMassMax.ToString();
+		Ro.CustomTexts[1].text = LoadedProp.BP.ReclaimEnergyMax.ToString();
 		//LoadedTextures.Add(LoadedTex );
 		LoadedPaths.Add(localpath);
 		LoadedProps.Add(LoadedProp);
 
 		if (localpath.ToLower() == SelectedObject.ToLower())
 		{
-			NewButton.GetComponent<ResourceObject>().Selected.SetActive(true);
+			Ro.Selected.SetActive(true);
 			//Pivot.localPosition = Vector3.up * (Mathf.Clamp(Pivot.GetComponent<RectTransform>().sizeDelta.y - 350, 0, 1000000) - 350) + Vector3.right * Pivot.localPosition.x;
 			Pivot.GetComponent<RectTransform>().anchoredPosition = Vector2.up * 250 * Mathf.FloorToInt(LoadedPaths.Count / 5f);
 			//SRect.normalizedPosition = Vector2.up;

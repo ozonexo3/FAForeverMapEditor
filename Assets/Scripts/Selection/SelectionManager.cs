@@ -18,6 +18,7 @@ namespace Selection
 		public bool SnapToWater = true;
 
 		public GameObject[] AffectedGameObjects;
+		public int[] AffectedTypes;
 		public bool Active = false;
 
 
@@ -140,6 +141,8 @@ namespace Selection
 				SetAffectedGameObjects(new GameObject[0], SelectionControlTypes.None);
 			else
 				SetAffectedGameObjects(new GameObject[0], SelectionControlTypes.Last);
+
+			AffectedTypes = new int[0];
 		}
 
 
@@ -194,7 +197,10 @@ namespace Selection
 			CleanIfInactive();
 		}
 
-
+		public void SetAffectedTypes(int[] NewTypes)
+		{
+			AffectedTypes = NewTypes;
+		}
 
 
 		public void CleanSelection()
@@ -208,6 +214,7 @@ namespace Selection
 			if (!Active)
 			{
 				AffectedGameObjects = new GameObject[0];
+				AffectedTypes = new int[0];
 				CleanSelection();
 			}
 		}

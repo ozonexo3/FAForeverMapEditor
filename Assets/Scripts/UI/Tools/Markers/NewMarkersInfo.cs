@@ -52,10 +52,12 @@ namespace EditMap
 
 			if (!MarkersInfo.MarkerPageChange)
 			{
-				Selection.SelectionManager.Current.CleanSelection();
+				SelectionManager.Current.CleanSelection();
 			}
 
-			Selection.SelectionManager.Current.SetAffectedGameObjects(MarkersControler.GetMarkerObjects(), SelectionManager.SelectionControlTypes.Marker);
+			int[] Types;
+			SelectionManager.Current.SetAffectedGameObjects(MarkersControler.GetMarkerObjects(out Types), SelectionManager.SelectionControlTypes.Marker);
+			SelectionManager.Current.SetAffectedTypes(Types);
 			//Selection.SelectionManager.Current.SetCustomSettings(true, false, false);
 
 
@@ -131,14 +133,14 @@ namespace EditMap
 
 		public void CreateFromView()
 		{
-			Place(new Vector3[] { CameraControler.Current.Pivot.localPosition }, new Quaternion[] { CameraControler.Current.Pivot.localRotation });
+			Place(new Vector3[] { CameraControler.Current.Pivot.localPosition }, new Quaternion[] { CameraControler.Current.Pivot.localRotation }, new Vector3[] { Vector3.one });
 			int mc = 0;
 			MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers[LastAddedMarkers[0]].zoom = CameraControler.GetCurrentZoom();
 		}
 
 		public List<int> LastAddedMarkers;
 
-		public void Place(Vector3[] Positions, Quaternion[] Rotations)
+		public void Place(Vector3[] Positions, Quaternion[] Rotations, Vector3[] Scales)
 		{
 			//List<MapLua.SaveLua.Marker> NewMarkers = new List<MapLua.SaveLua.Marker>();
 			int mc = 0; // MasterChainID
@@ -279,8 +281,10 @@ namespace EditMap
 			//MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers = NewMarkers.ToArray();
 			if (AnyRemoved)
 			{
-				Selection.SelectionManager.Current.CleanSelection();
-				Selection.SelectionManager.Current.SetAffectedGameObjects(MarkersControler.GetMarkerObjects(), SelectionManager.SelectionControlTypes.Marker);
+				SelectionManager.Current.CleanSelection();
+				int[] Types;
+				SelectionManager.Current.SetAffectedGameObjects(MarkersControler.GetMarkerObjects(out Types), SelectionManager.SelectionControlTypes.Marker);
+				SelectionManager.Current.SetAffectedTypes(Types);
 				MarkerSelectionOptions.UpdateOptions();
 
 				RenderMarkersConnections.Current.UpdateConnections();

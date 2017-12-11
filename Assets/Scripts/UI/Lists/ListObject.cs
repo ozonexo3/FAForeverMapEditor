@@ -19,6 +19,17 @@ public class ListObject : MonoBehaviour {
 	public System.Action<ListObject> DragAction;
 	public CanvasGroup Cg;
 
+	public void DisableRendering()
+	{
+		gameObject.SetActive(false);
+	}
+
+	public void EnableRendering()
+	{
+		gameObject.SetActive(true);
+	}
+
+
 	public void SetSelection(int id){
 		if(Selected)
 			Selected.SetActive(id == 1);

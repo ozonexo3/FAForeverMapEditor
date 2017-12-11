@@ -31,19 +31,19 @@ MonoBehaviour:
   antialiasing:
     m_Enabled: 1
     m_Settings:
-      method: 1
+      method: 0
       fxaaSettings:
         preset: 2
       taaSettings:
-        jitterSpread: 0.75
-        sharpen: 0.3
-        stationaryBlending: 0.95
+        jitterSpread: 0.718
+        sharpen: 0.03
+        stationaryBlending: 0.99
         motionBlending: 0.85
   ambientOcclusion:
     m_Enabled: 0
     m_Settings:
       intensity: 1.87
-      radius: 2
+      radius: 0.15
       sampleCount: 16
       downsampling: 0
       forceForwardCompatibility: 1

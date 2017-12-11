@@ -523,7 +523,7 @@ namespace MapLua
 									graph = "DefaultWater";
 									break;
 								case MarkerTypes.AirPathNode:
-									graph = "DefaultAmphibious";
+									graph = "DefaultAir";
 									break;
 							}
 						}
@@ -598,8 +598,8 @@ namespace MapLua
 					}
 
 					//Transform
-					LuaFile.AddLine(LuaParser.Write.Vector3ToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_POSITION), position));
 					LuaFile.AddLine(LuaParser.Write.Vector3ToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_ORIENTATION), orientation));
+					LuaFile.AddLine(LuaParser.Write.Vector3ToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_POSITION), position));
 
 					LuaFile.CloseTab(LuaParser.Write.EndBracketNext);
 				}

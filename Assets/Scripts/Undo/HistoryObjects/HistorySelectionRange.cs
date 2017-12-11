@@ -15,6 +15,7 @@ public class HistorySelectionRange : HistoryObject
 
 	public int[] Ids;
 	public GameObject[] AffectedGameObjects;
+	public int[] AffectedTypes;
 
 	public static bool DoingRedo = false;
 
@@ -29,7 +30,7 @@ public class HistorySelectionRange : HistoryObject
 
 		Ids = SelectionManager.Current.Selection.Ids.ToArray();
 		AffectedGameObjects = SelectionManager.Current.AffectedGameObjects;
-
+		AffectedTypes = SelectionManager.Current.AffectedTypes;
 	}
 
 
@@ -50,6 +51,7 @@ public class HistorySelectionRange : HistoryObject
 		}
 
 		SelectionManager.Current.SetAffectedGameObjects(AffectedGameObjects, SelectionManager.SelectionControlTypes.Last);
+		SelectionManager.Current.SetAffectedTypes(AffectedTypes);
 		SelectionManager.Current.Selection.Ids = Ids.ToList<int>();
 		SelectionManager.Current.FinishSelectionChange();
 

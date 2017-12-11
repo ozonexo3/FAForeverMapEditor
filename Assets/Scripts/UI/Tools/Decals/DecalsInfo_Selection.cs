@@ -28,14 +28,15 @@ namespace EditMap
 				Selection.SelectionManager.Current.CleanSelection();
 			}
 			*/
-
-			SelectionManager.Current.SetAffectedGameObjects(DecalsControler.GetAllDecalsGo(), SelectionManager.SelectionControlTypes.Decal);
+			int[] AllTypes;
+			SelectionManager.Current.SetAffectedGameObjects(DecalsControler.GetAllDecalsGo(out AllTypes), SelectionManager.SelectionControlTypes.Decal);
+			SelectionManager.Current.SetAffectedTypes(AllTypes);
 			//SelectionManager.Current.SetCustomSettings(true, true, true);
 
 
 			PlacementManager.Clear();
-			//if (ChangeControlerType.Current)
-			//	ChangeControlerType.Current.UpdateButtons();
+			if (ChangeControlerType.Current)
+				ChangeControlerType.Current.UpdateButtons();
 
 			//MarkerSelectionOptions.UpdateOptions();
 		}
@@ -55,7 +56,6 @@ namespace EditMap
 		public void CustomSnapAction(Transform tr)
 		{
 			OzoneDecal.SnapToGround(tr);
-
 		}
 
 		public void DestroyDetails(List<GameObject> MarkerObjects, bool RegisterUndo = true)
@@ -63,8 +63,27 @@ namespace EditMap
 
 		}
 
-		public void Place(Vector3[] Positions, Quaternion[] Rotations)
+		public void Place(Vector3[] Positions, Quaternion[] Rotations, Vector3[] Scales)
 		{
+			for (int i = 0; i < Positions.Length; i++)
+			{
+
+				GameObject NewDecalObject = Instantiate(DecalPrefab, DecalPivot);
+				OzoneDecal Dec = NewDecalObject.GetComponent<OzoneDecal>();
+				Dec.Shared = DecalSettings.GetLoaded;
+				Dec.tr = NewDecalObject.transform;
+
+				Dec.tr.localPosition = Positions[i];
+				Dec.tr.localRotation = Rotations[i];
+				Dec.tr.localScale = Scales[i];
+
+				LOD[] Old = Dec.lg.GetLODs();
+				Old[0].screenRelativeTransitionHeight = Dec.tr.localScale.z / FrustumHeightAtDistance(Dec.Shared.CutOffLOD * 0.102f);
+				Dec.lg.SetLODs(Old);
+
+
+				Dec.Material = Dec.Shared.SharedMaterial;
+			}
 		}
 
 

@@ -69,6 +69,10 @@ public class MapLuaParser : MonoBehaviour
 		StructurePath = StructurePath.Replace("Assets", "");
 #endif
 
+
+		DecalsInfo.Current = DecalsMenu;
+		PropsInfo.Current = PropsMenu;
+
 	}
 
 	public bool MapLoaded()

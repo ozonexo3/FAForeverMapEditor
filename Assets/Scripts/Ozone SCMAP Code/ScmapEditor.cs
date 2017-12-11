@@ -59,6 +59,7 @@ public class ScmapEditor : MonoBehaviour
 	{
 		Current = this;
 		ResBrowser.Instantiate();
+		EnvPaths.CurrentGamedataPath = EnvPaths.GetGamedataPath();
 	}
 
 	void Start()

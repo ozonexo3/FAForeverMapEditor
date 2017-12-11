@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using OzoneDecals;
 using Selection;
 
@@ -11,6 +12,8 @@ namespace EditMap
 		public GameObject TypePrefab;
 		public GameObject GroupPrefab;
 		public Transform ListPrefab;
+		public GridLayoutGroup Layout;
+		public ContentSizeFitter SizeFitter;
 
 		int Page = 0;
 
@@ -33,9 +36,13 @@ namespace EditMap
 
 		void Clean()
 		{
+			if (Generating)
+				StopCoroutine(GeneratingCoroutine);
+
 			for (int i = 0; i < AllObjects.Count; i++)
 				Destroy(AllObjects[i].gameObject);
 			AllObjects = new List<GameObject>();
+			AllObjects.Capacity = 2048;
 			AllListObjects = new HashSet<ListObjectDecal>();
 		}
 
@@ -44,11 +51,26 @@ namespace EditMap
 		public void GenerateTypes()
 		{
 			Clean();
-
 			Page = 0;
 
+			GeneratingCoroutine = StartCoroutine(GeneratingList());
+		}
+
+		bool Generating
+		{
+			get
+			{
+				return GeneratingCoroutine != null;
+			}
+		}
+
+		Coroutine GeneratingCoroutine;
+		IEnumerator GeneratingList()
+		{
 			HashSet<Decal.DecalSharedSettings>.Enumerator ListEnum = Decal.AllDecalsShared.GetEnumerator();
 			int indstanceId = 0;
+
+
 
 			while (ListEnum.MoveNext())
 			{
@@ -77,18 +99,33 @@ namespace EditMap
 					UpdateSelection();
 				}
 			}
+			Layout.enabled = true;
+			SizeFitter.enabled = true;
+			yield return null;
+			Layout.enabled = false;
+			SizeFitter.enabled = false;
 		}
 
 		public void OnTexturesChanged()
 		{
 			if (Page == 0)
 			{
-				for(int i = 0; i < AllObjects.Count; i++)
+				List<GameObject>.Enumerator ListEnum = AllObjects.GetEnumerator();
+				while (ListEnum.MoveNext())
+				{
+					ListObjectDecal lo = ListEnum.Current.GetComponent<ListObjectDecal>();
+					lo.ObjectName.text = ((TerrainDecalTypeString)((int)lo.Setting.Type)).ToString().Replace("_", " ") + "\n" + lo.Setting.Tex1Path;
+					lo.Image.texture = lo.Setting.Texture1;
+				}
+
+				/*
+				for (int i = 0; i < AllObjects.Count; i++)
 				{
 					ListObjectDecal lo = AllObjects[i].GetComponent<ListObjectDecal>();
 					lo.ObjectName.text = ((TerrainDecalTypeString)((int)lo.Setting.Type)).ToString().Replace("_", " ") + "\n" + lo.Setting.Tex1Path;
 					lo.Image.texture = lo.Setting.Texture1;
 				}
+				*/
 			}
 		}
 

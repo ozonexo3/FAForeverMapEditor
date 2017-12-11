@@ -13,7 +13,7 @@ public partial class CameraControler : MonoBehaviour {
 
 	const float ScrollStep = 0.033f;
 	const float MinDistance = 1;
-	static float MaxDistance = 2048;
+	static float MaxDistance = 1200;
 
 	const float SmoothZoom = 14;
 	const float SmoothPan = 16;
@@ -77,7 +77,9 @@ public partial class CameraControler : MonoBehaviour {
 			*/
 		}
 
-		LastLocalCamPos = Vector3.Lerp(LastLocalCamPos, TargetLocalCamPos, Time.unscaledDeltaTime * SmoothZoom);
+		//LastLocalCamPos = Vector3.Lerp(LastLocalCamPos, TargetLocalCamPos, Time.unscaledDeltaTime * SmoothZoom);
+		Vector3 Velocity = Vector3.zero;
+		LastLocalCamPos = Vector3.SmoothDamp(LastLocalCamPos, TargetLocalCamPos, ref Velocity, 0.05f, 8000, Time.unscaledDeltaTime);
 		transform.localPosition = LastLocalCamPos;
 
 

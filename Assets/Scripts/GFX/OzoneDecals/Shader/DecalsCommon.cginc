@@ -40,10 +40,10 @@ struct v2f
 	UNITY_VERTEX_INPUT_INSTANCE_ID
 };
 
-UNITY_INSTANCING_CBUFFER_START(Fade)
+UNITY_INSTANCING_BUFFER_START(Fade)
 UNITY_DEFINE_INSTANCED_PROP(float, _CutOffLOD)
 UNITY_DEFINE_INSTANCED_PROP(float, _NearCutOffLOD)
-UNITY_INSTANCING_CBUFFER_END
+UNITY_INSTANCING_BUFFER_END(Fade)
 
 v2f vert(appdata v)
 {
@@ -64,9 +64,9 @@ i.ray = i.ray * (_ProjectionParams.z / i.ray.z); \
 float2 uv = i.uv.xy / i.uv.w; \
 float depth = SAMPLE_DEPTH_TEXTURE(_CameraDepthTexture, uv); \
 depth = Linear01Depth(depth); \
-float CutoffDistance = UNITY_ACCESS_INSTANCED_PROP(_CutOffLOD) * 0.4; \
-float blend = smoothstep(UNITY_ACCESS_INSTANCED_PROP(_CutOffLOD), CutoffDistance, depth); \
-CutoffDistance = UNITY_ACCESS_INSTANCED_PROP(_NearCutOffLOD); \
+float CutoffDistance = UNITY_ACCESS_INSTANCED_PROP(Fade, _CutOffLOD) * 0.4; \
+float blend = smoothstep(UNITY_ACCESS_INSTANCED_PROP(Fade, _CutOffLOD), CutoffDistance, depth); \
+CutoffDistance = UNITY_ACCESS_INSTANCED_PROP(Fade, _NearCutOffLOD); \
 blend *= clamp((depth - CutoffDistance) / CutoffDistance, 0, 1 ); \
 float4 vpos = float4(i.ray * depth,1); \
 float3 wpos = mul(unity_CameraToWorld, vpos).xyz; \
@@ -81,4 +81,4 @@ texUV = half2(texUV.x, 1 - texUV.y);
 
 //float mask = tex2D(_MaskTex, texUV).r; \
 //clip(mask - 0.0005f);
-//UNITY_ACCESS_INSTANCED_PROP(_NearCutOffLOD)
+//UNITY_ACCESS_INSTANCED_PROP(Fade, _NearCutOffLOD)

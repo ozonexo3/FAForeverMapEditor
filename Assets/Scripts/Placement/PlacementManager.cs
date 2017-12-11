@@ -14,7 +14,7 @@ public class PlacementManager : MonoBehaviour {
 	}
 
 
-	static System.Action<Vector3[], Quaternion[]> CurrentPlaceAction;
+	static System.Action<Vector3[], Quaternion[], Vector3[]> CurrentPlaceAction;
 	public static System.Action<GameObject> InstantiateAction;
 	public static int MinRotAngle = 90;
 	public GameObject PlacementObject;
@@ -23,7 +23,7 @@ public class PlacementManager : MonoBehaviour {
 
 	int PlaceAngle = 0;
 
-	public static void BeginPlacement(GameObject Prefab, System.Action<Vector3[], Quaternion[]> PlaceAction)
+	public static void BeginPlacement(GameObject Prefab, System.Action<Vector3[], Quaternion[], Vector3[]> PlaceAction)
 	{
 		Clear();
 
@@ -105,7 +105,7 @@ public class PlacementManager : MonoBehaviour {
 				else if (Input.GetKey(KeyCode.E))
 				{
 					Rotating = true;
-					PlacementObject.transform.eulerAngles = StartRotation + Vector3.up * (Input.mousePosition.x - RotationStartMousePos.x);
+					PlacementObject.transform.eulerAngles = StartRotation + Vector3.up * ((Input.mousePosition.x - RotationStartMousePos.x) * 0.5f);
 				}
 			}
 
@@ -169,17 +169,20 @@ public class PlacementManager : MonoBehaviour {
 
 				Vector3[] Positions = new Vector3[SymmetryMatrix.Length + 1];
 				Quaternion[] Rotations = new Quaternion[SymmetryMatrix.Length + 1];
+				Vector3[] Scales = new Vector3[SymmetryMatrix.Length + 1];
 
 				Positions[0] = PlacementObject.transform.position;
 				Rotations[0] = PlacementObject.transform.rotation;
+				Scales[0] = PlacementObject.transform.localScale;
 
-				for(int i = 0; i < SymmetryMatrix.Length; i++)
+				for (int i = 0; i < SymmetryMatrix.Length; i++)
 				{
 					Positions[i + 1] = PlacementSymmetry[i].transform.position;
 					Rotations[i + 1] = PlacementSymmetry[i].transform.rotation;
+					Scales[i + 1] = PlacementObject.transform.localScale;
 				}
 
-				CurrentPlaceAction(Positions, Rotations);
+				CurrentPlaceAction(Positions, Rotations, Scales);
 			}
 		}
 		else if (PlacementObject.activeSelf)

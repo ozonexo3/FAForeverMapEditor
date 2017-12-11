@@ -28,12 +28,14 @@ public class DecalsControler : MonoBehaviour {
 		return ToReturn;
 	}
 
-	public static GameObject[] GetAllDecalsGo()
+	public static GameObject[] GetAllDecalsGo(out int[] AllTypes)
 	{
 		GameObject[] ToReturn = new GameObject[Current.AllDecals.Count];
+		AllTypes = new int[Current.AllDecals.Count];
 		for (int i = 0; i < ToReturn.Length; i++)
 		{
 			ToReturn[i] = Current.AllDecals[i].gameObject;
+			AllTypes[i] = Current.AllDecals[i].Shared.GetHashCode();
 		}
 		return ToReturn;
 	}
