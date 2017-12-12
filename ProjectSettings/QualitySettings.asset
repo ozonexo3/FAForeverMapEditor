@@ -37,3 +37,4 @@ QualitySettings:
   m_PerPlatformDefaultQuality:
     PS4: 0
     Standalone: 0
+    Windows Store Apps: 0

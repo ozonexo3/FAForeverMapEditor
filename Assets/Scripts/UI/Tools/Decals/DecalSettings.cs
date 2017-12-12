@@ -34,6 +34,9 @@ namespace EditMap
 		{
 			if (Creating)
 				return;
+
+			UpdateSelection();
+
 			Loading = true;
 			Loaded = DecalSettings;
 
@@ -81,9 +84,95 @@ namespace EditMap
 					case TerrainDecalType.TYPE_GLOW_MASK:
 						DecalType.value = 4;
 						break;
+					case TerrainDecalType.TYPE_WATER_MASK:
+						DecalType.value = 5;
+						break;
+					case TerrainDecalType.TYPE_WATER_ALBEDO:
+						DecalType.value = 6;
+						break;
+					case TerrainDecalType.TYPE_WATER_NORMALS:
+						DecalType.value = 7;
+						break;
+					case TerrainDecalType.TYPE_FORCE_DWORD:
+						DecalType.value = 8;
+						break;
+					case TerrainDecalType.TYPE_UNDEFINED:
+						DecalType.value = 9;
+						break;
 				}
 			}
 			Loading = false;
+		}
+
+		void UpdateSelection()
+		{
+			float NearCutoffValue = -1000;
+			float CutoffValue = -100;
+			HashSet<OzoneDecal>.Enumerator ListEnum = DecalsInfo.Current.SelectedDecals.GetEnumerator();
+			while (ListEnum.MoveNext())
+			{
+				if (NearCutoffValue < 0)
+					NearCutoffValue = ListEnum.Current.NearCutOffLOD;
+				else
+				{
+					if (ListEnum.Current.NearCutOffLOD != NearCutoffValue)
+					{
+						// TODO Different value
+					}
+
+				}
+
+				if (CutoffValue < 0)
+					CutoffValue = ListEnum.Current.CutOffLOD;
+				else
+				{
+					if (ListEnum.Current.CutOffLOD != CutoffValue)
+					{
+						// TODO Different value
+					}
+
+				}
+			}
+
+			if (NearCutoffValue < 0)
+				NearCutoffValue = NearCutOff.value;
+
+			if (CutoffValue < 0)
+				CutoffValue = CutOff.value;
+
+			NearCutOff.SetValue(NearCutoffValue);
+			CutOff.SetValue(CutoffValue);
+		}
+
+		TerrainDecalType TypeByDropdown()
+		{
+			
+			switch (DecalType.value)
+			{
+				case 0:
+					return TerrainDecalType.TYPE_ALBEDO;
+				case 1:
+					return TerrainDecalType.TYPE_NORMALS;
+				case 2:
+					return TerrainDecalType.TYPE_NORMALS_ALPHA;
+				case 3:
+					return TerrainDecalType.TYPE_GLOW;
+				case 4:
+					return TerrainDecalType.TYPE_GLOW_MASK;
+				case 5:
+					return TerrainDecalType.TYPE_WATER_MASK;
+				case 6:
+					return TerrainDecalType.TYPE_WATER_ALBEDO;
+				case 7:
+					return TerrainDecalType.TYPE_WATER_NORMALS;
+				case 8:
+					return TerrainDecalType.TYPE_FORCE_DWORD;
+				case 9:
+					return TerrainDecalType.TYPE_UNDEFINED;
+			}
+
+			return TerrainDecalType.TYPE_UNDEFINED;
+
 		}
 
 		public void OnSelectionChanged()
@@ -92,22 +181,19 @@ namespace EditMap
 			NearCutOff.SetValue(0);
 		}
 
-		public void OnValueChanged()
-		{
-			if (Loaded == null || Loading)
-				return;
-
-			//TODO Register Undo
-
-			Loaded.UpdateMaterial();
-		}
-
 		public void OnTypeChanged()
 		{
 			if (Loaded == null || Loading)
 				return;
 
+
+			if (Loaded.Type == TypeByDropdown())
+				return;
+
 			//TODO Register Undo
+
+			Loaded.Type = TypeByDropdown();
+
 
 			Loaded.UpdateMaterial();
 		}
@@ -166,14 +252,62 @@ namespace EditMap
 			}
 		}
 
+		public void OnCutoffLodChanged()
+		{
+			if (Loaded == null || Loading)
+				return;
+
+			//TODO Register Undo
+
+			HashSet<OzoneDecal>.Enumerator ListEnum = DecalsInfo.Current.SelectedDecals.GetEnumerator();
+			while (ListEnum.MoveNext())
+			{
+				ListEnum.Current.CutOffLOD = CutOff.value;
+			}
+			ListEnum.Dispose();
+
+			UpdateSelection();
+		}
+
+		public void OnNearCutoffLodChanged()
+		{
+			if (Loaded == null || Loading)
+				return;
+
+			//TODO Register Undo
+
+			HashSet<OzoneDecal>.Enumerator ListEnum = DecalsInfo.Current.SelectedDecals.GetEnumerator();
+			while (ListEnum.MoveNext())
+			{
+				ListEnum.Current.NearCutOffLOD = NearCutOff.value;
+			}
+			ListEnum.Dispose();
+
+			UpdateSelection();
+		}
+
 		public void SampleCutoffFromCamera()
 		{
-
+			float Dist = (int)CameraControler.GetCurrentZoom();
+			HashSet<OzoneDecal>.Enumerator ListEnum = DecalsInfo.Current.SelectedDecals.GetEnumerator();
+			while (ListEnum.MoveNext())
+			{
+				ListEnum.Current.CutOffLOD = Dist;
+			}
+			ListEnum.Dispose();
+			UpdateSelection();
 		}
 
 		public void SampleNearCutoffFromCamera()
 		{
-
+			float Dist = (int)CameraControler.GetCurrentZoom();
+			HashSet<OzoneDecal>.Enumerator ListEnum = DecalsInfo.Current.SelectedDecals.GetEnumerator();
+			while (ListEnum.MoveNext())
+			{
+				ListEnum.Current.NearCutOffLOD = Dist;
+			}
+			ListEnum.Dispose();
+			UpdateSelection();
 		}
 
 

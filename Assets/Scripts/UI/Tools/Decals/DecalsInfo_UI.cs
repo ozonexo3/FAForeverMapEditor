@@ -66,7 +66,7 @@ namespace EditMap
 			DecalsControler.Sort();
 		}
 
-		HashSet<OzoneDecal> SelectedDecals
+		public HashSet<OzoneDecal> SelectedDecals
 		{
 			get
 			{
@@ -87,6 +87,11 @@ namespace EditMap
 				}
 				return SelectedDecals;
 			}
+		}
+
+		public void CreateNewDecalType()
+		{
+
 		}
 	}
 }

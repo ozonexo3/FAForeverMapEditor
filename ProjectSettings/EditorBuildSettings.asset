@@ -5,7 +5,6 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 0
-    path: Assets/FAForeverMapEditor.unity
   - enabled: 1
     path: Assets/MapEditor.unity
+    guid: 4b48eccf8ce36f7478a4476718bc9fb4

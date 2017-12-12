@@ -62,7 +62,7 @@ namespace EditMap
 			DAHold = (int)DAHold;
 			DAHold /= 10f;
 			//DA_Slider.value = DAHold;
-			DA.SetValue(RaHold);
+			DA.SetValue(DAHold);
 
 			LightMultipiler.SetValue(Scmap.map.LightingMultiplier);
 

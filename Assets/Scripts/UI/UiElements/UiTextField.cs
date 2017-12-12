@@ -28,8 +28,12 @@ namespace Ozone.UI
 			Text, Float, Int
 		}
 
+		bool HasValue = false;
+
 		private void Start()
 		{
+			if (HasValue)
+				return;
 			if (FieldType == FieldTypes.Float)
 				SetValue(BeginValue);
 			else if (FieldType == FieldTypes.Int)
@@ -59,6 +63,7 @@ namespace Ozone.UI
 				return;
 
 			ChangingValue = true;
+			HasValue = true;
 			LastValue = SliderUi.value;
 			InputFieldUi.text = LastValue.ToString(Format);
 			if (InputFieldUi.contentType == InputField.ContentType.IntegerNumber)
@@ -78,7 +83,7 @@ namespace Ozone.UI
 		void UpdateSliderValue(bool ClampText = false)
 		{
 			ChangingValue = true;
-
+			HasValue = true;
 			if (InputFieldUi.contentType == InputField.ContentType.IntegerNumber)
 				LastValue = int.Parse(InputFieldUi.text);
 			else if (InputFieldUi.contentType == InputField.ContentType.DecimalNumber)
@@ -107,6 +112,7 @@ namespace Ozone.UI
 		bool ChangingValue = false;
 		public void SetValue(string value, bool AllowInvoke = false)
 		{
+			HasValue = true;
 			ChangingValue = !AllowInvoke;
 			InputFieldUi.text = value;
 			ChangingValue = false;
@@ -114,6 +120,7 @@ namespace Ozone.UI
 
 		public void SetValue(float value, bool AllowInvoke = false)
 		{
+			HasValue = true;
 			ChangingValue = !AllowInvoke;
 			LastValue = value;
 			if (SliderUi)
@@ -127,6 +134,7 @@ namespace Ozone.UI
 
 		public void SetValue(int value, bool AllowInvoke = false)
 		{
+			HasValue = true;
 			ChangingValue = !AllowInvoke;
 			LastValue = value;
 			if (SliderUi)
@@ -144,6 +152,8 @@ namespace Ozone.UI
 		{
 			get
 			{
+				if (!HasValue)
+					Debug.Log("Field has no value!", gameObject);
 				return InputFieldUi.text;
 			}
 		}
@@ -154,6 +164,11 @@ namespace Ozone.UI
 		{
 			get
 			{
+				if (!HasValue)
+				{
+					Debug.Log("Field has no value!", gameObject);
+					LastValue = BeginValue;
+				}
 				return LastValue;
 			}
 		}
@@ -162,7 +177,12 @@ namespace Ozone.UI
 		{
 			get
 			{
-				return (int)value;
+				if (!HasValue)
+				{
+					Debug.Log("Field has no value!", gameObject);
+					LastValue = (int)BeginValue;
+				}
+				return (int)LastValue;
 			}
 		}
 #endregion
