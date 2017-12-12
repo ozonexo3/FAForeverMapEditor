@@ -17,12 +17,7 @@ public partial class Decal {
 		public Texture2D Texture2;
 		public string Tex2Path;
 
-		public float WorldCutoffDistance;
-		public float CutOff;
-		public float NearCutOff;
 
-		public float CutOffLOD = 0.0f;
-		public float NearCutOffLOD = 0.0f;
 
 		public Material SharedMaterial;
 		public List<int> Ids;
@@ -41,31 +36,14 @@ public partial class Decal {
 			Type = Source.Type;
 			Tex1Path = Source.TexPathes[0];
 			Tex2Path = Source.TexPathes[1];
-			CutOff = Source.CutOffLOD;
-			NearCutOff = Source.NearCutOffLOD;
-
-			CutOffLOD = Source.CutOffLOD;
-			NearCutOffLOD = Source.NearCutOffLOD;
-
 
 			UpdateMaterial();
-		}
-
-		public void UpdateNearFar()
-		{
-			WorldCutoffDistance = CutOffLOD * 0.1f;
-			CutOff = (CutOffLOD - OzoneDecalRenderer.CameraNear) / OzoneDecalRenderer.CameraFar;
-			CutOff *= 0.1f;
-			NearCutOff = (NearCutOffLOD) / OzoneDecalRenderer.CameraFar;
-			NearCutOff *= 0.1f;
 		}
 
 		public void UpdateMaterial()
 		{
 			if (SharedMaterial == null)
 				SharedMaterial = new Material(EditMap.DecalsInfo.Current.AlbedoMaterial);
-
-			UpdateNearFar();
 
 
 			if (Type == TerrainDecalType.TYPE_NORMALS)

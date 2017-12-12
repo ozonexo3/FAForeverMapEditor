@@ -79,10 +79,10 @@ public partial class Decal
 
 		if (Type != other.Type)
 			return false;
-		if (CutOffLOD != other.CutOffLOD)
-			return false;
-		if (NearCutOffLOD != other.NearCutOffLOD)
-			return false;
+		//if (CutOffLOD != other.CutOffLOD)
+		//	return false;
+		//if (NearCutOffLOD != other.NearCutOffLOD)
+		//	return false;
 		if (OwnerArmy != other.OwnerArmy)
 			return false;
 

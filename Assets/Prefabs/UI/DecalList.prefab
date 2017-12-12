@@ -409,7 +409,7 @@ MonoBehaviour:
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_FontData:
-    m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
+    m_Font: {fileID: 12800000, guid: ba878bb41b1a125448c85ae6644d5b6a, type: 3}
     m_FontSize: 12
     m_FontStyle: 0
     m_BestFit: 0
@@ -443,6 +443,16 @@ MonoBehaviour:
   ListId: 0
   ConnectedGameObject: {fileID: 0}
   Cg: {fileID: 0}
+  Setting:
+    Type: 0
+    Texture1: {fileID: 0}
+    Tex1Path: 
+    Texture2: {fileID: 0}
+    Tex2Path: 
+    SharedMaterial: {fileID: 0}
+    Ids: 
+    DrawAlbedo: 0
+    DrawNormal: 0
   Image: {fileID: 114675639421524448}
 --- !u!114 &114675639421524448
 MonoBehaviour:

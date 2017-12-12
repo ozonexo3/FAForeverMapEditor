@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using OzoneDecals;
+using Ozone.UI;
 
 namespace EditMap
 {
@@ -12,8 +13,8 @@ namespace EditMap
 		public InputField Texture1Path;
 		public RawImage Texture2;
 		public InputField Texture2Path;
-		public InputField CutOff;
-		public InputField NearCutOff;
+		public UiTextField CutOff;
+		public UiTextField NearCutOff;
 		public Dropdown DecalType;
 		public Button CreateBtn;
 		public GameObject CreateSelected;
@@ -44,8 +45,9 @@ namespace EditMap
 				Texture2.texture = null;
 				Texture2Path.text = "";
 
-				CutOff.text = "0";
-				NearCutOff.text = "0";
+				//CutOff.text = "500";
+				//NearCutOff.text = "0";
+
 				CreateBtn.interactable = false;
 				CreateSelected.SetActive(false);
 			}
@@ -57,8 +59,8 @@ namespace EditMap
 				Texture2.texture = DecalSettings.Texture2;
 				Texture2Path.text = DecalSettings.Tex2Path;
 
-				CutOff.text = DecalSettings.CutOffLOD.ToString();
-				NearCutOff.text = DecalSettings.NearCutOffLOD.ToString();
+				//CutOff.text = DecalSettings.CutOffLOD.ToString();
+				//NearCutOff.text = DecalSettings.NearCutOffLOD.ToString();
 
 				CreateBtn.interactable = true;
 
@@ -82,6 +84,12 @@ namespace EditMap
 				}
 			}
 			Loading = false;
+		}
+
+		public void OnSelectionChanged()
+		{
+			CutOff.SetValue(50);
+			NearCutOff.SetValue(0);
 		}
 
 		public void OnValueChanged()
@@ -209,12 +217,12 @@ namespace EditMap
 
 		void CreatePrefabAction(GameObject InstancedPrefab)
 		{
-			OzoneDecal od = CreationGameObject.GetComponent<OzoneDecal>();
-			od.Shared = Loaded;
-			od.Material = Loaded.SharedMaterial;
-			LOD[] Old = od.lg.GetLODs();
-			Old[0].screenRelativeTransitionHeight = od.tr.localScale.z / DecalsInfo.FrustumHeightAtDistance(od.Shared.CutOffLOD * 0.102f);
-			od.lg.SetLODs(Old);
+			OzoneDecal Dec = CreationGameObject.GetComponent<OzoneDecal>();
+			Dec.Shared = Loaded;
+			Dec.Material = Loaded.SharedMaterial;
+
+			Dec.CutOffLOD = CutOff.value;
+			Dec.NearCutOffLOD = NearCutOff.value;
 		}
 	}
 

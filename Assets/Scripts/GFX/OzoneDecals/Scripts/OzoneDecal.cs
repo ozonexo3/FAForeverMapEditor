@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.Rendering;
+using EditMap;
 
 namespace OzoneDecals
 {
@@ -13,24 +14,47 @@ namespace OzoneDecals
 		public bool CreationObject;
 
 		public Material Material;
-		//public bool DrawAlbedo = false;
-		//public bool DrawNormal = false;
-		//public bool HighQualityBlending;
-		//public bool HasEmission;
-		//public bool HasSpecular;
 
-		//public float CutOffLOD;
-		//public float NearCutOffLOD;
-		//public float WorldCutoffDistance;
-		//public float FrustumSize;
+		public float WorldCutoffDistance;
+		public float CutOff;
+		public float NearCutOff;
 
-#if UNITY_EDITOR
-		public string Text0Path = "";
-		public string Text1Path = "";
-#endif
+		float _CutOffLOD = 50.0f;
+		float _NearCutOffLOD = 0.0f;
 
-		[HideInInspector]
-		public float LastDistance = 0;
+		public float CutOffLOD
+		{
+			get
+			{
+				return _CutOffLOD;
+			}
+			set
+			{
+				_CutOffLOD = value;
+
+				LOD[] Old = lg.GetLODs();
+				Old[0].screenRelativeTransitionHeight = tr.localScale.z / DecalsInfo.FrustumHeightAtDistance(Mathf.Max(_CutOffLOD, 1) * 0.102f);
+				lg.SetLODs(Old);
+
+				WorldCutoffDistance = _CutOffLOD * 0.1f;
+				CutOff = (_CutOffLOD - OzoneDecalRenderer.CameraNear) / OzoneDecalRenderer.CameraFar;
+				CutOff *= 0.1f;
+			}
+		}
+
+		public float NearCutOffLOD
+		{
+			get
+			{
+				return _NearCutOffLOD;
+			}
+			set
+			{
+				_NearCutOffLOD = value;
+				NearCutOff = (_NearCutOffLOD) / OzoneDecalRenderer.CameraFar;
+				NearCutOff *= 0.1f;
+			}
+		}
 
 		[HideInInspector]
 		public Transform tr;
@@ -83,8 +107,8 @@ namespace OzoneDecals
 			Component.Scale = tr.localScale * 10f;
 			Component.Rotation = tr.localEulerAngles * Mathf.Deg2Rad;
 
-			Component.CutOffLOD = Shared.CutOffLOD;
-			Component.NearCutOffLOD = Shared.NearCutOffLOD;
+			Component.CutOffLOD = CutOffLOD;
+			Component.NearCutOffLOD = NearCutOffLOD;
 			Component.TexPathes = new string[2];
 			Component.TexPathes[0] = Shared.Tex1Path;
 			Component.TexPathes[1] = Shared.Tex2Path;
@@ -110,30 +134,7 @@ namespace OzoneDecals
 
 		void OnWillRenderObject()
 		{
-			//if (Material == null)
-			//	return;
-
-			//if (Camera.current == null)
-			//	return;
-
-			//LastDistance = OzoneDecalRenderer.DecalDist(tr);
-
-			//if (LastDistance > WorldCutoffDistance * WorldCutoffDistance)
-			//	return;
-
 			OzoneDecalRenderer.AddDecal(this, Camera.current);
-			/*
-			if (DrawAlbedo)
-			{
-				IsVisible = true;
-
-
-			}
-			else
-			{
-
-			}
-			*/
 		}
 
 

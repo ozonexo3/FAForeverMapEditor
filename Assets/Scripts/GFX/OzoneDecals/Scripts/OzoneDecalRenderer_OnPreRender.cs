@@ -63,8 +63,8 @@ namespace OzoneDecals
 				if (decal != null && decal.Shared.DrawAlbedo)
 				{
 					_directBlock.Clear();
-					_directBlock.SetFloat("_NearCutOffLOD", decal.Shared.NearCutOff);
-					_directBlock.SetFloat("_CutOffLOD", decal.Shared.CutOff);
+					_directBlock.SetFloat("_NearCutOffLOD", decal.NearCutOff);
+					_directBlock.SetFloat("_CutOffLOD", decal.CutOff);
 
 					_bufferDeferred.DrawMesh(_cubeMesh, decal.tr.localToWorldMatrix, decal.Material, 0, 0, _directBlock);
 				}
@@ -100,8 +100,8 @@ namespace OzoneDecals
 						if (UseInstancing && AllowAlbedoInstancing)
 						{
 							_matrices[n] = decal.tr.localToWorldMatrix;
-							_NearCutOffLODValues[n] = decal.Shared.NearCutOff;
-							_CutOffLODValues[n] = decal.Shared.CutOff;
+							_NearCutOffLODValues[n] = decal.NearCutOff;
+							_CutOffLODValues[n] = decal.CutOff;
 							++n;
 
 							if (n == 1023)
@@ -123,8 +123,8 @@ namespace OzoneDecals
 								//_bufferDeferred.Blit(BuiltinRenderTextureType.CameraTarget, copy2id);
 
 							_directBlock.Clear();
-							_directBlock.SetFloat("_NearCutOffLOD", decal.Shared.NearCutOff);
-							_directBlock.SetFloat("_CutOffLOD", decal.Shared.CutOff);
+							_directBlock.SetFloat("_NearCutOffLOD", decal.NearCutOff);
+							_directBlock.SetFloat("_CutOffLOD", decal.CutOff);
 
 							_bufferDeferred.DrawMesh(_cubeMesh, decal.tr.localToWorldMatrix, material, 0, 0, _directBlock);
 						}
@@ -177,7 +177,7 @@ namespace OzoneDecals
 
 					if (decal != null && decal.Shared.DrawNormal)
 					{
-						if (hqCount < HightQualityMaxCount && decal.LastDistance < HightQualityBlendingDistance)
+						if (hqCount < HightQualityMaxCount)
 						{
 							// Create of copy of GBuffer1 (specular / smoothness) and GBuffer 2 (normal)
 							//_bufferDeferred.Blit(BuiltinRenderTextureType.GBuffer1, copy1id);
@@ -185,8 +185,8 @@ namespace OzoneDecals
 
 							_bufferDeferred.SetRenderTarget(_normalRenderTarget, BuiltinRenderTextureType.CameraTarget);
 							_directBlock.Clear();
-							_directBlock.SetFloat("_NearCutOffLOD", decal.Shared.NearCutOff);
-							_directBlock.SetFloat("_CutOffLOD", decal.Shared.CutOff);
+							_directBlock.SetFloat("_NearCutOffLOD", decal.NearCutOff);
+							_directBlock.SetFloat("_CutOffLOD", decal.CutOff);
 							_bufferDeferred.DrawMesh(_cubeMesh, decal.tr.localToWorldMatrix, material, 0, 1, _directBlock);
 							hqCount++;
 						}
@@ -196,8 +196,8 @@ namespace OzoneDecals
 							{
 								// Instanced drawing
 								_matrices[n] = decal.tr.localToWorldMatrix;
-								_CutOffLODValues[n] = decal.Shared.CutOff;
-								_NearCutOffLODValues[n] = decal.Shared.NearCutOff;
+								_CutOffLODValues[n] = decal.CutOff;
+								_NearCutOffLODValues[n] = decal.NearCutOff;
 								++n;
 
 								if (n == 1023)
@@ -224,8 +224,8 @@ namespace OzoneDecals
 
 								_bufferDeferred.SetRenderTarget(_normalRenderTarget, BuiltinRenderTextureType.CameraTarget);
 								_directBlock.Clear();
-								_directBlock.SetFloat("_NearCutOffLOD", decal.Shared.NearCutOff);
-								_directBlock.SetFloat("_CutOffLOD", decal.Shared.CutOff);
+								_directBlock.SetFloat("_NearCutOffLOD", decal.NearCutOff);
+								_directBlock.SetFloat("_CutOffLOD", decal.CutOff);
 
 								_bufferDeferred.DrawMesh(_cubeMesh, decal.tr.localToWorldMatrix, material, 0, 1, _directBlock);
 								++n;

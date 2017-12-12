@@ -15,6 +15,11 @@ namespace EditMap
 		public GridLayoutGroup Layout;
 		public ContentSizeFitter SizeFitter;
 
+		public void OnScroll()
+		{
+			ListPrefab.localPosition = new Vector3(0, (int)ListPrefab.localPosition.y, 0);
+		}
+
 		int Page = 0;
 
 		private void OnEnable()

@@ -77,10 +77,8 @@ namespace EditMap
 				Dec.tr.localRotation = Rotations[i];
 				Dec.tr.localScale = Scales[i];
 
-				LOD[] Old = Dec.lg.GetLODs();
-				Old[0].screenRelativeTransitionHeight = Dec.tr.localScale.z / FrustumHeightAtDistance(Dec.Shared.CutOffLOD * 0.102f);
-				Dec.lg.SetLODs(Old);
-
+				Dec.CutOffLOD = DecalSettingsUi.CutOff.value;
+				Dec.NearCutOffLOD = DecalSettingsUi.NearCutOff.value;
 
 				Dec.Material = Dec.Shared.SharedMaterial;
 			}

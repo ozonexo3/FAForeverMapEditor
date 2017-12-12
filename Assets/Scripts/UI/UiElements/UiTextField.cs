@@ -78,25 +78,28 @@ namespace Ozone.UI
 		void UpdateSliderValue(bool ClampText = false)
 		{
 			ChangingValue = true;
+
+			if (InputFieldUi.contentType == InputField.ContentType.IntegerNumber)
+				LastValue = int.Parse(InputFieldUi.text);
+			else if (InputFieldUi.contentType == InputField.ContentType.DecimalNumber)
+				LastValue = float.Parse(InputFieldUi.text);
+
 			if (SliderUi)
 			{
-				if (InputFieldUi.contentType == InputField.ContentType.IntegerNumber)
+				LastValue = Mathf.Clamp(LastValue, SliderUi.minValue, SliderUi.maxValue);
+
+				if (ClampText)
 				{
-					LastValue = int.Parse(InputFieldUi.text);
-					LastValue = Mathf.Clamp(LastValue, SliderUi.minValue, SliderUi.maxValue);
-					if(ClampText)
-					InputFieldUi.text = LastValue.ToString();
-				}
-				else if (InputFieldUi.contentType == InputField.ContentType.DecimalNumber)
-				{
-					LastValue = float.Parse(InputFieldUi.text);
-					LastValue = Mathf.Clamp(LastValue, SliderUi.minValue, SliderUi.maxValue);
-					if(ClampText)
+					if (InputFieldUi.contentType == InputField.ContentType.IntegerNumber)
+						InputFieldUi.text = LastValue.ToString();
+					else if (InputFieldUi.contentType == InputField.ContentType.DecimalNumber)
 						InputFieldUi.text = LastValue.ToString(Format);
 				}
 
 				SliderUi.value = LastValue;
+
 			}
+
 			ChangingValue = false;
 		}
 
