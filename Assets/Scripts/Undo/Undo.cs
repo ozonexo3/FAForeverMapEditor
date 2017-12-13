@@ -180,7 +180,8 @@ public class Undo : MonoBehaviour {
 
 	public void RegisterDecalsRemove()
 	{
-
+		HistoryDecalsRemove.AllSelected = DecalsInfo.Current.SelectedDecals;
+		HistoryDecalsMove.GenerateUndo(Prefabs.DecalsMove).Register();
 	}
 
 	public void RegisterDecalsChange()

@@ -60,6 +60,9 @@ namespace EditMap
 
 		public void DestroyDetails(List<GameObject> MarkerObjects, bool RegisterUndo = true)
 		{
+			//TODO Store selected decals type in Undo History
+
+
 
 		}
 
@@ -81,6 +84,8 @@ namespace EditMap
 				Dec.NearCutOffLOD = DecalSettingsUi.NearCutOff.value;
 
 				Dec.Material = Dec.Shared.SharedMaterial;
+
+				DecalsControler.AddDecal(Dec);
 			}
 		}
 

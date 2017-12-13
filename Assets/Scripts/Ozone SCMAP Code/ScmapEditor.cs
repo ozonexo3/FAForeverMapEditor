@@ -181,47 +181,7 @@ public class ScmapEditor : MonoBehaviour
 		if (Teren) DestroyImmediate(Teren.gameObject);
 
 		// Load Stratum Textures Paths
-		for (int i = 0; i < Textures.Length; i++)
-		{
-			MapLuaParser.Current.InfoPopup.Show(true, "Loading map...\n( Stratum textures " + (i + 1) + " )");
-
-			Textures[i].AlbedoPath = map.Layers[i].PathTexture;
-			Textures[i].NormalPath = map.Layers[i].PathNormalmap;
-			if (Textures[i].AlbedoPath.StartsWith("/"))
-			{
-				Textures[i].AlbedoPath = Textures[i].AlbedoPath.Remove(0, 1);
-			}
-			if (Textures[i].NormalPath.StartsWith("/"))
-			{
-				Textures[i].NormalPath = Textures[i].NormalPath.Remove(0, 1);
-			}
-			Textures[i].AlbedoScale = map.Layers[i].ScaleTexture;
-			Textures[i].NormalScale = map.Layers[i].ScaleNormalmap;
-
-			//Debug.Log("Load textures: " + i);
-
-			try
-			{
-				GetGamedataFile.LoadTextureFromGamedata("env.scd", Textures[i].AlbedoPath, i, false);
-			}
-			catch (System.Exception e)
-			{
-				Debug.LogError(i + ", Albedo tex: " + Textures[i].AlbedoPath);
-				Debug.LogError(e);
-			}
-			yield return null;
-			try
-			{
-				GetGamedataFile.LoadTextureFromGamedata("env.scd", Textures[i].NormalPath, i, true);
-			}
-			catch (System.Exception e)
-			{
-				Debug.LogError(i + ", Normal tex: " + Textures[i].NormalPath);
-				Debug.LogError(e);
-			}
-			yield return null;
-		}
-
+		LoadStratumScdTextures();
 		MapLuaParser.Current.InfoPopup.Show(true, "Loading map...\n( Assing scmap data )");
 
 
@@ -313,6 +273,52 @@ public class ScmapEditor : MonoBehaviour
 
 		yield return null;
 		Debug.Log("Scmap load complited");
+	}
+
+	public void LoadStratumScdTextures(bool Loading = true)
+	{
+		// Load Stratum Textures Paths
+		for (int i = 0; i < Textures.Length; i++)
+		{
+			if (Loading)
+			{
+				MapLuaParser.Current.InfoPopup.Show(true, "Loading map...\n( Stratum textures " + (i + 1) + " )");
+
+				Textures[i].AlbedoPath = map.Layers[i].PathTexture;
+				Textures[i].NormalPath = map.Layers[i].PathNormalmap;
+				if (Textures[i].AlbedoPath.StartsWith("/"))
+				{
+					Textures[i].AlbedoPath = Textures[i].AlbedoPath.Remove(0, 1);
+				}
+				if (Textures[i].NormalPath.StartsWith("/"))
+				{
+					Textures[i].NormalPath = Textures[i].NormalPath.Remove(0, 1);
+				}
+			
+				Textures[i].AlbedoScale = map.Layers[i].ScaleTexture;
+				Textures[i].NormalScale = map.Layers[i].ScaleNormalmap;
+			}
+			//Debug.Log("Load textures: " + i);
+
+			try
+			{
+				GetGamedataFile.LoadTextureFromGamedata("env.scd", Textures[i].AlbedoPath, i, false);
+			}
+			catch (System.Exception e)
+			{
+				Debug.LogError(i + ", Albedo tex: " + Textures[i].AlbedoPath);
+				Debug.LogError(e);
+			}
+			try
+			{
+				GetGamedataFile.LoadTextureFromGamedata("env.scd", Textures[i].NormalPath, i, true);
+			}
+			catch (System.Exception e)
+			{
+				Debug.LogError(i + ", Normal tex: " + Textures[i].NormalPath);
+				Debug.LogError(e);
+			}
+		}
 	}
 
 	#region Water
@@ -479,9 +485,6 @@ public class ScmapEditor : MonoBehaviour
 		int MipMapCount = 10;
 		for (int i = 0; i < 8; i++)
 		{
-			if (Textures[i + 1].Albedo == null)
-				continue;
-
 			if (Textures[i + 1].Albedo.width != AlbedoSize || Textures[i + 1].Albedo.height != AlbedoSize)
 			{
 
@@ -513,6 +516,8 @@ public class ScmapEditor : MonoBehaviour
 
 		for (int i = 0; i < 8; i++)
 		{
+			if (Textures[i + 1].Normal == null)
+				continue;
 			if (Textures[i + 1].Normal.width > AlbedoSize)
 			{
 				AlbedoSize = Textures[i + 1].Normal.width;

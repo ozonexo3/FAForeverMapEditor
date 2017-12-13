@@ -111,11 +111,11 @@ Material:
     - _SrcBlend: 1
     - _UVSec: 0
     - _WaterScale: 512
-    - _WaterScaleX: 256
-    - _WaterScaleZ: 256
+    - _WaterScaleX: 1024
+    - _WaterScaleZ: 1024
     - _ZWrite: 1
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - sunColor: {r: 0.40637133, g: 0.23704992, b: 0.16932137, a: 1}
+    - sunColor: {r: 0.26, g: 0.235, b: 0.175, a: 1}
     - waterColor: {r: 0, g: 0.35, b: 0.75, a: 1}

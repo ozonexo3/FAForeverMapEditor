@@ -365,9 +365,15 @@ public class MapLuaParser : MonoBehaviour
 			yield return null;
 
 		string BackupId = System.DateTime.Now.Month.ToString() + System.DateTime.Now.Day.ToString() + System.DateTime.Now.Hour.ToString() + System.DateTime.Now.Minute.ToString() + System.DateTime.Now.Second.ToString();
-		BackupPath = FolderParentPath + FolderName + "/Backup_" + BackupId;
 
-		if (BackupFiles)
+		BackupPath = EnvPaths.GetBackupPath();
+		if (string.IsNullOrEmpty(BackupPath))
+			BackupPath = FolderParentPath;
+
+		BackupPath += FolderName + "/Backup_" + BackupId;
+
+
+		if (BackupFiles && !System.IO.Directory.Exists(BackupPath))
 			System.IO.Directory.CreateDirectory(BackupPath);
 		yield return null;
 

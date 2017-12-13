@@ -568,6 +568,7 @@
     <Compile Include="Assets\Scripts\Undo\HistoryObjects\HistoryChainChange.cs" />
     <Compile Include="Assets\Scripts\Undo\HistoryObjects\HistoryChainMarkers.cs" />
     <Compile Include="Assets\Scripts\Undo\HistoryObjects\HistoryDecalsMove.cs" />
+    <Compile Include="Assets\Scripts\Undo\HistoryObjects\HistoryDecalsRemove.cs" />
     <Compile Include="Assets\Scripts\Undo\HistoryObjects\HistoryLighting.cs" />
     <Compile Include="Assets\Scripts\Undo\HistoryObjects\HistoryMapInfo.cs" />
     <Compile Include="Assets\Scripts\Undo\HistoryObjects\HistoryMarkersChange.cs" />

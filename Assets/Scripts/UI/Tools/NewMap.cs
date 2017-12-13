@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using System.IO;
+using Ozone.UI;
 
 namespace EditMap
 {
@@ -10,17 +11,18 @@ namespace EditMap
 	public class NewMap : MonoBehaviour
 	{
 
-		public InputField Name;
-		public InputField Desc;
+		public UiTextField Name;
+		public UiTextField Desc;
+		public Dropdown TextureSet;
 		public Dropdown MapType;
 		public Dropdown Width;
 		public Dropdown Height;
-		public InputField InitialHeight;
+		public UiTextField InitialHeight;
 
 		public Toggle Water;
-		public InputField WaterElv;
-		public InputField DepthElevation;
-		public InputField AbyssElevation;
+		public UiTextField WaterElv;
+		public UiTextField DepthElevation;
+		public UiTextField AbyssElevation;
 
 		private void OnEnable()
 		{
@@ -29,26 +31,29 @@ namespace EditMap
 
 		public void Clean()
 		{
-			Name.text = "";
-			Desc.text = "";
+			Name.SetValue("");
+			Desc.SetValue("");
 			MapType.value = 0;
 			Width.value = 3;
 			Height.value = 3;
-			InitialHeight.text = "64";
+			InitialHeight.SetValue(64);
 		}
 
 		public void ToggleWater()
 		{
-			WaterElv.interactable = Water.isOn;
-			DepthElevation.interactable = Water.isOn;
-			AbyssElevation.interactable = Water.isOn;
+			//WaterElv.interactable = Water.isOn;
+			//DepthElevation.interactable = Water.isOn;
+			//AbyssElevation.interactable = Water.isOn;
+			WaterElv.gameObject.SetActive(Water.isOn);
+			DepthElevation.gameObject.SetActive(Water.isOn);
+			AbyssElevation.gameObject.SetActive(Water.isOn);
 		}
 
 		public void WaterChange()
 		{
-			float water = float.Parse(WaterElv.text);
-			float depth = float.Parse(DepthElevation.text);
-			float abyss = float.Parse(AbyssElevation.text);
+			float water = WaterElv.value;
+			float depth = DepthElevation.value;
+			float abyss = AbyssElevation.value;
 
 			if (water < 0)
 				water = 0;
@@ -65,9 +70,9 @@ namespace EditMap
 			else if (abyss < 0)
 				abyss = 0;
 
-			WaterElv.text = water.ToString();
-			DepthElevation.text = depth.ToString();
-			AbyssElevation.text = abyss.ToString();
+			WaterElv.SetValue(water);
+			DepthElevation.SetValue(depth);
+			AbyssElevation.SetValue(abyss);
 		}
 
 
@@ -165,8 +170,8 @@ namespace EditMap
 			}
 
 
-			ScmapEditor.Current.map = new Map(MapLuaParser.Current.ScenarioLuaFile.Data.Size[0], MapLuaParser.Current.ScenarioLuaFile.Data.Size[1], int.Parse(InitialHeight.text), 
-				Water.isOn, int.Parse(WaterElv.text), int.Parse(DepthElevation.text), int.Parse(AbyssElevation.text));
+			ScmapEditor.Current.map = new Map(MapLuaParser.Current.ScenarioLuaFile.Data.Size[0], MapLuaParser.Current.ScenarioLuaFile.Data.Size[1], InitialHeight.intValue, 
+				Water.isOn, WaterElv.intValue, DepthElevation.intValue, AbyssElevation.intValue);
 
 
 

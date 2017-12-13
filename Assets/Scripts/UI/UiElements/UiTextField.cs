@@ -153,7 +153,9 @@ namespace Ozone.UI
 			get
 			{
 				if (!HasValue)
-					Debug.Log("Field has no value!", gameObject);
+				{
+
+				}
 				return InputFieldUi.text;
 			}
 		}
@@ -166,7 +168,6 @@ namespace Ozone.UI
 			{
 				if (!HasValue)
 				{
-					Debug.Log("Field has no value!", gameObject);
 					LastValue = BeginValue;
 				}
 				return LastValue;
@@ -179,7 +180,6 @@ namespace Ozone.UI
 			{
 				if (!HasValue)
 				{
-					Debug.Log("Field has no value!", gameObject);
 					LastValue = (int)BeginValue;
 				}
 				return (int)LastValue;

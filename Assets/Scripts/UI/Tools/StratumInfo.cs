@@ -1364,6 +1364,7 @@ namespace EditMap
 
 		class StratumTemplate
 		{
+			public bool TTerrainXP = false;
 			public ScmapEditor.TerrainTexture Stratum0;
 			public ScmapEditor.TerrainTexture Stratum1;
 			public ScmapEditor.TerrainTexture Stratum2;
@@ -1397,6 +1398,7 @@ namespace EditMap
 			{
 
 				StratumTemplate NewTemplate = new StratumTemplate();
+				NewTemplate.TTerrainXP = TTerrainXP.isOn;
 				NewTemplate.Stratum0 = ScmapEditor.Current.Textures[0];
 				NewTemplate.Stratum1 = ScmapEditor.Current.Textures[1];
 				NewTemplate.Stratum2 = ScmapEditor.Current.Textures[2];
@@ -1419,7 +1421,7 @@ namespace EditMap
 
 			var extensions = new[]
 {
-				new ExtensionFilter("Stratum setting file", "scmsl")
+				new ExtensionFilter("Stratum setting file", "scmst")
 			};
 
 			var paths = StandaloneFileBrowser.OpenFilePanel("Import stratum mask", EnvPaths.GetMapsPath(), extensions, false);
@@ -1438,6 +1440,8 @@ namespace EditMap
 
 				StratumTemplate NewTemplate = UnityEngine.JsonUtility.FromJson<StratumTemplate>(data);
 
+				TTerrainXP.isOn = NewTemplate.TTerrainXP;
+
 				ScmapEditor.Current.Textures[0] = NewTemplate.Stratum0;
 				ScmapEditor.Current.Textures[1] = NewTemplate.Stratum1;
 				ScmapEditor.Current.Textures[2] = NewTemplate.Stratum2;
@@ -1451,7 +1455,7 @@ namespace EditMap
 
 				//Map.Gamedata.LoadTextureFromGamedata("env.scd", Map.Textures[Selected].AlbedoPath, Selected, false);
 				//Map.Gamedata.LoadTextureFromGamedata("env.scd", Map.Textures[Selected].NormalPath, Selected, true);
-
+				/*
 				for (int i = 0; i < ScmapEditor.Current.Textures.Length; i++)
 				{
 					ScmapEditor.Current.Textures[i].AlbedoPath = ScmapEditor.Current.map.Layers[i].PathTexture;
@@ -1470,8 +1474,13 @@ namespace EditMap
 					GetGamedataFile.LoadTextureFromGamedata("env.scd", ScmapEditor.Current.Textures[i].AlbedoPath, i, false);
 					GetGamedataFile.LoadTextureFromGamedata("env.scd", ScmapEditor.Current.Textures[i].NormalPath, i, true);
 
-					ScmapEditor.Current.SetTextures(i);
 				}
+				*/
+
+				ScmapEditor.Current.LoadStratumScdTextures(false);
+
+				ScmapEditor.Current.SetTextures();
+
 
 				ReloadStratums();
 			}

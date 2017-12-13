@@ -14,6 +14,7 @@ public class EnvPaths : MonoBehaviour {
 	const string InstalationPath = "InstalationPath";
 	const string InstalationGamedata = "gamedata/";
 	const string MapsPath = "MapsPath";
+	const string BackupPath = "BackupPath";
 
 	public static string GetInstalationPath(){
 		return PlayerPrefs.GetString (InstalationPath, EnvPaths.DefaultGamedataPath);
@@ -45,6 +46,19 @@ public class EnvPaths : MonoBehaviour {
 		return PlayerPrefs.GetString(MapsPath, EnvPaths.DefaultMapPath);
 	}
 
+	public static void SetBackupPath(string value)
+	{
+		value = value.Replace("\\", "/");
+		if (value[value.Length - 1].ToString() != "/") value += "/";
+		if (value[0].ToString() == "/") value = value.Remove(0, 1);
+
+		PlayerPrefs.SetString(BackupPath, value);
+	}
+
+	public static string GetBackupPath()
+	{
+		return PlayerPrefs.GetString(BackupPath, "");
+	}
 
 	#region Auto Generate
 	public static void GenerateDefaultPaths(){

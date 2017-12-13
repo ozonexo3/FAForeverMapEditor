@@ -252,6 +252,22 @@ namespace EditMap
 			}
 		}
 
+		public void SetTex1Path()
+		{
+			if (Loaded == null)
+				return;
+
+			Texture1Path.text = Loaded.Tex1Path;
+		}
+
+		public void SetTex2Path()
+		{
+			if (Loaded == null)
+				return;
+
+			Texture2Path.text = Loaded.Tex2Path;
+		}
+
 		public void OnCutoffLodChanged()
 		{
 			if (Loaded == null || Loading)

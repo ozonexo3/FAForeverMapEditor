@@ -9,6 +9,7 @@ public class FafEditorSettings : MonoBehaviour {
 
 	public InputField		PathField;
 	public InputField		MapsPathField;
+	public InputField		BackupPathField;
 	public	Slider			HistorySlider;
 	public	Undo			History;
 
@@ -18,6 +19,7 @@ public class FafEditorSettings : MonoBehaviour {
 	void OnEnable(){
 		PathField.text = EnvPaths.GetInstalationPath();
 		MapsPathField.text = EnvPaths.GetMapsPath();
+		BackupPathField.text = EnvPaths.GetBackupPath();
 	}
 	
 
@@ -31,19 +33,11 @@ public class FafEditorSettings : MonoBehaviour {
 	}
 
 	public void Save(){
-		//string newPath = PathField.text.Replace("\\", "/");
-		//if(newPath[newPath.Length - 1].ToString() != "/") newPath += "/";
-		//if(newPath[0].ToString() == "/") newPath = newPath.Remove(0,1);
-		//PlayerPrefs.SetString("GameDataPath", newPath);
-
 		EnvPaths.SetInstalationPath (PathField.text);
 
-		//newPath = MapsPathField.text.Replace("\\", "/");
-		//if(newPath[newPath.Length - 1].ToString() != "/") newPath += "/";
-		//if(newPath[0].ToString() == "/") newPath = newPath.Remove(0,1);
-		//PlayerPrefs.SetString("MapsPath", newPath);
-
 		EnvPaths.SetMapsPath (MapsPathField.text);
+
+		EnvPaths.SetBackupPath(BackupPathField.text);
 
 		PlayerPrefs.SetInt(UndoHistory, (int)HistorySlider.value);
 		if(History)History.MaxHistoryLength = (int)HistorySlider.value;
@@ -56,15 +50,20 @@ public class FafEditorSettings : MonoBehaviour {
 	[DllImport("user32.dll")]
 	private static extern void SaveFileDialog(); //in your case : OpenFileDialog
 
+	public void BrowseGamedataPath(){
 
-	public void BrowseMapPath(){
+		var paths = StandaloneFileBrowser.OpenFolderPanel("Select 'Gamedata' folder in FA instalation directory", EnvPaths.GetMapsPath(), false);
+
+		if (paths.Length > 0 && !string.IsNullOrEmpty(paths[0]))
+		{
+			PathField.text = paths[0];
+		}
+	}
+
+	public void BrowseMapPath()
+	{
 
 		var paths = StandaloneFileBrowser.OpenFolderPanel("Select 'Maps' folder.", EnvPaths.GetMapsPath(), false);
-
-		/*System.Windows.Forms.FolderBrowserDialog FolderDialog = new FolderBrowserDialog ();
-
-		FolderDialog.ShowNewFolderButton = false;
-		FolderDialog.Description = "Select 'Maps' folder.";*/
 
 		if (paths.Length > 0 && !string.IsNullOrEmpty(paths[0]))
 		{
@@ -72,21 +71,13 @@ public class FafEditorSettings : MonoBehaviour {
 		}
 	}
 
-	public void BrowseGamedataPath(){
+	public void BrowseBackupPath()
+	{
+		var paths = StandaloneFileBrowser.OpenFolderPanel("Select 'Maps' folder.", EnvPaths.GetMapsPath(), false);
 
-		var paths = StandaloneFileBrowser.OpenFolderPanel("Select 'Gamedata' folder in FA instalation directory", EnvPaths.GetMapsPath(), false);
-
-		/*
-		System.Windows.Forms.FolderBrowserDialog FolderDialog = new FolderBrowserDialog ();
-
-		FolderDialog.ShowNewFolderButton = false;
-		FolderDialog.Description = "Select 'Gamedata' folder in Supreme Commander Forget Alliance instalation directory.";
-		*/
-
-		//if (FolderDialog.ShowDialog() == DialogResult.OK)
 		if (paths.Length > 0 && !string.IsNullOrEmpty(paths[0]))
 		{
-			PathField.text = paths[0];
+			BackupPathField.text = paths[0];
 		}
 	}
 
@@ -100,6 +91,11 @@ public class FafEditorSettings : MonoBehaviour {
 	public void ResetMap(){
 		EnvPaths.GenerateMapPath ();
 		MapsPathField.text = EnvPaths.DefaultMapPath;
+	}
+
+	public void ResetBackup()
+	{
+		MapsPathField.text = "";
 	}
 
 }

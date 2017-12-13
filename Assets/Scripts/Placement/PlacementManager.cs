@@ -44,9 +44,7 @@ public class PlacementManager : MonoBehaviour {
 			if (Current.PlacementSymmetry[i])
 				Destroy(Current.PlacementSymmetry[i]);
 
-
 		Current.enabled = false;
-
 	}
 
 	Vector3 RotationStartMousePos;
@@ -105,7 +103,7 @@ public class PlacementManager : MonoBehaviour {
 				else if (Input.GetKey(KeyCode.E))
 				{
 					Rotating = true;
-					PlacementObject.transform.eulerAngles = StartRotation + Vector3.up * ((Input.mousePosition.x - RotationStartMousePos.x) * 0.5f);
+					PlacementObject.transform.eulerAngles = StartRotation + Vector3.down * ((Input.mousePosition.x - RotationStartMousePos.x) * 0.5f);
 				}
 			}
 
@@ -164,7 +162,10 @@ public class PlacementManager : MonoBehaviour {
 
 
 			// Action
-			if (Input.GetMouseButtonDown(0))
+			if (Input.GetKey(KeyCode.E) || Input.GetKey(KeyCode.R) || Input.GetKey(KeyCode.B) || Input.GetKey(KeyCode.M))
+			{
+			}
+			else if (Input.GetMouseButtonDown(0))
 			{
 
 				Vector3[] Positions = new Vector3[SymmetryMatrix.Length + 1];

@@ -17,8 +17,8 @@ namespace Ozone
 		public void NewArray(int Capacity = MaxMemoryAllocation)
 		{
 			_capacity = Capacity;
-			Ids = new int[Capacity];
-			ConstantArray = new T[Capacity];
+			Ids = new int[_capacity];
+			ConstantArray = new T[_capacity];
 			_count = 0;
 		}
 

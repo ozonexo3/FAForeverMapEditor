@@ -41,11 +41,14 @@ public class DecalsControler : MonoBehaviour {
 	}
 
 
-	public static void AddDecal(OzoneDecal dc)
+	public static void AddDecal(OzoneDecal dc, int ForceOrder = -1)
 	{
 		if (!Current.AllDecals.Contains(dc))
 		{
-			Current.AllDecals.Add(dc);
+			if(ForceOrder >= 0)
+				Current.AllDecals.Insert(ForceOrder, dc);
+			else
+				Current.AllDecals.Add(dc);
 			OzoneDecalRenderer.AddAlbedoDecal(dc);
 		}
 	}

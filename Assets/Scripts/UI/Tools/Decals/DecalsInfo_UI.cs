@@ -91,6 +91,17 @@ namespace EditMap
 
 		public void CreateNewDecalType()
 		{
+			//TODO Undo Create
+
+			SelectionManager.Current.CleanSelection();
+
+			Decal.DecalSharedSettings NewSharedDecal = new Decal.DecalSharedSettings();
+
+			NewSharedDecal.UpdateMaterial();
+			Decal.AllDecalsShared.Add(NewSharedDecal);
+
+			DecalSettingsUi.Load(NewSharedDecal);
+			DecalsList.GenerateTypes();
 
 		}
 	}

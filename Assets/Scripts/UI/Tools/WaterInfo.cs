@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Ozone.UI;
+using System.IO;
+using System.Runtime.InteropServices;
+using SFB;
 
 namespace EditMap
 {
@@ -129,6 +132,59 @@ namespace EditMap
 			ScmapEditor.Current.map.Water.RefractionScale = RefractionScale.value;
 
 			ScmapEditor.Current.SetWater();
+		}
+
+
+
+		public void ExportWater()
+		{
+			var extensions = new[]
+			{
+				new ExtensionFilter("Water settings", "scmwtr")
+			};
+
+			var path = StandaloneFileBrowser.SaveFilePanel("Export water", EnvPaths.GetMapsPath(), "", extensions);
+
+			if (string.IsNullOrEmpty(path))
+				return;
+
+			string data = JsonUtility.ToJson(ScmapEditor.Current.map.Water);
+
+			File.WriteAllText(path, data);
+		}
+
+		public void ImportWater()
+		{
+			var extensions = new[]
+			{
+				new ExtensionFilter("Water settings", "scmwtr")
+			};
+
+			var paths = StandaloneFileBrowser.OpenFilePanel("Import water", EnvPaths.GetMapsPath(), extensions, false);
+
+
+			if (paths.Length <= 0 || string.IsNullOrEmpty(paths[0]))
+				return;
+
+
+			string data = File.ReadAllText(paths[0]);
+
+			float WaterLevel = ScmapEditor.Current.map.Water.Elevation;
+			float AbyssLevel = ScmapEditor.Current.map.Water.ElevationAbyss;
+			float DeepLevel = ScmapEditor.Current.map.Water.ElevationDeep;
+
+			ScmapEditor.Current.map.Water = JsonUtility.FromJson<WaterShader>(data);
+
+			ScmapEditor.Current.map.Water.Elevation = WaterLevel;
+			ScmapEditor.Current.map.Water.ElevationAbyss = AbyssLevel;
+			ScmapEditor.Current.map.Water.ElevationDeep = DeepLevel;
+
+			ScmapEditor.Current.SetWater();
+			ScmapEditor.Current.SetWaterTextures();
+			TerrainMenu.RegenerateMaps();
+
+			OnEnable();
+
 		}
 	}
 }

@@ -17,18 +17,16 @@ public partial class Decal {
 		public Texture2D Texture2;
 		public string Tex2Path;
 
-
-
 		public Material SharedMaterial;
-		public List<int> Ids;
 
 		public bool DrawAlbedo;
 		public bool DrawNormal;
 
 		public DecalSharedSettings()
 		{
-			//SharedMaterial = null;
-			Ids = new List<int>();
+			Type = TerrainDecalType.TYPE_ALBEDO;
+			Tex1Path = "";
+			Tex2Path = "";
 		}
 
 		public void Load(Decal Source)
@@ -46,7 +44,7 @@ public partial class Decal {
 				SharedMaterial = new Material(EditMap.DecalsInfo.Current.AlbedoMaterial);
 
 
-			if (Type == TerrainDecalType.TYPE_NORMALS)
+			if (Type == TerrainDecalType.TYPE_NORMALS || Type == TerrainDecalType.TYPE_NORMALS_ALPHA)
 			{
 				Texture1 = DecalsInfo.AssignTextureFromPath(ref SharedMaterial, "_NormalTex", Tex1Path);
 
