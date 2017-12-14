@@ -143,7 +143,7 @@ namespace EditMap
 				HashSet<Decal.DecalSharedSettings> SelectedShared = new HashSet<Decal.DecalSharedSettings>();
 				for (int i = 0; i < SelectedCount; i++)
 				{
-					SelectedShared.Add(SelectionManager.Current.AffectedGameObjects[SelectionManager.Current.Selection.Ids[i]].GetComponent<OzoneDecal>().Shared);
+					SelectedShared.Add(SelectionManager.Current.AffectedGameObjects[SelectionManager.Current.Selection.Ids[i]].GetComponent<OzoneDecal>().Dec.Shared);
 				}
 
 				var ListEnum = AllListObjects.GetEnumerator();
@@ -187,7 +187,7 @@ namespace EditMap
 
 			for (int i = 0; i < SelectionManager.Current.AffectedGameObjects.Length; i++)
 			{
-				if (SelectionManager.Current.AffectedGameObjects[i].GetComponent<OzoneDecal>().Shared == dss)
+				if (SelectionManager.Current.AffectedGameObjects[i].GetComponent<OzoneDecal>().Dec.Shared == dss)
 					SelectionManager.Current.SelectObjectAdd(SelectionManager.Current.AffectedGameObjects[i]);
 			}
 		}

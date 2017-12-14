@@ -1,4 +1,13 @@
-﻿using System.Collections;
+﻿// ******************************************************************************
+//
+// * Save.lua Class
+// * Can be loaded from LUA and saved as LUA using LuaParser
+// * Parsing is done by hand, because I can't find good parser that will convert LUA to Class
+// * Copyright ozonexo3 2017
+//
+// ******************************************************************************
+
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using NLua;
@@ -269,8 +278,8 @@ namespace MapLua
 					for(int a = 0; a < Data.areas.Length; a++)
 					{
 						//TODO
-						LuaFile.OpenTab(LuaParser.Write.PropertiveToLua(Data.areas[a].Name) + LuaParser.Write.OpenBracketValue);
-						LuaFile.AddLine(LuaParser.Write.RectangleToLua(LuaParser.Write.PropertiveToLua(Areas.KEY_RECTANGLE), Data.areas[a].rectangle));
+						LuaFile.OpenTab(LuaParser.Write.PropertieToLua(Data.areas[a].Name) + LuaParser.Write.OpenBracketValue);
+						LuaFile.AddLine(LuaParser.Write.RectangleToLua(LuaParser.Write.PropertieToLua(Areas.KEY_RECTANGLE), Data.areas[a].rectangle));
 						LuaFile.CloseTab(LuaParser.Write.EndBracketNext);
 					}
 				}
@@ -287,7 +296,7 @@ namespace MapLua
 				{
 					for(int mc = 0; mc < Data.MasterChains.Length; mc++)
 					{
-						LuaFile.OpenTab(LuaParser.Write.PropertiveToLua(Data.MasterChains[mc].Name) + LuaParser.Write.OpenBracketValue);
+						LuaFile.OpenTab(LuaParser.Write.PropertieToLua(Data.MasterChains[mc].Name) + LuaParser.Write.OpenBracketValue);
 						{
 							LuaFile.OpenTab(MasterChain.KEY_MARKERS + LuaParser.Write.OpenBracketValue);
 							{
@@ -317,7 +326,7 @@ namespace MapLua
 					{
 						Data.Chains[c].BakeMarkers();
 
-						LuaFile.OpenTab(LuaParser.Write.PropertiveToLua(Data.Chains[c].Name) + LuaParser.Write.OpenBracketValue);
+						LuaFile.OpenTab(LuaParser.Write.PropertieToLua(Data.Chains[c].Name) + LuaParser.Write.OpenBracketValue);
 						LuaFile.OpenTab(Chain.KEY_MARKERS + LuaParser.Write.OpenBracketValue);
 
 						for(int i = 0; i < Data.Chains[c].Markers.Length; i++)
@@ -353,7 +362,7 @@ namespace MapLua
 				{
 					for (int p = 0; p < Data.Platoons.Length; p++)
 					{
-						LuaFile.OpenTab(LuaParser.Write.PropertiveToLua(Data.Platoons[p].Name) + LuaParser.Write.OpenBracketValue);
+						LuaFile.OpenTab(LuaParser.Write.PropertieToLua(Data.Platoons[p].Name) + LuaParser.Write.OpenBracketValue);
 						LuaFile.AddLine(LuaParser.Write.Coma + Data.Platoons[p].PlatoonName + LuaParser.Write.Coma + LuaParser.Write.NextValue);
 						LuaFile.AddLine(LuaParser.Write.Coma + Data.Platoons[p].PlatoonFunction + LuaParser.Write.Coma + LuaParser.Write.NextValue);
 

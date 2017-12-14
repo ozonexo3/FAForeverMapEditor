@@ -1,4 +1,10 @@
-﻿using System.Collections;
+﻿//********************************
+//
+// Custom decal settins shared between multiple decals for FAF Map Editor 
+//
+//********************************
+
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using EditMap;
@@ -7,6 +13,21 @@ using OzoneDecals;
 public partial class Decal {
 
 	public static HashSet<DecalSharedSettings> AllDecalsShared = new HashSet<DecalSharedSettings>();
+
+	public DecalSharedSettings Shared;
+	OzoneDecal _Obj;
+	public OzoneDecal Obj
+	{
+		get
+		{
+			return _Obj;
+		}
+		set
+		{
+			_Obj = value;
+		}
+	}
+
 
 	[System.Serializable, PreferBinarySerialization]
 	public class DecalSharedSettings

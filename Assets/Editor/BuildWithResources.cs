@@ -4,7 +4,7 @@ using System.Diagnostics;
 
 public class BuildWithResources : MonoBehaviour 
 {
-	[MenuItem("Build/Windows with resources")]
+	[MenuItem("Build/Windows with resources (old)")]
 	public static void BuildSettings ()
 	{
 		// Get filename
@@ -43,6 +43,7 @@ public class BuildWithResources : MonoBehaviour
 	}
 
 
+	/*
 	[MenuItem("Build/Do Action")]
 	public static void ChangeModelVerts()
 	{
@@ -56,6 +57,6 @@ public class BuildWithResources : MonoBehaviour
 		}
 
 		LoadedMesh.vertices = NewVerts;
-
 	}
+	*/
 }

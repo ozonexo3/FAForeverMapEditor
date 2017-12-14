@@ -1,4 +1,11 @@
-﻿using UnityEngine;
+﻿// ******************************************************************************
+//
+// * Simple Undo system. Values are stored in Prefabs. 
+// * Copyright ozonexo3 2017
+//
+// ******************************************************************************
+
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using UndoHistory;
@@ -175,16 +182,15 @@ public class Undo : MonoBehaviour {
 
 	public void RegisterDecalsAdd()
 	{
-
+		HistoryDecalsChange.GenerateUndo(Prefabs.DecalsChange).Register();
 	}
 
 	public void RegisterDecalsRemove()
 	{
-		HistoryDecalsRemove.AllSelected = DecalsInfo.Current.SelectedDecals;
-		HistoryDecalsMove.GenerateUndo(Prefabs.DecalsMove).Register();
+		HistoryDecalsChange.GenerateUndo(Prefabs.DecalsChange).Register();
 	}
 
-	public void RegisterDecalsChange()
+	public void RegisterDecalsValuesChange()
 	{
 
 	}

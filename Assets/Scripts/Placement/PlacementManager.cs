@@ -1,4 +1,12 @@
-﻿using System.Collections;
+﻿// ******************************************************************************
+// *
+// * System for creating new objects. Can handle multiple objects, symmetry, rotation and scale.
+// * It take only GameObject and some voids for actions and returns arrays of transforms
+// * Copyright ozonexo3 2017
+// * 
+// ******************************************************************************
+
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Selection;
@@ -42,7 +50,7 @@ public class PlacementManager : MonoBehaviour {
 		Destroy(Current.PlacementObject);
 		for (int i = 0; i < Current.PlacementSymmetry.Length; i++)
 			if (Current.PlacementSymmetry[i])
-				Destroy(Current.PlacementSymmetry[i]);
+				DestroyImmediate(Current.PlacementSymmetry[i]);
 
 		Current.enabled = false;
 	}

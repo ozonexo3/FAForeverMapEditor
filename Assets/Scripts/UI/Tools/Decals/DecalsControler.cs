@@ -7,7 +7,7 @@ public class DecalsControler : MonoBehaviour {
 
 	public static DecalsControler Current;
 
-	public List<OzoneDecal> AllDecals;
+	public List<Decal> AllDecals = new List<Decal>();
 
 	private void Awake()
 	{
@@ -16,16 +16,26 @@ public class DecalsControler : MonoBehaviour {
 
 	public static List<Decal> GetAllDecals()
 	{
+		/*
 		int Count = Current.AllDecals.Count;
 		List<Decal> ToReturn = new List<Decal>(Count);
 
 		for (int i = 0; i < Count; i++)
 		{
 			//Current.AllDecals[i].Bake();
-			ToReturn.Add(Current.AllDecals[i].Bake());
+			ToReturn.Add(Current.AllDecals[i]);
 		}
 
 		return ToReturn;
+		*/
+
+		int Count = Current.AllDecals.Count;
+		for (int i = 0; i < Count; i++)
+		{
+			Current.AllDecals[i].Obj.Bake();
+		}
+
+		return Current.AllDecals;
 	}
 
 	public static GameObject[] GetAllDecalsGo(out int[] AllTypes)
@@ -34,35 +44,76 @@ public class DecalsControler : MonoBehaviour {
 		AllTypes = new int[Current.AllDecals.Count];
 		for (int i = 0; i < ToReturn.Length; i++)
 		{
-			ToReturn[i] = Current.AllDecals[i].gameObject;
+
+			ToReturn[i] = Current.AllDecals[i].Obj.gameObject;
 			AllTypes[i] = Current.AllDecals[i].Shared.GetHashCode();
 		}
 		return ToReturn;
 	}
 
-
-	public static void AddDecal(OzoneDecal dc, int ForceOrder = -1)
+	public static void ChangeDecalsList(List<Decal> NewDecalsList)
 	{
+		HashSet<OzoneDecal> ToDestroy = new HashSet<OzoneDecal>();
+
+		int count = Current.AllDecals.Count;
+		for(int i = 0; i < count; i++)
+		{
+			if (!NewDecalsList.Contains(Current.AllDecals[i]) && Current.AllDecals[i].Obj)
+			{
+				Current.AllDecals[i].Obj.Bake();
+				//DestroyImmediate(Current.AllDecals[i].Obj.gameObject);
+				ToDestroy.Add(Current.AllDecals[i].Obj);
+			}
+		}
+
+		count = NewDecalsList.Count;
+
+		for (int i = 0; i < count; i++)
+		{
+			if (!Current.AllDecals.Contains(NewDecalsList[i]))
+			{
+				// Empty, create gameObject
+				EditMap.DecalsInfo.CreateGameObjectFromDecal(NewDecalsList[i]);
+			}
+		}
+
+		Current.AllDecals = NewDecalsList;
+
+		foreach (OzoneDecal Obj in ToDestroy)
+			DestroyImmediate(Obj.gameObject);
+	}
+
+	public static void AddDecal(Decal dc, int ForceOrder = -1)
+	{
+		if(dc == null)
+		{
+			Debug.LogWarning("Trying to add NULL Decal");
+			return;
+		}
+
 		if (!Current.AllDecals.Contains(dc))
 		{
-			if(ForceOrder >= 0)
-				Current.AllDecals.Insert(ForceOrder, dc);
-			else
-				Current.AllDecals.Add(dc);
-			OzoneDecalRenderer.AddAlbedoDecal(dc);
+			if (!dc.Obj.CreationObject)
+			{
+				if (ForceOrder >= 0)
+					Current.AllDecals.Insert(ForceOrder, dc);
+				else
+					Current.AllDecals.Add(dc);
+			}
+			OzoneDecalRenderer.AddAlbedoDecal(dc.Obj);
 		}
 	}
 
-	public static void RemoveDecal(OzoneDecal dc)
+	public static void RemoveDecal(Decal dc)
 	{
 		if (Current.AllDecals.Contains(dc))
 		{
 			Current.AllDecals.Remove(dc);
-			OzoneDecalRenderer.RemoveAlbedoDecal(dc);
+			OzoneDecalRenderer.RemoveAlbedoDecal(dc.Obj);
 		}
 	}
 
-	public static void MoveUp(OzoneDecal dc)
+	public static void MoveUp(Decal dc)
 	{
 		if (!Current.AllDecals.Contains(dc))
 			Debug.LogError("Decal not exist in all decals list");
@@ -77,7 +128,7 @@ public class DecalsControler : MonoBehaviour {
 		}
 	}
 
-	public static void MoveDown(OzoneDecal dc)
+	public static void MoveDown(Decal dc)
 	{
 		if (!Current.AllDecals.Contains(dc))
 			Debug.LogError("Decal not exist in all decals list");
@@ -91,7 +142,7 @@ public class DecalsControler : MonoBehaviour {
 		}
 	}
 
-	public static void MoveBottom(OzoneDecal dc)
+	public static void MoveBottom(Decal dc)
 	{
 		if (!Current.AllDecals.Contains(dc))
 			Debug.LogError("Decal not exist in all decals list");
@@ -107,7 +158,7 @@ public class DecalsControler : MonoBehaviour {
 		}
 	}
 
-	public static void MoveTop(OzoneDecal dc)
+	public static void MoveTop(Decal dc)
 	{
 		if (!Current.AllDecals.Contains(dc))
 			Debug.LogError("Decal not exist in all decals list");
@@ -129,7 +180,7 @@ public class DecalsControler : MonoBehaviour {
 
 		for (int i = 0; i < count; i++)
 		{
-			Current.AllDecals[i].tr.SetSiblingIndex(i);
+			Current.AllDecals[i].Obj.tr.SetSiblingIndex(i);
 		}
 		Current.gameObject.SetActive(false);
 		Current.gameObject.SetActive(true);
@@ -146,7 +197,7 @@ public class DecalsControler : MonoBehaviour {
 		for (int d = 0; d < AllDecals.Count; d++)
 		{
 			if (AllDecals[d] != null)
-				Destroy(AllDecals[d].gameObject);
+				Destroy(AllDecals[d].Obj.gameObject);
 		}
 
 		//AllDecals = new List<OzoneDecal>();
@@ -181,9 +232,9 @@ public class DecalsControler : MonoBehaviour {
 
 		for (int d = 0; d < AllDecals.Count; d++)
 		{
-			Vector3 Pos = AllDecals[d].GetPivotPoint();
+			Vector3 Pos = AllDecals[d].Obj.GetPivotPoint();
 			Pos.y = ScmapEditor.Current.Teren.SampleHeight(Pos);
-			AllDecals[d].MovePivotPoint(Pos);
+			AllDecals[d].Obj.MovePivotPoint(Pos);
 
 			//AllDecals[d].tr.position = Pos;// + (AllDecals[d].tr.forward * AllDecals[d].tr.localScale.z * 0.5f) - (AllDecals[d].tr.right * AllDecals[d].tr.localScale.x * 0.5f);
 

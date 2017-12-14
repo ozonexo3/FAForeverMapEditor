@@ -17,12 +17,11 @@ namespace EditMap
 		{
 			if (SelectionManager.Current.Selection.Ids.Count == 0)
 				return;
-			HashSet<OzoneDecal>.Enumerator ListEnum = SelectedDecals.GetEnumerator();
-			while (ListEnum.MoveNext())
+			HashSet<OzoneDecal> Sd = SelectedDecals;
+			foreach (OzoneDecal Odec in Sd)
 			{
-				DecalsControler.MoveUp(ListEnum.Current);
+				DecalsControler.MoveUp(Odec.Dec);
 			}
-			ListEnum.Dispose();
 			DecalsControler.Sort();
 		}
 
@@ -30,12 +29,11 @@ namespace EditMap
 		{
 			if (SelectionManager.Current.Selection.Ids.Count == 0)
 				return;
-			HashSet<OzoneDecal>.Enumerator ListEnum = SelectedDecals.GetEnumerator();
-			while (ListEnum.MoveNext())
+			HashSet<OzoneDecal> Sd = SelectedDecals;
+			foreach (OzoneDecal Odec in Sd)
 			{
-				DecalsControler.MoveDown(ListEnum.Current);
+				DecalsControler.MoveDown(Odec.Dec);
 			}
-			ListEnum.Dispose();
 			DecalsControler.Sort();
 		}
 
@@ -43,12 +41,11 @@ namespace EditMap
 		{
 			if (SelectionManager.Current.Selection.Ids.Count == 0)
 				return;
-			HashSet<OzoneDecal>.Enumerator ListEnum = SelectedDecals.GetEnumerator();
-			while (ListEnum.MoveNext())
+			HashSet<OzoneDecal> Sd = SelectedDecals;
+			foreach (OzoneDecal Odec in Sd)
 			{
-				DecalsControler.MoveTop(ListEnum.Current);
+				DecalsControler.MoveTop(Odec.Dec);
 			}
-			ListEnum.Dispose();
 			DecalsControler.Sort();
 		}
 
@@ -57,12 +54,11 @@ namespace EditMap
 			if (SelectionManager.Current.Selection.Ids.Count == 0)
 				return;
 
-			HashSet<OzoneDecal>.Enumerator ListEnum = SelectedDecals.GetEnumerator();
-			while (ListEnum.MoveNext())
+			HashSet<OzoneDecal> Sd = SelectedDecals;
+			foreach (OzoneDecal Odec in Sd)
 			{
-				DecalsControler.MoveBottom(ListEnum.Current);
+				DecalsControler.MoveBottom(Odec.Dec);
 			}
-			ListEnum.Dispose();
 			DecalsControler.Sort();
 		}
 
@@ -71,6 +67,9 @@ namespace EditMap
 			get
 			{
 				HashSet<OzoneDecal> SelectedDecals = new HashSet<OzoneDecal>();
+				if (SelectionManager.Current.AffectedGameObjects.Length == 0)
+					return SelectedDecals;
+
 				int count = SelectionManager.Current.Selection.Ids.Count;
 				for (int i = 0; i < count; i++)
 				{

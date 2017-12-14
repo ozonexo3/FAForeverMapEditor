@@ -61,11 +61,13 @@ namespace EditMap
 
 			for (int i = 0; i < Count; i++)
 			{
+				CreateGameObjectFromDecal(ScmapEditor.Current.map.Decals[i]);
 
+				/*
 				GameObject NewDecalObject = Instantiate(DecalPrefab, DecalPivot);
 				OzoneDecal Dec = NewDecalObject.GetComponent<OzoneDecal>();
 				Decal Component = ScmapEditor.Current.map.Decals[i];
-				Dec.Shared = Component.Shared;
+				Dec.Dec = Component;
 				Dec.tr = NewDecalObject.transform;
 
 				Dec.tr.localRotation = Quaternion.Euler(Component.Rotation * Mathf.Rad2Deg);
@@ -76,16 +78,14 @@ namespace EditMap
 
 				Dec.MovePivotPoint(ScmapEditor.ScmapPosToWorld(Component.Position));
 
-				Dec.Material = Dec.Shared.SharedMaterial;
-
+				Dec.Material = Component.Shared.SharedMaterial;
+				*/
 
 				if (ScmapEditor.Current.map.Decals[i].Type != TerrainDecalType.TYPE_ALBEDO
 				&& ScmapEditor.Current.map.Decals[i].Type != TerrainDecalType.TYPE_NORMALS && ScmapEditor.Current.map.Decals[i].Type != TerrainDecalType.TYPE_NORMALS_ALPHA
 				&& ScmapEditor.Current.map.Decals[i].Type != TerrainDecalType.TYPE_GLOW && ScmapEditor.Current.map.Decals[i].Type != TerrainDecalType.TYPE_GLOW_MASK)
 				{
-					Debug.LogWarning("Found different decal type! " + ScmapEditor.Current.map.Decals[i].Type, NewDecalObject);
-
-
+					Debug.LogWarning("Found different decal type! " + ScmapEditor.Current.map.Decals[i].Type, ScmapEditor.Current.map.Decals[i].Obj.gameObject);
 				}
 
 				LoadedCount++;
@@ -100,6 +100,31 @@ namespace EditMap
 
 			yield return null;
 			LoadingDecals = false;
+		}
+
+
+		public static void CreateGameObjectFromDecal(Decal Component)
+		{
+			GameObject NewDecalObject = Instantiate(Current.DecalPrefab, Current.DecalPivot);
+			OzoneDecal Obj = NewDecalObject.GetComponent<OzoneDecal>();
+			Component.Obj = Obj;
+			Obj.Dec = Component;
+			Obj.tr = NewDecalObject.transform;
+
+			Obj.tr.localRotation = Quaternion.Euler(Component.Rotation * Mathf.Rad2Deg);
+			Obj.tr.localScale = new Vector3(Component.Scale.x * 0.1f, Component.Scale.x * 0.1f, Component.Scale.z * 0.1f);
+
+			Obj.CutOffLOD = Component.CutOffLOD;
+			Obj.NearCutOffLOD = Component.NearCutOffLOD;
+
+			Obj.MovePivotPoint(ScmapEditor.ScmapPosToWorld(Component.Position));
+
+			Obj.Material = Component.Shared.SharedMaterial;
+
+
+			if (Component.Obj == null)
+				Debug.Log("Decal is still null!");
+
 		}
 
 		public static float FrustumHeightAtDistance(float distance)

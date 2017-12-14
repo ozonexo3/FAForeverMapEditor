@@ -111,7 +111,7 @@ namespace OzoneDecals {
 
 		void AddDecalToRenderer(OzoneDecal d)
 		{
-			if (d.Shared.DrawAlbedo)
+			if (d.Dec.Shared.DrawAlbedo)
 			{
 				_DecalsAlbedo.Add(d);
 			}

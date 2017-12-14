@@ -1,4 +1,11 @@
-﻿using System.Collections;
+﻿// ******************************************************************************
+//
+// * Lua Writer - Convert values to LUA text lines
+// * Copyright ozonexo3 2017
+//
+// ******************************************************************************
+
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using NLua;
@@ -161,7 +168,7 @@ namespace LuaParser
 
 		#endregion
 
-		public static string PropertiveToLua(string prop)
+		public static string PropertieToLua(string prop)
 		{
 			return "[" + Coma + prop + Coma + "]";
 		}

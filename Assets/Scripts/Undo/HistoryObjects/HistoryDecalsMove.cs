@@ -24,7 +24,7 @@ public class HistoryDecalsMove : HistoryObject
 
 		for(int i = 0; i < Pos.Length; i++)
 		{
-			Transform tr = DecalsControler.Current.AllDecals[i].tr;
+			Transform tr = DecalsControler.Current.AllDecals[i].Obj.tr;
 			Pos[i] = tr.localPosition;
 			Rot[i] = tr.localRotation;
 			Scale[i] = tr.localScale;
@@ -45,7 +45,7 @@ public class HistoryDecalsMove : HistoryObject
 	{
 		for (int i = 0; i < Pos.Length; i++)
 		{
-			Transform tr = DecalsControler.Current.AllDecals[i].tr;
+			Transform tr = DecalsControler.Current.AllDecals[i].Obj.tr;
 			tr.localPosition = Pos[i];
 			tr.localRotation = Rot[i];
 			tr.localScale = Scale[i];

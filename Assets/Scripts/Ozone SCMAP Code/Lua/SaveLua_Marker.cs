@@ -490,22 +490,22 @@ namespace MapLua
 
 					ForceDefaultValues();
 
-					LuaFile.OpenTab(LuaParser.Write.PropertiveToLua(Name) + LuaParser.Write.OpenBracketValue);
+					LuaFile.OpenTab(LuaParser.Write.PropertieToLua(Name) + LuaParser.Write.OpenBracketValue);
 
 
 					if (AllowByType(KEY_SIZE))
-						LuaFile.AddLine(LuaParser.Write.FloatToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_SIZE), size));
+						LuaFile.AddLine(LuaParser.Write.FloatToLuaFunction(LuaParser.Write.PropertieToLua(KEY_SIZE), size));
 					if (AllowByType(KEY_RESOURCE))
-						LuaFile.AddLine(LuaParser.Write.BoolToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_RESOURCE), resource));
+						LuaFile.AddLine(LuaParser.Write.BoolToLuaFunction(LuaParser.Write.PropertieToLua(KEY_RESOURCE), resource));
 					if (AllowByType(KEY_AMOUNT))
-						LuaFile.AddLine(LuaParser.Write.FloatToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_AMOUNT), amount));
+						LuaFile.AddLine(LuaParser.Write.FloatToLuaFunction(LuaParser.Write.PropertieToLua(KEY_AMOUNT), amount));
 
-					LuaFile.AddLine(LuaParser.Write.StringToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_COLOR), color));
+					LuaFile.AddLine(LuaParser.Write.StringToLuaFunction(LuaParser.Write.PropertieToLua(KEY_COLOR), color));
 
 					if (AllowByType(KEY_EDITORICON))
-						LuaFile.AddLine(LuaParser.Write.StringToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_EDITORICON), editorIcon));
+						LuaFile.AddLine(LuaParser.Write.StringToLuaFunction(LuaParser.Write.PropertieToLua(KEY_EDITORICON), editorIcon));
 					if (AllowByType(KEY_HINT))
-						LuaFile.AddLine(LuaParser.Write.BoolToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_HINT), hint));
+						LuaFile.AddLine(LuaParser.Write.BoolToLuaFunction(LuaParser.Write.PropertieToLua(KEY_HINT), hint));
 
 					if (AllowByType(KEY_ADJACENTTO))
 					{
@@ -528,7 +528,7 @@ namespace MapLua
 							}
 						}
 
-						LuaFile.AddLine(LuaParser.Write.StringToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_GRAPH), graph));
+						LuaFile.AddLine(LuaParser.Write.StringToLuaFunction(LuaParser.Write.PropertieToLua(KEY_GRAPH), graph));
 
 
 						adjacentTo = "";
@@ -552,54 +552,54 @@ namespace MapLua
 								adjacentTo += AdjacentToMarker[i].Name;
 						}
 
-						LuaFile.AddLine(LuaParser.Write.StringToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_ADJACENTTO), adjacentTo));
+						LuaFile.AddLine(LuaParser.Write.StringToLuaFunction(LuaParser.Write.PropertieToLua(KEY_ADJACENTTO), adjacentTo));
 					}
 
 					//Type
-					LuaFile.AddLine(LuaParser.Write.StringToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_TYPE), MarkerTypeToString(MarkerType)));
-					LuaFile.AddLine(LuaParser.Write.StringToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_PROP), prop));
+					LuaFile.AddLine(LuaParser.Write.StringToLuaFunction(LuaParser.Write.PropertieToLua(KEY_TYPE), MarkerTypeToString(MarkerType)));
+					LuaFile.AddLine(LuaParser.Write.StringToLuaFunction(LuaParser.Write.PropertieToLua(KEY_PROP), prop));
 
 					if (AllowByType(KEY_ZOOM))
-						LuaFile.AddLine(LuaParser.Write.FloatToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_ZOOM), zoom));
+						LuaFile.AddLine(LuaParser.Write.FloatToLuaFunction(LuaParser.Write.PropertieToLua(KEY_ZOOM), zoom));
 					if (AllowByType(KEY_CANSETCAMERA))
-						LuaFile.AddLine(LuaParser.Write.BoolToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_CANSETCAMERA), canSetCamera));
+						LuaFile.AddLine(LuaParser.Write.BoolToLuaFunction(LuaParser.Write.PropertieToLua(KEY_CANSETCAMERA), canSetCamera));
 					if (AllowByType(KEY_CANSYNCCAMERA))
-						LuaFile.AddLine(LuaParser.Write.BoolToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_CANSYNCCAMERA), canSyncCamera));
+						LuaFile.AddLine(LuaParser.Write.BoolToLuaFunction(LuaParser.Write.PropertieToLua(KEY_CANSYNCCAMERA), canSyncCamera));
 
 					if (MarkerType == MarkerTypes.WeatherGenerator)
 					{
-						LuaFile.AddLine(LuaParser.Write.FloatToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_CLOUDCOUNT), cloudCount));
-						LuaFile.AddLine(LuaParser.Write.FloatToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_CLOUDCOUNTRANGE), cloudCountRange));
+						LuaFile.AddLine(LuaParser.Write.FloatToLuaFunction(LuaParser.Write.PropertieToLua(KEY_CLOUDCOUNT), cloudCount));
+						LuaFile.AddLine(LuaParser.Write.FloatToLuaFunction(LuaParser.Write.PropertieToLua(KEY_CLOUDCOUNTRANGE), cloudCountRange));
 
-						LuaFile.AddLine(LuaParser.Write.FloatToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_CLOUDEMITTERSCALE), cloudEmitterScale));
-						LuaFile.AddLine(LuaParser.Write.FloatToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_CLOUDEMITTERSCALERANGE), cloudEmitterScaleRange));
+						LuaFile.AddLine(LuaParser.Write.FloatToLuaFunction(LuaParser.Write.PropertieToLua(KEY_CLOUDEMITTERSCALE), cloudEmitterScale));
+						LuaFile.AddLine(LuaParser.Write.FloatToLuaFunction(LuaParser.Write.PropertieToLua(KEY_CLOUDEMITTERSCALERANGE), cloudEmitterScaleRange));
 
-						LuaFile.AddLine(LuaParser.Write.FloatToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_CLOUDHEIGHT), cloudHeight));
-						LuaFile.AddLine(LuaParser.Write.FloatToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_CLOUDHEIGHTRANGE), cloudHeightRange));
+						LuaFile.AddLine(LuaParser.Write.FloatToLuaFunction(LuaParser.Write.PropertieToLua(KEY_CLOUDHEIGHT), cloudHeight));
+						LuaFile.AddLine(LuaParser.Write.FloatToLuaFunction(LuaParser.Write.PropertieToLua(KEY_CLOUDHEIGHTRANGE), cloudHeightRange));
 
-						LuaFile.AddLine(LuaParser.Write.FloatToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_CLOUDSPREAD), cloudSpread));
-						LuaFile.AddLine(LuaParser.Write.FloatToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_SPAWNCHANCE), spawnChance));
-						LuaFile.AddLine(LuaParser.Write.StringToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_FORCETYPE), ForceType));
+						LuaFile.AddLine(LuaParser.Write.FloatToLuaFunction(LuaParser.Write.PropertieToLua(KEY_CLOUDSPREAD), cloudSpread));
+						LuaFile.AddLine(LuaParser.Write.FloatToLuaFunction(LuaParser.Write.PropertieToLua(KEY_SPAWNCHANCE), spawnChance));
+						LuaFile.AddLine(LuaParser.Write.StringToLuaFunction(LuaParser.Write.PropertieToLua(KEY_FORCETYPE), ForceType));
 					}
 					else if (MarkerType == MarkerTypes.WeatherDefinition)
 					{
-						LuaFile.AddLine(LuaParser.Write.Vector3ToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_WEATHERDRIFTDIRECTION), WeatherDriftDirection));
-						LuaFile.AddLine(LuaParser.Write.StringToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_MAPSTYLE), MapStyle));
+						LuaFile.AddLine(LuaParser.Write.Vector3ToLuaFunction(LuaParser.Write.PropertieToLua(KEY_WEATHERDRIFTDIRECTION), WeatherDriftDirection));
+						LuaFile.AddLine(LuaParser.Write.StringToLuaFunction(LuaParser.Write.PropertieToLua(KEY_MAPSTYLE), MapStyle));
 
-						LuaFile.AddLine(LuaParser.Write.StringToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_WEATHERTYPE01), WeatherType01));
-						LuaFile.AddLine(LuaParser.Write.StringToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_WEATHERTYPE02), WeatherType02));
-						LuaFile.AddLine(LuaParser.Write.StringToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_WEATHERTYPE03), WeatherType03));
-						LuaFile.AddLine(LuaParser.Write.StringToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_WEATHERTYPE04), WeatherType04));
+						LuaFile.AddLine(LuaParser.Write.StringToLuaFunction(LuaParser.Write.PropertieToLua(KEY_WEATHERTYPE01), WeatherType01));
+						LuaFile.AddLine(LuaParser.Write.StringToLuaFunction(LuaParser.Write.PropertieToLua(KEY_WEATHERTYPE02), WeatherType02));
+						LuaFile.AddLine(LuaParser.Write.StringToLuaFunction(LuaParser.Write.PropertieToLua(KEY_WEATHERTYPE03), WeatherType03));
+						LuaFile.AddLine(LuaParser.Write.StringToLuaFunction(LuaParser.Write.PropertieToLua(KEY_WEATHERTYPE04), WeatherType04));
 
-						LuaFile.AddLine(LuaParser.Write.FloatToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_WEATHERTYPE01CHANCE), WeatherType01Chance));
-						LuaFile.AddLine(LuaParser.Write.FloatToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_WEATHERTYPE02CHANCE), WeatherType02Chance));
-						LuaFile.AddLine(LuaParser.Write.FloatToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_WEATHERTYPE03CHANCE), WeatherType03Chance));
-						LuaFile.AddLine(LuaParser.Write.FloatToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_WEATHERTYPE04CHANCE), WeatherType04Chance));
+						LuaFile.AddLine(LuaParser.Write.FloatToLuaFunction(LuaParser.Write.PropertieToLua(KEY_WEATHERTYPE01CHANCE), WeatherType01Chance));
+						LuaFile.AddLine(LuaParser.Write.FloatToLuaFunction(LuaParser.Write.PropertieToLua(KEY_WEATHERTYPE02CHANCE), WeatherType02Chance));
+						LuaFile.AddLine(LuaParser.Write.FloatToLuaFunction(LuaParser.Write.PropertieToLua(KEY_WEATHERTYPE03CHANCE), WeatherType03Chance));
+						LuaFile.AddLine(LuaParser.Write.FloatToLuaFunction(LuaParser.Write.PropertieToLua(KEY_WEATHERTYPE04CHANCE), WeatherType04Chance));
 					}
 
 					//Transform
-					LuaFile.AddLine(LuaParser.Write.Vector3ToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_ORIENTATION), orientation));
-					LuaFile.AddLine(LuaParser.Write.Vector3ToLuaFunction(LuaParser.Write.PropertiveToLua(KEY_POSITION), position));
+					LuaFile.AddLine(LuaParser.Write.Vector3ToLuaFunction(LuaParser.Write.PropertieToLua(KEY_ORIENTATION), orientation));
+					LuaFile.AddLine(LuaParser.Write.Vector3ToLuaFunction(LuaParser.Write.PropertieToLua(KEY_POSITION), position));
 
 					LuaFile.CloseTab(LuaParser.Write.EndBracketNext);
 				}

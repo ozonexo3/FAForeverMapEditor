@@ -15,7 +15,7 @@ namespace EditMap
 			Current = this;
 		}
 
-		public GameObject[] Selection;
+		public GameObject[] PageSelection;
 		public GameObject[] Page;
 		public ChainsList ChainsInfo;
 		public MarkersList MarkerList;
@@ -28,6 +28,7 @@ namespace EditMap
 
 		void OnDisable()
 		{
+			Selection.SelectionManager.Current.ClearAffectedGameObjects();
 			MarkerList.Clean();
 		}
 
@@ -46,7 +47,7 @@ namespace EditMap
 		public static bool MarkerPageChange = false;
 		public void ChangePage(int PageId)
 		{
-			if (CurrentPage == PageId && Page[CurrentPage].activeSelf && Selection[CurrentPage].activeSelf)
+			if (CurrentPage == PageId && Page[CurrentPage].activeSelf && PageSelection[CurrentPage].activeSelf)
 				return;
 			MarkerPageChange = true;
 
@@ -56,11 +57,11 @@ namespace EditMap
 			for(int i = 0; i < Page.Length; i++)
 			{
 				Page[i].SetActive(false);
-				Selection[i].SetActive(false);
+				PageSelection[i].SetActive(false);
 			}
 
 			Page[CurrentPage].SetActive(true);
-			Selection[CurrentPage].SetActive(true);
+			PageSelection[CurrentPage].SetActive(true);
 			MarkerPageChange = false;
 		}
 

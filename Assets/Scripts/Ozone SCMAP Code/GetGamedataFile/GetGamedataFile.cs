@@ -1,4 +1,12 @@
-﻿using UnityEngine;
+﻿// ******************************************************************************
+//
+// * System for getting files from GameData SCD files or from Map folder
+// * It also converts them to Unity objects: Texture2D, Mesh, Materials
+// * Copyright ozonexo3 2017
+//
+// ******************************************************************************
+
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using System;
@@ -8,8 +16,6 @@ using System.IO;
 
 public partial struct GetGamedataFile
 {
-
-
 	static bool DebugTextureLoad = false;
 	static bool IsDxt3 = false;
 
@@ -66,54 +72,7 @@ public partial struct GetGamedataFile
 
 		if (NormalMap)
 		{
-			//texture.Compress(true);
-
-			/*
-			Texture2D normalTexture = new Texture2D((int)LoadDDsHeader.width, (int)LoadDDsHeader.height, TextureFormat.RGBA32, Mipmaps, false);
-
-			//Color theColour = new Color();
-			Color[] Pixels;
-
-			int m = 0;
-			int i = 0;
-			int Texwidth = 0;
-			int Texheight = 0;
-
-			for (m = 0; m < LoadDDsHeader.mipmapcount + 1; m++)
-			{
-				Texwidth = texture.width;
-				Texheight = texture.height;
-
-				if (m > 0)
-				{
-					Texwidth /= (int)Mathf.Pow(2, m);
-					Texheight /= (int)Mathf.Pow(2, m);
-				}
-				Pixels = texture.GetPixels(0, 0, Texwidth, Texheight, m);
-
-				for (i = 0; i < Pixels.Length; i++)
-				{
-					float R = Pixels[i].r;
-					float G = Pixels[i].g;
-					Pixels[i].r = R;
-					Pixels[i].g = G;
-					Pixels[i].b = 1 - (R + G);
-					Pixels[i].a = G;
-				}
-				normalTexture.SetPixels(0, 0, Texwidth, Texheight, Pixels, m);
-			}
-
-			normalTexture.mipMapBias = MipmapBias;
-			normalTexture.filterMode = FilterMode.Bilinear;
-			normalTexture.anisoLevel = AnisoLevel;
-
-			normalTexture.Apply(true);
-			
-
-			return normalTexture;
-			*/
 		}
-
 
 		texture.mipMapBias = MipmapBias;
 		texture.filterMode = FilterMode.Bilinear;

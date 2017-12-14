@@ -60,7 +60,7 @@ namespace OzoneDecals
 			{
 				OzoneDecal decal = decalListEnum.Current;
 
-				if (decal != null && decal.Shared.DrawAlbedo)
+				if (decal != null && decal.Dec.Shared.DrawAlbedo)
 				{
 					_directBlock.Clear();
 					_directBlock.SetFloat("_NearCutOffLOD", decal.NearCutOff);
@@ -95,7 +95,7 @@ namespace OzoneDecals
 				{
 					OzoneDecal decal = decalListEnum.Current;
 
-					if (decal != null && decal.Shared.DrawAlbedo)
+					if (decal != null && decal.Dec.Shared.DrawAlbedo)
 					{
 						if (UseInstancing && AllowAlbedoInstancing)
 						{
@@ -175,7 +175,7 @@ namespace OzoneDecals
 				{
 					OzoneDecal decal = decalListEnum.Current;
 
-					if (decal != null && decal.Shared.DrawNormal)
+					if (decal != null && decal.Dec.Shared.DrawNormal)
 					{
 						if (hqCount < HightQualityMaxCount)
 						{

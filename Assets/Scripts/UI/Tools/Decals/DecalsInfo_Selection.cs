@@ -20,6 +20,11 @@ namespace EditMap
 			GoToSelection();
 		}
 
+		private void OnDisable()
+		{
+			Selection.SelectionManager.Current.ClearAffectedGameObjects();
+		}
+
 		public void GoToSelection()
 		{
 			/*
@@ -48,7 +53,7 @@ namespace EditMap
 			if (SelectionManager.Current.AffectedGameObjects.Length == 0 || SelectionManager.Current.Selection.Ids.Count == 0)
 				DecalSettingsUi.Load(null);
 			else
-				DecalSettingsUi.Load(SelectionManager.Current.AffectedGameObjects[SelectionManager.Current.Selection.Ids[0]].GetComponent<OzoneDecal>().Shared);
+				DecalSettingsUi.Load(SelectionManager.Current.AffectedGameObjects[SelectionManager.Current.Selection.Ids[0]].GetComponent<OzoneDecal>().Dec.Shared);
 
 			DecalsList.UpdateSelection();
 		}
@@ -60,32 +65,52 @@ namespace EditMap
 
 		public void DestroyDetails(List<GameObject> MarkerObjects, bool RegisterUndo = true)
 		{
-			//TODO Store selected decals type in Undo History
+			if (RegisterUndo && MarkerObjects.Count > 0)
+				Undo.Current.RegisterDecalsRemove();
+
+			int Count = MarkerObjects.Count;
+			for (int i = 0; i < Count; i++)
+			{
 
 
+
+				DestroyImmediate(MarkerObjects[i]);
+
+			}
+
+			SelectionManager.Current.CleanSelection();
+			GoToSelection();
 
 		}
 
 		public void Place(Vector3[] Positions, Quaternion[] Rotations, Vector3[] Scales)
 		{
+			if (Positions.Length > 0)
+				Undo.Current.RegisterDecalsAdd();
+
 			for (int i = 0; i < Positions.Length; i++)
 			{
 
 				GameObject NewDecalObject = Instantiate(DecalPrefab, DecalPivot);
-				OzoneDecal Dec = NewDecalObject.GetComponent<OzoneDecal>();
-				Dec.Shared = DecalSettings.GetLoaded;
-				Dec.tr = NewDecalObject.transform;
+				OzoneDecal Obj = NewDecalObject.GetComponent<OzoneDecal>();
+				Decal component = new Decal();
+				component.Obj = Obj;
+				Obj.Dec = component;
+				Obj.Dec.Shared = DecalSettings.GetLoaded;
+				Obj.tr = NewDecalObject.transform;
 
-				Dec.tr.localPosition = Positions[i];
-				Dec.tr.localRotation = Rotations[i];
-				Dec.tr.localScale = Scales[i];
+				Obj.tr.localPosition = Positions[i];
+				Obj.tr.localRotation = Rotations[i];
+				Obj.tr.localScale = Scales[i];
 
-				Dec.CutOffLOD = DecalSettingsUi.CutOff.value;
-				Dec.NearCutOffLOD = DecalSettingsUi.NearCutOff.value;
+				Obj.CutOffLOD = DecalSettingsUi.CutOff.value;
+				Obj.NearCutOffLOD = DecalSettingsUi.NearCutOff.value;
 
-				Dec.Material = Dec.Shared.SharedMaterial;
+				Obj.Material = component.Shared.SharedMaterial;
 
-				DecalsControler.AddDecal(Dec);
+				Obj.Bake();
+
+				DecalsControler.AddDecal(Obj.Dec);
 			}
 		}
 

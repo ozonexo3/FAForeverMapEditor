@@ -1,4 +1,11 @@
-﻿using System.Collections;
+﻿// ******************************************************************************
+//
+// * Lua Reader - Convert LUA strings into values
+// * Copyright ozonexo3 2017
+//
+// ******************************************************************************
+
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using NLua;

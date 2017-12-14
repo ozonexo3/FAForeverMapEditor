@@ -1,4 +1,13 @@
-﻿using System.Collections;
+﻿// ******************************************************************************
+//
+// * Creator allows for simple LUA file creation. Couldn't find good LUA>Unity parser so I do everything by hand
+// * Unity parse in Json and has great build in tools for converting Class > Json > Class
+// * Text files exported from editor (stratum, layers, settings etc.) are in Json
+// * Copyright ozonexo3 2017
+//
+// ******************************************************************************
+
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Text;
@@ -9,9 +18,6 @@ namespace LuaParser
 	{
 
 		StringBuilder Sb;
-		//string FileString;
-
-		//int tabs = 0;
 		string TabsString = "";
 
 		public void OpenTab()
@@ -39,7 +45,6 @@ namespace LuaParser
 		public void AddLine(string line)
 		{
 			Sb.AppendLine(TabsString + line);
-			//LuaParser.Write.AddLine(line, tabs, ref FileString);
 		}
 
 
@@ -54,7 +59,6 @@ namespace LuaParser
 				coment += " ";
 
 			Sb.AppendLine(TabsString + CommentSaveBegin + coment + CommentSaveEnd);
-			//LuaParser.Write.AddLine(CommentSaveBegin + coment + CommentSaveEnd, tabs, ref FileString);
 		}
 
 		public string GetFileString()
@@ -65,8 +69,6 @@ namespace LuaParser
 		public Creator()
 		{
 			Sb = new StringBuilder(2048);
-			//FileString = "";
-			//tabs = 0;
 		}
 	}
 }

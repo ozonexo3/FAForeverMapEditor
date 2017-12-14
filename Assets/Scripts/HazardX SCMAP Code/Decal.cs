@@ -8,6 +8,7 @@
 using System;
 using UnityEngine;
 using System.Collections.Generic;
+using OzoneDecals;
 
 public partial class Decal
 {
@@ -22,9 +23,6 @@ public partial class Decal
 	public float NearCutOffLOD = 0.9f;
 
 	public int OwnerArmy = -1;
-
-	public DecalSharedSettings Shared;
-
 
 	public void Load(BinaryReader Stream)
 	{

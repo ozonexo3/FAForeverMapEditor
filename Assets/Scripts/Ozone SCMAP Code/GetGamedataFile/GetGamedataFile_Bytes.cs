@@ -13,13 +13,8 @@ using ICSharpCode.SharpZipLib.BZip2;
 public partial struct GetGamedataFile
 {
 
-	static List<ScdZipFile> ScdFiles = new List<ScdZipFile>();
-
-	public class ScdZipFile
-	{
-		public string scd;
-		public ZipFile zf;
-	}
+	// Store ZIP Read Stream in memory for faster load
+	static Dictionary<string, ZipFile> ScdFiles = new Dictionary<string, ZipFile>();
 
 
 	static bool Init = false;
@@ -52,43 +47,26 @@ public partial struct GetGamedataFile
 			return null;
 		}
 
-		//byte[] FinalBytes = new byte[0];
-		int ScdId = -1;
 
-		for (int i = 0; i < ScdFiles.Count; i++)
+		if (!ScdFiles.ContainsKey(scd))
 		{
-			if (ScdFiles[i].scd == scd)
-			{
-				ScdId = i;
-				break;
-			}
-		}
-
-		if (ScdId < 0)
-		{
-			ScdId = ScdFiles.Count;
-			ScdZipFile NewScd = new ScdZipFile();
-			NewScd.scd = scd;
-			ScdFiles.Add(NewScd);
-
 			FileStream fs = File.OpenRead(EnvPaths.GetGamedataPath() + scd);
-			ScdFiles[ScdId].zf = new ZipFile(fs);
-			Debug.Log("Add scd " + EnvPaths.GetGamedataPath() + scd + " as " + ScdId);
-
+			ZipFile NewZipFile = new ZipFile(fs);
+			ScdFiles.Add(scd, NewZipFile);
 		}
 
 		if (LocalPath.StartsWith("/"))
 			LocalPath = LocalPath.Remove(0, 1);
 
-		ZipEntry zipEntry2 = ScdFiles[ScdId].zf.GetEntry(LocalPath);
+		ZipEntry zipEntry2 = ScdFiles[scd].GetEntry(LocalPath);
 
 		if (zipEntry2 == null)
 		{
 
-			int FoundEntry = ScdFiles[ScdId].zf.FindEntry(LocalPath, true);
+			int FoundEntry = ScdFiles[scd].FindEntry(LocalPath, true);
 
-			if (FoundEntry >= 0 && FoundEntry < ScdFiles[ScdId].zf.Count)
-				zipEntry2 = ScdFiles[ScdId].zf[FoundEntry];
+			if (FoundEntry >= 0 && FoundEntry < ScdFiles[scd].Count)
+				zipEntry2 = ScdFiles[scd][FoundEntry];
 
 			if (zipEntry2 == null)
 			{
@@ -99,41 +77,20 @@ public partial struct GetGamedataFile
 
 		byte[] FinalBytes = new byte[4096]; // 4K is optimum
 
-		Stream s = ScdFiles[ScdId].zf.GetInputStream(zipEntry2);
+		Stream s = ScdFiles[scd].GetInputStream(zipEntry2);
 		FinalBytes = new byte[zipEntry2.Size];
 		s.Read(FinalBytes, 0, FinalBytes.Length);
 		s.Close();
 
-		/*try
-		{
-
-			ZipEntry zipEntry2 = ScdFiles[ScdId].zf.GetEntry(LocalPath);
-			if (zipEntry2 == null)
-			{
-				Debug.LogWarning("Zip Entry is empty for: " + LocalPath);
-				return null;
-			}
-
-			FinalBytes = new byte[4096]; // 4K is optimum
-
-			if (zipEntry2 != null)
-			{
-				Stream s = ScdFiles[ScdId].zf.GetInputStream(zipEntry2);
-				FinalBytes = new byte[zipEntry2.Size];
-				s.Read(FinalBytes, 0, FinalBytes.Length);
-			}
-		}
-		finally
-		{
-			if (zf != null)
-			{
-				zf.IsStreamOwner = true; // Makes close also shut the underlying stream
-				zf.Close(); // Ensure we release resources
-			}
-		}*/
 		return FinalBytes;
 	}
 
+
+	/// <summary>
+	/// Load Bytes from files in Map folder
+	/// </summary>
+	/// <param name="mapPath"></param>
+	/// <returns></returns>
 	public static byte[] LoadBytes(string mapPath)
 	{
 		return System.IO.File.ReadAllBytes(mapPath.Replace("/maps", MapLuaParser.Current.FolderParentPath));

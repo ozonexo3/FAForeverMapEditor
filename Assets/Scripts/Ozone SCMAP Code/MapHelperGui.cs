@@ -14,9 +14,7 @@ public class MapHelperGui : MonoBehaviour {
 	public		GameObject				BackGround;
 	public		GameObject				LoadingPopup;
 
-	public		StartingScreen			StartScreen;
 	public		LastMapsPopup			LastMapsList;
-	public		SearchMapPopup 			SearchMap;
 	public		GenericInfoPopup ErrorPopup;
 
 	static int More = 1;
@@ -74,9 +72,6 @@ public class MapHelperGui : MonoBehaviour {
 			OpenComposition(1);
 			Map = true;
 			MapLuaParser.Current.LoadFile();
-			break;
-		case "SearchMap":
-			SearchMap.CreateFolderList ();
 			break;
 		case "LastMaps":
 			Kompositions[2].SetActive(true);

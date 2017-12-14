@@ -1,4 +1,13 @@
-﻿using System.Collections;
+﻿// ******************************************************************************
+//
+// * Scenario.lua Class
+// * Can be loaded from LUA and saved as LUA using LuaParser
+// * Parsing is done by hand, because I can't find good parser that will convert LUA to Class
+// * Copyright ozonexo3 2017
+//
+// ******************************************************************************
+
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using NLua;
@@ -8,10 +17,8 @@ namespace MapLua
 	[System.Serializable]
 	public class ScenarioLua
 	{
-
 		public ScenarioInfo Data = new ScenarioInfo();
 		Lua LuaFile;
-
 
 		#region Structure Objects
 		[System.Serializable]
@@ -175,7 +182,7 @@ namespace MapLua
 
 		#endregion
 
-#region Armys
+		#region Armys
 		public bool AddDataToArmy(SaveLua.Army ArmyData)
 		{
 			for(int c = 0; c < Data.Configurations.Length; c++)
@@ -492,7 +499,7 @@ namespace MapLua
 				{// Configurations
 					for (int Cf = 0; Cf < Data.Configurations.Length; Cf++)
 					{
-						LuaFile.OpenTab(LuaParser.Write.PropertiveToLua(Data.Configurations[Cf].name) + LuaParser.Write.OpenBracketValue);
+						LuaFile.OpenTab(LuaParser.Write.PropertieToLua(Data.Configurations[Cf].name) + LuaParser.Write.OpenBracketValue);
 						{// Configuration Tab
 
 							LuaFile.OpenTab(Configuration.KEY_TEAMS + LuaParser.Write.OpenBracketValue);
@@ -528,7 +535,7 @@ namespace MapLua
 									}
 
 									LuaFile.AddLine(
-										LuaParser.Write.ValueToLua(LuaParser.Write.PropertiveToLua(ScenarioInfo.KEY_EXTRAARMIES),
+										LuaParser.Write.ValueToLua(LuaParser.Write.PropertieToLua(ScenarioInfo.KEY_EXTRAARMIES),
 										LuaParser.Write.StringFunction(ExtraArmyString),
 										(Data.Configurations[Cf].customprops.Length > 0)
 										));
@@ -540,7 +547,7 @@ namespace MapLua
 									if (Data.Configurations[Cf].customprops[i].key == ScenarioInfo.KEY_EXTRAARMIES)
 										continue;
 									LuaFile.AddLine(
-										LuaParser.Write.ValueToLua(LuaParser.Write.PropertiveToLua(Data.Configurations[Cf].customprops[i].key), 
+										LuaParser.Write.ValueToLua(LuaParser.Write.PropertieToLua(Data.Configurations[Cf].customprops[i].key), 
 										LuaParser.Write.StringFunction(Data.Configurations[Cf].customprops[i].value), 
 										(i < Data.Configurations[Cf].customprops.Length - 1)));
 

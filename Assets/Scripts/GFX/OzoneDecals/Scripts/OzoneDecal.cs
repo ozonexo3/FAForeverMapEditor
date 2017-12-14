@@ -9,8 +9,6 @@ namespace OzoneDecals
 	[ExecuteInEditMode]
 	public class OzoneDecal : MonoBehaviour
 	{
-		//public Decal Component;
-		public Decal.DecalSharedSettings Shared;
 		public bool CreationObject;
 
 		public Material Material;
@@ -18,9 +16,24 @@ namespace OzoneDecals
 		public float WorldCutoffDistance;
 		public float CutOff;
 		public float NearCutOff;
+		public float OwnerArmy;
 
 		float _CutOffLOD = 50.0f;
 		float _NearCutOffLOD = 0.0f;
+
+		Decal _Dec;
+		public Decal Dec
+		{
+			get
+			{
+				return _Dec;
+			}
+			set
+			{
+				_Dec = value;
+			}
+
+		}
 
 		public float CutOffLOD
 		{
@@ -62,14 +75,20 @@ namespace OzoneDecals
 		void OnEnable()
 		{
 			tr = transform;
-			if(!CreationObject)
-			DecalsControler.AddDecal(this);
+			if(!CreationObject && Dec != null)
+			DecalsControler.AddDecal(Dec);
 		}
 
 		private void OnDisable()
 		{
-			if (!CreationObject)
-				DecalsControler.RemoveDecal(this);
+			if (!CreationObject && Dec != null)
+				DecalsControler.RemoveDecal(Dec);
+		}
+
+		private void OnDestroy()
+		{
+			if(CreationObject)
+				DecalsControler.RemoveDecal(Dec);
 		}
 
 		MeshFilter mf;
@@ -97,23 +116,21 @@ namespace OzoneDecals
 			tr.localPosition = tr.TransformPoint(tr.InverseTransformPoint(Pos) - PivotPointLocal);
 		}
 
-		public Decal Bake()
+
+		
+		public void Bake()
 		{
-			Decal Component = new Decal();
+			_Dec.Type = _Dec.Shared.Type;
+			_Dec.Position = ScmapEditor.WorldPosToScmap( GetPivotPoint());
+			_Dec.Scale = tr.localScale * 10f;
+			_Dec.Rotation = tr.localEulerAngles * Mathf.Deg2Rad;
 
-			//TODO
-			Component.Type = Shared.Type;
-			Component.Position = ScmapEditor.WorldPosToScmap( GetPivotPoint());
-			Component.Scale = tr.localScale * 10f;
-			Component.Rotation = tr.localEulerAngles * Mathf.Deg2Rad;
-
-			Component.CutOffLOD = CutOffLOD;
-			Component.NearCutOffLOD = NearCutOffLOD;
-			Component.TexPathes = new string[2];
-			Component.TexPathes[0] = Shared.Tex1Path;
-			Component.TexPathes[1] = Shared.Tex2Path;
-
-			return Component;
+			_Dec.CutOffLOD = CutOffLOD;
+			_Dec.NearCutOffLOD = NearCutOffLOD;
+			_Dec.TexPathes = new string[2];
+			_Dec.TexPathes[0] = _Dec.Shared.Tex1Path;
+			_Dec.TexPathes[1] = _Dec.Shared.Tex2Path;
+			_Dec.Obj = this;
 		}
 		
 

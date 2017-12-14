@@ -124,7 +124,7 @@ namespace MapLua
 
 				public void SaveUnitsGroup(LuaParser.Creator LuaFile)
 				{
-					LuaFile.OpenTab(LuaParser.Write.PropertiveToLua(Name) + LuaParser.Write.SetValue + "GROUP " + LuaParser.Write.OpenBracket);
+					LuaFile.OpenTab(LuaParser.Write.PropertieToLua(Name) + LuaParser.Write.SetValue + "GROUP " + LuaParser.Write.OpenBracket);
 
 					LuaFile.AddLine(LuaParser.Write.StringToLua(KEY_ORDERS, orders));
 					LuaFile.AddLine(LuaParser.Write.StringToLua(KEY_PLATOON, platoon));
@@ -157,7 +157,7 @@ namespace MapLua
 
 				public void SaveUnit(LuaParser.Creator LuaFile)
 				{
-					LuaFile.OpenTab(LuaParser.Write.PropertiveToLua(Name) + LuaParser.Write.OpenBracketValue);
+					LuaFile.OpenTab(LuaParser.Write.PropertieToLua(Name) + LuaParser.Write.OpenBracketValue);
 
 					LuaFile.AddLine(LuaParser.Write.StringToLua(UnitsGroup.KEY_TYPE, type));
 					LuaFile.AddLine(LuaParser.Write.StringToLua(UnitsGroup.KEY_ORDERS, orders));
@@ -249,7 +249,7 @@ namespace MapLua
 
 				public void SavePlatoonBuilder(LuaParser.Creator LuaFile)
 				{
-					LuaFile.OpenTab(LuaParser.Write.PropertiveToLua(Name) + LuaParser.Write.OpenBracketValue);
+					LuaFile.OpenTab(LuaParser.Write.PropertieToLua(Name) + LuaParser.Write.OpenBracketValue);
 
 					LuaFile.AddLine(LuaParser.Write.StringToLua(KEY_PLATOONTEMPLATE, PlatoonTemplate));
 					LuaFile.AddLine(LuaParser.Write.IntToLua(KEY_PLATOONTEMPLATE, Priority));
@@ -333,7 +333,7 @@ namespace MapLua
 				LuaFile.AddSaveComent(ArmyName);
 				LuaFile.AddSaveComent("");
 
-				LuaFile.AddLine(LuaParser.Write.PropertiveToLua(ArmyName) + LuaParser.Write.SetValue);
+				LuaFile.AddLine(LuaParser.Write.PropertieToLua(ArmyName) + LuaParser.Write.SetValue);
 				LuaFile.OpenTab(LuaParser.Write.OpenBracket);
 
 
@@ -352,7 +352,7 @@ namespace MapLua
 				LuaFile.OpenTab(KEY_ALLIANCES + LuaParser.Write.OpenBracketValue);
 				for (int a = 0; a < Alliances.Length; a++)
 				{
-					LuaFile.AddLine(LuaParser.Write.StringToLua(LuaParser.Write.PropertiveToLua(Alliances[a].Army), Alliances[a].AllianceType));
+					LuaFile.AddLine(LuaParser.Write.StringToLua(LuaParser.Write.PropertieToLua(Alliances[a].Army), Alliances[a].AllianceType));
 				}
 				LuaFile.CloseTab(LuaParser.Write.EndBracketNext);
 

@@ -201,14 +201,18 @@ namespace EditMap
 
 		public void ClickTex1()
 		{
-			if(!string.IsNullOrEmpty(Texture1Path.text))
-				ResourceBrowser.Current.LoadStratumTexture(Texture1Path.text.Remove(0,1));
+			if (!string.IsNullOrEmpty(Texture1Path.text))
+				ResourceBrowser.Current.LoadStratumTexture(Texture1Path.text.Remove(0, 1));
+			else
+				ResourceBrowser.Current.gameObject.SetActive(true);
 		}
 
 		public void ClickTex2()
 		{
 			if (!string.IsNullOrEmpty(Texture2Path.text))
 				ResourceBrowser.Current.LoadStratumTexture(Texture2Path.text.Remove(0, 1));
+			else
+				ResourceBrowser.Current.gameObject.SetActive(true);
 		}
 
 		public void DropTex1()
@@ -344,7 +348,9 @@ namespace EditMap
 			{
 				//TODO Exit Creating mode
 				if (CreationGameObject)
-					Destroy(CreationGameObject);
+				{
+					DestroyImmediate(CreationGameObject);
+				}
 
 				DecalsInfo.Current.GoToSelection();
 			}
@@ -367,12 +373,18 @@ namespace EditMap
 
 		void CreatePrefabAction(GameObject InstancedPrefab)
 		{
-			OzoneDecal Dec = CreationGameObject.GetComponent<OzoneDecal>();
-			Dec.Shared = Loaded;
-			Dec.Material = Loaded.SharedMaterial;
+			OzoneDecal Obj = InstancedPrefab.GetComponent<OzoneDecal>();
+			Decal component = new Decal();
+			component.Obj = Obj;
+			Obj.Dec = component;
+			Obj.Dec.Shared = Loaded;
+			//Dec.Shared = Loaded;
+			Obj.Material = Loaded.SharedMaterial;
 
-			Dec.CutOffLOD = CutOff.value;
-			Dec.NearCutOffLOD = NearCutOff.value;
+			Obj.CutOffLOD = CutOff.value;
+			Obj.NearCutOffLOD = NearCutOff.value;
+			Obj.Bake();
+
 		}
 	}
 
