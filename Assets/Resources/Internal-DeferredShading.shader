@@ -86,8 +86,8 @@ half4 CalculateLight (unity_v2f_deferred i)
 
 	float NdotL = dot (light.dir, data.normalWorld);
 
-	 float3 lighting =  _SunColor.rgb * 2 * saturate(NdotL) * atten + _SunAmbience.rgb * 2;
-		lighting = _LightingMultiplier * lighting + _ShadowColor.rgb * 2 * (1 - lighting);
+	 float3 lighting =  (_SunColor.rgb * 2) * saturate(NdotL) * atten + (_SunAmbience.rgb * 2);
+		lighting = _LightingMultiplier * lighting + (_ShadowColor.rgb * 2) * (1 - lighting);
 		c.rgb = (data.diffuseColor + spec) * lighting;
 		c.a = 1;
 

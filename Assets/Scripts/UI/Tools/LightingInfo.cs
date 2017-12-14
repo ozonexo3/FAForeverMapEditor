@@ -125,6 +125,7 @@ namespace EditMap
 			}
 			else
 			{
+				EndSliderDrag();
 				IgnoreUpdate = true;
 				//LightMultipilerSlider.value = Mathf.Clamp(float.Parse(LightMultipiler.text), 0, 2);
 				//LightMultipiler.text = LightMultipilerSlider.value.ToString();

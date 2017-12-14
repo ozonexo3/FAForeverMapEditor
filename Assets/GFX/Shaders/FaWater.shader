@@ -19,8 +19,8 @@ Shader "MapEditor/FaWater" {
 		NormalSampler1 ("NormalSampler1", 2D) = "white" {}
 		NormalSampler2 ("NormalSampler2", 2D) = "white" {}
 		NormalSampler3 ("NormalSampler3", 2D) = "white" {}
-		_WaterScaleX ("Water Scale X", float) = 1024
-		_WaterScaleZ ("Water Scale Z", float) = 1024
+		//_WaterScaleX ("Water Scale X", float) = 1024
+		//_WaterScaleZ ("Water Scale Z", float) = 1024
 	}
     SubShader {
     	//Tags { "Queue"="Transparent" "RenderType"="Transparent" }
@@ -43,7 +43,7 @@ Shader "MapEditor/FaWater" {
 
 		//************ Water Params
 		
-		float _WaterScaleX, _WaterScaleZ;
+		uniform float _WaterScaleX, _WaterScaleZ;
 		float waveCrestThreshold = 1;
 		float3 waveCrestColor = float3(1,1,1);
 		float refractionScale = 0.015;

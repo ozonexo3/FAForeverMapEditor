@@ -31,13 +31,31 @@ public class PlacementManager : MonoBehaviour {
 
 	int PlaceAngle = 0;
 
-	public static void BeginPlacement(GameObject Prefab, System.Action<Vector3[], Quaternion[], Vector3[]> PlaceAction)
+
+	static Quaternion OldRot;
+	static Vector3 OldScale;
+	public static void BeginPlacement(GameObject Prefab, System.Action<Vector3[], Quaternion[], Vector3[]> PlaceAction, bool ResetTransform = true)
 	{
+		if (!ResetTransform && Current.PlacementObject)
+		{
+			OldRot = Current.PlacementObject.transform.rotation;
+			OldScale = Current.PlacementObject.transform.localScale;
+		}
+		else
+		{
+			OldRot = Quaternion.identity;
+			OldScale = Vector3.one;
+		}
+
 		Clear();
 
 		Current.PlacementObject = Instantiate(Prefab) as GameObject;
 		if (InstantiateAction != null)
 			InstantiateAction(Current.PlacementObject);
+
+		Current.PlacementObject.transform.rotation = OldRot;
+		Current.PlacementObject.transform.localScale = OldScale;
+
 		Current.PlacementObject.SetActive(false);
 		CurrentPlaceAction = PlaceAction;
 		Current.GenerateSymmetry();

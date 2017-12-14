@@ -170,10 +170,12 @@ public class ScmapEditor : MonoBehaviour
 		TerrainMaterial.SetTexture("_TerrainNormal", map.UncompressedNormalmapTex);
 		Shader.SetGlobalTexture("_UtilitySamplerC", map.UncompressedWatermapTex);
 		//WaterMaterial.SetTexture("_UtilitySamplerC", map.UncompressedWatermapTex);
-		WaterMaterial.SetFloat("_WaterScaleX", xRes);
-		WaterMaterial.SetFloat("_WaterScaleZ", zRes);
-		TerrainMaterial.SetFloat("_WaterScaleX", xRes);
-		TerrainMaterial.SetFloat("_WaterScaleZ", zRes);
+		//WaterMaterial.SetFloat("_WaterScaleX", xRes);
+		//WaterMaterial.SetFloat("_WaterScaleZ", zRes);
+		//TerrainMaterial.SetFloat("_WaterScaleX", xRes);
+		//TerrainMaterial.SetFloat("_WaterScaleZ", zRes);
+		Shader.SetGlobalFloat("_WaterScaleX", xRes);
+		Shader.SetGlobalFloat("_WaterScaleZ", xRes);
 
 		//*****************************************
 		// ***** Set Terrain proportives

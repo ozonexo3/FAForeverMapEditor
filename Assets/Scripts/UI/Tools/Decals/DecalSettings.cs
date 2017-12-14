@@ -33,14 +33,33 @@ namespace EditMap
 		public void Load(Decal.DecalSharedSettings DecalSettings)
 		{
 			if (Creating)
+			{
+				if (DecalSettings == null)
+					return;
+				Loaded = DecalSettings;
+				SwitchCreation();
 				return;
+			}
 
 			UpdateSelection();
 
-			Loading = true;
 			Loaded = DecalSettings;
 
-			if (DecalSettings == null)
+			SetUI();
+
+		}
+
+		public void SwitchCreation()
+		{
+			PlacementManager.Clear();
+			PlacementManager.BeginPlacement(GetCreationObject(), DecalsInfo.Current.Place, false);
+		}
+
+		void SetUI()
+		{
+			Loading = true;
+
+			if (Loaded == null)
 			{
 				Texture1.texture = null;
 				Texture1Path.text = "";
@@ -56,18 +75,18 @@ namespace EditMap
 			}
 			else
 			{
-				Texture1.texture = DecalSettings.Texture1;
-				Texture1Path.text = DecalSettings.Tex1Path;
+				Texture1.texture = Loaded.Texture1;
+				Texture1Path.text = Loaded.Tex1Path;
 
-				Texture2.texture = DecalSettings.Texture2;
-				Texture2Path.text = DecalSettings.Tex2Path;
+				Texture2.texture = Loaded.Texture2;
+				Texture2Path.text = Loaded.Tex2Path;
 
 				//CutOff.text = DecalSettings.CutOffLOD.ToString();
 				//NearCutOff.text = DecalSettings.NearCutOffLOD.ToString();
 
 				CreateBtn.interactable = true;
 
-				switch (DecalSettings.Type)
+				switch (Loaded.Type)
 				{
 					case TerrainDecalType.TYPE_ALBEDO:
 						DecalType.value = 0;
@@ -102,6 +121,7 @@ namespace EditMap
 				}
 			}
 			Loading = false;
+
 		}
 
 		void UpdateSelection()
@@ -332,9 +352,14 @@ namespace EditMap
 
 
 		bool Creating = false;
-		public void OnClickCreate()
+		public void SwitchCreate()
 		{
-			Creating = !Creating;
+			OnClickCreate(!Creating);
+		}
+
+		public void OnClickCreate(bool Value)
+		{
+			Creating = Value;
 			CreateSelected.SetActive(Creating);
 			if (Creating)
 			{
@@ -343,6 +368,7 @@ namespace EditMap
 				PlacementManager.InstantiateAction = CreatePrefabAction;
 				PlacementManager.MinRotAngle = 0;
 				PlacementManager.BeginPlacement(GetCreationObject(), DecalsInfo.Current.Place);
+				DecalsInfo.Current.DecalsList.UpdateSelection();
 			}
 			else
 			{

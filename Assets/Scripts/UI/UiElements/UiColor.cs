@@ -17,6 +17,7 @@ public class UiColor : MonoBehaviour
 	public Slider GreenSlider;
 	public Slider BlueSlider;
 
+	public UnityEvent OnInputFinish;
 	public UnityEvent OnValueChanged;
 
 	//System.Action FieldChangedAction;
@@ -99,10 +100,10 @@ public class UiColor : MonoBehaviour
 
 		UpdateGfx();
 		//FieldChangedAction();
-		OnValueChanged.Invoke();
+		OnInputFinish.Invoke();
 	}
 
-	public void SliderUpdate()
+	public void SliderUpdate(bool Finish)
 	{
 		if (Loading)
 			return;
@@ -113,7 +114,10 @@ public class UiColor : MonoBehaviour
 
 		UpdateGfx();
 		//FieldChangedAction();
-		OnValueChanged.Invoke();
+		if(Finish)
+			OnInputFinish.Invoke();
+		else
+			OnValueChanged.Invoke();
 	}
 
 	void UpdateGfx()

@@ -12,7 +12,7 @@ namespace EditMap
 		public GameObject TypePrefab;
 		public GameObject GroupPrefab;
 		public Transform ListPrefab;
-		public GridLayoutGroup Layout;
+		public VerticalLayoutGroup Layout;
 		public ContentSizeFitter SizeFitter;
 
 		public void OnScroll()
@@ -95,6 +95,7 @@ namespace EditMap
 					lo.Setting = Current;
 					lo.ClickActionId = OnClickType;
 					lo.DragAction = OnDropObject;
+					lo.SetHidden(Current.Hidden);
 					lo.ObjectName.text = ((TerrainDecalTypeString)((int)Current.Type)).ToString().Replace("_", " ") + "\n" + Current.Tex1Path;
 					lo.Image.texture = Current.Texture1;
 
@@ -149,7 +150,9 @@ namespace EditMap
 				var ListEnum = AllListObjects.GetEnumerator();
 				while (ListEnum.MoveNext())
 				{
-					if (SelectedShared.Contains(ListEnum.Current.Setting))
+					if (DecalSettings.GetLoaded == ListEnum.Current.Setting)
+						ListEnum.Current.SetSelection(2);
+					else if (SelectedShared.Contains(ListEnum.Current.Setting))
 						ListEnum.Current.Select();
 					else
 						ListEnum.Current.Unselect();
@@ -162,6 +165,7 @@ namespace EditMap
 		{
 			Decal.DecalSharedSettings dss = AllObjects[ob.InstanceId].GetComponent<ListObjectDecal>().Setting;
 			DecalsInfo.Current.DecalSettingsUi.Load(dss);
+			UpdateSelection();
 
 			/*
 			SelectionManager.Current.CleanSelection();

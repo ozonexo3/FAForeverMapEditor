@@ -43,6 +43,8 @@ public partial class Decal {
 		public bool DrawAlbedo;
 		public bool DrawNormal;
 
+		public bool Hidden;
+
 		public DecalSharedSettings()
 		{
 			Type = TerrainDecalType.TYPE_ALBEDO;
@@ -68,6 +70,8 @@ public partial class Decal {
 			if (Type == TerrainDecalType.TYPE_NORMALS || Type == TerrainDecalType.TYPE_NORMALS_ALPHA)
 			{
 				Texture1 = DecalsInfo.AssignTextureFromPath(ref SharedMaterial, "_NormalTex", Tex1Path);
+				Texture1.anisoLevel = 6;
+				Texture1.filterMode = FilterMode.Bilinear;
 
 				DrawAlbedo = false;
 				DrawNormal = true;

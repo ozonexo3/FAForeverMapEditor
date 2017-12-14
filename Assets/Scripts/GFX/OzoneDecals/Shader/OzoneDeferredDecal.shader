@@ -49,8 +49,9 @@ Shader "Ozone/Deferred Decal"
 
 			sampler2D _Mask;
 			sampler2D _Glow;
-			sampler2D _WaterRam;
-			sampler2D _UtilitySamplerC;
+			uniform sampler2D _WaterRam;
+			uniform sampler2D _UtilitySamplerC;
+			uniform float _WaterScaleX, _WaterScaleZ;
 
 			
 			float3 ApplyWaterColor( float depth, float3  inColor){
@@ -71,7 +72,7 @@ Shader "Ozone/Deferred Decal"
 				float4 color = tex2D(_MainTex, texUV);// * _Color;
 
 				
-				float4 waterTexture = tex2D( _UtilitySamplerC, wpos.xz * half2(0.009765, -0.009765) + half2(0, 0));
+				float4 waterTexture = tex2D( _UtilitySamplerC, wpos.xz * half2(0.009765 / (_WaterScaleX / 1024.0), -0.009765 / (_WaterScaleZ / 1024.0)));
 				color.rgb = ApplyWaterColor( waterTexture.g, color.rgb);	
 
 				color.a *= blend * tex2D(_Mask, texUV).r;
@@ -82,6 +83,8 @@ Shader "Ozone/Deferred Decal"
 
 				// Write albedo, premultiply for proper blending
 				outAlbedo = float4(color.rgb * color.a, color.a);
+
+				clip(color.a - 0.003);
 				//color *= 1 - float4(ShadeSH9(float4(gbuffer_normal, 1.0f)), 1.0f);
 
 				//color.rgb = 10000 * RawAlpha;
@@ -135,7 +138,7 @@ Shader "Ozone/Deferred Decal"
 				//clip(dot(gbuffer_normal, i.decalNormal) - _AngleLimit); // 60 degree clamp
 
 				float3 decalBitangent;
-				if (_NormalBlendMode == 0)
+				if (_NormalBlendMode == 1)
 				{
 					// Reorient decal
 					i.decalNormal = gbuffer_normal;
@@ -153,27 +156,31 @@ Shader "Ozone/Deferred Decal"
 				// Get normal from normal map
 				//float3 normal = UnpackScaleNormal(tex2D(_NormalTex, texUV), _NormalMultiplier);
 				//float3 normal = UnpackNormalDXT5nm(tex2D(_NormalTex, texUV));
-				float4 decalRaw = tex2D(_NormalTex, texUV);
+				//float4 decalRaw = tex2D(_NormalTex, texUV);
 				float3 normal;
-				normal.xz = decalRaw.ag * 2 - 1;
-				normal.y = sqrt(1 - dot(normal.xz,normal.xz)) ;
+				//normal.xz = decalRaw.ag * 2 - 1;
+				//normal.y = sqrt(1 - dot(normal.xz,normal.xz)) ;
 
 				
 
 				normal = UnpackNormalDXT5nm(tex2D(_NormalTex, texUV));
 
-				normal.z *= 0.5;
+				float AlphaNormal = saturate((1 - normal.z));
+
+
+				//normal.z *= 1;
+				//normal.z = saturate(normal.z - 0.9);
+				normal.z = 1 - blend;
 				normal.xy *= blend;
 
 				normal = normalize(normal);
-				float AlphaNormal = saturate(1 - normal.z * 1) * blend;
 
 				
 				// Clip to blend it with other normal maps
 				//float AlphaNormal = clamp(dot(normal, half3(0,0,1)) * 10, 0, 1);
 				//clip(0.999 -  AlphaNormal);
 				//clip(0.5 - normal.y);
-				clip(AlphaNormal - 0.05);
+				clip(AlphaNormal - 0.003);
 
 				normal = mul(normal, half3x3(i.decalTangent, decalBitangent, i.decalNormal));
 
@@ -185,7 +192,7 @@ Shader "Ozone/Deferred Decal"
 
 
 				// Write normal
-				outNormal = float4(normal * 0.5 + 0.5, saturate(AlphaNormal));
+				outNormal = float4(normal * 0.5 + 0.5, saturate(pow(AlphaNormal, 0.6)) * blend);
 			}
 			ENDCG
 		}

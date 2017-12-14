@@ -35,7 +35,7 @@ namespace Selection
 			SelectionRings = new List<GameObject>();
 
 			int count = Selection.Ids.Count;
-			if (count == 0)
+			if (count == 0 || AffectedGameObjects.Length == 0)
 			{
 				Controls.gameObject.SetActive(false);
 			}
