@@ -51,7 +51,7 @@ namespace EditMap
 				}
 			}
 
-			Debug.Log("Decal instances: " + nCount);
+			Debug.Log("Decal types: " + nCount);
 		}
 
 		static void CompareDecalsAndAdd(Decal ToCompare)

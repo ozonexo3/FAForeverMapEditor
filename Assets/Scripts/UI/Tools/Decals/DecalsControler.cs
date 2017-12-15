@@ -67,6 +67,8 @@ public class DecalsControler : MonoBehaviour {
 
 		Current.AllDecals = NewDecalsList;
 
+		Sort();
+
 		foreach (OzoneDecal Obj in ToDestroy)
 			DestroyImmediate(Obj.gameObject);
 	}

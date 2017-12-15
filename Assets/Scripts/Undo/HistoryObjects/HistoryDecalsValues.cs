@@ -1,15 +1,15 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UndoHistory;
 using EditMap;
+using OzoneDecals;
 
-public class HistoryDecalsMove : HistoryObject
+public class HistoryDecalsValues : HistoryObject
 {
-
-	Vector3[] Pos;
-	Quaternion[] Rot;
-	Vector3[] Scale;
+	public float[] CutOffLOD;
+	public float[] NearCutOffLOD;
 
 	public static bool UndoMenu;
 	public bool UndoToDecalsMenu;
@@ -18,16 +18,13 @@ public class HistoryDecalsMove : HistoryObject
 	{
 		UndoToDecalsMenu = UndoMenu;
 
-		Pos = new Vector3[DecalsControler.Current.AllDecals.Count];
-		Rot = new Quaternion[Pos.Length];
-		Scale = new Vector3[Pos.Length];
+		CutOffLOD = new float[DecalsControler.Current.AllDecals.Count];
+		NearCutOffLOD = new float[CutOffLOD.Length];
 
-		for (int i = 0; i < Pos.Length; i++)
+		for (int i = 0; i < CutOffLOD.Length; i++)
 		{
-			Transform tr = DecalsControler.Current.AllDecals[i].Obj.tr;
-			Pos[i] = tr.localPosition;
-			Rot[i] = tr.localRotation;
-			Scale[i] = tr.localScale;
+			CutOffLOD[i] = DecalsControler.Current.AllDecals[i].Obj.CutOffLOD;
+			NearCutOffLOD[i] = DecalsControler.Current.AllDecals[i].Obj.NearCutOffLOD;
 		}
 	}
 
@@ -36,19 +33,17 @@ public class HistoryDecalsMove : HistoryObject
 		UndoMenu = UndoToDecalsMenu;
 
 		if (!RedoGenerated)
-			HistoryMarkersMove.GenerateRedo(Undo.Current.Prefabs.DecalsMove).Register();
+			HistoryDecalsValues.GenerateRedo(Undo.Current.Prefabs.DecalValues).Register();
 		RedoGenerated = true;
 		DoRedo();
 	}
 
 	public override void DoRedo()
 	{
-		for (int i = 0; i < Pos.Length; i++)
+		for (int i = 0; i < CutOffLOD.Length; i++)
 		{
-			Transform tr = DecalsControler.Current.AllDecals[i].Obj.tr;
-			tr.localPosition = Pos[i];
-			tr.localRotation = Rot[i];
-			tr.localScale = Scale[i];
+			DecalsControler.Current.AllDecals[i].Obj.CutOffLOD = CutOffLOD[i];
+			DecalsControler.Current.AllDecals[i].Obj.NearCutOffLOD = NearCutOffLOD[i];
 		}
 
 		if (UndoToDecalsMenu)

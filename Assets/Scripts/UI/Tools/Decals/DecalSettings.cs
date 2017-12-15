@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using OzoneDecals;
 using Ozone.UI;
+using Selection;
 
 namespace EditMap
 {
@@ -18,6 +19,7 @@ namespace EditMap
 		public Dropdown DecalType;
 		public Button CreateBtn;
 		public GameObject CreateSelected;
+		public Button SelectAllBtn;
 
 		static Decal.DecalSharedSettings Loaded;
 
@@ -44,6 +46,9 @@ namespace EditMap
 			UpdateSelection();
 
 			Loaded = DecalSettings;
+
+			CreateBtn.interactable = Loaded != null;
+			SelectAllBtn.interactable = Loaded != null;
 
 			SetUI();
 
@@ -121,7 +126,22 @@ namespace EditMap
 				}
 			}
 			Loading = false;
+		}
 
+		public void SelectAll()
+		{
+			if (Loaded == null)
+				return;
+
+			Decal.DecalSharedSettings Shared = Loaded;
+
+			SelectionManager.Current.CleanSelection();
+
+			for (int i = 0; i < SelectionManager.Current.AffectedGameObjects.Length; i++)
+			{
+				if (SelectionManager.Current.AffectedGameObjects[i].GetComponent<OzoneDecal>().Dec.Shared == Shared)
+					SelectionManager.Current.SelectObjectAdd(SelectionManager.Current.AffectedGameObjects[i]);
+			}
 		}
 
 		void UpdateSelection()
@@ -211,6 +231,7 @@ namespace EditMap
 				return;
 
 			//TODO Register Undo
+			Undo.Current.RegisterDecalsSharedValuesChange();
 
 			Loaded.Type = TypeByDropdown();
 
@@ -245,6 +266,10 @@ namespace EditMap
 				//TODO Undo.RegisterStratumChange(Selected);
 				Debug.Log(ResourceBrowser.Current.LoadedPaths[ResourceBrowser.DragedObject.InstanceId]);
 
+				if (Loaded.Tex1Path == ResourceBrowser.Current.LoadedPaths[ResourceBrowser.DragedObject.InstanceId])
+					return;
+
+				Undo.Current.RegisterDecalsSharedValuesChange();
 				Loaded.Tex1Path = ResourceBrowser.Current.LoadedPaths[ResourceBrowser.DragedObject.InstanceId];
 				Loaded.UpdateMaterial();
 				Load(Loaded);
@@ -265,6 +290,10 @@ namespace EditMap
 				//TODO Undo.RegisterStratumChange(Selected);
 				Debug.Log(ResourceBrowser.Current.LoadedPaths[ResourceBrowser.DragedObject.InstanceId]);
 
+				if (Loaded.Tex2Path == ResourceBrowser.Current.LoadedPaths[ResourceBrowser.DragedObject.InstanceId])
+					return;
+
+				Undo.Current.RegisterDecalsSharedValuesChange();
 				Loaded.Tex2Path = ResourceBrowser.Current.LoadedPaths[ResourceBrowser.DragedObject.InstanceId];
 				Loaded.UpdateMaterial();
 				Load(Loaded);
@@ -297,7 +326,7 @@ namespace EditMap
 			if (Loaded == null || Loading)
 				return;
 
-			//TODO Register Undo
+			Undo.Current.RegisterDecalsValuesChange();
 
 			HashSet<OzoneDecal>.Enumerator ListEnum = DecalsInfo.Current.SelectedDecals.GetEnumerator();
 			while (ListEnum.MoveNext())
@@ -314,7 +343,7 @@ namespace EditMap
 			if (Loaded == null || Loading)
 				return;
 
-			//TODO Register Undo
+			Undo.Current.RegisterDecalsValuesChange();
 
 			HashSet<OzoneDecal>.Enumerator ListEnum = DecalsInfo.Current.SelectedDecals.GetEnumerator();
 			while (ListEnum.MoveNext())
@@ -328,6 +357,8 @@ namespace EditMap
 
 		public void SampleCutoffFromCamera()
 		{
+			Undo.Current.RegisterDecalsValuesChange();
+
 			float Dist = (int)CameraControler.GetCurrentZoom();
 			HashSet<OzoneDecal>.Enumerator ListEnum = DecalsInfo.Current.SelectedDecals.GetEnumerator();
 			while (ListEnum.MoveNext())
@@ -340,6 +371,8 @@ namespace EditMap
 
 		public void SampleNearCutoffFromCamera()
 		{
+			Undo.Current.RegisterDecalsValuesChange();
+
 			float Dist = (int)CameraControler.GetCurrentZoom();
 			HashSet<OzoneDecal>.Enumerator ListEnum = DecalsInfo.Current.SelectedDecals.GetEnumerator();
 			while (ListEnum.MoveNext())

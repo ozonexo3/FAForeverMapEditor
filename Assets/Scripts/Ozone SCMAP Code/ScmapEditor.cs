@@ -69,13 +69,29 @@ public class ScmapEditor : MonoBehaviour
 		RestartTerrainAsset();
 	}
 
-	public void UpdateBloom()
+	public void UpdateLighting()
 	{
+		Vector3 SunDIr = new Vector3(-map.SunDirection.x, -map.SunDirection.y, map.SunDirection.z);
+		Sun.transform.rotation = Quaternion.LookRotation(SunDIr);
+		Sun.color = new Color(map.SunColor.x, map.SunColor.y, map.SunColor.z, 1);
+		Sun.intensity = map.LightingMultiplier * EditMap.LightingInfo.SunMultipiler;
+		RenderSettings.ambientLight = new Color(map.ShadowFillColor.x, map.ShadowFillColor.y, map.ShadowFillColor.z, 1);
+
 		BloomModel.Settings Bs = PostProcessing.bloom.settings;
 		Bs.bloom.intensity = map.Bloom * 10;
 		PostProcessing.bloom.settings = Bs;
 
 		BloomOpt.intensity = map.Bloom;
+
+		RenderSettings.fogColor = new Color(map.FogColor.x, map.FogColor.y, map.FogColor.z, 1);
+		RenderSettings.fogStartDistance = map.FogStart * 2;
+		RenderSettings.fogEndDistance = map.FogEnd * 2;
+
+		Shader.SetGlobalFloat("_LightingMultiplier", map.LightingMultiplier);
+		Shader.SetGlobalColor("_SunColor", new Color(map.SunColor.x * 0.5f, map.SunColor.y * 0.5f, map.SunColor.z * 0.5f, 1));
+		Shader.SetGlobalColor("_SunAmbience", new Color(map.SunAmbience.x * 0.5f, map.SunAmbience.y * 0.5f, map.SunAmbience.z * 0.5f, 1));
+		Shader.SetGlobalColor("_ShadowColor", new Color(map.ShadowFillColor.x * 0.5f, map.ShadowFillColor.y * 0.5f, map.ShadowFillColor.z * 0.5f, 1));
+
 	}
 
 	public IEnumerator LoadScmapFile()
@@ -92,25 +108,7 @@ public class ScmapEditor : MonoBehaviour
 
 		if (map.Load(path))
 		{
-			Vector3 SunDIr = new Vector3(-map.SunDirection.x, -map.SunDirection.y, map.SunDirection.z);
-			Sun.transform.rotation = Quaternion.LookRotation(SunDIr);
-			Sun.color = new Color(map.SunColor.x, map.SunColor.y, map.SunColor.z, 1);
-			Sun.intensity = map.LightingMultiplier * EditMap.LightingInfo.SunMultipiler;
-			RenderSettings.ambientLight = new Color(map.ShadowFillColor.x, map.ShadowFillColor.y, map.ShadowFillColor.z, 1);
-
-			//Cam.GetComponent<Bloom>().bloomIntensity = map.Bloom * 4;
-
-			//PostProcessing.bloom.settings.bloom.intensity = map.Bloom * 4;
-			UpdateBloom();
-
-			RenderSettings.fogColor = new Color(map.FogColor.x, map.FogColor.y, map.FogColor.z, 1);
-			RenderSettings.fogStartDistance = map.FogStart * 2;
-			RenderSettings.fogEndDistance = map.FogEnd * 2;
-
-			Shader.SetGlobalFloat("_LightingMultiplier", map.LightingMultiplier);
-			Shader.SetGlobalColor("_SunColor", new Color(map.SunColor.x * 0.5f, map.SunColor.y * 0.5f, map.SunColor.z * 0.5f, 1));
-			Shader.SetGlobalColor("_SunAmbience", new Color(map.SunAmbience.x * 0.5f, map.SunAmbience.y * 0.5f, map.SunAmbience.z * 0.5f, 1));
-			Shader.SetGlobalColor("_ShadowColor", new Color(map.ShadowFillColor.x * 0.5f, map.ShadowFillColor.y * 0.5f, map.ShadowFillColor.z * 0.5f, 1));
+			UpdateLighting();
 		}
 		else
 		{

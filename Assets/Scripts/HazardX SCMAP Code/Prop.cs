@@ -7,7 +7,7 @@
 using UnityEngine;
 
 
-public class Prop
+public partial class Prop
 {
 
     public Vector3 Position;

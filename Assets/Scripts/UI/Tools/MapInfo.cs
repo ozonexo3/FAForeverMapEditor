@@ -13,8 +13,8 @@ namespace EditMap
 		public UiTextField Desc;
 		public UiTextField Version;
 		public Toggle[] ScriptToggles;
+		public Toggle SaveAsSc;
 		public Toggle SaveAsFa;
-
 
 		int PreviousPage = 0;
 		int CurrentPage = 0;

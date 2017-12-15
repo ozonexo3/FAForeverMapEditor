@@ -86,6 +86,9 @@ public class AppMenu : MonoBehaviour
 			case "Forum":
 				Application.OpenURL("http://forums.faforever.com/viewtopic.php?f=45&t=10647");
 				break;
+			case "Wiki":
+				Application.OpenURL("https://wiki.faforever.com/index.php?title=FA_Forever_Map_Editor");
+				break;
 			case "Donate":
 				Application.OpenURL("https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=LUYMTPBDH5V4E&lc=GB&item_name=FAF%20Map%20Editor&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted");
 				break;

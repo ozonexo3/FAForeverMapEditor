@@ -18,6 +18,9 @@ namespace EditMap
 			if (SelectionManager.Current.Selection.Ids.Count == 0)
 				return;
 			HashSet<OzoneDecal> Sd = SelectedDecals;
+			if (Sd.Count > 0)
+				Undo.Current.RegisterDecalsOrderChange();
+
 			foreach (OzoneDecal Odec in Sd)
 			{
 				DecalsControler.MoveUp(Odec.Dec);
@@ -30,6 +33,8 @@ namespace EditMap
 			if (SelectionManager.Current.Selection.Ids.Count == 0)
 				return;
 			HashSet<OzoneDecal> Sd = SelectedDecals;
+			if (Sd.Count > 0)
+				Undo.Current.RegisterDecalsOrderChange();
 			foreach (OzoneDecal Odec in Sd)
 			{
 				DecalsControler.MoveDown(Odec.Dec);
@@ -42,6 +47,8 @@ namespace EditMap
 			if (SelectionManager.Current.Selection.Ids.Count == 0)
 				return;
 			HashSet<OzoneDecal> Sd = SelectedDecals;
+			if (Sd.Count > 0)
+				Undo.Current.RegisterDecalsOrderChange();
 			foreach (OzoneDecal Odec in Sd)
 			{
 				DecalsControler.MoveTop(Odec.Dec);
@@ -55,6 +62,8 @@ namespace EditMap
 				return;
 
 			HashSet<OzoneDecal> Sd = SelectedDecals;
+			if (Sd.Count > 0)
+				Undo.Current.RegisterDecalsOrderChange();
 			foreach (OzoneDecal Odec in Sd)
 			{
 				DecalsControler.MoveBottom(Odec.Dec);
@@ -102,6 +111,17 @@ namespace EditMap
 			DecalSettingsUi.Load(NewSharedDecal);
 			DecalsList.GenerateTypes();
 
+		}
+
+		public void ToggleHideOther(Decal.DecalSharedSettings Connected)
+		{
+			foreach (Decal.DecalSharedSettings Shared in Decal.AllDecalsShared)
+			{
+				if (Shared == Connected)
+					continue;
+				Shared.Hidden = !Shared.Hidden;
+			}
+			DecalsList.UpdateSelection();
 		}
 
 		public void HideAll()

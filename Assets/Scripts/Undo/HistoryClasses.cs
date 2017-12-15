@@ -28,6 +28,8 @@ namespace UndoHistory
 		public GameObject DecalsMove;
 		public GameObject DecalsChange;
 		public GameObject DecalValues;
+		public GameObject DecalSharedValues;
+		public GameObject PropsChange;
 		public GameObject TerrainHeightChange;
 		public GameObject StratumPaint;
 		public GameObject StratumChange;

@@ -59,6 +59,22 @@ public class PropsRenderer : MonoBehaviour {
 		for (i = 0; i < count; i++)
 		{
 			Ptg = PropsInfo.AllPropsTypes[i];
+			foreach(PropGameObject PropInstance in Ptg.PropsInstances)
+			{
+				LocalPos = PropInstance.Tr.localPosition;
+				LocalPos.y = ScmapEditor.Current.Teren.SampleHeight(LocalPos);
+				PropInstance.Tr.localPosition = LocalPos;
+
+				step++;
+				if (step > PauseEvery)
+				{
+					step = 0;
+					yield return null;
+				}
+			}
+
+
+			/*
 			InstancesCount = Ptg.PropsInstances.Count;
 
 			for(p = 0; p < InstancesCount; p++)
@@ -73,7 +89,8 @@ public class PropsRenderer : MonoBehaviour {
 					step = 0;
 					yield return null;
 				}
-			}
+			}*/
+
 		}
 
 		yield return null;

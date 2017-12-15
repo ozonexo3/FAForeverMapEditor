@@ -83,13 +83,19 @@ namespace Selection
 				}
 
 				Controls.localPosition = NewBounds.center;
-				if (LastControlType == SelectionControlTypes.Decal && count == 1)
+				if (RotateControls() && count == 1)
 					Controls.localRotation = AffectedGameObjects[Selection.Ids[0]].transform.localRotation;
 				else
 					Controls.localRotation = Quaternion.identity;
 				//float Size = Mathf.Clamp(Mathf.Max(NewBounds.size.x, NewBounds.size.z), 0.2f, 10000);
 				//Ring.localScale = new Vector3(Size, 1, Size);
 			}
+		}
+
+		bool RotateControls()
+		{
+			return (ChangeControlerType.ControlerId == 1 || ChangeControlerType.ControlerId == 2) &&
+					LastControlType == SelectionControlTypes.Decal;
 		}
 
 		private void GenerateSymmetrySelectionRing(SelectedObjects Sel)
@@ -151,7 +157,7 @@ namespace Selection
 			}
 
 			Controls.localPosition = NewBounds.center;
-			if (LastControlType == SelectionControlTypes.Decal && count == 1)
+			if (RotateControls() && count == 1)
 				Controls.localRotation = AffectedGameObjects[Selection.Ids[0]].transform.localRotation;
 			else
 				Controls.localRotation = Quaternion.identity;

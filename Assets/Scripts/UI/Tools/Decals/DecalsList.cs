@@ -172,6 +172,7 @@ namespace EditMap
 			*/
 		}
 
+
 		public void OnDropObject(ListObject ob)
 		{
 

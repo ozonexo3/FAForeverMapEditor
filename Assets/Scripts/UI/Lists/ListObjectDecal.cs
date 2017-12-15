@@ -22,7 +22,14 @@ public class ListObjectDecal : ListObject
 
 	public void SwitchVisible()
 	{
-		Setting.Hidden = !Setting.Hidden;
+		if (Input.GetKey(KeyCode.LeftAlt))
+		{
+			DecalsInfo.Current.ToggleHideOther(Setting);
+		}
+		else
+		{
+			Setting.Hidden = !Setting.Hidden;
+		}
 		SetHidden(Setting.Hidden);
 	}
 }

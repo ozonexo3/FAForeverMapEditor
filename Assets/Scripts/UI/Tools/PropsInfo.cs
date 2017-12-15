@@ -56,11 +56,16 @@ namespace EditMap
 			public string HelpText = "";
 			//public Prop[] Props = new Prop[0];
 			public GetGamedataFile.PropObject PropObject;
-			public List<PropGameObject> PropsInstances = new List<PropGameObject>();
+			public HashSet<Prop> PropsInstances = new HashSet<Prop>();
+
+			public void SetNewInstances(HashSet<Prop> NewProps)
+			{
+
+			}
 
 			public PropTypeGroup()
 			{
-				PropsInstances = new List<PropGameObject>();
+				PropsInstances = new HashSet<Prop>();
 			}
 
 			public PropTypeGroup(GetGamedataFile.PropObject FromPropObject)
@@ -69,7 +74,7 @@ namespace EditMap
 				Blueprint = PropObject.BP.Path;
 				HelpText = PropObject.BP.HelpText;
 
-				PropsInstances = new List<PropGameObject>();
+				PropsInstances = new HashSet<Prop>();
 			}
 
 			public Prop[] GenerateSupComProps()
@@ -77,6 +82,30 @@ namespace EditMap
 				int count = PropsInstances.Count;
 				Prop[] Props = new Prop[count];
 
+				int i = 0;
+				foreach(Prop PropInstance in PropsInstances)
+				{
+					Props[i] = new Prop();
+					if (!Blueprint.StartsWith("/"))
+						Blueprint = "/" + Blueprint;
+
+					Props[i].BlueprintPath = Blueprint;
+					Props[i].Position = ScmapEditor.WorldPosToScmap(PropInstance.Obj.Tr.position);
+					Props[i].RotationX = Vector3.zero;
+					Props[i].RotationY = Vector3.zero;
+					Props[i].RotationZ = Vector3.zero;
+					MassMath.QuaternionToRotationMatrix(PropInstance.Obj.Tr.localRotation, ref Props[i].RotationX, ref Props[i].RotationY, ref Props[i].RotationZ);
+
+					Vector3 Scale = PropInstance.Obj.Tr.localScale;
+					Scale.x /= PropObject.BP.LocalScale.x;
+					Scale.y /= PropObject.BP.LocalScale.y;
+					Scale.z /= PropObject.BP.LocalScale.z;
+
+					Props[i].Scale = Scale;
+					i++;
+				}
+
+				/*
 				for (int i = 0; i < count; i++)
 				{
 					Props[i] = new Prop();
@@ -97,6 +126,7 @@ namespace EditMap
 
 					Props[i].Scale = Scale;
 				}
+				*/
 				return Props;
 			}
 		}
@@ -119,6 +149,7 @@ namespace EditMap
 			BrushGenerator.Current.Brushes[SelectedFalloff].mipMapBias = -1f;
 			TerrainMaterial.SetTexture("_BrushTex", (Texture)BrushGenerator.Current.Brushes[SelectedFalloff]);
 			AllowBrushUpdate = true;
+			UndoRegistered = false;
 		}
 
 		void OnDisable()
@@ -126,6 +157,7 @@ namespace EditMap
 			CleanSettingsList();
 			TerrainMaterial.SetInt("_Brush", 0);
 			TerrainMaterial.SetFloat("_BrushSize", 0);
+			UndoRegistered = false;
 		}
 
 		void Update()
@@ -144,9 +176,9 @@ namespace EditMap
 			if (AllPropsTypes != null && AllPropsTypes.Count > 0)
 				for (int i = 0; i < AllPropsTypes.Count; i++)
 				{
-					for (int p = 0; p < AllPropsTypes[i].PropsInstances.Count; p++)
+					foreach (Prop PropInstance in AllPropsTypes[i].PropsInstances)
 					{
-						Destroy(AllPropsTypes[i].PropsInstances[p].gameObject);
+						Destroy(PropInstance.Obj.gameObject);
 					}
 				}
 
@@ -211,14 +243,17 @@ namespace EditMap
 					yield return null;
 				}
 
-				//TODO store props as instances
-				AllPropsTypes[GroupId].PropsInstances.Add(
-					AllPropsTypes[GroupId].PropObject.CreatePropGameObject(
+				Props[i].GroupId = GroupId;
+				Props[i].CreateObject(AllowFarLod);
+				/*
+				Props[i].Obj = AllPropsTypes[GroupId].PropObject.CreatePropGameObject(
 						ScmapEditor.ScmapPosToWorld(Props[i].Position),
-						MassMath.QuaternionFromRotationMatrix(Props[i].RotationX, Props[i].RotationY, Props[i].RotationZ), 
+						MassMath.QuaternionFromRotationMatrix(Props[i].RotationX, Props[i].RotationY, Props[i].RotationZ),
 						Props[i].Scale, AllowFarLod
-						)
-					);
+						);
+						*/
+
+				AllPropsTypes[GroupId].PropsInstances.Add(Props[i]);
 
 				LoadedCount++;
 				LoadCounter--;
@@ -386,28 +421,6 @@ namespace EditMap
 				return;
 
 			UpdateBrushPosition(true);
-			/*
-			if (Slider)
-			{
-				InforeUpdate = true;
-				UpdateBrushPosition(true);
-
-				//BrushSize.text =  BrushSizeSlider.value.ToString();
-				//BrushStrength.text = BrushStrengthSlider.value.ToString();
-
-				InforeUpdate = false;
-			}
-			else
-			{
-				InforeUpdate = true;
-				
-				//BrushSizeSlider.value = Mathf.Clamp(LuaParser.Read.StringToFloat(BrushSize.text), MinimumBrushSize, MaximumBrushSize);
-				//BrushStrengthSlider.value = Mathf.Clamp(LuaParser.Read.StringToFloat(BrushStrength.text), 0, 100);
-
-				InforeUpdate = false;
-				UpdateBrushMenu(true);
-			}
-			*/
 		}
 
 
@@ -441,6 +454,7 @@ namespace EditMap
 					else if (Input.GetMouseButtonUp(0))
 					{
 						ChangingStrength = false;
+						UndoRegistered = false;
 					}
 					if (ChangingStrength)
 					{
@@ -461,6 +475,7 @@ namespace EditMap
 					else if (Input.GetMouseButtonUp(0))
 					{
 						ChangingSize = false;
+						UndoRegistered = false;
 					}
 					if (ChangingSize)
 					{
@@ -490,6 +505,11 @@ namespace EditMap
 							}
 						}
 					}
+					else if (Input.GetMouseButtonUp(0))
+					{
+						UndoRegistered = false;
+						UpdateBrushPosition(true);
+					}
 					else
 					{
 						UpdateBrushPosition(true);
@@ -497,6 +517,8 @@ namespace EditMap
 				}
 			}
 		}
+
+		bool UndoRegistered = false;
 
 		const float MinimumRenderBrushSize = 0.1f;
 		const float MinimumBrushSize = 0.0f;
@@ -599,29 +621,32 @@ namespace EditMap
 
 				// Search props by grid
 				int ClosestG = -1;
-				int ClosestP = -1;
-				SearchClosestProp(BrushGenerator.Current.PaintPositions[0], SearchSize, out ClosestG, out ClosestP);
+				//int ClosestP = -1;
+				PropGameObject ClosestInstance = SearchClosestProp(BrushGenerator.Current.PaintPositions[0], SearchSize, out ClosestG);
 
-				if (ClosestG < 0 || ClosestP < 0)
+				if (ClosestG < 0 || ClosestInstance == null)
 					return; // No props found
 
-				BrushPos = AllPropsTypes[ClosestG].PropsInstances[ClosestP].transform.position;
+				BrushPos = ClosestInstance.transform.position;
 				BrushGenerator.Current.GenerateSymmetry(BrushPos, 0, 0, 0);
 
 				for (int i = 0; i < BrushGenerator.Current.PaintPositions.Length; i++)
 				{
 					if(i == 0)
 					{
-						Destroy(AllPropsTypes[ClosestG].PropsInstances[ClosestP].gameObject);
-						AllPropsTypes[ClosestG].PropsInstances.RemoveAt(ClosestP);
+						RegisterUndo();
+						Destroy(ClosestInstance.gameObject);
+						//AllPropsTypes[ClosestG].PropsInstances.RemoveAt(ClosestP);
+						AllPropsTypes[ClosestG].PropsInstances.Remove(ClosestInstance);
 					}
 					else
 					{
-						SearchClosestProp(BrushGenerator.Current.PaintPositions[i], Tolerance, out ClosestG, out ClosestP);
-						if (ClosestG >= 0 && ClosestP >= 0)
+						PropGameObject TestObj = SearchClosestProp(BrushGenerator.Current.PaintPositions[i], Tolerance, out ClosestG);
+						if (ClosestG >= 0 && TestObj != null)
 						{
-							Destroy(AllPropsTypes[ClosestG].PropsInstances[ClosestP].gameObject);
-							AllPropsTypes[ClosestG].PropsInstances.RemoveAt(ClosestP);
+							RegisterUndo();
+							Destroy(TestObj.gameObject);
+							AllPropsTypes[ClosestG].PropsInstances.Remove(TestObj);
 						}
 					}
 				}
@@ -685,30 +710,53 @@ namespace EditMap
 			}
 		}
 
+		void RegisterUndo()
+		{
+			if (UndoRegistered)
+				return;
+			UndoRegistered = true;
+			Undo.Current.RegisterPropsChange();
+		}
+
 		void Paint(Vector3 AtPosition, Quaternion Rotation)
 		{
-			AtPosition.y = ScmapEditor.Current.Teren.SampleHeight(AtPosition);
+			RegisterUndo();
 
+			AtPosition.y = ScmapEditor.Current.Teren.SampleHeight(AtPosition);
 			AllPropsTypes[RandomPropGroup].PropsInstances.Add(PaintPropObjects[RandomProp].CreatePropGameObject(AtPosition, Rotation, Vector3.one * RandomScale));
 		}
 
 
 
-		void SearchClosestProp(Vector3 Pos, float tolerance, out int ClosestG, out int ClosestP)
+		PropGameObject SearchClosestProp(Vector3 Pos, float tolerance, out int ClosestG) //, out int ClosestP
 		{
 			int GroupsCount = AllPropsTypes.Count;
-			int PropsCount = 0;
+			//int PropsCount = 0;
 
 			int g = 0;
-			int p = 0;
+			//int p = 0;
 			float dist = 0;
 
 			ClosestG = -1;
-			ClosestP = -1;
+			//ClosestP = -1;
 			float ClosestDist = 1000000f;
+			PropGameObject ToReturn = null;
 
 			for (g = 0; g < AllPropsTypes.Count; g++)
 			{
+				foreach(PropGameObject PropInstance in AllPropsTypes[g].PropsInstances)
+				{
+					dist = Vector3.Distance(Pos, PropInstance.transform.position);
+					if (dist < ClosestDist && dist < tolerance)
+					{
+						ClosestG = g;
+						ToReturn = PropInstance;
+						//ClosestP = p;
+						ClosestDist = dist;
+					}
+				}
+
+				/*
 				PropsCount = AllPropsTypes[g].PropsInstances.Count;
 
 				for (p = 0; p < PropsCount; p++)
@@ -721,7 +769,9 @@ namespace EditMap
 						ClosestDist = dist;
 					}
 				}
+				*/
 			}
+			return ToReturn;
 		}
 
 		#endregion

@@ -1384,7 +1384,7 @@ namespace EditMap
 				new ExtensionFilter("Stratum template", "scmst")
 			};
 
-			var paths = StandaloneFileBrowser.SaveFilePanel("Import stratum mask", EnvPaths.GetMapsPath(), "", extensions);
+			var paths = StandaloneFileBrowser.SaveFilePanel("Export stratum mask", EnvPaths.GetMapsPath(), "", extensions);
 			/*
 			System.Windows.Forms.SaveFileDialog FolderDialog = new System.Windows.Forms.SaveFileDialog();
 
