@@ -51,7 +51,6 @@ namespace EditMap
 			SelectAllBtn.interactable = Loaded != null;
 
 			SetUI();
-
 		}
 
 		public void SwitchCreation()
@@ -385,6 +384,13 @@ namespace EditMap
 
 
 		bool Creating = false;
+		public bool IsCreating
+		{
+			get
+			{
+				return Creating;
+			}
+		}
 		public void SwitchCreate()
 		{
 			OnClickCreate(!Creating);

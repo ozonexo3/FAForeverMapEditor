@@ -29,13 +29,18 @@ public class HistoryDecalsChange : HistoryObject
 
 	public override void DoRedo()
 	{
-		Selection.SelectionManager.Current.CleanSelection();
+		bool CleanSelection = DecalsControler.Current.AllDecals.Count != Decals.Length || DecalsInfo.Current.DecalSettingsUi.IsCreating || !DecalsInfo.Current.gameObject.activeInHierarchy;
+
+		if (CleanSelection)
+			Selection.SelectionManager.Current.CleanSelection();
 
 		DecalsControler.ChangeDecalsList(Decals.ToList<Decal>());
 
-		Undo.Current.EditMenu.ChangeCategory(5);
-
-		DecalsInfo.Current.GoToSelection();
+		if (CleanSelection)
+		{
+			Undo.Current.EditMenu.ChangeCategory(5);
+			DecalsInfo.Current.GoToSelection();
+		}
 		//Selection.SelectionManager.Current.FinishSelectionChange();
 
 	}

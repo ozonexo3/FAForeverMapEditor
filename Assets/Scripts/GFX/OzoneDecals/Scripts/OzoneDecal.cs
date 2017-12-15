@@ -87,8 +87,8 @@ namespace OzoneDecals
 
 		private void OnDestroy()
 		{
-			if(CreationObject)
-				DecalsControler.RemoveDecal(Dec);
+			//if(CreationObject)
+			DecalsControler.RemoveDecal(Dec);
 		}
 
 		MeshFilter mf;

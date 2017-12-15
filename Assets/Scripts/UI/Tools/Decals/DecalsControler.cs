@@ -28,15 +28,23 @@ public class DecalsControler : MonoBehaviour {
 
 	public static GameObject[] GetAllDecalsGo(out int[] AllTypes)
 	{
-		GameObject[] ToReturn = new GameObject[Current.AllDecals.Count];
-		AllTypes = new int[Current.AllDecals.Count];
-		for (int i = 0; i < ToReturn.Length; i++)
+		int Count = Current.AllDecals.Count;
+		List<GameObject> ToReturn = new List<GameObject>();
+		List<int> AllTypesList = new List<int>();
+		for (int i = 0; i < Count; i++)
 		{
+			if(Current.AllDecals[i].Obj != null)
+			{
+				ToReturn.Add(Current.AllDecals[i].Obj.gameObject);
+				AllTypesList.Add(Current.AllDecals[i].Shared.GetHashCode());
+			}
 
-			ToReturn[i] = Current.AllDecals[i].Obj.gameObject;
-			AllTypes[i] = Current.AllDecals[i].Shared.GetHashCode();
+			//ToReturn[i] = Current.AllDecals[i].Obj.gameObject;
+			//AllTypes[i] = Current.AllDecals[i].Shared.GetHashCode();
 		}
-		return ToReturn;
+		AllTypes = AllTypesList.ToArray();
+
+		return ToReturn.ToArray();
 	}
 
 	public static void ChangeDecalsList(List<Decal> NewDecalsList)

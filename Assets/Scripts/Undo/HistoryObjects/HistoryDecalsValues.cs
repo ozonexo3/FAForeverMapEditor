@@ -46,16 +46,10 @@ public class HistoryDecalsValues : HistoryObject
 			DecalsControler.Current.AllDecals[i].Obj.NearCutOffLOD = NearCutOffLOD[i];
 		}
 
-		if (UndoToDecalsMenu)
-		{
-			Undo.Current.EditMenu.ChangeCategory(5);
-			//NewMarkersInfo.Current.ClearCreateNew();
-			//MarkersInfo.Current.ChangePage(0);
+		Undo.Current.EditMenu.ChangeCategory(5);
 
-			//NewMarkersInfo.Current.GoToSelection();
-			DecalsInfo.Current.GoToSelection();
-			Selection.SelectionManager.Current.FinishSelectionChange();
-
-		}
+		DecalsInfo.Current.GoToSelection();
+		DecalsInfo.Current.DecalSettingsUi.Load(DecalSettings.GetLoaded);
+		Selection.SelectionManager.Current.FinishSelectionChange();
 	}
 }

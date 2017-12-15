@@ -47,6 +47,7 @@ public class HistoryDecalsSharedValues : HistoryObject
 		DecalsInfo.Current.GoToSelection();
 		DecalsInfo.Current.DecalSettingsUi.Load(Shared);
 
+
 		//DecalsInfo.Current.GoToSelection();
 		//Selection.SelectionManager.Current.FinishSelectionChange();
 

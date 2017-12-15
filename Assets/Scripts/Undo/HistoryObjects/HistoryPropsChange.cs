@@ -7,13 +7,18 @@ using EditMap;
 public class HistoryPropsChange : HistoryObject
 {
 
-	HashSet<PropsInfo.PropTypeGroup> Groups;
+	Dictionary<PropsInfo.PropTypeGroup, HashSet<Prop>> Groups;
 
 	public override void Register()
 	{
-		Groups = new HashSet<PropsInfo.PropTypeGroup>();
+		Groups = new Dictionary<PropsInfo.PropTypeGroup, HashSet<Prop>>();
 
-
+		foreach(PropsInfo.PropTypeGroup Grp in PropsInfo.AllPropsTypes)
+		{
+			HashSet<Prop> OldProps = new HashSet<Prop>(Grp.PropsInstances);
+			
+			Groups.Add(Grp, OldProps);
+		}
 	}
 
 
@@ -29,7 +34,10 @@ public class HistoryPropsChange : HistoryObject
 	{
 		Selection.SelectionManager.Current.CleanSelection();
 
-
+		foreach (KeyValuePair<PropsInfo.PropTypeGroup, HashSet<Prop>> Grp in Groups)
+		{
+			Grp.Key.SetNewInstances(Grp.Value);
+		}
 
 		Undo.Current.EditMenu.ChangeCategory(6);
 	}

@@ -51,19 +51,18 @@ public class PropsRenderer : MonoBehaviour {
 		int step = 0;
 		int count = PropsInfo.AllPropsTypes.Count;
 		int i = 0;
-		int p = 0;
-		int InstancesCount = 0;
 		PropsInfo.PropTypeGroup Ptg = null;
 		Vector3 LocalPos = Vector3.zero;
 
 		for (i = 0; i < count; i++)
 		{
 			Ptg = PropsInfo.AllPropsTypes[i];
-			foreach(PropGameObject PropInstance in Ptg.PropsInstances)
+			foreach(Prop PropInstance in Ptg.PropsInstances)
 			{
-				LocalPos = PropInstance.Tr.localPosition;
+
+				LocalPos = PropInstance.Obj.Tr.localPosition;
 				LocalPos.y = ScmapEditor.Current.Teren.SampleHeight(LocalPos);
-				PropInstance.Tr.localPosition = LocalPos;
+				PropInstance.Obj.Tr.localPosition = LocalPos;
 
 				step++;
 				if (step > PauseEvery)
@@ -72,25 +71,6 @@ public class PropsRenderer : MonoBehaviour {
 					yield return null;
 				}
 			}
-
-
-			/*
-			InstancesCount = Ptg.PropsInstances.Count;
-
-			for(p = 0; p < InstancesCount; p++)
-			{
-				LocalPos = Ptg.PropsInstances[p].Tr.localPosition;
-				LocalPos.y = ScmapEditor.Current.Teren.SampleHeight(LocalPos);
-				Ptg.PropsInstances[p].Tr.localPosition = LocalPos;
-
-				step++;
-				if (step > PauseEvery)
-				{
-					step = 0;
-					yield return null;
-				}
-			}*/
-
 		}
 
 		yield return null;

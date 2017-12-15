@@ -25,6 +25,13 @@ namespace EditMap
 			Selection.SelectionManager.Current.ClearAffectedGameObjects();
 		}
 
+		private void Update()
+		{
+
+			HideUpdate();
+
+		}
+
 		public void GoToSelection()
 		{
 			/*
@@ -71,11 +78,7 @@ namespace EditMap
 			int Count = MarkerObjects.Count;
 			for (int i = 0; i < Count; i++)
 			{
-
-
-
 				DestroyImmediate(MarkerObjects[i]);
-
 			}
 
 			SelectionManager.Current.CleanSelection();

@@ -113,6 +113,39 @@ namespace EditMap
 
 		}
 
+		void HideUpdate()
+		{
+			if (Input.GetKeyDown(KeyCode.H))
+			{
+				HashSet<OzoneDecal> Selected = SelectedDecals;
+
+				if (Input.GetKey(KeyCode.LeftShift))
+				{
+					// Unhide
+					foreach (OzoneDecal Obj in Selected)
+					{
+						Obj.Dec.Shared.Hidden = false;
+					}
+
+					DecalSettings.GetLoaded.Hidden = false;
+
+				}
+				else
+				{
+					// Hide
+					foreach (OzoneDecal Obj in Selected)
+					{
+						Obj.Dec.Shared.Hidden = true;
+					}
+
+					DecalSettings.GetLoaded.Hidden = true;
+				}
+
+				DecalsList.UpdateSelection();
+			}
+
+		}
+
 		public void ToggleHideOther(Decal.DecalSharedSettings Connected)
 		{
 			foreach (Decal.DecalSharedSettings Shared in Decal.AllDecalsShared)

@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class PropGameObject : MonoBehaviour {
 
+	public Prop Connected;
+
 	public MeshFilter Mf;
 	public MeshRenderer Mr;
 	public MeshFilter Mf1;

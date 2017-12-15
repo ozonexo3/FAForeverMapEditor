@@ -23976,6 +23976,37 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 362146744}
+--- !u!84 &363518225
+RenderTexture:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: 
+  m_ImageContentsHash:
+    serializedVersion: 2
+    Hash: 00000000000000000000000000000000
+  m_ForcedFallbackFormat: 4
+  m_DownscaleFallback: 0
+  m_Width: 256
+  m_Height: 256
+  m_AntiAliasing: 1
+  m_DepthFormat: 1
+  m_ColorFormat: 0
+  m_MipMap: 0
+  m_GenerateMips: 1
+  m_SRGB: 0
+  m_UseDynamicScale: 0
+  m_BindMS: 0
+  m_TextureSettings:
+    serializedVersion: 2
+    m_FilterMode: 1
+    m_Aniso: 0
+    m_MipBias: 0
+    m_WrapU: 1
+    m_WrapV: 1
+    m_WrapW: 1
+  m_Dimension: 2
+  m_VolumeDepth: 1
 --- !u!1 &363734523
 GameObject:
   m_ObjectHideFlags: 0
@@ -35614,7 +35645,7 @@ Camera:
     serializedVersion: 2
     m_Bits: 2560
   m_RenderingPath: 1
-  m_TargetTexture: {fileID: 1292032201}
+  m_TargetTexture: {fileID: 363518225}
   m_TargetDisplay: 0
   m_TargetEye: 3
   m_HDR: 0
@@ -50521,6 +50552,16 @@ Prefab:
         type: 2}
       propertyPath: OnValueChanged.m_PersistentCalls.m_Calls.Array.data[1].m_CallState
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 114181087517900934, guid: 30131436e7e207b4f82d0dedb78a89a4,
+        type: 2}
+      propertyPath: Format
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114181087517900934, guid: 30131436e7e207b4f82d0dedb78a89a4,
+        type: 2}
+      propertyPath: BeginValue
+      value: 50
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 30131436e7e207b4f82d0dedb78a89a4, type: 2}
@@ -77604,7 +77645,7 @@ Prefab:
     - target: {fileID: 114621995600585708, guid: 0cbe5a6c3afdfd147a4011b19eead070,
         type: 2}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 224414395284792190, guid: 0cbe5a6c3afdfd147a4011b19eead070,
         type: 2}
@@ -83397,37 +83438,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: -165.01}
   m_SizeDelta: {x: 276, y: 22}
   m_Pivot: {x: 0, y: 0.5}
---- !u!84 &1292032201
-RenderTexture:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_Name: 
-  m_ImageContentsHash:
-    serializedVersion: 2
-    Hash: 00000000000000000000000000000000
-  m_ForcedFallbackFormat: 4
-  m_DownscaleFallback: 0
-  m_Width: 256
-  m_Height: 256
-  m_AntiAliasing: 1
-  m_DepthFormat: 1
-  m_ColorFormat: 0
-  m_MipMap: 0
-  m_GenerateMips: 1
-  m_SRGB: 0
-  m_UseDynamicScale: 0
-  m_BindMS: 0
-  m_TextureSettings:
-    serializedVersion: 2
-    m_FilterMode: 1
-    m_Aniso: 0
-    m_MipBias: 0
-    m_WrapU: 1
-    m_WrapV: 1
-    m_WrapW: 1
-  m_Dimension: 2
-  m_VolumeDepth: 1
 --- !u!1 &1293125327
 GameObject:
   m_ObjectHideFlags: 0
@@ -122400,6 +122410,7 @@ MonoBehaviour:
     DecalsChange: {fileID: 108316, guid: 8b446778201ec8f4e94b8616c6b05af2, type: 2}
     DecalValues: {fileID: 108316, guid: a3349105112c4ef46bb34b9776ed9105, type: 2}
     DecalSharedValues: {fileID: 108316, guid: 60db73ab10af80b4197a2cad95692388, type: 2}
+    PropsChange: {fileID: 108316, guid: ab7188e35e878ed4f9b3de651f878cda, type: 2}
     TerrainHeightChange: {fileID: 108316, guid: 4bb07b69e4d435345b460a2b2bedd5a7,
       type: 2}
     StratumPaint: {fileID: 108316, guid: e63bba23a97814a4096cbfce91883e87, type: 2}
@@ -135332,7 +135343,7 @@ Prefab:
     - target: {fileID: 114621995600585708, guid: 0cbe5a6c3afdfd147a4011b19eead070,
         type: 2}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 224414395284792190, guid: 0cbe5a6c3afdfd147a4011b19eead070,
         type: 2}
