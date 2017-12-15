@@ -259,7 +259,6 @@ public class AppMenu : MonoBehaviour
 
 	public void OpenRecentMapNo()
 	{
-		Debug.Log("Recent Map No");
 		ScmapEditor.Current.UnloadMap();
 		MapLuaParser.Current.ResetUI();
 

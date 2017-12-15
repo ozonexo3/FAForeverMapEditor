@@ -103,5 +103,33 @@ namespace EditMap
 			DecalsList.GenerateTypes();
 
 		}
+
+		public void HideAll()
+		{
+			foreach(Decal.DecalSharedSettings Shared in Decal.AllDecalsShared)
+			{
+				Shared.Hidden = true;
+			}
+			DecalsList.UpdateSelection();
+		}
+
+		public void UnhideAll()
+		{
+			foreach (Decal.DecalSharedSettings Shared in Decal.AllDecalsShared)
+			{
+				Shared.Hidden = false;
+			}
+			DecalsList.UpdateSelection();
+		}
+
+		public void ExportSelectedType()
+		{
+
+		}
+
+		public void ImportDecalType()
+		{
+
+		}
 	}
 }

@@ -14,7 +14,24 @@ public partial class Decal {
 
 	public static HashSet<DecalSharedSettings> AllDecalsShared = new HashSet<DecalSharedSettings>();
 
-	public DecalSharedSettings Shared;
+	DecalSharedSettings _Shared;
+	public DecalSharedSettings Shared
+	{
+		get
+		{
+			return _Shared;
+		}
+		set
+		{
+			if (_Shared != null)
+				_Shared.OnVisibilityChanged -= UpdateVisibility;
+			_Shared = value;
+			_Shared.OnVisibilityChanged += UpdateVisibility;
+			UpdateVisibility();
+		}
+	}
+
+
 	OzoneDecal _Obj;
 	public OzoneDecal Obj
 	{
@@ -28,6 +45,13 @@ public partial class Decal {
 		}
 	}
 
+	public void UpdateVisibility()
+	{
+		if (_Obj)
+		{
+			_Obj.gameObject.SetActive(!Shared.Hidden);
+		}
+	}
 
 	[System.Serializable, PreferBinarySerialization]
 	public class DecalSharedSettings
@@ -43,7 +67,24 @@ public partial class Decal {
 		public bool DrawAlbedo;
 		public bool DrawNormal;
 
-		public bool Hidden;
+		bool _Hidden;
+
+		public bool Hidden
+		{
+			get
+			{
+				return _Hidden;
+			}
+			set
+			{
+				_Hidden = value;
+				OnVisibilityChanged();
+			}
+
+		}
+
+		public delegate void VisibilityChanged();
+		public event VisibilityChanged OnVisibilityChanged;
 
 		public DecalSharedSettings()
 		{

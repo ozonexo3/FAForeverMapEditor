@@ -77,6 +77,24 @@ namespace Ozone.UI
 
 			OnValueChangedInvoke();
 		}
+
+		public void OnSliderFinished()
+		{
+			ChangingValue = true;
+			HasValue = true;
+			LastValue = SliderUi.value;
+			InputFieldUi.text = LastValue.ToString(Format);
+			if (InputFieldUi.contentType == InputField.ContentType.IntegerNumber)
+				SliderUi.value = int.Parse(InputFieldUi.text);
+			if (InputFieldUi.contentType == InputField.ContentType.DecimalNumber)
+				LastValue = float.Parse(InputFieldUi.text);
+
+			//SliderUi.value = LastValue;
+
+			ChangingValue = false;
+
+			OnEndEditInvoke();
+		}
 		#endregion
 
 

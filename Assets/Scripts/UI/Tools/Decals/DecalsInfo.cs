@@ -121,10 +121,7 @@ namespace EditMap
 
 			Obj.Material = Component.Shared.SharedMaterial;
 
-
-			if (Component.Obj == null)
-				Debug.Log("Decal is still null!");
-
+			Component.Shared.OnVisibilityChanged += Component.UpdateVisibility;
 		}
 
 		public static float FrustumHeightAtDistance(float distance)

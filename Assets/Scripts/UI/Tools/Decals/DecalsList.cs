@@ -123,15 +123,6 @@ namespace EditMap
 					lo.ObjectName.text = ((TerrainDecalTypeString)((int)lo.Setting.Type)).ToString().Replace("_", " ") + "\n" + lo.Setting.Tex1Path;
 					lo.Image.texture = lo.Setting.Texture1;
 				}
-
-				/*
-				for (int i = 0; i < AllObjects.Count; i++)
-				{
-					ListObjectDecal lo = AllObjects[i].GetComponent<ListObjectDecal>();
-					lo.ObjectName.text = ((TerrainDecalTypeString)((int)lo.Setting.Type)).ToString().Replace("_", " ") + "\n" + lo.Setting.Tex1Path;
-					lo.Image.texture = lo.Setting.Texture1;
-				}
-				*/
 			}
 		}
 
@@ -147,17 +138,20 @@ namespace EditMap
 					SelectedShared.Add(SelectionManager.Current.AffectedGameObjects[SelectionManager.Current.Selection.Ids[i]].GetComponent<OzoneDecal>().Dec.Shared);
 				}
 
-				var ListEnum = AllListObjects.GetEnumerator();
-				while (ListEnum.MoveNext())
+				foreach(ListObjectDecal Current in AllListObjects)
 				{
-					if (DecalSettings.GetLoaded == ListEnum.Current.Setting)
-						ListEnum.Current.SetSelection(2);
-					else if (SelectedShared.Contains(ListEnum.Current.Setting))
-						ListEnum.Current.Select();
+					Current.SetHidden(Current.Setting.Hidden);
+
+					if (DecalSettings.GetLoaded == Current.Setting)
+						Current.SetSelection(2);
+					else if (SelectedShared.Contains(Current.Setting))
+						Current.Select();
 					else
-						ListEnum.Current.Unselect();
+						Current.Unselect();
 
 				}
+
+
 			}
 		}
 

@@ -7,6 +7,7 @@ public class DecalsControler : MonoBehaviour {
 
 	public static DecalsControler Current;
 
+
 	public List<Decal> AllDecals = new List<Decal>();
 
 	private void Awake()
@@ -16,19 +17,6 @@ public class DecalsControler : MonoBehaviour {
 
 	public static List<Decal> GetAllDecals()
 	{
-		/*
-		int Count = Current.AllDecals.Count;
-		List<Decal> ToReturn = new List<Decal>(Count);
-
-		for (int i = 0; i < Count; i++)
-		{
-			//Current.AllDecals[i].Bake();
-			ToReturn.Add(Current.AllDecals[i]);
-		}
-
-		return ToReturn;
-		*/
-
 		int Count = Current.AllDecals.Count;
 		for (int i = 0; i < Count; i++)
 		{
@@ -100,7 +88,6 @@ public class DecalsControler : MonoBehaviour {
 				else
 					Current.AllDecals.Add(dc);
 			}
-			OzoneDecalRenderer.AddAlbedoDecal(dc.Obj);
 		}
 	}
 
@@ -109,7 +96,6 @@ public class DecalsControler : MonoBehaviour {
 		if (Current.AllDecals.Contains(dc))
 		{
 			Current.AllDecals.Remove(dc);
-			OzoneDecalRenderer.RemoveAlbedoDecal(dc.Obj);
 		}
 	}
 

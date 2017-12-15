@@ -81,8 +81,8 @@ namespace OzoneDecals
 
 		private void OnDisable()
 		{
-			if (!CreationObject && Dec != null)
-				DecalsControler.RemoveDecal(Dec);
+			//if (!CreationObject && Dec != null)
+			//	DecalsControler.RemoveDecal(Dec);
 		}
 
 		private void OnDestroy()

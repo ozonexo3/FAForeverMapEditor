@@ -2,13 +2,14 @@
 using UnityEngine.UI;
 using System.Collections;
 using EditMap;
+using Ozone.UI;
 
 public class SymmetryWindow : MonoBehaviour {
 
 	public		Editing			EditMenu;
 	public		Toggle[]		Toggles;
-	public		Slider			AngleSlider;
-	public		InputField		ToleranceInput;
+	public		UiTextField			AngleSlider;
+	public UiTextField ToleranceInput;
 
 	bool Enabling = false;
 
@@ -19,23 +20,34 @@ public class SymmetryWindow : MonoBehaviour {
 		}*/
 		Debug.Log(PlayerPrefs.GetInt("Symmetry", 0));
 		Toggles[ PlayerPrefs.GetInt("Symmetry", 0) ].isOn = true;
-		AngleSlider.value = PlayerPrefs.GetInt("SymmetryAngleCount", 2);
-		ToleranceInput.text = GetTolerance().ToString();
+		AngleSlider.SetValue(PlayerPrefs.GetInt("SymmetryAngleCount", 2));
+		ToleranceInput.SetValue(GetTolerance());
 		Enabling = false;
 	}
 
+	public void ToleranceChange()
+	{
+		PlayerPrefs.SetFloat("SymmetryTolerance", ToleranceInput.value);
+	}
+
 	public void SliderChange(){
+		PlayerPrefs.SetInt("SymmetryAngleCount", AngleSlider.intValue);
+
+		/*
 		if(Enabling) return;
 		//bool AnythingChanged = false;
 		if(GetTolerance() != (int)AngleSlider.value){
 			PlayerPrefs.SetInt("SymmetryAngleCount", (int)AngleSlider.value);
 			//AnythingChanged = true;
 		}
+		*/
+		/*
 		if(float.Parse(ToleranceInput.text) != PlayerPrefs.GetFloat("SymmetryTolerance", 0.4f)){
 			PlayerPrefs.SetFloat("SymmetryTolerance", float.Parse(ToleranceInput.text));
 			EditMenu.MirrorTolerance = float.Parse(ToleranceInput.text);
 			//AnythingChanged = true;
 		}
+		*/
 
 		//if(AnythingChanged) EditMenu.EditMarkers.UpdateSelectionRing();
 	}
