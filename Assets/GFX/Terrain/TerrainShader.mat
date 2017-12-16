@@ -231,22 +231,22 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
-    - _AbyssLevel: 5.1709313
-    - _Area: 0
-    - _AreaHeight: 25.6
-    - _AreaWidht: 25.6
-    - _AreaX: 0
-    - _AreaY: 0
+    - _AbyssLevel: 1
+    - _Area: 1
+    - _AreaHeight: 102.3
+    - _AreaWidht: 102.5
+    - _AreaX: 0.1
+    - _AreaY: -0.1
     - _Brush: 0
     - _BrushSize: 0
-    - _BrushUvX: 0.23634146
-    - _BrushUvY: 0.5732622
+    - _BrushUvX: 0.31706575
+    - _BrushUvY: 0.7108611
     - _DeepLevel: 1.675625
-    - _DepthLevel: 6.31
+    - _DepthLevel: 2
     - _GeneratingNormal: 0
     - _Grid: 0
     - _GridCamDist: 0.049673967
-    - _GridScale: 51.2
+    - _GridScale: 102.4
     - _HideSplat0: 0
     - _HideSplat1: 0
     - _HideSplat2: 0
@@ -257,32 +257,32 @@ Material:
     - _HideSplat7: 0
     - _HideSplat8: 0
     - _LightingMultiplier: 1.27
-    - _LowerScale: 70.62069
-    - _LowerScaleNormal: 97.52381
+    - _LowerScale: 256
+    - _LowerScaleNormal: 256
     - _Shininess: 0.03
     - _Slope: 0
-    - _Splat0Scale: 128
-    - _Splat0ScaleNormal: 58.514286
-    - _Splat1Scale: 512
-    - _Splat1ScaleNormal: 21.557896
-    - _Splat2Scale: 128
-    - _Splat2ScaleNormal: 32
-    - _Splat3Scale: 64
-    - _Splat3ScaleNormal: 97.52381
-    - _Splat4Scale: 128
-    - _Splat4ScaleNormal: 128
-    - _Splat5Scale: 128
-    - _Splat5ScaleNormal: 128
-    - _Splat6Scale: 128
-    - _Splat6ScaleNormal: 128
-    - _Splat7Scale: 128
-    - _Splat7ScaleNormal: 128
+    - _Splat0Scale: 256
+    - _Splat0ScaleNormal: 256
+    - _Splat1Scale: 256
+    - _Splat1ScaleNormal: 256
+    - _Splat2Scale: 256
+    - _Splat2ScaleNormal: 256
+    - _Splat3Scale: 256
+    - _Splat3ScaleNormal: 256
+    - _Splat4Scale: 256
+    - _Splat4ScaleNormal: 256
+    - _Splat5Scale: 256
+    - _Splat5ScaleNormal: 256
+    - _Splat6Scale: 256
+    - _Splat6ScaleNormal: 256
+    - _Splat7Scale: 256
+    - _Splat7ScaleNormal: 256
     - _TTerrainXP: 0
-    - _UpperScale: 4
-    - _UpperScaleNormal: 512
+    - _UpperScale: 8
+    - _UpperScaleNormal: 1024
     - _UseSlopeTex: 1
     - _Water: 1
-    - _WaterLevel: 6.31
+    - _WaterLevel: 2.5
     - _WaterScaleX: 1024
     - _WaterScaleZ: 1024
     m_Colors:

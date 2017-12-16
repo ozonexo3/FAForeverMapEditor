@@ -22,7 +22,7 @@ public class ListObjectDecal : ListObject
 
 	public void SwitchVisible()
 	{
-		if (Input.GetKey(KeyCode.LeftAlt))
+		if (Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.LeftShift))
 		{
 			DecalsInfo.Current.ToggleHideOther(Setting);
 		}

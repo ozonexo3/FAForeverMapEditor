@@ -282,7 +282,7 @@ public class ResourceBrowser : MonoBehaviour
 
 				for (int i = 0; i < Count; i++)
 				{
-					LoadAtPath(EditMap.PropsInfo.AllPropsTypes[i].LoadBlueprint, EditMap.PropsInfo.AllPropsTypes[i].PropObject.BP.Name);
+					LoadAtPath(GetGamedataFile.LocalBlueprintPath(EditMap.PropsInfo.AllPropsTypes[i].Blueprint), EditMap.PropsInfo.AllPropsTypes[i].PropObject.BP.Name);
 
 					Counter++;
 					if (Counter >= PauseEveryLoadedAsset)

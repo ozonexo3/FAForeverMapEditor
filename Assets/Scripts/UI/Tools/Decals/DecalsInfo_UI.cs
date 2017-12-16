@@ -119,7 +119,7 @@ namespace EditMap
 			{
 				HashSet<OzoneDecal> Selected = SelectedDecals;
 
-				if (Input.GetKey(KeyCode.LeftShift))
+				if (Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.LeftShift))
 				{
 					// Unhide
 					foreach (OzoneDecal Obj in Selected)

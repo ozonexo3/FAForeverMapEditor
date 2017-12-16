@@ -18,7 +18,6 @@ public class SymmetryWindow : MonoBehaviour {
 		/*foreach(Toggle tog in Toggles){
 			tog.isOn = false;
 		}*/
-		Debug.Log(PlayerPrefs.GetInt("Symmetry", 0));
 		Toggles[ PlayerPrefs.GetInt("Symmetry", 0) ].isOn = true;
 		AngleSlider.SetValue(PlayerPrefs.GetInt("SymmetryAngleCount", 2));
 		ToleranceInput.SetValue(GetTolerance());

@@ -2,6 +2,7 @@
 using UnityEngine.UI;
 using System.Collections;
 using EditMap;
+using Ozone.UI;
 
 public class PropData : MonoBehaviour {
 
@@ -14,14 +15,13 @@ public class PropData : MonoBehaviour {
 	public		Text		TotalMassField;
 	public		Text		TotalEnergyField;
 
-	public InputField ScaleMin;
-	public InputField ScaleMax;
+	public UiTextField ScaleMin;
+	public UiTextField ScaleMax;
 
-	public InputField RotationMin;
-	public InputField RotationMax;
+	public UiTextField RotationMin;
+	public UiTextField RotationMax;
 
-	public InputField Chance;
-
+	public UiTextField Chance;
 
 	public void SetPropList(int _ID, string name, float mass, float energy, int count, string path){
 		ID = _ID;
@@ -57,6 +57,7 @@ public class PropData : MonoBehaviour {
 		PropsInfo.Current.Preview.Hide(gameObject);
 	}
 
+	/*
 	public void ClampRotations()
 	{
 		float RotMin = LuaParser.Read.StringToFloat(RotationMin.text);
@@ -65,4 +66,5 @@ public class PropData : MonoBehaviour {
 		RotationMin.text = Mathf.Clamp(RotMin, 0, RotMax).ToString();
 		RotationMax.text = Mathf.Clamp(RotMax, RotMin, 360).ToString();
 	}
+	*/
 }

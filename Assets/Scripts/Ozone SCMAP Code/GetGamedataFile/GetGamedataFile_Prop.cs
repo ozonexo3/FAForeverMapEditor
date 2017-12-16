@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using System;
 using NLua;
 using EditMap;
@@ -134,9 +135,27 @@ public partial struct GetGamedataFile
 		public Texture2D Normal;
 	}
 
+	public static string LocalBlueprintPath(string path)
+	{
+		if (path.StartsWith("/"))
+			path = path.Remove(0, 1);
+
+		return path;
+	}
+
+	public static PropObject LoadProp(string scdPath)
+	{
+		return LoadProp("env.scd", LocalBlueprintPath(scdPath));
+	}
+
+	static Dictionary<string, PropObject> LoadedPropObjects = new Dictionary<string, PropObject>();
 
 	public static PropObject LoadProp(string scd, string LocalPath)
 	{
+		if (LoadedPropObjects.ContainsKey(LocalPath))
+			return LoadedPropObjects[LocalPath];
+
+
 		PropObject ToReturn = new PropObject();
 
 		byte[] Bytes = LoadBytes(scd, LocalPath);
@@ -315,6 +334,8 @@ public partial struct GetGamedataFile
 			}
 
 		}
+
+		LoadedPropObjects.Add(LocalPath, ToReturn);
 
 		return ToReturn;
 	}

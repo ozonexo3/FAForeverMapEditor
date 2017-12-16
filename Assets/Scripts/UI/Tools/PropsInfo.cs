@@ -3,6 +3,10 @@ using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
 using Ozone.UI;
+using System.Runtime.InteropServices;
+using SFB;
+using System.IO;
+
 
 namespace EditMap
 {
@@ -52,7 +56,15 @@ namespace EditMap
 		public class PropTypeGroup
 		{
 			public string Blueprint = "";
-			public string LoadBlueprint = "";
+			public string LoadBlueprint
+			{
+				get
+				{
+					return GetGamedataFile.LocalBlueprintPath(Blueprint);
+				}
+			}
+
+			//public string LoadBlueprint = "";
 			public string HelpText = "";
 			//public Prop[] Props = new Prop[0];
 			public GetGamedataFile.PropObject PropObject;
@@ -221,12 +233,8 @@ namespace EditMap
 					GroupId = AllPropsTypes.Count;
 					AllPropsTypes.Add(new PropTypeGroup());
 					AllPropsTypes[GroupId].Blueprint = Props[i].BlueprintPath;
-					AllPropsTypes[GroupId].LoadBlueprint = Props[i].BlueprintPath.Replace("\\", "/");
 
-					if (AllPropsTypes[GroupId].LoadBlueprint.StartsWith("/"))
-						AllPropsTypes[GroupId].LoadBlueprint = AllPropsTypes[GroupId].LoadBlueprint.Remove(0, 1);
-
-					AllPropsTypes[GroupId].PropObject = GetGamedataFile.LoadProp("env.scd", AllPropsTypes[GroupId].LoadBlueprint);
+					AllPropsTypes[GroupId].PropObject = GetGamedataFile.LoadProp(AllPropsTypes[GroupId].Blueprint);
 					LoadCounter = YieldStep;
 					yield return null;
 				}
@@ -350,22 +358,22 @@ namespace EditMap
 				return;
 			if (ResourceBrowser.SelectedCategory == 3)
 			{
-				//Undo.RegisterStratumChange(Selected);
-
-				if (!PaintPropObjects.Contains(ResourceBrowser.Current.LoadedProps[ResourceBrowser.DragedObject.InstanceId]))
-				{
-					//Debug.Log(ResourceBrowser.Current.LoadedPaths[ResourceBrowser.DragedObject.InstanceId]);
-
-					PaintPropObjects.Add(ResourceBrowser.Current.LoadedProps[ResourceBrowser.DragedObject.InstanceId]);
-
-					GameObject NewPropListObject = Instantiate(PaintPropListObject, PaintPropPivot) as GameObject;
-					NewPropListObject.GetComponent<PropData>().SetPropPaint(PaintPropObjects.Count - 1, ResourceBrowser.Current.LoadedProps[ResourceBrowser.DragedObject.InstanceId].BP.Name);
-					PaintButtons.Add(NewPropListObject.GetComponent<PropData>());
-				}
-
-				//Map.Textures[Selected].Albedo = ResourceBrowser.Current.LoadedTextures[ResourceBrowser.DragedObject.InstanceId];
-				//Map.Textures[Selected].AlbedoPath = ResourceBrowser.Current.LoadedPaths[ResourceBrowser.DragedObject.InstanceId];
+				LoadProp(ResourceBrowser.Current.LoadedProps[ResourceBrowser.DragedObject.InstanceId]);
 			}
+		}
+
+		bool LoadProp(GetGamedataFile.PropObject PropObj)
+		{
+			if (!PaintPropObjects.Contains(PropObj))
+			{
+				PaintPropObjects.Add(PropObj);
+
+				GameObject NewPropListObject = Instantiate(PaintPropListObject, PaintPropPivot) as GameObject;
+				NewPropListObject.GetComponent<PropData>().SetPropPaint(PaintPropObjects.Count - 1, PropObj.BP.Name);
+				PaintButtons.Add(NewPropListObject.GetComponent<PropData>());
+				return true;
+			}
+			return false;
 		}
 
 		public void RemoveProp(int ID)
@@ -646,13 +654,13 @@ namespace EditMap
 			else
 			{
 
-				RandomProp = Random.Range(0, Count);
-				RandomScale = Random.Range(LuaParser.Read.StringToFloat(PaintButtons[RandomProp].ScaleMin.text), LuaParser.Read.StringToFloat(PaintButtons[RandomProp].ScaleMax.text));
+				RandomProp = GetRandomProp();
+				RandomScale = Random.Range(PaintButtons[RandomProp].ScaleMin.value, PaintButtons[RandomProp].ScaleMax.value);
 
 				BrushGenerator.Current.GenerateSymmetry(BrushPos, size, Scatter.value, size);
 
-				float RotMin = LuaParser.Read.StringToFloat(PaintButtons[RandomProp].RotationMin.text);
-				float RotMax = LuaParser.Read.StringToFloat(PaintButtons[RandomProp].RotationMax.text);
+				float RotMin = PaintButtons[RandomProp].RotationMin.intValue;
+				float RotMax = PaintButtons[RandomProp].RotationMax.intValue;
 
 				BrushGenerator.Current.GenerateRotationSymmetry(Quaternion.Euler(Vector3.up * Random.Range(RotMin, RotMax)));
 
@@ -662,7 +670,7 @@ namespace EditMap
 				RandomPropGroup = -1;
 				for (int i = 0; i < AllPropsTypes.Count; i++)
 				{
-					if (AllPropsTypes[i].Blueprint == PaintPropObjects[RandomProp].BP.Path)
+					if (AllPropsTypes[i].LoadBlueprint == PaintPropObjects[RandomProp].BP.Path)
 					{
 						RandomPropGroup = i;
 						break;
@@ -699,6 +707,32 @@ namespace EditMap
 					Paint(BrushGenerator.Current.PaintPositions[i], BrushGenerator.Current.PaintRotations[i]);
 				}
 			}
+		}
+
+		int GetRandomProp()
+		{
+			int Count = PaintPropObjects.Count;
+			int TotalValue = 0;
+			for (int i = 0; i < Count; i++)
+			{
+				TotalValue += PaintButtons[i].Chance.intValue;
+			}
+
+			int RandomInt = Random.Range(0, TotalValue);
+
+
+			TotalValue = 0;
+			for (int i = 0; i < Count; i++)
+			{
+				TotalValue += PaintButtons[i].Chance.intValue;
+
+				if (RandomInt < TotalValue)
+					return i;
+			}
+			return Count - 1;
+
+
+			//return Random.Range(0, PaintPropObjects.Count);
 		}
 
 		void RegisterUndo()
@@ -766,19 +800,117 @@ namespace EditMap
 				public string Blueprint;
 				public float ScaleMin;
 				public float ScaleMax;
-				public float RotationMin;
-				public float RotationMax;
-				public float Chance;
+				public int RotationMin;
+				public int RotationMax;
+				public int Chance;
 			}
 		}
 
 		public void ImportPropsSet()
 		{
+			var extensions = new[]
+			{
+				new ExtensionFilter("Props paint set", "proppaintset")
+			};
+
+			var paths = StandaloneFileBrowser.OpenFilePanel("Import props paint set", EnvPaths.GetMapsPath(), extensions, false);
+
+
+			if (paths.Length <= 0 || string.IsNullOrEmpty(paths[0]))
+				return;
+
+			string data = File.ReadAllText(paths[0]);
+
+			PaintButtonsSet PaintSet = JsonUtility.FromJson<PaintButtonsSet>(data);
+
+			bool[] Exist = new bool[PaintPropObjects.Count];
+
+			for(int i = 0; i < PaintSet.PaintProps.Length; i++)
+			{
+				bool Found = false;
+				int o = 0;
+				for(o = 0; i < PaintPropObjects.Count; o++)
+				{
+					if(PaintPropObjects[i].BP.Path == PaintSet.PaintProps[i].Blueprint)
+					{
+						if (o < Exist.Length)
+							Exist[o] = true;
+						Found = true;
+						break;
+					}
+				}
+
+				if (!Found)
+				{
+					// Load
+					if (!LoadProp(GetGamedataFile.LoadProp(PaintSet.PaintProps[i].Blueprint)))
+					{
+						Debug.LogWarning("Can't load prop at path: " + PaintSet.PaintProps[i].Blueprint);
+						continue;
+					}
+
+					o = PaintButtons.Count - 1;
+
+				}
+
+
+
+				PaintButtons[o].ScaleMin.SetValue(PaintSet.PaintProps[i].ScaleMin);
+				PaintButtons[o].ScaleMax.SetValue(PaintSet.PaintProps[i].ScaleMax);
+
+				PaintButtons[o].RotationMin.SetValue(PaintSet.PaintProps[i].RotationMin);
+				PaintButtons[o].RotationMax.SetValue(PaintSet.PaintProps[i].RotationMax);
+
+				PaintButtons[o].Chance.SetValue(PaintSet.PaintProps[i].Chance);
+			}
+
+			for(int i = Exist.Length - 1; i >= 0; i--)
+			{
+				if (!Exist[i])
+				{
+					RemoveProp(i);
+				}
+			}
 
 		}
 
 		public void ExportPropsSet()
 		{
+			var extensions = new[]
+			{
+				new ExtensionFilter("Props paint set", "proppaintset")
+			};
+
+			var path = StandaloneFileBrowser.SaveFilePanel("Export props paint set", EnvPaths.GetMapsPath(), "", extensions);
+
+			if (string.IsNullOrEmpty(path))
+				return;
+
+			PaintButtonsSet PaintSet = new PaintButtonsSet();
+			PaintSet.PaintProps = new PaintButtonsSet.PaintProp[PaintButtons.Count];
+			
+			for(int i = 0; i < PaintSet.PaintProps.Length; i++)
+			{
+				if (PaintPropObjects[i].BP == null)
+					Debug.Log("Prop object is empty!");
+
+				PaintSet.PaintProps[i] = new PaintButtonsSet.PaintProp();
+
+				PaintSet.PaintProps[i].Blueprint = PaintPropObjects[i].BP.Path;
+				PaintSet.PaintProps[i].ScaleMin = PaintButtons[RandomProp].ScaleMin.value;
+				PaintSet.PaintProps[i].ScaleMax = PaintButtons[RandomProp].ScaleMin.value;
+				PaintSet.PaintProps[i].RotationMin = PaintButtons[RandomProp].RotationMin.intValue;
+				PaintSet.PaintProps[i].RotationMax = PaintButtons[RandomProp].RotationMax.intValue;
+				PaintSet.PaintProps[i].Chance = PaintButtons[RandomProp].Chance.intValue;
+			}
+
+
+
+			string data = JsonUtility.ToJson(PaintSet);
+
+			File.WriteAllText(path, data);
+
+
 
 		}
 
