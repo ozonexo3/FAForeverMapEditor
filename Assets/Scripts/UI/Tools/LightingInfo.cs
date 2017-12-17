@@ -72,6 +72,8 @@ namespace EditMap
 			FogStart.SetValue(Scmap.map.FogStart);
 			FogEnd.SetValue(Scmap.map.FogEnd);
 
+			Bloom.SetValue(Scmap.map.Bloom);
+
 			IgnoreUpdate = false;
 			UndoUpdate();
 		}

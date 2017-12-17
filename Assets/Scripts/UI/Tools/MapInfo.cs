@@ -64,8 +64,8 @@ namespace EditMap
 		public void UpdateFields()
 		{
 			Name.SetValue(Scenario.ScenarioLuaFile.Data.name);
-			Name.SetValue(Scenario.ScenarioLuaFile.Data.description);
-			Name.SetValue(Scenario.ScenarioLuaFile.Data.map_version.ToString());
+			Desc.SetValue(Scenario.ScenarioLuaFile.Data.description);
+			Version.SetValue(Scenario.ScenarioLuaFile.Data.map_version.ToString());
 
 			//Name.text = Scenario.ScenarioLuaFile.Data.name;
 			//Desc.text = Scenario.ScenarioLuaFile.Data.description;

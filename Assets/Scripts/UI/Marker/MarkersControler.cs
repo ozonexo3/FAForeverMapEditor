@@ -218,18 +218,23 @@ namespace Markers
 #region Refresh
 		public static void UpdateGraphics(SaveLua.Marker Owner, int mc)
 		{
+			bool Active = true;
 			MarkerPropGraphic PropGraphic;
-			if (Owner.MarkerType == SaveLua.Marker.MarkerTypes.BlankMarker && ArmyInfo.ArmyExist(Owner.Name))
+			if (Owner.MarkerType == SaveLua.Marker.MarkerTypes.BlankMarker && ArmyInfo.ArmyExist(Owner.Name)) {
 				PropGraphic = Current.SpawnGraphic;
-			else
+				Active = Current.MarkerLayersSettings.Spawn;
+			}
+			else {
 				PropGraphic = GetPropByType(Owner.MarkerType);
+				Active = Current.MarkerLayersSettings.ActiveByType(Owner.MarkerType);
+			}
 
 			Owner.MarkerObj.Mf.sharedMesh = PropGraphic.SharedMesh;
 			Owner.MarkerObj.Mr.sharedMaterial = PropGraphic.SharedMaterial;
 			Owner.MarkerObj.Bc.size = PropGraphic.SharedMesh.bounds.size;
 			Owner.MarkerObj.Bc.center = PropGraphic.SharedMesh.bounds.center;
 
-			Owner.MarkerObj.gameObject.SetActive(Current.MarkerLayersSettings.ActiveByType(Owner.MarkerType));
+			Owner.MarkerObj.gameObject.SetActive(Active);
 
 		}
 
@@ -256,9 +261,16 @@ namespace Markers
 				int Mcount = MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers.Count;
 				for (int m = 0; m < Mcount; m++)
 				{
-					if (MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers[m].MarkerObj != null)
-					{
-						bool Active = Current.MarkerLayersSettings.ActiveByType(MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers[m].MarkerType);
+					if (MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers[m].MarkerObj != null) { 
+
+						bool Active = true;
+
+						if (MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers[m].MarkerType == SaveLua.Marker.MarkerTypes.BlankMarker && 
+						ArmyInfo.ArmyExist(MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers[m].Name))
+							Active = Current.MarkerLayersSettings.Spawn;
+						else 
+							Active = Current.MarkerLayersSettings.ActiveByType(MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers[m].MarkerType);
+
 
 						if (Active && !MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers[m].MarkerObj.gameObject.activeSelf)
 							MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers[m].MarkerObj.gameObject.SetActive(true);

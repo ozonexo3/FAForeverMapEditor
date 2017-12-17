@@ -38,6 +38,7 @@ public class SkyboxData
 	public void Load(BinaryReader Stream)
 	{
 		// It should be some kind of settings for procedural skybox (colors, UV coordinates, rect, scale)
+		// It should also contain skybox height (i hope so)
 
 		Data = new SkyboxValues();
 
@@ -50,6 +51,7 @@ public class SkyboxData
 		// Sun and sky gradient settins ?
 		Data.BeginBytes = Stream.ReadBytes(64); // 16 x 4 bytes?
 
+
 		// Planet and moon textures
 		Data.Albedo = Stream.ReadStringNull();
 		Data.Glow = Stream.ReadStringNull();
@@ -61,6 +63,8 @@ public class SkyboxData
 		Data.Length = Stream.ReadInt32();
 		if(Data.Length > 0)
 			Data.MidBytes = Stream.ReadBytes(Data.Length * 40); // 10 x 4 bytes? 5 x 8 bytes?
+		// Planets/Stars are in 3D so we need Position (Vector3) and Scale (Short/Float/Vector3)
+		// They still need to define what texture to use and coords on them (atlas textures)
 
 		//Total of 19 bytes
 		Data.MidBytesStatic = Stream.ReadBytes(19); // 4x 4 bytes + RGB (3bytes)?

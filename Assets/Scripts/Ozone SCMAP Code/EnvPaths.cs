@@ -48,9 +48,13 @@ public class EnvPaths : MonoBehaviour {
 
 	public static void SetBackupPath(string value)
 	{
-		value = value.Replace("\\", "/");
-		if (value[value.Length - 1].ToString() != "/") value += "/";
-		if (value[0].ToString() == "/") value = value.Remove(0, 1);
+
+		if (!string.IsNullOrEmpty(value))
+		{
+			value = value.Replace("\\", "/");
+			if (value[value.Length - 1].ToString() != "/") value += "/";
+			if (value.Length > 0 && value[0].ToString() == "/") value = value.Remove(0, 1);
+		}
 
 		PlayerPrefs.SetString(BackupPath, value);
 	}

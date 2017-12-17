@@ -14,7 +14,6 @@ namespace MapLua
 		{
 			public string Name = "";
 			public MarkerTypes MarkerType;
-			public MarkerLayers MarkerLayer;
 			public Markers.MarkerObject MarkerObj;
 			public List<Chain> ConnectedToChains;
 

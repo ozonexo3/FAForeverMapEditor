@@ -121,8 +121,9 @@ public class ScmapEditor : MonoBehaviour
 
 		if (map.VersionMinor >= 60)
 		{
-			/*
+			
 			// Create Default Values
+			/*
 			DefaultSkyboxData = new SkyboxData.SkyboxValues();
 			DefaultSkyboxData.BeginBytes = map.AdditionalSkyboxData.Data.BeginBytes;
 			DefaultSkyboxData.Albedo = map.AdditionalSkyboxData.Data.Albedo;
@@ -131,7 +132,8 @@ public class ScmapEditor : MonoBehaviour
 			DefaultSkyboxData.MidBytes = map.AdditionalSkyboxData.Data.MidBytes;
 			DefaultSkyboxData.MidBytesStatic = map.AdditionalSkyboxData.Data.MidBytesStatic;
 			DefaultSkyboxData.Clouds = map.AdditionalSkyboxData.Data.Clouds;
-			DefaultSkyboxData.EndBytes = map.AdditionalSkyboxData.Data.EndBytes;*/
+			DefaultSkyboxData.EndBytes = map.AdditionalSkyboxData.Data.EndBytes;
+			*/
 		}
 		else
 		{
@@ -591,6 +593,28 @@ public class ScmapEditor : MonoBehaviour
 				}
 			}
 		}
+
+		if (MapLuaParser.Current.EditMenu.MapInfoMenu.SaveAsFa.isOn)
+		{
+			map.VersionMinor = 60;
+
+		}
+		else if(map.VersionMinor >= 60)
+		{
+			if (map.AdditionalSkyboxData.Data.BeginBytes.Length == 0)
+			{
+				map.AdditionalSkyboxData.Data.BeginBytes = DefaultSkyboxData.BeginBytes;
+				map.AdditionalSkyboxData.Data.Albedo = DefaultSkyboxData.Albedo;
+				map.AdditionalSkyboxData.Data.Glow = DefaultSkyboxData.Glow;
+				map.AdditionalSkyboxData.Data.Length = DefaultSkyboxData.Length;
+				map.AdditionalSkyboxData.Data.MidBytes = DefaultSkyboxData.MidBytes;
+				map.AdditionalSkyboxData.Data.MidBytesStatic = DefaultSkyboxData.MidBytesStatic;
+				map.AdditionalSkyboxData.Data.Clouds = DefaultSkyboxData.Clouds;
+				map.AdditionalSkyboxData.Data.EndBytes = DefaultSkyboxData.EndBytes;
+			}
+			map.VersionMinor = 56;
+		}
+
 		//Debug.Log("Set Heightmap to map " + map.Width + ", " + map.Height);
 
 		//string MapPath = EnvPaths.GetMapsPath();
@@ -644,7 +668,7 @@ public class ScmapEditor : MonoBehaviour
 		map.Props = AllProps;
 
 
-		map.Save(path, map.VersionMinor);
+		map.Save(path,  map.VersionMinor);
 	}
 
 	#endregion

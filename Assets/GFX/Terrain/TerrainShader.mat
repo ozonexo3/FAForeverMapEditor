@@ -231,22 +231,22 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
-    - _AbyssLevel: 1
-    - _Area: 1
+    - _AbyssLevel: 0
+    - _Area: 0
     - _AreaHeight: 102.3
     - _AreaWidht: 102.5
     - _AreaX: 0.1
     - _AreaY: -0.1
     - _Brush: 0
     - _BrushSize: 0
-    - _BrushUvX: 0.31706575
-    - _BrushUvY: 0.7108611
+    - _BrushUvX: 0.60110396
+    - _BrushUvY: 0.18322542
     - _DeepLevel: 1.675625
-    - _DepthLevel: 2
+    - _DepthLevel: 1.1
     - _GeneratingNormal: 0
     - _Grid: 0
     - _GridCamDist: 0.049673967
-    - _GridScale: 102.4
+    - _GridScale: 25.6
     - _HideSplat0: 0
     - _HideSplat1: 0
     - _HideSplat2: 0
@@ -257,32 +257,32 @@ Material:
     - _HideSplat7: 0
     - _HideSplat8: 0
     - _LightingMultiplier: 1.27
-    - _LowerScale: 256
-    - _LowerScaleNormal: 256
+    - _LowerScale: 64
+    - _LowerScaleNormal: 37.647057
     - _Shininess: 0.03
     - _Slope: 0
-    - _Splat0Scale: 256
-    - _Splat0ScaleNormal: 256
-    - _Splat1Scale: 256
-    - _Splat1ScaleNormal: 256
-    - _Splat2Scale: 256
-    - _Splat2ScaleNormal: 256
-    - _Splat3Scale: 256
-    - _Splat3ScaleNormal: 256
-    - _Splat4Scale: 256
-    - _Splat4ScaleNormal: 256
-    - _Splat5Scale: 256
-    - _Splat5ScaleNormal: 256
-    - _Splat6Scale: 256
-    - _Splat6ScaleNormal: 256
-    - _Splat7Scale: 256
-    - _Splat7ScaleNormal: 256
+    - _Splat0Scale: 64
+    - _Splat0ScaleNormal: 18.550724
+    - _Splat1Scale: 128
+    - _Splat1ScaleNormal: 128
+    - _Splat2Scale: 42.666668
+    - _Splat2ScaleNormal: 64
+    - _Splat3Scale: 16.202532
+    - _Splat3ScaleNormal: 8.677966
+    - _Splat4Scale: 64
+    - _Splat4ScaleNormal: 64
+    - _Splat5Scale: 64
+    - _Splat5ScaleNormal: 64
+    - _Splat6Scale: 64
+    - _Splat6ScaleNormal: 64
+    - _Splat7Scale: 64
+    - _Splat7ScaleNormal: 64
     - _TTerrainXP: 0
-    - _UpperScale: 8
-    - _UpperScaleNormal: 1024
+    - _UpperScale: 2
+    - _UpperScaleNormal: 256
     - _UseSlopeTex: 1
     - _Water: 1
-    - _WaterLevel: 2.5
+    - _WaterLevel: 1.33
     - _WaterScaleX: 1024
     - _WaterScaleZ: 1024
     m_Colors:

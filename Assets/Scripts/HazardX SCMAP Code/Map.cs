@@ -11,7 +11,7 @@ using UnityEngine;
 using System.IO;
 
 #if UNITY_EDITOR
-[System.Serializable]
+[System.Serializable, PreferBinarySerialization]
 #endif
 public class Map
 {
@@ -59,6 +59,7 @@ public class Map
     public string[] EnvCubemapsFile;
 	public SkyboxData AdditionalSkyboxData = new SkyboxData();
 
+	[HideInInspector]
 	public byte[] TerrainTypeData;
 
     public List<WaveGenerator> WaveGenerators = new List<WaveGenerator>();
@@ -88,7 +89,11 @@ public class Map
     public int Unknown11;
     public int Unknown12;
 
-    public short Unknown13;
+	public byte Unknown15;
+	public Single Unknown16;
+	public Single Unknown17;
+
+	public short Unknown13;
     public int Unknown7;
 
     public int Unknown8;
@@ -140,9 +145,10 @@ public class Map
         Unknown12 = 0;
         Unknown13 = 0;
         Unknown14 = 0;
+		Unknown15 = 0;
 
-        //Minimap Colors (Default)
-        MinimapContourInterval = 24;
+		//Minimap Colors (Default)
+		MinimapContourInterval = 24;
         MinimapDeepWaterColor = new Color(71, 140, 181);
 		MinimapContourColor = new Color(112, 112, 112);
 		MinimapShoreColor = new Color(140, 201, 224);
@@ -240,6 +246,7 @@ public class Map
 		Unknown7 = 13153;
 		Unknown8 = 4;
 		Unknown14 = -8.3f;
+		Unknown15 = 0;
 
 		WaveGenerators = new List<WaveGenerator>();
 		Layers = new List<Layer>();
@@ -345,6 +352,7 @@ public class Map
 		Unknown12 = 0;
 		Unknown13 = 0;
 		Unknown14 = 0;
+		Unknown15 = 0;
 
 		//Minimap Colors (Default)
 		MinimapContourInterval = 24;
@@ -455,10 +463,10 @@ public class Map
             Unknown10 = _with1.ReadInt32();
             //? always EDFE EFBE
             Unknown11 = _with1.ReadInt32();
-            //? always 2
-            _with1.ReadSingle();
-            //Map Width (in float)
-            _with1.ReadSingle();
+			//? always 2
+			Unknown16 = _with1.ReadSingle();
+			//Map Width (in float)
+			Unknown17 = _with1.ReadSingle();
             //Map Height (in float)
             Unknown12 = _with1.ReadInt32();
             //? always 0
@@ -471,10 +479,6 @@ public class Map
             if (VersionMinor <= 0)
                 VersionMinor = 56;
 			
-            if (VersionMinor > 56)
-            {
-                Console.WriteLine("This map uses SCMAP file version" + VersionMinor + " which is not yet supported by this editor. I will try to load it with the newest known version (" + 56 + "), but it is very likely to fail or cause errors.");
-            }
 
             //# Heightmap Section #
             Width = _with1.ReadInt32();
@@ -483,14 +487,16 @@ public class Map
             HeightScale = _with1.ReadSingle();
             //Height Scale, usually 1/128
             HeightmapData = _with1.ReadInt16Array((Height + 1) * (Width + 1));//TODO: Current saving method gets a memory overload on trying to reload the map here.
-            //heightmap dimension is always 1 more than texture dimension!
+																			  //heightmap dimension is always 1 more than texture dimension!
 
-            if (VersionMinor >= 56)
-                _with1.ReadByte();
-            //Always 0?
+			if (VersionMinor >= 56)
+				Unknown15 = _with1.ReadByte();
+			else
+				Unknown15 = 0;
+			//Always 0?
 
-            //# Texture Definition Section #
-            TerrainShader = _with1.ReadStringNull();
+			//# Texture Definition Section #
+			TerrainShader = _with1.ReadStringNull();
             //Terrain Shader, usually "TTerrain"
             TexPathBackground = _with1.ReadStringNull();
             TexPathSkyCubemap = _with1.ReadStringNull();
@@ -940,8 +946,11 @@ public class Map
         //Height Scale, usually 1/128
         _with2.Write(HeightmapData);
 
-        if (MapFileVersion >= 56)
-            _with2.Write(Convert.ToByte(0));
+		if (MapFileVersion >= 56)
+		{
+			//_with2.Write(Convert.ToByte(0));
+			_with2.Write(Unknown15);
+		}
         //Always 0?
 
         //# Texture Definition Section #

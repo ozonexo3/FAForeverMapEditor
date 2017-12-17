@@ -63,6 +63,11 @@ public class MapLuaParser : MonoBehaviour
 
 		EnvPaths.GenerateDefaultPaths();
 
+		if (string.IsNullOrEmpty(EnvPaths.GetInstalationPath())){
+			EnvPaths.GenerateGamedataPath();
+			EnvPaths.SetInstalationPath(EnvPaths.DefaultGamedataPath);
+		}
+
 		Current = this;
 		StructurePath = Application.dataPath + "/Structure/"; ;
 #if UNITY_EDITOR
@@ -368,7 +373,13 @@ public class MapLuaParser : MonoBehaviour
 
 		BackupPath = EnvPaths.GetBackupPath();
 		if (string.IsNullOrEmpty(BackupPath))
-			BackupPath = FolderParentPath;
+		{
+			BackupPath = Application.dataPath + "/MapsBackup/";
+#if UNITY_EDITOR
+			BackupPath = BackupPath.Replace("Assets/", "");
+#endif
+			//BackupPath = FolderParentPath;
+		}
 
 		BackupPath += FolderName + "/Backup_" + BackupId;
 

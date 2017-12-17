@@ -52,7 +52,7 @@ public class FafEditorSettings : MonoBehaviour {
 
 	public void BrowseGamedataPath(){
 
-		var paths = StandaloneFileBrowser.OpenFolderPanel("Select 'Gamedata' folder in FA instalation directory", EnvPaths.GetMapsPath(), false);
+		var paths = StandaloneFileBrowser.OpenFolderPanel("Select Forged Alliance instalation path", EnvPaths.GetMapsPath(), false);
 
 		if (paths.Length > 0 && !string.IsNullOrEmpty(paths[0]))
 		{
@@ -73,7 +73,7 @@ public class FafEditorSettings : MonoBehaviour {
 
 	public void BrowseBackupPath()
 	{
-		var paths = StandaloneFileBrowser.OpenFolderPanel("Select 'Maps' folder.", EnvPaths.GetMapsPath(), false);
+		var paths = StandaloneFileBrowser.OpenFolderPanel("Select backup 'Maps' folder.", EnvPaths.GetMapsPath(), false);
 
 		if (paths.Length > 0 && !string.IsNullOrEmpty(paths[0]))
 		{
@@ -95,7 +95,7 @@ public class FafEditorSettings : MonoBehaviour {
 
 	public void ResetBackup()
 	{
-		MapsPathField.text = "";
+		BackupPathField.text = EnvPaths.DefaultMapPath.Replace("Maps/", "MapsBackup/");
 	}
 
 }

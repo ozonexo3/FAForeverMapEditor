@@ -2,15 +2,15 @@
 using UnityEditor;
 using System.Diagnostics;
 
-public class BuildWithResources : MonoBehaviour 
+public class BuildWithResources : MonoBehaviour
 {
 	[MenuItem("Build/Windows with resources (old)")]
-	public static void BuildSettings ()
+	public static void BuildSettings()
 	{
 		// Get filename
 		string path = EditorUtility.SaveFolderPanel("Choose Location of Built Game", "", "");
 
-		string[] levels = new string[] {"Assets/MapEditor.unity"};
+		string[] levels = new string[] { "Assets/MapEditor.unity" };
 
 		BuildPipeline.BuildPlayer(levels, path + "/FAForeverMapEditor.exe", BuildTarget.StandaloneWindows, BuildOptions.None);
 
@@ -24,12 +24,12 @@ public class BuildWithResources : MonoBehaviour
 	}
 
 	[MenuItem("Build/Windows with resources (64bit)")]
-	public static void BuildSettings64 ()
+	public static void BuildSettings64()
 	{
 		// Get filename
 		string path = EditorUtility.SaveFolderPanel("Choose Location of Built Game", "", "");
 
-		string[] levels = new string[] {"Assets/MapEditor.unity"};
+		string[] levels = new string[] { "Assets/MapEditor.unity" };
 
 		BuildPipeline.BuildPlayer(levels, path + "/FAForeverMapEditor.exe", BuildTarget.StandaloneWindows64, BuildOptions.None);
 
@@ -59,4 +59,14 @@ public class BuildWithResources : MonoBehaviour
 		LoadedMesh.vertices = NewVerts;
 	}
 	*/
+
+	[MenuItem("Build/Do Action")]
+	public static void ChangeModelVerts()
+	{
+		ScmapEditor From = UnityEditor.Selection.gameObjects[0].GetComponent<ScmapEditor>();
+		ScmapEditor To = UnityEditor.Selection.gameObjects[1].GetComponent<ScmapEditor>();
+
+		To.DefaultSkyboxData = From.DefaultSkyboxData;
+	}
+
 }
