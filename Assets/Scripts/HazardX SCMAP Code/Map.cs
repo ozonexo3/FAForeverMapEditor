@@ -87,7 +87,7 @@ public class Map
     public float FogEnd;
     public int Unknown10;
     public int Unknown11;
-    public int Unknown12;
+    public float Unknown12;
 
 	public byte Unknown15;
 	public Single Unknown16;
@@ -468,7 +468,7 @@ public class Map
 			//Map Width (in float)
 			Unknown17 = _with1.ReadSingle();
             //Map Height (in float)
-            Unknown12 = _with1.ReadInt32();
+            Unknown12 = _with1.ReadSingle();
             //? always 0
             Unknown13 = _with1.ReadInt16();
             //? always 0
@@ -919,9 +919,9 @@ public class Map
         //? always EDFE EFBE
         _with2.Write(Unknown11);
         //? always 2
-        _with2.Write(Width);
+        _with2.Write((float)Width);
         //Map Width (in float)
-        _with2.Write(Height);
+        _with2.Write((float)Height);
         //Map Height (in float)
         _with2.Write(Unknown12);
         //? always 0

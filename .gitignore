@@ -13,6 +13,7 @@ FAFMapParser.userprefs
 Assembly-CSharp-vs.csproj
 Assembly-UnityScript-Editor-vs.unityproj
 Library
+MapsBackup
 Temp
 obj
 Assets/OnlyLocal/*
