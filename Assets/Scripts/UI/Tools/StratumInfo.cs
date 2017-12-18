@@ -38,8 +38,6 @@ namespace EditMap
 		public GameObject Page_Settings;
 		public GameObject Page_SettingsSelected;
 
-		public AnimationCurve LinearBrushCurve;
-
 		// Brush
 		[Header("Brush")]
 		//public Slider BrushSizeSlider;
@@ -1222,7 +1220,7 @@ namespace EditMap
 
 
 			var extensions = new[]
-{
+			{
 				new ExtensionFilter("Stratum mask", "raw")
 			};
 
@@ -1297,6 +1295,8 @@ namespace EditMap
 
 		public void ExportStratum()
 		{
+
+			
 
 			var extensions = new[]
 {

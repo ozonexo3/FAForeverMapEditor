@@ -72,7 +72,7 @@ public class BrushGenerator : MonoBehaviour
 			byte[] fileData;
 			fileData = File.ReadAllBytes(AllBrushFiles[i]);
 
-			Brushes.Add(new Texture2D(512, 512, TextureFormat.RGBA32, false));
+			Brushes.Add(new Texture2D(512, 512, TextureFormat.R8, false));
 			Brushes[Brushes.Count - 1].LoadImage(fileData);
 			BrushesNames.Add(AllBrushFiles[i].Replace(StructurePath, "").Replace("/", "").Replace("\\", ""));
 		}
@@ -499,6 +499,21 @@ public class BrushGenerator : MonoBehaviour
 		return pix;
 	}
 
+	static Color[] PixelsStorage;
+	static Color getPixel(float x, float y, int width, int height)
+	{
+		int x1 = (int)Mathf.Floor(x);
+		int y1 = (int)Mathf.Floor(y);
+
+		if (x1 > width || x1 < 0 ||
+			y1 > height || y1 < 0)
+		{
+			return Color.clear;
+		}
+
+		return PixelsStorage[x1 + y1 * width];
+	}
+
 	static float rot_x(float angle, float x, float y)
 	{
 		float cos = Mathf.Cos(angle / 180.0f * Mathf.PI);
@@ -518,8 +533,13 @@ public class BrushGenerator : MonoBehaviour
 	{
 		Texture2D rotImage = new Texture2D(tex.width, tex.height, tex.format, false);
 		rotImage.wrapMode = TextureWrapMode.Clamp;
+		PixelsStorage = rotImage.GetPixels();
+
+		int width = tex.width;
+		int height = tex.height;
 		int x, y;
 		int x1, y1;
+		Color[] NewPixels = new Color[PixelsStorage.Length];
 		for (x = 0; x < tex.width; x++)
 		{
 			for (y = 0; y < tex.height; y++)
@@ -530,10 +550,13 @@ public class BrushGenerator : MonoBehaviour
 				if (vertical) y1 = tex.height - y - 1;
 				else y1 = y;
 
-				rotImage.SetPixel(x, y, getPixel(tex, x1, y1));
+				//rotImage.SetPixel(x, y, getPixel(tex, x1, y1));
+				NewPixels[x + y * width] = getPixel(x1, y1, width, height);
 			}
 		}
-		rotImage.Apply();
+
+		rotImage.SetPixels(NewPixels);
+		rotImage.Apply(false);
 		return rotImage;
 	}
 	#endregion

@@ -1,6 +1,7 @@
 ﻿//********************************
 //
 // Custom decal settins shared between multiple decals for FAF Map Editor 
+// * Copyright ozonexo3 2017
 //
 //********************************
 

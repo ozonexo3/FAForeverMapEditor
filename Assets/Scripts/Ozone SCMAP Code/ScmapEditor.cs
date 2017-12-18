@@ -142,7 +142,7 @@ public class ScmapEditor : MonoBehaviour
 			map.AdditionalSkyboxData.Data.Albedo = DefaultSkyboxData.Albedo;
 			map.AdditionalSkyboxData.Data.Glow = DefaultSkyboxData.Glow;
 			map.AdditionalSkyboxData.Data.Length = DefaultSkyboxData.Length;
-			map.AdditionalSkyboxData.Data.MidBytes = DefaultSkyboxData.MidBytes;
+			//map.AdditionalSkyboxData.Data.MidBytes = DefaultSkyboxData.MidBytes;
 			map.AdditionalSkyboxData.Data.MidBytesStatic = DefaultSkyboxData.MidBytesStatic;
 			map.AdditionalSkyboxData.Data.Clouds = DefaultSkyboxData.Clouds;
 			map.AdditionalSkyboxData.Data.EndBytes = DefaultSkyboxData.EndBytes;
@@ -607,7 +607,7 @@ public class ScmapEditor : MonoBehaviour
 				map.AdditionalSkyboxData.Data.Albedo = DefaultSkyboxData.Albedo;
 				map.AdditionalSkyboxData.Data.Glow = DefaultSkyboxData.Glow;
 				map.AdditionalSkyboxData.Data.Length = DefaultSkyboxData.Length;
-				map.AdditionalSkyboxData.Data.MidBytes = DefaultSkyboxData.MidBytes;
+				//map.AdditionalSkyboxData.Data.MidBytes = DefaultSkyboxData.MidBytes;
 				map.AdditionalSkyboxData.Data.MidBytesStatic = DefaultSkyboxData.MidBytesStatic;
 				map.AdditionalSkyboxData.Data.Clouds = DefaultSkyboxData.Clouds;
 				map.AdditionalSkyboxData.Data.EndBytes = DefaultSkyboxData.EndBytes;

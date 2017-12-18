@@ -13,6 +13,9 @@ public class FafEditorSettings : MonoBehaviour {
 	public	Slider			HistorySlider;
 	public	Undo			History;
 
+	public Dropdown PlayAs;
+	public Toggle FogOfWar;
+
 	public const int DefaultUndoHistory = 50;
 	public const string UndoHistory = "UndoHistrySteps";
 
@@ -20,6 +23,9 @@ public class FafEditorSettings : MonoBehaviour {
 		PathField.text = EnvPaths.GetInstalationPath();
 		MapsPathField.text = EnvPaths.GetMapsPath();
 		BackupPathField.text = EnvPaths.GetBackupPath();
+
+		PlayAs.value = GetFaction();
+		FogOfWar.isOn = GetFogOfWar();
 	}
 	
 
@@ -41,6 +47,9 @@ public class FafEditorSettings : MonoBehaviour {
 
 		PlayerPrefs.SetInt(UndoHistory, (int)HistorySlider.value);
 		if(History)History.MaxHistoryLength = (int)HistorySlider.value;
+
+		PlayerPrefs.SetInt("PlayMap_Faction", PlayAs.value);
+		PlayerPrefs.SetInt("PlayMap_FogOfWar", FogOfWar.isOn?1:0);
 
 		PlayerPrefs.Save();
 		gameObject.SetActive(false);
@@ -98,4 +107,13 @@ public class FafEditorSettings : MonoBehaviour {
 		BackupPathField.text = EnvPaths.DefaultMapPath.Replace("Maps/", "MapsBackup/");
 	}
 
+	public static int GetFaction()
+	{
+		return PlayerPrefs.GetInt("PlayMap_Faction", 0);
+	}
+
+	public static bool GetFogOfWar()
+	{
+		return PlayerPrefs.GetInt("PlayMap_FogOfWar", 1) == 1;
+	}
 }

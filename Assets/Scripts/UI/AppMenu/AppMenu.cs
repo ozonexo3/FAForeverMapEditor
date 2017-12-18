@@ -92,6 +92,28 @@ public class AppMenu : MonoBehaviour
 			case "Donate":
 				Application.OpenURL("https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=LUYMTPBDH5V4E&lc=GB&item_name=FAF%20Map%20Editor&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted");
 				break;
+			case "PlayMap":
+				if (MapLuaParser.IsMapLoaded)
+				{
+					string Arguments = "";
+					Arguments += "/map \"" + "/maps/" + MapLuaParser.Current.FolderName + "/" + MapLuaParser.Current.ScenarioFileName + ".lua" + "\"";
+					//Arguments += "/map \"" + MapLuaParser.LoadedMapFolderPath + MapLuaParser.Current.ScenarioFileName + ".lua" + "\"";
+					Arguments += " /faction " + (FafEditorSettings.GetFaction() + 1).ToString();
+					Arguments += " /victory sandbox";
+					Arguments += " /gamespeed adjustable";
+
+					Arguments += "/predeployed /enablediskwatch";
+
+					if (!FafEditorSettings.GetFogOfWar())
+						Arguments += " /nofog";
+
+					Debug.Log("Args: " + Arguments);
+
+					System.Diagnostics.Process.Start(
+						"C:/Program Files (x86)/Steam/steamapps/common/Supreme Commander Forged Alliance/bin/SupremeCommander.exe", Arguments
+						);
+				}
+				break;
 		}
 	}
 
@@ -105,6 +127,7 @@ public class AppMenu : MonoBehaviour
 		{
 			but.interactable = true;
 		}
+
 
 		RecentMaps.SetActive(false);
 
@@ -145,7 +168,7 @@ public class AppMenu : MonoBehaviour
 
 	public void OpenMap()
 	{
-		if (MapLuaParser.Current.MapLoaded())
+		if (MapLuaParser.IsMapLoaded)
 			GenericPopup.ShowPopup(GenericPopup.PopupTypes.TriButton, "Save map", "Save current map before opening another map?", "Yes", OpenMapYes, "No", OpenMapNo, "Cancel", OpenMapCancel);
 		else
 			OpenMapProcess();
@@ -236,8 +259,12 @@ public class AppMenu : MonoBehaviour
 			return; // Same map
 		}
 
-		if (MapLuaParser.Current.MapLoaded() )
+		if (MapLuaParser.IsMapLoaded)
+		{
+			PlaySystemSound.PlayBeep();
 			GenericPopup.ShowPopup(GenericPopup.PopupTypes.TriButton, "Save map", "Save current map before opening another map?", "Yes", OpenRecentMapYes, "No", OpenRecentMapNo, "Cancel", OpenMapCancel);
+
+		}
 		else
 			OpenRecentMapNo();
 	}
@@ -279,7 +306,7 @@ public class AppMenu : MonoBehaviour
 
 	public void OpenNewMap()
 	{
-		if(MapLuaParser.Current.MapLoaded())
+		if(MapLuaParser.IsMapLoaded)
 			GenericPopup.ShowPopup(GenericPopup.PopupTypes.TriButton, "Save map", "Save current map before creating new map?", "Yes", OpenNewMapYes, "No", OpenNewMapNo, "Cancel", OpenNewMapCancel);
 		else
 			NewMapWindow.SetActive(true);
@@ -319,7 +346,7 @@ public class AppMenu : MonoBehaviour
 
 	public void SaveMapAs()
 	{
-		if (!MapLuaParser.Current.MapLoaded())
+		if (!MapLuaParser.IsMapLoaded)
 			return;
 
 		LateUpdate();

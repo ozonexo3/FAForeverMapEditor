@@ -1,4 +1,11 @@
-﻿using System.Collections;
+﻿//********************************
+// 
+// * Procedural skybox from v60 scmap file for FAF Map Editor 
+// * Copyright ozonexo3 2017
+//
+//********************************
+
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
@@ -26,12 +33,19 @@ public class SkyboxData
 		public string Glow = "/textures/environment/Decal_test_Glow001.dds";
 
 		public int Length = 0;
-		public byte[] MidBytes = new byte[0];
+		public Planet[] Planets = new Planet[0];
+
 		public byte[] MidBytesStatic = new byte[0];
 
 		public string Clouds = "/textures/environment/cirrus000.dds";
 
 		public byte[] EndBytes = new byte[0];
+
+		[System.Serializable]
+		public class Planet
+		{
+			public byte[] Bytes = new byte[0];
+		}
 	}
 
 
@@ -52,6 +66,8 @@ public class SkyboxData
 		Data.BeginBytes = Stream.ReadBytes(64); // 16 x 4 bytes?
 
 
+		Debug.Log(byte.)
+
 		// Planet and moon textures
 		Data.Albedo = Stream.ReadStringNull();
 		Data.Glow = Stream.ReadStringNull();
@@ -61,10 +77,15 @@ public class SkyboxData
 		//Array of layers
 		// Planets, moons
 		Data.Length = Stream.ReadInt32();
-		if(Data.Length > 0)
-			Data.MidBytes = Stream.ReadBytes(Data.Length * 40); // 10 x 4 bytes? 5 x 8 bytes?
-		// Planets/Stars are in 3D so we need Position (Vector3) and Scale (Short/Float/Vector3)
-		// They still need to define what texture to use and coords on them (atlas textures)
+		Data.Planets = new SkyboxValues.Planet[Data.Length];
+		for(int i = 0; i < Data.Planets.Length; i++)
+		{
+			Data.Planets[i] = new SkyboxValues.Planet();
+			Data.Planets[i].Bytes = Stream.ReadBytes(40); // 10 x 4 bytes? 5 x 8 bytes?
+			// Planets/Stars are in 3D so we need Position (Vector3) and Scale (Short/Float/Vector3)
+			// They still need to define what texture to use and coords on them (atlas textures)
+		}
+
 
 		//Total of 19 bytes
 		Data.MidBytesStatic = Stream.ReadBytes(19); // 4x 4 bytes + RGB (3bytes)?
@@ -85,8 +106,13 @@ public class SkyboxData
 		Stream.Write(Data.Albedo, true);
 		Stream.Write(Data.Glow, true);
 
-		Stream.Write(Data.Length);
-		Stream.Write(Data.MidBytes);
+		Stream.Write(Data.Planets.Length);
+		for(int i = 0; i < Data.Planets.Length; i++)
+		{
+			Stream.Write(Data.Planets[i].Bytes);
+		}
+
+		//Stream.Write(Data.MidBytes);
 		Stream.Write(Data.MidBytesStatic);
 		
 		Stream.Write(Data.Clouds, true);

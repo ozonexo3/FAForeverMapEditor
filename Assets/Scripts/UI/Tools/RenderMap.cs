@@ -22,7 +22,7 @@ public class RenderMap : MonoBehaviour {
 
 	IEnumerator Rendering()
 	{
-		if (MapLuaParser.Current.MapLoaded())
+		if (MapLuaParser.IsMapLoaded)
 		{
 			if (Directory.Exists(Path.text))
 			{

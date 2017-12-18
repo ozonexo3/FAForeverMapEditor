@@ -1,4 +1,11 @@
-﻿using UnityEngine;
+﻿//********************************
+// 
+// * Resource browser
+// * Copyright ozonexo3 2017
+//
+//********************************
+
+using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
@@ -38,7 +45,6 @@ public class ResourceBrowser : MonoBehaviour
 	public List<GetGamedataFile.PropObject> LoadedProps = new List<GetGamedataFile.PropObject>();
 
 	//Local
-	bool Generating = false;
 	List<string> LoadedEnvPaths = new List<string>();
 	const string LocalPath = "env/";
 	static string[] CategoryPaths = new string[] { "layers/", "splats/", "decals/", "Props/" };
@@ -65,10 +71,11 @@ public class ResourceBrowser : MonoBehaviour
 		if (!gameObject.activeSelf || CustomLoading)
 			return;
 		SelectedObject = "";
-		StopCoroutine("GenerateList");
+		if (IsGenerating)
+			StopCoroutine(GeneratingList);
 		DontReload = false;
 		Pivot.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
-		StartCoroutine("GenerateList");
+		GeneratingList = StartCoroutine(GenerateList());
 	}
 	#endregion
 
@@ -151,7 +158,6 @@ public class ResourceBrowser : MonoBehaviour
 		int LastEnvType = EnvType.value;
 
 		CustomLoading = true;
-		//StopCoroutine("GenerateList");
 		//Debug.Log ("Load browser for: " + path);
 		string BeginPath = path;
 		//SRect.normalizedPosition = Vector2.zero;
@@ -206,15 +212,16 @@ public class ResourceBrowser : MonoBehaviour
 
 		gameObject.SetActive(true);
 
-		DontReload = LastCategory == Category.value && LastEnvType == EnvType.value && !Generating;
+		DontReload = LastCategory == Category.value && LastEnvType == EnvType.value && !IsGenerating;
 
 		if(!DontReload)
 			Pivot.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
 
 
-		StopCoroutine("GenerateList");
+		if (IsGenerating)
+			StopCoroutine(GeneratingList);
 		CustomLoading = false;
-		StartCoroutine("GenerateList");
+		GeneratingList = StartCoroutine(GenerateList());
 	}
 
 	public void LoadPropBlueprint()
@@ -224,9 +231,10 @@ public class ResourceBrowser : MonoBehaviour
 			Category.value = 3;
 
 			gameObject.SetActive(true);
-			StopCoroutine("GenerateList");
+			if (IsGenerating)
+				StopCoroutine(GeneratingList);
 			CustomLoading = false;
-			StartCoroutine("GenerateList");
+			GeneratingList = StartCoroutine(GenerateList());
 		}
 		else
 			gameObject.SetActive(true);
@@ -251,6 +259,15 @@ public class ResourceBrowser : MonoBehaviour
 		LoadedProps = new List<GetGamedataFile.PropObject>();
 	}
 
+	bool IsGenerating
+	{
+		get
+		{
+			return GeneratingList != null;
+		}
+	}
+
+	Coroutine GeneratingList;
 	IEnumerator GenerateList()
 	{
 		SelectedCategory = Category.value;
@@ -258,7 +275,6 @@ public class ResourceBrowser : MonoBehaviour
 			Clean();
 		else if (LastSelection)
 			LastSelection.SetActive(false);
-		Generating = true;
 		Loading.SetActive(true);
 
 		int Counter = 0;
@@ -266,8 +282,33 @@ public class ResourceBrowser : MonoBehaviour
 		Layout.enabled = true;
 		SizeFitter.enabled = true;
 
+
+
 		if (LoadedEnvPaths[EnvType.value] == CurrentMapFolderPath)
 		{
+			if (MapLuaParser.IsMapLoaded) {
+
+				string[] AllFiles = Directory.GetFiles(MapLuaParser.LoadedMapFolderPath, "*", SearchOption.AllDirectories);
+				Debug.Log("Found " + AllFiles.Length + " in map folder");
+
+				for(int i = 0; i < AllFiles.Length; i++)
+				{
+					string path = AllFiles[i];
+
+					if (path.ToLower().EndsWith(".dds"))
+					{
+						// Load Texture
+
+
+					}
+					else if (path.ToLower().EndsWith(".blueprint"))
+					{
+						// Load Blueprint
+
+
+					}
+				}
+			}
 
 			yield return null;
 			yield return null;
@@ -363,8 +404,8 @@ public class ResourceBrowser : MonoBehaviour
 		Layout.enabled = false;
 		SizeFitter.enabled = false;
 
-		Generating = false;
 		Loading.SetActive(false);
+		GeneratingList = null;
 	}
 
 	public void FastFocus()

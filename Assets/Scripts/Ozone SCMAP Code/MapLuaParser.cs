@@ -34,6 +34,14 @@ public class MapLuaParser : MonoBehaviour
 	public string FolderName;
 	public string ScenarioFileName;
 
+	public static string LoadedMapFolderPath
+	{
+		get
+		{
+			return Current.FolderParentPath + Current.FolderName + "/";
+		}
+	}
+
 	//public		CameraControler	CamControll;
 	[Header("UI")]
 	public GameObject Background;
@@ -80,9 +88,12 @@ public class MapLuaParser : MonoBehaviour
 
 	}
 
-	public bool MapLoaded()
+	public static bool IsMapLoaded
 	{
-		return !string.IsNullOrEmpty(FolderName) && !string.IsNullOrEmpty(ScenarioFileName) && !string.IsNullOrEmpty(FolderParentPath);
+		get
+		{
+			return !string.IsNullOrEmpty(Current.FolderName) && !string.IsNullOrEmpty(Current.ScenarioFileName) && !string.IsNullOrEmpty(Current.FolderParentPath);
+		}
 	}
 
 	public void ResetUI()
@@ -155,17 +166,17 @@ public class MapLuaParser : MonoBehaviour
 			AllFilesExists = false;
 		}
 
-		if (AllFilesExists && !System.IO.File.Exists(FolderParentPath + FolderName + "/" + ScenarioFileName + ".lua"))
+		if (AllFilesExists && !System.IO.File.Exists(LoadedMapFolderPath + ScenarioFileName + ".lua"))
 		{
 			AllFilesExists = SearchForScenario();
 
 			if (!AllFilesExists)
 			{
-				Error = "Scenario.lua not exist: " + FolderParentPath + FolderName + "/" + ScenarioFileName + ".lua";
+				Error = "Scenario.lua not exist: " + LoadedMapFolderPath + ScenarioFileName + ".lua";
 				Debug.LogError(Error);
 			}
 		}
-		string ScenarioText = System.IO.File.ReadAllText(FolderParentPath + FolderName + "/" + ScenarioFileName + ".lua");
+		string ScenarioText = System.IO.File.ReadAllText(LoadedMapFolderPath + ScenarioFileName + ".lua");
 		if (AllFilesExists && !ScenarioText.StartsWith("version = 3"))
 		{
 			AllFilesExists = SearchForScenario();
@@ -291,7 +302,7 @@ public class MapLuaParser : MonoBehaviour
 
 	bool SearchForScenario()
 	{
-		string[] AllFiles = System.IO.Directory.GetFiles(FolderParentPath + FolderName + "/");
+		string[] AllFiles = System.IO.Directory.GetFiles(LoadedMapFolderPath);
 		for (int i = 0; i < AllFiles.Length; i++)
 		{
 			if (AllFiles[i].ToLower().EndsWith(".lua"))
@@ -339,7 +350,7 @@ public class MapLuaParser : MonoBehaviour
 	public bool BackupFiles = true;
 	public void SaveMap(bool Backup = true)
 	{
-		if (!MapLuaParser.Current.MapLoaded())
+		if (!IsMapLoaded)
 			return;
 
 
@@ -389,7 +400,7 @@ public class MapLuaParser : MonoBehaviour
 		yield return null;
 
 		// Scenario.lua
-		string ScenarioFilePath = FolderParentPath + FolderName + "/" + ScenarioFileName + ".lua";
+		string ScenarioFilePath = LoadedMapFolderPath + ScenarioFileName + ".lua";
 		if (BackupFiles && System.IO.File.Exists(ScenarioFilePath))
 			System.IO.File.Move(ScenarioFilePath, BackupPath + "/" + ScenarioFileName + ".lua");
 		ScenarioLuaFile.Save(ScenarioFilePath);

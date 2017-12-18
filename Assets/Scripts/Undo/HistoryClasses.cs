@@ -17,11 +17,11 @@ namespace UndoHistory
 		public GameObject ArmyChange;
 		public GameObject AreasChange;
 		public GameObject AreaChange;
-		public GameObject SelectionChange;
-		public GameObject SelectionRange;
+		//public GameObject SelectionChange;
+		//public GameObject SelectionRange;
 		public GameObject MarkersRemove;
 		public GameObject MarkersMove;
-		public GameObject MarkersSelection;
+		//public GameObject MarkersSelection;
 		public GameObject MarkersChange;
 		public GameObject ChainChange;
 		public GameObject ChainMarkers;
