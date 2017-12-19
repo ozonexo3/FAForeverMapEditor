@@ -110,7 +110,7 @@ public class AppMenu : MonoBehaviour
 					Debug.Log("Args: " + Arguments);
 
 					System.Diagnostics.Process.Start(
-						"C:/Program Files (x86)/Steam/steamapps/common/Supreme Commander Forged Alliance/bin/SupremeCommander.exe", Arguments
+						EnvPaths.GetInstalationPath() + "bin/SupremeCommander.exe", Arguments
 						);
 				}
 				break;

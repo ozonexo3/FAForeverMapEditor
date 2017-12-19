@@ -137,15 +137,7 @@ public class ScmapEditor : MonoBehaviour
 		}
 		else
 		{
-			map.AdditionalSkyboxData.Data = new SkyboxData.SkyboxValues();
-			map.AdditionalSkyboxData.Data.BeginBytes = DefaultSkyboxData.BeginBytes;
-			map.AdditionalSkyboxData.Data.Albedo = DefaultSkyboxData.Albedo;
-			map.AdditionalSkyboxData.Data.Glow = DefaultSkyboxData.Glow;
-			map.AdditionalSkyboxData.Data.Length = DefaultSkyboxData.Length;
-			//map.AdditionalSkyboxData.Data.MidBytes = DefaultSkyboxData.MidBytes;
-			map.AdditionalSkyboxData.Data.MidBytesStatic = DefaultSkyboxData.MidBytesStatic;
-			map.AdditionalSkyboxData.Data.Clouds = DefaultSkyboxData.Clouds;
-			map.AdditionalSkyboxData.Data.EndBytes = DefaultSkyboxData.EndBytes;
+			map.AdditionalSkyboxData.Data = new SkyboxData.SkyboxValues(DefaultSkyboxData);
 
 		}
 
@@ -601,16 +593,9 @@ public class ScmapEditor : MonoBehaviour
 		}
 		else if(map.VersionMinor >= 60)
 		{
-			if (map.AdditionalSkyboxData.Data.BeginBytes.Length == 0)
+			if (map.AdditionalSkyboxData.Data.Position.x == 0)
 			{
-				map.AdditionalSkyboxData.Data.BeginBytes = DefaultSkyboxData.BeginBytes;
-				map.AdditionalSkyboxData.Data.Albedo = DefaultSkyboxData.Albedo;
-				map.AdditionalSkyboxData.Data.Glow = DefaultSkyboxData.Glow;
-				map.AdditionalSkyboxData.Data.Length = DefaultSkyboxData.Length;
-				//map.AdditionalSkyboxData.Data.MidBytes = DefaultSkyboxData.MidBytes;
-				map.AdditionalSkyboxData.Data.MidBytesStatic = DefaultSkyboxData.MidBytesStatic;
-				map.AdditionalSkyboxData.Data.Clouds = DefaultSkyboxData.Clouds;
-				map.AdditionalSkyboxData.Data.EndBytes = DefaultSkyboxData.EndBytes;
+				map.AdditionalSkyboxData.Data.CopyFrom(DefaultSkyboxData);
 			}
 			map.VersionMinor = 56;
 		}
