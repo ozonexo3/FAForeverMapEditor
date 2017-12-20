@@ -95,7 +95,9 @@ namespace EditMap
 				return;
 			}
 
-			string path = MapPath + Name.text;
+			string FolderName = Name.text.Replace(" ", "_") + ".v0001";
+
+			string path = MapPath + FolderName;
 			Debug.Log(path);
 			if (Directory.Exists(path))
 			{
@@ -107,8 +109,8 @@ namespace EditMap
 
 			ScmapEditor.Current.UnloadMap();
 
-			string FolderName = Name.text.Replace(" ", "_");
-			string FileName = FolderName.ToLower();
+			//string FolderName = Name.text.Replace(" ", "_");
+			string FileName = Name.text.Replace(" ", "_");
 
 			Debug.Log(FolderName);
 

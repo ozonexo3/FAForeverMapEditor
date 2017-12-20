@@ -1114,8 +1114,8 @@ namespace EditMap
 					if(ImportedImage.width != ScmapEditor.Current.map.TexturemapTex.width || ImportedImage.height != ScmapEditor.Current.map.TexturemapTex.height)
 					{
 						//ImportedImage.Resize(Map.map.TexturemapTex.width, Map.map.TexturemapTex.height);
-						TextureScale.Bilinear(ImportedImage, ScmapEditor.Current.map.TexturemapTex.width, ScmapEditor.Current.map.TexturemapTex.height);
-						ImportedImage.Apply(false);
+						ImportedImage = TextureScale.Bilinear(ImportedImage, ScmapEditor.Current.map.TexturemapTex.width, ScmapEditor.Current.map.TexturemapTex.height);
+						//ImportedImage.Apply(false);
 					}
 
 					ImportedImage = TextureFlip.FlipTextureVertical(ImportedImage, false);

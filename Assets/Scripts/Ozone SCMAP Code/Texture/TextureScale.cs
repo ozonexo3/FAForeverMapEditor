@@ -27,9 +27,24 @@ public class TextureScale
 		ThreadedScale (tex, newWidth, newHeight, false);
 	}
 
-	public static Texture2D Bilinear (Texture2D tex, int newWidth, int newHeight)
+	public static Texture2D Bilinear (Texture2D source, int targetWidth, int targetHeight)
 	{
-		return ThreadedScale (tex, newWidth, newHeight, true);
+		return ThreadedScale (source, targetWidth, targetHeight, true);
+		/*
+		Texture2D result = new Texture2D(targetWidth, targetHeight, source.format, false);
+		float incX = (1.0f / (float)targetWidth);
+		float incY = (1.0f / (float)targetHeight);
+		for (int i = 0; i < result.height; ++i)
+		{
+			for (int j = 0; j < result.width; ++j)
+			{
+				Color newColor = source.GetPixelBilinear((float)j / (float)result.width, (float)i / (float)result.height);
+				result.SetPixel(j, i, newColor);
+			}
+		}
+		result.Apply();
+		return result;
+		*/
 	}
 
 

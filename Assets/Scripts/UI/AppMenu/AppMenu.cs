@@ -107,11 +107,17 @@ public class AppMenu : MonoBehaviour
 					if (!FafEditorSettings.GetFogOfWar())
 						Arguments += " /nofog";
 
+					string GamePath = EnvPaths.GetInstalationPath() + "bin/SupremeCommander.exe";
+
+					if (!System.IO.File.Exists(GamePath))
+					{
+						Debug.LogError("Game executable not exist at given path: " + GamePath);
+						return;
+					}
+					Debug.Log("Start game: " + GamePath);
 					Debug.Log("Args: " + Arguments);
 
-					System.Diagnostics.Process.Start(
-						EnvPaths.GetInstalationPath() + "bin/SupremeCommander.exe", Arguments
-						);
+					System.Diagnostics.Process.Start(GamePath, Arguments);
 				}
 				break;
 		}
