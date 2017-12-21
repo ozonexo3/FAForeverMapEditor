@@ -19,6 +19,8 @@ Shader "MapEditor/FaWater" {
 		NormalSampler1 ("NormalSampler1", 2D) = "white" {}
 		NormalSampler2 ("NormalSampler2", 2D) = "white" {}
 		NormalSampler3 ("NormalSampler3", 2D) = "white" {}
+
+		_GridScale ("Grid Scale", Range (0, 2048)) = 512
 		//_WaterScaleX ("Water Scale X", float) = 1024
 		//_WaterScaleZ ("Water Scale Z", float) = 1024
 	}
@@ -71,8 +73,10 @@ Shader "MapEditor/FaWater" {
 		float SunGlow;
 
 	    fixed4 waterColor, sunColor;
-
-
+		half _GridScale;
+		
+		int _Area;
+		half4 _AreaRect;
 		
 		//*********** End Water Params
 		sampler2D _WaterGrabTexture;
@@ -96,6 +100,7 @@ Shader "MapEditor/FaWater" {
 			float4 mScreenPos	: 	TEXCOORD6;
 			float4 AddVar		: 	TEXCOORD7;
 			float4 grabUV;
+			float3 worldPos;
 		};
 
 		void vert (inout appdata_full v, out Input o){
@@ -258,6 +263,24 @@ Shader "MapEditor/FaWater" {
 
 			returnPixels.a = waterDepth;
 			clip(waterDepth - 0.01);
+
+
+			if(_Area > 0){
+				fixed3 BlackEmit = -1;
+				fixed3 Albedo = 0;
+				if(IN.worldPos.x < _AreaRect.x){
+					returnPixels.rgb = 0;
+				}
+				else if(IN.worldPos.x > _AreaRect.z){
+					returnPixels.rgb = 0;
+				}
+				else if(IN.worldPos.z < _AreaRect.y - _GridScale){
+					returnPixels.rgb = 0;
+				}
+				else if(IN.worldPos.z > _AreaRect.w - _GridScale){
+					returnPixels.rgb = 0;
+				}
+			}
 
 
 			o.Albedo = 0;

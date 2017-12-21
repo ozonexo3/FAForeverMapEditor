@@ -70,6 +70,20 @@ public partial class Decal {
 
 		bool _Hidden;
 
+		public void FixPaths()
+		{
+			if (!Tex1Path.StartsWith("/"))
+			{
+				Tex1Path = Tex1Path.Replace("env", "/env");
+			}
+
+			if (!Tex2Path.StartsWith("/"))
+			{
+				Tex2Path = Tex2Path.Replace("env", "/env");
+			}
+
+		}
+
 		public bool Hidden
 		{
 			get

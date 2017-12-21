@@ -15,12 +15,6 @@ Properties {
 	_DepthLevel ("Depth Level", float) = 0.078125
 	_AbyssLevel ("Abyss Level", float) = 0.078125
 	
-	[MaterialToggle] _Area("Area", Int) = 0
-	_AreaX ("Area X", Range (0, 2048)) = 0
-	_AreaY ("Area Y", Range (0, 2048)) = 0
-	_AreaWidht ("Area Widht", Range (0, 2048)) = 0
-	_AreaHeight ("Area Height", Range (0, 2048)) = 0
-
 	// set by terrain engine
 	_Control ("Control (RGBA)", 2D) = "black" {}
 	_ControlXP ("ControlXP (RGBA)", 2D) = "black" {}
@@ -174,11 +168,8 @@ Properties {
 			half _BrushUvX;
 			half _BrushUvY;
 
-			int _Area;
-			half _AreaX;
-			half _AreaY;
-			half _AreaWidht;
-			half _AreaHeight;
+			uniform int _Area;
+			uniform half4 _AreaRect;
 
 
 
@@ -399,19 +390,19 @@ Properties {
 				if(_Area > 0){
 					fixed3 BlackEmit = -1;
 					fixed3 Albedo = 0;
-					if(IN.worldPos.x < _AreaX){
+					if(IN.worldPos.x < _AreaRect.x){
 						o.Emission = BlackEmit;
 						o.Albedo = Albedo;
 					}
-					else if(IN.worldPos.x > _AreaWidht){
+					else if(IN.worldPos.x > _AreaRect.z){
 						o.Emission = BlackEmit;
 						o.Albedo = Albedo;
 					}
-					else if(IN.worldPos.z < _AreaY - _GridScale){
+					else if(IN.worldPos.z < _AreaRect.y - _GridScale){
 						o.Emission = BlackEmit;
 						o.Albedo = Albedo;
 					}
-					else if(IN.worldPos.z > _AreaHeight - _GridScale){
+					else if(IN.worldPos.z > _AreaRect.w - _GridScale){
 						o.Emission = BlackEmit;
 						o.Albedo = Albedo;
 					}

@@ -128,6 +128,7 @@ namespace OzoneDecals
 			_Dec.CutOffLOD = CutOffLOD;
 			_Dec.NearCutOffLOD = NearCutOffLOD;
 			_Dec.TexPathes = new string[2];
+			_Dec.Shared.FixPaths();
 			_Dec.TexPathes[0] = _Dec.Shared.Tex1Path;
 			_Dec.TexPathes[1] = _Dec.Shared.Tex2Path;
 			_Dec.Obj = this;

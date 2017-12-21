@@ -33,6 +33,7 @@ public class Map
 	public	GetGamedataFile.HeaderClass		WatermapHeader;
 
 	public Texture2D PreviewTex;
+	[HideInInspector]
 	public short[] HeightmapData = new short[0];
     public short HeightMin;
     public short HeightMax;
@@ -46,10 +47,13 @@ public class Map
 	public Texture2D NormalmapTex;
 	public Texture2D WatermapTex;
 	public Texture2D WaterDataTexture;
-    public byte[] WaterFoamMask = new byte[0];
-    public byte[] WaterFlatnessMask = new byte[0];
+	[HideInInspector]
+	public byte[] WaterFoamMask = new byte[0];
+	[HideInInspector]
+	public byte[] WaterFlatnessMask = new byte[0];
 
-    public byte[] WaterDepthBiasMask = new byte[0];
+	[HideInInspector]
+	public byte[] WaterDepthBiasMask = new byte[0];
     public int Width = 0;
     public int Height = 0;
 
@@ -742,8 +746,8 @@ public class Map
         fs.Dispose();
 
 		PreviewTextHeader = GetGamedataFile.GetDdsFormat(PreviewData);
-		PreviewTextHeader.Format = TextureFormat.RGBA32;
-		PreviewTex = TextureLoader.LoadTextureDXT(PreviewData, PreviewTextHeader);
+		PreviewTextHeader.Format = TextureFormat.BGRA32;
+		PreviewTex = TextureLoader.ConvertToRGBA(TextureLoader.LoadTextureDXT(PreviewData, PreviewTextHeader));
 
 		TextureMapHeader = GetGamedataFile.GetDdsFormat(TexturemapData);
 		TextureMapHeader.Format = TextureFormat.BGRA32;
@@ -926,14 +930,15 @@ public class Map
         _with2.Write(Unknown12);
         //? always 0
         _with2.Write(Unknown13);
-        //? always 0
+		//? always 0
 		//byte[] SaveData = new byte[0];
 
 		//SaveData = PreviewTex.GetRawTextureData();
 		//_with2.Write(SaveData.Length);
 		//_with2.Write(SaveData);
 		//Debug.Log(PreviewTex.GetRawTextureData().Length);
-		SaveTexture(_with2, PreviewTex, PreviewTextHeader);
+		TextureLoader.GetHeaderBGRA(PreviewTex, ref PreviewTextHeader);
+		SaveTexture(_with2, TextureLoader.ConvertToBGRA(PreviewTex), PreviewTextHeader);
 		//_with2.Write(PreviewImageLength);
 		//_with2.Write(PreviewData);
 		//Debug.Log( _with2.BaseStream.Length );
@@ -991,12 +996,12 @@ public class Map
         _with2.Write(FogStart);
         _with2.Write(FogEnd);
 
-        Water.Save(Stream);
+        Water.Save(_with2);
 
         _with2.Write(WaveGenerators.Count);
         for (int i = 0; i < WaveGenerators.Count; i++)
         {
-            WaveGenerators[i].Save(Stream);
+            WaveGenerators[i].Save(_with2);
         }
 
         if (VersionMinor < 56)
@@ -1006,9 +1011,9 @@ public class Map
             _with2.Write(6);
             for (int i = 0; i <= 4; i++)
             {
-                Layers[i].Save(Stream);
+                Layers[i].Save(_with2);
             }
-            Layers[Layers.Count - 1].Save(Stream);
+            Layers[Layers.Count - 1].Save(_with2);
         }
         else
         {
@@ -1055,11 +1060,11 @@ public class Map
 
             for (int i = 0; i < Layers.Count; i++)
             {
-                Layers[i].SaveAlbedo(Stream);
+                Layers[i].SaveAlbedo(_with2);
             }
             for (int i = 0; i < Layers.Count - 1; i++)
             {
-                Layers[i].SaveNormal(Stream);
+                Layers[i].SaveNormal(_with2);
             }
         }
 
@@ -1073,13 +1078,13 @@ public class Map
 		_with2.Write(Decals.Count);
         for (int i = 0; i < Decals.Count; i++)
         {
-            Decals[i].Save(Stream, i);
+            Decals[i].Save(_with2, i);
         }
 
         _with2.Write(DecalGroups.Count);
         for (int i = 0; i < DecalGroups.Count; i++)
         {
-            DecalGroups[i].Save(Stream);
+            DecalGroups[i].Save(_with2);
         }
 
         _with2.Write(Width);
@@ -1089,21 +1094,25 @@ public class Map
 
         _with2.Write(1);
 
-		SaveTexture(Stream, NormalmapTex, NormalmapHeader);
+		TextureLoader.GetHeaderDxt5(NormalmapTex, ref NormalmapHeader);
+		SaveTexture(_with2, NormalmapTex, NormalmapHeader);
         //Format.Dxt5
 
         if (VersionMinor < 56)
             _with2.Write(1);
 
-		SaveTexture(Stream, TextureLoader.ConvertToBGRA(TexturemapTex), TextureMapHeader);
+		TextureLoader.GetHeaderBGRA(TexturemapTex, ref TextureMapHeader);
+		SaveTexture(_with2, TextureLoader.ConvertToBGRA(TexturemapTex), TextureMapHeader);
 
         if (VersionMinor >= 56)
         {
-			SaveTexture(Stream, TextureLoader.ConvertToBGRA(TexturemapTex2), TextureMap2Header);
+			TextureLoader.GetHeaderBGRA(TexturemapTex2, ref TextureMap2Header);
+			SaveTexture(_with2, TextureLoader.ConvertToBGRA(TexturemapTex2), TextureMap2Header);
         }
 
         _with2.Write(1);
-		SaveTexture(Stream, WatermapTex, WatermapHeader);
+		TextureLoader.GetHeaderDxt5(WatermapTex, ref WatermapHeader);
+		SaveTexture(_with2, WatermapTex, WatermapHeader);
 
         _with2.Write(WaterFoamMask);
         _with2.Write(WaterFlatnessMask);
@@ -1123,7 +1132,7 @@ public class Map
         _with2.Write(Props.Count);
         for (int i = 0; i <= Props.Count - 1; i++)
         {
-            Props[i].Save(Stream);
+            Props[i].Save(_with2);
         }
 
         _with2.Close();

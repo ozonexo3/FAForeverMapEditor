@@ -64,7 +64,87 @@ public static class TextureLoader
 		Array.Copy(y, 0, x, oldLen, y.Length);
 		return x;
 	}
-		
+
+	public static void GetHeaderBGRA(Texture2D texture, ref GetGamedataFile.HeaderClass header)
+	{
+		header = new GetGamedataFile.HeaderClass();
+		header.Format = TextureFormat.BGRA32;
+		header.Magic = 542327876;
+		header.size = 124;
+		header.flags = 4103;
+		header.width = (uint)texture.width;
+		header.height = (uint)texture.height;
+
+		header.sizeorpitch = 0;
+		header.depth = 0;
+		header.mipmapcount = 0;
+		header.alphabitdepth = 0;
+		header.reserved0 = 0;
+		header.reserved1 = 0;
+		header.reserved2 = 0;
+		header.reserved3 = 0;
+		header.reserved4 = 0;
+		header.reserved5 = 0;
+		header.reserved6 = 0;
+		header.reserved7 = 0;
+		header.reserved8 = 0;
+		header.reserved9 = 0;
+
+
+		header.pixelformatSize = 32;
+		header.pixelformatflags = 65;
+		header.pixelformatFourcc = 0;
+		header.pixelformatRgbBitCount = 32;
+		header.pixelformatRbitMask = 16711680;
+		header.pixelformatGbitMask = 65280;
+		header.pixelformatBbitMask = 255;
+		header.pixelformatAbitMask = 4278190080;
+		header.caps1 = 4098;
+		header.caps2 = 0;
+		header.caps3 = 0;
+		header.caps4 = 0;
+	}
+
+	public static void GetHeaderDxt5(Texture2D texture, ref GetGamedataFile.HeaderClass header)
+	{
+		header = new GetGamedataFile.HeaderClass();
+		header.Format = TextureFormat.BGRA32;
+		header.Magic = 542327876;
+		header.size = 124;
+		header.flags = 4103;
+		header.width = (uint)texture.width;
+		header.height = (uint)texture.height;
+
+		header.sizeorpitch = 0;
+		header.depth = 0;
+		header.mipmapcount = 0;
+		header.alphabitdepth = 0;
+		header.reserved0 = 0;
+		header.reserved1 = 0;
+		header.reserved2 = 0;
+		header.reserved3 = 0;
+		header.reserved4 = 0;
+		header.reserved5 = 0;
+		header.reserved6 = 0;
+		header.reserved7 = 0;
+		header.reserved8 = 0;
+		header.reserved9 = 0;
+
+
+		header.pixelformatSize = 32;
+		header.pixelformatflags = 4;
+		header.pixelformatFourcc = 894720068;
+		header.pixelformatRgbBitCount = 0;
+		header.pixelformatRbitMask = 0;
+		header.pixelformatGbitMask = 0;
+		header.pixelformatBbitMask = 0;
+		header.pixelformatAbitMask = 0;
+		header.caps1 = 4098;
+		header.caps2 = 0;
+		header.caps3 = 0;
+		header.caps4 = 0;
+	}
+
 	const uint dwReserved2 = 0;
 	public static byte[] SaveTextureDDS(Texture2D texture, GetGamedataFile.HeaderClass header)
 	{

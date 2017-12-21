@@ -535,20 +535,29 @@ public class MapLuaParser : MonoBehaviour
 
 			if (bigestAreaRect.width > 0 && bigestAreaRect.height > 0)
 			{
+				Shader.SetGlobalInt("_Area", 1);
+				Shader.SetGlobalVector("_AreaRect", new Vector4(bigestAreaRect.x / 10f, bigestAreaRect.y / 10f, bigestAreaRect.width / 10f, bigestAreaRect.height / 10f));
+
+				/*
 				HeightmapControler.TerrainMaterial.SetInt("_Area", 1);
 				HeightmapControler.TerrainMaterial.SetFloat("_AreaX", bigestAreaRect.x / 10f);
 				HeightmapControler.TerrainMaterial.SetFloat("_AreaY", bigestAreaRect.y / 10f);
 				HeightmapControler.TerrainMaterial.SetFloat("_AreaWidht", bigestAreaRect.width / 10f);
 				HeightmapControler.TerrainMaterial.SetFloat("_AreaHeight", bigestAreaRect.height / 10f);
+				*/
 			}
 			else
 			{
-				HeightmapControler.TerrainMaterial.SetInt("_Area", 0);
+				//HeightmapControler.TerrainMaterial.SetInt("_Area", 0);
+				Shader.SetGlobalInt("_Area", 0);
 			}
 
 		}
 		else
-			HeightmapControler.TerrainMaterial.SetInt("_Area", 0);
+		{
+			Shader.SetGlobalInt("_Area", 0);
+			//HeightmapControler.TerrainMaterial.SetInt("_Area", 0);
+		}
 	}
 	#endregion
 

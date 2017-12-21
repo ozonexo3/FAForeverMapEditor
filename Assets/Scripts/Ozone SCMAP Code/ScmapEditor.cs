@@ -24,6 +24,8 @@ public class ScmapEditor : MonoBehaviour
 	public Material WaterMaterial;
 	public PostProcessingProfile PostProcessing;
 	public BloomOptimized BloomOpt;
+	public BloomOptimized BloomOptPreview;
+	public PreviewTex PreviewRenderer;
 
 	[Header("Loaded variables")]
 	public TerrainTexture[] Textures; // Loaded textures
@@ -82,6 +84,7 @@ public class ScmapEditor : MonoBehaviour
 		PostProcessing.bloom.settings = Bs;
 
 		BloomOpt.intensity = map.Bloom;
+		BloomOptPreview.intensity = map.Bloom;
 
 		RenderSettings.fogColor = new Color(map.FogColor.x, map.FogColor.y, map.FogColor.z, 1);
 		RenderSettings.fogStartDistance = map.FogStart * 2;
@@ -208,7 +211,7 @@ public class ScmapEditor : MonoBehaviour
 		WaterLevel.transform.localScale = new Vector3(HalfxRes, 1, HalfzRes);
 		TerrainMaterial.SetFloat("_GridScale", HalfxRes);
 		TerrainMaterial.SetTexture("_UtilitySamplerC", map.UncompressedWatermapTex);
-
+		WaterMaterial.SetFloat("_GridScale", HalfxRes);
 
 
 
@@ -628,6 +631,9 @@ public class ScmapEditor : MonoBehaviour
 		map.NormalmapTex.Apply();
 		map.NormalmapTex.Compress(true);
 		map.NormalmapTex.Apply();
+
+		map.PreviewTex = PreviewRenderer.RenderPreview();
+
 
 
 		for (int i = 0; i < map.Layers.Count; i++)
