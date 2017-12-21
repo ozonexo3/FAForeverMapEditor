@@ -6,6 +6,7 @@ public class PreviewTex : MonoBehaviour {
 
 	public Camera Cam;
 	public RenderTexture RT;
+	public Color Empty;
 	
 	public Texture2D RenderPreview(float HeightOffset = 0) {
 
@@ -18,16 +19,25 @@ public class PreviewTex : MonoBehaviour {
 		CamPos.y = distance + HeightOffset;
 		transform.position = CamPos;
 
+		
+
+		RenderTexture currentActiveRT = RenderTexture.active;
+		RenderTexture.active = Cam.targetTexture;
+
 		float LastLodBias = QualitySettings.lodBias;
 		QualitySettings.lodBias = 100000;
 		Cam.Render();
 		QualitySettings.lodBias = LastLodBias;
 
-		RenderTexture currentActiveRT = RenderTexture.active;
-
-		RenderTexture.active = Cam.targetTexture;
-
 		Texture2D PreviewRender = new Texture2D(256, 256, TextureFormat.RGBA32, false);
+
+		Color[] Colors = new Color[256 * 256];
+		for(int i = 0; i < Colors.Length; i++)
+		{
+			Colors[i] = Empty;
+		}
+		PreviewRender.SetPixels(Colors);
+		PreviewRender.Apply();
 		PreviewRender.ReadPixels(new Rect(0, 0, PreviewRender.width, PreviewRender.height), 0, 0, false);
 		PreviewRender.Apply();
 

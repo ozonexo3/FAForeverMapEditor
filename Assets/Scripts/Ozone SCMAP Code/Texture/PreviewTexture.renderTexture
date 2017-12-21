@@ -14,7 +14,7 @@ RenderTexture:
   m_Width: 256
   m_Height: 256
   m_AntiAliasing: 1
-  m_DepthFormat: 1
+  m_DepthFormat: 2
   m_ColorFormat: 0
   m_MipMap: 0
   m_GenerateMips: 1
@@ -23,7 +23,7 @@ RenderTexture:
   m_BindMS: 0
   m_TextureSettings:
     serializedVersion: 2
-    m_FilterMode: 0
+    m_FilterMode: 1
     m_Aniso: 0
     m_MipBias: 0
     m_WrapU: 1
