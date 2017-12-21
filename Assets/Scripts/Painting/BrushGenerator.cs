@@ -533,7 +533,7 @@ public class BrushGenerator : MonoBehaviour
 	{
 		Texture2D rotImage = new Texture2D(tex.width, tex.height, tex.format, false);
 		rotImage.wrapMode = TextureWrapMode.Clamp;
-		PixelsStorage = rotImage.GetPixels();
+		PixelsStorage = tex.GetPixels();
 
 		int width = tex.width;
 		int height = tex.height;
