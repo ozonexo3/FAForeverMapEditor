@@ -231,7 +231,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
-    - _AbyssLevel: 0.3
+    - _AbyssLevel: 5.1709313
     - _Area: 1
     - _AreaHeight: 128
     - _AreaWidht: 204.8
@@ -242,7 +242,7 @@ Material:
     - _BrushUvX: 0.85578656
     - _BrushUvY: 0.053629737
     - _DeepLevel: 1.675625
-    - _DepthLevel: 2
+    - _DepthLevel: 6.31
     - _GeneratingNormal: 0
     - _Grid: 0
     - _GridCamDist: 0.049673967
@@ -257,18 +257,18 @@ Material:
     - _HideSplat7: 0
     - _HideSplat8: 0
     - _LightingMultiplier: 1.27
-    - _LowerScale: 128
-    - _LowerScaleNormal: 58.514286
+    - _LowerScale: 70.62069
+    - _LowerScaleNormal: 97.52381
     - _Shininess: 0.03
     - _Slope: 0
     - _Splat0Scale: 128
-    - _Splat0ScaleNormal: 128
-    - _Splat1Scale: 128
-    - _Splat1ScaleNormal: 128
+    - _Splat0ScaleNormal: 58.514286
+    - _Splat1Scale: 512
+    - _Splat1ScaleNormal: 21.557896
     - _Splat2Scale: 128
-    - _Splat2ScaleNormal: 128
-    - _Splat3Scale: 128
-    - _Splat3ScaleNormal: 128
+    - _Splat2ScaleNormal: 32
+    - _Splat3Scale: 64
+    - _Splat3ScaleNormal: 97.52381
     - _Splat4Scale: 128
     - _Splat4ScaleNormal: 128
     - _Splat5Scale: 128
@@ -282,7 +282,7 @@ Material:
     - _UpperScaleNormal: 512
     - _UseSlopeTex: 1
     - _Water: 1
-    - _WaterLevel: 2.8
+    - _WaterLevel: 6.31
     - _WaterScaleX: 1024
     - _WaterScaleZ: 1024
     m_Colors:
