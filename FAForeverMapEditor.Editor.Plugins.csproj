@@ -317,11 +317,15 @@
   <ItemGroup>
     <None Include="Assets\GFX\Fonts\Lato\OFL.txt" />
     <None Include="Assets\GFX\Fonts\Roboto\LICENSE.txt" />
-    <None Include="Assets\GFX\Shaders\Backup\FaTerrainShader 1.shader" />
+    <None Include="Assets\GFX\Shaders\Backup\FaTerrainShaderOld.shader" />
     <None Include="Assets\GFX\Shaders\Backup\FaTerrainShader_UI.shader" />
     <None Include="Assets\GFX\Shaders\Backup\FaWater 1.shader" />
     <None Include="Assets\GFX\Shaders\Backup\FaWater 2.shader" />
     <None Include="Assets\GFX\Shaders\DecalShader.shader" />
+    <None Include="Assets\GFX\Shaders\Deferred\Internal-DeferredShading.shader" />
+    <None Include="Assets\GFX\Shaders\Deferred\UnityDeprecatedEX.cginc" />
+    <None Include="Assets\GFX\Shaders\Deferred\UnityPBSLighting.cginc" />
+    <None Include="Assets\GFX\Shaders\Deferred\UnityStandardBRDFCustom.cginc" />
     <None Include="Assets\GFX\Shaders\FaTerrainShader.shader" />
     <None Include="Assets\GFX\Shaders\FaWater.shader" />
     <None Include="Assets\GFX\Shaders\MarkerShader.shader" />
@@ -374,10 +378,6 @@
     <None Include="Assets\PostProcessing\Resources\Shaders\Uber.shader" />
     <None Include="Assets\PostProcessing\Resources\Shaders\UberSecondPass.cginc" />
     <None Include="Assets\PostProcessing\Utilities\CustomMotionTexture\Shaders\CustomMotionVectorTexture.shader" />
-    <None Include="Assets\Resources\Internal-DeferredShading.shader" />
-    <None Include="Assets\Resources\UnityDeprecatedEX.cginc" />
-    <None Include="Assets\Resources\UnityPBSLighting.cginc" />
-    <None Include="Assets\Resources\UnityStandardBRDFCustom.cginc" />
     <None Include="Assets\Scripts\GFX\OzoneDecals\Shader\DecalsCommon.cginc" />
     <None Include="Assets\Scripts\GFX\OzoneDecals\Shader\OzoneDeferredDecal.shader" />
     <None Include="Assets\Scripts\GFX\OzoneGlow\OzoneGlow.shader" />

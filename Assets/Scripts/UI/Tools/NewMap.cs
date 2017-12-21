@@ -36,7 +36,7 @@ namespace EditMap
 			MapType.value = 0;
 			Width.value = 3;
 			Height.value = 3;
-			InitialHeight.SetValue(64);
+			InitialHeight.SetValue(16);
 		}
 
 		public void ToggleWater()

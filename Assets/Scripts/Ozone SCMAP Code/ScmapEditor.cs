@@ -84,7 +84,7 @@ public class ScmapEditor : MonoBehaviour
 		PostProcessing.bloom.settings = Bs;
 
 		BloomOpt.intensity = map.Bloom;
-		BloomOptPreview.intensity = map.Bloom;
+		BloomOptPreview.intensity = map.Bloom * 2;
 
 		RenderSettings.fogColor = new Color(map.FogColor.x, map.FogColor.y, map.FogColor.z, 1);
 		RenderSettings.fogStartDistance = map.FogStart * 2;
@@ -575,23 +575,50 @@ public class ScmapEditor : MonoBehaviour
 	#region Saving
 	public void SaveScmapFile()
 	{
+		float LowestElevation = 128;
+		float HighestElevation = 0;
+
 		if (Teren)
 		{
 			heights = Teren.terrainData.GetHeights(0, 0, Teren.terrainData.heightmapWidth, Teren.terrainData.heightmapHeight);
 
 			float HeightResize = 512 * 40;
-			for (int y = 0; y < map.Width + 1; y++)
+			int y = 0;
+			int x = 0;
+			for (y = 0; y < map.Width + 1; y++)
 			{
-				for (int x = 0; x < map.Height + 1; x++)
+				for (x = 0; x < map.Height + 1; x++)
 				{
-					map.SetHeight(y, map.Height - x, (short)(heights[x, y] * HeightResize));
+					float Height = heights[x, y];
+
+					LowestElevation = Mathf.Min(LowestElevation, Height);
+					HighestElevation = Mathf.Max(HighestElevation, Height);
+
+					map.SetHeight(y, map.Height - x, (short)(Height * HeightResize));
 				}
 			}
 		}
 
+		LowestElevation = (LowestElevation * 16) / 0.1f;
+		if (map.Water.HasWater)
+			LowestElevation = Mathf.Max(LowestElevation, map.Water.Elevation);
+
+		HighestElevation = (HighestElevation * 16) / 0.1f;
+
 		if (MapLuaParser.Current.EditMenu.MapInfoMenu.SaveAsFa.isOn)
 		{
+			if(map.AdditionalSkyboxData.Data.Position.x == 0)
+			{
+				map.AdditionalSkyboxData.Data.CopyFrom(DefaultSkyboxData);
+			}
+
 			map.VersionMinor = 60;
+
+			map.AdditionalSkyboxData.Data.Position = WorldPosToScmap(MapLuaParser.Current.MapCenterPoint);
+			
+
+			map.AdditionalSkyboxData.Data.Position.y = Mathf.Clamp(LowestElevation - 1, 0, 128);
+			map.AdditionalSkyboxData.Data.Scale.y = Mathf.Max(map.Width, map.Height) * 2.288245f;
 
 		}
 		else if(map.VersionMinor >= 60)
@@ -632,8 +659,7 @@ public class ScmapEditor : MonoBehaviour
 		map.NormalmapTex.Compress(true);
 		map.NormalmapTex.Apply();
 
-		map.PreviewTex = PreviewRenderer.RenderPreview();
-
+		map.PreviewTex = PreviewRenderer.RenderPreview(((LowestElevation + HighestElevation) / 2) * 0.1f);
 
 
 		for (int i = 0; i < map.Layers.Count; i++)
