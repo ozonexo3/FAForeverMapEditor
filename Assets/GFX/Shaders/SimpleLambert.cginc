@@ -1,7 +1,8 @@
-﻿			uniform half _LightingMultiplier;
-			uniform fixed4 _SunColor;
-			uniform fixed4 _SunAmbience;
-			uniform fixed4 _ShadowColor;
+﻿uniform half _LightingMultiplier;
+uniform fixed4 _SunColor;
+uniform fixed4 _SunAmbience;
+uniform fixed4 _ShadowColor;
+uniform half _SpecularAmmount;
 
 /*
 float4 LightingSimpleLambertLight  (SurfaceOutput s, float3 lightDir, half atten) {
@@ -27,9 +28,12 @@ inline float4 LightingSimpleLambertLight  (SurfaceOutput s, UnityLight light)
 	fixed diff = max (0, dot (s.Normal, light.dir));
 						 
 	float4 c;
+	float R = light.dir - 2.0f * NdotL * s.Normal;
+	float3 viewDirection = light.dir;
+	float specular = pow(saturate(dot(R, viewDirection)), 80);// * specAmount;
 	float3 spec = float3(0,0,0);
 
-	float3 lighting = light.color * saturate(NdotL);
+	float3 lighting = light.color * saturate(NdotL) + specular;
 	lighting = _LightingMultiplier * lighting + _ShadowColor.rgb * 2 * (1 - lighting);
 
 
@@ -65,7 +69,7 @@ inline half4 LightingSimpleLambert_Deferred (SurfaceOutput s, UnityGI gi, out ha
 	data.diffuseColor   = s.Albedo;
 	data.occlusion      = 1;
 	data.specularColor  = 0;
-	data.smoothness     = 0;
+	data.smoothness     = s.Gloss;
 	data.normalWorld    = s.Normal;
 
 	UnityStandardDataToGbuffer(data, outGBuffer0, outGBuffer1, outGBuffer2);

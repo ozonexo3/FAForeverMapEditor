@@ -5,3 +5,6 @@ function OnPopulate()
     ScenarioUtils.InitializeArmies()
     ScenarioFramework.SetPlayableArea('AREA_1' , false)
 end
+
+function OnStart(scenario)
+end

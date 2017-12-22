@@ -34,15 +34,15 @@ public class AppMenu : MonoBehaviour
 			}
 			if (Input.GetMouseButtonUp(0))
 			{
-					foreach (GameObject obj in Popups)
-					{
-						obj.SetActive(false);
-					}
-					foreach (Button but in Buttons)
-					{
-						but.interactable = true;
-					}
-					MenuOpen = false;
+				foreach (GameObject obj in Popups)
+				{
+					obj.SetActive(false);
+				}
+				foreach (Button but in Buttons)
+				{
+					but.interactable = true;
+				}
+				MenuOpen = false;
 			}
 		}
 	}
@@ -111,8 +111,17 @@ public class AppMenu : MonoBehaviour
 
 					if (!System.IO.File.Exists(GamePath))
 					{
-						Debug.LogError("Game executable not exist at given path: " + GamePath);
-						return;
+						string OtherPath = EnvPaths.GetInstalationPath() + "bin/ForgedAlliance.exe";
+						if (System.IO.File.Exists(OtherPath))
+						{
+							GamePath = OtherPath;
+						}
+						else
+						{
+
+							Debug.LogError("Game executable not exist at given path: " + EnvPaths.GetInstalationPath() + "bin/");
+							return;
+						}
 					}
 					Debug.Log("Start game: " + GamePath);
 					Debug.Log("Args: " + Arguments);
@@ -231,7 +240,7 @@ public class AppMenu : MonoBehaviour
 		*/
 
 		//if (FileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-		if(paths.Length > 0 && !string.IsNullOrEmpty(paths[0]))
+		if (paths.Length > 0 && !string.IsNullOrEmpty(paths[0]))
 		{
 			string[] PathSeparation = paths[0].Replace("\\", "/").Replace(".lua", "").Split("/".ToCharArray());
 
@@ -278,7 +287,7 @@ public class AppMenu : MonoBehaviour
 
 	public void OpenRecentMapYes()
 	{
-		if(!MapLuaParser.SavingMapProcess)
+		if (!MapLuaParser.SavingMapProcess)
 			StartCoroutine(OpenRecentMapSave());
 	}
 
@@ -312,7 +321,7 @@ public class AppMenu : MonoBehaviour
 
 	public void OpenNewMap()
 	{
-		if(MapLuaParser.IsMapLoaded)
+		if (MapLuaParser.IsMapLoaded)
 			GenericPopup.ShowPopup(GenericPopup.PopupTypes.TriButton, "Save map", "Save current map before creating new map?", "Yes", OpenNewMapYes, "No", OpenNewMapNo, "Cancel", OpenNewMapCancel);
 		else
 			NewMapWindow.SetActive(true);
@@ -346,7 +355,7 @@ public class AppMenu : MonoBehaviour
 		NewMapWindow.SetActive(false);
 
 	}
-#endregion
+	#endregion
 
 
 

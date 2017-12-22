@@ -95,6 +95,8 @@ public class ScmapEditor : MonoBehaviour
 		Shader.SetGlobalColor("_SunAmbience", new Color(map.SunAmbience.x * 0.5f, map.SunAmbience.y * 0.5f, map.SunAmbience.z * 0.5f, 1));
 		Shader.SetGlobalColor("_ShadowColor", new Color(map.ShadowFillColor.x * 0.5f, map.ShadowFillColor.y * 0.5f, map.ShadowFillColor.z * 0.5f, 1));
 
+
+		Shader.SetGlobalColor("_SpecularColor", new Color(map.SpecularColor.x * 0.5f, map.SpecularColor.y * 0.5f, map.SpecularColor.z * 0.5f, map.SpecularColor.w * 0.5f));
 	}
 
 	public IEnumerator LoadScmapFile()

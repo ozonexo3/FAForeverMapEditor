@@ -109,7 +109,7 @@ Shader "Ozone/Deferred Decal"
 
 				//outEmission.rgb = color.rgb * tex2D(_Glow, texUV).rgb * (blend * 5 * RawAlpha);
 				//outEmission.a = RawAlpha;
-				outGlow = float4(1,0,0,RawAlpha);
+				outGlow = float4(RawAlpha,0,0,0);
 			}
 			ENDCG
 		}
@@ -138,7 +138,7 @@ Shader "Ozone/Deferred Decal"
 				//clip(dot(gbuffer_normal, i.decalNormal) - _AngleLimit); // 60 degree clamp
 
 				float3 decalBitangent;
-				if (_NormalBlendMode == 1)
+				if (_NormalBlendMode == 0)
 				{
 					// Reorient decal
 					i.decalNormal = gbuffer_normal;
@@ -162,15 +162,15 @@ Shader "Ozone/Deferred Decal"
 				//normal.y = sqrt(1 - dot(normal.xz,normal.xz)) ;
 
 				
+				float4 NormalRaw = tex2D(_NormalTex, texUV);
+				normal = UnpackNormalDXT5nm(NormalRaw);
 
-				normal = UnpackNormalDXT5nm(tex2D(_NormalTex, texUV));
-
-				float AlphaNormal = saturate((1 - normal.z));
-
+				//float AlphaNormal = saturate((1 - normal.z) * 1) * NormalRaw.r;
+				float AlphaNormal =  NormalRaw.r;
 
 				//normal.z *= 1;
 				//normal.z = saturate(normal.z - 0.9);
-				normal.z = 1 - blend;
+				//normal.z = 1 - blend;
 				normal.xy *= blend;
 
 				normal = normalize(normal);
@@ -192,7 +192,7 @@ Shader "Ozone/Deferred Decal"
 
 
 				// Write normal
-				outNormal = float4(normal * 0.5 + 0.5, saturate(pow(AlphaNormal, 0.6)) * blend);
+				outNormal = float4(normal * 0.5 + 0.5, saturate(AlphaNormal * blend));
 			}
 			ENDCG
 		}

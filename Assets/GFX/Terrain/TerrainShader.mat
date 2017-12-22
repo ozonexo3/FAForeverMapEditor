@@ -238,7 +238,7 @@ Material:
     - _AreaX: 0
     - _AreaY: 76.8
     - _Brush: 0
-    - _BrushSize: 66
+    - _BrushSize: 0
     - _BrushUvX: 0.4189645
     - _BrushUvY: 0.6879845
     - _DeepLevel: 1.675625
@@ -277,7 +277,7 @@ Material:
     - _Splat6ScaleNormal: 64
     - _Splat7Scale: 64
     - _Splat7ScaleNormal: 64
-    - _TTerrainXP: 0
+    - _TTerrainXP: 1
     - _UpperScale: 2
     - _UpperScaleNormal: 256
     - _UseSlopeTex: 1

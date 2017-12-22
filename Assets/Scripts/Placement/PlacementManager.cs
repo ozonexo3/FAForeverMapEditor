@@ -257,7 +257,8 @@ public class PlacementManager : MonoBehaviour {
 				SymmetryMatrix[1] = Matrix4x4.TRS(Vector3.zero, Quaternion.identity, new Vector3(1, 1, -1));
 
 				SymmetryMatrix[2] = new Matrix4x4();
-				SymmetryMatrix[2] = Matrix4x4.TRS(Vector3.zero, Quaternion.identity, new Vector3(-1, 1, -1));
+				SymmetryMatrix[2] = SymmetryMatrix[0] * SymmetryMatrix[1];
+				//SymmetryMatrix[2] = Matrix4x4.TRS(Vector3.zero, Quaternion.identity, new Vector3(-1, 1, -1));
 				break;
 			case 5:// Diagonal1
 				SymmetryMatrix = new Matrix4x4[1];
@@ -268,11 +269,12 @@ public class PlacementManager : MonoBehaviour {
 				SymmetryMatrix[0] = Matrix4x4.TRS(Vector3.zero, Quaternion.Euler(Vector3.down * 90), new Vector3(-1, 1, 1));
 				break;
 			case 7: // Diagonal 3
-				SymmetryMatrix = new Matrix4x4[2];
+				SymmetryMatrix = new Matrix4x4[3];
 				SymmetryMatrix[0] = Matrix4x4.TRS(Vector3.zero, Quaternion.Euler(Vector3.up * 90), new Vector3(-1, 1, 1));
 
 				SymmetryMatrix[1] = Matrix4x4.TRS(Vector3.zero, Quaternion.Euler(Vector3.down * 90), new Vector3(-1, 1, 1));
 
+				SymmetryMatrix[2] = SymmetryMatrix[0] * SymmetryMatrix[1];
 				break;
 			case 8: // Rotation
 				int RotCount = PlayerPrefs.GetInt("SymmetryAngleCount", 2) - 1;

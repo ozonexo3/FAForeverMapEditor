@@ -340,7 +340,7 @@ namespace Selection
 					GenerateSymmetrySelectionRing(SymetrySelection[0]);
 					break;
 				case 7: // Diagonal 3
-					SymetrySelection = new SelectedObjects[2];
+					SymetrySelection = new SelectedObjects[3];
 					SymetrySelection[0] = new SelectedObjects();
 					SymetrySelection[0].SymmetryMatrix = Matrix4x4.TRS(Vector3.zero, Quaternion.Euler(Vector3.up * 90), new Vector3(-1, 1, 1));
 					SymetrySelection[0].InverseRotation = true;
@@ -352,6 +352,12 @@ namespace Selection
 					SymetrySelection[1].InverseRotation = true;
 					SymetrySelection[1].LoadSymetryIds();
 					GenerateSymmetrySelectionRing(SymetrySelection[1]);
+
+					SymetrySelection[2] = new SelectedObjects();
+					SymetrySelection[2].SymmetryMatrix = SymetrySelection[0].SymmetryMatrix * SymetrySelection[1].SymmetryMatrix;
+					SymetrySelection[2].InverseRotation = false;
+					SymetrySelection[2].LoadSymetryIds();
+					GenerateSymmetrySelectionRing(SymetrySelection[2]);
 
 					break;
 				case 8: // Rotation

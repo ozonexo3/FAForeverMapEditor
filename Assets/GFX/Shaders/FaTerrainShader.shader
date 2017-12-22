@@ -412,9 +412,9 @@ Properties {
 				//o.Emission = tex2D (_SplatNormal3, UV * 10 );
 				//o.Emission = nrm;
 
-				o.Gloss = 0;
-				o.Specular = 0;
-				o.Alpha = 1;
+				o.Gloss = (1 - col.a) + 0.01;
+				o.Specular = col.a + 0.01;
+				o.Alpha = col.a;
 			}
 			ENDCG  
 

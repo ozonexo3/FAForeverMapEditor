@@ -45,6 +45,7 @@ uniform half _LightingMultiplier;
 uniform fixed4 _SunColor;
 uniform fixed4 _SunAmbience;
 uniform fixed4 _ShadowColor;
+uniform fixed4 _SpecularColor;
 
 half4 CalculateLight (unity_v2f_deferred i)
 {
@@ -86,7 +87,10 @@ half4 CalculateLight (unity_v2f_deferred i)
 
 	float NdotL = dot (light.dir, data.normalWorld);
 
-	 float3 lighting =  (_SunColor.rgb * 2) * saturate(NdotL) * atten + (_SunAmbience.rgb * 2);
+	float3 R = light.dir - 2.0f * NdotL * data.normalWorld;
+	float specular = pow( saturate( dot(R, eyeVec) ), 8) * (_SpecularColor.r * 2) * gbuffer1.a * 2;
+
+	 float3 lighting =  (_SunColor.rgb * 2) * saturate(NdotL) * atten + (_SunAmbience.rgb * 2) + specular;
 		lighting = _LightingMultiplier * lighting + (_ShadowColor.rgb * 2) * (1 - lighting);
 		c.rgb = (data.diffuseColor + spec) * lighting;
 		c.a = 1;
