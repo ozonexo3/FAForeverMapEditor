@@ -6,73 +6,67 @@
 //********************************
 
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using System.IO;
 
 [System.Serializable]
 public class SkyboxData
 {
-
-	//TODO find what are these values are!
-	/*
-	public short[] BeginValues = new short[32];
-	public Vector3[] beginvectors;
-	public float[] BeginFloats;
-	public int[] BeginInts;
-	public Color[] BeginColors;
-	*/
-
 	public SkyboxValues Data;
 
+	#region SkyboxData
 	[System.Serializable]
 	public class SkyboxValues
 	{
-		[Header("Begin")]
+		[Header("Sky dome")]
 		public Vector3 Position = new Vector3(256, 0, 256);
-		public Vector3 Scale = new Vector3(-35.45f, 1171.581f, 1256637); // X - Unknown, Y - Scale of sky dome, Z - Always 1.256637
+		public float Scale = 2343;
+		public float SubtractHeight = 1.256637f;
+		//public Vector3 Scale = new Vector3(-35.45f, 1171.581f, 1.256637f); // X - horizonBegin, Y - Scale of sky dome, Z - subtract from vertex position.y
 		public int SubdivisionsAxis = 16;
 		public int SubdivisionsHeight = 6;
-		public float Value3 = 174.5082f; // Unknown
+
+		[Header("Horizon")]
+		public float HorizonHeight = 0;
+		public float ZenithHeight = 174.5082f; // horizonEnd
 		[ColorUsage(false, true, 0, 2, 0, 2)]
-		public Color HorizoColor = new Color(0,0,0,0);
+		public Color HorizonColor = new Color(0, 0, 0, 0);
 		[ColorUsage(false, true, 0, 2, 0, 2)]
 		public Color ZenithColor = new Color(0, 0, 0, 0);
-		public float Value6 = 0.1f; // Always 0.1
 
-		[Header("Planet atlas")]
+		[Header("Decals atlas")]
+		public float DecalGlowMultiplier = 0.1f; // Always 0.1
 		public string Albedo = "/textures/environment/Decal_test_Albedo001.dds";
 		public string Glow = "/textures/environment/Decal_test_Glow001.dds";
-
-		[Header("Planet array")]
 		public Planet[] Planets = new Planet[0];
 
-		[Header("Some more data?")]
+		[Header("Cumulus?")]
 		public Color32 MidRgbColor; // 3 bytes, always 0 == black?
-		public float Mid0 = 1.8f;
-		public float Mid1 = 0.97f;
-		public float Mid2 = 0.97f;
-		public float Mid3 = 0.97f;
 
-		[Header("Clouds")]
-		public string Clouds = "/textures/environment/cirrus000.dds";
 
-		[Header("Clouds animation")]
-		public int CloudsInt = 4; // Always 4
-		public Vector3 Clouds1;
-		public Vector3 Clouds2;
-		public Vector3 Clouds3;
-		public Vector3 Clouds4;
-		public Vector3 Clouds5;
-		public Vector3 Clouds6;
-		public Vector3 Clouds7;
+		[Header("Cirrus")]
+		public float CirrusMultiplier = 1.8f;
+		[ColorUsage(false, true, 0, 2, 0, 2)]
+		public Color CirrusColor = Color.white;
+		public string CirrusTexture = "/textures/environment/cirrus000.dds";
+		public Cirrus[] CirrusLayers;
+
+		public float Clouds7; // Always 0
 
 		[System.Serializable]
 		public struct Planet
 		{
 			public Vector3 Position;
-			public Vector3 Scale;
+			public float Rotation; // Used in shader to rotate vertexes around center
+			public Vector2 Scale;
 			public Vector4 Uv;
+		}
+
+		[System.Serializable]
+		public struct Cirrus
+		{
+			public Vector2 frequency;
+			public float Speed;
+			public Vector2 Direction;
 		}
 
 		public SkyboxValues()
@@ -83,136 +77,148 @@ public class SkyboxData
 		public SkyboxValues(SkyboxValues from)
 		{
 			CopyFrom(from);
-			
+
 		}
 
 		public void CopyFrom(SkyboxValues from)
 		{
 			Position = from.Position;
 			Scale = from.Scale;
+			SubtractHeight = from.SubtractHeight;
 			SubdivisionsAxis = from.SubdivisionsAxis;
 			SubdivisionsHeight = from.SubdivisionsHeight;
-			Value3 = from.Value3;
-			HorizoColor = from.HorizoColor;
+
+			HorizonHeight = from.HorizonHeight;
+			ZenithHeight = from.ZenithHeight;
+			HorizonColor = from.HorizonColor;
 			ZenithColor = from.ZenithColor;
-			Value6 = from.Value6;
+			DecalGlowMultiplier = from.DecalGlowMultiplier;
 
 			Albedo = from.Albedo;
 			Glow = from.Glow;
 
 			Planets = new Planet[from.Planets.Length];
-			for(int i = 0; i < from.Planets.Length; i++)
+			for (int i = 0; i < from.Planets.Length; i++)
 			{
 				Planets[i] = from.Planets[i];
 			}
 
-			Clouds = from.Clouds;
+			CirrusMultiplier = from.CirrusMultiplier;
+			CirrusColor = from.CirrusColor;
 
-			CloudsInt = from.CloudsInt;
+			CirrusTexture = from.CirrusTexture;
 
-			Clouds1 = from.Clouds1;
-			Clouds2 = from.Clouds2;
-			Clouds3 = from.Clouds3;
-			Clouds4 = from.Clouds4;
-			Clouds5 = from.Clouds5;
-			Clouds6 = from.Clouds6;
+			CirrusLayers = from.CirrusLayers;
 			Clouds7 = from.Clouds7;
 		}
 	}
+	#endregion
 
-
-
+	#region Read/Write
 	public void Load(BinaryReader Stream)
 	{
 		Data = new SkyboxValues();
 
+		// Skydome
 		Data.Position = Stream.ReadVector3();
-		Data.Scale = Stream.ReadVector3();
+		Data.HorizonHeight = Stream.ReadSingle();
+		Data.Scale = Stream.ReadSingle();
+		Data.SubtractHeight = Stream.ReadSingle();
 		Data.SubdivisionsAxis = Stream.ReadInt32();
 		Data.SubdivisionsHeight = Stream.ReadInt32();
-		Data.Value3 = Stream.ReadSingle();
+		Data.ZenithHeight = Stream.ReadSingle();
 		Vector3 VectorColor = Stream.ReadVector3();
-		Data.HorizoColor = new Color(VectorColor.x, VectorColor.y, VectorColor.z);
+		Data.HorizonColor = new Color(VectorColor.x, VectorColor.y, VectorColor.z);
 		VectorColor = Stream.ReadVector3();
 		Data.ZenithColor = new Color(VectorColor.x, VectorColor.y, VectorColor.z);
-		Data.Value6 = Stream.ReadSingle();
 
-		// Planet and moon textures
+		// Decals
+		Data.DecalGlowMultiplier = Stream.ReadSingle();
+
 		Data.Albedo = Stream.ReadStringNull();
 		Data.Glow = Stream.ReadStringNull();
 
 		// Array of Planets/Stars
 		int Length = Stream.ReadInt32();
 		Data.Planets = new SkyboxValues.Planet[Length];
-		for(int i = 0; i < Data.Planets.Length; i++)
+		for (int i = 0; i < Data.Planets.Length; i++)
 		{
 			Data.Planets[i] = new SkyboxValues.Planet();
 			Data.Planets[i].Position = Stream.ReadVector3();
-			Data.Planets[i].Scale = Stream.ReadVector3();
+			Data.Planets[i].Rotation = Stream.ReadSingle();
+			Data.Planets[i].Scale = Stream.ReadVector2();
 			Data.Planets[i].Uv = Stream.ReadVector4();
 		}
 
 		// Mid
 		Data.MidRgbColor = new Color32(Stream.ReadByte(), Stream.ReadByte(), Stream.ReadByte(), 0);
-		Data.Mid0 = Stream.ReadSingle();
-		Data.Mid1 = Stream.ReadSingle();
-		Data.Mid2 = Stream.ReadSingle();
-		Data.Mid3 = Stream.ReadSingle();
 
+		// Cirrus
+		Data.CirrusMultiplier = Stream.ReadSingle();
+		VectorColor = Stream.ReadVector3();
+		Data.CirrusColor = new Color(VectorColor.x, VectorColor.y, VectorColor.z);
 
-		//Procedural Clouds Texture
-		Data.Clouds = Stream.ReadStringNull();
+		Data.CirrusTexture = Stream.ReadStringNull();
 
-		Data.CloudsInt = Stream.ReadInt32();
-		Data.Clouds1 = Stream.ReadVector3();
-		Data.Clouds2 = Stream.ReadVector3();
-		Data.Clouds3 = Stream.ReadVector3();
-		Data.Clouds4 = Stream.ReadVector3();
-		Data.Clouds5 = Stream.ReadVector3();
-		Data.Clouds6 = Stream.ReadVector3();
-		Data.Clouds7 = Stream.ReadVector3();
+		int CirrusLayerCount = Stream.ReadInt32();
+		Data.CirrusLayers = new SkyboxValues.Cirrus[CirrusLayerCount];
+		for (int i = 0; i < Data.CirrusLayers.Length; i++)
+		{
+			Data.CirrusLayers[i] = new SkyboxValues.Cirrus();
+			Data.CirrusLayers[i].frequency = Stream.ReadVector2();
+			Data.CirrusLayers[i].Speed = Stream.ReadSingle();
+			Data.CirrusLayers[i].Direction = Stream.ReadVector2();
+		}
+		Data.Clouds7 = Stream.ReadSingle();
 	}
 
 	public void Save(BinaryWriter Stream)
 	{
+		// Sky Dome
 		Stream.Write(Data.Position);
+		Stream.Write(Data.HorizonHeight);
 		Stream.Write(Data.Scale);
+		Stream.Write(Data.SubtractHeight);
 		Stream.Write(Data.SubdivisionsAxis);
 		Stream.Write(Data.SubdivisionsHeight);
-		Stream.Write(Data.Value3);
-		Stream.Write(new Vector3(Data.HorizoColor.r, Data.HorizoColor.g, Data.HorizoColor.b));
+		Stream.Write(Data.ZenithHeight);
+		Stream.Write(new Vector3(Data.HorizonColor.r, Data.HorizonColor.g, Data.HorizonColor.b));
 		Stream.Write(new Vector3(Data.ZenithColor.r, Data.ZenithColor.g, Data.ZenithColor.b));
-		Stream.Write(Data.Value6);
 
+		// Decals
+		Stream.Write(Data.DecalGlowMultiplier);
 		Stream.Write(Data.Albedo, true);
 		Stream.Write(Data.Glow, true);
 
 		Stream.Write(Data.Planets.Length);
-		for(int i = 0; i < Data.Planets.Length; i++)
+		for (int i = 0; i < Data.Planets.Length; i++)
 		{
 			Stream.Write(Data.Planets[i].Position);
+			Stream.Write(Data.Planets[i].Rotation);
 			Stream.Write(Data.Planets[i].Scale);
 			Stream.Write(Data.Planets[i].Uv);
 		}
 
+		// Mid
 		Stream.Write(Data.MidRgbColor.r);
 		Stream.Write(Data.MidRgbColor.g);
 		Stream.Write(Data.MidRgbColor.b);
-		Stream.Write(Data.Mid0);
-		Stream.Write(Data.Mid1);
-		Stream.Write(Data.Mid2);
-		Stream.Write(Data.Mid3);
 
-		Stream.Write(Data.Clouds, true);
+		// Cirrus
+		Stream.Write(Data.CirrusMultiplier);
+		Stream.Write(new Vector3(Data.CirrusColor.r, Data.CirrusColor.g, Data.CirrusColor.b));
 
-		Stream.Write(Data.CloudsInt);
-		Stream.Write(Data.Clouds1);
-		Stream.Write(Data.Clouds2);
-		Stream.Write(Data.Clouds3);
-		Stream.Write(Data.Clouds4);
-		Stream.Write(Data.Clouds5);
-		Stream.Write(Data.Clouds6);
+		Stream.Write(Data.CirrusTexture, true);
+
+		Stream.Write(Data.CirrusLayers.Length);
+		for (int i = 0; i < Data.CirrusLayers.Length; i++)
+		{
+			Stream.Write(Data.CirrusLayers[i].frequency);
+			Stream.Write(Data.CirrusLayers[i].Speed);
+			Stream.Write(Data.CirrusLayers[i].Direction);
+		}
+
 		Stream.Write(Data.Clouds7);
 	}
-
+	#endregion
 }

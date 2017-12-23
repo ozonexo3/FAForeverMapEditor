@@ -335,13 +335,16 @@ namespace EditMap
 			beginHeights = ScmapEditor.Current.Teren.terrainData.GetHeights(0, 0, w, h);
 			MapLuaParser.Current.History.RegisterTerrainHeightmapChange(beginHeights);
 
+			float Value = float.Parse(TerrainSet.text) * 0.1f;
+			Value /= 16f;
+
 			float[,] heights = ScmapEditor.Current.Teren.terrainData.GetHeights(0, 0, ScmapEditor.Current.Teren.terrainData.heightmapWidth, ScmapEditor.Current.Teren.terrainData.heightmapHeight);
 
 			for (int i = 0; i < ScmapEditor.Current.Teren.terrainData.heightmapWidth; i++)
 			{
 				for (int j = 0; j < ScmapEditor.Current.Teren.terrainData.heightmapWidth; j++)
 				{
-					heights[i, j] = int.Parse(TerrainAdd.text) / 128f;
+					heights[i, j] = Value;
 				}
 			}
 			ScmapEditor.Current.Teren.terrainData.SetHeights(0, 0, heights);

@@ -602,10 +602,18 @@ public class ScmapEditor : MonoBehaviour
 		}
 
 		LowestElevation = (LowestElevation * 16) / 0.1f;
-		if (map.Water.HasWater)
-			LowestElevation = Mathf.Max(LowestElevation, map.Water.Elevation);
-
 		HighestElevation = (HighestElevation * 16) / 0.1f;
+
+		Debug.Log("Lowest point: " + LowestElevation);
+		Debug.Log("Highest point: " + HighestElevation);
+
+		if (HighestElevation - LowestElevation > 49.9)
+			Debug.LogError("Height difference is too high! it might couse rendering issues! Height difference is: " + (HighestElevation - LowestElevation));
+
+		if (map.Water.HasWater)
+		{
+			//LowestElevation = Mathf.Max(LowestElevation, map.Water.Elevation);
+		}
 
 		if (MapLuaParser.Current.EditMenu.MapInfoMenu.SaveAsFa.isOn)
 		{
@@ -617,10 +625,9 @@ public class ScmapEditor : MonoBehaviour
 			map.VersionMinor = 60;
 
 			map.AdditionalSkyboxData.Data.Position = WorldPosToScmap(MapLuaParser.Current.MapCenterPoint);
-			
 
-			map.AdditionalSkyboxData.Data.Position.y = Mathf.Clamp(LowestElevation - 1, 0, 128);
-			map.AdditionalSkyboxData.Data.Scale.y = Mathf.Max(map.Width, map.Height) * 2.288245f;
+			//map.AdditionalSkyboxData.Data.Position.y = Mathf.Clamp(LowestElevation - 1, 0, 128);
+			//map.AdditionalSkyboxData.Data.Scale.y = Mathf.Max(map.Width, map.Height) * 2.288245f;
 
 		}
 		else if(map.VersionMinor >= 60)
