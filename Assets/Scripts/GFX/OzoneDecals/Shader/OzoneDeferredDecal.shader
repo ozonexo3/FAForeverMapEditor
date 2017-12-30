@@ -51,6 +51,7 @@ Shader "Ozone/Deferred Decal"
 			sampler2D _Glow;
 			uniform sampler2D _WaterRam;
 			uniform sampler2D _UtilitySamplerC;
+			uniform int _Water;
 			uniform float _WaterScaleX, _WaterScaleZ;
 
 			
@@ -73,6 +74,7 @@ Shader "Ozone/Deferred Decal"
 
 				
 				float4 waterTexture = tex2D( _UtilitySamplerC, wpos.xz * half2(0.009765 / (_WaterScaleX / 1024.0), -0.009765 / (_WaterScaleZ / 1024.0)));
+				if(_Water > 0)
 				color.rgb = ApplyWaterColor( waterTexture.g, color.rgb);	
 
 				color.a *= blend * tex2D(_Mask, texUV).r;

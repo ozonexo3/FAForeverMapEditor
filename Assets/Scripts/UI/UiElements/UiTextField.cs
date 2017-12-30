@@ -11,7 +11,7 @@ namespace Ozone.UI
 		[Header("Config")]
 		public FieldTypes FieldType;
 		public float BeginValue;
-		public string Format = "N2";
+		//public string Format = "N2";
 
 		[Header("UI")]
 		public InputField	InputFieldUi;
@@ -65,7 +65,7 @@ namespace Ozone.UI
 			ChangingValue = true;
 			HasValue = true;
 			LastValue = SliderUi.value;
-			InputFieldUi.text = LastValue.ToString(Format);
+			SetTextField();
 			if (InputFieldUi.contentType == InputField.ContentType.IntegerNumber)
 				SliderUi.value = int.Parse(InputFieldUi.text);
 			if (InputFieldUi.contentType == InputField.ContentType.DecimalNumber)
@@ -83,7 +83,7 @@ namespace Ozone.UI
 			ChangingValue = true;
 			HasValue = true;
 			LastValue = SliderUi.value;
-			InputFieldUi.text = LastValue.ToString(Format);
+			SetTextField();
 			if (InputFieldUi.contentType == InputField.ContentType.IntegerNumber)
 				SliderUi.value = int.Parse(InputFieldUi.text);
 			if (InputFieldUi.contentType == InputField.ContentType.DecimalNumber)
@@ -113,10 +113,7 @@ namespace Ozone.UI
 
 				if (ClampText)
 				{
-					if (InputFieldUi.contentType == InputField.ContentType.IntegerNumber)
-						InputFieldUi.text = LastValue.ToString();
-					else if (InputFieldUi.contentType == InputField.ContentType.DecimalNumber)
-						InputFieldUi.text = LastValue.ToString(Format);
+					SetTextField();
 				}
 
 				SliderUi.value = LastValue;
@@ -146,7 +143,8 @@ namespace Ozone.UI
 				LastValue = Mathf.Clamp(LastValue, SliderUi.minValue, SliderUi.maxValue);
 				SliderUi.value = LastValue;
 			}
-			InputFieldUi.text = LastValue.ToString(Format);
+
+			SetTextField();
 			ChangingValue = false;
 		}
 
@@ -160,8 +158,16 @@ namespace Ozone.UI
 				LastValue = Mathf.Clamp(LastValue, SliderUi.minValue, SliderUi.maxValue);
 				SliderUi.value = LastValue;
 			}
-			InputFieldUi.text = LastValue.ToString(Format);
+			SetTextField();
 			ChangingValue = false;
+		}
+
+		void SetTextField()
+		{
+			if (InputFieldUi.contentType == InputField.ContentType.IntegerNumber)
+				InputFieldUi.text = LastValue.ToString();
+			else if (InputFieldUi.contentType == InputField.ContentType.DecimalNumber)
+				InputFieldUi.text = LastValue.ToString("0.00");
 		}
 		#endregion
 

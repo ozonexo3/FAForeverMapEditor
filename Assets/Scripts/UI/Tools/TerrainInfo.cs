@@ -30,6 +30,7 @@ namespace EditMap
 		//public Slider BrushRotationSlider;
 		public UiTextField BrushRotation;
 
+		public UiTextField BrushTarget;
 		public UiTextField BrushMini;
 		public UiTextField BrushMax;
 
@@ -281,29 +282,15 @@ namespace EditMap
 		{
 			if (Slider)
 			{
-				//BrushSize.text = BrushSizeSlider.value.ToString();
-				//BrushStrength.text = BrushStrengthSlider.value.ToString();
-				//BrushRotation.text = BrushRotationSlider.value.ToString();
+
 			}
 			else
 			{
-				//BrushSizeSlider.value = float.Parse(BrushSize.text);
-				//BrushStrengthSlider.value = int.Parse(BrushStrength.text);
-				//BrushRotationSlider.value = int.Parse(BrushRotation.text);
+
 			}
 
-			//BrushSizeSlider.value = Mathf.Clamp(BrushSizeSlider.value, 1, 256);
-			//BrushStrengthSlider.value = (int)Mathf.Clamp(BrushStrengthSlider.value, 0, 100);
-			//BrushRotationSlider.value = (int)Mathf.Clamp(BrushStrengthSlider.value, -360, 360);
-
-			//BrushSize.text = BrushSizeSlider.value.ToString();
-			//BrushStrength.text = BrushStrengthSlider.value.ToString();
-			//BrushRotation.text = BrushRotationSlider.value.ToString();
-
-			//float TerrainHeight = ScmapEditor.Current.Data.size.y;
-
-			Min = BrushMini.intValue / ScmapEditor.Current.Data.size.y;
-			Max = BrushMax.intValue / ScmapEditor.Current.Data.size.y;
+			Min = BrushMini.value / ScmapEditor.Current.Data.size.y;
+			Max = BrushMax.value / ScmapEditor.Current.Data.size.y;
 
 			Min /= 10f;
 			Max /= 10f;
@@ -416,6 +403,7 @@ namespace EditMap
 			}
 		}
 
+		public Texture2D ExportAs;
 		public void ExportWithSizeHeightmap()
 		{
 
@@ -436,12 +424,14 @@ namespace EditMap
 			if (paths == null || string.IsNullOrEmpty(paths))
 				return;
 
-			int h = ScmapEditor.Current.Teren.terrainData.heightmapWidth;
-			int w = ScmapEditor.Current.Teren.terrainData.heightmapWidth;
+			float h = ScmapEditor.Current.Teren.terrainData.heightmapHeight;
+			float w = ScmapEditor.Current.Teren.terrainData.heightmapWidth;
 
-			float[,] data = ScmapEditor.Current.Teren.terrainData.GetHeights(0, 0, w, h);
+			float[,] data = ScmapEditor.Current.Teren.terrainData.GetHeights(0, 0, (int)w, (int)h);
 
-			Texture2D ExportAs = new Texture2D(ScmapEditor.Current.Teren.terrainData.heightmapWidth, ScmapEditor.Current.Teren.terrainData.heightmapWidth, TextureFormat.RGB24, false);
+			ExportAs = new Texture2D((int)w, (int)h, TextureFormat.RGB24, false, true);
+
+			Debug.Log(w + ", " +  h);
 
 			float HeightValue = 1;
 			HeightValue = float.Parse(TerrainScale_HeightValue.text);
@@ -451,43 +441,51 @@ namespace EditMap
 			{
 				for (int x = 0; x < w; x++)
 				{
-					float Value = data[y, x] / HeightConversion;
+					float Value = data[y, x];// / HeightConversion;
 
 					if (TerrainScale_Height.isOn)
 					{
 						Value *= HeightValue;
 					}
-					float ColorR = (Mathf.Floor(Value) * (1f / 255f));
-					float ColorG = (Value - Mathf.Floor(Value));
+					//float ColorR = (Mathf.Floor(Value) * (1f / 255f));
+					//float ColorG = (Value - Mathf.Floor(Value));
 
-					ExportAs.SetPixel(h - (y + 1), x, new Color(ColorR, ColorG, 0));
+					ExportAs.SetPixel((int)(h - (y + 1)), x, new Color(Value, 0, 0));
 				}
 			}
 			ExportAs.Apply();
 
-			Debug.Log(ExportAs.GetPixel(128, 128).r + ", " + ExportAs.GetPixel(128, 128).g);
-			Debug.Log(ExportAs.GetPixel(128, 128).r + ExportAs.GetPixel(128, 128).g * (1f / 255f));
+			//Debug.Log(ExportAs.GetPixel(128, 128).r + ", " + ExportAs.GetPixel(128, 128).g);
+			//Debug.Log(ExportAs.GetPixel(128, 128).r + ExportAs.GetPixel(128, 128).g * (1f / 255f));
 
-			TextureScale.Bilinear(ExportAs, scale, scale);
+			//ExportAs = TextureScale.Bilinear(ExportAs, scale, scale);
+
+			bool differentSize = w != scale || h != scale;
 
 			h = scale;
 			w = scale;
 
 			using (BinaryWriter writer = new BinaryWriter(new System.IO.FileStream(paths, System.IO.FileMode.Create)))
 			{
+				Color pixel = Color.black;
+
 				for (int y = 0; y < h; y++)
 				{
 					for (int x = 0; x < w; x++)
 					{
-						Color pixel = ExportAs.GetPixel(h - (y + 1), x);
-						float value = (pixel.r + pixel.g * (1f / 255f));
+						if(differentSize)
+							pixel = ExportAs.GetPixelBilinear(y / h, x / w);
+						else
+							pixel = ExportAs.GetPixel(y, x);
+						//float value = (pixel.r + pixel.g * (1f / 255f));
+						float value = pixel.r;
 						uint ThisPixel = (uint)(value * HeightConversion);
 						writer.Write(System.BitConverter.GetBytes(System.BitConverter.ToUInt16(System.BitConverter.GetBytes(ThisPixel), 0)));
 					}
 				}
 				writer.Close();
 			}
-			ExportAs = null;
+			//ExportAs = null;
 
 		}
 
@@ -575,8 +573,7 @@ namespace EditMap
 		{
 			GenerateControlTex.GenerateWater();
 			GenerateControlTex.GenerateNormal();
-			if (ScmapEditor.Current.Slope)
-				GenerateControlTex.Current.GenerateSlopeTexture();
+			
 		}
 
 		#region Brush Update
@@ -666,11 +663,13 @@ namespace EditMap
 
 		void Paint(Vector3 AtPosition, int id = 0)
 		{
-			int BrushPaintType = 0;
-			if (Smooth || SelectedBrush == 2)
-				BrushPaintType = 1; // Smooth
-			else if (SelectedBrush == 3)
-				BrushPaintType = 2;
+			int BrushPaintType = SelectedBrush;
+
+
+			if (Smooth)
+				BrushPaintType = 2; // Smooth
+
+			
 
 			int hmWidth = ScmapEditor.Current.Teren.terrainData.heightmapWidth;
 			int hmHeight = ScmapEditor.Current.Teren.terrainData.heightmapHeight;
@@ -716,32 +715,71 @@ namespace EditMap
 
 			int i = 0;
 			int j = 0;
-
-			if (SelectedBrush == 3)
+			int x = 0;
+			int y = 0;
+			float SampleBrush = 0;
+			float PixelPower = 0;
+			
+			if (SelectedBrush == 1)
 			{
+				float Count = 0;
 				for (i = 0; i < (size - OffsetDown) - OffsetTop; i++)
 				{
 					for (j = 0; j < (size - OffsetLeft) - OffsetRight; j++)
 					{
-						CenterHeight += heights[i, j];
+						x = (int)(((i + OffsetDown) / (float)size) * BrushGenerator.Current.PaintImageWidths[id]);
+						y = (int)(((j + OffsetLeft) / (float)size) * BrushGenerator.Current.PaintImageHeights[id]);
+						SampleBrush = Mathf.Clamp01(BrushGenerator.Current.Values[id][y + BrushGenerator.Current.PaintImageWidths[id] * x] - 0.0255f);
+						CenterHeight += heights[i, j] * SampleBrush;
+						Count += SampleBrush;
 					}
 				}
-				CenterHeight /= size * size;
+				CenterHeight /= Count;
+			}
+			else if (SelectedBrush == 3)
+			{
+				float Count = 0;
+				for (i = 0; i < (size - OffsetDown) - OffsetTop; i++)
+				{
+					for (j = 0; j < (size - OffsetLeft) - OffsetRight; j++)
+					{
+						x = (int)(((i + OffsetDown) / (float)size) * BrushGenerator.Current.PaintImageWidths[id]);
+						y = (int)(((j + OffsetLeft) / (float)size) * BrushGenerator.Current.PaintImageHeights[id]);
+						SampleBrush = Mathf.Clamp01(BrushGenerator.Current.Values[id][y + BrushGenerator.Current.PaintImageWidths[id] * x] - 0.5f) * 2f;
+						CenterHeight += heights[i, j] * SampleBrush;
+						Count += SampleBrush;
+					}
+				}
+				CenterHeight /= Count;
 			}
 
 
 			int SizeDown = (size - OffsetDown) - OffsetTop;
 			int SizeLeft = (size - OffsetLeft) - OffsetRight;
-			int x = 0;
-			int y = 0;
-			//Color BrushValue = Color.white;
-			float SampleBrush = 0;
-			float PixelPower = 0;
-
+			float TargetHeight = Mathf.Clamp(((Invert?(128):(BrushTarget.value)) / ScmapEditor.Current.Data.size.y) / 10f, Min, Max);
 
 			float BrushStrenghtValue = BrushStrength.value;
-			float PaintStrength = BrushStrenghtValue * 0.00005f * (Invert ? (-1) : 1);
-			float SizeSmooth = Mathf.Clamp01(size / 10f) * 10;
+			//float PaintStrength = BrushStrenghtValue * 0.00005f * (Invert ? (-1) : 1);
+
+			float StrengthMultiplier = 1;
+			switch (BrushPaintType)
+			{
+				case 1: // Flatten
+					StrengthMultiplier = BrushGenerator.Current.HeightmapBlurStrength.Evaluate(BrushStrenghtValue) * 0.00008f;
+					break;
+				case 2: // Smooth
+					StrengthMultiplier = BrushGenerator.Current.HeightmapBlurStrength.Evaluate(BrushStrenghtValue) * Mathf.Clamp(size / 10f, 0, 20) * 0.01f;
+					break;
+				case 3: // Sharp
+					StrengthMultiplier = BrushGenerator.Current.HeightmapBlurStrength.Evaluate(BrushStrenghtValue) * 0.00008f;
+					break;
+				default:
+					StrengthMultiplier = BrushGenerator.Current.HeightmapPaintStrength.Evaluate(BrushStrenghtValue) * 0.00008f * (Invert ? (-1) : 1);
+					break;
+			}
+
+			//float SizeSmooth = Mathf.Clamp01(size / 10f) * 15;
+
 
 			for (i = 0; i < SizeDown; i++)
 			{
@@ -754,30 +792,47 @@ namespace EditMap
 					//BrushValue = BrushGenerator.Current.GetPixel(y, x);
 					//SambleBrush = BrushValue.r;
 					//SampleBrush = BrushGenerator.Current.GetBrushValue(id, y, x);
-					SampleBrush = BrushGenerator.Current.Values[id][y + BrushGenerator.Current.PaintImageWidths[id] * x];
-					if (SampleBrush >= 0.003f)
+					SampleBrush = Mathf.Clamp01(BrushGenerator.Current.Values[id][y + BrushGenerator.Current.PaintImageWidths[id] * x] - 0.0255f);
+					if (SampleBrush > 0)
 					{
 						switch (BrushPaintType)
 						{
-							case 1: // Smooth
+							case 1: // Flatten
+								PixelPower = Mathf.Pow(Mathf.Abs(heights[i, j] - CenterHeight), 0.454545f) + 1;
+								PixelPower /= 2f;
+
+								//if (PixelPower < 0.001f)
+								//	heights[i, j] = CenterHeight;
+								//else { 
+								//float FlattenStrenght = PixelPower * StrengthMultiplier * Mathf.Pow(SampleBrush, 2);
+								//heights[i, j] += FlattenStrenght;
+								heights[i, j] = MoveToValue(heights[i, j], CenterHeight, StrengthMultiplier * SampleBrush * PixelPower, 0, 128);
+								//}
+
+								break;
+							case 2: // Smooth
 								CenterHeight = GetNearValues(ref heights, i, j);
 
-								PixelPower = Mathf.Pow(Mathf.Abs(heights[i, j] - CenterHeight), 0.5f) * SizeSmooth;
+								PixelPower = Mathf.Pow(Mathf.Abs(heights[i, j] - CenterHeight), 0.454545f) + 1;
+								PixelPower /= 2f;
 								//PixelPower = 10;
 
-								heights[i, j] = Mathf.Lerp(heights[i, j], CenterHeight, BrushStrenghtValue * 0.4f * Mathf.Pow(SampleBrush, 2) * PixelPower);
+								//heights[i, j] = Mathf.Lerp(heights[i, j], CenterHeight, BrushStrenghtValue * Mathf.Pow(SampleBrush, 2) * PixelPower);
+								heights[i, j] = Mathf.Lerp(heights[i, j], CenterHeight, PixelPower * StrengthMultiplier * Mathf.Pow(SampleBrush, 2));
+								
 								break;
-							case 2: // Sharp
-								PixelPower = heights[i, j] - CenterHeight;
-								heights[i, j] += Mathf.Lerp(PixelPower, 0, PixelPower * 10) * BrushStrenghtValue * 0.01f * Mathf.Pow(SampleBrush, 2);
+							case 3: // Sharp
+								PixelPower = Mathf.Pow(Mathf.Abs(heights[i, j] - CenterHeight), 0.454545f) + 1;
+								PixelPower /= 2f;
+								//heights[i, j] += Mathf.Lerp(PixelPower, 0, PixelPower * 10) * BrushStrenghtValue * 0.01f * Mathf.Pow(SampleBrush, 2);
+								heights[i, j] = MoveToValue(heights[i, j], CenterHeight, - StrengthMultiplier * SampleBrush * PixelPower, Min, Max);
 								break;
 							default:
-								heights[i, j] += SampleBrush * PaintStrength;
+								//heights[i, j] += SampleBrush * StrengthMultiplier;
+								heights[i, j] = MoveToValue(heights[i, j], TargetHeight, SampleBrush * StrengthMultiplier, Min, Max);
 								break;
 						}
 
-
-						heights[i, j] = Mathf.Clamp(heights[i, j], Min, Max);
 					}
 				}
 			}
@@ -797,18 +852,34 @@ namespace EditMap
 			OnTerrainChanged();
 		}
 
+		float MoveToValue(float current, float target, float speed, float min, float max)
+		{
+			if(current > target)
+			{
+				return Mathf.Clamp(current - speed, target, max);
+			}
+			else if (current < target)
+			{
+				return Mathf.Clamp(current + speed, min, target);
+			}
+			return current;
+		}
+
 
 		public void OnTerrainChanged()
 		{
 			Markers.MarkersControler.UpdateMarkersHeights();
 			PropsRenderer.Current.UpdatePropsHeights();
 			DecalsControler.UpdateDecals();
+
+			if (ScmapEditor.Current.Slope)
+				GenerateControlTex.Current.GenerateSlopeTexture();
 		}
 
 		float GetNearValues(ref float[,] heigths, int x, int y, int range = 1)
 		{
 			float ToReturn = 0f;
-			int Count = 0;
+			float Count = 0;
 
 			if (x > 0)
 			{

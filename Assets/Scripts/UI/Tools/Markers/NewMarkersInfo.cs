@@ -325,12 +325,29 @@ namespace EditMap
 		{
 			if(CreationId == 5)
 			{
+				PlacementManager.SnapToWater = false;
 				return MarkerPresets[SpawnPressetDropdown.value];
 			}
 			else
 			{
 				LastCreationType = GetCreationType();
 				MarkersControler.MarkerPropGraphic Mpg = MarkersControler.GetPropByType(LastCreationType);
+
+				switch (LastCreationType)
+				{
+					case MapLua.SaveLua.Marker.MarkerTypes.BlankMarker:
+						PlacementManager.SnapToWater = false;
+						break;
+					case MapLua.SaveLua.Marker.MarkerTypes.Mass:
+						PlacementManager.SnapToWater = false;
+						break;
+					case MapLua.SaveLua.Marker.MarkerTypes.Hydrocarbon:
+						PlacementManager.SnapToWater = false;
+						break;
+					default:
+						PlacementManager.SnapToWater = true;
+						break;
+				}
 
 				MarkerNew NewMarkerObject = MarkerPrefab.GetComponent<MarkerNew>();
 				NewMarkerObject.Mf.sharedMesh = Mpg.SharedMesh;

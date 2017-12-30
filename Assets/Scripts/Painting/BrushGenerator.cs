@@ -28,6 +28,10 @@ public class BrushGenerator : MonoBehaviour
 	public int[] PaintImageWidths;
 	public int[] PaintImageHeights;
 
+	public AnimationCurve HeightmapPaintStrength;
+	public AnimationCurve HeightmapBlurStrength;
+	public AnimationCurve HeightmapSharpenStrength;
+
 	public Color GetPixel(int id, int x, int y)
 	{
 		return Pixels[id][x + y];

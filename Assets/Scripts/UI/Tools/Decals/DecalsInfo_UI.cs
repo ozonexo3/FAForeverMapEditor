@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using OzoneDecals;
 using Selection;
 
@@ -11,6 +12,74 @@ namespace EditMap
 
 		public DecalSettings DecalSettingsUi;
 		public DecalsList DecalsList;
+
+		public void DropAtDecals() {
+			if (ResourceBrowser.DragedObject == null)
+				return;
+
+			if (!ResourceBrowser.IsDecal())
+				return;
+
+			string DropPath = ResourceBrowser.Current.LoadedPaths[ResourceBrowser.DragedObject.InstanceId];
+			if (!DropPath.StartsWith("/"))
+			{
+				DropPath = DropPath.ToLower().Replace("env", "/env");
+			}
+			Debug.Log(DropPath);
+
+			foreach(Decal.DecalSharedSettings Shared in Decal.AllDecalsShared)
+			{
+				if (Shared.Tex1Path == DropPath)
+				{
+					SelectionManager.Current.CleanSelection();
+					DecalSettingsUi.Load(Shared);
+					Debug.Log("Exist");
+					return;
+				}
+			}
+
+			// Decal does not exist. Create it
+			SelectionManager.Current.CleanSelection();
+			GoToSelection();
+
+			Decal.DecalSharedSettings NewSharedDecal = new Decal.DecalSharedSettings();
+
+			if(DropPath.ToLower().Contains("normal"))
+				NewSharedDecal.Type = TerrainDecalType.TYPE_NORMALS;
+			else
+				NewSharedDecal.Type = TerrainDecalType.TYPE_ALBEDO;
+
+			NewSharedDecal.Tex1Path = DropPath;
+
+			NewSharedDecal.UpdateMaterial();
+			Decal.AllDecalsShared.Add(NewSharedDecal);
+
+			DecalSettingsUi.Load(NewSharedDecal);
+			DecalsList.GenerateTypes();
+		}
+
+		public void DropAtGameplay()
+		{
+			if (ResourceBrowser.DragedObject == null)
+				return;
+
+			if (!ResourceBrowser.IsDecal())
+				return;
+
+			DropAtDecals();
+			Decal.DecalSharedSettings Shared = DecalSettings.GetLoaded;
+			if (Shared == null)
+			{
+				Debug.Log("No deca setting loaded");
+				return;
+			}
+
+			Vector3 MouseWorldPos = CameraControler.BufforedGameplayCursorPos;
+			PlacementManager.PlaceAtPosition(MouseWorldPos, DecalSettingsUi.CreationPrefab, Place);
+
+			GoToSelection();
+			DecalSettingsUi.Load(Shared);
+		}
 
 
 		public void MoveUp()

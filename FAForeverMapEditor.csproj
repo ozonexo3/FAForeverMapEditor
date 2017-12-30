@@ -295,6 +295,11 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\CielaSpike\Thread Ninja\Example\ExampleScript.cs" />
+    <Compile Include="Assets\CielaSpike\Thread Ninja\Ninja.cs" />
+    <Compile Include="Assets\CielaSpike\Thread Ninja\Task.cs" />
+    <Compile Include="Assets\CielaSpike\Thread Ninja\TaskState.cs" />
+    <Compile Include="Assets\CielaSpike\Thread Ninja\ThreadNinjaMonoBehaviourExtensions.cs" />
     <Compile Include="Assets\LUA\KeraLua\CharPtr.cs" />
     <Compile Include="Assets\LUA\KeraLua\DynamicLibraryPath.cs" />
     <Compile Include="Assets\LUA\KeraLua\Lua.cs" />
@@ -482,6 +487,7 @@
     <Compile Include="Assets\Scripts\Ozone SCMAP Code\MapHelperGui.cs" />
     <Compile Include="Assets\Scripts\Ozone SCMAP Code\MapLuaParser.cs" />
     <Compile Include="Assets\Scripts\Ozone SCMAP Code\ScmapEditor.cs" />
+    <Compile Include="Assets\Scripts\Ozone SCMAP Code\Skybox\ProceduralSkybox.cs" />
     <Compile Include="Assets\Scripts\Ozone SCMAP Code\Texture\BmpLoader.cs" />
     <Compile Include="Assets\Scripts\Ozone SCMAP Code\Texture\GenerateControlTex.cs" />
     <Compile Include="Assets\Scripts\Ozone SCMAP Code\Texture\PreviewTex.cs" />
@@ -622,6 +628,7 @@
     <None Include="Assets\GFX\Shaders\PropShader.shader" />
     <None Include="Assets\GFX\Shaders\Selection.shader" />
     <None Include="Assets\GFX\Shaders\SimpleLambert.cginc" />
+    <None Include="Assets\GFX\Shaders\Skybox\FaSkyboxShader.shader" />
     <None Include="Assets\GFX\Shaders\UI\RawImageChannel.shader" />
     <None Include="Assets\GFX\Shaders\UI\RawImageNoAlpha.shader" />
     <None Include="Assets\GFX\Shaders\UI\UI-Add.shader" />

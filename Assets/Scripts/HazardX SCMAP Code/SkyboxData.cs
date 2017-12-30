@@ -110,6 +110,14 @@ public class SkyboxData
 
 			CirrusLayers = from.CirrusLayers;
 			Clouds7 = from.Clouds7;
+
+			UpdateSize();
+		}
+
+		public void UpdateSize()
+		{
+			Position = ScmapEditor.WorldPosToScmap( MapLuaParser.Current.MapCenterPoint);
+			Scale = Mathf.Max(ScmapEditor.Current.map.Width, ScmapEditor.Current.map.Height) * 2.288245f;
 		}
 	}
 	#endregion

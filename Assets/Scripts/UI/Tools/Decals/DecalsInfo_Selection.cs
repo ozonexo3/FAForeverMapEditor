@@ -12,6 +12,7 @@ namespace EditMap
 
 		private void OnEnable()
 		{
+			PlacementManager.OnDropOnGameplay += DropAtGameplay;
 			SelectionManager.Current.DisableLayer = 14;
 			SelectionManager.Current.SetRemoveAction(DestroyDetails);
 			SelectionManager.Current.SetSelectionChangeAction(SelectDetails);
@@ -22,6 +23,7 @@ namespace EditMap
 
 		private void OnDisable()
 		{
+			PlacementManager.OnDropOnGameplay -= DropAtGameplay;
 			Selection.SelectionManager.Current.ClearAffectedGameObjects();
 		}
 

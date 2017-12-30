@@ -29,6 +29,19 @@ public class PlacementManager : MonoBehaviour {
 	public LayerMask RaycastMask;
 	public Camera Cam;
 
+	static bool _SnapToWater = false;
+	public static bool SnapToWater
+	{
+		set
+		{
+			_SnapToWater = value;
+		}
+		get
+		{
+			return _SnapToWater;
+		}
+	}
+
 	int PlaceAngle = 0;
 
 
@@ -50,6 +63,7 @@ public class PlacementManager : MonoBehaviour {
 		Clear();
 
 		Current.PlacementObject = Instantiate(Prefab) as GameObject;
+		Current.PlacementObject.SetActive(true);
 		if (InstantiateAction != null)
 			InstantiateAction(Current.PlacementObject);
 
@@ -169,23 +183,14 @@ public class PlacementManager : MonoBehaviour {
 					Point = LastHitPoint;
 
 				if (SelectionManager.Current.SnapToGrid)
-					PlacementObject.transform.position = ScmapEditor.SnapToGridCenter(Point, true, SelectionManager.Current.SnapToWater);
-				else if (SelectionManager.Current.SnapToWater)
+					PlacementObject.transform.position = ScmapEditor.SnapToGridCenter(Point, true, SnapToWater);
+				else if (SnapToWater)
 					PlacementObject.transform.position = ScmapEditor.ClampToWater(Point);
 				else
 					PlacementObject.transform.position = Point;
 			}
 
-			for (int i = 0; i < PlacementSymmetry.Length; i++)
-			{
-				Vector3 SymmetryPoint = SymmetryMatrix[i].MultiplyPoint(PlacementObject.transform.position - MapLuaParser.Current.MapCenterPoint) + MapLuaParser.Current.MapCenterPoint;
-
-				PlacementSymmetry[i].transform.localPosition = SymmetryPoint;
-				PlacementSymmetry[i].transform.localRotation = PlacementObject.transform.localRotation * MassMath.QuaternionFromMatrix(SymmetryMatrix[i]);
-				PlacementSymmetry[i].transform.localScale = PlacementObject.transform.localScale;
-
-			}
-
+			UpdateSymmetryObjects();
 
 			// Action
 			if (Input.GetKey(KeyCode.E) || Input.GetKey(KeyCode.R) || Input.GetKey(KeyCode.B) || Input.GetKey(KeyCode.M))
@@ -193,23 +198,7 @@ public class PlacementManager : MonoBehaviour {
 			}
 			else if (Input.GetMouseButtonDown(0))
 			{
-
-				Vector3[] Positions = new Vector3[SymmetryMatrix.Length + 1];
-				Quaternion[] Rotations = new Quaternion[SymmetryMatrix.Length + 1];
-				Vector3[] Scales = new Vector3[SymmetryMatrix.Length + 1];
-
-				Positions[0] = PlacementObject.transform.position;
-				Rotations[0] = PlacementObject.transform.rotation;
-				Scales[0] = PlacementObject.transform.localScale;
-
-				for (int i = 0; i < SymmetryMatrix.Length; i++)
-				{
-					Positions[i + 1] = PlacementSymmetry[i].transform.position;
-					Rotations[i + 1] = PlacementSymmetry[i].transform.rotation;
-					Scales[i + 1] = PlacementObject.transform.localScale;
-				}
-
-				CurrentPlaceAction(Positions, Rotations, Scales);
+				Place();
 			}
 		}
 		else if (PlacementObject.activeSelf)
@@ -220,10 +209,75 @@ public class PlacementManager : MonoBehaviour {
 		}
 	}
 
+	void UpdateSymmetryObjects()
+	{
+
+		Vector3 Euler = PlacementObject.transform.localRotation.eulerAngles;
+
+		for (int i = 0; i < PlacementSymmetry.Length; i++)
+		{
+			Vector3 SymmetryPoint = SymmetryMatrix[i].MultiplyPoint(PlacementObject.transform.position - MapLuaParser.Current.MapCenterPoint) + MapLuaParser.Current.MapCenterPoint;
+
+			PlacementSymmetry[i].transform.localPosition = SymmetryPoint;
+			PlacementSymmetry[i].transform.localRotation = Quaternion.Euler(new Vector3(Euler.x, Euler.y * (InvertRotation[i] ? (-1) : (1)), Euler.z)) * MassMath.QuaternionFromMatrix(SymmetryMatrix[i]);
+			PlacementSymmetry[i].transform.localScale = PlacementObject.transform.localScale;
+		}
+	}
+
+	void Place()
+	{
+		Vector3[] Positions = new Vector3[SymmetryMatrix.Length + 1];
+		Quaternion[] Rotations = new Quaternion[SymmetryMatrix.Length + 1];
+		Vector3[] Scales = new Vector3[SymmetryMatrix.Length + 1];
+
+		Positions[0] = PlacementObject.transform.position;
+		Rotations[0] = PlacementObject.transform.rotation;
+		Scales[0] = PlacementObject.transform.localScale;
+
+		for (int i = 0; i < SymmetryMatrix.Length; i++)
+		{
+			Positions[i + 1] = PlacementSymmetry[i].transform.position;
+			Rotations[i + 1] = PlacementSymmetry[i].transform.rotation;
+			Scales[i + 1] = PlacementObject.transform.localScale;
+		}
+
+		CurrentPlaceAction(Positions, Rotations, Scales);
+	}
+
+	public delegate void DropAction();
+	public static event DropAction OnDropOnGameplay;
+
+	public void DropAtGameplay()
+	{
+		if (ResourceBrowser.DragedObject == null)
+			return;
+
+		//string DropPath = ResourceBrowser.Current.LoadedPaths[ResourceBrowser.DragedObject.InstanceId];
+		OnDropOnGameplay?.Invoke();
+	}
+
+
+	public static void PlaceAtPosition(Vector3 Position, GameObject Prefab, System.Action<Vector3[], Quaternion[], Vector3[]> PlaceAction, bool ResetTransform = true)
+	{
+		BeginPlacement(Prefab, PlaceAction, ResetTransform);
+
+		Current.PlacementObject.transform.localPosition = Position;
+		Current.PlacementObject.transform.localRotation = OldRot;
+		Current.PlacementObject.transform.localScale = OldScale;
+
+		Current.UpdateSymmetryObjects();
+
+		Current.Place();
+		Clear();
+	}
+
+
+
 
 	int LastSym = 0;
 	//float LastTolerance;
 	public Matrix4x4[] SymmetryMatrix;
+	public bool[] InvertRotation;
 	public GameObject[] PlacementSymmetry;
 	public void GenerateSymmetry()
 	{
@@ -239,51 +293,67 @@ public class PlacementManager : MonoBehaviour {
 		{
 			case 1: // X
 				SymmetryMatrix = new Matrix4x4[1];
+				InvertRotation = new bool[1];
 				SymmetryMatrix[0] = Matrix4x4.TRS(Vector3.zero, Quaternion.identity, new Vector3(-1, 1, 1));
+				InvertRotation[0] = true;
 				break;
 			case 2: // Z
 				SymmetryMatrix = new Matrix4x4[1];
+				InvertRotation = new bool[1];
 				SymmetryMatrix[0] = Matrix4x4.TRS(Vector3.zero, Quaternion.identity, new Vector3(1, 1, -1));
+				InvertRotation[0] = true;
 				break;
 			case 3: // XZ
 				SymmetryMatrix = new Matrix4x4[1];
+				InvertRotation = new bool[1];
 				SymmetryMatrix[0] = Matrix4x4.TRS(Vector3.zero, Quaternion.identity, new Vector3(-1, 1, -1));
+				InvertRotation[0] = false;
 				break;
 			case 4: // X Z XZ
 				SymmetryMatrix = new Matrix4x4[3];
+				InvertRotation = new bool[3];
 				SymmetryMatrix[0] = Matrix4x4.TRS(Vector3.zero, Quaternion.identity, new Vector3(-1, 1, 1));
+				InvertRotation[0] = true;
 
-				SymmetryMatrix[1] = new Matrix4x4();
 				SymmetryMatrix[1] = Matrix4x4.TRS(Vector3.zero, Quaternion.identity, new Vector3(1, 1, -1));
+				InvertRotation[1] = true;
 
-				SymmetryMatrix[2] = new Matrix4x4();
 				SymmetryMatrix[2] = SymmetryMatrix[0] * SymmetryMatrix[1];
+				InvertRotation[2] = false;
 				//SymmetryMatrix[2] = Matrix4x4.TRS(Vector3.zero, Quaternion.identity, new Vector3(-1, 1, -1));
 				break;
 			case 5:// Diagonal1
 				SymmetryMatrix = new Matrix4x4[1];
+				InvertRotation = new bool[1];
 				SymmetryMatrix[0] = Matrix4x4.TRS(Vector3.zero, Quaternion.Euler(Vector3.up * 90), new Vector3(-1, 1, 1));
+				InvertRotation[0] = true;
 				break;
 			case 6: // Diagonal 2
 				SymmetryMatrix = new Matrix4x4[1];
+				InvertRotation = new bool[1];
 				SymmetryMatrix[0] = Matrix4x4.TRS(Vector3.zero, Quaternion.Euler(Vector3.down * 90), new Vector3(-1, 1, 1));
+				InvertRotation[0] = true;
 				break;
 			case 7: // Diagonal 3
 				SymmetryMatrix = new Matrix4x4[3];
+				InvertRotation = new bool[3];
 				SymmetryMatrix[0] = Matrix4x4.TRS(Vector3.zero, Quaternion.Euler(Vector3.up * 90), new Vector3(-1, 1, 1));
-
+				InvertRotation[0] = true;
 				SymmetryMatrix[1] = Matrix4x4.TRS(Vector3.zero, Quaternion.Euler(Vector3.down * 90), new Vector3(-1, 1, 1));
-
+				InvertRotation[1] = true;
 				SymmetryMatrix[2] = SymmetryMatrix[0] * SymmetryMatrix[1];
+				InvertRotation[2] = false;
 				break;
 			case 8: // Rotation
 				int RotCount = PlayerPrefs.GetInt("SymmetryAngleCount", 2) - 1;
 				float angle = 360.0f / (float)(RotCount + 1);
 				SymmetryMatrix = new Matrix4x4[RotCount];
+				InvertRotation = new bool[RotCount];
 
 				for (int i = 0; i < RotCount; i++)
 				{
 					SymmetryMatrix[i] = Matrix4x4.TRS(Vector3.zero, Quaternion.Euler(Vector3.up * (angle * (i + 1))), Vector3.one);
+					InvertRotation[i] = false;
 				}
 				break;
 			default:

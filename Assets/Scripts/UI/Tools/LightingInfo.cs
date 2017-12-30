@@ -148,7 +148,7 @@ namespace EditMap
 			Scmap.map.FogEnd = FogEnd.value;
 
 			Scmap.UpdateLighting();
-
+			Scmap.Skybox.LoadSkybox();
 			/*
 			// Set light
 			Scmap.Sun.transform.rotation = Quaternion.Euler(new Vector3(DA.value, -360 + RA.value, 0));
@@ -165,7 +165,7 @@ namespace EditMap
 			Shader.SetGlobalColor("_SunAmbience", new Color(Scmap.map.SunAmbience.x * 0.5f, Scmap.map.SunAmbience.y * 0.5f, Scmap.map.SunAmbience.z * 0.5f, 1));
 			Shader.SetGlobalColor("_ShadowColor", new Color(Scmap.map.ShadowFillColor.x * 0.5f, Scmap.map.ShadowFillColor.y * 0.5f, Scmap.map.ShadowFillColor.z * 0.5f, 1));
 		*/
-	}
+		}
 
 
 		class LightingData{
@@ -281,6 +281,9 @@ namespace EditMap
 
 			string data = File.ReadAllText(paths[0]);
 			Scmap.map.AdditionalSkyboxData = UnityEngine.JsonUtility.FromJson<SkyboxData>(data);
+			Scmap.map.AdditionalSkyboxData.Data.UpdateSize();
+
+			Scmap.Skybox.LoadSkybox();
 		}
 	}
 }

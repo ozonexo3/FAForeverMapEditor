@@ -4,7 +4,7 @@ using System.Collections;
 
 public class EditorVersion : MonoBehaviour {
 
-	public const string EditorBuildVersion = "v0.514 HF1 Alpha";
+	public const string EditorBuildVersion = "v0.515 Alpha";
 
 	void Start () {
 		GetComponent<Text>().text = EditorBuildVersion;

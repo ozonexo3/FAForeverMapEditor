@@ -98,6 +98,7 @@ public class MapLuaParser : MonoBehaviour
 
 	public void ResetUI()
 	{
+		EditMenu.ButtonFunction("Map");
 		EditMenu.gameObject.SetActive(false);
 		Background.SetActive(true);
 

@@ -4,17 +4,13 @@ Shader "MapEditor/FaTerrainShader" {
 Properties {
 	_SpecColor ("Specular Color", Color) = (0.5, 0.5, 0.5, 1)
 	_Shininess ("Shininess", Range (0.03, 1)) = 0.078125
-	[MaterialToggle] _Water("Has Water", Int) = 0
+	//[MaterialToggle] _Water("Has Water", Int) = 0
 	[MaterialToggle] _Grid("Grid", Int) = 0
 	[MaterialToggle] _Slope("Slope", Int) = 0
 	[MaterialToggle] _UseSlopeTex("Use Slope Data", Int) = 0
 	_SlopeTex ("Slope data", 2D) = "black" {}
 	[MaterialToggle] _TTerrainXP("_TTerrainXP", Int) = 0
-	
-	_WaterLevel ("Water Level", float) = 0.078125
-	_DepthLevel ("Depth Level", float) = 0.078125
-	_AbyssLevel ("Abyss Level", float) = 0.078125
-	
+		
 	// set by terrain engine
 	_Control ("Control (RGBA)", 2D) = "black" {}
 	_ControlXP ("ControlXP (RGBA)", 2D) = "black" {}
@@ -128,11 +124,10 @@ Properties {
 			sampler2D _MyGrabTexture3;
 			sampler2D _WaterRam;
 			half _Shininess;
-			half _WaterLevel;
-			half _DepthLevel, _AbyssLevel;
 			fixed4 _Abyss;
 			fixed4 _Deep;
 			int _Water;
+			float _WaterLevel;
 
 			int _Slope, _UseSlopeTex;
 			sampler2D _SlopeTex;
@@ -199,7 +194,6 @@ Properties {
 
 				float4 waterTexture = tex2D( _UtilitySamplerC, IN.uv_Control * float2(1, -1) + float2(1 / (_WaterScaleX * 1), 1 / (_WaterScaleZ * 1) + 1));
 
-				//float WaterDepth = (_WaterLevel - IN.worldPos.y) / (_WaterLevel - _AbyssLevel);
 				float WaterDepth = waterTexture.g;
 
 				float2 UVCtrl = IN.uv_Control * fixed2(1, -1) + half2(0, 1);
@@ -342,7 +336,8 @@ Properties {
 				
 
 				if(_Grid > 0){
-					fixed4 GridColor = tex2D (_GridTexture, IN.uv_Control * _GridScale - float2(-0.00, -0.00));
+					float2 GridUv = IN.uv_Control * _GridScale;
+					fixed4 GridColor = tex2D (_GridTexture, IN.uv_Control * _GridScale);
 					fixed4 GridFinal = fixed4(0,0,0,GridColor.a);
 					if(_GridCamDist < 1){
 						GridFinal.rgb = lerp(GridFinal.rgb, fixed3(1,1,1), GridColor.r * lerp(1, 0, _GridCamDist));
@@ -350,11 +345,19 @@ Properties {
 						GridFinal.rgb = lerp(GridFinal.rgb, fixed3(0,1,0), GridColor.b * lerp(0, 1, _GridCamDist));
 					}
 					else{
-					GridFinal.rgb = lerp(GridFinal.rgb, fixed3(0,1,0), GridColor.b);
+						GridFinal.rgb = lerp(GridFinal.rgb, fixed3(0,1,0), GridColor.b);
 					}
-						  
+
+					GridFinal *= GridColor.a;
+
+					half CenterGridSize = lerp(0.005, 0.015, _GridCamDist) / _GridScale;
+					if(IN.uv_Control.x > 0.5 - CenterGridSize && IN.uv_Control.x < 0.5 + CenterGridSize)
+						  GridFinal.rgb = fixed3(0.4,1,0);
+					else if(IN.uv_Control.y > 0.5 - CenterGridSize && IN.uv_Control.y < 0.5 + CenterGridSize)
+						  GridFinal.rgb = fixed3(0.4,1,0);
+
 					//col.rgb = lerp(col.rgb, GridFinal.rgb, GridColor.a);
-					Emit += GridFinal * GridColor.a;
+					Emit += GridFinal;
 				}
 
 				if(_Brush > 0){	

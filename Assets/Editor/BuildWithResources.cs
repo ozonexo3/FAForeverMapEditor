@@ -63,10 +63,22 @@ public class BuildWithResources : MonoBehaviour
 	[MenuItem("Build/Do Action")]
 	public static void ChangeModelVerts()
 	{
-		ScmapEditor From = UnityEditor.Selection.gameObjects[0].GetComponent<ScmapEditor>();
-		ScmapEditor To = UnityEditor.Selection.gameObjects[1].GetComponent<ScmapEditor>();
+		//ScmapEditor From = UnityEditor.Selection.gameObjects[0].GetComponent<ScmapEditor>();
+		//ScmapEditor To = UnityEditor.Selection.gameObjects[1].GetComponent<ScmapEditor>();
 
-		To.DefaultSkyboxData = From.DefaultSkyboxData;
+		//To.DefaultSkyboxData = From.DefaultSkyboxData;
+
+		string path = EditorUtility.OpenFilePanel("Skybox", "", "");
+
+
+		if (string.IsNullOrEmpty(path))
+			return;
+
+		string data = System.IO.File.ReadAllText(path);
+		ScmapEditor To = UnityEditor.Selection.activeGameObject.GetComponent<ScmapEditor>();
+		SkyboxData NewSkybox = UnityEngine.JsonUtility.FromJson<SkyboxData>(data);
+		To.DefaultSkyboxData = NewSkybox.Data;
+		EditorUtility.SetDirty(To);
 	}
 
 }

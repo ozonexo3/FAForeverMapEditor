@@ -115,7 +115,7 @@ namespace EditMap
 			if (Loading)
 				return;
 			ScmapEditor.Current.map.Water.ColorLerp.x = ColorLerpXElevation.value;
-			ScmapEditor.Current.map.Water.ColorLerp.y = ColorLerpXElevation.value;
+			ScmapEditor.Current.map.Water.ColorLerp.y = ColorLerpYElevation.value;
 
 			ScmapEditor.Current.map.Water.SurfaceColor = WaterColor.GetVectorValue();
 			ScmapEditor.Current.map.Water.SunColor = SunColor.GetVectorValue();

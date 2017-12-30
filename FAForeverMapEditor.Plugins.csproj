@@ -347,6 +347,7 @@
     <None Include="Assets\GFX\Shaders\PropShader.shader" />
     <None Include="Assets\GFX\Shaders\Selection.shader" />
     <None Include="Assets\GFX\Shaders\SimpleLambert.cginc" />
+    <None Include="Assets\GFX\Shaders\Skybox\FaSkyboxShader.shader" />
     <None Include="Assets\GFX\Shaders\UI\RawImageChannel.shader" />
     <None Include="Assets\GFX\Shaders\UI\RawImageNoAlpha.shader" />
     <None Include="Assets\GFX\Shaders\UI\UI-Add.shader" />

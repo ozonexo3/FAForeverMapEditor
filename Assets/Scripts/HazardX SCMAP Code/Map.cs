@@ -719,6 +719,7 @@ public class Map
 			}
 			else
 			{
+				AdditionalSkyboxData.Data = new SkyboxData.SkyboxValues(ScmapEditor.Current.DefaultSkyboxData);
 				//AdditionalSkyboxData.LoadDefaults();
 			}
 

@@ -10,16 +10,27 @@ namespace EditMap
 {
 	public class DecalSettings : MonoBehaviour
 	{
+		public GameObject TextureObject;
+		public GameObject TypeObject;
+
 		public RawImage Texture1;
 		public InputField Texture1Path;
 		public RawImage Texture2;
 		public InputField Texture2Path;
+		public Text Texture1Name;
+		public Text Texture2Name;
+		public Color TextureEmptyColor;
+		public Color TextureGoodColor;
+		public Color TextureUnusedColor;
+
 		public UiTextField CutOff;
 		public UiTextField NearCutOff;
 		public Dropdown DecalType;
 		public Button CreateBtn;
 		public GameObject CreateSelected;
 		public Button SelectAllBtn;
+
+
 
 		static Decal.DecalSharedSettings Loaded;
 
@@ -56,6 +67,7 @@ namespace EditMap
 		public void SwitchCreation()
 		{
 			PlacementManager.Clear();
+			PlacementManager.SnapToWater = false;
 			PlacementManager.BeginPlacement(GetCreationObject(), DecalsInfo.Current.Place, false);
 		}
 
@@ -76,6 +88,7 @@ namespace EditMap
 
 				CreateBtn.interactable = false;
 				CreateSelected.SetActive(false);
+				UpdateTextureNames();
 			}
 			else
 			{
@@ -123,8 +136,65 @@ namespace EditMap
 						DecalType.value = 9;
 						break;
 				}
+
+				UpdateTextureNames();
 			}
 			Loading = false;
+		}
+
+		void UpdateTextureNames()
+		{
+			if(Loaded == null)
+			{
+				Texture1Name.text = "None";
+				Texture2Name.text = "None";
+				TextureObject.SetActive(false);
+				TypeObject.SetActive(false);
+				SelectAllBtn.gameObject.SetActive(false);
+				return;
+			}
+
+			TextureObject.SetActive(true);
+			TypeObject.SetActive(true);
+			SelectAllBtn.gameObject.SetActive(true);
+
+			bool NeedSecound = false;
+			switch (DecalType.value)
+			{
+				case 0:
+					Texture1Name.text = "Color";
+					Texture2Name.text = "Specular";
+					break;
+				case 1:
+					Texture1Name.text = "Normal";
+					Texture2Name.text = "None";
+					break;
+				case 2:
+					Texture1Name.text = "Normal";
+					Texture2Name.text = "Alpha";
+					NeedSecound = true;
+					break;
+				case 3:
+					Texture1Name.text = "Glow";
+					Texture2Name.text = "None";
+					break;
+				case 4:
+					Texture1Name.text = "Glow";
+					Texture2Name.text = "Mask";
+					NeedSecound = true;
+					break;
+				default:
+					Texture1Name.text = "Color";
+					Texture2Name.text = "None";
+					break;
+			}
+
+			Texture1Name.color = (Loaded.Texture1 != null) ? TextureGoodColor : TextureEmptyColor;
+
+			if (NeedSecound)
+				Texture2Name.color = (Loaded.Texture2 != null) ? TextureGoodColor : TextureEmptyColor;
+			else
+				Texture2Name.color = TextureUnusedColor;
 		}
 
 		public void SelectAll()
@@ -233,7 +303,7 @@ namespace EditMap
 			Undo.Current.RegisterDecalsSharedValuesChange();
 
 			Loaded.Type = TypeByDropdown();
-
+			UpdateTextureNames();
 
 			Loaded.UpdateMaterial();
 		}
@@ -406,6 +476,7 @@ namespace EditMap
 				Selection.SelectionManager.Current.ClearAffectedGameObjects(false);
 				PlacementManager.InstantiateAction = CreatePrefabAction;
 				PlacementManager.MinRotAngle = 0;
+				PlacementManager.SnapToWater = false;
 				PlacementManager.BeginPlacement(GetCreationObject(), DecalsInfo.Current.Place);
 				DecalsInfo.Current.DecalsList.UpdateSelection();
 			}
@@ -427,6 +498,8 @@ namespace EditMap
 		GameObject CreationGameObject;
 		GameObject GetCreationObject()
 		{
+			return CreationPrefab;
+			/*
 			if (!CreationGameObject)
 			{
 				CreationGameObject = Instantiate(CreationPrefab);
@@ -434,6 +507,7 @@ namespace EditMap
 				CreatePrefabAction(CreationGameObject);
 			}
 			return CreationGameObject;
+			*/
 		}
 
 		void CreatePrefabAction(GameObject InstancedPrefab)

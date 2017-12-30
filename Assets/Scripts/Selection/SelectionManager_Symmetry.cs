@@ -133,7 +133,12 @@ namespace Selection
 							Current.AffectedGameObjects[Ids[i]].transform.localPosition = ScmapEditor.SnapToGridCenter(Positions[i] + Offset, true, Current.SnapToWater);
 							SelectionRings[i].transform.localPosition = Current.AffectedGameObjects[Ids[i]].transform.localPosition;
 						}*/
-						Vector3 NewPos = ScmapEditor.SnapToGridCenter(Positions[i] + Offset, true, Current.SnapToWater);
+
+						Vector3 NewPos = Vector3.zero;
+						if (Current.LastControlType == SelectionControlTypes.Marker)
+							NewPos = ScmapEditor.SnapMarker(Positions[i] + Offset, Current.AffectedTypes[Ids[i]]);
+						else
+							NewPos = ScmapEditor.SnapToGridCenter(Positions[i] + Offset, true, Current.SnapToWater);
 
 						SelectionRings[i].transform.localPosition = NewPos;
 						if (CustomSnapAction != null)

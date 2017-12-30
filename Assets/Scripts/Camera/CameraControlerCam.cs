@@ -181,6 +181,16 @@ public partial class CameraControler : MonoBehaviour {
 		TargetLocalCamPos -= Offset;
 	}
 
+
+	public static Vector3 BufforedGameplayCursorPos
+	{
+		get
+		{
+			return Current.GameplayCursorPos;
+		}
+	}
+
+	Vector3 GameplayCursorPos;
 	void CursorUiPos()
 	{
 
@@ -188,12 +198,13 @@ public partial class CameraControler : MonoBehaviour {
 		RaycastHit hit;
 		if (Physics.Raycast(ray, out hit, MaxRaycastDistance, MaskCursor))
 		{
-			Vector3 GameplayCursorPos = ScmapEditor.WorldPosToScmap(hit.point);
-			GameplayCursorPos.y = hit.point.y * 10;
-			GameplayCursorPos.z = ScmapEditor.Current.map.Height - GameplayCursorPos.z;
-			string X = GameplayCursorPos.x.ToString("N2");
-			string Y = GameplayCursorPos.y.ToString("N2");
-			string Z = GameplayCursorPos.z.ToString("N2");
+			GameplayCursorPos = hit.point;
+			Vector3 GameplayCursorPosScm = ScmapEditor.WorldPosToScmap(GameplayCursorPos);
+			GameplayCursorPosScm.y = hit.point.y * 10;
+			GameplayCursorPosScm.z = ScmapEditor.Current.map.Height - GameplayCursorPosScm.z;
+			string X = GameplayCursorPosScm.x.ToString("N2");
+			string Y = GameplayCursorPosScm.y.ToString("N2");
+			string Z = GameplayCursorPosScm.z.ToString("N2");
 
 			X = X.PadRight(8);
 			Y = Y.PadRight(8);

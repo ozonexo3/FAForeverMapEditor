@@ -33,7 +33,7 @@ Shader "MapEditor/FaWater" {
 	     } 
 
 		Blend SrcAlpha OneMinusSrcAlpha
-
+		Offset 0, -20000
 
 
 		CGPROGRAM

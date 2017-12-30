@@ -35,9 +35,30 @@ public class ResourceBrowser : MonoBehaviour
 	public Dropdown Category;
 	public GameObject Loading;
 	public Texture2D CursorImage;
+	public Texture2D CursorImage_Prop;
+	public Texture2D CursorImage_Decal;
 	public LayoutGroup Layout;
 	public ContentSizeFitter SizeFitter;
 
+	public Texture2D GetCursorImage()
+	{
+		if (Category.value == 1 || Category.value == 2)
+			return CursorImage_Decal;
+		else if (Category.value == 3)
+			return CursorImage_Prop;
+		else
+			return CursorImage;
+	}
+
+	public static bool IsDecal()
+	{
+		return Current.Category.value == 1 || Current.Category.value == 2;
+	}
+
+	public static bool IsProp()
+	{
+		return Current.Category.value == 3;
+	}
 
 	[Header("Loaded assets")]
 	public List<Texture2D> LoadedTextures = new List<Texture2D>();

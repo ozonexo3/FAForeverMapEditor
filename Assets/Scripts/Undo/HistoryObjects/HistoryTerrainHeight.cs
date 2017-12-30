@@ -44,5 +44,6 @@ public class HistoryTerrainHeight : HistoryObject {
 
 		//Markers.MarkersControler.UpdateMarkersHeights();
 		Undo.Current.EditMenu.EditTerrain.OnTerrainChanged();
+		Undo.Current.EditMenu.EditTerrain.RegenerateMaps();
 	}
 }

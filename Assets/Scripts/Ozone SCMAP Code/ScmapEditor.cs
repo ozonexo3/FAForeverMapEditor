@@ -20,6 +20,7 @@ public class ScmapEditor : MonoBehaviour
 	public Transform WaterLevel;
 	public ResourceBrowser ResBrowser;
 	public Light Sun;
+	public ProceduralSkybox Skybox;
 	public Material TerrainMaterial;
 	public Material WaterMaterial;
 	public PostProcessingProfile PostProcessing;
@@ -95,7 +96,6 @@ public class ScmapEditor : MonoBehaviour
 		Shader.SetGlobalColor("_SunAmbience", new Color(map.SunAmbience.x * 0.5f, map.SunAmbience.y * 0.5f, map.SunAmbience.z * 0.5f, 1));
 		Shader.SetGlobalColor("_ShadowColor", new Color(map.ShadowFillColor.x * 0.5f, map.ShadowFillColor.y * 0.5f, map.ShadowFillColor.z * 0.5f, 1));
 
-
 		Shader.SetGlobalColor("_SpecularColor", new Color(map.SpecularColor.x * 0.5f, map.SpecularColor.y * 0.5f, map.SpecularColor.z * 0.5f, map.SpecularColor.w * 0.5f));
 	}
 
@@ -114,6 +114,7 @@ public class ScmapEditor : MonoBehaviour
 		if (map.Load(path))
 		{
 			UpdateLighting();
+			Skybox.LoadSkybox();
 		}
 		else
 		{
@@ -166,11 +167,6 @@ public class ScmapEditor : MonoBehaviour
 
 		TerrainMaterial.SetTexture("_TerrainNormal", map.UncompressedNormalmapTex);
 		Shader.SetGlobalTexture("_UtilitySamplerC", map.UncompressedWatermapTex);
-		//WaterMaterial.SetTexture("_UtilitySamplerC", map.UncompressedWatermapTex);
-		//WaterMaterial.SetFloat("_WaterScaleX", xRes);
-		//WaterMaterial.SetFloat("_WaterScaleZ", zRes);
-		//TerrainMaterial.SetFloat("_WaterScaleX", xRes);
-		//TerrainMaterial.SetFloat("_WaterScaleZ", zRes);
 		Shader.SetGlobalFloat("_WaterScaleX", xRes);
 		Shader.SetGlobalFloat("_WaterScaleZ", xRes);
 
@@ -188,7 +184,7 @@ public class ScmapEditor : MonoBehaviour
 		Teren.gameObject.name = "TERRAIN";
 		Teren.materialType = Terrain.MaterialType.Custom;
 		Teren.materialTemplate = TerrainMaterial;
-		Teren.heightmapPixelError = 5f;
+		Teren.heightmapPixelError = 4f;
 		Teren.basemapDistance = 10000;
 		Teren.castShadows = false;
 		Teren.drawTreesAndFoliage = false;
@@ -343,10 +339,11 @@ public class ScmapEditor : MonoBehaviour
 
 		//Shader.SetGlobalVector("waterLerp", map.Water.WaveTextures);
 
-		TerrainMaterial.SetFloat("_WaterLevel", map.Water.Elevation / 10.0f);
-		TerrainMaterial.SetFloat("_DepthLevel", map.Water.ElevationDeep / 10.0f);
-		TerrainMaterial.SetFloat("_AbyssLevel", map.Water.ElevationAbyss / 10.0f);
-		TerrainMaterial.SetInt("_Water", map.Water.HasWater ? 1 : 0);
+		Shader.SetGlobalFloat("_WaterLevel", map.Water.Elevation / 10.0f);
+		//TerrainMaterial.SetFloat("_DepthLevel", map.Water.ElevationDeep / 10.0f);
+		//TerrainMaterial.SetFloat("_AbyssLevel", map.Water.ElevationAbyss / 10.0f);
+		//TerrainMaterial.SetInt("_Water", map.Water.HasWater ? 1 : 0);
+		Shader.SetGlobalInt("_Water", map.Water.HasWater ? 1 : 0);
 	}
 
 	public void SetWaterTextures()
@@ -624,11 +621,7 @@ public class ScmapEditor : MonoBehaviour
 
 			map.VersionMinor = 60;
 
-			map.AdditionalSkyboxData.Data.Position = WorldPosToScmap(MapLuaParser.Current.MapCenterPoint);
-
-			//map.AdditionalSkyboxData.Data.Position.y = Mathf.Clamp(LowestElevation - 1, 0, 128);
-			//map.AdditionalSkyboxData.Data.Scale.y = Mathf.Max(map.Width, map.Height) * 2.288245f;
-
+			map.AdditionalSkyboxData.Data.UpdateSize();
 		}
 		else if(map.VersionMinor >= 60)
 		{
@@ -636,6 +629,7 @@ public class ScmapEditor : MonoBehaviour
 			{
 				map.AdditionalSkyboxData.Data.CopyFrom(DefaultSkyboxData);
 			}
+			map.AdditionalSkyboxData.Data.UpdateSize();
 			map.VersionMinor = 56;
 		}
 
@@ -860,6 +854,14 @@ public class ScmapEditor : MonoBehaviour
 		return Pos;
 	}
 
+	public static Vector3 SnapMarker(Vector3 Pos, int ID)
+	{
+		bool Water = ID == 1 || ID == 2 || ID == 3;
+
+		return SnapToGridCenter(Pos, true, !Water);
+
+	}
+
 	public static Vector3 SnapToGridCenter(Vector3 Pos, bool SampleHeight = false, bool MinimumWaterLevel = false)
 	{
 		Pos.x += 0.1f;
@@ -885,7 +887,8 @@ public class ScmapEditor : MonoBehaviour
 
 	public static Vector3 ClampToWater(Vector3 Pos)
 	{
-		Pos.y = Mathf.Clamp(Pos.y, GetWaterLevel(), 10000);
+		if (Current.map.Water.HasWater)
+			Pos.y = Mathf.Clamp(Pos.y, GetWaterLevel(), 10000);
 		return Pos;
 	}
 
