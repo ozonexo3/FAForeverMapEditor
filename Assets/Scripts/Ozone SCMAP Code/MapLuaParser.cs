@@ -16,6 +16,7 @@ public class MapLuaParser : MonoBehaviour
 	public static MapLuaParser Current;
 
 	[Header("LUA")]
+	public string LoadedMapFolder;
 	public ScenarioLua ScenarioLuaFile;
 	public SaveLua SaveLuaFile;
 	public TextAsset SaveLuaHeader;
@@ -409,7 +410,7 @@ public class MapLuaParser : MonoBehaviour
 
 
 		//Save.lua
-		string SaveFilePath = ScenarioLuaFile.Data.save.Replace("/maps/", FolderParentPath);
+		string SaveFilePath = MapRelativePath(ScenarioLuaFile.Data.save);
 		string FileName = ScenarioLuaFile.Data.save;
 		string[] Names = FileName.Split(("/").ToCharArray());
 		if (BackupFiles && System.IO.File.Exists(SaveFilePath))
@@ -432,7 +433,7 @@ public class MapLuaParser : MonoBehaviour
 	public void SaveScmap()
 	{
 
-		string MapFilePath = ScenarioLuaFile.Data.map.Replace("/maps/", FolderParentPath);
+		string MapFilePath = MapRelativePath(ScenarioLuaFile.Data.map);
 
 		string FileName = ScenarioLuaFile.Data.map;
 		char[] NameSeparator = ("/").ToCharArray();
@@ -464,7 +465,7 @@ public class MapLuaParser : MonoBehaviour
 		SaveData = loadedFile;
 		*/
 
-		string SaveFilePath = ScenarioLuaFile.Data.script.Replace("/maps/", FolderParentPath);
+		string SaveFilePath = MapRelativePath(ScenarioLuaFile.Data.script);
 
 		string FileName = ScenarioLuaFile.Data.script;
 		char[] NameSeparator = ("/").ToCharArray();
@@ -578,6 +579,11 @@ public class MapLuaParser : MonoBehaviour
 	public static float GetMapSizeY()
 	{
 		return Current.ScenarioLuaFile.Data.Size[1];
+	}
+
+	public static string MapRelativePath(string luaPath)
+	{
+		return luaPath.Replace("/maps/", Current.FolderParentPath);
 	}
 
 	#endregion

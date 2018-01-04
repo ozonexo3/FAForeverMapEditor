@@ -104,7 +104,7 @@ Material:
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
     - _Glossiness: 0.5
-    - _GridScale: 25.6
+    - _GridScale: 51.2
     - _Metallic: 0
     - _Mode: 0
     - _OcclusionStrength: 1
@@ -118,5 +118,5 @@ Material:
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - sunColor: {r: 0.4063715, g: 0.23705, b: 0.1693215, a: 1}
-    - waterColor: {r: 0.64, g: 0.34, b: 0.175, a: 1}
+    - sunColor: {r: 0.225, g: 0.21, b: 0.24, a: 1}
+    - waterColor: {r: 0, g: 0.175, b: 0.375, a: 1}

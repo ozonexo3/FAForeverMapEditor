@@ -18,8 +18,8 @@ public class Layer
     {
         this.PathTexture = "";
         this.PathNormalmap = "";
-        this.ScaleTexture = 1f;
-        this.ScaleNormalmap = 1f;
+        this.ScaleTexture = 4f;
+        this.ScaleNormalmap = 4f;
     }
 
     public void Load(BinaryReader Stream)

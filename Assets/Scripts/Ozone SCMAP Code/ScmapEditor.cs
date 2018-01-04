@@ -106,7 +106,7 @@ public class ScmapEditor : MonoBehaviour
 		map = new Map();
 
 		string MapPath = EnvPaths.GetMapsPath();
-		string path = MapLuaParser.Current.ScenarioLuaFile.Data.map.Replace("/maps/", MapPath);
+		string path = MapLuaParser.MapRelativePath(MapLuaParser.Current.ScenarioLuaFile.Data.map);
 
 		Debug.Log("Load SCMAP file: " + path);
 
@@ -273,11 +273,16 @@ public class ScmapEditor : MonoBehaviour
 	public void LoadStratumScdTextures(bool Loading = true)
 	{
 		// Load Stratum Textures Paths
+
+
 		for (int i = 0; i < Textures.Length; i++)
 		{
 			if (Loading)
 			{
 				MapLuaParser.Current.InfoPopup.Show(true, "Loading map...\n( Stratum textures " + (i + 1) + " )");
+
+				if (i >= map.Layers.Count)
+					map.Layers.Add(new Layer());
 
 				Textures[i].AlbedoPath = map.Layers[i].PathTexture;
 				Textures[i].NormalPath = map.Layers[i].PathNormalmap;
@@ -636,7 +641,7 @@ public class ScmapEditor : MonoBehaviour
 		//Debug.Log("Set Heightmap to map " + map.Width + ", " + map.Height);
 
 		//string MapPath = EnvPaths.GetMapsPath();
-		string path = MapLuaParser.Current.ScenarioLuaFile.Data.map.Replace("/maps/", MapLuaParser.Current.FolderParentPath);
+		string path = MapLuaParser.MapRelativePath(MapLuaParser.Current.ScenarioLuaFile.Data.map);
 
 		//TODO force values if needed
 		//map.TerrainShader = Shader;
