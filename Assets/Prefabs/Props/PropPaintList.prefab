@@ -872,6 +872,23 @@ MonoBehaviour:
           m_CallState: 2
       m_TypeName: UnityEngine.EventSystems.EventTrigger+TriggerEvent, UnityEngine.UI,
         Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+  - eventID: 6
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 114017589616092716}
+          m_MethodName: DropOtherProp
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+      m_TypeName: UnityEngine.EventSystems.EventTrigger+TriggerEvent, UnityEngine.UI,
+        Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   delegates: []
 --- !u!114 &114216572268778048
 MonoBehaviour:
@@ -1080,7 +1097,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   FieldType: 1
   BeginValue: 1
-  Format: N2
   InputFieldUi: {fileID: 114226237324387216}
   SliderUi: {fileID: 0}
   OnValueChanged:
@@ -1106,7 +1122,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   FieldType: 2
   BeginValue: 360
-  Format: 0
   InputFieldUi: {fileID: 114510921813939316}
   SliderUi: {fileID: 114644361265583564}
   OnValueChanged:
@@ -1213,7 +1228,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   FieldType: 2
   BeginValue: 0
-  Format: 0
   InputFieldUi: {fileID: 114799158646090148}
   SliderUi: {fileID: 114515083728861288}
   OnValueChanged:
@@ -1299,7 +1313,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   FieldType: 2
   BeginValue: 100
-  Format: 0
   InputFieldUi: {fileID: 114683520203043370}
   SliderUi: {fileID: 114514618127567082}
   OnValueChanged:
@@ -2258,7 +2271,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   FieldType: 1
   BeginValue: 1
-  Format: N2
   InputFieldUi: {fileID: 114216572268778048}
   SliderUi: {fileID: 0}
   OnValueChanged:

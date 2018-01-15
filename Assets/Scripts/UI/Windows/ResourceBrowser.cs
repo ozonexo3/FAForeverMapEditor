@@ -10,7 +10,7 @@ using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using System.IO.Compression;
+//using System.IO.Compression;
 using ICSharpCode.SharpZipLib.Core;
 using ICSharpCode.SharpZipLib.Zip;
 using ICSharpCode.SharpZipLib.BZip2;

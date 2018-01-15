@@ -4,7 +4,7 @@ using System.Collections;
 using System;
 
 using System.IO;
-using System.IO.Compression;
+//using System.IO.Compression;
 using ICSharpCode.SharpZipLib.Core;
 using ICSharpCode.SharpZipLib.Zip;
 using ICSharpCode.SharpZipLib.BZip2;
@@ -29,7 +29,7 @@ public partial struct GetGamedataFile
 	{
 		if (!Init)
 		{
-			ICSharpCode.SharpZipLib.Zip.ZipConstants.DefaultCodePage = 0;
+			ZipConstants.DefaultCodePage = 0;
 			Init = true;
 		}
 

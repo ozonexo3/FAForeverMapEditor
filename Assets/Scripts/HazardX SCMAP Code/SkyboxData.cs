@@ -28,9 +28,9 @@ public class SkyboxData
 		[Header("Horizon")]
 		public float HorizonHeight = 0;
 		public float ZenithHeight = 174.5082f; // horizonEnd
-		[ColorUsage(false, true, 0, 2, 0, 2)]
+		[ColorUsage(false, true)]
 		public Color HorizonColor = new Color(0, 0, 0, 0);
-		[ColorUsage(false, true, 0, 2, 0, 2)]
+		[ColorUsage(false, true)]
 		public Color ZenithColor = new Color(0, 0, 0, 0);
 
 		[Header("Decals atlas")]
@@ -45,7 +45,7 @@ public class SkyboxData
 
 		[Header("Cirrus")]
 		public float CirrusMultiplier = 1.8f;
-		[ColorUsage(false, true, 0, 2, 0, 2)]
+		[ColorUsage(false, true)]
 		public Color CirrusColor = Color.white;
 		public string CirrusTexture = "/textures/environment/cirrus000.dds";
 		public Cirrus[] CirrusLayers;

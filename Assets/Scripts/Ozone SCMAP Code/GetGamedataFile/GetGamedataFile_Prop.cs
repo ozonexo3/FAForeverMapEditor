@@ -281,6 +281,8 @@ public partial struct GetGamedataFile
 
 		ToReturn.BP.LocalScale = Vector3.one * (ToReturn.BP.UniformScale * 0.1f);
 
+
+
 		for (int i = 0; i < ToReturn.BP.LODs.Length; i++)
 		{
 			ToReturn.BP.LODs[i].Mesh = LoadModel(scd, ToReturn.BP.LODs[i].Scm);
@@ -313,6 +315,7 @@ public partial struct GetGamedataFile
 			ToReturn.BP.LODs[i].Albedo.anisoLevel = 2;
 			ToReturn.BP.LODs[i].Mat.SetTexture("_MainTex", ToReturn.BP.LODs[i].Albedo);
 
+
 			if (ToReturn.BP.LODs[i].ShaderName == "VertexNormal")
 			{
 				ToReturn.BP.LODs[i].NormalsName = "";
@@ -324,6 +327,11 @@ public partial struct GetGamedataFile
 			else
 			{
 				ToReturn.BP.LODs[i].NormalsName = OffsetRelativePath(LocalPath, ToReturn.BP.LODs[i].NormalsName, true);
+			}
+
+			if(ToReturn.BP.LODs[i].ShaderName == "NormalMappedTerrain")
+			{
+				ToReturn.BP.LODs[i].Mat.SetInt("_GlowAlpha", 1);
 			}
 
 			if (!string.IsNullOrEmpty(ToReturn.BP.LODs[i].NormalsName))

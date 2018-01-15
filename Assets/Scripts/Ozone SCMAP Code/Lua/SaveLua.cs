@@ -109,7 +109,7 @@ namespace MapLua
 		{
 			System.Text.Encoding encodeType = System.Text.Encoding.ASCII;
 			string loadedFileSave = "";
-			string MapPath = EnvPaths.GetMapsPath();
+			//string MapPath = EnvPaths.GetMapsPath();
 
 			loadedFileSave = System.IO.File.ReadAllText( MapLuaParser.MapRelativePath(MapLuaParser.Current.ScenarioLuaFile.Data.save), encodeType);
 

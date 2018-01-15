@@ -57,6 +57,11 @@ public class PropData : MonoBehaviour {
 		PropsInfo.Current.Preview.Hide(gameObject);
 	}
 
+	public void DropOtherProp()
+	{
+		PropsInfo.Current.DropProp();
+	}
+
 	/*
 	public void ClampRotations()
 	{

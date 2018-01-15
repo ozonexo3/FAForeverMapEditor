@@ -35,7 +35,7 @@ public partial class CameraControler : MonoBehaviour {
 					if (transform.localPosition.y > MinDistance && Physics.Raycast(ray, out hit, MaxRaycastDistance, Mask))
 					{
 						Vector3 Ray = Pivot.InverseTransformDirection(ray.direction);
-						TargetLocalCamPos += Ray * ScrollStep * SampleCamSpeed();
+						TargetLocalCamPos += Ray * (ScrollStep * SampleCamSpeed());
 
 						float Distance = Vector3.Distance(Pivot.TransformPoint(TargetLocalCamPos), hit.point);
 						if (Distance < MinDistance)
@@ -52,7 +52,7 @@ public partial class CameraControler : MonoBehaviour {
 					if (transform.localPosition.y < MaxDistance && Physics.Raycast(ray, out hit, MaxDistance, Mask))
 					{
 						Vector3 Ray = Pivot.InverseTransformDirection(ray.direction);
-						TargetLocalCamPos -= Ray * ScrollStep * SampleCamSpeed();
+						TargetLocalCamPos -= Ray * (ScrollStep * SampleCamSpeed());
 					}
 					MouseScrollSteps++;
 				}

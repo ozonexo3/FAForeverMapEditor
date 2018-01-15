@@ -105,7 +105,7 @@ public class ScmapEditor : MonoBehaviour
 
 		map = new Map();
 
-		string MapPath = EnvPaths.GetMapsPath();
+		//string MapPath = EnvPaths.GetMapsPath();
 		string path = MapLuaParser.MapRelativePath(MapLuaParser.Current.ScenarioLuaFile.Data.map);
 
 		Debug.Log("Load SCMAP file: " + path);
@@ -123,39 +123,21 @@ public class ScmapEditor : MonoBehaviour
 		}
 
 
-
-
 		if (map.VersionMinor >= 60)
 		{
-			
-			// Create Default Values
-			/*
-			DefaultSkyboxData = new SkyboxData.SkyboxValues();
-			DefaultSkyboxData.BeginBytes = map.AdditionalSkyboxData.Data.BeginBytes;
-			DefaultSkyboxData.Albedo = map.AdditionalSkyboxData.Data.Albedo;
-			DefaultSkyboxData.Glow = map.AdditionalSkyboxData.Data.Glow;
-			DefaultSkyboxData.Length = map.AdditionalSkyboxData.Data.Length;
-			DefaultSkyboxData.MidBytes = map.AdditionalSkyboxData.Data.MidBytes;
-			DefaultSkyboxData.MidBytesStatic = map.AdditionalSkyboxData.Data.MidBytesStatic;
-			DefaultSkyboxData.Clouds = map.AdditionalSkyboxData.Data.Clouds;
-			DefaultSkyboxData.EndBytes = map.AdditionalSkyboxData.Data.EndBytes;
-			*/
 		}
 		else
 		{
 			map.AdditionalSkyboxData.Data = new SkyboxData.SkyboxValues(DefaultSkyboxData);
-
 		}
 
 
 		EnvPaths.CurrentGamedataPath = EnvPaths.GetGamedataPath();
 
-		//Shader = map.TerrainShader;
+		//Shader
 		MapLuaParser.Current.EditMenu.TexturesMenu.TTerrainXP.isOn = map.TerrainShader == "TTerrainXP";
 		ToogleShader();
-
 	
-
 		// Set Variables
 		int xRes = MapLuaParser.Current.ScenarioLuaFile.Data.Size[0];
 		int zRes = MapLuaParser.Current.ScenarioLuaFile.Data.Size[1];

@@ -43,13 +43,16 @@ public class EditorVersion : MonoBehaviour
 				float Latest = BuildFloat(LatestTag);
 				float Current = BuildFloat(EditorBuildVersion);
 				if (Current < Latest)
+				{
+					Debug.Log("New version avaiable: " + Latest);
 					GenericPopup.ShowPopup(GenericPopup.PopupTypes.TwoButton, "New version",
 						"New version of Map Editor is avaiable.\nCurrent: " + EditorBuildVersion.ToLower() + "\t\tNew: " + LatestTag + "\nDo you want to download it now?",
 						"Download", DownloadLatest,
 						"Cancel", CancelDownload
 						);
+				}
 				else
-					Debug.Log("Latest version " + Latest);
+					Debug.Log("Latest version: " + Mathf.Max(Latest, Current));
 
 			}
 		}

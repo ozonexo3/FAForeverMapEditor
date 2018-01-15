@@ -4,7 +4,7 @@ using System.Diagnostics;
 
 public class BuildWithResources : MonoBehaviour
 {
-	[MenuItem("Build/Windows with resources (old)")]
+	//[MenuItem("Build/Windows with resources (old)")]
 	public static void BuildSettings()
 	{
 		// Get filename
@@ -31,7 +31,7 @@ public class BuildWithResources : MonoBehaviour
 
 		string[] levels = new string[] { "Assets/MapEditor.unity" };
 
-		BuildPipeline.BuildPlayer(levels, path + "/FAForeverMapEditor.exe", BuildTarget.StandaloneWindows64, BuildOptions.None);
+		BuildPipeline.BuildPlayer(levels, path + "/FAForeverMapEditor.exe", BuildTarget.StandaloneWindows64, BuildOptions.Il2CPP);
 
 		// Copy structure files
 		FileUtil.CopyFileOrDirectory("Structure", path + "/FAForeverMapEditor_Data/Structure");

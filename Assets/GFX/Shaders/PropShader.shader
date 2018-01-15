@@ -3,6 +3,8 @@
 Shader "Custom/PropShader" {
 	Properties {
 		//_Color ("Color", Color) = (1,1,1,1)
+		[MaterialEnum(Off,0,On,1)] 
+		_GlowAlpha ("Glow (Alpha)", Int) = 0
 		_MainTex ("Albedo (RGB)", 2D) = "white" {}
 		_BumpMap ("Normal ", 2D) = "bump" {}
 		_Clip ("Alpha cull", Range (0, 1)) = 0.5
@@ -41,19 +43,21 @@ Shader "Custom/PropShader" {
 			// put more per-instance properties here
 		UNITY_INSTANCING_BUFFER_END(Props)
 
+		fixed _GlowAlpha;
+
 		void surf (Input IN, inout SurfaceOutput o) {
 			// Albedo comes from a texture tinted by color
 			fixed4 c = tex2D (_MainTex, IN.uv_MainTex);
 			o.Albedo = c.rgb;
 			o.Normal = UnpackNormal( tex2D (_BumpMap, IN.uv_MainTex) );
 
-			//o.Emission = _SunAmbience;
-
-			// Metallic and smoothness come from slider variables
-			//o.Metallic = _Metallic;
-			//o.Smoothness = _Glossiness;
-			clip(c.a - _Clip);
-			o.Alpha = c.a;
+			if(_GlowAlpha > 0){
+				o.Emission = c.rgb * c.a;
+			}
+			else{
+				clip(c.a - _Clip);
+				o.Alpha = c.a;
+			}
 		}
 		ENDCG
 	}

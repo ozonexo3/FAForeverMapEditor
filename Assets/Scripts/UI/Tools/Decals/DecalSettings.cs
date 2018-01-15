@@ -68,7 +68,7 @@ namespace EditMap
 		{
 			PlacementManager.Clear();
 			PlacementManager.SnapToWater = false;
-			PlacementManager.BeginPlacement(GetCreationObject(), DecalsInfo.Current.Place, false);
+			PlacementManager.BeginPlacement(GetCreationObject, DecalsInfo.Current.Place, false);
 		}
 
 		void SetUI()
@@ -472,22 +472,15 @@ namespace EditMap
 			CreateSelected.SetActive(Creating);
 			if (Creating)
 			{
-				//TODO Enter Creating mode
 				Selection.SelectionManager.Current.ClearAffectedGameObjects(false);
 				PlacementManager.InstantiateAction = CreatePrefabAction;
 				PlacementManager.MinRotAngle = 0;
 				PlacementManager.SnapToWater = false;
-				PlacementManager.BeginPlacement(GetCreationObject(), DecalsInfo.Current.Place);
+				PlacementManager.BeginPlacement(GetCreationObject, DecalsInfo.Current.Place);
 				DecalsInfo.Current.DecalsList.UpdateSelection();
 			}
 			else
 			{
-				//TODO Exit Creating mode
-				if (CreationGameObject)
-				{
-					DestroyImmediate(CreationGameObject);
-				}
-
 				DecalsInfo.Current.GoToSelection();
 			}
 		}
@@ -495,19 +488,12 @@ namespace EditMap
 
 
 		public GameObject CreationPrefab;
-		GameObject CreationGameObject;
-		GameObject GetCreationObject()
+		GameObject GetCreationObject
 		{
-			return CreationPrefab;
-			/*
-			if (!CreationGameObject)
+			get
 			{
-				CreationGameObject = Instantiate(CreationPrefab);
-				CreationGameObject.SetActive(false);
-				CreatePrefabAction(CreationGameObject);
+				return CreationPrefab;
 			}
-			return CreationGameObject;
-			*/
 		}
 
 		void CreatePrefabAction(GameObject InstancedPrefab)

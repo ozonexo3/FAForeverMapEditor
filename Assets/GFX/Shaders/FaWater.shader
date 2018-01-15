@@ -37,7 +37,7 @@ Shader "MapEditor/FaWater" {
 
 
 		CGPROGRAM
-		#pragma surface surf Empty vertex:vert alpha noambient
+		#pragma surface surf Empty vertex:vert alpha noambient 
 			#pragma target 4.0
 			#pragma exclude_renderers gles
 			#pragma multi_compile ___ UNITY_HDR_ON
@@ -90,7 +90,7 @@ Shader "MapEditor/FaWater" {
 			          }
 
 		struct Input {
-	        float4 position 	: 	SV_POSITION;
+	        //float4 position 	: 	SV_POSITION;
 			float2 uv_UtilitySamplerC : TEXCOORD0;
 			float2 mLayer0      : 	TEXCOORD1;
 			float2 mLayer1      : 	TEXCOORD2;
@@ -105,8 +105,8 @@ Shader "MapEditor/FaWater" {
 
 		void vert (inout appdata_full v, out Input o){
 			UNITY_INITIALIZE_OUTPUT(Input,o);
-	        o.position = UnityObjectToClipPos (v.vertex);
-	        o.mScreenPos = ComputeNonStereoScreenPos(o.position);
+	        //o.position = UnityObjectToClipPos (v.vertex);
+	        o.mScreenPos = ComputeNonStereoScreenPos(UnityObjectToClipPos (v.vertex));
 	        //o.mScreenPos.xy /=  o.mScreenPos.w;
 	        //o.mScreenPos.xy /= _ScreenParams.xy * 0.1;
 	        
