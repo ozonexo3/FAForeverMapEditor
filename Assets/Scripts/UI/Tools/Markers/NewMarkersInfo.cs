@@ -26,7 +26,7 @@ namespace EditMap
 			SelectionManager.Current.DisableLayer = 9;
 			SelectionManager.Current.SetRemoveAction(DestroyMarkers);
 			SelectionManager.Current.SetSelectionChangeAction(SelectMarkers);
-			SelectionManager.Current.SetCustomSnapAction(null);
+			SelectionManager.Current.SetCustomSnapAction(SnapAction);
 
 			if (CreationId >= 0)
 				SelectCreateNew(CreationId);
@@ -200,7 +200,10 @@ namespace EditMap
 					ChainsList.AddToCurrentChain(NewMarker);
 
 					NewMarker.position = ScmapEditor.WorldPosToScmap(Positions[i]);
-					NewMarker.orientation = Rotations[i].eulerAngles;
+					if (CreationId == 3)
+						NewMarker.orientation = Rotations[i].eulerAngles;
+					else
+						NewMarker.orientation = Vector3.zero;
 					MarkersControler.CreateMarker(NewMarker, mc);
 					LastAddedMarkers.Add(TotalMarkersCount);
 					TotalMarkersCount++;
@@ -291,6 +294,16 @@ namespace EditMap
 			}
 		}
 
+		public void SelectMarkers()
+		{
+
+		}
+
+		public void SnapAction(Transform marker)
+		{
+			//if (LastCreationType != MapLua.SaveLua.Marker.MarkerTypes.CameraInfo)
+			//	marker.localRotation = Quaternion.identity;
+		}
 
 		MapLua.SaveLua.Marker.MarkerTypes GetCreationType()
 		{
@@ -314,11 +327,6 @@ namespace EditMap
 			return MapLua.SaveLua.Marker.MarkerTypes.Mass;
 		}
 
-		public void SelectMarkers()
-		{
-
-
-		}
 
 		MapLua.SaveLua.Marker.MarkerTypes LastCreationType = MapLua.SaveLua.Marker.MarkerTypes.BlankMarker;
 		GameObject GetCreationObject()

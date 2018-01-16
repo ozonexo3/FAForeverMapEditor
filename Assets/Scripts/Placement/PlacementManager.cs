@@ -253,7 +253,8 @@ public class PlacementManager : MonoBehaviour {
 			return;
 
 		//string DropPath = ResourceBrowser.Current.LoadedPaths[ResourceBrowser.DragedObject.InstanceId];
-		OnDropOnGameplay?.Invoke();
+		if(OnDropOnGameplay != null)
+		OnDropOnGameplay.Invoke();
 	}
 
 

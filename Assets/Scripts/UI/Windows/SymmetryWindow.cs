@@ -13,6 +13,10 @@ public class SymmetryWindow : MonoBehaviour {
 
 	bool Enabling = false;
 
+
+	public delegate void SymmetryChange();
+	public static event SymmetryChange OnSymmetryChanged;
+
 	void OnEnable(){
 		Enabling = true;
 		/*foreach(Toggle tog in Toggles){
@@ -26,11 +30,22 @@ public class SymmetryWindow : MonoBehaviour {
 
 	public void ToleranceChange()
 	{
-		PlayerPrefs.SetFloat("SymmetryTolerance", ToleranceInput.value);
+		if (ToleranceInput.value != GetTolerance())
+		{
+			InvokeChange();
+			PlayerPrefs.SetFloat("SymmetryTolerance", ToleranceInput.value);
+
+		}
 	}
 
 	public void SliderChange(){
-		PlayerPrefs.SetInt("SymmetryAngleCount", AngleSlider.intValue);
+
+		if(AngleSlider.intValue != PlayerPrefs.GetInt("SymmetryAngleCount", 2))
+		{
+			InvokeChange();
+			PlayerPrefs.SetInt("SymmetryAngleCount", AngleSlider.intValue);
+		}
+
 
 		/*
 		if(Enabling) return;
@@ -49,6 +64,12 @@ public class SymmetryWindow : MonoBehaviour {
 		*/
 
 		//if(AnythingChanged) EditMenu.EditMarkers.UpdateSelectionRing();
+	}
+
+	void InvokeChange()
+	{
+		if(OnSymmetryChanged != null)
+		OnSymmetryChanged.Invoke();
 	}
 
 	public void Button(string func){

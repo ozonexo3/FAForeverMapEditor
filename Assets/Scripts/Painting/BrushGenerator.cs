@@ -22,6 +22,7 @@ public class BrushGenerator : MonoBehaviour
 	public Quaternion[] PaintRotations;
 	Vector3 BrushPos;
 	public int LastSym = 0;
+	int LastRot = 2;
 
 	public Color[][] Pixels;
 	public float[][] Values;
@@ -248,12 +249,20 @@ public class BrushGenerator : MonoBehaviour
 		LastSym = SymmetryCode;
 	}
 
+	public static void RegeneratePaintBrushIfNeeded(bool BrushChanged = false)
+	{
+		if (BrushChanged || PlayerPrefs.GetInt("Symmetry", 0) != Current.LastSym || (Current.LastSym == 8 && Current.LastRot != PlayerPrefs.GetInt("SymmetryAngleCount", 2)))
+		{
+			Current.GeneratePaintBrushesh();
+		}
+	}
+
 
 	// Generate brush textures for all symmetry - need to be done only once, when changing symmetry
 	// It mirrors and rotate brush texture
 	// Generating textures is slow and make lag when generating
 	// Need to find something to speed it up
-	public void GeneratePaintBrushesh()
+	void GeneratePaintBrushesh()
 	{
 		int SymmetryCode = PlayerPrefs.GetInt("Symmetry", 0);
 		LastSym = SymmetryCode;
@@ -304,13 +313,13 @@ public class BrushGenerator : MonoBehaviour
 				PaintImage[3] = MirrorTexture(RotatedBrush, true, true);
 				break;
 			case 8:
-				int Count = PlayerPrefs.GetInt("SymmetryAngleCount", 2);
-				PaintImage = new Texture2D[Count];
+				LastRot = PlayerPrefs.GetInt("SymmetryAngleCount", 2);
+				PaintImage = new Texture2D[LastRot];
 				PaintImage[0] = RotatedBrush;
-				float angle = 360.0f / (float)Count;
-				for (int i = 1; i < Count; i++)
+				float angle = 360.0f / (float)LastRot;
+				for (int i = 1; i < LastRot; i++)
 				{
-					PaintImage[i] = rotateTexture(RotatedBrush, angle * i);
+					PaintImage[i] = rotateTexture(RotatedBrush, -angle * i);
 				}
 				break;
 			default:
@@ -497,7 +506,7 @@ public class BrushGenerator : MonoBehaviour
 		}
 		else
 		{
-			pix = tex.GetPixel(x1, y1);
+			pix = tex.GetPixel(y1, x1);
 		}
 
 		return pix;

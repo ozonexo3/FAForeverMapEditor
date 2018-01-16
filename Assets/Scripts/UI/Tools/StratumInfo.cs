@@ -250,10 +250,7 @@ namespace EditMap
 					TerainChanged = false;
 				}
 
-				if (PlayerPrefs.GetInt("Symmetry", 0) != BrushGenerator.Current.LastSym)
-				{
-					BrushGenerator.Current.GeneratePaintBrushesh();
-				}
+				BrushGenerator.RegeneratePaintBrushIfNeeded();
 			}
 		}
 
@@ -502,7 +499,7 @@ namespace EditMap
 					}
 
 					TerrainMaterial.SetTexture("_BrushTex", (Texture)BrushGenerator.Current.RotatedBrush);
-					BrushGenerator.Current.GeneratePaintBrushesh();
+					BrushGenerator.RegeneratePaintBrushIfNeeded(true);
 				}
 				//TerrainMaterial.SetFloat("_BrushSize", BrushSize.value);
 			}
@@ -586,7 +583,7 @@ namespace EditMap
 				BrushGenerator.Current.RotatedBrush = BrushGenerator.rotateTexture(BrushGenerator.Current.Brushes[SelectedFalloff], LastRotation);
 			}
 			TerrainMaterial.SetTexture("_BrushTex", (Texture)BrushGenerator.Current.RotatedBrush);
-			BrushGenerator.Current.GeneratePaintBrushesh();
+			BrushGenerator.RegeneratePaintBrushIfNeeded(true);
 		}
 
 

@@ -484,6 +484,8 @@ namespace MapLua
 					if (MarkerObj != null)
 					{
 						position = ScmapEditor.WorldPosToScmap(MarkerObj.transform.position);
+						if(MarkerType != MarkerTypes.CameraInfo)
+							MarkerObj.transform.localRotation = Quaternion.identity;
 						orientation = MarkerObj.transform.eulerAngles;
 					}
 
