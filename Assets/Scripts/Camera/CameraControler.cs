@@ -11,7 +11,6 @@ public partial class CameraControler : MonoBehaviour {
 
 	public Camera Cam;
 	public			Undo				History;
-	public			MapHelperGui		HUD;
 	public			Editing				Edit;
 	public			AppMenu				Menu;
 	public			GameObject			LoadingPopup;
@@ -123,7 +122,7 @@ public partial class CameraControler : MonoBehaviour {
 
 		// Interaction
 
-		if (HUD.MapLoaded)
+		if (MapLuaParser.IsMapLoaded)
 		{
 			UberCameraMovement();
 		}

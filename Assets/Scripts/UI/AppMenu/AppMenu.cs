@@ -11,7 +11,6 @@ public class AppMenu : MonoBehaviour
 
 	public GameObject Symmetry;
 	public Editing EditingMenu;
-	public MapHelperGui MapHelper;
 
 	public Button[] Buttons;
 	public GameObject[] Popups;

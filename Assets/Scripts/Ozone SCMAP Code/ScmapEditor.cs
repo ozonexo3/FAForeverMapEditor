@@ -2,13 +2,14 @@
 // * SCmap editor
 // * Set Unity objects and scripts using data loaded from Scm
 // ***************************************************************************************
+
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using UnityStandardAssets.ImageEffects;
 using UnityEngine.PostProcessing;
 
-public class ScmapEditor : MonoBehaviour
+public partial class ScmapEditor : MonoBehaviour
 {
 
 	public static ScmapEditor Current;
@@ -33,7 +34,7 @@ public class ScmapEditor : MonoBehaviour
 	public Map map; // Loaded Scmap data
 	public SkyboxData.SkyboxValues DefaultSkyboxData;
 
-	float[,] heights = new float[1, 1];
+	
 	bool Grid;
 	[HideInInspector]
 	public bool Slope;
@@ -237,7 +238,7 @@ public class ScmapEditor : MonoBehaviour
 		}
 
 		// Set terrain heights from heights array
-		Data.SetHeights(0, 0, heights);
+		ApplyHeightmap();
 
 		Teren.gameObject.layer = 8;
 
@@ -393,17 +394,6 @@ public class ScmapEditor : MonoBehaviour
 		}
 		else
 		{
-			//TerrainMaterial.SetTexture("_Splat0XP", Textures[1].Albedo);
-			//TerrainMaterial.SetTexture("_Splat1XP", Textures[2].Albedo);
-			//TerrainMaterial.SetTexture("_Splat2XP", Textures[3].Albedo);
-			//TerrainMaterial.SetTexture("_Splat3XP", Textures[4].Albedo);
-			//TerrainMaterial.SetTexture("_Splat4XP", Textures[5].Albedo);
-			//TerrainMaterial.SetTexture("_Splat5XP", Textures[6].Albedo);
-			//TerrainMaterial.SetTexture("_Splat6XP", Textures[7].Albedo);
-			//TerrainMaterial.SetTexture("_Splat7XP", Textures[8].Albedo);
-
-
-
 			TerrainMaterial.SetFloat("_Splat0Scale", map.Width / Textures[1].AlbedoScale);
 			TerrainMaterial.SetFloat("_Splat1Scale", map.Width / Textures[2].AlbedoScale);
 			TerrainMaterial.SetFloat("_Splat2Scale", map.Width / Textures[3].AlbedoScale);
@@ -412,15 +402,6 @@ public class ScmapEditor : MonoBehaviour
 			TerrainMaterial.SetFloat("_Splat5Scale", map.Width / Textures[6].AlbedoScale);
 			TerrainMaterial.SetFloat("_Splat6Scale", map.Width / Textures[7].AlbedoScale);
 			TerrainMaterial.SetFloat("_Splat7Scale", map.Width / Textures[8].AlbedoScale);
-
-			//TerrainMaterial.SetTexture("_SplatNormal0", Textures[1].Normal);
-			//TerrainMaterial.SetTexture("_SplatNormal1", Textures[2].Normal);
-			//TerrainMaterial.SetTexture("_SplatNormal2", Textures[3].Normal);
-			//TerrainMaterial.SetTexture("_SplatNormal3", Textures[4].Normal);
-			//TerrainMaterial.SetTexture("_SplatNormal4", Textures[5].Normal);
-			//TerrainMaterial.SetTexture("_SplatNormal5", Textures[6].Normal);
-			//TerrainMaterial.SetTexture("_SplatNormal6", Textures[7].Normal);
-			//TerrainMaterial.SetTexture("_SplatNormal7", Textures[8].Normal);
 
 			TerrainMaterial.SetFloat("_Splat0ScaleNormal", map.Width / Textures[1].NormalScale);
 			TerrainMaterial.SetFloat("_Splat1ScaleNormal", map.Width / Textures[2].NormalScale);

@@ -10,7 +10,7 @@ using EditMap;
 using NLua;
 using MapLua;
 
-public class MapLuaParser : MonoBehaviour
+public partial class MapLuaParser : MonoBehaviour
 {
 
 	public static MapLuaParser Current;
@@ -28,7 +28,6 @@ public class MapLuaParser : MonoBehaviour
 	public ScmapEditor HeightmapControler;
 	public Editing EditMenu;
 	public Undo History;
-	public MapHelperGui HelperGui;
 
 	[Header("Map")]
 	public string FolderParentPath;
@@ -47,6 +46,7 @@ public class MapLuaParser : MonoBehaviour
 	[Header("UI")]
 	public GameObject Background;
 	public GenericInfoPopup InfoPopup;
+	public GenericInfoPopup ErrorPopup;
 	public PropsInfo PropsMenu;
 	public DecalsInfo DecalsMenu;
 
@@ -86,7 +86,6 @@ public class MapLuaParser : MonoBehaviour
 
 		DecalsInfo.Current = DecalsMenu;
 		PropsInfo.Current = PropsMenu;
-
 	}
 
 	public static bool IsMapLoaded
@@ -220,10 +219,6 @@ public class MapLuaParser : MonoBehaviour
 			{
 				//Map Loaded
 			}
-			else
-			{
-				HelperGui.MapLoaded = false;
-			}
 
 
 			CameraControler.Current.MapSize = Mathf.Max(ScenarioLuaFile.Data.Size[0], ScenarioLuaFile.Data.Size[1]);
@@ -252,9 +247,6 @@ public class MapLuaParser : MonoBehaviour
 				//LoadSaveLua();
 				yield return null;
 			}
-
-			// Finish Load
-			HelperGui.MapLoaded = true;
 
 			// Load Props
 			if (LoadProps)
@@ -297,9 +289,17 @@ public class MapLuaParser : MonoBehaviour
 		}
 		else
 		{
-			HelperGui.ReturnLoadingWithError(Error);
+			ReturnLoadingWithError(Error);
 		}
 
+	}
+
+	public void ReturnLoadingWithError(string Error)
+	{
+		//Map = false;
+		//OpenComposition(0);
+		ErrorPopup.Show(true, Error);
+		ErrorPopup.InvokeHide();
 	}
 
 	bool SearchForScenario()

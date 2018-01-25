@@ -233,6 +233,7 @@ namespace EditMap
 					{
 						if (UpdateBrushPosition(true))
 						{
+							ScmapEditor.Current.Teren.heightmapPixelError = 20;
 							ScmapEditor.Current.TerrainMaterial.SetFloat("_GeneratingNormal", 1);
 							PaintStarted = true;
 							SymmetryPaint();
@@ -251,6 +252,8 @@ namespace EditMap
 					else if (Input.GetMouseButtonUp(0))
 					{
 						PaintStarted = false;
+						ScmapEditor.Current.Teren.heightmapPixelError = 4;
+
 					}
 					else
 					{
@@ -708,7 +711,14 @@ namespace EditMap
 			int OffsetTop = 0;
 			if (posYInTerrain - offset + size > ScmapEditor.Current.Teren.terrainData.heightmapWidth) OffsetTop = posYInTerrain - offset + size - ScmapEditor.Current.Teren.terrainData.heightmapWidth;
 
-			float[,] heights = ScmapEditor.Current.Teren.terrainData.GetHeights(posXInTerrain - offset + OffsetLeft, posYInTerrain - offset + OffsetDown, (size - OffsetLeft) - OffsetRight, (size - OffsetDown) - OffsetTop);
+			//float[,] heights = ScmapEditor.Current.Teren.terrainData.GetHeights(posXInTerrain - offset + OffsetLeft, posYInTerrain - offset + OffsetDown, (size - OffsetLeft) - OffsetRight, (size - OffsetDown) - OffsetTop);
+
+			int GetX = posXInTerrain - offset + OffsetLeft;
+			int GetY = posYInTerrain - offset + OffsetDown;
+
+			ScmapEditor.GetValues(GetX, GetY, (size - OffsetLeft) - OffsetRight, (size - OffsetDown) - OffsetTop);
+			
+
 			float CenterHeight = 0;
 
 			int i = 0;
@@ -728,7 +738,7 @@ namespace EditMap
 						x = (int)(((i + OffsetDown) / (float)size) * BrushGenerator.Current.PaintImageWidths[id]);
 						y = (int)(((j + OffsetLeft) / (float)size) * BrushGenerator.Current.PaintImageHeights[id]);
 						SampleBrush = Mathf.Clamp01(BrushGenerator.Current.Values[id][y + BrushGenerator.Current.PaintImageWidths[id] * x] - 0.0255f);
-						CenterHeight += heights[i, j] * SampleBrush;
+						CenterHeight += ScmapEditor.ReturnValues[i, j] * SampleBrush;
 						Count += SampleBrush;
 					}
 				}
@@ -744,7 +754,7 @@ namespace EditMap
 						x = (int)(((i + OffsetDown) / (float)size) * BrushGenerator.Current.PaintImageWidths[id]);
 						y = (int)(((j + OffsetLeft) / (float)size) * BrushGenerator.Current.PaintImageHeights[id]);
 						SampleBrush = Mathf.Clamp01(BrushGenerator.Current.Values[id][y + BrushGenerator.Current.PaintImageWidths[id] * x] - 0.5f) * 2f;
-						CenterHeight += heights[i, j] * SampleBrush;
+						CenterHeight += ScmapEditor.ReturnValues[i, j] * SampleBrush;
 						Count += SampleBrush;
 					}
 				}
@@ -796,7 +806,7 @@ namespace EditMap
 						switch (BrushPaintType)
 						{
 							case 1: // Flatten
-								PixelPower = Mathf.Pow(Mathf.Abs(heights[i, j] - CenterHeight), 0.454545f) + 1;
+								PixelPower = Mathf.Pow(Mathf.Abs(ScmapEditor.ReturnValues[i, j] - CenterHeight), 0.454545f) + 1;
 								PixelPower /= 2f;
 
 								//if (PixelPower < 0.001f)
@@ -804,30 +814,30 @@ namespace EditMap
 								//else { 
 								//float FlattenStrenght = PixelPower * StrengthMultiplier * Mathf.Pow(SampleBrush, 2);
 								//heights[i, j] += FlattenStrenght;
-								heights[i, j] = MoveToValue(heights[i, j], CenterHeight, StrengthMultiplier * SampleBrush * PixelPower, 0, 128);
+								ScmapEditor.ReturnValues[i, j] = MoveToValue(ScmapEditor.ReturnValues[i, j], CenterHeight, StrengthMultiplier * SampleBrush * PixelPower, 0, 128);
 								//}
 
 								break;
 							case 2: // Smooth
-								CenterHeight = GetNearValues(ref heights, i, j);
+								CenterHeight = GetNearValues(ref ScmapEditor.ReturnValues, i, j);
 
-								PixelPower = Mathf.Pow(Mathf.Abs(heights[i, j] - CenterHeight), 0.454545f) + 1;
+								PixelPower = Mathf.Pow(Mathf.Abs(ScmapEditor.ReturnValues[i, j] - CenterHeight), 0.454545f) + 1;
 								PixelPower /= 2f;
 								//PixelPower = 10;
 
 								//heights[i, j] = Mathf.Lerp(heights[i, j], CenterHeight, BrushStrenghtValue * Mathf.Pow(SampleBrush, 2) * PixelPower);
-								heights[i, j] = Mathf.Lerp(heights[i, j], CenterHeight, PixelPower * StrengthMultiplier * Mathf.Pow(SampleBrush, 2));
+								ScmapEditor.ReturnValues[i, j] = Mathf.Lerp(ScmapEditor.ReturnValues[i, j], CenterHeight, PixelPower * StrengthMultiplier * Mathf.Pow(SampleBrush, 2));
 								
 								break;
 							case 3: // Sharp
-								PixelPower = Mathf.Pow(Mathf.Abs(heights[i, j] - CenterHeight), 0.454545f) + 1;
+								PixelPower = Mathf.Pow(Mathf.Abs(ScmapEditor.ReturnValues[i, j] - CenterHeight), 0.454545f) + 1;
 								PixelPower /= 2f;
 								//heights[i, j] += Mathf.Lerp(PixelPower, 0, PixelPower * 10) * BrushStrenghtValue * 0.01f * Mathf.Pow(SampleBrush, 2);
-								heights[i, j] = MoveToValue(heights[i, j], CenterHeight, - StrengthMultiplier * SampleBrush * PixelPower, Min, Max);
+								ScmapEditor.ReturnValues[i, j] = MoveToValue(ScmapEditor.ReturnValues[i, j], CenterHeight, - StrengthMultiplier * SampleBrush * PixelPower, Min, Max);
 								break;
 							default:
 								//heights[i, j] += SampleBrush * StrengthMultiplier;
-								heights[i, j] = MoveToValue(heights[i, j], TargetHeight, SampleBrush * StrengthMultiplier, Min, Max);
+								ScmapEditor.ReturnValues[i, j] = MoveToValue(ScmapEditor.ReturnValues[i, j], TargetHeight, SampleBrush * StrengthMultiplier, Min, Max);
 								break;
 						}
 
@@ -843,7 +853,9 @@ namespace EditMap
 				TerainChanged = true;
 			}
 
-			ScmapEditor.Current.Teren.terrainData.SetHeightsDelayLOD(posXInTerrain - offset + OffsetLeft, posYInTerrain - offset + OffsetDown, heights);
+			//ScmapEditor.Current.Teren.terrainData.SetHeightsDelayLOD(posXInTerrain - offset + OffsetLeft, posYInTerrain - offset + OffsetDown, heights);
+
+			ScmapEditor.ApplyChanges(GetX, GetY);
 
 			//Markers.MarkersControler.UpdateMarkersHeights();
 

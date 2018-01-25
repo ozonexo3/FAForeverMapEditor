@@ -8,7 +8,6 @@ public class LoadRecentMaps : MonoBehaviour {
 	public AppMenu Menu;
 	public GameObject ListPrefab;
 	public Transform Pivot;
-	public MapHelperGui HelperGui;
 
 	private void OnEnable()
 	{
