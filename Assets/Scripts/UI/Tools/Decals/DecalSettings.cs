@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using OzoneDecals;
 using Ozone.UI;
 using Selection;
+using FAF.MapEditor;
 
 namespace EditMap
 {

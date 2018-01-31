@@ -185,12 +185,16 @@ namespace MapLua
 			{
 			}
 
-			public Marker(MarkerTypes Type)
+			public Marker(MarkerTypes Type, string NewName = "")
 			{
 				ConnectedToChains = new List<Chain>();
 				AdjacentToMarker = new List<Marker>();
 
-				Name = GetLowestName(Type);
+				if (string.IsNullOrEmpty(NewName))
+					Name = GetLowestName(Type);
+				else
+					Name = NewName;
+
 				RegisterMarkerName(Name);
 				size = 1;
 				position = Vector3.zero;

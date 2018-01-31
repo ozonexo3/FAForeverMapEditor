@@ -6,7 +6,7 @@ using Ozone.UI;
 using System.Runtime.InteropServices;
 using SFB;
 using System.IO;
-
+using FAF.MapEditor;
 
 namespace EditMap
 {

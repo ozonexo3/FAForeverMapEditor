@@ -145,7 +145,7 @@ public partial struct GetGamedataFile
 
 	public static PropObject LoadProp(string scdPath)
 	{
-		return LoadProp("env.scd", LocalBlueprintPath(scdPath));
+		return LoadProp(GetGamedataFile.EnvScd, LocalBlueprintPath(scdPath));
 	}
 
 	static Dictionary<string, PropObject> LoadedPropObjects = new Dictionary<string, PropObject>();

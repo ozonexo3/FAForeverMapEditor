@@ -8,6 +8,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityStandardAssets.ImageEffects;
 using UnityEngine.PostProcessing;
+using FAF.MapEditor;
 
 public partial class ScmapEditor : MonoBehaviour
 {
@@ -285,7 +286,7 @@ public partial class ScmapEditor : MonoBehaviour
 
 			try
 			{
-				GetGamedataFile.LoadTextureFromGamedata("env.scd", Textures[i].AlbedoPath, i, false);
+				GetGamedataFile.LoadTextureFromGamedata(GetGamedataFile.EnvScd, Textures[i].AlbedoPath, i, false);
 			}
 			catch (System.Exception e)
 			{
@@ -294,7 +295,7 @@ public partial class ScmapEditor : MonoBehaviour
 			}
 			try
 			{
-				GetGamedataFile.LoadTextureFromGamedata("env.scd", Textures[i].NormalPath, i, true);
+				GetGamedataFile.LoadTextureFromGamedata(GetGamedataFile.EnvScd, Textures[i].NormalPath, i, true);
 			}
 			catch (System.Exception e)
 			{

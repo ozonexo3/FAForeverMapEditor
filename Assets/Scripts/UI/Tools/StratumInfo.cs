@@ -8,6 +8,7 @@ using B83.Image.BMP;
 using System.Text;
 using System.Runtime.InteropServices;
 using SFB;
+using FAF.MapEditor;
 
 namespace EditMap
 {
@@ -884,7 +885,7 @@ namespace EditMap
 				//Map.Textures [Selected].Normal = ResourceBrowser.Current.LoadedTextures [ResourceBrowser.DragedObject.InstanceId];
 				ScmapEditor.Current.Textures[Selected].NormalPath = ResourceBrowser.Current.LoadedPaths[ResourceBrowser.DragedObject.InstanceId];
 
-				GetGamedataFile.LoadTextureFromGamedata("env.scd", ScmapEditor.Current.Textures[Selected].NormalPath, Selected, true);
+				GetGamedataFile.LoadTextureFromGamedata(GetGamedataFile.EnvScd, ScmapEditor.Current.Textures[Selected].NormalPath, Selected, true);
 
 				//Map.map.Layers [Selected].PathNormalmap = Map.Textures [Selected].NormalPath;
 
@@ -1350,8 +1351,8 @@ namespace EditMap
 
 				ScmapEditor.Current.Textures[Selected] = NewTexture;
 
-				GetGamedataFile.LoadTextureFromGamedata("env.scd", ScmapEditor.Current.Textures[Selected].AlbedoPath, Selected, false);
-				GetGamedataFile.LoadTextureFromGamedata("env.scd", ScmapEditor.Current.Textures[Selected].NormalPath, Selected, true);
+				GetGamedataFile.LoadTextureFromGamedata(GetGamedataFile.EnvScd, ScmapEditor.Current.Textures[Selected].AlbedoPath, Selected, false);
+				GetGamedataFile.LoadTextureFromGamedata(GetGamedataFile.EnvScd, ScmapEditor.Current.Textures[Selected].NormalPath, Selected, true);
 
 				ScmapEditor.Current.SetTextures(Selected);
 
@@ -1450,29 +1451,7 @@ namespace EditMap
 				ScmapEditor.Current.Textures[8] = NewTemplate.Stratum8;
 				ScmapEditor.Current.Textures[9] = NewTemplate.Stratum9;
 
-				//Map.Gamedata.LoadTextureFromGamedata("env.scd", Map.Textures[Selected].AlbedoPath, Selected, false);
-				//Map.Gamedata.LoadTextureFromGamedata("env.scd", Map.Textures[Selected].NormalPath, Selected, true);
-				/*
-				for (int i = 0; i < ScmapEditor.Current.Textures.Length; i++)
-				{
-					ScmapEditor.Current.Textures[i].AlbedoPath = ScmapEditor.Current.map.Layers[i].PathTexture;
-					ScmapEditor.Current.Textures[i].NormalPath = ScmapEditor.Current.map.Layers[i].PathNormalmap;
-					if (ScmapEditor.Current.Textures[i].AlbedoPath.StartsWith("/"))
-					{
-						ScmapEditor.Current.Textures[i].AlbedoPath = ScmapEditor.Current.Textures[i].AlbedoPath.Remove(0, 1);
-					}
-					if (ScmapEditor.Current.Textures[i].NormalPath.StartsWith("/"))
-					{
-						ScmapEditor.Current.Textures[i].NormalPath = ScmapEditor.Current.Textures[i].NormalPath.Remove(0, 1);
-					}
-					ScmapEditor.Current.Textures[i].AlbedoScale = ScmapEditor.Current.map.Layers[i].ScaleTexture;
-					ScmapEditor.Current.Textures[i].NormalScale = ScmapEditor.Current.map.Layers[i].ScaleNormalmap;
 
-					GetGamedataFile.LoadTextureFromGamedata("env.scd", ScmapEditor.Current.Textures[i].AlbedoPath, i, false);
-					GetGamedataFile.LoadTextureFromGamedata("env.scd", ScmapEditor.Current.Textures[i].NormalPath, i, true);
-
-				}
-				*/
 
 				ScmapEditor.Current.LoadStratumScdTextures(false);
 

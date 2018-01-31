@@ -13,9 +13,29 @@ using ICSharpCode.SharpZipLib.BZip2;
 public partial struct GetGamedataFile
 {
 
+	public const string EnvScd = "env.scd";
+	public const string MapScd = "maps";
+
 	// Store ZIP Read Stream in memory for faster load
 	static Dictionary<string, ZipFile> ScdFiles = new Dictionary<string, ZipFile>();
 
+	public static ZipFile GetZipFileInstance(string scd)
+	{
+		if (!Init)
+		{
+			ZipConstants.DefaultCodePage = 0;
+			Init = true;
+		}
+
+		if (!ScdFiles.ContainsKey(scd))
+		{
+			FileStream fs = File.OpenRead(EnvPaths.GetGamedataPath() + scd);
+			ZipFile NewZipFile = new ZipFile(fs);
+			ScdFiles.Add(scd, NewZipFile);
+		}
+
+		return ScdFiles[scd];
+	}
 
 	static bool Init = false;
 
@@ -27,12 +47,6 @@ public partial struct GetGamedataFile
 	/// <returns></returns>
 	public static byte[] LoadBytes(string scd, string LocalPath)
 	{
-		if (!Init)
-		{
-			ZipConstants.DefaultCodePage = 0;
-			Init = true;
-		}
-
 		if (LocalPath.StartsWith("/maps"))
 		{
 			return LoadBytes(LocalPath); 
@@ -48,25 +62,28 @@ public partial struct GetGamedataFile
 		}
 
 
-		if (!ScdFiles.ContainsKey(scd))
+		// Get ZipFile
+		ZipFile ZipFileInstance = GetZipFileInstance(scd);
+		if(ZipFileInstance == null)
 		{
-			FileStream fs = File.OpenRead(EnvPaths.GetGamedataPath() + scd);
-			ZipFile NewZipFile = new ZipFile(fs);
-			ScdFiles.Add(scd, NewZipFile);
+			Debug.LogError("Can't load ZipFile");
+			return null;
 		}
+
 
 		if (LocalPath.StartsWith("/"))
 			LocalPath = LocalPath.Remove(0, 1);
 
-		ZipEntry zipEntry2 = ScdFiles[scd].GetEntry(LocalPath);
+
+		ZipEntry zipEntry2 = ZipFileInstance.GetEntry(LocalPath);
 
 		if (zipEntry2 == null)
 		{
 
-			int FoundEntry = ScdFiles[scd].FindEntry(LocalPath, true);
+			int FoundEntry = ZipFileInstance.FindEntry(LocalPath, true);
 
-			if (FoundEntry >= 0 && FoundEntry < ScdFiles[scd].Count)
-				zipEntry2 = ScdFiles[scd][FoundEntry];
+			if (FoundEntry >= 0 && FoundEntry < ZipFileInstance.Count)
+				zipEntry2 = ZipFileInstance[FoundEntry];
 
 			if (zipEntry2 == null)
 			{
@@ -77,7 +94,7 @@ public partial struct GetGamedataFile
 
 		byte[] FinalBytes = new byte[4096]; // 4K is optimum
 
-		Stream s = ScdFiles[scd].GetInputStream(zipEntry2);
+		Stream s = ZipFileInstance.GetInputStream(zipEntry2);
 		FinalBytes = new byte[zipEntry2.Size];
 		s.Read(FinalBytes, 0, FinalBytes.Length);
 		s.Close();

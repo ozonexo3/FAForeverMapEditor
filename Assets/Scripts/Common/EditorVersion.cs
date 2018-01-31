@@ -22,7 +22,6 @@ public class EditorVersion : MonoBehaviour
 		using (WWW www = new WWW(url))
 		{
 			yield return www;
-			/*
 			if (www.responseHeaders.Count > 0)
 			{
 				
@@ -32,7 +31,6 @@ public class EditorVersion : MonoBehaviour
 					}
 				
 			}
-			*/
 			string[] Tags = www.url.Replace("\\", "/").Split("/".ToCharArray());
 
 			if (Tags.Length > 0)

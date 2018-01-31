@@ -131,7 +131,12 @@ namespace EditMap
 			MapLuaParser.Current.ScenarioLuaFile.Data.Configurations = new MapLua.ScenarioLua.Configuration[1];
 			MapLuaParser.Current.ScenarioLuaFile.Data.Configurations[0] = new MapLua.ScenarioLua.Configuration();
 			MapLuaParser.Current.ScenarioLuaFile.Data.Configurations[0].name = "standard";
-			MapLuaParser.Current.ScenarioLuaFile.Data.Configurations[0].Teams = new MapLua.ScenarioLua.Team[0];
+			MapLuaParser.Current.ScenarioLuaFile.Data.Configurations[0].Teams = new MapLua.ScenarioLua.Team[1];
+			MapLuaParser.Current.ScenarioLuaFile.Data.Configurations[0].Teams[0] = new MapLua.ScenarioLua.Team();
+			MapLuaParser.Current.ScenarioLuaFile.Data.Configurations[0].Teams[0].name = "FFA";
+			MapLuaParser.Current.ScenarioLuaFile.Data.Configurations[0].Teams[0].Armys = new List<MapLua.ScenarioLua.Army>();
+			MapLuaParser.Current.ScenarioLuaFile.Data.Configurations[0].Teams[0].Armys.Add(new MapLua.ScenarioLua.Army("ARMY_1"));
+			MapLuaParser.Current.ScenarioLuaFile.Data.Configurations[0].Teams[0].Armys.Add(new MapLua.ScenarioLua.Army("ARMY_2"));
 			MapLuaParser.Current.ScenarioLuaFile.Data.Configurations[0].ExtraArmys = new List<MapLua.ScenarioLua.Army>();
 			MapLuaParser.Current.ScenarioLuaFile.Data.Configurations[0].factions = new MapLua.ScenarioLua.Factions[0];
 
@@ -148,9 +153,17 @@ namespace EditMap
 			MapLuaParser.Current.ScenarioLuaFile.Data.starts = true;
 
 
+
 			MapLuaParser.Current.SaveLuaFile.Data = new MapLua.SaveLua.Scenario();
 
 			MapLuaParser.Current.SaveLuaFile.Data.MasterChains[0].Markers = new List<MapLua.SaveLua.Marker>();
+
+			MapLua.SaveLua.Marker A1marker = new MapLua.SaveLua.Marker(MapLua.SaveLua.Marker.MarkerTypes.BlankMarker, "ARMY_1");
+			A1marker.position = new Vector3((int)(NewMapWidth * 0.25f), InitialHeight.intValue, (int)(NewMapWidth * 0.25f));
+			MapLuaParser.Current.SaveLuaFile.Data.MasterChains[0].Markers.Add(A1marker);
+			MapLua.SaveLua.Marker A2marker = new MapLua.SaveLua.Marker(MapLua.SaveLua.Marker.MarkerTypes.BlankMarker, "ARMY_2");
+			A2marker.position = new Vector3((int)(NewMapWidth * 0.75f), InitialHeight.intValue, (int)(NewMapWidth * 0.75f));
+			MapLuaParser.Current.SaveLuaFile.Data.MasterChains[0].Markers.Add(A2marker);
 
 			MapLuaParser.Current.SaveLuaFile.Data.areas = new MapLua.SaveLua.Areas[1];
 			MapLuaParser.Current.SaveLuaFile.Data.areas[0] = new MapLua.SaveLua.Areas();

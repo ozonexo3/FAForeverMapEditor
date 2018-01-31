@@ -42,6 +42,14 @@ public partial class MapLuaParser : MonoBehaviour
 		}
 	}
 
+	public static string RelativeLoadedMapFolderPath
+	{
+		get
+		{
+			return "Maps/" + Current.FolderName + "/";
+		}
+	}
+
 	//public		CameraControler	CamControll;
 	[Header("UI")]
 	public GameObject Background;

@@ -137,6 +137,18 @@ namespace MapLua
 			public string Name;
 			public SaveLua.Army Data;
 			public NoRusnOffset NoRush;
+
+			public Army()
+			{
+
+			}
+
+			public Army(string name)
+			{
+				Name = name;
+				Data = new SaveLua.Army();
+				NoRush = new NoRusnOffset();
+			}
 		}
 
 		[System.Serializable]
