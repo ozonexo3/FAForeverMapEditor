@@ -314,61 +314,51 @@ namespace FAF.MapEditor
 				if (MapLuaParser.IsMapLoaded)
 				{
 
-					string LoadPath = MapLuaParser.LoadedMapFolderPath + "/env/";
-					switch (Category.value)
+					string LoadPath = MapLuaParser.LoadedMapFolderPath + "env/" + CategoryPaths[Category.value];
+					Debug.Log("Try load assets from: " + LoadPath);
+					if (Directory.Exists(LoadPath))
 					{
-						case 0:
-							LoadPath += "Stratum";
-							break;
-						case 1:
-							LoadPath += "Decal";
-							break;
-						case 2:
-							LoadPath += "Stratum";
-							break;
-						case 3:
-							LoadPath += "Props";
-							break;
-					}
 
-					string[] AllFiles = Directory.GetFiles(LoadPath, "*", SearchOption.AllDirectories);
-					Debug.Log("Found " + AllFiles.Length + " in map folder");
+						string[] AllFiles = Directory.GetFiles(LoadPath, "*", SearchOption.AllDirectories);
+						Debug.Log("Found " + AllFiles.Length + " files in map folder");
 
-					for (int i = 0; i < AllFiles.Length; i++)
-					{
-						string path = AllFiles[i];
-
-						// Load Texture
-						switch (Category.value)
+						for (int i = 0; i < AllFiles.Length; i++)
 						{
-							case 0:
-								if (path.ToLower().EndsWith(".dds"))
-									Counter += GenerateMapTextureButton(LoadPath, path, Prefab_Texture);
-								break;
-							case 1:
-								if (path.ToLower().EndsWith(".dds"))
-									Counter += GenerateMapTextureButton(LoadPath, path, Prefab_Decal);
-								break;
-							case 2:
-								if (path.ToLower().EndsWith(".dds"))
-									Counter += GenerateMapTextureButton(LoadPath, path, Prefab_Decal);
-								break;
-							case 3:
-								if (path.ToLower().EndsWith(".blueprint"))
-									Counter += GenerateMapPropButton(LoadPath, path, Prefab_Prop);
-								break;
-						}
+							string path = AllFiles[i];
 
-						if (Counter >= PauseEveryLoadedAsset)
-						{
-							Counter = 0;
-							yield return null;
+							// Load Texture
+							switch (Category.value)
+							{
+								case 0:
+									if (path.ToLower().EndsWith(".dds"))
+										Counter += GenerateMapTextureButton(LoadPath, path, Prefab_Texture);
+									break;
+								case 1:
+									if (path.ToLower().EndsWith(".dds"))
+										Counter += GenerateMapTextureButton(LoadPath, path, Prefab_Decal);
+									break;
+								case 2:
+									if (path.ToLower().EndsWith(".dds"))
+										Counter += GenerateMapTextureButton(LoadPath, path, Prefab_Decal);
+									break;
+								case 3:
+									if (path.ToLower().EndsWith(".bp"))
+										Counter += GenerateMapPropButton(LoadPath, path, Prefab_Prop);
+									break;
+							}
+
+							if (Counter >= PauseEveryLoadedAsset)
+							{
+								Counter = 0;
+								yield return null;
+							}
 						}
+						yield return null;
+						yield return null;
 					}
 				}
 
-				yield return null;
-				yield return null;
+
 
 			}
 			else if (LoadedEnvPaths[EnvType.value] == CurrentMapPath)
@@ -549,7 +539,15 @@ namespace FAF.MapEditor
 			else if (localpath.EndsWith(".BP"))
 				PropPath = LocalName.Replace(".BP", "");
 
-			GetGamedataFile.PropObject LoadedProp = GetGamedataFile.LoadProp(GetGamedataFile.EnvScd, localpath);
+			GetGamedataFile.PropObject LoadedProp = null;
+
+			if (localpath.ToLower().StartsWith("maps"))
+			{
+				localpath = "/" + localpath;
+				LoadedProp = GetGamedataFile.LoadProp(GetGamedataFile.MapScd, localpath);
+			}
+			else 
+				LoadedProp = GetGamedataFile.LoadProp(GetGamedataFile.EnvScd, localpath);
 
 			GameObject NewButton = Instantiate(Prefab) as GameObject;
 			NewButton.transform.SetParent(Pivot, false);

@@ -11,7 +11,7 @@ namespace FAF.MapEditor
 		{
 			Texture2D LoadedTex;
 
-			string RelativePath = absolutePath.Replace(MapLuaParser.LoadedMapFolderPath, MapLuaParser.RelativeLoadedMapFolderPath);
+			string RelativePath = "/" + absolutePath.Replace(MapLuaParser.LoadedMapFolderPath, MapLuaParser.RelativeLoadedMapFolderPath);
 			Debug.Log(RelativePath);
 
 			try
@@ -56,7 +56,7 @@ namespace FAF.MapEditor
 		int GenerateMapPropButton(string loadPath, string absolutePath, GameObject Prefab)
 		{
 
-			string RelativePath = absolutePath.Replace(MapLuaParser.LoadedMapFolderPath, MapLuaParser.RelativeLoadedMapFolderPath);
+			string RelativePath = "/" + absolutePath.Replace(MapLuaParser.LoadedMapFolderPath, MapLuaParser.RelativeLoadedMapFolderPath);
 			Debug.Log(RelativePath);
 
 			string PropPath = "";

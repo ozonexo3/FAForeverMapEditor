@@ -145,7 +145,14 @@ public partial struct GetGamedataFile
 
 	public static PropObject LoadProp(string scdPath)
 	{
-		return LoadProp(GetGamedataFile.EnvScd, LocalBlueprintPath(scdPath));
+		if (scdPath.StartsWith("maps"))
+			scdPath = "/" + scdPath;
+
+		if (scdPath.StartsWith("/maps")) { 
+			return LoadProp(GetGamedataFile.MapScd, scdPath);
+		}
+		else
+			return LoadProp(GetGamedataFile.EnvScd, LocalBlueprintPath(scdPath));
 	}
 
 	static Dictionary<string, PropObject> LoadedPropObjects = new Dictionary<string, PropObject>();
@@ -157,6 +164,8 @@ public partial struct GetGamedataFile
 
 
 		PropObject ToReturn = new PropObject();
+
+		Debug.Log("Load prop" + scd + ", at: " + LocalPath);
 
 		byte[] Bytes = LoadBytes(scd, LocalPath);
 		if (Bytes.Length == 0)

@@ -46,7 +46,7 @@ public partial class MapLuaParser : MonoBehaviour
 	{
 		get
 		{
-			return "Maps/" + Current.FolderName + "/";
+			return "maps/" + Current.FolderName + "/";
 		}
 	}
 

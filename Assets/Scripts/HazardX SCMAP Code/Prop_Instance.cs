@@ -23,10 +23,15 @@ public partial class Prop
 
 	public void Bake()
 	{
-		BlueprintPath = Group.Blueprint;
+		BlueprintPath = Group.Blueprint.Replace("\\", "/");
 
 		if (!BlueprintPath.StartsWith("/"))
 			BlueprintPath = "/" + BlueprintPath;
+
+		//if (BlueprintPath.StartsWith("/maps"))
+		//	BlueprintPath = BlueprintPath.Remove(0, 1);
+
+		Debug.Log("PropPath: " + BlueprintPath);
 
 		Position = ScmapEditor.WorldPosToScmap(Obj.Tr.position);
 

@@ -5,9 +5,9 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{D6D748A5-0B92-CB91-5DCC-3A82DAD28C54}</ProjectGuid>
+    <ProjectGuid>{A7FE3FE6-27C6-EFE4-A771-5044D500E8E3}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <AssemblyName>com.unity.package-manager-ui.Editor</AssemblyName>
+    <AssemblyName>Assembly-CSharp-Editor</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{E097FAD1-6243-4DAD-9C02-E9B9EFC3FFC1};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <TargetFrameworkIdentifier>.NETFramework</TargetFrameworkIdentifier>
@@ -756,52 +756,59 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="C:\ProgramData\Unity\cache\packages\packages.unity.com\com.unity.package-manager-ui@1.3.0\Editor\AssemblyInfo.cs" />
-    <Compile Include="C:\ProgramData\Unity\cache\packages\packages.unity.com\com.unity.package-manager-ui@1.3.0\Editor\Sources\External\SemVersion.cs" />
-    <Compile Include="C:\ProgramData\Unity\cache\packages\packages.unity.com\com.unity.package-manager-ui@1.3.0\Editor\Sources\External\SemVersionExtension.cs" />
-    <Compile Include="C:\ProgramData\Unity\cache\packages\packages.unity.com\com.unity.package-manager-ui@1.3.0\Editor\Sources\Services\Common\OperationSignal.cs" />
-    <Compile Include="C:\ProgramData\Unity\cache\packages\packages.unity.com\com.unity.package-manager-ui@1.3.0\Editor\Sources\Services\Common\ThreadedDelay.cs" />
-    <Compile Include="C:\ProgramData\Unity\cache\packages\packages.unity.com\com.unity.package-manager-ui@1.3.0\Editor\Sources\Services\Interfaces\IAddOperation.cs" />
-    <Compile Include="C:\ProgramData\Unity\cache\packages\packages.unity.com\com.unity.package-manager-ui@1.3.0\Editor\Sources\Services\Interfaces\IBaseOperation.cs" />
-    <Compile Include="C:\ProgramData\Unity\cache\packages\packages.unity.com\com.unity.package-manager-ui@1.3.0\Editor\Sources\Services\Interfaces\IListOperation.cs" />
-    <Compile Include="C:\ProgramData\Unity\cache\packages\packages.unity.com\com.unity.package-manager-ui@1.3.0\Editor\Sources\Services\Interfaces\IOperationFactory.cs" />
-    <Compile Include="C:\ProgramData\Unity\cache\packages\packages.unity.com\com.unity.package-manager-ui@1.3.0\Editor\Sources\Services\Interfaces\IRemoveOperation.cs" />
-    <Compile Include="C:\ProgramData\Unity\cache\packages\packages.unity.com\com.unity.package-manager-ui@1.3.0\Editor\Sources\Services\Interfaces\ISearchOperation.cs" />
-    <Compile Include="C:\ProgramData\Unity\cache\packages\packages.unity.com\com.unity.package-manager-ui@1.3.0\Editor\Sources\Services\OperationFactory.cs" />
-    <Compile Include="C:\ProgramData\Unity\cache\packages\packages.unity.com\com.unity.package-manager-ui@1.3.0\Editor\Sources\Services\Packages\Package.cs" />
-    <Compile Include="C:\ProgramData\Unity\cache\packages\packages.unity.com\com.unity.package-manager-ui@1.3.0\Editor\Sources\Services\Packages\PackageCollection.cs" />
-    <Compile Include="C:\ProgramData\Unity\cache\packages\packages.unity.com\com.unity.package-manager-ui@1.3.0\Editor\Sources\Services\Packages\PackageFilter.cs" />
-    <Compile Include="C:\ProgramData\Unity\cache\packages\packages.unity.com\com.unity.package-manager-ui@1.3.0\Editor\Sources\Services\Packages\PackageGroupOrigins.cs" />
-    <Compile Include="C:\ProgramData\Unity\cache\packages\packages.unity.com\com.unity.package-manager-ui@1.3.0\Editor\Sources\Services\Packages\PackageInfo.cs" />
-    <Compile Include="C:\ProgramData\Unity\cache\packages\packages.unity.com\com.unity.package-manager-ui@1.3.0\Editor\Sources\Services\Packages\PackageInfoListExtensions.cs" />
-    <Compile Include="C:\ProgramData\Unity\cache\packages\packages.unity.com\com.unity.package-manager-ui@1.3.0\Editor\Sources\Services\Packages\PackageListExtensions.cs" />
-    <Compile Include="C:\ProgramData\Unity\cache\packages\packages.unity.com\com.unity.package-manager-ui@1.3.0\Editor\Sources\Services\Packages\PackageState.cs" />
-    <Compile Include="C:\ProgramData\Unity\cache\packages\packages.unity.com\com.unity.package-manager-ui@1.3.0\Editor\Sources\Services\Upm\UpmAddOperation.cs" />
-    <Compile Include="C:\ProgramData\Unity\cache\packages\packages.unity.com\com.unity.package-manager-ui@1.3.0\Editor\Sources\Services\Upm\UpmBaseOperation.cs" />
-    <Compile Include="C:\ProgramData\Unity\cache\packages\packages.unity.com\com.unity.package-manager-ui@1.3.0\Editor\Sources\Services\Upm\UpmListOperation.cs" />
-    <Compile Include="C:\ProgramData\Unity\cache\packages\packages.unity.com\com.unity.package-manager-ui@1.3.0\Editor\Sources\Services\Upm\UpmOperationFactory.cs" />
-    <Compile Include="C:\ProgramData\Unity\cache\packages\packages.unity.com\com.unity.package-manager-ui@1.3.0\Editor\Sources\Services\Upm\UpmRemoveOperation.cs" />
-    <Compile Include="C:\ProgramData\Unity\cache\packages\packages.unity.com\com.unity.package-manager-ui@1.3.0\Editor\Sources\Services\Upm\UpmSearchOperation.cs" />
-    <Compile Include="C:\ProgramData\Unity\cache\packages\packages.unity.com\com.unity.package-manager-ui@1.3.0\Editor\Sources\UI\Common\Alert.cs" />
-    <Compile Include="C:\ProgramData\Unity\cache\packages\packages.unity.com\com.unity.package-manager-ui@1.3.0\Editor\Sources\UI\Common\Caret.cs" />
-    <Compile Include="C:\ProgramData\Unity\cache\packages\packages.unity.com\com.unity.package-manager-ui@1.3.0\Editor\Sources\UI\Common\LoadingSpinner.cs" />
-    <Compile Include="C:\ProgramData\Unity\cache\packages\packages.unity.com\com.unity.package-manager-ui@1.3.0\Editor\Sources\UI\Common\UIUtils.cs" />
-    <Compile Include="C:\ProgramData\Unity\cache\packages\packages.unity.com\com.unity.package-manager-ui@1.3.0\Editor\Sources\UI\PackageDetails.cs" />
-    <Compile Include="C:\ProgramData\Unity\cache\packages\packages.unity.com\com.unity.package-manager-ui@1.3.0\Editor\Sources\UI\PackageGroup.cs" />
-    <Compile Include="C:\ProgramData\Unity\cache\packages\packages.unity.com\com.unity.package-manager-ui@1.3.0\Editor\Sources\UI\PackageItem.cs" />
-    <Compile Include="C:\ProgramData\Unity\cache\packages\packages.unity.com\com.unity.package-manager-ui@1.3.0\Editor\Sources\UI\PackageList.cs" />
-    <Compile Include="C:\ProgramData\Unity\cache\packages\packages.unity.com\com.unity.package-manager-ui@1.3.0\Editor\Sources\UI\PackageManagerWindow.cs" />
-    <Compile Include="C:\ProgramData\Unity\cache\packages\packages.unity.com\com.unity.package-manager-ui@1.3.0\Editor\Sources\UI\PackageSearchFilterTabs.cs" />
-    <Compile Include="C:\ProgramData\Unity\cache\packages\packages.unity.com\com.unity.package-manager-ui@1.3.0\Editor\ValidationSuite\IValidationTest.cs" />
-    <Compile Include="C:\ProgramData\Unity\cache\packages\packages.unity.com\com.unity.package-manager-ui@1.3.0\Editor\ValidationSuite\IValidationTestResult.cs" />
-    <Compile Include="C:\ProgramData\Unity\cache\packages\packages.unity.com\com.unity.package-manager-ui@1.3.0\Editor\ValidationSuite\UI\PackageValidationWindow.cs" />
-    <Compile Include="C:\ProgramData\Unity\cache\packages\packages.unity.com\com.unity.package-manager-ui@1.3.0\Editor\ValidationSuite\Utilities\Utilities.cs" />
-    <Compile Include="C:\ProgramData\Unity\cache\packages\packages.unity.com\com.unity.package-manager-ui@1.3.0\Editor\ValidationSuite\ValidationSuite.cs" />
-    <Compile Include="C:\ProgramData\Unity\cache\packages\packages.unity.com\com.unity.package-manager-ui@1.3.0\Editor\ValidationSuite\ValidationTests\AssemblyDefinitionValidation.cs" />
-    <Compile Include="C:\ProgramData\Unity\cache\packages\packages.unity.com\com.unity.package-manager-ui@1.3.0\Editor\ValidationSuite\ValidationTests\BaseValidation.cs" />
-    <Compile Include="C:\ProgramData\Unity\cache\packages\packages.unity.com\com.unity.package-manager-ui@1.3.0\Editor\ValidationSuite\ValidationTests\ChangeLogValidation.cs" />
-    <Compile Include="C:\ProgramData\Unity\cache\packages\packages.unity.com\com.unity.package-manager-ui@1.3.0\Editor\ValidationSuite\ValidationTests\ManifestValidation.cs" />
-    <Compile Include="C:\ProgramData\Unity\cache\packages\packages.unity.com\com.unity.package-manager-ui@1.3.0\Editor\ValidationSuite\ValidationTests\MetaFilesValidation.cs" />
+    <ProjectReference Include="FAForeverMapEditor.Plugins.csproj">
+      <Project>{D12FDEA9-1D2C-B9CE-C96B-D95DAD860558}</Project>
+      <Name>FAForeverMapEditor.Plugins</Name>
+    </ProjectReference>
+    <ProjectReference Include="FAForeverMapEditor.csproj">
+      <Project>{726F1A7D-6B82-7E5C-457A-25BF0902FEF2}</Project>
+      <Name>FAForeverMapEditor</Name>
+    </ProjectReference>
+    <ProjectReference Include="FAForeverMapEditor.Editor.Plugins.csproj">
+      <Project>{28BBF88D-3822-47DD-6333-51DF06861A06}</Project>
+      <Name>FAForeverMapEditor.Editor.Plugins</Name>
+    </ProjectReference>
+    <ProjectReference Include="com.unity.package-manager-ui.Editor.csproj">
+      <Project>{D6D748A5-0B92-CB91-5DCC-3A82DAD28C54}</Project>
+      <Name>com.unity.package-manager-ui.Editor</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Assets\Editor\BuildWithResources.cs" />
+    <Compile Include="Assets\PostProcessing\Editor\Attributes\PostProcessingModelEditorAttribute.cs" />
+    <Compile Include="Assets\PostProcessing\Editor\Models\AmbientOcclusionModelEditor.cs" />
+    <Compile Include="Assets\PostProcessing\Editor\Models\AntialiasingModelEditor.cs" />
+    <Compile Include="Assets\PostProcessing\Editor\Models\BloomModelEditor.cs" />
+    <Compile Include="Assets\PostProcessing\Editor\Models\BuiltinDebugViewsEditor.cs" />
+    <Compile Include="Assets\PostProcessing\Editor\Models\ChromaticAberrationEditor.cs" />
+    <Compile Include="Assets\PostProcessing\Editor\Models\ColorGradingModelEditor.cs" />
+    <Compile Include="Assets\PostProcessing\Editor\Models\DefaultPostFxModelEditor.cs" />
+    <Compile Include="Assets\PostProcessing\Editor\Models\DepthOfFieldModelEditor.cs" />
+    <Compile Include="Assets\PostProcessing\Editor\Models\DitheringModelEditor.cs" />
+    <Compile Include="Assets\PostProcessing\Editor\Models\EyeAdaptationModelEditor.cs" />
+    <Compile Include="Assets\PostProcessing\Editor\Models\FogModelEditor.cs" />
+    <Compile Include="Assets\PostProcessing\Editor\Models\GrainModelEditor.cs" />
+    <Compile Include="Assets\PostProcessing\Editor\Models\MotionBlurModelEditor.cs" />
+    <Compile Include="Assets\PostProcessing\Editor\Models\ScreenSpaceReflectionModelEditor.cs" />
+    <Compile Include="Assets\PostProcessing\Editor\Models\UserLutModelEditor.cs" />
+    <Compile Include="Assets\PostProcessing\Editor\Models\VignetteModelEditor.cs" />
+    <Compile Include="Assets\PostProcessing\Editor\Monitors\HistogramMonitor.cs" />
+    <Compile Include="Assets\PostProcessing\Editor\Monitors\ParadeMonitor.cs" />
+    <Compile Include="Assets\PostProcessing\Editor\Monitors\VectorscopeMonitor.cs" />
+    <Compile Include="Assets\PostProcessing\Editor\Monitors\WaveformMonitor.cs" />
+    <Compile Include="Assets\PostProcessing\Editor\PostProcessingBehaviourEditor.cs" />
+    <Compile Include="Assets\PostProcessing\Editor\PostProcessingFactory.cs" />
+    <Compile Include="Assets\PostProcessing\Editor\PostProcessingInspector.cs" />
+    <Compile Include="Assets\PostProcessing\Editor\PostProcessingModelEditor.cs" />
+    <Compile Include="Assets\PostProcessing\Editor\PostProcessingMonitor.cs" />
+    <Compile Include="Assets\PostProcessing\Editor\PropertyDrawers\GetSetDrawer.cs" />
+    <Compile Include="Assets\PostProcessing\Editor\PropertyDrawers\MinDrawer.cs" />
+    <Compile Include="Assets\PostProcessing\Editor\PropertyDrawers\TrackballGroupDrawer.cs" />
+    <Compile Include="Assets\PostProcessing\Editor\Utils\CurveEditor.cs" />
+    <Compile Include="Assets\PostProcessing\Editor\Utils\EditorGUIHelper.cs" />
+    <Compile Include="Assets\PostProcessing\Editor\Utils\EditorResources.cs" />
+    <Compile Include="Assets\PostProcessing\Editor\Utils\FxStyles.cs" />
+    <Compile Include="Assets\PostProcessing\Editor\Utils\ReflectionUtils.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\GFX\Fonts\Lato\OFL.txt" />
