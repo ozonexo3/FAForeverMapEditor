@@ -165,8 +165,6 @@ public partial struct GetGamedataFile
 
 		PropObject ToReturn = new PropObject();
 
-		Debug.Log("Load prop" + scd + ", at: " + LocalPath);
-
 		byte[] Bytes = LoadBytes(scd, LocalPath);
 		if (Bytes.Length == 0)
 		{

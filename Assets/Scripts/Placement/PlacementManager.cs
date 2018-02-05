@@ -107,7 +107,7 @@ public class PlacementManager : MonoBehaviour {
 		RaycastHit hit;
 		if (Physics.Raycast(ray, out hit, 1000, RaycastMask))
 		{
-			if (LastSym != PlayerPrefs.GetInt("Symmetry", 0))
+			if (LastSym != SymmetryWindow.GetSymmetryType())
 				GenerateSymmetry();
 
 			if (!PlacementObject.activeSelf)
@@ -283,7 +283,7 @@ public class PlacementManager : MonoBehaviour {
 	public GameObject[] PlacementSymmetry;
 	public void GenerateSymmetry()
 	{
-		LastSym = PlayerPrefs.GetInt("Symmetry", 0);
+		LastSym = SymmetryWindow.GetSymmetryType();
 		//LastTolerance = SymmetryWindow.GetTolerance();
 
 		for(int i = 0; i < PlacementSymmetry.Length; i++)
@@ -347,7 +347,7 @@ public class PlacementManager : MonoBehaviour {
 				InvertRotation[2] = false;
 				break;
 			case 8: // Rotation
-				int RotCount = PlayerPrefs.GetInt("SymmetryAngleCount", 2) - 1;
+				int RotCount = SymmetryWindow.GetRotationSym() - 1;
 				float angle = 360.0f / (float)(RotCount + 1);
 				SymmetryMatrix = new Matrix4x4[RotCount];
 				InvertRotation = new bool[RotCount];

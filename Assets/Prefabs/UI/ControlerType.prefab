@@ -533,6 +533,7 @@ MonoBehaviour:
   Rotation: {fileID: 114883834529736988}
   Scale: {fileID: 114611910070920548}
   Snap: {fileID: 114576600208685584}
+  DefaultSnap: 1
 --- !u!114 &114891843757506360
 MonoBehaviour:
   m_ObjectHideFlags: 1

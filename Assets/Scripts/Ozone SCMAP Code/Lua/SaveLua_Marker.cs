@@ -150,6 +150,122 @@ namespace MapLua
 					return Key == KEY_HINT;
 			}
 
+			void DefaultsByType()
+			{
+				switch (MarkerType)
+				{
+					case MarkerTypes.Mass:
+						resource = true;
+						amount = 100;
+						prop = "/env/common/props/markers/M_Mass_prop.bp";
+						color = "ff808080";
+						break;
+					case MarkerTypes.Hydrocarbon:
+						size = 3;
+						resource = true;
+						amount = 100;
+						prop = "/env/common/props/markers/M_Hydrocarbon_prop.bp";
+						color = "ff808080";
+						break;
+					case MarkerTypes.CameraInfo:
+						prop = "/env/common/props/markers/M_Camera_prop.bp";
+						color = "ff808000";
+						canSyncCamera = true;
+						canSetCamera = true;
+						zoom = 30;
+						break;
+					case MarkerTypes.CombatZone:
+						prop = "/env/common/props/markers/M_CombatZone_prop.bp";
+						hint = true;
+						color = "ff800000";
+						break;
+					case MarkerTypes.DefensivePoint:
+						prop = "/env/common/props/markers/M_Defensive_prop.bp";
+						hint = true;
+						color = "ff008000";
+						break;
+					case MarkerTypes.NavalDefensivePoint:
+						prop = "/env/common/props/markers/M_Defensive_prop.bp";
+						hint = true;
+						color = "ff0080FF";
+						break;
+					case MarkerTypes.ProtectedExperimentalConstruction:
+						prop = "/env/common/props/markers/M_Expansion_prop.bp";
+						hint = true;
+						color = "ff0000AA";
+						break;
+					case MarkerTypes.ExpansionArea:
+						prop = "/env/common/props/markers/M_Expansion_prop.bp";
+						hint = true;
+						color = "ff008080";
+						break;
+					case MarkerTypes.LargeExpansionArea:
+						prop = "/env/common/props/markers/M_Expansion_prop.bp";
+						hint = true;
+						color = "ff008080";
+						break;
+					case MarkerTypes.NavalArea:
+						prop = "/env/common/props/markers/M_Expansion_prop.bp";
+						hint = true;
+						color = "ff0000FF";
+						break;
+					case MarkerTypes.RallyPoint:
+						prop = "/env/common/props/markers/M_Defensive_prop.bp";
+						hint = true;
+						color = "FF808000";
+						break;
+					case MarkerTypes.NavalRallyPoint:
+						prop = "/env/common/props/markers/M_Defensive_prop.bp";
+						hint = true;
+						color = "ff00FFFF";
+						break;
+					case MarkerTypes.LandPathNode:
+						prop = "/env/common/props/markers/M_Path_prop.bp";
+						hint = true;
+						color = "ff00ff00";
+						break;
+					case MarkerTypes.AirPathNode:
+						prop = "/env/common/props/markers/M_Path_prop.bp";
+						hint = true;
+						color = "ffffffff";
+						break;
+					case MarkerTypes.WaterPathNode:
+						prop = "/env/common/props/markers/M_Path_prop.bp";
+						hint = true;
+						color = "ff0000ff";
+						break;
+					case MarkerTypes.AmphibiousPathNode:
+						prop = "/env/common/props/markers/M_Path_prop.bp";
+						hint = true;
+						color = "ff00ffff";
+						break;
+					case MarkerTypes.AutoPathNode:
+						prop = "/env/common/props/markers/M_Path_prop.bp";
+						hint = true;
+						color = "ff800000";
+						break;
+					case MarkerTypes.NavalLink:
+						prop = "/env/common/props/markers/M_Blank_prop.bp";
+						hint = false;
+						color = "ffff0000";
+						break;
+					case MarkerTypes.TransportMarker:
+						prop = "/env/common/props/markers/M_Blank_prop.bp";
+						hint = false;
+						color = "ff80A088";
+						break;
+					case MarkerTypes.Island:
+						prop = "/env/common/props/markers/M_Expansion_prop.bp";
+						hint = true;
+						color = "ffffff";
+						break;
+				}
+
+
+				prop = "/env/common/props/markers/M_Blank_prop.bp";
+
+			}
+
 			public MarkerLayers LayerByType(MarkerTypes Type)
 			{
 				if (Type == MarkerTypes.BlankMarker || Type == MarkerTypes.Mass || Type == MarkerTypes.Hydrocarbon || Type == MarkerTypes.CameraInfo)
@@ -178,6 +294,14 @@ namespace MapLua
 					orientation = Vector3.zero;
 					color = "ff008000";
 				}
+				else if(MarkerType == MarkerTypes.CameraInfo)
+				{
+
+				}
+				else
+				{
+					orientation = Vector3.zero;
+				}
 
 			}
 
@@ -199,32 +323,11 @@ namespace MapLua
 				size = 1;
 				position = Vector3.zero;
 				orientation = Vector3.zero;
-				prop = "/env/common/props/markers/M_Blank_prop.bp";
 
 				MarkerType = Type;
 				type = MarkerTypeToString(Type);
 
-				if (Type == MarkerTypes.Mass)
-				{
-					resource = true;
-					amount = 100;
-					prop = "/env/common/props/markers/M_Mass_prop.bp";
-					color = "ff808080";
-				}
-				else if (Type == MarkerTypes.Hydrocarbon)
-				{
-					size = 3;
-					resource = true;
-					amount = 100;
-					prop = "/env/common/props/markers/M_Hydrocarbon_prop.bp";
-					color = "ff808080";
-				}
-				else if (Type == MarkerTypes.CameraInfo)
-				{
-					canSyncCamera = true;
-					canSetCamera = true;
-					zoom = 30;
-				}
+				DefaultsByType();
 			}
 
 			public Marker(Marker CopyMarker, string NewName = "")

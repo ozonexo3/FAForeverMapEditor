@@ -36,6 +36,7 @@ namespace Selection
 			Controls_Scale.SetActive(AllowScale && ChangeControlerType.ControlerId == 2);
 
 			//FinishSelectionChange();
+			ResetControlerPosition();
 		}
 
 #endregion

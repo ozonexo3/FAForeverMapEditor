@@ -24,12 +24,12 @@ public class EditorVersion : MonoBehaviour
 			yield return www;
 			if (www.responseHeaders.Count > 0)
 			{
-				
-					foreach (KeyValuePair<string, string> entry in www.responseHeaders)
-					{
-						Debug.Log(entry.Key + " = " + entry.Value);
-					}
-				
+				/*
+				foreach (KeyValuePair<string, string> entry in www.responseHeaders)
+				{
+					Debug.Log(entry.Key + " = " + entry.Value);
+				}
+				*/
 			}
 			string[] Tags = www.url.Replace("\\", "/").Split("/".ToCharArray());
 

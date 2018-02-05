@@ -216,7 +216,17 @@ MonoBehaviour:
   ListId: 0
   ConnectedGameObject: {fileID: 0}
   Cg: {fileID: 0}
+  Setting:
+    Type: 1
+    Texture1: {fileID: 0}
+    Tex1Path: 
+    Texture2: {fileID: 0}
+    Tex2Path: 
+    SharedMaterial: {fileID: 0}
+    DrawAlbedo: 0
+    DrawNormal: 0
   Image: {fileID: 0}
+  VisibleText: {fileID: 0}
 --- !u!114 &114848371536585562
 MonoBehaviour:
   m_ObjectHideFlags: 1

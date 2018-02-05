@@ -288,8 +288,6 @@ public partial struct GetGamedataFile
 		if (LoadedMeshes.ContainsKey(ModelKey))
 			return LoadedMeshes[ModelKey];
 
-		Debug.Log("LoadModel for: " + scd + ", at: " + LocalPath);
-
 		byte[] FinalMeshBytes = LoadBytes(scd, LocalPath);
 
 		if (FinalMeshBytes == null || FinalMeshBytes.Length == 0)

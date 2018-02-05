@@ -282,6 +282,7 @@ MonoBehaviour:
   - {fileID: 114000013692354490}
   - {fileID: 114000012781562974}
   CustomTexts: []
+  MeshView: {fileID: 0}
 --- !u!114 &114000013650291784
 MonoBehaviour:
   m_ObjectHideFlags: 1

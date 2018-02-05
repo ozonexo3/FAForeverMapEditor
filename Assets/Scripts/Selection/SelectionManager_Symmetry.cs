@@ -278,7 +278,10 @@ namespace Selection
 		float LastTolerance;
 		void GenerateSymmetry()
 		{
-			LastSym = PlayerPrefs.GetInt("Symmetry", 0);
+			LastSym = SymmetryWindow.GetSymmetryType();
+			//if (LastSym > 8)
+			//	LastSym = 8;
+
 			LastTolerance = SymmetryWindow.GetTolerance();
 
 
@@ -366,7 +369,7 @@ namespace Selection
 
 					break;
 				case 8: // Rotation
-					int RotCount = PlayerPrefs.GetInt("SymmetryAngleCount", 2) - 1;
+					int RotCount = SymmetryWindow.GetRotationSym() - 1;
 					float angle = 360.0f / (float)(RotCount + 1);
 					SymetrySelection = new SelectedObjects[RotCount];
 

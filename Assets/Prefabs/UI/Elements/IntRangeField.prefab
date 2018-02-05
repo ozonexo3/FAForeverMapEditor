@@ -250,7 +250,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   FieldType: 2
   BeginValue: 0
-  Format: 0
   InputFieldUi: {fileID: 114208810250179934}
   SliderUi: {fileID: 114173077333384758}
   OnValueChanged:

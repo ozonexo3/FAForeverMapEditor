@@ -161,7 +161,7 @@ public class BrushGenerator : MonoBehaviour
 				PaintPositions[3] = GetDiagonal3Symetry();
 				break;
 			case 8:
-				int Count = PlayerPrefs.GetInt("SymmetryAngleCount", 2);
+				int Count = SymmetryWindow.GetRotationSym();
 				PaintPositions = new Vector3[Count];
 				PaintPositions[0] = BrushPos;
 				float angle = 360.0f / (float)Count;
@@ -227,7 +227,7 @@ public class BrushGenerator : MonoBehaviour
 				PaintRotations[3] = Quaternion.Euler(new Vector3(Euler.x, 180 + Euler.y, Euler.z));  //GetHorizontalVerticalSymetry();
 				break;
 			case 8:
-				int Count = PlayerPrefs.GetInt("SymmetryAngleCount", 2);
+				int Count = SymmetryWindow.GetRotationSym();
 				PaintRotations = new Quaternion[Count];
 				PaintRotations[0] = Rotation;
 				float angle = 360.0f / (float)Count;
@@ -245,13 +245,13 @@ public class BrushGenerator : MonoBehaviour
 
 	public void UpdateSymmetryType()
 	{
-		int SymmetryCode = PlayerPrefs.GetInt("Symmetry", 0);
+		int SymmetryCode = SymmetryWindow.GetSymmetryType();
 		LastSym = SymmetryCode;
 	}
 
 	public static void RegeneratePaintBrushIfNeeded(bool BrushChanged = false)
 	{
-		if (BrushChanged || PlayerPrefs.GetInt("Symmetry", 0) != Current.LastSym || (Current.LastSym == 8 && Current.LastRot != PlayerPrefs.GetInt("SymmetryAngleCount", 2)))
+		if (BrushChanged || SymmetryWindow.GetSymmetryType() != Current.LastSym || (Current.LastSym == 8 && Current.LastRot != SymmetryWindow.GetRotationSym()))
 		{
 			Current.GeneratePaintBrushesh();
 		}
@@ -264,7 +264,7 @@ public class BrushGenerator : MonoBehaviour
 	// Need to find something to speed it up
 	void GeneratePaintBrushesh()
 	{
-		int SymmetryCode = PlayerPrefs.GetInt("Symmetry", 0);
+		int SymmetryCode = SymmetryWindow.GetSymmetryType();
 		LastSym = SymmetryCode;
 		switch (SymmetryCode)
 		{
@@ -313,7 +313,7 @@ public class BrushGenerator : MonoBehaviour
 				PaintImage[3] = MirrorTexture(RotatedBrush, true, true);
 				break;
 			case 8:
-				LastRot = PlayerPrefs.GetInt("SymmetryAngleCount", 2);
+				LastRot = SymmetryWindow.GetRotationSym();
 				PaintImage = new Texture2D[LastRot];
 				PaintImage[0] = RotatedBrush;
 				float angle = 360.0f / (float)LastRot;

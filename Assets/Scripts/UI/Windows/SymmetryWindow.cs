@@ -23,7 +23,7 @@ public class SymmetryWindow : MonoBehaviour {
 			tog.isOn = false;
 		}*/
 		Toggles[ PlayerPrefs.GetInt("Symmetry", 0) ].isOn = true;
-		AngleSlider.SetValue(PlayerPrefs.GetInt("SymmetryAngleCount", 2));
+		AngleSlider.SetValue(SymmetryWindow.GetRotationSym());
 		ToleranceInput.SetValue(GetTolerance());
 		Enabling = false;
 	}
@@ -40,30 +40,11 @@ public class SymmetryWindow : MonoBehaviour {
 
 	public void SliderChange(){
 
-		if(AngleSlider.intValue != PlayerPrefs.GetInt("SymmetryAngleCount", 2))
+		if(AngleSlider.intValue != SymmetryWindow.GetRotationSym())
 		{
 			InvokeChange();
 			PlayerPrefs.SetInt("SymmetryAngleCount", AngleSlider.intValue);
 		}
-
-
-		/*
-		if(Enabling) return;
-		//bool AnythingChanged = false;
-		if(GetTolerance() != (int)AngleSlider.value){
-			PlayerPrefs.SetInt("SymmetryAngleCount", (int)AngleSlider.value);
-			//AnythingChanged = true;
-		}
-		*/
-		/*
-		if(float.Parse(ToleranceInput.text) != PlayerPrefs.GetFloat("SymmetryTolerance", 0.4f)){
-			PlayerPrefs.SetFloat("SymmetryTolerance", float.Parse(ToleranceInput.text));
-			EditMenu.MirrorTolerance = float.Parse(ToleranceInput.text);
-			//AnythingChanged = true;
-		}
-		*/
-
-		//if(AnythingChanged) EditMenu.EditMarkers.UpdateSelectionRing();
 	}
 
 	void InvokeChange()
@@ -115,5 +96,22 @@ public class SymmetryWindow : MonoBehaviour {
 	public static float GetTolerance()
 	{
 		return PlayerPrefs.GetFloat("SymmetryTolerance", 0.4f);
+	}
+
+	public static int GetSymmetryType()
+	{
+		return PlayerPrefs.GetInt("Symmetry", 0);
+	}
+
+	public static int GetRotationSym()
+	{
+		int count = PlayerPrefs.GetInt("SymmetryAngleCount", 2);
+
+		if (count < 2)
+		{
+			PlayerPrefs.SetInt("SymmetryAngleCount", 2);
+			return 2;
+		}
+		return count;
 	}
 }
