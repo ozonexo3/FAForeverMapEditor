@@ -43,7 +43,13 @@ public class SymmetryWindow : MonoBehaviour {
 		if(AngleSlider.intValue != SymmetryWindow.GetRotationSym())
 		{
 			InvokeChange();
-			PlayerPrefs.SetInt("SymmetryAngleCount", AngleSlider.intValue);
+			int value = AngleSlider.intValue;
+			if (value < 2)
+				value = 2;
+			else if (value > 16)
+				value = 16;
+
+			PlayerPrefs.SetInt("SymmetryAngleCount", value);
 		}
 	}
 

@@ -168,6 +168,7 @@ MonoBehaviour:
   InstanceId: 0
   ListId: 0
   ConnectedGameObject: {fileID: 0}
+  Cg: {fileID: 0}
 --- !u!114 &114557367245061036
 MonoBehaviour:
   m_ObjectHideFlags: 1

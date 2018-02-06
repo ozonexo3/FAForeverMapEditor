@@ -104,7 +104,7 @@ public class GenerateControlTex : MonoBehaviour
 
 				WaterDepth = HeightmapPixels[LerpX, LerpY] + HeightmapPixels[LerpX + 1, LerpY] + HeightmapPixels[LerpX, LerpY + 1] + HeightmapPixels[LerpX + 1, LerpY + 1];
 				WaterDepth /= 4;
-				WaterDepth *= 16;
+				WaterDepth *= 64; //16
 
 				WaterDepth = (WaterHeight - WaterDepth) / WaterHeight;
 				WaterDepth /= DeepDifference;

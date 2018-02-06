@@ -699,7 +699,8 @@ namespace EditMap
 						return;
 				}
 
-				if (!AllowWaterLevel.isOn && ScmapEditor.Current.Teren.SampleHeight(BrushGenerator.Current.PaintPositions[0]) <= ScmapEditor.Current.WaterLevel.position.y)
+				if (!AllowWaterLevel.isOn && ScmapEditor.Current.map.Water.HasWater)
+					if(ScmapEditor.Current.Teren.SampleHeight(BrushGenerator.Current.PaintPositions[0]) <= ScmapEditor.Current.WaterLevel.position.y)
 					return;
 
 				for (int i = 0; i < BrushGenerator.Current.PaintPositions.Length; i++)

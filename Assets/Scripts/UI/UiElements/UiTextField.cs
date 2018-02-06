@@ -55,6 +55,7 @@ namespace Ozone.UI
 				return;
 			UpdateSliderValue(true);
 			OnEndEdit.Invoke();
+			SetTextField();
 		}
 
 		public void OnSliderChanged()
@@ -167,7 +168,7 @@ namespace Ozone.UI
 			if (InputFieldUi.contentType == InputField.ContentType.IntegerNumber)
 				InputFieldUi.text = LastValue.ToString();
 			else if (InputFieldUi.contentType == InputField.ContentType.DecimalNumber)
-				InputFieldUi.text = LastValue.ToString("0.00");
+				InputFieldUi.text = LastValue.ToString("F2");
 		}
 		#endregion
 

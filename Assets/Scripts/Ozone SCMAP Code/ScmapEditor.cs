@@ -147,7 +147,6 @@ public partial class ScmapEditor : MonoBehaviour
 		float HalfzRes = zRes / 10f;
 
 		float yRes = (float)map.HeightScale; ;
-		float HeightResize = 512 * 40;
 
 		TerrainMaterial.SetTexture("_TerrainNormal", map.UncompressedNormalmapTex);
 		Shader.SetGlobalTexture("_UtilitySamplerC", map.UncompressedWatermapTex);
@@ -180,7 +179,7 @@ public partial class ScmapEditor : MonoBehaviour
 		Data.heightmapResolution = (int)(xRes + 1);
 		Data.size = new Vector3(
 			HalfxRes,
-			yRes * MapHeightScale,
+			yRes * MapHeightScale * 4,
 			HalfzRes
 			);
 		//Data.SetDetailResolution((int)(xRes / 2), 8);
@@ -229,7 +228,7 @@ public partial class ScmapEditor : MonoBehaviour
 			{
 				localY = (int)(((Max - 1) - y) * HeightWidthMultiply);
 
-				heights[y, x] = map.GetHeight(x, localY) / HeightResize;
+				heights[y, x] = ((float)map.GetHeight(x, localY)) / HeightConversion;
 
 				if (HeightWidthMultiply == 0.5f && y > 0 && y % 2f == 0)
 				{
@@ -541,6 +540,9 @@ public partial class ScmapEditor : MonoBehaviour
 	#endregion
 
 	#region Saving
+	const float HeightResize = 128 * 128; //512 * 40;
+	const uint HeightConversion = 256 * (256 + 64);
+
 	public void SaveScmapFile()
 	{
 		float LowestElevation = 128;
@@ -550,7 +552,6 @@ public partial class ScmapEditor : MonoBehaviour
 		{
 			heights = Teren.terrainData.GetHeights(0, 0, Teren.terrainData.heightmapWidth, Teren.terrainData.heightmapHeight);
 
-			float HeightResize = 512 * 40;
 			int y = 0;
 			int x = 0;
 			for (y = 0; y < map.Width + 1; y++)
@@ -562,7 +563,7 @@ public partial class ScmapEditor : MonoBehaviour
 					LowestElevation = Mathf.Min(LowestElevation, Height);
 					HighestElevation = Mathf.Max(HighestElevation, Height);
 
-					map.SetHeight(y, map.Height - x, (short)(Height * HeightResize));
+					map.SetHeight(y, map.Height - x, (short)(Height * HeightConversion));
 				}
 			}
 		}

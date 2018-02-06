@@ -123,6 +123,8 @@ namespace Selection
 				{
 					for (int i = 0; i < Positions.Length; i++)
 					{
+
+
 						/*
 						if (i >= count)
 						{
@@ -136,7 +138,13 @@ namespace Selection
 
 						Vector3 NewPos = Vector3.zero;
 						if (Current.LastControlType == SelectionControlTypes.Marker)
-							NewPos = ScmapEditor.SnapMarker(Positions[i] + Offset, Current.AffectedTypes[Ids[i]]);
+						{
+							if (i >= count)
+								NewPos = ScmapEditor.SnapToGridCenter(Positions[i] + Offset, true, Current.SnapToWater);
+							else
+								NewPos = ScmapEditor.SnapMarker(Positions[i] + Offset, Current.AffectedTypes[Ids[i]]);
+
+						}
 						else
 							NewPos = ScmapEditor.SnapToGridCenter(Positions[i] + Offset, true, Current.SnapToWater);
 

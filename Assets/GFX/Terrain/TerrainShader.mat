@@ -239,8 +239,8 @@ Material:
     - _AreaY: 76.8
     - _Brush: 0
     - _BrushSize: 0
-    - _BrushUvX: 0.34308037
-    - _BrushUvY: 0.7713868
+    - _BrushUvX: 0.348984
+    - _BrushUvY: 0.6772774
     - _DeepLevel: 1.675625
     - _DepthLevel: 1.5
     - _GeneratingNormal: 0
@@ -257,18 +257,18 @@ Material:
     - _HideSplat7: 0
     - _HideSplat8: 0
     - _LightingMultiplier: 1.27
-    - _LowerScale: 64
-    - _LowerScaleNormal: 512
+    - _LowerScale: 70.62069
+    - _LowerScaleNormal: 97.52381
     - _Shininess: 0.03
     - _Slope: 0
     - _Splat0Scale: 128
-    - _Splat0ScaleNormal: 23.813953
-    - _Splat1Scale: 128
-    - _Splat1ScaleNormal: 85.333336
-    - _Splat2Scale: 30.476192
-    - _Splat2ScaleNormal: 128
-    - _Splat3Scale: 39.384617
-    - _Splat3ScaleNormal: 128
+    - _Splat0ScaleNormal: 58.514286
+    - _Splat1Scale: 512
+    - _Splat1ScaleNormal: 21.557896
+    - _Splat2Scale: 128
+    - _Splat2ScaleNormal: 32
+    - _Splat3Scale: 64
+    - _Splat3ScaleNormal: 97.52381
     - _Splat4Scale: 128
     - _Splat4ScaleNormal: 128
     - _Splat5Scale: 128

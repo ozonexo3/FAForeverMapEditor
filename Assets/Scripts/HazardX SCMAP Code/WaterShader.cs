@@ -104,11 +104,22 @@ public class WaterShader
         }
         else
         {
-            _with1.BaseStream.Position += 12;
-            Elevation = 17.5f;
-            ElevationDeep = 15f;
-            ElevationAbyss = 2.5f;
-        }
+			//_with1.BaseStream.Position += 12;
+			//Elevation = 17.5f;
+			//ElevationDeep = 15f;
+			//ElevationAbyss = 2.5f;
+			Elevation = _with1.ReadSingle();
+			ElevationDeep = _with1.ReadSingle();
+			ElevationAbyss = _with1.ReadSingle();
+
+			if (Elevation <= 0)
+				Elevation = 17.5f;
+			if (ElevationDeep <= 0)
+				ElevationDeep = 15f;
+			if (ElevationAbyss <= 0)
+				ElevationAbyss = 2.5f;
+
+		}
 
         SurfaceColor = _with1.ReadVector3();
         ColorLerp = _with1.ReadVector2();
@@ -151,10 +162,13 @@ public class WaterShader
         else
         {
             _with2.Write(Convert.ToByte(0));
-            _with2.Write(-10000f);
-            _with2.Write(-10000f);
-            _with2.Write(-10000f);
-        }
+			//_with2.Write(-10000f);
+			//_with2.Write(-10000f);
+			//_with2.Write(-10000f);
+			_with2.Write(Elevation);
+			_with2.Write(ElevationDeep);
+			_with2.Write(ElevationAbyss);
+		}
 
         _with2.Write(SurfaceColor);
         _with2.Write(ColorLerp);
