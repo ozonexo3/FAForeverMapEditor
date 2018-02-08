@@ -23,6 +23,9 @@ namespace EditMap
 
 		private void OnDisable()
 		{
+			if (DecalSettingsUi.IsCreating)
+				DecalSettingsUi.OnClickCreate(false);
+
 			PlacementManager.OnDropOnGameplay -= DropAtGameplay;
 			Selection.SelectionManager.Current.ClearAffectedGameObjects();
 		}

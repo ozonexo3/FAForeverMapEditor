@@ -10,6 +10,7 @@ public partial class CameraControler : MonoBehaviour {
 	public static			CameraControler		Current;
 
 	public Camera Cam;
+	public Camera[] OtherCams;
 	public			Undo				History;
 	public			Editing				Edit;
 	public			AppMenu				Menu;
@@ -56,6 +57,34 @@ public partial class CameraControler : MonoBehaviour {
 		TargetLocalCamPos = transform.localPosition;
 		PanOffsetX = Vector3.zero;
 		PanOffsetZ = Vector3.zero;
+
+		UpdateRect();
+	}
+
+	public void UpdateRect()
+	{
+		float RemoveCamPropHeight = 30f / (float)Screen.height;
+		float RemoveCamPropWidth = 309f / (float)Screen.width;
+		Cam.rect = new Rect(RemoveCamPropWidth, 0, 1 - RemoveCamPropWidth, 1 - RemoveCamPropHeight);
+
+		LastWidth = Screen.width;
+		LastHeight = Screen.height;
+
+		for(int i = 0; i < OtherCams.Length; i++)
+		{
+			OtherCams[i].rect = Cam.rect;
+		}
+	}
+
+	int LastWidth = 0;
+	int LastHeight;
+	void CheckScreenChange()
+	{
+		if(Screen.width != LastWidth || Screen.height != LastHeight)
+		{
+			
+			UpdateRect();
+		}
 	}
 
 	public static void FocusCamera(Transform Pivot, float Zoom = 30, float rot = 10)
@@ -107,6 +136,8 @@ public partial class CameraControler : MonoBehaviour {
 	}
 
 	void Update () {
+
+		CheckScreenChange();
 
 		if (LoadingPopup.activeSelf){
 			if(DragStartedOverMenu) DragStartedOverMenu = false;
