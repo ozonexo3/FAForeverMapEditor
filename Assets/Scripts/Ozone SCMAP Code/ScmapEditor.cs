@@ -101,6 +101,8 @@ public partial class ScmapEditor : MonoBehaviour
 		Shader.SetGlobalColor("_SpecularColor", new Color(map.SpecularColor.x * 0.5f, map.SpecularColor.y * 0.5f, map.SpecularColor.z * 0.5f, map.SpecularColor.w * 0.5f));
 	}
 
+	public static float TerrainHeight = 12.5f;
+
 	public IEnumerator LoadScmapFile()
 	{
 		//UnloadMap();
@@ -177,9 +179,12 @@ public partial class ScmapEditor : MonoBehaviour
 		//Teren.terrainData.baseMapResolution = 32;
 
 		Data.heightmapResolution = (int)(xRes + 1);
+		TerrainHeight = 1f / yRes;
+		TerrainHeight *= 0.1f;
+
 		Data.size = new Vector3(
 			HalfxRes,
-			yRes * MapHeightScale * 4,
+			TerrainHeight,
 			HalfzRes
 			);
 		//Data.SetDetailResolution((int)(xRes / 2), 8);
@@ -228,7 +233,8 @@ public partial class ScmapEditor : MonoBehaviour
 			{
 				localY = (int)(((Max - 1) - y) * HeightWidthMultiply);
 
-				heights[y, x] = ((float)map.GetHeight(x, localY)) / HeightConversion;
+				//heights[y, x] = (float)((((double)map.GetHeight(x, localY)) / (256 * 256)) * (double)(TerrainHeight));
+				heights[y, x] = (float)((((double)map.GetHeight(x, localY)) / (128 * 128)));
 
 				if (HeightWidthMultiply == 0.5f && y > 0 && y % 2f == 0)
 				{
@@ -541,7 +547,7 @@ public partial class ScmapEditor : MonoBehaviour
 
 	#region Saving
 	const float HeightResize = 128 * 128; //512 * 40;
-	const uint HeightConversion = 256 * (256 + 64);
+	const double HeightConversion = 256 * (256 + 64);
 
 	public void SaveScmapFile()
 	{
@@ -563,13 +569,18 @@ public partial class ScmapEditor : MonoBehaviour
 					LowestElevation = Mathf.Min(LowestElevation, Height);
 					HighestElevation = Mathf.Max(HighestElevation, Height);
 
-					map.SetHeight(y, map.Height - x, (short)(Height * HeightConversion));
+					//heights[y, x] = (float)((((double)Height) / (256 * 64)));
+
+					double HeightValue = (double)Height * (128.0 * 128.0);
+					map.SetHeight(y, map.Height - x, (short)(HeightValue));
+
+					//map.SetHeight(y, map.Height - x, (short)(Height * HeightConversion));
 				}
 			}
 		}
 
-		LowestElevation = (LowestElevation * 16) / 0.1f;
-		HighestElevation = (HighestElevation * 16) / 0.1f;
+		LowestElevation = (LowestElevation * TerrainHeight) / 0.1f;
+		HighestElevation = (HighestElevation * TerrainHeight) / 0.1f;
 
 		Debug.Log("Lowest point: " + LowestElevation);
 		Debug.Log("Highest point: " + HighestElevation);

@@ -746,7 +746,7 @@ namespace EditMap
 				for (j = 0; j < (size - OffsetLeft) - OffsetRight; j++)
 				{
 
-					if (Min <= 0 && Max >= 0)
+					if (Min > 0 || Max < 90)
 					{
 						float angle = Vector3.Angle(Vector3.up, ScmapEditor.Current.Teren.terrainData.GetInterpolatedNormal((posXInTerrain - offset + OffsetLeft + i) / (float)hmWidth, 1 - (posYInTerrain - offset + OffsetDown + j) / (float)hmHeight));
 						if ((angle < Min && Min > 0) || (angle > Max && Max < 90))
