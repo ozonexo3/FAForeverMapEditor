@@ -916,7 +916,7 @@ public partial class ScmapEditor : MonoBehaviour
 
 	public void ToogleShader()
 	{
-		TerrainMaterial.SetInt("_TTerrainXP", (MapLuaParser.Current.EditMenu.TexturesMenu.TTerrainXP.isOn) ? 1 : 0);
+		Shader.SetGlobalInt("_TTerrainXP", (MapLuaParser.Current.EditMenu.TexturesMenu.TTerrainXP.isOn) ? 1 : 0);
 	}
 	#endregion
 }

@@ -9,7 +9,7 @@ Properties {
 	[MaterialToggle] _Slope("Slope", Int) = 0
 	[MaterialToggle] _UseSlopeTex("Use Slope Data", Int) = 0
 	_SlopeTex ("Slope data", 2D) = "black" {}
-	[MaterialToggle] _TTerrainXP("_TTerrainXP", Int) = 0
+	//[MaterialToggle] _TTerrainXP("_TTerrainXP", Int) = 0
 		
 	// set by terrain engine
 	_Control ("Control (RGBA)", 2D) = "black" {}
@@ -154,7 +154,7 @@ Properties {
 			int _HideSplat0, _HideSplat1, _HideSplat2, _HideSplat3, _HideSplat4, _HideSplat5, _HideSplat6, _HideSplat7, _HideSplat8;
 
 			half _LowerScale, _UpperScale;
-			fixed _TTerrainXP;
+			uniform int _TTerrainXP;
 			uniform float _WaterScaleX, _WaterScaleZ;
 
 			int _Brush;

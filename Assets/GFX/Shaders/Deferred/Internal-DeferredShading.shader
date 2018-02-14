@@ -41,6 +41,7 @@ sampler2D _CameraGBufferTexture0;
 sampler2D _CameraGBufferTexture1;
 sampler2D _CameraGBufferTexture2;
 
+uniform int _TTerrainXP;
 uniform half _LightingMultiplier;
 uniform fixed4 _SunColor;
 uniform fixed4 _SunAmbience;
@@ -89,11 +90,32 @@ half4 CalculateLight (unity_v2f_deferred i)
 
 	float3 R = light.dir - 2.0f * NdotL * data.normalWorld;
 	float specular = pow( saturate( dot(R, eyeVec) ), 8) * (_SpecularColor.r * 2) * gbuffer1.a * 2;
+	float3 lighting =  (_SunColor.rgb * 2) * saturate(NdotL) * atten + (_SunAmbience.rgb * 2) + specular;
+	lighting = _LightingMultiplier * lighting + (_ShadowColor.rgb * 2) * (1 - lighting);
+	c.rgb = (data.diffuseColor + spec) * lighting;
+	c.a = 1;
 
-	 float3 lighting =  (_SunColor.rgb * 2) * saturate(NdotL) * atten + (_SunAmbience.rgb * 2) + specular;
+	if(_TTerrainXP == 0){ // Normal lighting
+		float NdotL = dot (light.dir, data.normalWorld);
+
+		float3 R = light.dir - 2.0f * NdotL * data.normalWorld;
+		float specular = pow( saturate( dot(R, eyeVec) ), 8) * (_SpecularColor.r * 2) * gbuffer1.a * 2;
+		float3 lighting =  (_SunColor.rgb * 2) * saturate(NdotL) * atten + (_SunAmbience.rgb * 2) + specular;
 		lighting = _LightingMultiplier * lighting + (_ShadowColor.rgb * 2) * (1 - lighting);
 		c.rgb = (data.diffuseColor + spec) * lighting;
 		c.a = 1;
+	}
+	else{ // XP lighting
+		float NdotL = dot (light.dir, data.normalWorld);
+
+		float3 R = light.dir - 2.0f * NdotL * data.normalWorld;
+		float specular = pow( saturate( dot(R, eyeVec) ), 8) * (_SpecularColor.r * 2) * gbuffer1.a * 2;
+		float3 lighting =  (_SunColor.rgb * 2) * saturate(NdotL) * atten + (_SunAmbience.rgb * 2) + specular;
+		lighting = _LightingMultiplier * lighting + (_ShadowColor.rgb * 2) * (1 - lighting);
+		c.rgb = (data.diffuseColor + spec) * lighting;
+		c.a = 1;
+	}
+
 
 	//half4 res = data.diffuseColor;
 
