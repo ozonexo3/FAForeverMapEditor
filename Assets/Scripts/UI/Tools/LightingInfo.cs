@@ -27,6 +27,7 @@ namespace EditMap
 
 		public UiTextField Glow;
 		public UiTextField Bloom;
+		public UiColor Specular;
 
 		public UiColor FogColor;
 		public UiTextField FogStart;
@@ -71,6 +72,8 @@ namespace EditMap
 			FogColor.SetColorField(Scmap.map.FogColor.x, Scmap.map.FogColor.y, Scmap.map.FogColor.z);
 			FogStart.SetValue(Scmap.map.FogStart);
 			FogEnd.SetValue(Scmap.map.FogEnd);
+
+			Specular.SetColorField(Scmap.map.SpecularColor.x, Scmap.map.SpecularColor.y, Scmap.map.SpecularColor.z, Scmap.map.SpecularColor.w);
 
 			Bloom.SetValue(Scmap.map.Bloom);
 
@@ -143,6 +146,8 @@ namespace EditMap
 			Scmap.map.SunAmbience = AmbienceColor.GetVectorValue();
 			Scmap.map.ShadowFillColor = ShadowColor.GetVectorValue();
 
+			Scmap.map.SpecularColor = Specular.GetVector4Value();
+
 			Scmap.map.FogColor = FogColor.GetVectorValue();
 			Scmap.map.FogStart = FogStart.value;
 			Scmap.map.FogEnd = FogEnd.value;
@@ -178,6 +183,7 @@ namespace EditMap
 			public Vector4 SpecularColor;
 
 			public float Bloom;
+			public Vector4 Specular;
 			public Vector3 FogColor;
 			public float FogStart;
 			public float FogEnd;
