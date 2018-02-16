@@ -18,6 +18,7 @@ namespace Ozone.UI
 		public Slider		SliderUi;
 
 		[Header("Events")]
+		public UnityEvent OnBeginChange;
 		public UnityEvent OnValueChanged;
 		public UnityEvent OnEndEdit;
 
@@ -41,10 +42,23 @@ namespace Ozone.UI
 		}
 
 		#region Events
+		bool Started = false;
+		void InvokeStart()
+		{
+			if (Started)
+				return;
+
+			Debug.Log("Begin change");
+			Started = true;
+			OnBeginChange.Invoke();
+		}
+
 		public void OnValueChangedInvoke()
 		{
 			if (ChangingValue)
 				return;
+
+			InvokeStart();
 			UpdateSliderValue();
 			OnValueChanged.Invoke();
 		}
@@ -56,12 +70,15 @@ namespace Ozone.UI
 			UpdateSliderValue(true);
 			OnEndEdit.Invoke();
 			SetTextField();
+			Started = false;
 		}
 
 		public void OnSliderChanged()
 		{
 			if (ChangingValue)
 				return;
+
+			InvokeStart();
 
 			ChangingValue = true;
 			HasValue = true;

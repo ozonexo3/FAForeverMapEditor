@@ -94,11 +94,42 @@ namespace EditMap
 		public void EndSliderDrag()
 		{
 			SliderDrag = false;
+			UpdateMenu(false);
 		}
 
 		public void UpdateColors()
 		{
 			UpdateMenu(true);
+		}
+
+		public void BeginColorsChange()
+		{
+			Undo.Current.RegisterLightingChange();
+		}
+
+		public void FinishColorChange()
+		{
+			if (IgnoreUpdate) return;
+
+			EndSliderDrag();
+			IgnoreUpdate = true;
+
+			Scmap.map.Bloom = Bloom.value;
+
+			RA_Value = RA.intValue;
+			DA_Value = RA.intValue;
+
+			IgnoreUpdate = false;
+			UpdateLightingData();
+		}
+
+		public void BeginUpdateMenu()
+		{
+			if (IgnoreUpdate)
+				return;
+
+			Debug.Log("Register lighting undo");
+			Undo.Current.RegisterLightingChange();
 		}
 
 		public void UpdateMenu(bool Slider = false)
@@ -107,8 +138,8 @@ namespace EditMap
 
 			if (!UndoChange && !SliderDrag && !Slider)
 			{
-				Debug.Log("Register lighting undo");
-				Undo.Current.RegisterLightingChange();
+				//Debug.Log("Register lighting undo");
+				//Undo.Current.RegisterLightingChange();
 			}
 
 			if (Slider)
@@ -120,7 +151,8 @@ namespace EditMap
 			}
 			else
 			{
-				EndSliderDrag();
+				//EndSliderDrag();
+				SliderDrag = false;
 				IgnoreUpdate = true;
 
 				Scmap.map.Bloom = Bloom.value;

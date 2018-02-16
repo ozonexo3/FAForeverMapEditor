@@ -11,6 +11,7 @@ public class HistoryLighting : HistoryObject {
 	public Vector3 SunColor = Vector3.zero;
 	public Vector3 AmbientColor = Vector3.zero;
 	public Vector3 ShadowColor = Vector3.zero;
+	public Vector4 Specular = Vector4.zero;
 
 	public override void Register(){
 		LightingInfo LightMenu = Undo.Current.EditMenu.Categorys[3].GetComponent<LightingInfo>();
@@ -22,6 +23,7 @@ public class HistoryLighting : HistoryObject {
 		SunColor = LightMenu.LightColor.GetVectorValue();
 		AmbientColor = LightMenu.AmbienceColor.GetVectorValue();
 		ShadowColor = LightMenu.ShadowColor.GetVectorValue();
+		Specular = LightMenu.Specular.GetVector4Value();
 
 	}
 
@@ -47,7 +49,7 @@ public class HistoryLighting : HistoryObject {
 		LightMenu.LightColor.SetColorField(SunColor.x, SunColor.y, SunColor.z);
 		LightMenu.AmbienceColor.SetColorField(AmbientColor.x, AmbientColor.y, AmbientColor.z);
 		LightMenu.ShadowColor.SetColorField(ShadowColor.x, ShadowColor.y, ShadowColor.z);
-
+		LightMenu.Specular.SetColorField(Specular.x, Specular.y, Specular.z, Specular.w);
 
 		LightMenu.IgnoreUpdate = false;
 

@@ -20,6 +20,7 @@ public class UiColor : MonoBehaviour
 	public Slider BlueSlider;
 	public Slider AlphaSlider;
 
+	public UnityEvent OnInputBegin;
 	public UnityEvent OnInputFinish;
 	public UnityEvent OnValueChanged;
 
@@ -47,7 +48,7 @@ public class UiColor : MonoBehaviour
 
 	public Vector4 GetVector4Value()
 	{
-		return new Vector4(RedSlider.value, GreenSlider.value, BlueSlider.value, BlueSlider.value);
+		return new Vector4(RedSlider.value, GreenSlider.value, BlueSlider.value, AlphaSlider.value);
 	}
 
 	public void SetColorField(float R, float G, float B, float A = 1)
@@ -134,15 +135,22 @@ public class UiColor : MonoBehaviour
 
 		UpdateGfx();
 		//FieldChangedAction();
+		Begin = false;
 		OnInputFinish.Invoke();
 	}
 
 	bool UpdatingSlider = false;
+	bool Begin = false;
 	public void SliderUpdate(bool Finish)
 	{
 		if (Loading || UpdatingSlider)
 			return;
 
+		if (!Begin)
+		{
+			OnInputBegin.Invoke();
+			Begin = true;
+		}
 
 		UpdatingSlider = true;
 		RedSlider.value = FormatFloat(RedSlider.value);
@@ -164,8 +172,11 @@ public class UiColor : MonoBehaviour
 
 		UpdateGfx();
 		//FieldChangedAction();
-		if(Finish)
+		if (Finish)
+		{
 			OnInputFinish.Invoke();
+			Begin = false;
+		}
 		else
 			OnValueChanged.Invoke();
 	}

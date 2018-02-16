@@ -1122,12 +1122,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Clamp: 2
   ColorPreview: {fileID: 114966455930318946}
+  AlphaPreview: {fileID: 0}
   Red: {fileID: 114253102147753970}
   Green: {fileID: 114227852599666468}
   Blue: {fileID: 114908838917561428}
+  Alpha: {fileID: 0}
   RedSlider: {fileID: 114064465241593402}
   GreenSlider: {fileID: 114778493800725736}
   BlueSlider: {fileID: 114916793088180614}
+  AlphaSlider: {fileID: 0}
   OnInputFinish:
     m_PersistentCalls:
       m_Calls: []
