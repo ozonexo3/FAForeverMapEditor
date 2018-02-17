@@ -77,7 +77,7 @@ public partial struct GetGamedataFile
 		texture.mipMapBias = MipmapBias;
 		texture.filterMode = FilterMode.Bilinear;
 		texture.anisoLevel = AnisoLevel;
-		texture.Apply(true);
+		texture.Apply(false);
 
 		if(StoreInMemory)
 			LoadedTextures.Add(TextureKey, texture);

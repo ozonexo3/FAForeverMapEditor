@@ -172,6 +172,9 @@ namespace EditMap
 		{
 			if (Scmap.map == null) return;
 
+			Scmap.Sun.transform.rotation = Quaternion.Euler(new Vector3(DA.value, -360 + RA.value, 0));
+			Scmap.map.SunDirection = Scmap.Sun.transform.rotation * Vector3.back;
+
 			Scmap.map.LightingMultiplier = LightMultipiler.value;
 
 			Scmap.map.SunColor = LightColor.GetVectorValue();
@@ -215,7 +218,6 @@ namespace EditMap
 			public Vector4 SpecularColor;
 
 			public float Bloom;
-			public Vector4 Specular;
 			public Vector3 FogColor;
 			public float FogStart;
 			public float FogEnd;

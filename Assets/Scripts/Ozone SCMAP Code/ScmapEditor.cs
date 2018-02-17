@@ -35,8 +35,8 @@ public partial class ScmapEditor : MonoBehaviour
 	public Map map; // Loaded Scmap data
 	public SkyboxData.SkyboxValues DefaultSkyboxData;
 
-	
-	bool Grid;
+	[HideInInspector]
+	public bool Grid;
 	[HideInInspector]
 	public bool Slope;
 	//string Shader;
@@ -462,24 +462,23 @@ public partial class ScmapEditor : MonoBehaviour
 			}
 
 
-			if (i == 0)
-
-				MipMapCount = Textures[i + 1].Albedo.mipmapCount;
+			//if (i == 0)
+			//	MipMapCount = Textures[i + 1].Albedo.mipmapCount;
 
 			if (MipMapCount != Textures[i + 1].Albedo.mipmapCount)
 				Debug.LogWarning("Wrong mipmap Count for texture" + Textures[i + 1].AlbedoPath);
 			for (int m = 0; m < MipMapCount; m++)
 			{
 				AlbedoArray.SetPixels(Textures[i + 1].Albedo.GetPixels(m), i, m);
-
 			}
 		}
 
 		//AlbedoArray.mipMapBias = 0.5f;
 		AlbedoArray.filterMode = FilterMode.Bilinear;
-		AlbedoArray.anisoLevel = 4;
+		AlbedoArray.anisoLevel = 2;
+		AlbedoArray.mipMapBias = 0.5f;
 
-		AlbedoArray.Apply(true);
+		AlbedoArray.Apply(false);
 		TerrainMaterial.SetTexture("_SplatAlbedoArray", AlbedoArray);
 
 		AlbedoSize = 256;
@@ -518,8 +517,8 @@ public partial class ScmapEditor : MonoBehaviour
 
 		//NormalArray.mipMapBias = -0.5f;
 		NormalArray.filterMode = FilterMode.Bilinear;
-		NormalArray.anisoLevel = 4;
-		NormalArray.Apply(true);
+		NormalArray.anisoLevel = 2;
+		NormalArray.Apply(false);
 
 		TerrainMaterial.SetTexture("_SplatNormalArray", NormalArray);
 	}

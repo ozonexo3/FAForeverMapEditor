@@ -1099,6 +1099,11 @@ MonoBehaviour:
   BeginValue: 1
   InputFieldUi: {fileID: 114226237324387216}
   SliderUi: {fileID: 0}
+  OnBeginChange:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
   OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -1124,6 +1129,11 @@ MonoBehaviour:
   BeginValue: 360
   InputFieldUi: {fileID: 114510921813939316}
   SliderUi: {fileID: 114644361265583564}
+  OnBeginChange:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
   OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -1230,6 +1240,11 @@ MonoBehaviour:
   BeginValue: 0
   InputFieldUi: {fileID: 114799158646090148}
   SliderUi: {fileID: 114515083728861288}
+  OnBeginChange:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
   OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -1315,6 +1330,11 @@ MonoBehaviour:
   BeginValue: 100
   InputFieldUi: {fileID: 114683520203043370}
   SliderUi: {fileID: 114514618127567082}
+  OnBeginChange:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
   OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -2273,6 +2293,11 @@ MonoBehaviour:
   BeginValue: 1
   InputFieldUi: {fileID: 114216572268778048}
   SliderUi: {fileID: 0}
+  OnBeginChange:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
   OnValueChanged:
     m_PersistentCalls:
       m_Calls: []

@@ -176,19 +176,22 @@ Properties {
 			}
 
 			inline fixed3 UnpackNormalDXT5nmScaled (fixed4 packednormal, fixed scale)
-{
-			   fixed3 normal = 0;
-			   normal.xz = packednormal.wx * 2 - 1;
+			{
+				fixed3 normal = 0;
+				normal.xz = packednormal.wx * 2 - 1;
+				normal.y = sqrt(1 - saturate(dot(normal.xz, normal.xz)));
+				normal.xz *= scale;
 
-
-
-			   normal.y = sqrt(1 - saturate(dot(normal.xz, normal.xz)));
-
-			normal.xz *= scale;
-
-			
 			   return normal.xzy;
 			}
+
+			#if defined(SHADER_API_D3D11) || defined(SHADER_API_XBOXONE) || defined(SHADER_API_GLES3) || defined(SHADER_API_GLCORE)
+			#define UNITY_SAMPLE_TEX2DARRAY_GRAD(tex,coord,dx,dy) tex.SampleGrad (sampler##tex,coord,dx,dy)
+			#else
+			#if defined(UNITY_COMPILER_HLSL2GLSL) || defined(SHADER_TARGET_SURFACE_ANALYSIS)
+			#define UNITY_SAMPLE_TEX2DARRAY_GRAD(tex,coord,dx,dy) float4(0,0,0,0) //tex2DArray(tex,coord,dx,dy)
+			#endif
+			#endif
 
 			void surf (Input IN, inout SurfaceOutput o) {
 

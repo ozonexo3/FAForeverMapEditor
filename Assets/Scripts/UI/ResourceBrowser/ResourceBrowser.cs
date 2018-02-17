@@ -438,11 +438,13 @@ namespace FAF.MapEditor
 				}
 				finally
 				{
+					/*
 					if (zf != null)
 					{
 						zf.IsStreamOwner = true; // Makes close also shut the underlying stream
 						zf.Close(); // Ensure we release resources
 					}
+					*/
 				}
 			}
 

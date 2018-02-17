@@ -10,6 +10,14 @@ public class PreviewTex : MonoBehaviour {
 	
 	public Texture2D RenderPreview(float HeightOffset = 0) {
 
+		bool Slope = ScmapEditor.Current.Slope;
+		bool Grid = ScmapEditor.Current.Grid;
+
+		if(Slope)
+		ScmapEditor.Current.ToogleSlope(false);
+		if(Grid)
+		ScmapEditor.Current.ToogleGrid(false);
+
 		Vector3 CamPos = MapLuaParser.Current.MapCenterPoint;
 		float Size = Mathf.Max(ScmapEditor.Current.map.Width, ScmapEditor.Current.map.Height) * 0.1f;
 		float distance = Size * (2.0f * Mathf.Tan(0.5f * Cam.fieldOfView * Mathf.Deg2Rad));
@@ -49,6 +57,11 @@ public class PreviewTex : MonoBehaviour {
 		//Preview.Apply();
 
 		RenderTexture.active = currentActiveRT;
+
+		if(Slope)
+		ScmapEditor.Current.ToogleSlope(Slope);
+		if(Grid)
+		ScmapEditor.Current.ToogleGrid(Grid);
 
 		return TextureFlip.FlipTextureVertical(PreviewRender, false);
 

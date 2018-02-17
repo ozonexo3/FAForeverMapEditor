@@ -252,6 +252,11 @@ MonoBehaviour:
   BeginValue: 0
   InputFieldUi: {fileID: 114208810250179934}
   SliderUi: {fileID: 114173077333384758}
+  OnBeginChange:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
   OnValueChanged:
     m_PersistentCalls:
       m_Calls: []

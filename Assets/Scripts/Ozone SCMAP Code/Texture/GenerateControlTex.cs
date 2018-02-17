@@ -103,17 +103,21 @@ public class GenerateControlTex : MonoBehaviour
 					LerpY = HeightmapHeight - 1;
 
 				WaterDepth = HeightmapPixels[LerpX, LerpY] + HeightmapPixels[LerpX + 1, LerpY] + HeightmapPixels[LerpX, LerpY + 1] + HeightmapPixels[LerpX + 1, LerpY + 1];
-				WaterDepth /= 4;
-				WaterDepth *= 64; //16
+				WaterDepth /= 4f;
+				WaterDepth *= ScmapEditor.TerrainHeight; //16
+				//WaterDepth /= 0.1f;
+
 
 				WaterDepth = (WaterHeight - WaterDepth) / WaterHeight;
 				WaterDepth /= DeepDifference;
+
 
 				AllColors[i] = new Color(AllColors[i].r, Mathf.Clamp01(WaterDepth), (1f - Mathf.Clamp01(WaterDepth * 100f)), 0);
 			}
 		}
 
 		yield return Ninja.JumpToUnity;
+
 		ScmapEditor.Current.map.UncompressedWatermapTex.SetPixels(AllColors);
 		ScmapEditor.Current.map.UncompressedWatermapTex.Apply(false);
 	}

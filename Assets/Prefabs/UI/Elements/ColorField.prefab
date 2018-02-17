@@ -1131,6 +1131,11 @@ MonoBehaviour:
   GreenSlider: {fileID: 114778493800725736}
   BlueSlider: {fileID: 114916793088180614}
   AlphaSlider: {fileID: 0}
+  OnInputBegin:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
   OnInputFinish:
     m_PersistentCalls:
       m_Calls: []

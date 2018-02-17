@@ -237,13 +237,13 @@ Material:
     - _AreaWidht: 204.8
     - _AreaX: 0
     - _AreaY: 76.8
-    - _Brush: 1
-    - _BrushSize: 0
-    - _BrushUvX: 0.4105984
-    - _BrushUvY: 0.51083726
+    - _Brush: 0
+    - _BrushSize: 10
+    - _BrushUvX: 0.2111087
+    - _BrushUvY: 0.36257067
     - _DeepLevel: 1.675625
     - _DepthLevel: 1.5
-    - _GeneratingNormal: 0
+    - _GeneratingNormal: 1
     - _Grid: 0
     - _GridCamDist: 0.049673967
     - _GridScale: 102.4
@@ -257,17 +257,17 @@ Material:
     - _HideSplat7: 0
     - _HideSplat8: 0
     - _LightingMultiplier: 1.27
-    - _LowerScale: 256
-    - _LowerScaleNormal: 117.02857
+    - _LowerScale: 409.6
+    - _LowerScaleNormal: 256
     - _Shininess: 0.03
     - _Slope: 0
     - _Splat0Scale: 256
     - _Splat0ScaleNormal: 256
-    - _Splat1Scale: 292.57144
-    - _Splat1ScaleNormal: 89.04348
-    - _Splat2Scale: 60.952385
-    - _Splat2ScaleNormal: 512
-    - _Splat3Scale: 170.66667
+    - _Splat1Scale: 608.34406
+    - _Splat1ScaleNormal: 1950.8965
+    - _Splat2Scale: 256
+    - _Splat2ScaleNormal: 256
+    - _Splat3Scale: 256
     - _Splat3ScaleNormal: 256
     - _Splat4Scale: 256
     - _Splat4ScaleNormal: 256
