@@ -161,7 +161,9 @@ public class GenerateControlTex : MonoBehaviour
 		int y = 0;
 		Vector3 Normal;
 
-		int counter = 0;
+		//int counter = 0;
+		float Realtime = Time.realtimeSinceStartup;
+		const float MaxAllowedOverhead = 0.02f;
 
 		for (x = 0; x < Width; x++)
 		{
@@ -171,13 +173,19 @@ public class GenerateControlTex : MonoBehaviour
 				Normal = ScmapEditor.Current.Data.GetInterpolatedNormal((x + 0.5f) / (Width), 1f - (y + 0.5f) / (Height));
 				AllColors[i] = new Color(0, 1f - (Normal.z * 0.5f + 0.5f), 0, Normal.x * 0.5f + 0.5f);
 
+				if(Time.realtimeSinceStartup - Realtime > MaxAllowedOverhead)
+				{
+					yield return null;
+					Realtime = Time.realtimeSinceStartup;
+				}
+				/*
 				counter++;
 				if (counter > 40000)
 				{
 					counter = 0;
 					yield return null;
 				}
-
+				*/
 			}
 		}
 
@@ -185,12 +193,15 @@ public class GenerateControlTex : MonoBehaviour
 		ScmapEditor.Current.map.UncompressedNormalmapTex.Apply(false);
 
 		yield return null;
+		NormalCoroutine = null;
+
 		ScmapEditor.Current.TerrainMaterial.SetFloat("_GeneratingNormal", 0);
+
 
 		if (BufforNormalTex)
 		{
 			BufforNormalTex = false;
-			NormalCoroutine = Current.StartCoroutine(Current.GeneratingNormal());
+			GenerateNormal();
 		}
 	}
 

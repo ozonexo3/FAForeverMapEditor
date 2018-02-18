@@ -6,7 +6,7 @@ using System.Collections.Generic;
 public class EditorVersion : MonoBehaviour
 {
 
-	public const string EditorBuildVersion = "v0.516-Alpha";
+	public const string EditorBuildVersion = "v0.517-Alpha";
 	public static string LatestTag = "";
 	public static string FoundUrl;
 

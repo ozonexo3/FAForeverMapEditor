@@ -12,12 +12,18 @@ public partial class ScmapEditor : MonoBehaviour
 
 	static float[,] heights = new float[1, 1];
 
-	public static void ApplyHeightmap()
+	public static void ApplyHeightmap(bool delayed = true)
 	{
-		Current.Data.SetHeightsDelayLOD(0, 0, heights);
+		if (delayed)
+			Current.Data.SetHeightsDelayLOD(0, 0, heights);
+		else
+		{
+			Current.Data.SetHeights(0, 0, heights);
+			Current.Teren.Flush();
+		}
 	}
 
-	public static void SetHeights(int X, int Y, float[,] values)
+	public static void SetHeights(int X, int Y, float[,] values, bool delayed = true)
 	{
 		int width = values.GetLength(1);
 		int height = values.GetLength(0);
@@ -30,7 +36,13 @@ public partial class ScmapEditor : MonoBehaviour
 			}
 		}
 
-		Current.Data.SetHeightsDelayLOD(X, Y, values);
+		if (delayed)
+			Current.Data.SetHeightsDelayLOD(X, Y, values);
+		else
+		{
+			Current.Data.SetHeights(X, Y, values);
+			Current.Teren.Flush();
+		}
 	}
 
 	public static void ApplyChanges(int X, int Y)
@@ -62,8 +74,8 @@ public partial class ScmapEditor : MonoBehaviour
 	}
 
 	public static float[,] ReturnValues;
-	static int LastGetWidth = 0;
-	static int LastGetHeight = 0;
+	public static int LastGetWidth = 0;
+	public static int LastGetHeight = 0;
 	public static float[,] GetValues(int X, int Y, int Width, int Height)
 	{
 		if(Width != LastGetWidth || Height != LastGetHeight)

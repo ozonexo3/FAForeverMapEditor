@@ -173,7 +173,9 @@ namespace EditMap
 			if (Scmap.map == null) return;
 
 			Scmap.Sun.transform.rotation = Quaternion.Euler(new Vector3(DA.value, -360 + RA.value, 0));
-			Scmap.map.SunDirection = Scmap.Sun.transform.rotation * Vector3.back;
+			Vector3 SunDir = Scmap.Sun.transform.rotation * Vector3.back;
+			SunDir.z *= -1;
+			Scmap.map.SunDirection = SunDir;
 
 			Scmap.map.LightingMultiplier = LightMultipiler.value;
 

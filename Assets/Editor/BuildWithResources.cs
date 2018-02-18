@@ -29,6 +29,9 @@ public class BuildWithResources : MonoBehaviour
 		// Get filename
 		string path = EditorUtility.SaveFolderPanel("Choose Location of Built Game", "", "");
 
+		if (string.IsNullOrEmpty(path))
+			return;
+
 		string[] levels = new string[] { "Assets/MapEditor.unity" };
 
 		BuildPipeline.BuildPlayer(levels, path + "/FAForeverMapEditor.exe", BuildTarget.StandaloneWindows64, (BuildOptions.Il2CPP | BuildOptions.CompressWithLz4HC));
@@ -60,7 +63,7 @@ public class BuildWithResources : MonoBehaviour
 	}
 	*/
 
-	[MenuItem("Build/Do Action")]
+	//[MenuItem("Build/Do Action")]
 	public static void ChangeModelVerts()
 	{
 		//ScmapEditor From = UnityEditor.Selection.gameObjects[0].GetComponent<ScmapEditor>();

@@ -47,7 +47,7 @@ public partial struct GetGamedataFile
 	/// <returns></returns>
 	public static byte[] LoadBytes(string scd, string LocalPath)
 	{
-		if (LocalPath.StartsWith("/maps"))
+		if (LocalPath.ToLower().StartsWith("/maps") || LocalPath.ToLower().StartsWith("maps"))
 		{
 			return LoadBytes(LocalPath); 
 		}
@@ -110,6 +110,9 @@ public partial struct GetGamedataFile
 	/// <returns></returns>
 	public static byte[] LoadBytes(string mapPath)
 	{
+		if (!mapPath.StartsWith("/"))
+			mapPath = "/" + mapPath;
+
 		return System.IO.File.ReadAllBytes(mapPath.Replace("/maps", MapLuaParser.Current.FolderParentPath));
 	}
 }

@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PropGameObject : MonoBehaviour {
+public class PropGameObject : MonoBehaviour
+{
 
 	public Prop Connected;
 
@@ -14,5 +15,4 @@ public class PropGameObject : MonoBehaviour {
 	public MeshRenderer Mr2;
 	public LODGroup Lodg;
 	public Transform Tr;
-
 }

@@ -1125,7 +1125,7 @@ public class Map
             _with2.Write(Convert.ToInt16(0));
 
 
-		if(MapFileVersion >= 60)
+		if(VersionMinor >= 60)
 		{
 			AdditionalSkyboxData.Save(_with2);
 		}

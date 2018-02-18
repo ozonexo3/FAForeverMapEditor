@@ -179,6 +179,7 @@ namespace EditMap
 			if (PaintStarted && Input.GetMouseButtonUp(0))
 			{
 				ScmapEditor.Current.Teren.ApplyDelayedHeightmapModification();
+				ScmapEditor.Current.Teren.Flush();
 			}
 
 			if (Edit.MauseOnGameplay || ChangingStrength || ChangingSize)
@@ -803,6 +804,9 @@ namespace EditMap
 					SampleBrush = Mathf.Clamp01(BrushGenerator.Current.Values[id][y + BrushGenerator.Current.PaintImageWidths[id] * x] - 0.0255f);
 					if (SampleBrush > 0)
 					{
+						if (i < 0 || j < 0 || i >= ScmapEditor.LastGetWidth || j >= ScmapEditor.LastGetHeight)
+							continue;
+
 						switch (BrushPaintType)
 						{
 							case 1: // Flatten

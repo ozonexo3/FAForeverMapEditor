@@ -187,6 +187,12 @@ public partial class ScmapEditor : MonoBehaviour
 			TerrainHeight,
 			HalfzRes
 			);
+
+		Data.RefreshPrototypes();
+		Teren.Flush();
+		Teren.UpdateGIMaterials();
+		Teren.ApplyDelayedHeightmapModification();
+
 		//Data.SetDetailResolution((int)(xRes / 2), 8);
 		//Data.baseMapResolution = (int)(xRes / 2);
 		//Data.alphamapResolution = (int)(xRes / 2);
@@ -244,7 +250,7 @@ public partial class ScmapEditor : MonoBehaviour
 		}
 
 		// Set terrain heights from heights array
-		ApplyHeightmap();
+		ApplyHeightmap(false);
 
 		Teren.gameObject.layer = 8;
 
@@ -289,18 +295,27 @@ public partial class ScmapEditor : MonoBehaviour
 			}
 			//Debug.Log("Load textures: " + i);
 
+			string Env = GetGamedataFile.EnvScd;
+			if (Textures[i].AlbedoPath.ToLower().StartsWith("maps"))
+				Env = GetGamedataFile.MapScd;
+
 			try
 			{
-				GetGamedataFile.LoadTextureFromGamedata(GetGamedataFile.EnvScd, Textures[i].AlbedoPath, i, false);
+				GetGamedataFile.LoadTextureFromGamedata(Env, Textures[i].AlbedoPath, i, false);
 			}
 			catch (System.Exception e)
 			{
 				Debug.LogError(i + ", Albedo tex: " + Textures[i].AlbedoPath);
 				Debug.LogError(e);
 			}
+
+			Env = GetGamedataFile.EnvScd;
+			if (Textures[i].NormalPath.ToLower().StartsWith("maps"))
+				Env = GetGamedataFile.MapScd;
+
 			try
 			{
-				GetGamedataFile.LoadTextureFromGamedata(GetGamedataFile.EnvScd, Textures[i].NormalPath, i, true);
+				GetGamedataFile.LoadTextureFromGamedata(Env, Textures[i].NormalPath, i, true);
 			}
 			catch (System.Exception e)
 			{
