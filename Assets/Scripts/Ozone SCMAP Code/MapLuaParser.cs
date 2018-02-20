@@ -19,6 +19,7 @@ public partial class MapLuaParser : MonoBehaviour
 	public string LoadedMapFolder;
 	public ScenarioLua ScenarioLuaFile;
 	public SaveLua SaveLuaFile;
+	public TablesLua TablesLuaFile;
 	public TextAsset SaveLuaHeader;
 	public TextAsset SaveLuaFooter;
 	public TextAsset DefaultScript;
@@ -216,6 +217,7 @@ public partial class MapLuaParser : MonoBehaviour
 
 			ScenarioLuaFile = new ScenarioLua();
 			SaveLuaFile = new SaveLua();
+			TablesLuaFile = new TablesLua();
 			AsyncOperation ResUn = Resources.UnloadUnusedAssets();
 			while (!ResUn.isDone)
 			{
@@ -287,6 +289,10 @@ public partial class MapLuaParser : MonoBehaviour
 				DecalsMenu.gameObject.SetActive(false);
 			}
 
+			if (TablesLuaFile.Load(FolderName, ScenarioFileName, FolderParentPath))
+			{
+				//Map Loaded
+			}
 
 			InfoPopup.Show(false);
 
