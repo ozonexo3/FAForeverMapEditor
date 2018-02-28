@@ -671,13 +671,14 @@ PlayerSettings:
     Android: 0
     Metro: 1
     PS4: 0
-    Standalone: 1
+    Standalone: 0
     WP8: 2
     WebGL: 1
     iOS: 1
   il2cppCompilerConfiguration: {}
   incrementalIl2cppBuild:
     iOS: 0
+  allowUnsafeCode: 1
   additionalIl2CppArgs: 
   scriptingRuntimeVersion: 1
   apiCompatibilityLevelPerPlatform:

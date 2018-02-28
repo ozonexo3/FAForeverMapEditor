@@ -66,23 +66,6 @@ namespace MapLua
 		const string KEY_spwnMexArmy = "spwnMexArmy";
 		const string KEY_spwnHydroArmy = "spwnHydroArmy";
 
-		const string KEY_vanishCoreMexesFor1v1y = "vanishCoreMexesFor1v1";
-		const string KEY_vanish1v1Mexes = "vanish1v1Mexes";
-		const string KEY_vanish1v1Hydro = "vanish1v1Hydro";
-		const string KEY_vanish2v2Hydro = "vanish2v2Hydro";
-
-		const string KEY_middlemex = "middlemex";
-		const string KEY_middlemass = "middlemass";
-		const string KEY_coremexes = "coremexes";
-
-		const string KEY_spwnAdditionalHydro = "spwnAdditionalHydro";
-		const string KEY_sidemass = "sidemass";
-		const string KEY_underwatermass = "underwatermass";
-		const string KEY_islandmass = "islandmass";
-		const string KEY_backmass = "backmass";
-		const string KEY_crazyrushOneMex = "crazyrushOneMex";
-		const string KEY_DuplicateListMex = "DuplicateListMex";
-
 		public bool Load(string FolderName, string ScenarioFileName, string FolderParentPath)
 		{
 			System.Text.Encoding encodeType = System.Text.Encoding.ASCII;
@@ -101,7 +84,8 @@ namespace MapLua
 				return false;
 			}
 
-			loadedFile = System.IO.File.ReadAllText(loc, encodeType);
+			loadedFile = System.IO.File.ReadAllText(loc, encodeType).Replace("}\n", "},\n").Replace("} ", "}, ");
+			loadedFile = "Main = {\n" + loadedFile + "\n}";
 
 			LuaFile = new Lua();
 			LuaFile.LoadCLRPackage();
@@ -115,27 +99,36 @@ namespace MapLua
 				return false;
 			}
 
-			GetMexArrays(LuaFile.GetTable(KEY_spwnMexArmy), ref Data.spawnMexArmy);
-			GetMexArrays(LuaFile.GetTable(KEY_spwnHydroArmy), ref Data.spwnHydroArmy);
 
-			Data.vanishCoreMexesFor1v1 = LuaParser.Read.StringArrayFromTable(LuaFile.GetTable(KEY_vanishCoreMexesFor1v1y));
-			Data.vanish1v1Mexes = LuaParser.Read.StringArrayFromTable(LuaFile.GetTable(KEY_vanish1v1Mexes));
-			Data.vanish1v1Hydro = LuaParser.Read.StringArrayFromTable(LuaFile.GetTable(KEY_vanish1v1Hydro));
-			Data.vanish2v2Hydro = LuaParser.Read.StringArrayFromTable(LuaFile.GetTable(KEY_vanish2v2Hydro));
 
-			GetMexArrays(LuaFile.GetTable(KEY_middlemex), ref Data.middlemex);
-			GetMexArrays(LuaFile.GetTable(KEY_middlemass), ref Data.middlemass);
-			GetMexArrays(LuaFile.GetTable(KEY_coremexes), ref Data.coremexes);
+			LuaTable Main = LuaFile.GetTable("Main");
 
-			Data.spwnAdditionalHydro = LuaParser.Read.StringArrayFromTable(LuaFile.GetTable(KEY_spwnAdditionalHydro));
+			var Enum = Main.Keys.GetEnumerator();
+			while (Enum.MoveNext())
+			{
+				string Key = Enum.Current as string;
+				Debug.Log(Key);
+			}
 
-			GetMexArrays(LuaFile.GetTable(KEY_sidemass), ref Data.sidemass);
-			GetMexArrays(LuaFile.GetTable(KEY_underwatermass), ref Data.underwatermass);
-			GetMexArrays(LuaFile.GetTable(KEY_islandmass), ref Data.islandmass);
-			GetMexArrays(LuaFile.GetTable(KEY_backmass), ref Data.backmass);
 
-			Data.crazyrushOneMex = LuaParser.Read.StringArrayFromTable(LuaFile.GetTable(KEY_crazyrushOneMex));
-			Data.DuplicateListMex = LuaParser.Read.StringArrayFromTable(LuaFile.GetTable(KEY_DuplicateListMex));
+			Debug.LogWarning("---");
+
+
+
+			string[] MainKeys = LuaParser.Read.GetTableKeys(Main);
+
+			for(int i = 0; i < MainKeys.Length; i++)
+			{
+				LuaTable Table = Main.RawGet(MainKeys[i]) as LuaTable;
+				Debug.Log(MainKeys[i] + " : " + Table.Keys.Count);
+
+				if(MainKeys[i] == KEY_spwnMexArmy)
+					GetMexArrays(Main.RawGet(KEY_spwnMexArmy) as LuaTable, ref Data.spawnMexArmy);
+			}
+			
+
+			//GetMexArrays(Main.GetTable(KEY_spwnMexArmy), ref Data.spawnMexArmy);
+			//GetMexArrays(Main.GetTable(KEY_spwnHydroArmy), ref Data.spwnHydroArmy);
 
 			return true;
 		}

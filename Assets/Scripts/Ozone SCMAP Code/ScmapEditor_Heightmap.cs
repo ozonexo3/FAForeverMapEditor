@@ -10,6 +10,7 @@ using UnityEngine;
 public partial class ScmapEditor : MonoBehaviour
 {
 
+	static int heightsLength;
 	static float[,] heights = new float[1, 1];
 
 	public static void ApplyHeightmap(bool delayed = true)
@@ -53,11 +54,21 @@ public partial class ScmapEditor : MonoBehaviour
 		{
 			for (y = 0; y < LastGetHeight; y++)
 			{
-				heights[Y + x, X + y] = ReturnValues[x, y];
+				int hx = Y + x;
+				int hy = X + y;
+				if (hx >= heightsLength || hy >= heightsLength)
+					continue;
+
+				heights[hx, hy] = ReturnValues[x, y];
 			}
 		}
 
-		Current.Data.SetHeightsDelayLOD(X, Y, ReturnValues);
+		if(X + ReturnValues.GetLength(0) >= heightsLength || Y + ReturnValues.GetLength(1) >= heightsLength)
+		{
+			ApplyHeightmap(true);
+		}
+		else
+			Current.Data.SetHeightsDelayLOD(X, Y, ReturnValues);
 		//ApplyHeightmap();
 	}
 
@@ -92,7 +103,12 @@ public partial class ScmapEditor : MonoBehaviour
 		{
 			for(y = 0; y < LastGetHeight; y++)
 			{
-				ReturnValues[x, y] = heights[Y + x, X + y];
+				int hx = Y + x;
+				int hy = X + y;
+				if (hx >= heightsLength || hy >= heightsLength)
+					continue;
+
+				ReturnValues[x, y] = heights[hx, hy];
 			}
 		}
 

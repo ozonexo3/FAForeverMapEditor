@@ -70,6 +70,7 @@ public partial class ScmapEditor : MonoBehaviour
 	void Start()
 	{
 		ToogleGrid(false);
+		heightsLength = 10;
 		heights = new float[10, 10];
 		RestartTerrainAsset();
 	}
@@ -223,8 +224,8 @@ public partial class ScmapEditor : MonoBehaviour
 		SetWater();
 
 
-		int Max = (int)Mathf.Max((map.Height + 1), (map.Width + 1));
-		heights = new float[Max, Max];
+		heightsLength = (int)Mathf.Max((map.Height + 1), (map.Width + 1));
+		heights = new float[heightsLength, heightsLength];
 
 		float HeightWidthMultiply = (map.Height / (float)map.Width);
 
@@ -233,11 +234,11 @@ public partial class ScmapEditor : MonoBehaviour
 		int x = 0;
 		int localY = 0;
 
-		for (y = 0; y < Max; y++)
+		for (y = 0; y < heightsLength; y++)
 		{
-			for (x = 0; x < Max; x++)
+			for (x = 0; x < heightsLength; x++)
 			{
-				localY = (int)(((Max - 1) - y) * HeightWidthMultiply);
+				localY = (int)(((heightsLength - 1) - y) * HeightWidthMultiply);
 
 				//heights[y, x] = (float)((((double)map.GetHeight(x, localY)) / (256 * 256)) * (double)(TerrainHeight));
 				heights[y, x] = (float)((((double)map.GetHeight(x, localY)) / (128 * 128)));
@@ -571,6 +572,7 @@ public partial class ScmapEditor : MonoBehaviour
 		if (Teren)
 		{
 			heights = Teren.terrainData.GetHeights(0, 0, Teren.terrainData.heightmapWidth, Teren.terrainData.heightmapHeight);
+			heightsLength = heights.GetLength(0);
 
 			int y = 0;
 			int x = 0;
@@ -694,6 +696,7 @@ public partial class ScmapEditor : MonoBehaviour
 		int xRes = (int)(256 + 1);
 		int zRes = (int)(256 + 1);
 		int yRes = (int)(128);
+		heightsLength = xRes;
 		heights = new float[xRes, zRes];
 
 		// Set Terrain proportives
