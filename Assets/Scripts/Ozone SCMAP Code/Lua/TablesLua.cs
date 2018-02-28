@@ -25,28 +25,12 @@ namespace MapLua
 		[System.Serializable]
 		public class TablesInfo
 		{
+			// Core Marker to Army
 			public MexArray[] spawnMexArmy = new MexArray[5];
-
 			public MexArray[] spwnHydroArmy = new MexArray[5];
 
-			public string[] vanishCoreMexesFor1v1;
-			public string[] vanish1v1Mexes;
-			public string[] vanish1v1Hydro;
-			public string[] vanish2v2Hydro;
+			public List<TableKey> AllTables;
 
-			public MexArray[] middlemex;
-			public MexArray[] middlemass;
-			public MexArray[] coremexes;
-
-			public string[] spwnAdditionalHydro;
-
-			public MexArray[] sidemass;
-			public MexArray[] underwatermass;
-			public MexArray[] islandmass;
-			public MexArray[] backmass;
-
-			public string[] crazyrushOneMex;
-			public string[] DuplicateListMex;
 		}
 
 
@@ -56,10 +40,32 @@ namespace MapLua
 		{
 			public string[] MexesIds;
 
-			public MexArray(string[] Keys)
+			public MexArray(string[] MexesIds)
 			{
-				MexesIds = Keys;
+				this.MexesIds = MexesIds;
 			}
+		}
+
+		[System.Serializable]
+		public class TableKey
+		{
+			public string Key;
+			public bool OneDimension = false;
+			public MexArray[] Values;
+
+			public TableKey(string Key, bool OneDimension)
+			{
+				this.Key = Key;
+				this.OneDimension = OneDimension;
+
+				if (OneDimension)
+				{
+					Values = new MexArray[1];
+					Values[0] = new MexArray(new string[0]);
+
+				}
+			}
+
 		}
 		#endregion
 
@@ -84,8 +90,7 @@ namespace MapLua
 				return false;
 			}
 
-			loadedFile = System.IO.File.ReadAllText(loc, encodeType).Replace("}\n", "},\n").Replace("} ", "}, ");
-			loadedFile = "Main = {\n" + loadedFile + "\n}";
+			loadedFile = System.IO.File.ReadAllText(loc, encodeType);// .Replace("}\n", "},\n").Replace("} ", "}, ");
 
 			LuaFile = new Lua();
 			LuaFile.LoadCLRPackage();
@@ -99,46 +104,69 @@ namespace MapLua
 				return false;
 			}
 
+			string[] Keys = GetAllTableKeys(loadedFile);
+			Data.AllTables = new List<TableKey>();
 
+			GetMexArrays(LuaFile.GetTable(KEY_spwnMexArmy), ref Data.spawnMexArmy);
+			GetMexArrays(LuaFile.GetTable(KEY_spwnHydroArmy), ref Data.spwnHydroArmy);
 
-			LuaTable Main = LuaFile.GetTable("Main");
-
-			var Enum = Main.Keys.GetEnumerator();
-			while (Enum.MoveNext())
+			Debug.Log(Keys.Length);
+			for(int i = 0; i < Keys.Length; i++)
 			{
-				string Key = Enum.Current as string;
-				Debug.Log(Key);
+				LuaTable MarkerTable = LuaFile.GetTable(Keys[i]);
+				if (MarkerTable != null)
+				{
+
+					Debug.Log(Keys[i] + ": " + MarkerTable.Values.Count);
+
+					string[] StringValues = LuaParser.Read.StringArrayFromTable(MarkerTable);
+
+					if(StringValues.Length == 0 || StringValues[0] != "table")
+					{
+						TableKey NewTable = new TableKey(Keys[i], true);
+						NewTable.Values[0].MexesIds = StringValues;
+
+						Data.AllTables.Add(NewTable);
+					}
+					else
+					{
+						TableKey NewTable = new TableKey(Keys[i], false);
+						GetMexArrays(MarkerTable, ref NewTable.Values);
+						Data.AllTables.Add(NewTable);
+					}
+
+				}
 			}
-
-
-			Debug.LogWarning("---");
-
-
-
-			string[] MainKeys = LuaParser.Read.GetTableKeys(Main);
-
-			for(int i = 0; i < MainKeys.Length; i++)
-			{
-				LuaTable Table = Main.RawGet(MainKeys[i]) as LuaTable;
-				Debug.Log(MainKeys[i] + " : " + Table.Keys.Count);
-
-				if(MainKeys[i] == KEY_spwnMexArmy)
-					GetMexArrays(Main.RawGet(KEY_spwnMexArmy) as LuaTable, ref Data.spawnMexArmy);
-			}
-			
-
-			//GetMexArrays(Main.GetTable(KEY_spwnMexArmy), ref Data.spawnMexArmy);
-			//GetMexArrays(Main.GetTable(KEY_spwnHydroArmy), ref Data.spwnHydroArmy);
 
 			return true;
 		}
 
 		void GetMexArrays(LuaTable Table, ref MexArray[] Array)
 		{
-			LuaTable[] Tabs = LuaParser.Read.GetTableTables(Table);
+			LuaTable[] Tabs = LuaParser.Read.TableArrayFromTable(Table);
 			Array = new MexArray[Tabs.Length];
 			for (int i = 0; i < Array.Length; i++)
 				Array[i] = new MexArray(LuaParser.Read.StringArrayFromTable(Tabs[i]));
+		}
+
+		string[] GetAllTableKeys(string file)
+		{
+			List<string> Keys = new List<string>();
+			file = file.Replace(" ", "");
+			string[] Lines = file.Split("\n".ToCharArray());
+			for(int l = 0; l < Lines.Length; l++)
+			{
+				if (Lines[l].Contains("="))
+				{
+					string value = Lines[l].Split("=".ToCharArray())[0];
+					if (value == KEY_spwnMexArmy || value == KEY_spwnHydroArmy)
+						continue;
+					Keys.Add(value);
+				}
+			}
+
+
+			return Keys.ToArray();
 		}
 	}
 }
