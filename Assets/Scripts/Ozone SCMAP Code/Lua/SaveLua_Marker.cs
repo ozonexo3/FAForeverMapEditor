@@ -61,6 +61,10 @@ namespace MapLua
 			public float WeatherType02Chance = 0;
 			public float WeatherType01Chance = 0;
 
+			//Adaptive
+			public List<int> SpawnWithArmy = new List<int>();
+			public List<string> AdaptiveKeys = new List<string>();
+
 			public const string KEY_SIZE = "size";
 			public const string KEY_RESOURCE = "resource";
 			public const string KEY_AMOUNT = "amount";

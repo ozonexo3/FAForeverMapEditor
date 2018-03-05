@@ -913,6 +913,7 @@
     <Compile Include="Assets\Scripts\UI\Tools\Decals\DecalsList.cs" />
     <Compile Include="Assets\Scripts\UI\Tools\LightingInfo.cs" />
     <Compile Include="Assets\Scripts\UI\Tools\MapInfo.cs" />
+    <Compile Include="Assets\Scripts\UI\Tools\Markers\AdaptiveInfo.cs" />
     <Compile Include="Assets\Scripts\UI\Tools\Markers\MarkerLayersInfo.cs" />
     <Compile Include="Assets\Scripts\UI\Tools\Markers\MarkersInfo.cs" />
     <Compile Include="Assets\Scripts\UI\Tools\Markers\NewMarkersInfo.cs" />
