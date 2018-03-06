@@ -13,6 +13,7 @@ namespace EditMap
 		[Header("UI")]
 		public GameObject TogglePrefab;
 		public GameObject TitlePrefab;
+		public GameObject TitleDescPrefab;
 		public Transform ArmyTooglePivot;
 		public Transform CustomTablesPivot;
 
@@ -28,6 +29,10 @@ namespace EditMap
 
 		void Generate()
 		{
+
+			if (!MapLuaParser.Current.TablesLuaFile.IsLoaded)
+				return;
+
 			Toggles = new Dictionary<string, UiToggle>();
 			ScenarioLua.ScenarioInfo ScenarioData = MapLuaParser.Current.ScenarioLuaFile.Data;
 
@@ -54,10 +59,7 @@ namespace EditMap
 			TablesLua.TablesInfo TablesData = MapLuaParser.Current.TablesLuaFile.Data;
 			for(int i = 0; i < TablesData.AllTables.Count; i++)
 			{
-				GameObject NewTitleObj = Instantiate(TitlePrefab, ArmyTooglePivot.parent);
-				NewTitleObj.transform.SetSiblingIndex(CustomTablesPivot.GetSiblingIndex());
-				NewTitleObj.SetActive(true);
-				NewTitleObj.GetComponent<Text>().text = FormatTableName(TablesData.AllTables[i].Key);
+				CreateTitle(TablesData.AllTables[i].Key);
 
 				if (TablesData.AllTables[i].OneDimension)
 				{
@@ -87,6 +89,44 @@ namespace EditMap
 		public void UpdateSelection()
 		{
 
+		}
+
+		void CreateTitle(string name)
+		{
+			GameObject Prefab = TitlePrefab;
+			string Name = name;
+			string Desc = "";
+
+			switch (name)
+			{
+				case "crazyrushOneMex":
+					Prefab = TitleDescPrefab;
+					Name = "Crazyrush";
+					Desc = "One mex per player";
+					break;
+				case "DuplicateListMex":
+					Prefab = TitleDescPrefab;
+					Name = "Duplicate List Mex";
+					Desc = "Additional crazyrush mex";
+					break;
+				case "extramass":
+					Prefab = TitleDescPrefab;
+					Name = "Extra Mass";
+					Desc = "Additional mex in starting locations";
+					break;
+			}
+
+
+
+			GameObject NewTitleObj = Instantiate(Prefab, ArmyTooglePivot.parent);
+			NewTitleObj.transform.SetSiblingIndex(CustomTablesPivot.GetSiblingIndex());
+			NewTitleObj.SetActive(true);
+			NewTitleObj.GetComponent<Text>().text = FormatTableName(name);
+
+			if (!string.IsNullOrEmpty(Desc))
+			{
+				NewTitleObj.GetComponent<UiTitle>().Subtitle.text = Desc;
+			}
 
 		}
 
@@ -111,6 +151,30 @@ namespace EditMap
 				}
 			}
 			return name;
+		}
+
+		public void CreateTablesFile()
+		{
+			GenericPopup.ShowPopup(GenericPopup.PopupTypes.TriButton, "Creating Tables", "Replace current script.lua file?\nThis can't be undone.",
+				"Yes", ReplaceScript,
+				"No", NoScript,
+				"Cancel", Cancel
+				);
+		}
+
+		void ReplaceScript()
+		{
+
+		}
+
+		void NoScript()
+		{
+
+		}
+
+		void Cancel()
+		{
+
 		}
 	}
 }

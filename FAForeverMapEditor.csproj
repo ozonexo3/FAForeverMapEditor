@@ -924,6 +924,7 @@
     <Compile Include="Assets\Scripts\UI\Tools\WaterInfo.cs" />
     <Compile Include="Assets\Scripts\UI\UiElements\UiColor.cs" />
     <Compile Include="Assets\Scripts\UI\UiElements\UiTextField.cs" />
+    <Compile Include="Assets\Scripts\UI\UiElements\UiTitle.cs" />
     <Compile Include="Assets\Scripts\UI\UiElements\UiToggle.cs" />
     <Compile Include="Assets\Scripts\UI\Windows\ArmysWindow.cs" />
     <Compile Include="Assets\Scripts\UI\Windows\GenericInfoPopup.cs" />
