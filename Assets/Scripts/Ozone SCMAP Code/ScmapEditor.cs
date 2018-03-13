@@ -452,28 +452,30 @@ public partial class ScmapEditor : MonoBehaviour
 	void GenerateArrays()
 	{
 		int AlbedoSize = 256;
+		int MipMapCount = 10;
 
 		for (int i = 0; i < 8; i++)
 		{
 			if (Textures[i + 1].Albedo.width > AlbedoSize)
 			{
 				AlbedoSize = Textures[i + 1].Albedo.width;
+				MipMapCount = Textures[i + 1].Albedo.mipmapCount;
 			}
 			if (Textures[i + 1].Albedo.height > AlbedoSize)
 			{
 				AlbedoSize = Textures[i + 1].Albedo.height;
+				MipMapCount = Textures[i + 1].Albedo.mipmapCount;
 			}
 		}
 
 
 		Texture2DArray AlbedoArray = new Texture2DArray(AlbedoSize, AlbedoSize, 8, TextureFormat.RGBA32, true);
 
-		int MipMapCount = 10;
 		for (int i = 0; i < 8; i++)
 		{
 			if (Textures[i + 1].Albedo.width != AlbedoSize || Textures[i + 1].Albedo.height != AlbedoSize)
 			{
-
+				Debug.Log("Rescale texture from" + Textures[i + 1].Albedo.width + "x" + Textures[i + 1].Albedo.height + " to: " + AlbedoSize);
 				Textures[i + 1].Albedo = TextureScale.Bilinear(Textures[i + 1].Albedo, AlbedoSize, AlbedoSize);
 			}
 
@@ -482,7 +484,7 @@ public partial class ScmapEditor : MonoBehaviour
 			//	MipMapCount = Textures[i + 1].Albedo.mipmapCount;
 
 			if (MipMapCount != Textures[i + 1].Albedo.mipmapCount)
-				Debug.LogWarning("Wrong mipmap Count for texture" + Textures[i + 1].AlbedoPath);
+				Debug.LogWarning("Wrong mipmap Count: " + Textures[i + 1].Albedo.mipmapCount + " for texture" + Textures[i + 1].AlbedoPath);
 			for (int m = 0; m < MipMapCount; m++)
 			{
 				AlbedoArray.SetPixels(Textures[i + 1].Albedo.GetPixels(m), i, m);
