@@ -77,6 +77,8 @@ Shader "Ozone/Deferred Decal"
 				if(_Water > 0)
 				color.rgb = ApplyWaterColor( waterTexture.g, color.rgb);	
 
+				//color.a = saturate(color.a);
+				//color.a = 1;
 				color.a *= blend * tex2D(_Mask, texUV).r;
 								float RawAlpha = color.a;
 

@@ -41,7 +41,7 @@ public partial struct GetGamedataFile
 		if (FinalTextureData2 == null || FinalTextureData2.Length == 0)
 		{
 			//Debug.LogWarning("File bytes are empty!");
-			return new Texture2D(32, 32, TextureFormat.RGBA32, true);
+			return Texture2D.whiteTexture;
 		}
 
 		TextureFormat format = GetFormatOfDdsBytes(FinalTextureData2);
