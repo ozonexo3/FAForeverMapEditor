@@ -368,14 +368,21 @@ namespace EditMap
 					return;
 				}
 			}
-			Undo.Current.RegisterMarkerChange(new SaveLua.Marker[] { SelectedGameObjects[0].GetComponent<MarkerObject>().Owner });
 
-			MapLua.SaveLua.RemoveMarkerName(SelectedGameObjects[0].name);
-			MapLua.SaveLua.RegisterMarkerName(NameToChange);
+			SaveLua.Marker Current = SelectedGameObjects[0].GetComponent<MarkerObject>().Owner;
 
-			SelectedGameObjects[0].GetComponent<MarkerObject>().Owner.Name = NameToChange;
+			Undo.Current.RegisterMarkerChange(new SaveLua.Marker[] { Current });
+
+			//MapLua.SaveLua.RemoveMarkerName(SelectedGameObjects[0].name);
+			//MapLua.SaveLua.RegisterMarkerName(NameToChange);
+			MapLua.SaveLua.RemoveMarker(SelectedGameObjects[0].name);
+
+
+			Current.Name = NameToChange;
 			SelectedGameObjects[0].name = NameToChange;
 			NameField.text = NameToChange;
+			MapLua.SaveLua.AddNewMarker(Current);
+
 
 			MarkerListControler.UpdateList(true);
 

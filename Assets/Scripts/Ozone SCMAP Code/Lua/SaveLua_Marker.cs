@@ -323,7 +323,7 @@ namespace MapLua
 				else
 					Name = NewName;
 
-				RegisterMarkerName(Name);
+				AddNewMarker(this);
 				size = 1;
 				position = Vector3.zero;
 				orientation = Vector3.zero;
@@ -348,11 +348,11 @@ namespace MapLua
 				if (string.IsNullOrEmpty(NewName))
 				{
 					Name = GetLowestName(CopyMarker.MarkerType);
-					RegisterMarkerName(Name);
 				}
 				else
 					Name = NewName;
 
+				AddNewMarker(this);
 
 				size = CopyMarker.size;
 				amount = CopyMarker.amount;
@@ -392,7 +392,7 @@ namespace MapLua
 			{
 				// Create marker from table
 				Name = name;
-				RegisterMarkerName(Name);
+				AddNewMarker(this);
 				ConnectedToChains = new List<Chain>();
 				AdjacentToMarker = new List<Marker>();
 				string[] Keys = LuaParser.Read.GetTableKeys(Table);
@@ -721,7 +721,7 @@ namespace MapLua
 		}
 		#endregion
 
-
+		/*
 		static HashSet<string> AllExistingNames = new HashSet<string>();
 
 		public static void RegisterMarkerName(string MarkerName)
@@ -739,6 +739,44 @@ namespace MapLua
 		{
 			return AllExistingNames.Contains(name);
 		}
+		*/
+
+		static Dictionary<string, SaveLua.Marker> AllMarkersDictionary = new Dictionary<string, SaveLua.Marker>();
+
+		public static void ClearMarkersDictionary()
+		{
+			if (AllMarkersDictionary == null)
+				AllMarkersDictionary = new Dictionary<string, Marker>();
+			else
+				AllMarkersDictionary.Clear();
+		}
+
+		public static void AddNewMarker(SaveLua.Marker NewMarker)
+		{
+			AllMarkersDictionary.Add(NewMarker.Name, NewMarker);
+		}
+
+		public static void RemoveMarker(string Name)
+		{
+			AllMarkersDictionary.Remove(Name);
+		}
+
+		public static SaveLua.Marker GetMarker(string Name)
+		{
+			if (AllMarkersDictionary.ContainsKey(Name))
+				return AllMarkersDictionary[Name];
+
+			return null;
+		}
+
+		public static bool MarkerExist(string Name, bool WithObject = true)
+		{
+			if(WithObject)
+				return AllMarkersDictionary.ContainsKey(Name) && AllMarkersDictionary[Name].MarkerObj != null;
+
+			return AllMarkersDictionary.ContainsKey(Name);
+		}
+
 
 		public static string GetLowestName(Marker.MarkerTypes Type)
 		{
@@ -751,7 +789,7 @@ namespace MapLua
 			}
 
 			int ID = 0;
-			while (AllExistingNames.Contains(prefix + ID.ToString("00")))
+			while (MarkerExist(prefix + ID.ToString("00")))
 				ID++;
 
 			return prefix + ID.ToString("00");

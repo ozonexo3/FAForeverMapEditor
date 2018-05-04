@@ -50,6 +50,9 @@ namespace Selection
 				{
 					int ID = Selection.Ids[i];
 
+					if (AffectedGameObjects[ID] == null)
+						continue;
+
 					if (i == 0)
 					{
 						NewBounds.center = AffectedGameObjects[ID].transform.localPosition;

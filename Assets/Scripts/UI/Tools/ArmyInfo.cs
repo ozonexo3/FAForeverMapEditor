@@ -132,7 +132,7 @@ public class ArmyInfo : MonoBehaviour {
 					ArmyListObject.SetSelection(1);
 					ArmyListObject.ObjectName.text += "\nNo army in Save.lua!";
 				}
-				else if (!SaveLua.NameExist(ArmyListObject.name))
+				else if (!SaveLua.MarkerExist(ArmyListObject.name))
 				{
 					ArmyListObject.SetSelection(1);
 					ArmyListObject.ObjectName.text += "\nArmy marker not found!";

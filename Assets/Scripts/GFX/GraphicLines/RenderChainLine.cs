@@ -12,6 +12,7 @@ public class RenderChainLine : MonoBehaviour {
 
 	public MapLua.SaveLua.Chain RenderChain;
 
+	/*
 	void CreateLineMaterial()
 	{
 		if (!lineMaterial)
@@ -32,6 +33,7 @@ public class RenderChainLine : MonoBehaviour {
 			lineMaterial.SetInt("_ZTest", (int)UnityEngine.Rendering.CompareFunction.Greater);
 		}
 	}
+	*/
 
 	// Will be called after all regular rendering is done
 	Vector3 Pos;

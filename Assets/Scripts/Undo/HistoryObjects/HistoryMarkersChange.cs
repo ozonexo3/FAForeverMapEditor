@@ -51,16 +51,17 @@ public class HistoryMarkersChange : HistoryObject
 		{
 			if (Marker.Name != Name)
 			{
-				if (MapLua.SaveLua.NameExist(Name))
+				if (MapLua.SaveLua.MarkerExist(Name))
 				{
 					// Cant Undo, Name already exist
 				}
 				else
 				{
-					MapLua.SaveLua.RemoveMarkerName(Marker.Name);
-					MapLua.SaveLua.RegisterMarkerName(Name);
+					MapLua.SaveLua.RemoveMarker(Marker.Name);
 					Marker.Name = Name;
 					Marker.MarkerObj.gameObject.name = Name;
+					MapLua.SaveLua.AddNewMarker(Marker);
+
 				}
 			}
 			Marker.zoom = zoom;

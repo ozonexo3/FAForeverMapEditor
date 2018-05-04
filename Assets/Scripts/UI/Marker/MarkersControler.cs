@@ -88,7 +88,9 @@ namespace Markers
 		{
 			Current = this;
 		}
-		
+
+
+
 		public static void LoadMarkers()
 		{
 			Clear();

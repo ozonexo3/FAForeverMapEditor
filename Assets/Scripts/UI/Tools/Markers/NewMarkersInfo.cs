@@ -265,7 +265,7 @@ namespace EditMap
 				{
 					if(MarkerObjects[m] == MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers[i].MarkerObj.gameObject)
 					{
-						MapLua.SaveLua.RemoveMarkerName(MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers[i].Name);
+						MapLua.SaveLua.RemoveMarker(MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers[i].Name);
 						Destroy(MarkerObjects[m]);
 						MarkerObjects.RemoveAt(m);
 						MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers[i] = null;
