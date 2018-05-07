@@ -473,6 +473,9 @@ public partial class ScmapEditor : MonoBehaviour
 
 		for (int i = 0; i < 8; i++)
 		{
+			if (Textures[i + 1].Albedo.width <= 4 && Textures[i + 1].Albedo.height <= 4)
+				continue;
+
 			if (Textures[i + 1].Albedo.width != AlbedoSize || Textures[i + 1].Albedo.height != AlbedoSize)
 			{
 				Debug.Log("Rescale texture from" + Textures[i + 1].Albedo.width + "x" + Textures[i + 1].Albedo.height + " to: " + AlbedoSize);

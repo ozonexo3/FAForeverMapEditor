@@ -358,11 +358,6 @@ public partial class MapLuaParser : MonoBehaviour
 
 	#region SaveMap
 
-	public void SaveMapAs()
-	{
-
-	}
-
 	public bool BackupFiles = true;
 	public void SaveMap(bool Backup = true)
 	{
@@ -438,6 +433,14 @@ public partial class MapLuaParser : MonoBehaviour
 		//SaveScriptLua(ScriptId);
 
 		SaveScmap();
+		yield return null;
+
+		string TablesFilePath = LoadedMapFolderPath + ScenarioFileName + ".lua";
+		TablesFilePath = TablesLua.ScenarioToTableFileName(TablesFilePath);
+		Debug.Log(TablesFilePath);
+		if (BackupFiles && System.IO.File.Exists(TablesFilePath))
+			System.IO.File.Move(TablesFilePath, TablesLua.ScenarioToTableFileName(BackupPath + "/" + ScenarioFileName + ".lua"));
+		TablesLuaFile.Save(TablesFilePath);
 		yield return null;
 
 		InfoPopup.Show(false);

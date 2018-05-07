@@ -20,25 +20,33 @@ namespace LuaParser
 		StringBuilder Sb;
 		string TabsString = "";
 
-		public void OpenTab()
+		public void OpenTab(int tabs = 1)
 		{
-			TabsString += LuaParser.Write.tab;
+			if(tabs <= 1)
+				TabsString += LuaParser.Write.tab;
+			else
+				for (int i = 0; i < tabs; i++)
+					TabsString += LuaParser.Write.tab;
 		}
 
-		public void CloseTab()
+		public void CloseTab(int tabs = 1)
 		{
-			TabsString = TabsString.Remove(TabsString.Length - LuaParser.Write.tab.Length);
+			if (tabs <= 1)
+				TabsString = TabsString.Remove(TabsString.Length - LuaParser.Write.tab.Length);
+			else
+				for (int i = 0; i < tabs; i++)
+					TabsString = TabsString.Remove(TabsString.Length - LuaParser.Write.tab.Length);
 		}
 
-		public void OpenTab(string line)
+		public void OpenTab(string line, int tabs = 1)
 		{
 			AddLine(line);
-			OpenTab();
+			OpenTab(tabs);
 		}
 
-		public void CloseTab(string line)
+		public void CloseTab(string line, int tabs = 1)
 		{
-			CloseTab();
+			CloseTab(tabs);
 			AddLine(line);
 		}
 
@@ -46,9 +54,19 @@ namespace LuaParser
 		{
 			Sb.AppendLine(TabsString + line);
 		}
-
+		public void NextLine(int Count = 0)
+		{
+			if(Count <= 1)
+				Sb.AppendLine(TabsString);
+			else
+			{
+				for(int i = 0; i < Count; i++)
+					Sb.AppendLine(TabsString);
+			}
+		}
 
 		const int MinimumComentCharacters = 75;
+		const string Comment = "--";
 		const string CommentSaveBegin = "--[[";
 		const string CommentSaveEnd = "]]--";
 		public void AddSaveComent(string coment)
@@ -59,6 +77,11 @@ namespace LuaParser
 				coment += " ";
 
 			Sb.AppendLine(TabsString + CommentSaveBegin + coment + CommentSaveEnd);
+		}
+
+		public void AddComent(string coment)
+		{
+			Sb.AppendLine(TabsString + Comment + " " + coment);
 		}
 
 		public string GetFileString()

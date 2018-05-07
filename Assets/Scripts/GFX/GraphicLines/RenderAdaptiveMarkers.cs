@@ -156,7 +156,8 @@ public class RenderAdaptiveMarkers : MonoBehaviour {
 
 		Camera MainCam = CameraControler.Current.Cam;
 		Rect CamRect = MainCam.pixelRect;
-		GUI.BeginScrollView(CamRect, Vector2.zero, new Rect(0, 0, CamRect.width, CamRect.height), false, false);
+		Rect UiRect = new Rect(CamRect.x, CamRect.y + (Screen.height - CamRect.height), CamRect.width, CamRect.height);
+		GUI.BeginScrollView(UiRect, Vector2.zero, new Rect(0, (Screen.height - CamRect.height), CamRect.width, CamRect.height), false, false);
 
 		//GUI.Label(new Rect(500, 500, 100, 50), "Test");
 
@@ -179,6 +180,6 @@ public class RenderAdaptiveMarkers : MonoBehaviour {
 	{
 		var position = Cam.WorldToScreenPoint(Pivot.position);
 		var textSize = GUI.skin.label.CalcSize(new GUIContent(text));
-		GUI.Label(new Rect(position.x - CamRect.x, (Screen.height - position.y) - CamRect.y, textSize.x, textSize.y), text);
+		GUI.Label(new Rect(position.x - CamRect.x, (Screen.height - position.y), textSize.x, textSize.y), text);
 	}
 }

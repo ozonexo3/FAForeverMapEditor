@@ -13,6 +13,7 @@ namespace EditMap
 	{
 
 		[Header("UI")]
+		public Text MarkerName;
 		public GameObject TogglePrefab;
 		public GameObject TitlePrefab;
 		public GameObject TitleDescPrefab;
@@ -32,6 +33,7 @@ namespace EditMap
 			SelectionManager.Current.SetSelectionChangeAction(UpdateSelection);
 
 			RenderAdaptiveMarkers.UpdateAdaptiveLines();
+			UpdateMarkerName();
 		}
 
 		private void OnDisable()
@@ -127,6 +129,17 @@ namespace EditMap
 		{
 			UpdateArmyToggles();
 			UpdateCustomToggles();
+			UpdateMarkerName();
+		}
+
+		void UpdateMarkerName()
+		{
+			if (SelectionManager.Current.Selection.Ids.Count > 0)
+			{
+				MarkerName.text = SelectionManager.Current.AffectedGameObjects[SelectionManager.Current.Selection.Ids[0]].GetComponent<MarkerObject>().Owner.Name;
+			}
+			else
+				MarkerName.text = "";
 		}
 
 		void UpdateArmyToggles()
