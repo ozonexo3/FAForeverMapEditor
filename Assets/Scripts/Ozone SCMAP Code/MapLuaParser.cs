@@ -23,6 +23,7 @@ public partial class MapLuaParser : MonoBehaviour
 	public TextAsset SaveLuaHeader;
 	public TextAsset SaveLuaFooter;
 	public TextAsset DefaultScript;
+	public TextAsset AdaptiveScript;
 
 	#region Variables
 	[Header("Core")]
@@ -118,13 +119,18 @@ public partial class MapLuaParser : MonoBehaviour
 
 	#region Loading
 
-	public IEnumerator ForceLoadMapAtPath(string path)
+	public IEnumerator ForceLoadMapAtPath(string path, bool Props, bool Decals)
 	{
 		path = path.Replace("\\", "/");
 		Debug.Log("Load from: " + path);
 
 		char[] NameSeparator = ("/").ToCharArray();
 		string[] Names = path.Split(NameSeparator);
+
+		FolderParentPath = "";
+
+		for (int i = 0; i < Names.Length - 2; i++)
+			FolderParentPath += Names[i] + "/";
 
 		FolderName = Names[Names.Length - 2];
 		ScenarioFileName = Names[Names.Length - 1].Replace(".lua", "");
@@ -138,7 +144,9 @@ public partial class MapLuaParser : MonoBehaviour
 
 		//PlayerPrefs.SetString("MapsPath", NewMapPath);
 		loadSave = false;
-		LoadProps = false;
+		LoadProps = Props;
+		LoadDecals = Decals;
+
 		var LoadFile = StartCoroutine("LoadingFile");
 		yield return LoadFile;
 
@@ -391,23 +399,9 @@ public partial class MapLuaParser : MonoBehaviour
 		while (DecalsControler.IsUpdating)
 			yield return null;
 
-		string BackupId = System.DateTime.Now.Month.ToString() + System.DateTime.Now.Day.ToString() + System.DateTime.Now.Hour.ToString() + System.DateTime.Now.Minute.ToString() + System.DateTime.Now.Second.ToString();
 
-		BackupPath = EnvPaths.GetBackupPath();
-		if (string.IsNullOrEmpty(BackupPath))
-		{
-			BackupPath = Application.dataPath + "/MapsBackup/";
-#if UNITY_EDITOR
-			BackupPath = BackupPath.Replace("Assets/", "");
-#endif
-			//BackupPath = FolderParentPath;
-		}
+		GenerateBackupPath();
 
-		BackupPath += FolderName + "/Backup_" + BackupId;
-
-
-		if (BackupFiles && !System.IO.Directory.Exists(BackupPath))
-			System.IO.Directory.CreateDirectory(BackupPath);
 		yield return null;
 
 		// Scenario.lua
@@ -437,7 +431,7 @@ public partial class MapLuaParser : MonoBehaviour
 
 		string TablesFilePath = LoadedMapFolderPath + ScenarioFileName + ".lua";
 		TablesFilePath = TablesLua.ScenarioToTableFileName(TablesFilePath);
-		Debug.Log(TablesFilePath);
+		//Debug.Log(TablesFilePath);
 		if (BackupFiles && System.IO.File.Exists(TablesFilePath))
 			System.IO.File.Move(TablesFilePath, TablesLua.ScenarioToTableFileName(BackupPath + "/" + ScenarioFileName + ".lua"));
 		TablesLuaFile.Save(TablesFilePath);
@@ -445,6 +439,26 @@ public partial class MapLuaParser : MonoBehaviour
 
 		InfoPopup.Show(false);
 		SavingMapProcess = false;
+	}
+
+	void GenerateBackupPath()
+	{
+		string BackupId = System.DateTime.Now.Month.ToString() + System.DateTime.Now.Day.ToString() + System.DateTime.Now.Hour.ToString() + System.DateTime.Now.Minute.ToString() + System.DateTime.Now.Second.ToString();
+
+		BackupPath = EnvPaths.GetBackupPath();
+		if (string.IsNullOrEmpty(BackupPath))
+		{
+			BackupPath = Application.dataPath + "/MapsBackup/";
+#if UNITY_EDITOR
+			BackupPath = BackupPath.Replace("Assets/", "");
+#endif
+			//BackupPath = FolderParentPath;
+		}
+
+		BackupPath += FolderName + "/Backup_" + BackupId;
+
+		if (BackupFiles && !System.IO.Directory.Exists(BackupPath))
+			System.IO.Directory.CreateDirectory(BackupPath);
 	}
 
 	public void SaveScmap()
@@ -464,23 +478,28 @@ public partial class MapLuaParser : MonoBehaviour
 	}
 
 
-	public void SaveScriptLua(int ID = 0)
+	public void SaveScriptLua(int ID = 0, bool NewBackup = false)
 	{
-		string SaveData = DefaultScript.text;
+		string SaveData = "";
 
-		/*
-		string loadedFile = "";
+		switch (ID)
+		{
+			case 1:
+				string TablesFilePath = FolderName + "/" + ScenarioFileName + ".lua\"";
+				TablesFilePath = TablesLua.ScenarioToTableFileName(TablesFilePath);
 
-		System.Text.Encoding encodeType = System.Text.Encoding.ASCII;
-		string loc = "";
-		if(ID == 0) return;
-		else if(ID == 1) loc = StructurePath + "script_structure1.lua";
-		else if(ID == 2) loc = StructurePath + "script_structure2.lua";
+				SaveData = AdaptiveScript.text.Replace("[**TablesPath**]", "\"/maps/" + TablesFilePath);
 
-		loadedFile = System.IO.File.ReadAllText(loc, encodeType);
+				break;
+			default:
+				SaveData = DefaultScript.text;
+				break;
+		}
 
-		SaveData = loadedFile;
-		*/
+		if (NewBackup)
+		{
+			GenerateBackupPath();
+		}
 
 		string SaveFilePath = MapRelativePath(ScenarioLuaFile.Data.script);
 
@@ -488,11 +507,16 @@ public partial class MapLuaParser : MonoBehaviour
 		char[] NameSeparator = ("/").ToCharArray();
 		string[] Names = FileName.Split(NameSeparator);
 
-		if (System.IO.File.Exists(SaveFilePath))
+		Debug.Log(SaveFilePath);
+		Debug.Log(BackupPath + "/" + Names[Names.Length - 1]);
+
+		if (BackupFiles && System.IO.File.Exists(SaveFilePath))
 			System.IO.File.Move(SaveFilePath, BackupPath + "/" + Names[Names.Length - 1]);
 
 		System.IO.File.WriteAllText(SaveFilePath, SaveData);
 	}
+
+
 
 	#endregion
 

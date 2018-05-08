@@ -72,6 +72,17 @@ namespace MapLua
 				}
 			}
 
+			public TableKey(string Key, int count)
+			{
+				this.Key = Key;
+				this.OneDimension = false;
+				IsHydro = Key.ToLower().Contains("hydro");
+
+				Values = new MexArray[count];
+				for(int i = 0; i < count; i++)
+					Values[i] = new MexArray(new string[i]);
+			}
+
 		}
 		#endregion
 
@@ -287,10 +298,31 @@ namespace MapLua
 
 		#endregion
 
+		public void CreateDefault()
+		{
+			Data.AllTables = new List<TableKey>();
+
+			Data.AllTables.Add(new TableKey("spwnAdditionalHydro", true));
+
+			Data.AllTables.Add(new TableKey("middlemass", 2));
+			Data.AllTables.Add(new TableKey("sidemass", 2));
+			Data.AllTables.Add(new TableKey("underwatermass", 2));
+			Data.AllTables.Add(new TableKey("islandmass", 2));
+			Data.AllTables.Add(new TableKey("backmass", 2));
+
+			Data.AllTables.Add(new TableKey("crazyrushOneMex", true));
+			Data.AllTables.Add(new TableKey("extramass", true));
+			Data.AllTables.Add(new TableKey("DuplicateListMex", true));
+
+			IsLoaded = true;
+		}
 
 		#region Save
 		public void Save(string Path)
 		{
+			if (!IsLoaded)
+				return;
+
 			ScenarioLua.ScenarioInfo ScenarioData = MapLuaParser.Current.ScenarioLuaFile.Data;
 
 			SaveLua.Marker[] AllMarkers = MarkersControler.GetMarkers();

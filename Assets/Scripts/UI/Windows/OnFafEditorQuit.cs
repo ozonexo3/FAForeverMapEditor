@@ -28,7 +28,8 @@ public class OnFafEditorQuit : MonoBehaviour {
 		if (!MapLuaParser.SavingMapProcess)
 		{
 			CancelInvoke();
-			Application.Quit();
+			//Application.Quit();
+			ForceQuit();
 		}
 	}
 
@@ -36,7 +37,8 @@ public class OnFafEditorQuit : MonoBehaviour {
 	{
 		AllowQuit = true;
 		Popup.SetActive(false);
-		Application.Quit();
+		//Application.Quit();
+		ForceQuit();
 	}
 
 	public void PressCancel()
@@ -44,8 +46,18 @@ public class OnFafEditorQuit : MonoBehaviour {
 		Popup.SetActive(false);
 	}
 
+	static bool QuitForced = false;
+	public static void ForceQuit()
+	{
+		QuitForced = true;
+		Application.Quit();
+	}
+
 	static bool WantsToQuit()
 	{
+		if (QuitForced)
+			return true;
+
 		if (Current == null)
 			return true;
 

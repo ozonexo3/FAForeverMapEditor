@@ -40,7 +40,7 @@ public partial class CameraControler : MonoBehaviour {
 	const float CameraMinOffset = 0.5f;
 
 	//float MaxY = 100;
-	public void RestartCam(){
+	public void RestartCam(bool NoRect = false){
 		if(!Terrain.activeTerrain) return;
 		Pos = Vector3.zero + Vector3.right * MapSize / 20.0f - Vector3.forward * MapSize / 20.0f;
 		Pos.y = Terrain.activeTerrain.SampleHeight(Pos);
@@ -58,13 +58,22 @@ public partial class CameraControler : MonoBehaviour {
 		PanOffsetX = Vector3.zero;
 		PanOffsetZ = Vector3.zero;
 
-		UpdateRect();
+		UpdateRect(NoRect);
 	}
 
-	public void UpdateRect()
+	public void UpdateRect(bool NoRect = false)
 	{
 		float RemoveCamPropHeight = 30f / (float)Screen.height;
 		float RemoveCamPropWidth = 309f / (float)Screen.width;
+
+		if (NoRect)
+		{
+			RemoveCamPropHeight = 0;
+			RemoveCamPropWidth = 0;
+		}
+
+
+
 		Cam.rect = new Rect(RemoveCamPropWidth, 0, 1 - RemoveCamPropWidth, 1 - RemoveCamPropHeight);
 
 		LastWidth = Screen.width;

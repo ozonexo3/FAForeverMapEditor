@@ -17,7 +17,6 @@ public partial class Prop
     public Vector3 RotationZ;
 	public Vector3 Scale;
 
-    private static Vector3 V1 = new Vector3(1f, 1f, 1f);
     public void Load(BinaryReader Stream)
     {
         BlueprintPath = Stream.ReadStringNull();
@@ -26,7 +25,6 @@ public partial class Prop
         RotationY = Stream.ReadVector3();
         RotationZ = Stream.ReadVector3();
 		Scale = Stream.ReadVector3();
-        // scale (unused)
     }
 
     public void Save(BinaryWriter Stream)
@@ -36,8 +34,6 @@ public partial class Prop
         Stream.Write(RotationX);
         Stream.Write(RotationY);
         Stream.Write(RotationZ);
-        Stream.Write(V1);
-        // scale (unused)
+        Stream.Write(Scale);
     }
-
 }

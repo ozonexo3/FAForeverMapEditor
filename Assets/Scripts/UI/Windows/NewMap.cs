@@ -191,7 +191,7 @@ namespace EditMap
 
 
 			MapLuaParser.Current.SaveMap(false);
-			MapLuaParser.Current.SaveScriptLua(1);
+			MapLuaParser.Current.SaveScriptLua(0);
 			Debug.Log(FolderName);
 			MapLuaParser.Current.LoadFile();
 			Debug.Log(FolderName);

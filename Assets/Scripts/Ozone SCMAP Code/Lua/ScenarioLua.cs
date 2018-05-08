@@ -470,7 +470,8 @@ namespace MapLua
 				LuaFile.AddLine(LuaParser.Write.StringToLua(ScenarioInfo.KEY_PREVIEW, Data.preview));
 
 				LuaFile.AddLine(LuaParser.Write.FloatToLua(ScenarioInfo.KEY_MAPVERSION, Data.map_version));
-				if(Data.AdaptiveMap)
+				Data.AdaptiveMap = MapLuaParser.Current.TablesLuaFile.IsLoaded;
+				if (Data.AdaptiveMap)
 					LuaFile.AddLine(LuaParser.Write.BoolToLua(ScenarioInfo.KEY_ADAPTIVEMAP, Data.AdaptiveMap));
 				LuaFile.AddLine(LuaParser.Write.StringToLua(ScenarioInfo.KEY_TYPE, Data.type));
 				LuaFile.AddLine(LuaParser.Write.BoolToLua(ScenarioInfo.KEY_STARTS, Data.starts));

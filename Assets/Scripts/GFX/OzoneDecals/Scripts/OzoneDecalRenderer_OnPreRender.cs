@@ -71,6 +71,8 @@ namespace OzoneDecals
 			}
 		}
 
+		public static int CutoffMultiplier = 1;
+
 		private void DrawDeferredDecals_AlbedoInstanced(Camera cam)
 		{
 			_bufferDeferred.SetRenderTarget(_albedoRenderTarget, BuiltinRenderTextureType.CameraTarget);
@@ -101,7 +103,7 @@ namespace OzoneDecals
 						{
 							_matrices[n] = decal.tr.localToWorldMatrix;
 							_NearCutOffLODValues[n] = decal.NearCutOff;
-							_CutOffLODValues[n] = decal.CutOff;
+							_CutOffLODValues[n] = decal.CutOff * CutoffMultiplier;
 							++n;
 
 							if (n == 1023)
@@ -196,7 +198,7 @@ namespace OzoneDecals
 							{
 								// Instanced drawing
 								_matrices[n] = decal.tr.localToWorldMatrix;
-								_CutOffLODValues[n] = decal.CutOff;
+								_CutOffLODValues[n] = decal.CutOff * CutoffMultiplier;
 								_NearCutOffLODValues[n] = decal.NearCutOff;
 								++n;
 
@@ -224,7 +226,7 @@ namespace OzoneDecals
 
 								_bufferDeferred.SetRenderTarget(_normalRenderTarget, BuiltinRenderTextureType.CameraTarget);
 								_directBlock.Clear();
-								_directBlock.SetFloat("_NearCutOffLOD", decal.NearCutOff);
+								_directBlock.SetFloat("_NearCutOffLOD", decal.NearCutOff * CutoffMultiplier);
 								_directBlock.SetFloat("_CutOffLOD", decal.CutOff);
 
 								_bufferDeferred.DrawMesh(_cubeMesh, decal.tr.localToWorldMatrix, material, 0, 1, _directBlock);

@@ -403,12 +403,17 @@ namespace EditMap
 
 		void ReplaceScript()
 		{
-
+			MapLuaParser.Current.SaveScriptLua(1, true);
+			NoScript();
 		}
 
 		void NoScript()
 		{
+			if (MapLuaParser.Current.TablesLuaFile.IsLoaded)
+				return;
 
+			MapLuaParser.Current.TablesLuaFile.CreateDefault();
+			OnEnable();
 		}
 
 		void Cancel()

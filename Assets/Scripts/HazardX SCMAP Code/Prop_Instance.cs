@@ -28,11 +28,6 @@ public partial class Prop
 		if (!BlueprintPath.StartsWith("/"))
 			BlueprintPath = "/" + BlueprintPath;
 
-		//if (BlueprintPath.StartsWith("/maps"))
-		//	BlueprintPath = BlueprintPath.Remove(0, 1);
-
-		//Debug.Log("PropPath: " + BlueprintPath);
-
 		Position = ScmapEditor.WorldPosToScmap(Obj.Tr.position);
 
 		RotationX = Vector3.zero;

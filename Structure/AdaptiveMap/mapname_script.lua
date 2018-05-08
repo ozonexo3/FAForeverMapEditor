@@ -20,7 +20,6 @@ local mirrormex = ScenarioInfo.Options.mirrormex or 1
 local optional_civilian_base = ScenarioInfo.Options.optional_civilian_base or 1
 local dupicatesinglemex = ScenarioInfo.Options.dupicatesinglemex or 1
 local additionalmex = ScenarioInfo.Options.additionalmex or 1
---local removeRock = ScenarioInfo.Options.removeRock or 1
 
 --stuff for the crazyrush script
 local currentResSpot = 0
@@ -40,10 +39,43 @@ math.randomseed(1)
 
 
 
-------------------------------------------------------------------------
------ Initialization part ----------------------------------------------
-------------------------------------------------------------------------
+
 function OnPopulate()
+------------------------------------------------------------------------
+----- special options (civilians, reclaim...) --------------------------
+------------------------------------------------------------------------
+
+    if ((optional_reclaim == 2) or (optional_reclaim == 3)) then
+        ScenarioUtils.CreateArmyGroup('ARMY_17', 'Optional_Wreckage_' .. optional_reclaim, true)
+    elseif (optional_reclaim == 4) then
+        ScenarioUtils.CreateArmyGroup('ARMY_17', 'Optional_Wreckage_2', true)
+        ScenarioUtils.CreateArmyGroup('ARMY_17', 'Optional_Wreckage_3', true)
+    end
+    if optional_reclaim_middle > 1 then
+        for midreclaim = 2, optional_reclaim_middle do
+            ScenarioUtils.CreateArmyGroup('ARMY_17', 'Optional_Wreckage_Middle_'..midreclaim, true)
+        end
+    end
+    if(optional_reclaim_adaptive > 1) then
+        AddFactionReclaimBack(optional_reclaim_adaptive)
+    end
+    if(optional_civilian_base > 1) then
+        local spawncivs = true
+        for m = 13, 14 do
+            armystring = "ARMY_" .. m
+            for _, army in ListArmies() do
+                if( army == armystring) then
+                    LOG("ULTIMATE found player in civ base. remove civs")
+                    spawncivs = false
+                end
+            end
+        end
+        if(spawncivs) then
+            ScenarioUtils.CreateArmyGroup('ARMY_17', 'Optional_Civilian_Base', false)
+            ScenarioUtils.CreateArmyGroup('ARMY_17', 'Optional_Civilian_Defences_'.. optional_civilian_base, false)
+        end
+    end
+	
     ScenarioUtils.InitializeArmies();
 end
 
@@ -112,46 +144,6 @@ function ScenarioUtils.CreateResources()
     LOG("ULTIMATE", automex, hydroplus, optional_reclaim_middle, optional_reclaim_adaptive, middlemex, sidemex, underwatermex, optional_reclaim, mirrormex, optional_civilian_base)
     -- get map markers
     local markers = ScenarioUtils.GetMarkers();
-
-
-
-
-
-
-------------------------------------------------------------------------
------ special options (civilians, reclaim...) --------------------------
-------------------------------------------------------------------------
-
-    if ((optional_reclaim == 2) or (optional_reclaim == 3)) then
-        ScenarioUtils.CreateArmyGroup('ARMY_17', 'Optional_Wreckage_' .. optional_reclaim, true)
-    elseif (optional_reclaim == 4) then
-        ScenarioUtils.CreateArmyGroup('ARMY_17', 'Optional_Wreckage_2', true)
-        ScenarioUtils.CreateArmyGroup('ARMY_17', 'Optional_Wreckage_3', true)
-    end
-    if optional_reclaim_middle > 1 then
-        for midreclaim = 2, optional_reclaim_middle do
-            ScenarioUtils.CreateArmyGroup('ARMY_17', 'Optional_Wreckage_Middle_'..midreclaim, true)
-        end
-    end
-    if(optional_reclaim_adaptive > 1) then
-        AddFactionReclaimBack(optional_reclaim_adaptive)
-    end
-    if(optional_civilian_base > 1) then
-        local spawncivs = true
-        for m = 13, 14 do
-            armystring = "ARMY_" .. m
-            for _, army in ListArmies() do
-                if( army == armystring) then
-                    LOG("ULTIMATE found player in civ base. remove civs")
-                    spawncivs = false
-                end
-            end
-        end
-        if(spawncivs) then
-            ScenarioUtils.CreateArmyGroup('ARMY_17', 'Optional_Civilian_Base', false)
-            ScenarioUtils.CreateArmyGroup('ARMY_17', 'Optional_Civilian_Defences_'.. optional_civilian_base, false)
-        end
-    end
 
 -- table of which ressources belong to which player, it is sorted in such a way that the first line
 -- corresponds to player one, the second to player 2 and so on... load it from the _tables.lua file
@@ -332,7 +324,7 @@ function spawnressource(Position,restype, spawnhpr)
         lod,         -- LOD
         0,           -- Duration (0 == does not expire)
         -1,          -- army (-1 == not owned by any single army)
-        0            -- ???
+        0            -- fidelity
     );
     CreateResourceDeposit(restype, Position[1], Position[2], Position[3], Size/2);
     if spawnhpr then
@@ -610,17 +602,17 @@ function Expand_StartupCheck()
     for m = 13, 14 do
         armystring = "ARMY_" .. m
         for _, army in ListArmies() do
-            if( army == armystring) then
-                Expand_MapExpand()
+            if army == armystring then
                 LOG("ULTIMATE found player outside of playable region. Expand map")
+                Expand_MapExpand()
                 return false
             end
         end
     end
-    if(expandmap == 1) then
+    if expandmap == 1 then
         return false
     end
-    if(expandmap == 2) then
+    if expandmap == 2 then
         Expand_MapExpand()
         return false
     end
@@ -810,21 +802,3 @@ function AddFactionReclaimBack(optional_reclaim_back)
         end
     end
 end
-
-
-
---[[
-------------------------------------------------------------------------
-------remove some of the rock reclaim-----------------------------------
-------------------------------------------------------------------------
-function Rock_RemoveRocks(percentage)
-    LOG('remove ', 1 - percentage, ' percent of the rock reclaim')
-    local totalProps = GetReclaimablesInRect(Rect(unpack(ScenarioInfo.PlayableArea)))
-    for _ , r in totalProps or {} do
-        local propid = r:GetBlueprint().BlueprintId
-        if(string.find(propid, 'rock' ) or string.find(propid, 'iceberg') or string.find(propid, 'boulder') or string.find(propid, 'fieldstone' )) then
-            r:AdjustHealth(r, -(r:GetHealth())*(1-percentage))
-            --r:SetMaxReclaimValues( percentage * (r:GetBlueprint().Economy.ReclaimTime), percentage * (r:GetBlueprint().Economy.ReclaimMassMax), percentage * (r:GetBlueprint().Economy.ReclaimEnergyMax))
-        end
-    end
-end]]--

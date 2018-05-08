@@ -8,7 +8,7 @@ public class PreviewTex : MonoBehaviour {
 	public RenderTexture RT;
 	public Color Empty;
 	
-	public Texture2D RenderPreview(float HeightOffset = 0) {
+	public Texture2D RenderPreview(float HeightOffset = 0, int Width = 256, int Height = 256, bool Flip = true) {
 
 		bool Slope = ScmapEditor.Current.Slope;
 		bool Grid = ScmapEditor.Current.Grid;
@@ -37,9 +37,9 @@ public class PreviewTex : MonoBehaviour {
 		Cam.Render();
 		QualitySettings.lodBias = LastLodBias;
 
-		Texture2D PreviewRender = new Texture2D(256, 256, TextureFormat.RGBA32, false);
+		Texture2D PreviewRender = new Texture2D(Width, Height, TextureFormat.RGBA32, false);
 
-		Color[] Colors = new Color[256 * 256];
+		Color[] Colors = new Color[Width * Height];
 		for(int i = 0; i < Colors.Length; i++)
 		{
 			Colors[i] = Empty;
@@ -49,13 +49,6 @@ public class PreviewTex : MonoBehaviour {
 		PreviewRender.ReadPixels(new Rect(0, 0, PreviewRender.width, PreviewRender.height), 0, 0, false);
 		PreviewRender.Apply();
 
-		//Texture2D Preview = TextureLoader.ConvertToBGRA(PreviewRender);
-		//Graphics.ConvertTexture(PreviewRender, Preview);
-
-		//Preview = TextureFlip.FlipTextureVertical(Preview, false);
-		//Preview.Compress(true);
-		//Preview.Apply();
-
 		RenderTexture.active = currentActiveRT;
 
 		if(Slope)
@@ -63,7 +56,11 @@ public class PreviewTex : MonoBehaviour {
 		if(Grid)
 		ScmapEditor.Current.ToogleGrid(Grid);
 
-		return TextureFlip.FlipTextureVertical(PreviewRender, false);
+
+		if (Flip)
+			return TextureFlip.FlipTextureVertical(PreviewRender, false);
+		else
+			return PreviewRender;
 
 	}
 

@@ -5,10 +5,15 @@ using UnityEngine;
 public partial class MapLuaParser : MonoBehaviour
 {
 
-	static int More = 1;
 	static string[] Args;
 	void Start () {
 		Args = System.Environment.GetCommandLineArgs();
+
+		for(int i = 0; i < Args.Length; i++)
+		{
+			Debug.Log(Args[i]);
+		}
+
 		if (Args.Length > 0)
 
 			if (Args.Length == 3 && Args[1] == "-setInstalationPath")
@@ -18,32 +23,52 @@ public partial class MapLuaParser : MonoBehaviour
 			}
 
 
-		if (Args.Length == 6 + More && Args[1 + More] == "-renderPreviewImage")
+		Debug.Log(Args.Length);
+		Debug.Log(Args[0]);
+		if (Args.Length >= 6)
 		{
-			GetGamedataFile.MipmapBias = -0.9f;
-			StartCoroutine("RenderImageAndClose");
+			if (Args[1] == "-renderPreviewImage" || Args[1] == "-renderPreviewImageNoProps" || Args[1] == "-renderPreviewImageNoDecals" || Args[1] == "-renderPreviewImageNoPropsDecals")
+			{
+
+				GetGamedataFile.MipmapBias = -0.9f;
+
+				bool Props = Args[1] == "-renderPreviewImage" || Args[1] == "-renderPreviewImageNoDecals";
+				bool Decals = Args[1] == "-renderPreviewImage" || Args[1] == "-renderPreviewImageNoProps";
+
+				int Widht = int.Parse(Args[2]);
+				int Height = int.Parse(Args[3]);
+				Debug.Log("Begin coroutine");
+				StartCoroutine(RenderImageAndClose(Props, Decals, Widht, Height, Args[4], Args[5]));
+			}
 		}
 	}
 
 
 
 
-	public IEnumerator RenderImageAndClose()
+	public IEnumerator RenderImageAndClose(bool Props, bool Decals, int Width, int Height, string MapPath, string ImagePath)
 	{
-		var LoadScmapFile = MapLuaParser.Current.StartCoroutine("ForceLoadMapAtPath", Args[4 + More]);
+		var LoadScmapFile = MapLuaParser.Current.StartCoroutine(ForceLoadMapAtPath(MapPath, Props, Decals));
 		yield return LoadScmapFile;
 
+		QualitySettings.lodBias = 100000;
+		QualitySettings.shadowDistance = CameraControler.Current.transform.localPosition.y * 1.1f;
 
-		int Widht = int.Parse(Args[2 + More]);
-		int Height = int.Parse(Args[3 + More]);
+		if (Decals)
+		{
+			OzoneDecals.OzoneDecalRenderer.CutoffMultiplier = 100000;
 
-		CameraControler.Current.RestartCam();
 
-		CameraControler.Current.RenderCamera(Widht, Height, Args[5 + More]);
+		}
 
-		Debug.Log("Success! Preview rendered to: " + Args[5 + More]);
+		CameraControler.Current.RestartCam(true);
+		yield return null;
+		CameraControler.Current.RenderCamera(Width, Height, ImagePath);
+		//ScmapEditor.Current.PreviewRenderer.RenderPreview()
 
-		Application.Quit();
+		Debug.Log("Success! Preview rendered to: " + ImagePath);
+
+		OnFafEditorQuit.ForceQuit();
 	}
 
 }
