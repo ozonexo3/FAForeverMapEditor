@@ -24,6 +24,7 @@ public partial class MapLuaParser : MonoBehaviour
 	public TextAsset SaveLuaFooter;
 	public TextAsset DefaultScript;
 	public TextAsset AdaptiveScript;
+	public TextAsset AdaptiveOptions;
 
 	#region Variables
 	[Header("Core")]
@@ -174,6 +175,8 @@ public partial class MapLuaParser : MonoBehaviour
 
 		while (SavingMapProcess)
 			yield return null;
+
+		Undo.Current.Clear();
 
 		bool AllFilesExists = true;
 		string Error = "";
@@ -429,12 +432,7 @@ public partial class MapLuaParser : MonoBehaviour
 		SaveScmap();
 		yield return null;
 
-		string TablesFilePath = LoadedMapFolderPath + ScenarioFileName + ".lua";
-		TablesFilePath = TablesLua.ScenarioToTableFileName(TablesFilePath);
-		//Debug.Log(TablesFilePath);
-		if (BackupFiles && System.IO.File.Exists(TablesFilePath))
-			System.IO.File.Move(TablesFilePath, TablesLua.ScenarioToTableFileName(BackupPath + "/" + ScenarioFileName + ".lua"));
-		TablesLuaFile.Save(TablesFilePath);
+		SaveTablesLua();
 		yield return null;
 
 		InfoPopup.Show(false);
@@ -477,6 +475,27 @@ public partial class MapLuaParser : MonoBehaviour
 		HeightmapControler.SaveScmapFile();
 	}
 
+	public void SaveTablesLua()
+	{
+		string TablesFilePath = LoadedMapFolderPath + ScenarioFileName + ".lua";
+		TablesFilePath = TablesLua.ScenarioToTableFileName(TablesFilePath);
+		//Debug.Log(TablesFilePath);
+		if (BackupFiles && System.IO.File.Exists(TablesFilePath))
+			System.IO.File.Move(TablesFilePath, TablesLua.ScenarioToTableFileName(BackupPath + "/" + ScenarioFileName + ".lua"));
+		TablesLuaFile.Save(TablesFilePath);
+	}
+
+	public void SaveOptionsLua()
+	{
+		
+		string OptionsFilePath = LoadedMapFolderPath + ScenarioFileName + ".lua";
+		OptionsFilePath = TablesLua.ScenarioToOptionsFileName(OptionsFilePath);
+		if (BackupFiles && System.IO.File.Exists(OptionsFilePath))
+			System.IO.File.Move(OptionsFilePath, TablesLua.ScenarioToTableFileName(BackupPath + "/" + ScenarioFileName + ".lua"));
+
+		System.IO.File.WriteAllText(OptionsFilePath, AdaptiveOptions.text);
+
+	}
 
 	public void SaveScriptLua(int ID = 0, bool NewBackup = false)
 	{

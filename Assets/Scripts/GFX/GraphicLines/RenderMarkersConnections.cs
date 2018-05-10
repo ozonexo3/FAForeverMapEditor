@@ -148,6 +148,8 @@ public class RenderMarkersConnections : MonoBehaviour
 	{
 		if (generating)
 			return;
+		if (PreviewTex.IsPreview)
+			return;
 
 		if (!MarkersControler.Current.MarkerLayersSettings.ConnectedNodes)
 			return;

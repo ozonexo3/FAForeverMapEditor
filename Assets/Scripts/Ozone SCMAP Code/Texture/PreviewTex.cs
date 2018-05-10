@@ -7,6 +7,20 @@ public class PreviewTex : MonoBehaviour {
 	public Camera Cam;
 	public RenderTexture RT;
 	public Color Empty;
+
+	static bool RenderingPreview = false;
+	public static bool IsPreview
+	{
+		get
+		{
+			return RenderingPreview;
+		}
+	}
+
+	public static void ForcePreviewMode(bool on)
+	{
+		RenderingPreview = on;
+	}
 	
 	public Texture2D RenderPreview(float HeightOffset = 0, int Width = 256, int Height = 256, bool Flip = true) {
 
@@ -34,9 +48,15 @@ public class PreviewTex : MonoBehaviour {
 
 		float LastLodBias = QualitySettings.lodBias;
 		QualitySettings.lodBias = 100000;
+		RenderingPreview = true;
+		// -->
 		Cam.Render();
+		// <--
+		RenderingPreview = false;
 		QualitySettings.lodBias = LastLodBias;
 
+
+		// Texture
 		Texture2D PreviewRender = new Texture2D(Width, Height, TextureFormat.RGBA32, false);
 
 		Color[] Colors = new Color[Width * Height];

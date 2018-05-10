@@ -24,6 +24,31 @@ public partial class ScmapEditor : MonoBehaviour
 		}
 	}
 
+	public static void GetAllHeights(ref float[,] destArray)
+	{
+		int width = heights.GetLength(0);
+		int height = heights.GetLength(1);
+
+		if (destArray == null || destArray.GetLength(0) != width || destArray.GetLength(1) != height)
+		{
+			destArray = new float[width, height];
+		}
+
+		for(int x = 0; x < width; x++)
+		{
+			for (int y = 0; y < width; y++)
+			{
+				destArray[x, y] = heights[x, y];
+			}
+		}
+	}
+
+	public static void SetAllHeights(float[,] newHeights)
+	{
+		SetHeights(0, 0, newHeights, false);
+
+	}
+
 	public static void SetHeights(int X, int Y, float[,] values, bool delayed = true)
 	{
 		int width = values.GetLength(1);

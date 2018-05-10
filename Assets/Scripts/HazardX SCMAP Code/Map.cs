@@ -191,6 +191,15 @@ public class Map
 		TexturemapTex.Apply();
 		TexturemapTex2.Apply();
 
+
+		Color Bump = new Color(0, 0, 1, 1);
+		for (int i = 0; i < Pixels.Length; i++)
+			Pixels[i] = Bump;
+
+		UncompressedNormalmapTex.SetPixels(Pixels);
+
+
+
 		PreviewTextHeader = DefaultScmapHeaders.Current.PreviewTextHeader;
 		TextureMapHeader = DefaultScmapHeaders.Current.TextureMapHeader;
 		TextureMap2Header = DefaultScmapHeaders.Current.TextureMap2Header;
@@ -726,7 +735,7 @@ public class Map
 
 			try{
 	            int PropCount = _with1.ReadInt32();
-				Debug.Log ("PropCount: " + PropCount + ", v" + VersionMinor );
+				//Debug.Log ("PropCount: " + PropCount + ", v" + VersionMinor );
 				for (int i = 0; i < PropCount; i++)
 	            {
 	                Prop Prop = new Prop();

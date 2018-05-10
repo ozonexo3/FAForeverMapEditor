@@ -23,10 +23,10 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
-    - _HorizonHeight: 0
-    - _ZenithHeight: 20
+    - _HorizonHeight: 1.5
+    - _ZenithHeight: 4
     m_Colors:
     - _Horizon: {r: 0.5, g: 0.5, b: 0.5, a: 1}
-    - _HorizonColor: {r: 0.6485937, g: 0.8204687, b: 0.84, a: 1}
+    - _HorizonColor: {r: 1, g: 0, b: 0, a: 1}
     - _Zenith: {r: 0.5, g: 0.5, b: 0.5, a: 1}
-    - _ZenithColor: {r: 0.21960786, g: 0.41176474, b: 0.72156864, a: 0}
+    - _ZenithColor: {r: 0, g: 0.16666651, b: 1, a: 1}

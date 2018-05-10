@@ -126,6 +126,9 @@ public class RenderAdaptiveMarkers : MonoBehaviour {
 		if (!RenderEnabled || AdaptiveConnections.Count <= 0)
 			return;
 
+		if (PreviewTex.IsPreview)
+			return;
+
 		lineMaterial.SetPass(0);
 
 		GL.PushMatrix();
@@ -152,6 +155,9 @@ public class RenderAdaptiveMarkers : MonoBehaviour {
 	void OnGUI()
 	{
 		if (!RenderEnabled || AdaptiveCustoms.Count <= 0)
+			return;
+
+		if (PreviewTex.IsPreview)
 			return;
 
 		Camera MainCam = CameraControler.Current.Cam;

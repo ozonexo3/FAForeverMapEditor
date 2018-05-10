@@ -33,6 +33,9 @@ public class RenderLineBetweenTransforms : MonoBehaviour {
 	public void OnPostRender()
 	//public void OnRenderObject()
 	{
+		if (PreviewTex.IsPreview)
+			return;
+
 		CreateLineMaterial();
 		// Apply the line material
 		lineMaterial.SetPass(0);

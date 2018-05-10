@@ -12,6 +12,9 @@ public class DrawWireMesh : MonoBehaviour {
 
 	void OnRenderObject() {
 
+		if (PreviewTex.IsPreview)
+			return;
+
 		lineMaterial.SetPass(0);
 		GL.PushMatrix();
 		// Set transformation matrix for drawing to

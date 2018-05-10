@@ -128,7 +128,11 @@ public partial class CameraControler : MonoBehaviour {
 		RenderTexture rt = new RenderTexture(resWidth, resHeight, 24);
 		Cam.targetTexture = rt;
 		Texture2D screenShot = new Texture2D(resWidth, resHeight, TextureFormat.RGB24, false);
+
+		PreviewTex.ForcePreviewMode(true);
 		Cam.Render();
+		PreviewTex.ForcePreviewMode(false);
+
 		RenderTexture.active = rt;
 		screenShot.ReadPixels(new Rect(0, 0, resWidth, resHeight), 0, 0);
 		Cam.targetTexture = null;

@@ -9,6 +9,9 @@ public class RenderAreas : MonoBehaviour {
 
 	public void OnRenderObject()
 	{
+		if (PreviewTex.IsPreview)
+			return;
+
 		if (Camera.current != RenderCamera || ScmapEditor.Current == null || ScmapEditor.Current.Teren == null)
 			return;
 

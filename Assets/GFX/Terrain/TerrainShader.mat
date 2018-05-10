@@ -239,8 +239,8 @@ Material:
     - _AreaY: 76.8
     - _Brush: 0
     - _BrushSize: 0
-    - _BrushUvX: 0.08006778
-    - _BrushUvY: 0.9226573
+    - _BrushUvX: 0.33044267
+    - _BrushUvY: 0.51678336
     - _DeepLevel: 1.675625
     - _DepthLevel: 1.5
     - _GeneratingNormal: 0
@@ -257,19 +257,19 @@ Material:
     - _HideSplat7: 0
     - _HideSplat8: 0
     - _LightingMultiplier: 1.27
-    - _LowerScale: 51.2
-    - _LowerScaleNormal: 64
+    - _LowerScale: 64
+    - _LowerScaleNormal: 37.647057
     - _Shininess: 0.03
     - _Slope: 0
     - _Splat0Scale: 64
-    - _Splat0ScaleNormal: 64
-    - _Splat1Scale: 170.66667
-    - _Splat1ScaleNormal: 256
-    - _Splat2Scale: 56.88889
-    - _Splat2ScaleNormal: 56.88889
-    - _Splat3Scale: 64
-    - _Splat3ScaleNormal: 16
-    - _Splat4Scale: 24.497608
+    - _Splat0ScaleNormal: 18.550724
+    - _Splat1Scale: 128
+    - _Splat1ScaleNormal: 128
+    - _Splat2Scale: 42.666668
+    - _Splat2ScaleNormal: 64
+    - _Splat3Scale: 16.202532
+    - _Splat3ScaleNormal: 8.677966
+    - _Splat4Scale: 64
     - _Splat4ScaleNormal: 64
     - _Splat5Scale: 64
     - _Splat5ScaleNormal: 64
@@ -278,7 +278,7 @@ Material:
     - _Splat7Scale: 64
     - _Splat7ScaleNormal: 64
     - _TTerrainXP: 0
-    - _UpperScale: 9.733841
+    - _UpperScale: 2
     - _UpperScaleNormal: 64
     - _UseSlopeTex: 1
     - _Water: 0

@@ -95,6 +95,11 @@ namespace MapLua
 			return ScenarioFileName.Replace("_scenario.lua", "_tables.lua");
 		}
 
+		public static string ScenarioToOptionsFileName(string ScenarioFileName)
+		{
+			return ScenarioFileName.Replace("_scenario.lua", "_options.lua");
+		}
+
 		#region Load
 		public bool Load(string FolderName, string ScenarioFileName, string FolderParentPath)
 		{

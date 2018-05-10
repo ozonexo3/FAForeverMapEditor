@@ -189,7 +189,6 @@ namespace EditMap
 				Water.isOn, WaterElv.intValue, DepthElevation.intValue, AbyssElevation.intValue);
 
 
-
 			MapLuaParser.Current.SaveMap(false);
 			MapLuaParser.Current.SaveScriptLua(0);
 			Debug.Log(FolderName);

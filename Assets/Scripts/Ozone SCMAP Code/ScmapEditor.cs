@@ -266,6 +266,7 @@ public partial class ScmapEditor : MonoBehaviour
 		Debug.Log("Scmap load complited");
 	}
 
+
 	public void LoadStratumScdTextures(bool Loading = true)
 	{
 		// Load Stratum Textures Paths

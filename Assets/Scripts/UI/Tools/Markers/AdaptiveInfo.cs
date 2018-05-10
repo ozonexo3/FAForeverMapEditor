@@ -413,6 +413,8 @@ namespace EditMap
 				return;
 
 			MapLuaParser.Current.TablesLuaFile.CreateDefault();
+			MapLuaParser.Current.SaveTablesLua();
+			MapLuaParser.Current.SaveOptionsLua();
 			OnEnable();
 		}
 

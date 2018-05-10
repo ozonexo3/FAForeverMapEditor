@@ -9,10 +9,12 @@ public partial class MapLuaParser : MonoBehaviour
 	void Start () {
 		Args = System.Environment.GetCommandLineArgs();
 
+		/*
 		for(int i = 0; i < Args.Length; i++)
 		{
 			Debug.Log(Args[i]);
 		}
+		*/
 
 		if (Args.Length > 0)
 
@@ -23,8 +25,8 @@ public partial class MapLuaParser : MonoBehaviour
 			}
 
 
-		Debug.Log(Args.Length);
-		Debug.Log(Args[0]);
+		//Debug.Log(Args.Length);
+		//Debug.Log(Args[0]);
 		if (Args.Length >= 6)
 		{
 			if (Args[1] == "-renderPreviewImage" || Args[1] == "-renderPreviewImageNoProps" || Args[1] == "-renderPreviewImageNoDecals" || Args[1] == "-renderPreviewImageNoPropsDecals")

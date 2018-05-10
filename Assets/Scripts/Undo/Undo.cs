@@ -30,7 +30,6 @@ public partial class Undo : MonoBehaviour {
 	public		List<HistoryObject>		History;
 	public		List<HistoryObject>		RedoHistory;
 	public		int				CurrentStage;
-	public		bool			CurrentSaved = false;
 
 	public static	bool		RegisterMarkersDelete = false;
 
@@ -40,6 +39,7 @@ public partial class Undo : MonoBehaviour {
 
 	void Start(){
 		MaxHistoryLength = PlayerPrefs.GetInt(FafEditorSettings.UndoHistory, FafEditorSettings.DefaultUndoHistory);
+		Clear();
 	}
 
 	public void AddUndoCleanup()
@@ -51,6 +51,31 @@ public partial class Undo : MonoBehaviour {
 			Destroy(RedoHistory[0].gameObject);
 			RedoHistory.RemoveAt(0);
 		}
+	}
+
+	public void Clear()
+	{
+		if (History == null)
+			History = new List<HistoryObject>();
+
+		if (RedoHistory == null)
+			RedoHistory = new List<HistoryObject>();
+
+		for (int i = 0; i < History.Count; i++)
+		{
+			if(History[i] && History[i].gameObject)
+				Destroy(History[i].gameObject);
+		}
+		for (int i = 0; i < RedoHistory.Count; i++)
+		{
+			if(RedoHistory[i] && RedoHistory[i].gameObject)
+				Destroy(RedoHistory[i].gameObject);
+		}
+
+		CurrentStage = 0;
+
+		History.Clear();
+		RedoHistory.Clear();
 	}
 
 	// keys

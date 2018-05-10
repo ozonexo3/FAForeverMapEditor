@@ -55,7 +55,7 @@ namespace EditMap
 			int Count = Props.Count;
 			LoadedCount = 0;
 
-			Debug.Log("Decals count: " + Count);
+			//Debug.Log("Decals count: " + Count);
 
 
 

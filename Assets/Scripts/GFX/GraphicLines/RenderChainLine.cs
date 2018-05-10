@@ -12,28 +12,6 @@ public class RenderChainLine : MonoBehaviour {
 
 	public MapLua.SaveLua.Chain RenderChain;
 
-	/*
-	void CreateLineMaterial()
-	{
-		if (!lineMaterial)
-		{
-			// Unity has a built-in shader that is useful for drawing
-			// simple colored things.
-			Shader shader = Shader.Find("Hidden/Internal-Colored");
-			lineMaterial = new Material(shader);
-			lineMaterial.hideFlags = HideFlags.HideAndDontSave;
-			lineMaterial.SetOverrideTag("Queue", "Geometry");
-			// Turn on alpha blending
-			lineMaterial.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
-			lineMaterial.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
-			// Turn backface culling off
-			lineMaterial.SetInt("_Cull", (int)UnityEngine.Rendering.CullMode.Off);
-			// Turn off depth writes
-			lineMaterial.SetInt("_ZWrite", 0);
-			lineMaterial.SetInt("_ZTest", (int)UnityEngine.Rendering.CompareFunction.Greater);
-		}
-	}
-	*/
 
 	// Will be called after all regular rendering is done
 	Vector3 Pos;
@@ -44,6 +22,9 @@ public class RenderChainLine : MonoBehaviour {
 	{
 		if (RenderChain == null || RenderChain.ConnectedMarkers == null)
 			return;
+		if (PreviewTex.IsPreview)
+			return;
+
 		//CreateLineMaterial();
 		// Apply the line material
 		lineMaterial.SetPass(0);

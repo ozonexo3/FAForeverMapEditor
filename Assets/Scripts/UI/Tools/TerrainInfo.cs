@@ -321,7 +321,7 @@ namespace EditMap
 		{
 			int h = ScmapEditor.Current.Teren.terrainData.heightmapHeight;
 			int w = ScmapEditor.Current.Teren.terrainData.heightmapWidth;
-			beginHeights = ScmapEditor.Current.Teren.terrainData.GetHeights(0, 0, w, h);
+			ScmapEditor.GetAllHeights(ref beginHeights);
 			MapLuaParser.Current.History.RegisterTerrainHeightmapChange(beginHeights);
 
 			float Value = float.Parse(TerrainSet.text) * 0.1f;
@@ -345,7 +345,7 @@ namespace EditMap
 		{
 			int h = ScmapEditor.Current.Teren.terrainData.heightmapHeight;
 			int w = ScmapEditor.Current.Teren.terrainData.heightmapWidth;
-			beginHeights = ScmapEditor.Current.Teren.terrainData.GetHeights(0, 0, w, h);
+			ScmapEditor.GetAllHeights(ref beginHeights);
 			MapLuaParser.Current.History.RegisterTerrainHeightmapChange(beginHeights);
 
 			//float Value = float.Parse(TerrainAdd.text) / 128f;
@@ -511,7 +511,7 @@ namespace EditMap
 
 			int h = ScmapEditor.Current.Teren.terrainData.heightmapHeight;
 			int w = ScmapEditor.Current.Teren.terrainData.heightmapWidth;
-			beginHeights = ScmapEditor.Current.Teren.terrainData.GetHeights(0, 0, w, h);
+			ScmapEditor.GetAllHeights(ref beginHeights);
 			MapLuaParser.Current.History.RegisterTerrainHeightmapChange(beginHeights);
 
 
@@ -852,7 +852,7 @@ namespace EditMap
 			// set the new height
 			if (!TerainChanged)
 			{
-				beginHeights = ScmapEditor.Current.Teren.terrainData.GetHeights(0, 0, hmWidth, hmHeight);
+				ScmapEditor.GetAllHeights(ref beginHeights);
 				
 				TerainChanged = true;
 			}
