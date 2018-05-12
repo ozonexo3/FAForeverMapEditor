@@ -359,6 +359,9 @@ namespace MapLua
 
 			LuaFile.AddComent("Line number is 10 + armynumber for the mexes in the table");
 			int ArmyCount = ArmyId;
+			Data.spawnMexArmy = new MexArray[ArmyCount];
+			Data.spawnHydroArmy = new MexArray[ArmyCount];
+
 			ArmyId = 0;
 			// Create Mass table
 			for (int c = 0; c < ScenarioData.Configurations.Length; c++)

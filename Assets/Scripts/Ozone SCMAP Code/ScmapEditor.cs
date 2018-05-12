@@ -593,7 +593,7 @@ public partial class ScmapEditor : MonoBehaviour
 
 					//heights[y, x] = (float)((((double)Height) / (256 * 64)));
 
-					double HeightValue = (double)Height * (128.0 * 128.0);
+					double HeightValue = (double)Height * (128.0 * 128.0 + 0.5);
 					map.SetHeight(y, map.Height - x, (short)(HeightValue));
 
 					//map.SetHeight(y, map.Height - x, (short)(Height * HeightConversion));

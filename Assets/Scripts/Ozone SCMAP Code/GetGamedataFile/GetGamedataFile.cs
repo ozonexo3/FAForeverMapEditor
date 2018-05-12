@@ -65,7 +65,7 @@ public partial struct GetGamedataFile
 			}
 			catch (System.Exception e)
 			{
-				Debug.Log("Texture load fallback: " + e);
+				Debug.Log("Texture load fallback: " + LocalPath + "\n" + e);
 				texture = DDS.DDSReader.LoadDDSTexture(new MemoryStream(FinalTextureData2), false).ToTexture2D();
 			}
 		}
