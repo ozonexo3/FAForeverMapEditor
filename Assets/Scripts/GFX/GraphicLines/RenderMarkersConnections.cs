@@ -47,6 +47,8 @@ public class RenderMarkersConnections : MonoBehaviour
 
 	public void UpdateConnections()
 	{
+		RenderMarkersWarnings.Generate();
+
 		if (generating)
 		{
 			Buffor = true;

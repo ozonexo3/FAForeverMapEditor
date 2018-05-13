@@ -192,7 +192,12 @@ namespace EditMap
 
 					MapLua.SaveLua.Marker NewMarker = new MapLua.SaveLua.Marker(LastCreationType);
 
-					if (SelectionManager.Current.SnapToGrid)
+					bool snapToWater = SelectionManager.Current.SnapToWater;
+
+					if (LastCreationType == MapLua.SaveLua.Marker.MarkerTypes.Mass || LastCreationType == MapLua.SaveLua.Marker.MarkerTypes.Hydrocarbon)
+						snapToWater = false;
+
+					if (SelectionManager.Current.SnapToGrid) 
 						Positions[i] = ScmapEditor.SnapToGridCenter(Positions[i], true, SelectionManager.Current.SnapToWater);
 
 					//Positions[i].y = ScmapEditor.Current.Teren.SampleHeight(Positions[i]);

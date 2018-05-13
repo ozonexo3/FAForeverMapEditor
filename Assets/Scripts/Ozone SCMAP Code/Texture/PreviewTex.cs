@@ -23,11 +23,12 @@ public class PreviewTex : MonoBehaviour {
 	}
 	
 	public Texture2D RenderPreview(float HeightOffset = 0, int Width = 256, int Height = 256, bool Flip = true) {
+		RenderingPreview = true;
 
 		bool Slope = ScmapEditor.Current.Slope;
 		bool Grid = ScmapEditor.Current.Grid;
 
-		if(Slope)
+		if (Slope)
 		ScmapEditor.Current.ToogleSlope(false);
 		if(Grid)
 		ScmapEditor.Current.ToogleGrid(false);
@@ -48,11 +49,9 @@ public class PreviewTex : MonoBehaviour {
 
 		float LastLodBias = QualitySettings.lodBias;
 		QualitySettings.lodBias = 100000;
-		RenderingPreview = true;
 		// -->
 		Cam.Render();
 		// <--
-		RenderingPreview = false;
 		QualitySettings.lodBias = LastLodBias;
 
 
@@ -76,6 +75,7 @@ public class PreviewTex : MonoBehaviour {
 		if(Grid)
 		ScmapEditor.Current.ToogleGrid(Grid);
 
+		RenderingPreview = false;
 
 		if (Flip)
 			return TextureFlip.FlipTextureVertical(PreviewRender, false);

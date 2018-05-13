@@ -169,7 +169,7 @@ public partial class MapLuaParser : MonoBehaviour
 	bool LoadProps = true;
 	bool LoadDecals = true;
 
-	bool LoadingMapProcess = false;
+	public static bool LoadingMapProcess = false;
 	IEnumerator LoadingFile()
 	{
 
@@ -307,10 +307,12 @@ public partial class MapLuaParser : MonoBehaviour
 
 			InfoPopup.Show(false);
 
+			LoadingMapProcess = false;
+
+
 			RenderMarkersConnections.Current.UpdateConnections();
 
 			EditMenu.Categorys[0].GetComponent<MapInfo>().UpdateFields();
-			LoadingMapProcess = false;
 		}
 		else
 		{
@@ -404,7 +406,7 @@ public partial class MapLuaParser : MonoBehaviour
 
 
 		GenerateBackupPath();
-
+		PreviewTex.ForcePreviewMode(true);
 		yield return null;
 
 		// Scenario.lua
@@ -414,6 +416,7 @@ public partial class MapLuaParser : MonoBehaviour
 		ScenarioLuaFile.Save(ScenarioFilePath);
 		yield return null;
 
+	
 
 		//Save.lua
 		string SaveFilePath = MapRelativePath(ScenarioLuaFile.Data.save);

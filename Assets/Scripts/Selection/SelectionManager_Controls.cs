@@ -490,7 +490,7 @@ namespace Selection
 
 		void ControlerFinish()
 		{
-			//TODO Bake Positions
+			RenderMarkersWarnings.Generate();
 			ResetControlerPosition();
 			Draged = false;
 		}

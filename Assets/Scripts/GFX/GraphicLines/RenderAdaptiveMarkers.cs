@@ -23,6 +23,7 @@ public class RenderAdaptiveMarkers : MonoBehaviour {
 	public static void Clear()
 	{
 		AdaptiveConnections.Clear();
+		AdaptiveCustoms.Clear();
 	}
 
 	static Color GetColor(int id)

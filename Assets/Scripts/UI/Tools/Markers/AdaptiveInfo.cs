@@ -152,6 +152,11 @@ namespace EditMap
 			for (int i = 0; i < Count; i++)
 			{
 				GameObject CurrentObj = SelectionManager.Current.AffectedGameObjects[SelectionManager.Current.Selection.Ids[i]];
+
+				MarkerObject Mo = CurrentObj.GetComponent<MarkerObject>();
+				if (Mo == null)
+					continue;
+
 				SaveLua.Marker Current = CurrentObj.GetComponent<MarkerObject>().Owner;
 
 				if (Current.MarkerType == SaveLua.Marker.MarkerTypes.Mass || Current.MarkerType == SaveLua.Marker.MarkerTypes.Hydrocarbon)

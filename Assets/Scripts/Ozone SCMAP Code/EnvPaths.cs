@@ -25,6 +25,11 @@ public class EnvPaths : MonoBehaviour {
 		if(value[value.Length - 1].ToString() != "/") value += "/";
 		if(value[0].ToString() == "/") value = value.Remove(0,1);
 
+		if (value.ToLower().EndsWith(InstalationGamedata))
+		{
+			value = value.Remove(value.Length - InstalationGamedata.Length);
+		}
+
 		PlayerPrefs.SetString (InstalationPath, value);
 	}
 
