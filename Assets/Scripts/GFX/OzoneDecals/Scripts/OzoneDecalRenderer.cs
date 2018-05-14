@@ -41,7 +41,7 @@ namespace OzoneDecals {
 		protected float[] _NearCutOffLODValues;
 
 		public static float CameraNear;
-		public static float CameraFar;
+		public static float CameraFar = 1400;
 
 		private void OnEnable()
 		{

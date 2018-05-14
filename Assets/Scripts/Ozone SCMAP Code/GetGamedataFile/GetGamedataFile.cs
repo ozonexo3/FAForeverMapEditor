@@ -17,7 +17,6 @@ using System.IO;
 public partial struct GetGamedataFile
 {
 	static bool DebugTextureLoad = false;
-	static bool IsDxt3 = false;
 
 	public static float MipmapBias = 0.0f;
 	public static int AnisoLevel = 6;
@@ -30,11 +29,16 @@ public partial struct GetGamedataFile
 
 	public static Texture2D LoadTexture2DFromGamedata(string scd, string LocalPath, bool NormalMap = false, bool StoreInMemory = true)
 	{
+		if (string.IsNullOrEmpty(LocalPath))
+			return Texture2D.whiteTexture;
+
 		string TextureKey = scd + "_" + LocalPath;
 
 		if (LoadedTextures.ContainsKey(TextureKey))
 			return LoadedTextures[TextureKey];
 
+		if (DebugTextureLoad)
+			Debug.Log(LocalPath);
 
 		byte[] FinalTextureData2 = LoadBytes(scd, LocalPath);
 
@@ -47,7 +51,6 @@ public partial struct GetGamedataFile
 		TextureFormat format = GetFormatOfDdsBytes(FinalTextureData2);
 		bool Mipmaps = LoadDDsHeader.mipmapcount > 0;
 		Texture2D texture = new Texture2D((int)LoadDDsHeader.width, (int)LoadDDsHeader.height, format, Mipmaps, false);
-
 
 		int DDS_HEADER_SIZE = 128;
 		byte[] dxtBytes = new byte[FinalTextureData2.Length - DDS_HEADER_SIZE];
@@ -70,8 +73,10 @@ public partial struct GetGamedataFile
 			}
 		}
 
-		if (NormalMap)
+		if (FlipBlueRed)
 		{
+			texture = CannelFlip(texture);
+
 		}
 
 		texture.mipMapBias = MipmapBias;
@@ -85,6 +90,24 @@ public partial struct GetGamedataFile
 		return texture;
 	}
 
+
+	public static Texture2D CannelFlip(Texture2D Source)
+	{
+		int MipMapCount = Source.mipmapCount;
+		Texture2D ChannelFlip = new Texture2D(Source.width, Source.height, Source.format, Source.mipmapCount > 0, false);
+		for (int m = 0; m < MipMapCount; m++)
+		{
+			Color[] Pixels = Source.GetPixels(m);
+
+			for(int p = 0; p < Pixels.Length; p++)
+			{
+				Pixels[p] = new Color(Pixels[p].b, Pixels[p].g, Pixels[p].r);
+			}
+			ChannelFlip.SetPixels(Pixels, m);
+		}
+		ChannelFlip.Apply(false);
+		return ChannelFlip;
+	}
 
 	public static void LoadTextureFromGamedata(string scd, string LocalPath, int Id, bool NormalMap = false)
 	{
@@ -170,7 +193,7 @@ public partial struct GetGamedataFile
 		BinaryReader Stream = new BinaryReader(ms);
 		LoadDDsHeader = BinaryStreamDdsHeader(Stream);
 
-		return ReadFourcc(LoadDDsHeader.pixelformatFourcc);
+		return ReadFourcc();
 	}
 
 	public static TextureFormat GetFormatOfDds(string FinalImagePath)
@@ -186,7 +209,7 @@ public partial struct GetGamedataFile
 		BinaryReader Stream = new BinaryReader(fs);
 		LoadDDsHeader = BinaryStreamDdsHeader(Stream);
 
-		return ReadFourcc(LoadDDsHeader.pixelformatFourcc);
+		return ReadFourcc();
 	}
 
 	public static HeaderClass GetDdsFormat(byte[] Bytes)
@@ -244,10 +267,12 @@ public partial struct GetGamedataFile
 		return DDsHeader;
 	}
 
-
-	static TextureFormat ReadFourcc(uint fourcc)
+	static bool IsDxt3 = false;
+	static bool FlipBlueRed = false;
+	static TextureFormat ReadFourcc()
 	{
 		IsDxt3 = false;
+		FlipBlueRed = false;
 		if (DebugTextureLoad) Debug.Log(
 			 "Size: " + LoadDDsHeader.size +
 			 " flags: " + LoadDDsHeader.flags +
@@ -286,6 +311,13 @@ public partial struct GetGamedataFile
 				}
 				else if (LoadDDsHeader.pixelformatRgbBitCount == 24)
 				{
+					if (LoadDDsHeader.pixelformatRbitMask > LoadDDsHeader.pixelformatGbitMask && LoadDDsHeader.pixelformatGbitMask > LoadDDsHeader.pixelformatBbitMask) // BGR
+					{
+						FlipBlueRed = true;
+						Debug.Log("Flip blue and red channels");
+						return TextureFormat.RGB24;
+					}
+
 					return TextureFormat.RGB24;
 				}
 				else

@@ -68,6 +68,14 @@ public partial class MapLuaParser : MonoBehaviour
 		CameraControler.Current.RenderCamera(Width, Height, ImagePath);
 		//ScmapEditor.Current.PreviewRenderer.RenderPreview()
 
+
+		if (Decals)
+		{
+			OzoneDecals.OzoneDecalRenderer.CutoffMultiplier = 1;
+
+
+		}
+
 		Debug.Log("Success! Preview rendered to: " + ImagePath);
 
 		OnFafEditorQuit.ForceQuit();

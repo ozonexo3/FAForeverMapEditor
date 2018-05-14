@@ -198,7 +198,7 @@ namespace EditMap
 						snapToWater = false;
 
 					if (SelectionManager.Current.SnapToGrid) 
-						Positions[i] = ScmapEditor.SnapToGridCenter(Positions[i], true, SelectionManager.Current.SnapToWater);
+						Positions[i] = ScmapEditor.SnapToGridCenter(Positions[i], true, snapToWater);
 
 					//Positions[i].y = ScmapEditor.Current.Teren.SampleHeight(Positions[i]);
 

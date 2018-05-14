@@ -549,7 +549,7 @@ public partial class MapLuaParser : MonoBehaviour
 
 	}
 
-	public Rect GetAreaRect()
+	public Rect GetAreaRect(bool Round = false)
 	{
 		if (SaveLuaFile.Data.areas.Length > 0 && !AreaInfo.HideArea)
 		{
@@ -578,6 +578,16 @@ public partial class MapLuaParser : MonoBehaviour
 				}
 			}
 
+			if (Round)
+			{
+				bigestAreaRect.x -= bigestAreaRect.x % 4;
+				bigestAreaRect.width -= bigestAreaRect.width % 4;
+
+				bigestAreaRect.y -= bigestAreaRect.y % 4;
+				bigestAreaRect.height -= bigestAreaRect.height % 4;
+
+			}
+
 			float LastY = bigestAreaRect.y;
 			bigestAreaRect.y = ScmapEditor.Current.map.Width - bigestAreaRect.height;
 			bigestAreaRect.height = ScmapEditor.Current.map.Width - LastY;
@@ -591,29 +601,23 @@ public partial class MapLuaParser : MonoBehaviour
 
 	}
 
-	public void UpdateArea()
+	public void UpdateArea(bool Round = true)
 	{
 		if (SaveLuaFile.Data.areas.Length > 0 && !AreaInfo.HideArea)
 		{
 			//int bigestAreaId = 0;
-			Rect bigestAreaRect = GetAreaRect();
+			Rect bigestAreaRect = GetAreaRect(Round);
 
 			if (bigestAreaRect.width > 0 && bigestAreaRect.height > 0)
 			{
+
+				// Set shaders
 				Shader.SetGlobalInt("_Area", 1);
 				Shader.SetGlobalVector("_AreaRect", new Vector4(bigestAreaRect.x / 10f, bigestAreaRect.y / 10f, bigestAreaRect.width / 10f, bigestAreaRect.height / 10f));
 
-				/*
-				HeightmapControler.TerrainMaterial.SetInt("_Area", 1);
-				HeightmapControler.TerrainMaterial.SetFloat("_AreaX", bigestAreaRect.x / 10f);
-				HeightmapControler.TerrainMaterial.SetFloat("_AreaY", bigestAreaRect.y / 10f);
-				HeightmapControler.TerrainMaterial.SetFloat("_AreaWidht", bigestAreaRect.width / 10f);
-				HeightmapControler.TerrainMaterial.SetFloat("_AreaHeight", bigestAreaRect.height / 10f);
-				*/
 			}
 			else
 			{
-				//HeightmapControler.TerrainMaterial.SetInt("_Area", 0);
 				Shader.SetGlobalInt("_Area", 0);
 			}
 
@@ -621,7 +625,6 @@ public partial class MapLuaParser : MonoBehaviour
 		else
 		{
 			Shader.SetGlobalInt("_Area", 0);
-			//HeightmapControler.TerrainMaterial.SetInt("_Area", 0);
 		}
 	}
 	#endregion

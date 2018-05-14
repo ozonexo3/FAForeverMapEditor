@@ -271,7 +271,6 @@ public partial class ScmapEditor : MonoBehaviour
 	{
 		// Load Stratum Textures Paths
 
-
 		for (int i = 0; i < Textures.Length; i++)
 		{
 			if (Loading)
@@ -303,6 +302,7 @@ public partial class ScmapEditor : MonoBehaviour
 
 			try
 			{
+				
 				GetGamedataFile.LoadTextureFromGamedata(Env, Textures[i].AlbedoPath, i, false);
 			}
 			catch (System.Exception e)
@@ -325,6 +325,7 @@ public partial class ScmapEditor : MonoBehaviour
 				Debug.LogError(e);
 			}
 		}
+
 	}
 
 	#region Water
@@ -469,7 +470,6 @@ public partial class ScmapEditor : MonoBehaviour
 			}
 		}
 
-
 		Texture2DArray AlbedoArray = new Texture2DArray(AlbedoSize, AlbedoSize, 8, TextureFormat.RGBA32, true);
 
 		for (int i = 0; i < 8; i++)
@@ -497,8 +497,8 @@ public partial class ScmapEditor : MonoBehaviour
 
 		//AlbedoArray.mipMapBias = 0.5f;
 		AlbedoArray.filterMode = FilterMode.Bilinear;
-		AlbedoArray.anisoLevel = 2;
-		AlbedoArray.mipMapBias = 0.5f;
+		AlbedoArray.anisoLevel = 4;
+		AlbedoArray.mipMapBias = 0.0f;
 
 		AlbedoArray.Apply(false);
 		TerrainMaterial.SetTexture("_SplatAlbedoArray", AlbedoArray);

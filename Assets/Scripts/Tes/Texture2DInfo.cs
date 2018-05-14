@@ -30,7 +30,7 @@ public class Texture2DInfo
 		if(rawData != null)
 		{
 			texture.LoadRawTextureData(rawData);
-			texture.Apply(true);
+			texture.Apply(!hasMipmaps);
 		}
 		
 		return texture;

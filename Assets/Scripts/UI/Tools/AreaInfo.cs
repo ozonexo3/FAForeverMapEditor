@@ -9,6 +9,7 @@ public class AreaInfo : MonoBehaviour {
 	public static AreaInfo Current;
 
 	public Toggle BorderRelative;
+	public Toggle Rounding;
 	public Toggle AreaHide;
 	public Toggle AreaDefault;
 	public GameObject AreaPrefab;
@@ -46,12 +47,19 @@ public class AreaInfo : MonoBehaviour {
 		UpdateList();
 	}
 
+	public void SwitchPlayableAreaRounding()
+	{
+		//Rounding.isOn = !Rounding.isOn;
+
+		MapLuaParser.Current.UpdateArea(Rounding.isOn);
+	}
+
 	public void UpdateList()
 	{
 		Clean();
 		Generate();
 
-		MapLuaParser.Current.UpdateArea();
+		MapLuaParser.Current.UpdateArea(Rounding.isOn);
 	}
 
 	void Clean()
@@ -124,13 +132,13 @@ public class AreaInfo : MonoBehaviour {
 		{
 			SelectedArea = null;
 		}
-		MapLuaParser.Current.UpdateArea();
+		MapLuaParser.Current.UpdateArea(Rounding.isOn);
 	}
 
 	public void SelectArea(int InstanceID)
 	{
 		SelectedArea = MapLuaParser.Current.SaveLuaFile.Data.areas[InstanceID];
-		MapLuaParser.Current.UpdateArea();
+		MapLuaParser.Current.UpdateArea(Rounding.isOn);
 	}
 
 
@@ -165,7 +173,7 @@ public class AreaInfo : MonoBehaviour {
 
 		if (SelectedArea == MapLuaParser.Current.SaveLuaFile.Data.areas[instanceID])
 		{
-			MapLuaParser.Current.UpdateArea();
+			MapLuaParser.Current.UpdateArea(Rounding.isOn);
 		}
 	}
 
