@@ -720,7 +720,7 @@ public class Map
                 _with1.ReadInt16();
 
 
-			Debug.Log("Scmap file version: " + VersionMinor);
+			//Debug.Log("Scmap file version: " + VersionMinor);
 
 			if (VersionMinor >= 60)
 			{

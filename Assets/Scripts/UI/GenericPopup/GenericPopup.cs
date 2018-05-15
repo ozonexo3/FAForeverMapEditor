@@ -113,12 +113,12 @@ public class GenericPopup : MonoBehaviour {
 		NoText.text = PopupBufor[0].No;
 		CancelText.text = PopupBufor[0].Cancel;
 		Pivot.SetActive(true);
-		Debug.Log("Show popup");
+		//Debug.Log("Show popup");
 	}
 
 	void HidePopup()
 	{
-		Debug.Log("Hide popup");
+		//Debug.Log("Hide popup");
 
 		PopupDisplayed = false;
 		Pivot.SetActive(false);

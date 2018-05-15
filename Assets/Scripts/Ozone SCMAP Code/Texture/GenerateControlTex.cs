@@ -264,10 +264,11 @@ public class GenerateControlTex : MonoBehaviour
 
 	IEnumerator GeneratingSlopeTask()
 	{
-		Color Flat = new Color(0, 0.8f, 0, 1);
-		Color LowAngle = new Color(0.3f, 0.89f, 0, 1);
-		Color HighAngle = new Color(0.6f, 0.9f, 0, 1);
-		Color Unpassable = new Color(0.9f, 0, 0, 1);
+		const float Saturation = 0.8f;
+		Color Flat = new Color(0.1f * Saturation, 0.78f * Saturation, 0.1f * Saturation, 1);
+		Color LowAngle = new Color(0.3f * Saturation, 0.89f * Saturation, 0.1f * Saturation, 1);
+		Color HighAngle = new Color(0.6f * Saturation, 0.9f * Saturation, 0.1f * Saturation, 1);
+		Color Unpassable = new Color(0.7f * Saturation, 0.1f * Saturation, 0.1f * Saturation, 1);
 
 		Color[] Pixels = new Color[ScmapEditor.Current.map.Width * ScmapEditor.Current.map.Height];
 		int x = 0;

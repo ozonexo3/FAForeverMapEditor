@@ -14,7 +14,7 @@ public partial struct GetGamedataFile
 
 	public class PropObject
 	{
-		public BluePrint BP;
+		public PropBluePrint BP;
 
 
 		public PropGameObject CreatePropGameObject(Vector3 position, Quaternion rotation, Vector3 scale, bool AllowFarLod = true)
@@ -100,7 +100,7 @@ public partial struct GetGamedataFile
 
 	}
 
-	public class BluePrint
+	public class PropBluePrint
 	{
 		public string Path;
 		public string Name = "";
@@ -125,6 +125,7 @@ public partial struct GetGamedataFile
 	{
 		public string AlbedoName = "";
 		public string NormalsName = "";
+		public string SpecularName = "";
 		public string ShaderName = "";
 		public string Scm = "";
 		public float LODCutoff = 1000;
@@ -168,7 +169,7 @@ public partial struct GetGamedataFile
 		byte[] Bytes = LoadBytes(scd, LocalPath);
 		if (Bytes.Length == 0)
 		{
-			Debug.LogError("Prop not exits: " + LocalPath);
+			Debug.LogError("Prop does not exits: " + LocalPath);
 			return ToReturn;
 		}
 		string BluePrintString = System.Text.Encoding.UTF8.GetString(Bytes);
@@ -182,7 +183,7 @@ public partial struct GetGamedataFile
 		BluePrintString = BluePrintString.Replace("PropBlueprint {", "PropBlueprint = {");
 
 		// *** Parse Blueprint
-		ToReturn.BP = new BluePrint();
+		ToReturn.BP = new PropBluePrint();
 		// Create Lua
 		Lua BP = new Lua();
 		BP.LoadCLRPackage();
@@ -216,32 +217,31 @@ public partial struct GetGamedataFile
 		}
 
 		// Economy
-		if (BP.GetTable("PropBlueprint.Economy") != null)
+		LuaTable EconomyTab = BP.GetTable("PropBlueprint.Economy");
+		if (EconomyTab != null)
 		{
-			LuaTable EconomyTab = BP.GetTable("PropBlueprint.Economy") as LuaTable;
+			if (EconomyTab.RawGet("ReclaimEnergyMax") != null)
+				ToReturn.BP.ReclaimEnergyMax = LuaParser.Read.StringToFloat(EconomyTab.RawGet("ReclaimEnergyMax").ToString());
 
-			if (EconomyTab != null)
-			{
-				if (EconomyTab.RawGet("ReclaimEnergyMax") != null)
-					ToReturn.BP.ReclaimEnergyMax = LuaParser.Read.StringToFloat(EconomyTab.RawGet("ReclaimEnergyMax").ToString());
+			if (EconomyTab.RawGet("ReclaimMassMax") != null)
+				ToReturn.BP.ReclaimMassMax = LuaParser.Read.StringToFloat(EconomyTab.RawGet("ReclaimMassMax").ToString());
 
-				if (EconomyTab.RawGet("ReclaimMassMax") != null)
-					ToReturn.BP.ReclaimMassMax = LuaParser.Read.StringToFloat(EconomyTab.RawGet("ReclaimMassMax").ToString());
-
-				if (EconomyTab.RawGet("ReclaimTime") != null)
-					ToReturn.BP.ReclaimTime = LuaParser.Read.StringToFloat(EconomyTab.RawGet("ReclaimTime").ToString());
-			}
+			if (EconomyTab.RawGet("ReclaimTime") != null)
+				ToReturn.BP.ReclaimTime = LuaParser.Read.StringToFloat(EconomyTab.RawGet("ReclaimTime").ToString());
 		}
 
 		//Size
-		if (BP.GetTable("PropBlueprint").RawGet("SizeX") != null)
-			ToReturn.BP.SizeX = LuaParser.Read.StringToFloat(BP.GetTable("PropBlueprint").RawGet("SizeX").ToString());
+		object SizeX = BP.GetTable("PropBlueprint").RawGet("SizeX");
+		if (SizeX != null)
+			ToReturn.BP.SizeX = LuaParser.Read.StringToFloat(SizeX.ToString());
 
-		if (BP.GetTable("PropBlueprint").RawGet("SizeY") != null)
-			ToReturn.BP.SizeY = LuaParser.Read.StringToFloat(BP.GetTable("PropBlueprint").RawGet("SizeY").ToString());
+		object SizeY = BP.GetTable("PropBlueprint").RawGet("SizeY");
+		if (SizeY != null)
+			ToReturn.BP.SizeY = LuaParser.Read.StringToFloat(SizeY.ToString());
 
-		if (BP.GetTable("PropBlueprint").RawGet("SizeZ") != null)
-			ToReturn.BP.SizeY = LuaParser.Read.StringToFloat(BP.GetTable("PropBlueprint").RawGet("SizeZ").ToString());
+		object SizeZ = BP.GetTable("PropBlueprint").RawGet("SizeZ");
+		if (SizeZ != null)
+			ToReturn.BP.SizeY = LuaParser.Read.StringToFloat(SizeZ.ToString());
 
 
 		//Display

@@ -88,6 +88,13 @@ namespace EditMap
 
 		void UpdateList()
 		{
+			if(MapLuaParser.Current.SaveLuaFile.Data == null || MapLuaParser.Current.SaveLuaFile.Data.Chains == null || ChainSelected >= MapLuaParser.Current.SaveLuaFile.Data.Chains.Length)
+			{
+				CleanMenu();
+				return;
+			}
+				
+
 			NewBtn.SetActive(ChainSelected < 0);
 			ReturnBtn.SetActive(ChainSelected >= 0);
 			MarkersAddButtons.SetActive(ChainSelected >= 0);

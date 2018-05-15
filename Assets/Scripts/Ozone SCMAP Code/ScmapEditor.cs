@@ -113,7 +113,7 @@ public partial class ScmapEditor : MonoBehaviour
 		//string MapPath = EnvPaths.GetMapsPath();
 		string path = MapLuaParser.MapRelativePath(MapLuaParser.Current.ScenarioLuaFile.Data.map);
 
-		Debug.Log("Load SCMAP file: " + path);
+		//Debug.Log("Load SCMAP file: " + path);
 
 
 		if (map.Load(path))
@@ -263,7 +263,9 @@ public partial class ScmapEditor : MonoBehaviour
 		}
 
 		yield return null;
-		Debug.Log("Scmap load complited");
+		//Debug.Log("Scmap load complited");
+
+		GetGamedataFile.LoadUnit("UAA0101");
 	}
 
 
@@ -479,7 +481,7 @@ public partial class ScmapEditor : MonoBehaviour
 
 			if (Textures[i + 1].Albedo.width != AlbedoSize || Textures[i + 1].Albedo.height != AlbedoSize)
 			{
-				Debug.Log("Rescale texture from" + Textures[i + 1].Albedo.width + "x" + Textures[i + 1].Albedo.height + " to: " + AlbedoSize);
+				//Debug.Log("Rescale texture from" + Textures[i + 1].Albedo.width + "x" + Textures[i + 1].Albedo.height + " to: " + AlbedoSize);
 				Textures[i + 1].Albedo = TextureScale.Bilinear(Textures[i + 1].Albedo, AlbedoSize, AlbedoSize);
 			}
 

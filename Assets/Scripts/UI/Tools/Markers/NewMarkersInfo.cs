@@ -222,6 +222,7 @@ namespace EditMap
 				//MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers = MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers.Concat<MapLua.SaveLua.Marker>(NewMarkers.ToArray());
 				MarkerSelectionOptions.UpdateOptions();
 				MarkersControler.UpdateBlankMarkersGraphics();
+				RenderMarkersWarnings.Generate();
 			}
 		}
 

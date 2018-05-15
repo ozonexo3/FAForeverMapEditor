@@ -15,6 +15,7 @@ public partial struct GetGamedataFile
 
 	public const string EnvScd = "env.scd";
 	public const string MapScd = "maps";
+	public const string UnitsScd = "units.scd";
 
 	// Store ZIP Read Stream in memory for faster load
 	static Dictionary<string, ZipFile> ScdFiles = new Dictionary<string, ZipFile>();

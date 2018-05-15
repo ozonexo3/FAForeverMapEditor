@@ -112,11 +112,11 @@ namespace MapLua
 			string loc = FolderParentPath + FolderName + "/" + ScenarioFileName + ".lua";
 			loc = ScenarioToTableFileName(loc);
 
-			Debug.Log("Load file:" + loc);
+			//Debug.Log("Load file:" + loc);
 
 			if (!System.IO.File.Exists(loc))
 			{
-				Debug.Log("No Tables file found");
+				//Debug.Log("No Tables file found");
 				return false;
 			}
 
