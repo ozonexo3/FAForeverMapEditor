@@ -294,21 +294,21 @@ public class BrushGenerator : MonoBehaviour
 				PaintImage = new Texture2D[2];
 				PaintImage[0] = RotatedBrush;
 				PaintImage[1] = rotateTexture(RotatedBrush, 90);
-				PaintImage[1] = MirrorTexture(PaintImage[1], false, true);
+				PaintImage[1] = MirrorTexture(PaintImage[1], true, false);
 				break;
 			case 6:
 				PaintImage = new Texture2D[2];
 				PaintImage[0] = RotatedBrush;
 				PaintImage[1] = rotateTexture(RotatedBrush, 90);
-				PaintImage[1] = MirrorTexture(PaintImage[1], true, false);
+				PaintImage[1] = MirrorTexture(PaintImage[1], false, true);
 				break;
 			case 7:
 				PaintImage = new Texture2D[4];
 				PaintImage[0] = RotatedBrush;
 				PaintImage[1] = rotateTexture(RotatedBrush, 90);
-				PaintImage[1] = MirrorTexture(PaintImage[1], false, true);
+				PaintImage[1] = MirrorTexture(PaintImage[1], true, false);
 				PaintImage[2] = rotateTexture(RotatedBrush, 90);
-				PaintImage[2] = MirrorTexture(PaintImage[2], true, false);
+				PaintImage[2] = MirrorTexture(PaintImage[2], false, true);
 
 				PaintImage[3] = MirrorTexture(RotatedBrush, true, true);
 				break;

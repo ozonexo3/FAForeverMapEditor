@@ -717,7 +717,11 @@ namespace EditMap
 			int GetX = posXInTerrain - offset + OffsetLeft;
 			int GetY = posYInTerrain - offset + OffsetDown;
 
-			ScmapEditor.GetValues(GetX, GetY, (size - OffsetLeft) - OffsetRight, (size - OffsetDown) - OffsetTop);
+
+			int SizeDown = (size - OffsetDown) - OffsetTop;
+			int SizeLeft = (size - OffsetLeft) - OffsetRight;
+
+			ScmapEditor.GetValues(GetX, GetY, SizeDown, SizeLeft);
 			
 
 			float CenterHeight = 0;
@@ -732,13 +736,17 @@ namespace EditMap
 			if (SelectedBrush == 1)
 			{
 				float Count = 0;
-				for (i = 0; i < (size - OffsetDown) - OffsetTop; i++)
+				for (i = 0; i < ScmapEditor.LastGetWidth; i++)
 				{
-					for (j = 0; j < (size - OffsetLeft) - OffsetRight; j++)
+					for (j = 0; j < ScmapEditor.LastGetHeight; j++)
 					{
+						// Brush strength
 						x = (int)(((i + OffsetDown) / (float)size) * BrushGenerator.Current.PaintImageWidths[id]);
 						y = (int)(((j + OffsetLeft) / (float)size) * BrushGenerator.Current.PaintImageHeights[id]);
-						SampleBrush = Mathf.Clamp01(BrushGenerator.Current.Values[id][y + BrushGenerator.Current.PaintImageWidths[id] * x] - 0.0255f);
+
+						if (x < 0 || y < 0 || x >= BrushGenerator.Current.PaintImageWidths[id] || y >= BrushGenerator.Current.PaintImageHeights[id])
+							continue;
+						SampleBrush = Mathf.Clamp01(BrushGenerator.Current.Values[id][y + BrushGenerator.Current.PaintImageHeights[id] * x] - 0.0255f);
 						CenterHeight += ScmapEditor.ReturnValues[i, j] * SampleBrush;
 						Count += SampleBrush;
 					}
@@ -748,13 +756,17 @@ namespace EditMap
 			else if (SelectedBrush == 3)
 			{
 				float Count = 0;
-				for (i = 0; i < (size - OffsetDown) - OffsetTop; i++)
+				for (i = 0; i < ScmapEditor.LastGetWidth; i++)
 				{
-					for (j = 0; j < (size - OffsetLeft) - OffsetRight; j++)
+					for (j = 0; j < ScmapEditor.LastGetHeight; j++)
 					{
+						// Brush strength
 						x = (int)(((i + OffsetDown) / (float)size) * BrushGenerator.Current.PaintImageWidths[id]);
 						y = (int)(((j + OffsetLeft) / (float)size) * BrushGenerator.Current.PaintImageHeights[id]);
-						SampleBrush = Mathf.Clamp01(BrushGenerator.Current.Values[id][y + BrushGenerator.Current.PaintImageWidths[id] * x] - 0.5f) * 2f;
+
+						if (x < 0 || y < 0 || x >= BrushGenerator.Current.PaintImageWidths[id] || y >= BrushGenerator.Current.PaintImageHeights[id])
+							continue;
+						SampleBrush = Mathf.Clamp01(BrushGenerator.Current.Values[id][y + BrushGenerator.Current.PaintImageHeights[id] * x] - 0.0255f);
 						CenterHeight += ScmapEditor.ReturnValues[i, j] * SampleBrush;
 						Count += SampleBrush;
 					}
@@ -763,8 +775,6 @@ namespace EditMap
 			}
 
 
-			int SizeDown = (size - OffsetDown) - OffsetTop;
-			int SizeLeft = (size - OffsetLeft) - OffsetRight;
 			float TargetHeight = Mathf.Clamp(((Invert?(128):(BrushTarget.value)) / ScmapEditor.Current.Data.size.y) / 10f, Min, Max);
 
 			float BrushStrenghtValue = BrushStrength.value;
@@ -790,22 +800,23 @@ namespace EditMap
 			//float SizeSmooth = Mathf.Clamp01(size / 10f) * 15;
 
 
-			for (i = 0; i < SizeDown; i++)
+			for (i = 0; i < ScmapEditor.LastGetWidth; i++)
 			{
-				for (j = 0; j < SizeLeft; j++)
+				for (j = 0; j < ScmapEditor.LastGetHeight; j++)
 				{
 					// Brush strength
 					x = (int)(((i + OffsetDown) / (float)size) * BrushGenerator.Current.PaintImageWidths[id]);
 					y = (int)(((j + OffsetLeft) / (float)size) * BrushGenerator.Current.PaintImageHeights[id]);
-					//BrushValue = BrushGenerator.Current.PaintImage[id].GetPixel(y, x);
-					//BrushValue = BrushGenerator.Current.GetPixel(y, x);
-					//SambleBrush = BrushValue.r;
-					//SampleBrush = BrushGenerator.Current.GetBrushValue(id, y, x);
-					SampleBrush = Mathf.Clamp01(BrushGenerator.Current.Values[id][y + BrushGenerator.Current.PaintImageWidths[id] * x] - 0.0255f);
+
+					if (x < 0 || y < 0 || x >= BrushGenerator.Current.PaintImageWidths[id] || y >= BrushGenerator.Current.PaintImageHeights[id])
+						continue;
+					SampleBrush = Mathf.Clamp01(BrushGenerator.Current.Values[id][y + BrushGenerator.Current.PaintImageHeights[id] * x] - 0.0255f);
+
+
 					if (SampleBrush > 0)
 					{
-						if (i < 0 || j < 0 || i >= ScmapEditor.LastGetWidth || j >= ScmapEditor.LastGetHeight)
-							continue;
+						//if (i < 0 || j < 0 || i >= ScmapEditor.LastGetWidth || j >= ScmapEditor.LastGetHeight)
+						//	continue;
 
 						switch (BrushPaintType)
 						{

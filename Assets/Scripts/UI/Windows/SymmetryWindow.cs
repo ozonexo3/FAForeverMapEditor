@@ -61,42 +61,47 @@ public class SymmetryWindow : MonoBehaviour {
 
 	public void Button(string func){
 		if(Enabling) return;
-		Debug.Log("Change symmetry: " + func);
+		//Debug.Log("Change symmetry: " + func);
 		switch(func){
 		case "close":
 			gameObject.SetActive(false);
 			break;
 		case "sym0":
-			if(Toggles[0].isOn) PlayerPrefs.SetInt("Symmetry", 0);
+			if(Toggles[0].isOn) SaveSymmetry(0);
 			break;
 		case "sym1":
-			if(Toggles[1].isOn) PlayerPrefs.SetInt("Symmetry", 1);
+			if(Toggles[1].isOn) SaveSymmetry(1);
 			break;
 		case "sym2":
-			if(Toggles[2].isOn) PlayerPrefs.SetInt("Symmetry", 2);
+			if(Toggles[2].isOn) SaveSymmetry(2);
 			break;
 		case "sym3":
-			if(Toggles[3].isOn) PlayerPrefs.SetInt("Symmetry", 3);
+			if(Toggles[3].isOn) SaveSymmetry(3);
 			break;
 		case "sym4":
-			if(Toggles[4].isOn) PlayerPrefs.SetInt("Symmetry", 4);
+			if(Toggles[4].isOn) SaveSymmetry(4);
 			break;
 		case "sym5":
-			if(Toggles[5].isOn) PlayerPrefs.SetInt("Symmetry", 5);
+			if(Toggles[5].isOn) SaveSymmetry(5);
 			break;
 		case "sym6":
-			if(Toggles[6].isOn) PlayerPrefs.SetInt("Symmetry", 6);
+			if(Toggles[6].isOn) SaveSymmetry(6);
 			break;
 		case "sym7":
-			if(Toggles[7].isOn) PlayerPrefs.SetInt("Symmetry", 7);
+			if(Toggles[7].isOn) SaveSymmetry(7);
 			break;
 		case "sym8":
-			if(Toggles[8].isOn) PlayerPrefs.SetInt("Symmetry", 8);
+			if(Toggles[8].isOn) SaveSymmetry(8);
 			break;
 		}
-		PlayerPrefs.Save();
+		
 	}
 
+	void SaveSymmetry(int id)
+	{
+		PlayerPrefs.SetInt("Symmetry", id);
+		PlayerPrefs.Save();
+	}
 
 
 	public static float GetTolerance()

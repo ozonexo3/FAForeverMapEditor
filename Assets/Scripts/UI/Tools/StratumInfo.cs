@@ -672,7 +672,6 @@ namespace EditMap
 		}
 
 
-		static int StratumTexSampleHeight = 0;
 		static Color[] StratumData;
 		static int PaintChannel = 0;
 		int size = 0;
@@ -723,27 +722,29 @@ namespace EditMap
 			int i = 0;
 			int j = 0;
 
+			int SizeDown = (size - OffsetDown) - OffsetTop;
+			int SizeLeft = (size - OffsetLeft) - OffsetRight;
+
 			if (Selected > 0 && Selected < 5)
 			{
-				StratumData = ScmapEditor.Current.map.TexturemapTex.GetPixels(posXInTerrain - offset + OffsetLeft, posYInTerrain - offset + OffsetDown, (size - OffsetLeft) - OffsetRight, (size - OffsetDown) - OffsetTop);
+				StratumData = ScmapEditor.Current.map.TexturemapTex.GetPixels(posXInTerrain - offset + OffsetLeft, posYInTerrain - offset + OffsetDown, SizeLeft, SizeDown);
 			}
 			else if (Selected > 4 && Selected < 9)
 			{
-				StratumData = ScmapEditor.Current.map.TexturemapTex2.GetPixels(posXInTerrain - offset + OffsetLeft, posYInTerrain - offset + OffsetDown, (size - OffsetLeft) - OffsetRight, (size - OffsetDown) - OffsetTop);
+				StratumData = ScmapEditor.Current.map.TexturemapTex2.GetPixels(posXInTerrain - offset + OffsetLeft, posYInTerrain - offset + OffsetDown, SizeLeft, SizeDown);
 			}
 			else
 				return;
 
 
-			StratumTexSampleHeight = (size - OffsetDown) - OffsetTop;
-
 			int PaintType = PaintChannel;
 			if (LinearBrush.isOn)
 				PaintType += 10;
 
-			for (i = 0; i < (size - OffsetDown) - OffsetTop; i++)
+
+			for (i = 0; i < SizeDown; i++)
 			{
-				for (j = 0; j < (size - OffsetLeft) - OffsetRight; j++)
+				for (j = 0; j < SizeLeft; j++)
 				{
 
 					if (Min > 0 || Max < 90)
@@ -754,12 +755,14 @@ namespace EditMap
 					}
 
 					// Brush strength
-					x = (int)(((i + OffsetDown) / (float)size) * BrushGenerator.Current.PaintImageWidths[id]);
+					x = BrushGenerator.Current.PaintImageWidths[id] - 
+						(int)(((i + OffsetDown) / (float)size) * BrushGenerator.Current.PaintImageWidths[id]);
 					y = (int)(((j + OffsetLeft) / (float)size) * BrushGenerator.Current.PaintImageHeights[id]);
-					//BrushValue = BrushGenerator.Current.PaintImage[id].GetPixel(y, x);
-					//SambleBrush = BrushValue.r;
-					SampleBrush = BrushGenerator.Current.Values[id][y + BrushGenerator.Current.PaintImageWidths[id] * x];
-					SampleBrush = Mathf.Pow(SampleBrush, 0.454545f);
+
+					if (x < 0 || y < 0 || x >= BrushGenerator.Current.PaintImageWidths[id] || y >= BrushGenerator.Current.PaintImageHeights[id])
+						continue;
+					SampleBrush = Mathf.Clamp01(BrushGenerator.Current.Values[id][y + BrushGenerator.Current.PaintImageHeights[id] * x] - 0.0255f);
+					SampleBrush = Mathf.GammaToLinearSpace(SampleBrush); // , 0.454545f
 
 					if (SampleBrush >= 0.003f)
 					{
@@ -775,9 +778,9 @@ namespace EditMap
 						}
 						else
 						{
-							int XY = i + j * StratumTexSampleHeight;
+							int XY = j + i * SizeLeft;
 
-							switch (PaintChannel)
+							switch (PaintType)
 							{
 								case 0:
 										StratumData[XY].r += SampleBrush * LocalBrushStrength;
@@ -804,10 +807,7 @@ namespace EditMap
 										StratumData[XY].a = ConvertToLinear(StratumData[XY].a, SampleBrush * LocalBrushStrength);
 									break;
 							}
-							//heights[i,j] += SambleBrush * BrushStrengthSlider.value * 0.0002f * (Invert?(-1):1);
 						}
-
-						//heights[i,j] = Mathf.Clamp(heights[i,j], Min, Max);
 					}
 				}
 			}
@@ -836,14 +836,14 @@ namespace EditMap
 			//Map.map.TexturemapTex.SetPixels(StratumData);
 		}
 
-		static int XyToColorId(int x, int y)
-		{
-			return x + y * StratumTexSampleHeight;
-		}
-
 		static float ConvertToLinear(float value, float addValue)
 		{
-			return (Mathf.Clamp01(value * 2 - 1) + addValue) * 0.5f + 0.5f;
+			value = Mathf.Clamp01(value * 2f - 1f);
+			value = Mathf.Clamp01(value + addValue);
+			value += 1;
+			value /= 2f;
+			value = Mathf.Clamp01(value);
+			return value;
 			//return Mathf.Clamp01((Mathf.Clamp01(value * 0.5f + 0.5f) + addValue) * 2f - 1f);
 			//return Mathf.Pow(Mathf.Pow(value, 0.454545f) + addValue, 2.2f);
 			//return value + Mathf.Pow(addValue, 0.454545f);

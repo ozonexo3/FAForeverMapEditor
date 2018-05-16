@@ -48,7 +48,7 @@ namespace Ozone.UI
 			if (Started)
 				return;
 
-			Debug.Log("Begin change");
+			//Debug.Log("Begin change");
 			Started = true;
 			OnBeginChange.Invoke();
 		}
