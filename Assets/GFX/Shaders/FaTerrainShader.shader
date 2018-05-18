@@ -154,6 +154,7 @@ Properties {
 			int _HideSplat0, _HideSplat1, _HideSplat2, _HideSplat3, _HideSplat4, _HideSplat5, _HideSplat6, _HideSplat7, _HideSplat8;
 
 			half _LowerScale, _UpperScale;
+			half _LowerScaleNormal, _UpperScaleNormal;
 			uniform int _TTerrainXP;
 			uniform float _WaterScaleX, _WaterScaleZ;
 
@@ -252,7 +253,7 @@ Properties {
 				//col = 1;
 				half4 nrm;
 				//UV *= 0.01;
-				nrm = tex2D (_NormalLower, UV * _LowerScale);
+				nrm = tex2D (_NormalLower, UV * _LowerScaleNormal);
 				if(_HideSplat0 == 0)
 				//nrm = lerp(nrm, tex2D (_SplatNormal0, UV * _Splat0ScaleNormal), splat_control.r);
 				nrm = lerp(nrm, UNITY_SAMPLE_TEX2DARRAY(_SplatNormalArray, float3(UV * _Splat0ScaleNormal, 0)), splat_control.r);

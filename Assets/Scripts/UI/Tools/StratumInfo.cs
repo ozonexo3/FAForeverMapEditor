@@ -1068,6 +1068,56 @@ namespace EditMap
 
 		#region Import/Export
 
+
+		public void ClearStratumMask()
+		{
+			if (Selected == 0 || Selected == 9)
+				return;
+
+
+			Color[] StratumData;
+			if (Selected > 4)
+			{
+				StratumData = ScmapEditor.Current.map.TexturemapTex2.GetPixels();
+				beginColors = ScmapEditor.Current.map.TexturemapTex2.GetPixels();
+			}
+			else
+			{
+				StratumData = ScmapEditor.Current.map.TexturemapTex.GetPixels();
+				beginColors = ScmapEditor.Current.map.TexturemapTex.GetPixels();
+			}
+
+			if (Selected > 0 && Selected < 5)
+				MapLuaParser.Current.History.RegisterStratumPaint(beginColors, 0);
+			else if (Selected > 4 && Selected < 9)
+				MapLuaParser.Current.History.RegisterStratumPaint(beginColors, 1);
+
+
+			for (int i = 0; i < StratumData.Length; i++)
+			{
+				if (Selected == 1 || Selected == 5)
+					StratumData[i].r = 0;
+				else if (Selected == 2 || Selected == 6)
+					StratumData[i].g = 0;
+				else if (Selected == 3 || Selected == 7)
+					StratumData[i].b = 0;
+				else if (Selected == 4 || Selected == 8)
+					StratumData[i].a = 0;
+			}
+
+
+			if (Selected > 4)
+			{
+				ScmapEditor.Current.map.TexturemapTex2.SetPixels(StratumData);
+				ScmapEditor.Current.map.TexturemapTex2.Apply(false);
+			}
+			else
+			{
+				ScmapEditor.Current.map.TexturemapTex.SetPixels(StratumData);
+				ScmapEditor.Current.map.TexturemapTex.Apply(false);
+			}
+		}
+
 		public void ImportStratumMask()
 		{
 			if (Selected == 0 || Selected == 9)
@@ -1102,11 +1152,18 @@ namespace EditMap
 					if (Selected > 4)
 					{
 						StratumData = ScmapEditor.Current.map.TexturemapTex2.GetPixels();
+						beginColors = ScmapEditor.Current.map.TexturemapTex2.GetPixels();
 					}
 					else
 					{
 						StratumData = ScmapEditor.Current.map.TexturemapTex.GetPixels();
+						beginColors = ScmapEditor.Current.map.TexturemapTex.GetPixels();
 					}
+
+					if (Selected > 0 && Selected < 5)
+						MapLuaParser.Current.History.RegisterStratumPaint(beginColors, 0);
+					else if (Selected > 4 && Selected < 9)
+						MapLuaParser.Current.History.RegisterStratumPaint(beginColors, 1);
 
 					Texture2D ImportedImage = img.ToTexture2D();
 					if(ImportedImage.width != ScmapEditor.Current.map.TexturemapTex.width || ImportedImage.height != ScmapEditor.Current.map.TexturemapTex.height)

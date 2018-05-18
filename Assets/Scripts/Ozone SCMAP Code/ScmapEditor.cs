@@ -25,6 +25,7 @@ public partial class ScmapEditor : MonoBehaviour
 	public ProceduralSkybox Skybox;
 	public Material TerrainMaterial;
 	public Material WaterMaterial;
+	public Cubemap DefaultWaterSky;
 	public PostProcessingProfile PostProcessing;
 	public BloomOptimized BloomOpt;
 	public BloomOptimized BloomOptPreview;
@@ -211,7 +212,7 @@ public partial class ScmapEditor : MonoBehaviour
 
 		/*
 		 * // Cubemap
-		Texture2D Cubemap = GetGamedataFile.LoadTexture2DFromGamedata("textures.scd", map.Water.TexPathCubemap);
+		Texture2D Cubemap = GetGamedataFile.LoadTexture2DFromGamedata(GetGamedataFile.TexturesScd, map.Water.TexPathCubemap);
 		Debug.Log(Cubemap.width);
 		Cubemap cb = new Cubemap(Cubemap.width, TextureFormat.RGB24, Cubemap.mipmapCount > 1);
 		cb.SetPixels(Cubemap.GetPixels(), CubemapFace.PositiveX);
@@ -265,7 +266,7 @@ public partial class ScmapEditor : MonoBehaviour
 		yield return null;
 		//Debug.Log("Scmap load complited");
 
-		GetGamedataFile.LoadUnit("UAA0101");
+		//GetGamedataFile.UnitObject NewUnit = new GetGamedataFile.UnitObject();
 	}
 
 
@@ -350,6 +351,12 @@ public partial class ScmapEditor : MonoBehaviour
 		Shader.SetGlobalFloat("fresnelPower", map.Water.FresnelPower);
 		Shader.SetGlobalFloat("fresnelBias", map.Water.FresnelBias);
 
+		/*
+		for (int w = 0; w < map.WaveGenerators.Count; w++)
+		{
+			map.WaveGenerators[w].Position.y = map.Water.Elevation;
+		}
+		*/
 
 		//Shader.SetGlobalVector("waterLerp", map.Water.WaveTextures);
 
@@ -362,22 +369,32 @@ public partial class ScmapEditor : MonoBehaviour
 
 	public void SetWaterTextures()
 	{
-		Texture2D WaterRamp = GetGamedataFile.LoadTexture2DFromGamedata("textures.scd", map.Water.TexPathWaterRamp);
+		Texture2D WaterRamp = GetGamedataFile.LoadTexture2DFromGamedata(GetGamedataFile.TexturesScd, map.Water.TexPathWaterRamp);
 		WaterRamp.wrapMode = TextureWrapMode.Clamp;
 		Shader.SetGlobalTexture("_WaterRam", WaterRamp);
 
+		try
+		{
+			Cubemap WaterReflection = GetGamedataFile.GetGamedataCubemap(GetGamedataFile.TexturesScd, map.Water.TexPathCubemap);
+			WaterMaterial.SetTexture("SkySampler", WaterReflection);
+		}
+		catch
+		{
+			WaterMaterial.SetTexture("SkySampler", DefaultWaterSky);
+		}
+
 		const int WaterAnisoLevel = 4;
 
-		Texture2D WaterNormal = GetGamedataFile.LoadTexture2DFromGamedata("textures.scd", map.Water.WaveTextures[0].TexPath);
+		Texture2D WaterNormal = GetGamedataFile.LoadTexture2DFromGamedata(GetGamedataFile.TexturesScd, map.Water.WaveTextures[0].TexPath);
 		WaterNormal.anisoLevel = WaterAnisoLevel;
 		WaterMaterial.SetTexture("NormalSampler0", WaterNormal);
-		WaterNormal = GetGamedataFile.LoadTexture2DFromGamedata("textures.scd", map.Water.WaveTextures[1].TexPath);
+		WaterNormal = GetGamedataFile.LoadTexture2DFromGamedata(GetGamedataFile.TexturesScd, map.Water.WaveTextures[1].TexPath);
 		WaterNormal.anisoLevel = WaterAnisoLevel;
 		WaterMaterial.SetTexture("NormalSampler1", WaterNormal);
-		WaterNormal = GetGamedataFile.LoadTexture2DFromGamedata("textures.scd", map.Water.WaveTextures[2].TexPath);
+		WaterNormal = GetGamedataFile.LoadTexture2DFromGamedata(GetGamedataFile.TexturesScd, map.Water.WaveTextures[2].TexPath);
 		WaterNormal.anisoLevel = WaterAnisoLevel;
 		WaterMaterial.SetTexture("NormalSampler2", WaterNormal);
-		WaterNormal = GetGamedataFile.LoadTexture2DFromGamedata("textures.scd", map.Water.WaveTextures[3].TexPath);
+		WaterNormal = GetGamedataFile.LoadTexture2DFromGamedata(GetGamedataFile.TexturesScd, map.Water.WaveTextures[3].TexPath);
 		WaterNormal.anisoLevel = WaterAnisoLevel;
 		WaterMaterial.SetTexture("NormalSampler3", WaterNormal);
 
@@ -733,7 +750,6 @@ public partial class ScmapEditor : MonoBehaviour
 
 	public void UnloadMap()
 	{
-
 		Textures[0].AlbedoPath = "/env/evergreen2/layers/eg_gravel005_albedo.dds";
 		Textures[0].NormalPath = "/env/tundra/layers/tund_sandlight_normal.dds";
 		Textures[0].AlbedoScale = 4;
@@ -886,6 +902,14 @@ public partial class ScmapEditor : MonoBehaviour
 
 		if (SampleHeight)
 			Pos.y = Current.Teren.SampleHeight(Pos);
+		if (MinimumWaterLevel)
+			Pos.y = Mathf.Clamp(Pos.y, GetWaterLevel(), 10000);
+		return Pos;
+	}
+
+	public static Vector3 SnapToTerrain(Vector3 Pos, bool MinimumWaterLevel = false)
+	{
+		Pos.y = Current.Teren.SampleHeight(Pos);
 		if (MinimumWaterLevel)
 			Pos.y = Mathf.Clamp(Pos.y, GetWaterLevel(), 10000);
 		return Pos;

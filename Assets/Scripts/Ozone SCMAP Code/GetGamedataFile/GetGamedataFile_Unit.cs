@@ -8,15 +8,24 @@ using EditMap;
 public partial struct GetGamedataFile
 {
 
-	public class UnitObject
+	public class UnitObject : MonoBehaviour
 	{
 		public UnitBluePrint BP;
 
 
-
 		public void CreateUnitObject(Vector3 position, Quaternion rotation)
 		{
+			GameObject Obj = new GameObject(BP.CodeName);
 
+			Obj.transform.localPosition = ScmapEditor.SnapToTerrain(position);
+			Obj.transform.localRotation = rotation;
+			Obj.transform.localScale = BP.UniformScale * 0.1f;
+
+			MeshRenderer mr = Obj.AddComponent<MeshRenderer>();
+			MeshFilter mf = Obj.AddComponent<MeshFilter>();
+
+			mr.material = BP.LODs[0].Mat;
+			mf.mesh = BP.LODs[0].Mesh;
 		}
 	}
 
@@ -36,6 +45,7 @@ public partial struct GetGamedataFile
 
 		public Vector3 SelectionSize;
 		public Vector3 Size;
+		public Vector3 UniformScale;
 
 		// Strategic
 		public string StrategicIconName;
@@ -135,6 +145,7 @@ public partial struct GetGamedataFile
 		//TODO
 		// Load Blueprint Data
 		object CurrentValue = null;
+		LuaTable UnitBlueprintTable = BP.GetTable("UnitBlueprint");
 
 		LuaTable InterfaceTab = BP.GetTable("UnitBlueprint.Interface");
 		if(InterfaceTab != null)
@@ -162,7 +173,7 @@ public partial struct GetGamedataFile
 				ToReturn.BP.BuildTime = LuaParser.Read.StringToFloat(CurrentValue.ToString());
 		}
 
-		CurrentValue = BP.GetTable("UnitBlueprint").RawGet("StrategicIconName");
+		CurrentValue = UnitBlueprintTable.RawGet("StrategicIconName");
 		if (CurrentValue != null)
 			ToReturn.BP.StrategicIconName = CurrentValue.ToString();
 
@@ -176,6 +187,9 @@ public partial struct GetGamedataFile
 		//Display
 		if (BP.GetTable("UnitBlueprint.Display") != null)
 		{
+			if (BP.GetTable("UnitBlueprint.Display").RawGet("UniformScale") != null)
+				ToReturn.BP.UniformScale = Vector3.one * LuaParser.Read.StringToFloat(BP.GetTable("UnitBlueprint.Display").RawGet("UniformScale").ToString());
+
 			// Mesh
 			if (BP.GetTable("UnitBlueprint.Display.Mesh") != null)
 			{
@@ -217,15 +231,84 @@ public partial struct GetGamedataFile
 			}
 		}
 
+		ToReturn.BP.Size = Vector3.one * 0.1f;
+
+		CurrentValue = UnitBlueprintTable.RawGet("SizeX");
+		if (CurrentValue != null)
+			ToReturn.BP.Size.x = LuaParser.Read.StringToFloat(CurrentValue.ToString());
+
+		CurrentValue = UnitBlueprintTable.RawGet("SizeY");
+		if (CurrentValue != null)
+			ToReturn.BP.Size.y = LuaParser.Read.StringToFloat(CurrentValue.ToString());
+
+		CurrentValue = UnitBlueprintTable.RawGet("SizeZ");
+		if (CurrentValue != null)
+			ToReturn.BP.Size.z = LuaParser.Read.StringToFloat(CurrentValue.ToString());
+
+
+		for (int i = 0; i < ToReturn.BP.LODs.Length; i++)
+		{
+			ToReturn.BP.LODs[i].Mesh = LoadModel(scd, ToReturn.BP.LODs[i].Scm);
+
+			//ToReturn.BP.LODs[i].Mat = new Material(Shader.Find("Standard (Specular setup)"));
+			ToReturn.BP.LODs[i].Mat = new Material(EditMap.PropsInfo.Current.UnitMaterial);
+
+			ToReturn.BP.LODs[i].Mat.name = ToReturn.BP.CodeName + "_LOD" + i + " mat";
+
+			if (ToReturn.BP.LODs[i].AlbedoName.Length == 0)
+			{
+				ToReturn.BP.LODs[i].AlbedoName = LocalPath.Replace("unit.bp", "albedo.dds");
+			}
+			else
+			{
+				ToReturn.BP.LODs[i].AlbedoName = OffsetRelativePath(LocalPath, ToReturn.BP.LODs[i].AlbedoName, true);
+			}
+
+			ToReturn.BP.LODs[i].Albedo = LoadTexture2DFromGamedata(scd, ToReturn.BP.LODs[i].AlbedoName, false);
+			ToReturn.BP.LODs[i].Albedo.anisoLevel = 2;
+			ToReturn.BP.LODs[i].Mat.SetTexture("_MainTex", ToReturn.BP.LODs[i].Albedo);
+
+
+			if (ToReturn.BP.LODs[i].NormalsName.Length == 0)
+			{
+				ToReturn.BP.LODs[i].NormalsName = LocalPath.Replace("unit.bp", "NormalsTS.dds");
+			}
+			else
+			{
+				ToReturn.BP.LODs[i].NormalsName = OffsetRelativePath(LocalPath, ToReturn.BP.LODs[i].NormalsName, true);
+			}
+
+			if (!string.IsNullOrEmpty(ToReturn.BP.LODs[i].NormalsName))
+			{
+				ToReturn.BP.LODs[i].Normal = LoadTexture2DFromGamedata(scd, ToReturn.BP.LODs[i].NormalsName, true);
+				ToReturn.BP.LODs[i].Normal.anisoLevel = 2;
+				ToReturn.BP.LODs[i].Mat.SetTexture("_BumpMap", ToReturn.BP.LODs[i].Normal);
+			}
+
+
+			if (ToReturn.BP.LODs[i].SpecularName.Length == 0)
+			{
+				ToReturn.BP.LODs[i].SpecularName = LocalPath.Replace("unit.bp", "SpecTeam.dds");
+			}
+			else
+			{
+				ToReturn.BP.LODs[i].SpecularName = OffsetRelativePath(LocalPath, ToReturn.BP.LODs[i].SpecularName, true);
+			}
+
+			if (!string.IsNullOrEmpty(ToReturn.BP.LODs[i].SpecularName))
+			{
+				ToReturn.BP.LODs[i].Specular = LoadTexture2DFromGamedata(scd, ToReturn.BP.LODs[i].SpecularName, false);
+				ToReturn.BP.LODs[i].Specular.anisoLevel = 2;
+				ToReturn.BP.LODs[i].Mat.SetTexture("_SpecTeam", ToReturn.BP.LODs[i].Specular);
+			}
+
+		}
 
 
 
 
 
-
-
-
-		Debug.Log("Unit blueprint loaded: " + ToReturn.BP.CodeName + "\n" + ToReturn.BP.HelpText);
+			Debug.Log("Unit blueprint loaded: " + ToReturn.BP.CodeName + "\n" + ToReturn.BP.HelpText);
 		//Debug.Log(ToReturn.BP.HelpText);
 		Debug.Log("StrategicIconName: " + ToReturn.BP.StrategicIconName);
 		Debug.Log("BuildTime: " + ToReturn.BP.BuildTime);

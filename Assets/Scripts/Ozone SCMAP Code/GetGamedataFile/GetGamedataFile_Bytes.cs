@@ -13,6 +13,7 @@ using ICSharpCode.SharpZipLib.BZip2;
 public partial struct GetGamedataFile
 {
 
+	public const string TexturesScd = "textures.scd";
 	public const string EnvScd = "env.scd";
 	public const string MapScd = "maps";
 	public const string UnitsScd = "units.scd";

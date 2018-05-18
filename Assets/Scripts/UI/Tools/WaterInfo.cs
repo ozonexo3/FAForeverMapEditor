@@ -9,7 +9,7 @@ using SFB;
 
 namespace EditMap
 {
-	public class WaterInfo : MonoBehaviour
+	public partial class WaterInfo : MonoBehaviour
 	{
 
 		public TerrainInfo TerrainMenu;
@@ -147,6 +147,7 @@ namespace EditMap
 
 			if (string.IsNullOrEmpty(path))
 				return;
+
 
 			string data = JsonUtility.ToJson(ScmapEditor.Current.map.Water);
 

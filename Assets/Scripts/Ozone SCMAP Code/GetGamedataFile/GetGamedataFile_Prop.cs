@@ -134,6 +134,7 @@ public partial struct GetGamedataFile
 		public Material Mat;
 		public Texture2D Albedo;
 		public Texture2D Normal;
+		public Texture2D Specular;
 	}
 
 	public static string LocalBlueprintPath(string path)

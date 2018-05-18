@@ -41,6 +41,7 @@ namespace EditMap
 		public LayerMask TerrainMask;
 		public Material TerrainMaterial;
 		public Material PropMaterial;
+		public Material UnitMaterial;
 
 		float TotalMassCount = 0;
 		float TotalEnergyCount = 0;

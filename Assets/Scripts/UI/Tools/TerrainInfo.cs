@@ -322,7 +322,6 @@ namespace EditMap
 			int h = ScmapEditor.Current.Teren.terrainData.heightmapHeight;
 			int w = ScmapEditor.Current.Teren.terrainData.heightmapWidth;
 			ScmapEditor.GetAllHeights(ref beginHeights);
-			MapLuaParser.Current.History.RegisterTerrainHeightmapChange(beginHeights);
 
 			float Value = float.Parse(TerrainSet.text) * 0.1f;
 			Value /= ScmapEditor.TerrainHeight;
@@ -336,9 +335,15 @@ namespace EditMap
 					heights[i, j] = Value;
 				}
 			}
-			ScmapEditor.Current.Teren.terrainData.SetHeights(0, 0, heights);
+
+			MapLuaParser.Current.History.RegisterTerrainHeightmapChange(beginHeights);
+
+			ScmapEditor.SetAllHeights(heights);
+
+			//ScmapEditor.Current.Teren.terrainData.SetHeights(0, 0, heights);
 			RegenerateMaps();
 			OnTerrainChanged();
+
 		}
 
 		public void AddTerrainHeight()
@@ -361,7 +366,8 @@ namespace EditMap
 					heights[i, j] += Value;
 				}
 			}
-			ScmapEditor.Current.Teren.terrainData.SetHeights(0, 0, heights);
+			ScmapEditor.SetAllHeights(heights);
+			//ScmapEditor.Current.Teren.terrainData.SetHeights(0, 0, heights);
 			RegenerateMaps();
 			OnTerrainChanged();
 		}
@@ -375,7 +381,8 @@ namespace EditMap
 
 			var extensions = new[]
 			{
-				new ExtensionFilter("Heightmap", new string[]{"raw" })
+				new ExtensionFilter("Heightmap", new string[]{"raw" }),
+				new ExtensionFilter("WM Heightmap", new string[]{"r16" })
 				//new ExtensionFilter("Stratum mask", "raw, bmp")
 			};
 
@@ -565,7 +572,8 @@ namespace EditMap
 					}
 				}
 			}
-			ScmapEditor.Current.Teren.terrainData.SetHeights(0, 0, data);
+			//ScmapEditor.Current.Teren.terrainData.SetHeights(0, 0, data);
+			ScmapEditor.SetAllHeights(data);
 			RegenerateMaps();
 			OnTerrainChanged();
 		}

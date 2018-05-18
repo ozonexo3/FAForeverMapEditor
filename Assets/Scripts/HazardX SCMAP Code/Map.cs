@@ -66,6 +66,7 @@ public class Map
 	[HideInInspector]
 	public byte[] TerrainTypeData;
 
+	[HideInInspector]
     public List<WaveGenerator> WaveGenerators = new List<WaveGenerator>();
     public List<Layer> Layers = new List<Layer>();
     public List<Decal> Decals = new List<Decal>();

@@ -159,8 +159,9 @@ public partial class MapLuaParser : MonoBehaviour
 	{
 		if (LoadingMapProcess)
 			return;
-
+		LoadingMapProcess = true;
 		ScmapEditor.Current.UnloadMap();
+		LoadingMapProcess = false;
 
 		StartCoroutine("LoadingFile");
 	}
@@ -250,7 +251,7 @@ public partial class MapLuaParser : MonoBehaviour
 			yield return null;
 
 			// SCMAP
-			var LoadScmapFile = HeightmapControler.StartCoroutine("LoadScmapFile");
+			var LoadScmapFile = HeightmapControler.StartCoroutine(ScmapEditor.Current.LoadScmapFile());
 			yield return LoadScmapFile;
 			CameraControler.Current.RestartCam();
 
@@ -268,6 +269,12 @@ public partial class MapLuaParser : MonoBehaviour
 				//LoadSaveLua();
 				yield return null;
 			}
+
+			//GetGamedataFile.LoadUnit("XEL0209").CreateUnitObject(MapLuaParser.Current.MapCenterPoint, Quaternion.identity);
+
+			//GetGamedataFile.LoadUnit("UEB0201").CreateUnitObject(MapLuaParser.Current.MapCenterPoint + Vector3.forward * 0.7f, Quaternion.identity);
+
+			//GetGamedataFile.LoadUnit("UEL0001").CreateUnitObject(MapLuaParser.Current.MapCenterPoint + Vector3.left * 0.3f, Quaternion.identity);
 
 			// Load Props
 			if (LoadProps)

@@ -47,6 +47,9 @@ public class RenderMarkersConnections : MonoBehaviour
 
 	public void UpdateConnections()
 	{
+		if (MapLuaParser.LoadingMapProcess || MapLuaParser.SavingMapProcess)
+			return;
+
 		RenderMarkersWarnings.Generate();
 
 		if (generating)
@@ -125,6 +128,17 @@ public class RenderMarkersConnections : MonoBehaviour
 
 	}
 
+	void Clear()
+	{
+		for (int l = 0; l < Layers.Length; l++)
+		{
+			if (Layers[l].Edges == null)
+				Layers[l].Edges = new List<Edge>();
+			else
+				Layers[l].Edges.Clear();
+		}
+	}
+
 	bool EdgeExist(int l, int p0, int p1)
 	{
 		for (int e = 0; e < Layers[l].Count; e++)
@@ -153,11 +167,16 @@ public class RenderMarkersConnections : MonoBehaviour
 		if (PreviewTex.IsPreview)
 			return;
 
+		if (MapLuaParser.LoadingMapProcess || MapLuaParser.SavingMapProcess)
+			return;
+
 		if (!MarkersControler.Current.MarkerLayersSettings.ConnectedNodes)
 			return;
 
 		if (Camera.current != RenderCamera)
 			return;
+
+
 
 		//CreateLineMaterial();
 		// Apply the line material
@@ -182,6 +201,13 @@ public class RenderMarkersConnections : MonoBehaviour
 
 			for (int i = 0; i < Layers[l].Count; i++)
 			{
+				if(Layers[l].Edges[i].Point0 == null || Layers[l].Edges[i].Point1 == null)
+				{
+					Clear();
+					GL.End();
+					GL.PopMatrix();
+					return;
+				}
 				GL.Vertex(Layers[l].Edges[i].Point0.localPosition);
 				GL.Vertex(Layers[l].Edges[i].Point1.localPosition);
 			}

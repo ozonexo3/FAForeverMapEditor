@@ -1,4 +1,6 @@
-﻿// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
+﻿// Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
+
+// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
 
 // Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
 
@@ -101,6 +103,7 @@ Shader "MapEditor/FaWater" {
 			float4 AddVar		: 	TEXCOORD7;
 			float4 grabUV;
 			float3 worldPos;
+			float3 viewDir;
 		};
 
 		void vert (inout appdata_full v, out Input o){
@@ -127,7 +130,7 @@ Shader "MapEditor/FaWater" {
 	        //o.mScreenPos.xy /= o.mScreenPos.w;
 	        
 	        o.mViewVec = mul (unity_ObjectToWorld, v.vertex).xyz - _WorldSpaceCameraPos;
-	        o.mViewVec = normalize(o.mViewVec);
+	        //o.mViewVec = normalize(o.mViewVec);
 	        o.AddVar = float4(length(_WorldSpaceCameraPos - mul(unity_ObjectToWorld, v.vertex).xyz), 0, 0, 0);
 			 float4 hpos = UnityObjectToClipPos (v.vertex);
 	         o.grabUV = ComputeGrabScreenPos(hpos);
@@ -143,6 +146,7 @@ Shader "MapEditor/FaWater" {
 	    uniform sampler2D NormalSampler0, NormalSampler1, NormalSampler2, NormalSampler3;
 		//samplerCUBE _Reflection;
 		samplerCUBE SkySampler;
+
 	    
 	   void surf (Input IN, inout SurfaceOutput o) {
 	    
@@ -158,8 +162,10 @@ Shader "MapEditor/FaWater" {
 			
 	        // calculate the correct viewvector
 			float3 viewVector = normalize(IN.mViewVec);
-			
-		    float2 screenPos = UNITY_PROJ_COORD(IN.mScreenPos.xy / IN.mScreenPos.w);
+			//viewVector = WorldSpaceViewDir(float4(0, 0, 1, 1));
+			//viewVector = IN.viewDir;
+			float OneOverW = 1 / IN.mScreenPos.w;
+
 
 			// calculate the background pixel
 			float4 backGroundPixels = tex2Dproj( _WaterGrabTexture, UNITY_PROJ_COORD(IN.grabUV) );
@@ -196,39 +202,36 @@ Shader "MapEditor/FaWater" {
 			float4 skyReflection = texCUBE( SkySampler, R );
 	    		    	
 	    	// get the correct coordinate for sampling refraction and reflection
-			float OneOverW = 1 / IN.mScreenPos.w;
-		   // float2 refractionPos = screenPos;
-			//refractionPos.y = 1 - refractionPos.y;
-		    //refractionPos -= refractionScale * N.xz * OneOverW;
-	    	
-	    	// calculate the refract pixel, corrected for fetching a non-refractable pixel
-		    float4 refractedPixels = tex2Dproj( _WaterGrabTexture, UNITY_PROJ_COORD(IN.grabUV));
 
+			float2 screenPos = UNITY_PROJ_COORD(IN.mScreenPos.xy / IN.mScreenPos.w);
+
+			float4 refractionPos = IN.mScreenPos;
+			refractionPos.xy -= refractionScale * N.xz * OneOverW;
+
+
+	    	// calculate the refract pixel, corrected for fetching a non-refractable pixel
+		    float4 refractedPixels = tex2Dproj( _WaterGrabTexture, refractionPos); // UNITY_PROJ_COORD(IN.grabUV)
 		    // because the range of the alpha value that we use for the water is very small
 		    // we multiply by a large number and then saturate
 		    // this will also help in the case where we filter to an intermediate value
 		    refractedPixels.xyz = lerp(refractedPixels, backGroundPixels, saturate((IN.AddVar.x - 40) / 30 ) ).xyz; //255
-			//refractedPixels.xyz = 0; //<<<
-			//refractedPixels.a = 0; //<<<
 
-			//float4 reflectedPixels = tex2D( _ReflectionTexture, refractionPos );
-			float4 refractionPos = IN.mScreenPos; 
-			refractionPos.xy -= refractionScale * N.xz * OneOverW;
-			float4 reflectedPixels = tex2Dproj( _ReflectionTexture, UNITY_PROJ_COORD(refractionPos) );
-			//reflectedPixels.rgb = exp2(-reflectedPixels.rgb);
+			// 
+			// calculate the reflected value at this pixel
+			//
+			float4 reflectedPixels = tex2D( _ReflectionTexture, refractionPos);
 
-			//fresnelPower = 1.1;
-			//fresnelBias = 0;
 
 	   		float  NDotL = saturate( dot(-viewVector, N) );
-			float fresnel = tex2D( FresnelSampler, float2(waterDepth, NDotL) ).r;
-			fresnel = pow(fresnel, fresnelPower) + fresnelBias;
-			//fresnel = pow(fresnel, 0.454545);
+			//float fresnel = tex2D( FresnelSampler, float2(waterDepth, NDotL) ).r;
+			//float fresnel = tex2D(FresnelSampler, float2(pow(waterDepth - fresnelBias, fresnelPower), NDotL)).r;
+			float fresnel = tex2D(FresnelSampler, float2(waterDepth, pow(NDotL + fresnelBias, fresnelPower))).r;
+			//fresnel = pow(fresnel, fresnelPower) + fresnelBias;
+
 
 			// figure out the sun reflection
 			float SunDotR = saturate(dot(-R, SunDirection));
-			//SunDotR = pow(SunDotR, fresnelPower);
-    		float3 sunReflection = pow( SunDotR, SunShininess) * sunColor.rgb;
+    		float3 sunReflection = pow( SunDotR, SunShininess) * sunColor.rgb * 4;
 
     		// lerp the reflections together
    			reflectedPixels = lerp( skyReflection, reflectedPixels, saturate(unitreflectionAmount * reflectedPixels.w));
@@ -251,8 +254,8 @@ Shader "MapEditor/FaWater" {
 			//refractedPixels = 
 			
 			// add in the sky reflection
-			sunReflection = sunReflection * (fresnel);
-		    refractedPixels.xyz += sunReflection * 2;
+			sunReflection = sunReflection * fresnel;
+		    refractedPixels.xyz += sunReflection;
 
 			// Lerp in a wave crest
 			waveCrestColor = float3(1,1,1);

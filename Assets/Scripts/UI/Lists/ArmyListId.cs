@@ -15,53 +15,35 @@ public class ArmyListId : MonoBehaviour {
 
 		Clean();
 
-		int i = 0;
-		for (int mc = 0; mc < MapLuaParser.Current.SaveLuaFile.Data.MasterChains.Length; mc++)
+		if (MapLuaParser.Current.ScenarioLuaFile.Data.Configurations.Length == 0 || MapLuaParser.Current.ScenarioLuaFile.Data.Configurations[0].Teams.Length == 0)
+			return;
+
+		var AllArmies = MapLuaParser.Current.ScenarioLuaFile.Data.Configurations[0].Teams[0].Armys;
+
+		for (int a = 0; a < AllArmies.Count; a++)
 		{
-			int Mcount = MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers.Count;
-			for (int m = 0; m < Mcount; m++)
+			MapLua.SaveLua.Marker ArmyMarker = MapLua.SaveLua.GetMarker(AllArmies[a].Name);
+
+			if (ArmyMarker != null && ArmyMarker.MarkerObj != null && ArmyMarker.MarkerType == MapLua.SaveLua.Marker.MarkerTypes.BlankMarker)
 			{
-				if (MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers[m].MarkerObj != null &&
-					MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers[m].MarkerType == MapLua.SaveLua.Marker.MarkerTypes.BlankMarker &&
-					ArmyInfo.ArmyExist(MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers[m].Name))
-				{
-					GameObject NewBut = Instantiate(ButtonPrefab) as GameObject;
-					NewBut.transform.SetParent(Pivot);
-					ArmyButtons.Add(NewBut.GetComponent<ArmyIdButton>());
-					ArmyButtons[i].Controler = this;
-					ArmyButtons[i].Id = i;
+				GameObject NewBut = Instantiate(ButtonPrefab) as GameObject;
+				NewBut.transform.SetParent(Pivot);
+				ArmyButtons.Add(NewBut.GetComponent<ArmyIdButton>());
+				ArmyButtons[a].Controler = this;
+				ArmyButtons[a].Id = a;
+				ArmyButtons[a].ArmyId = a;
+				ArmyButtons[a].ArmyTeam = 0;
 
-					ArmyInfo.GetArmyId(MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers[m].Name, out ArmyButtons[i].ArmyId, out ArmyButtons[i].ArmyTeam);
+				//ArmyInfo.GetArmyId(AllArmies[a].Name, out ArmyButtons[i].ArmyId, out ArmyButtons[i].ArmyTeam);
 
 
-					ArmyButtons[i].Name.text = (i + 1).ToString();
+				ArmyButtons[a].Name.text = (a + 1).ToString();
 
-					NewBut.GetComponent<RectTransform>().localPosition = Vector3.up * -27 * i;
-					if (i == defaultId) ArmyButtons[i].Select.color = new Color(0.15f, 0.15f, 0.5f, 1);
-
-					i++;
-				}
+				NewBut.GetComponent<RectTransform>().localPosition = Vector3.up * -27 * a;
+				if (a == defaultId) ArmyButtons[a].Select.color = new Color(0.15f, 0.15f, 0.5f, 1);
 			}
 		}
 
-
-		//TODO
-		/*
-		for(int i = 0; i < Armys.Scenario.ARMY_.Count; i++){
-			GameObject NewBut = Instantiate(ButtonPrefab) as GameObject;
-			NewBut.transform.SetParent(Pivot);
-			ArmyButtons.Add(NewBut.GetComponent<ArmyIdButton>());
-			ArmyButtons[i].Controler = this;
-			ArmyButtons[i].Id = i;
-			ArmyButtons[i].Name.text = (i + 1).ToString();
-
-			NewBut.GetComponent<RectTransform>().localPosition = Vector3.up * -27 * i;
-			if(i == defaultId) ArmyButtons[i].Select.color = new Color(0.15f, 0.15f, 0.5f, 1);
-		}
-		
-
-		GetComponent<RectTransform>().sizeDelta = new Vector2(52, 6 + 27 * Armys.Scenario.ARMY_.Count);
-		*/
 	}
 
 	public void Selected(int id){
