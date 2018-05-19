@@ -79,8 +79,9 @@ Shader "Ozone/Deferred Decal"
 
 				//color.a = saturate(color.a);
 				//color.a = 1;
-				color.a *= blend * tex2D(_Mask, texUV).r;
-								float RawAlpha = color.a;
+				fixed4 Mask = tex2D(_Mask, texUV);
+				color.a *= blend;
+				float RawAlpha = color.a;
 
 				//color.rgb = blend * 1000;
 

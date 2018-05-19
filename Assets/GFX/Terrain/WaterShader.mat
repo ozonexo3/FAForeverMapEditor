@@ -12,7 +12,7 @@ Material:
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 2005
+  m_CustomRenderQueue: -1
   stringTagMap: {}
   disabledShaderPasses: []
   m_SavedProperties:
@@ -47,7 +47,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - SkySampler:
-        m_Texture: {fileID: 8900000, guid: d0dc59633ae9a5f429041343d65a0c21, type: 3}
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BumpMap:
@@ -104,7 +104,7 @@ Material:
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
     - _Glossiness: 0.5
-    - _GridScale: 25.6
+    - _GridScale: 102.4
     - _Metallic: 0
     - _Mode: 0
     - _OcclusionStrength: 1
@@ -118,5 +118,5 @@ Material:
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - sunColor: {r: 0.4063715, g: 0.23705, b: 0.1693215, a: 1}
-    - waterColor: {r: 0.64, g: 0.34, b: 0.175, a: 1}
+    - sunColor: {r: 0.395, g: 0.42, b: 0.39499998, a: 1}
+    - waterColor: {r: 0.03, g: 0.044999998, b: 0, a: 1}

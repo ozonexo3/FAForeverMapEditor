@@ -104,7 +104,7 @@ public class GenerateControlTex : MonoBehaviour
 
 				WaterDepth = HeightmapPixels[LerpX, LerpY] + HeightmapPixels[LerpX + 1, LerpY] + HeightmapPixels[LerpX, LerpY + 1] + HeightmapPixels[LerpX + 1, LerpY + 1];
 				WaterDepth /= 4f;
-				WaterDepth *= ScmapEditor.TerrainHeight; //16
+				WaterDepth *= ScmapEditor.TerrainHeight * 2f; //16
 				//WaterDepth /= 0.1f;
 
 
@@ -239,9 +239,7 @@ public class GenerateControlTex : MonoBehaviour
 	}
 	static bool BufforSlopeTex = false;
 
-	public float FlatHeight = 0.000045f;
-	public float NonFlatHeight = 0.0022f;
-	public float UnpassableHeight = 0.005f;
+
 
 	static float[,] SlopeHeightmapPixels;
 
@@ -262,13 +260,19 @@ public class GenerateControlTex : MonoBehaviour
 		}
 	}
 
+	const float FlatHeight = 0.000045f;
+	const float NonFlatHeight = 0.0022f;
+	const float AlmostUnpassableHeight = 0.005f;
+	const float UnpassableHeight = 0.0105f;
+
 	IEnumerator GeneratingSlopeTask()
 	{
 		const float Saturation = 0.8f;
 		Color Flat = new Color(0.1f * Saturation, 0.78f * Saturation, 0.1f * Saturation, 1);
 		Color LowAngle = new Color(0.3f * Saturation, 0.89f * Saturation, 0.1f * Saturation, 1);
 		Color HighAngle = new Color(0.6f * Saturation, 0.9f * Saturation, 0.1f * Saturation, 1);
-		Color Unpassable = new Color(0.7f * Saturation, 0.1f * Saturation, 0.1f * Saturation, 1);
+		Color Unpassable = new Color(0.8f * Saturation, 0.05f * Saturation, 0.05f * Saturation, 1);
+		Color AlmostUnpassable = new Color(0.7f * Saturation, 0.4f * Saturation, 0.05f * Saturation, 1);
 
 		Color[] Pixels = new Color[ScmapEditor.Current.map.Width * ScmapEditor.Current.map.Height];
 		int x = 0;
@@ -290,14 +294,16 @@ public class GenerateControlTex : MonoBehaviour
 				float Min = Mathf.Min(Slope0, Slope1, Slope2, Slope3);
 				float Max = Mathf.Max(Slope0, Slope1, Slope2, Slope3);
 
-				float Slope = Mathf.Abs(Max - Min);
+				float Slope = Mathf.Abs(Max - Min) * 2;
 
 				if (Slope < FlatHeight)
 					Pixels[i] = Flat;
 				else if (Slope < NonFlatHeight)
 					Pixels[i] = LowAngle;
-				else if (Slope < UnpassableHeight)
+				else if (Slope < AlmostUnpassableHeight)
 					Pixels[i] = HighAngle;
+				else if (Slope < UnpassableHeight)
+					Pixels[i] = AlmostUnpassable;
 				else
 					Pixels[i] = Unpassable;
 			}

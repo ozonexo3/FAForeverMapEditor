@@ -120,6 +120,11 @@ namespace MapLua
 						UnitGroups = new UnitsGroup[0];
 						Units = new Unit[0];
 					}
+
+					for(int u = 0; u < Units.Length; u++)
+					{
+						GetGamedataFile.LoadUnit(Units[u].type).CreateUnitObject(ScmapEditor.ScmapPosToWorld(Units[u].Position), Quaternion.Euler(Units[u].Orientation));
+					}
 				}
 
 				public void SaveUnitsGroup(LuaParser.Creator LuaFile)

@@ -88,8 +88,8 @@ public partial class ScmapEditor : MonoBehaviour
 		Bs.bloom.intensity = map.Bloom * 10;
 		PostProcessing.bloom.settings = Bs;
 
-		BloomOpt.intensity = map.Bloom;
-		BloomOptPreview.intensity = map.Bloom * 2;
+		BloomOpt.intensity = map.Bloom * 4;
+		BloomOptPreview.intensity = map.Bloom * 4;
 
 		RenderSettings.fogColor = new Color(map.FogColor.x, map.FogColor.y, map.FogColor.z, 1);
 		RenderSettings.fogStartDistance = map.FogStart * 2;
@@ -186,7 +186,7 @@ public partial class ScmapEditor : MonoBehaviour
 
 		Data.size = new Vector3(
 			HalfxRes,
-			TerrainHeight,
+			TerrainHeight * 2,
 			HalfzRes
 			);
 
@@ -242,7 +242,7 @@ public partial class ScmapEditor : MonoBehaviour
 				localY = (int)(((heightsLength - 1) - y) * HeightWidthMultiply);
 
 				//heights[y, x] = (float)((((double)map.GetHeight(x, localY)) / (256 * 256)) * (double)(TerrainHeight));
-				heights[y, x] = (float)((((double)map.GetHeight(x, localY)) / (128 * 128)));
+				heights[y, x] = (float)((((double)map.GetHeight(x, localY)) / (128.0 * 256.0)));
 
 				if (HeightWidthMultiply == 0.5f && y > 0 && y % 2f == 0)
 				{
@@ -383,7 +383,7 @@ public partial class ScmapEditor : MonoBehaviour
 			WaterMaterial.SetTexture("SkySampler", DefaultWaterSky);
 		}
 
-		const int WaterAnisoLevel = 4;
+		const int WaterAnisoLevel = 1;
 
 		Texture2D WaterNormal = GetGamedataFile.LoadTexture2DFromGamedata(GetGamedataFile.TexturesScd, map.Water.WaveTextures[0].TexPath);
 		WaterNormal.anisoLevel = WaterAnisoLevel;
@@ -588,6 +588,7 @@ public partial class ScmapEditor : MonoBehaviour
 	#region Saving
 	const float HeightResize = 128 * 128; //512 * 40;
 	const double HeightConversion = 256 * (256 + 64);
+	const double RoundingError = 0.5;
 
 	public void SaveScmapFile()
 	{
@@ -612,8 +613,8 @@ public partial class ScmapEditor : MonoBehaviour
 
 					//heights[y, x] = (float)((((double)Height) / (256 * 64)));
 
-					double HeightValue = (double)Height * (128.0 * 128.0 + 0.5);
-					map.SetHeight(y, map.Height - x, (short)(HeightValue));
+					double HeightValue = ((double)Height) * (128.0 * 256.0);
+					map.SetHeight(y, map.Height - x, (short)(HeightValue + RoundingError));
 
 					//map.SetHeight(y, map.Height - x, (short)(Height * HeightConversion));
 				}

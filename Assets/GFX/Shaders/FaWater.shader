@@ -27,7 +27,7 @@ Shader "MapEditor/FaWater" {
 		//_WaterScaleZ ("Water Scale Z", float) = 1024
 	}
     SubShader {
-    	//Tags { "Queue"="Transparent" "RenderType"="Transparent" }
+    	Tags { "Queue"="Transparent+2" "RenderType"="Transparent" }
 
 	    GrabPass 
 	     {
@@ -206,11 +206,12 @@ Shader "MapEditor/FaWater" {
 			float2 screenPos = UNITY_PROJ_COORD(IN.mScreenPos.xy / IN.mScreenPos.w);
 
 			float4 refractionPos = IN.mScreenPos;
-			refractionPos.xy -= refractionScale * N.xz * OneOverW;
+			refractionPos.xy -= refractionScale * N.xz * OneOverW * 0.1;
 
-
-	    	// calculate the refract pixel, corrected for fetching a non-refractable pixel
-		    float4 refractedPixels = tex2Dproj( _WaterGrabTexture, refractionPos); // UNITY_PROJ_COORD(IN.grabUV)
+			float4 GrabUvPos = IN.grabUV;
+			GrabUvPos.xy -= refractionScale * N.xz * OneOverW * 0.1;
+			// calculate the refract pixel, corrected for fetching a non-refractable pixel
+			float4 refractedPixels = tex2Dproj(_WaterGrabTexture, UNITY_PROJ_COORD(GrabUvPos)); // UNITY_PROJ_COORD(IN.grabUV)
 		    // because the range of the alpha value that we use for the water is very small
 		    // we multiply by a large number and then saturate
 		    // this will also help in the case where we filter to an intermediate value

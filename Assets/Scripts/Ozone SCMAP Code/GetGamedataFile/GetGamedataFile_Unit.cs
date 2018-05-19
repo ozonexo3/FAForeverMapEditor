@@ -8,7 +8,7 @@ using EditMap;
 public partial struct GetGamedataFile
 {
 
-	public class UnitObject : MonoBehaviour
+	public class UnitObject
 	{
 		public UnitBluePrint BP;
 
@@ -116,6 +116,7 @@ public partial struct GetGamedataFile
 		string[] PathSplit = LocalPath.Split(("/").ToCharArray());
 		ToReturn.BP.Name = PathSplit[PathSplit.Length - 1].Replace(".bp", "");
 		ToReturn.BP.CodeName = ToReturn.BP.Name.Replace("_unit", "");
+		//Debug.Log("Load Unit : " + ToReturn.BP.CodeName);
 
 		//Fix LUA
 		string[] SplitedBlueprint = BluePrintString.Split("\n".ToCharArray());
@@ -248,6 +249,9 @@ public partial struct GetGamedataFile
 
 		for (int i = 0; i < ToReturn.BP.LODs.Length; i++)
 		{
+			if (i > 0)
+				continue;
+
 			ToReturn.BP.LODs[i].Mesh = LoadModel(scd, ToReturn.BP.LODs[i].Scm);
 
 			//ToReturn.BP.LODs[i].Mat = new Material(Shader.Find("Standard (Specular setup)"));
@@ -308,11 +312,11 @@ public partial struct GetGamedataFile
 
 
 
-			Debug.Log("Unit blueprint loaded: " + ToReturn.BP.CodeName + "\n" + ToReturn.BP.HelpText);
+		//	Debug.Log("Unit blueprint loaded: " + ToReturn.BP.CodeName + "\n" + ToReturn.BP.HelpText);
 		//Debug.Log(ToReturn.BP.HelpText);
-		Debug.Log("StrategicIconName: " + ToReturn.BP.StrategicIconName);
-		Debug.Log("BuildTime: " + ToReturn.BP.BuildTime);
-		Debug.Log("BuildCostEnergy: " + ToReturn.BP.BuildCostEnergy + "\nBuildCostMass: " + ToReturn.BP.BuildCostMass);
+		//Debug.Log("StrategicIconName: " + ToReturn.BP.StrategicIconName);
+		//Debug.Log("BuildTime: " + ToReturn.BP.BuildTime);
+		//Debug.Log("BuildCostEnergy: " + ToReturn.BP.BuildCostEnergy + "\nBuildCostMass: " + ToReturn.BP.BuildCostMass);
 
 		return ToReturn;
 	}

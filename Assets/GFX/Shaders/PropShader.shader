@@ -12,12 +12,12 @@ Shader "Custom/PropShader" {
 		//_Metallic ("Metallic", Range(0,1)) = 0.0
 	}
 	SubShader {
-		Tags { "RenderType"="TransparentCutout" "Queue" = "AlphaTest" }
+		Tags { "RenderType"="TransparentCutout" "Queue" = "Transparent+1" }
 		LOD 200
 		
 		CGPROGRAM
 		// Physically based Standard lighting model, and enable shadows on all light types
-		#pragma surface surf BlinnPhong exclude_path:deferred noforwardadd addshadow novertexlights noshadowmask halfasview interpolateview
+		#pragma surface surf BlinnPhong noforwardadd addshadow novertexlights noshadowmask halfasview interpolateview
 
 		// Use shader model 3.0 target, to get nicer looking lighting
 		#pragma target 3.0
@@ -57,19 +57,21 @@ Shader "Custom/PropShader" {
 
 		void surf (Input IN, inout SurfaceOutput o) {
 			// Albedo comes from a texture tinted by color
-			fixed4 c = tex2D (_MainTex, IN.uv_MainTex);
+			fixed4 c = tex2D (_MainTex, IN.uv_MainTex) * 0.65;
 			o.Albedo = c.rgb;
-			o.Normal = UnpackNormalDXT5nmScaled( tex2D (_BumpMap, IN.uv_MainTex), 1 );
+			fixed4 n = tex2D(_BumpMap, IN.uv_MainTex);
+			o.Normal = UnpackNormalDXT5nmScaled(n, 1 );
 
 			if(_GlowAlpha > 0){
 				o.Emission = c.rgb * c.a;
 			}
 			else{
-				clip(c.a - _Clip);
-				o.Alpha = c.a;
+				clip(c.a * 2 - _Clip);
+				o.Alpha = c.a * 2;
 			}
 		}
 		ENDCG
 	}
-	FallBack "Diffuse"
+
+	FallBack "Standard"
 }

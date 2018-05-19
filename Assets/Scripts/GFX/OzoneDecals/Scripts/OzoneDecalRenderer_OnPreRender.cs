@@ -29,7 +29,7 @@ namespace OzoneDecals
 				return;
 #endif
 
-			if (_Decals.Count == 0)
+			if (_Decals.Count == 0 && _DecalsAlbedo.Count == 0)
 				return;
 
 			CreateBuffer(ref _bufferDeferred, cam, _Name, _camEvent);

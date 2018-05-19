@@ -18,7 +18,7 @@ public partial struct GetGamedataFile
 {
 	static bool DebugTextureLoad = false;
 
-	public static float MipmapBias = 0.0f;
+	public static float MipmapBias = -0.2f;
 	public static int AnisoLevel = 6;
 
 	static Dictionary<string, Texture2D> LoadedTextures = new Dictionary<string, Texture2D>();
@@ -27,10 +27,36 @@ public partial struct GetGamedataFile
 		LoadedTextures = new Dictionary<string, Texture2D>();
 	}
 
+	static Texture2D _EmptyNormal;
+	static Color NormalPixelColor = new Color(0.5f, 0, 0, 0.5f);
+	static Texture2D emptyNormalTexture
+	{
+		get
+		{
+			if (_EmptyNormal == null) {
+				_EmptyNormal = new Texture2D(4, 4, TextureFormat.ARGB32, false);
+				Color[] Colors = _EmptyNormal.GetPixels();
+				for (int i = 0; i < Colors.Length; i++)
+				Colors[i] = NormalPixelColor;
+				_EmptyNormal.SetPixels(Colors);
+				_EmptyNormal.Apply(_EmptyNormal.mipmapCount > 0);
+			}
+
+			return _EmptyNormal;
+		}
+	}
+
+
 	public static Texture2D LoadTexture2DFromGamedata(string scd, string LocalPath, bool NormalMap = false, bool StoreInMemory = true)
 	{
 		if (string.IsNullOrEmpty(LocalPath))
-			return Texture2D.whiteTexture;
+		{
+			if (NormalMap)
+				return emptyNormalTexture;
+			else
+				return Texture2D.whiteTexture;
+
+		}
 
 		string TextureKey = scd + "_" + LocalPath;
 
@@ -45,7 +71,10 @@ public partial struct GetGamedataFile
 		if (FinalTextureData2 == null || FinalTextureData2.Length == 0)
 		{
 			//Debug.LogWarning("File bytes are empty!");
-			return Texture2D.whiteTexture;
+			if (NormalMap)
+				return emptyNormalTexture;
+			else
+				return Texture2D.whiteTexture;
 		}
 
 		TextureFormat format = GetFormatOfDdsBytes(FinalTextureData2);
@@ -314,7 +343,7 @@ public partial struct GetGamedataFile
 					if (LoadDDsHeader.pixelformatRbitMask > LoadDDsHeader.pixelformatGbitMask && LoadDDsHeader.pixelformatGbitMask > LoadDDsHeader.pixelformatBbitMask) // BGR
 					{
 						FlipBlueRed = true;
-						Debug.Log("Flip blue and red channels");
+						//Debug.Log("Flip blue and red channels");
 						return TextureFormat.RGB24;
 					}
 

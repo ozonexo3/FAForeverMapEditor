@@ -2,7 +2,7 @@
 
 Shader "Custom/UnitShader" {
 	Properties {
-		//_Color ("Color", Color) = (1,1,1,1)
+		_Color ("Army", Color) = (1,1,1,1)
 		[MaterialEnum(Off,0,On,1)] 
 		_GlowAlpha ("Glow (Alpha)", Int) = 0
 		_MainTex ("Albedo (RGB)", 2D) = "white" {}
@@ -12,12 +12,12 @@ Shader "Custom/UnitShader" {
 		//_Metallic ("Metallic", Range(0,1)) = 0.0
 	}
 	SubShader {
-		Tags { "RenderType"="TransparentCutout" "Queue" = "AlphaTest" }
+		Tags { "RenderType"="TransparentCutout" "Queue" = "Transparent+1" }
 		LOD 200
 		
 		CGPROGRAM
 		// Physically based Standard lighting model, and enable shadows on all light types
-		#pragma surface surf BlinnPhong exclude_path:deferred noforwardadd addshadow novertexlights noshadowmask halfasview interpolateview
+		#pragma surface surf BlinnPhong noforwardadd addshadow novertexlights noshadowmask halfasview interpolateview
 
 		// Use shader model 3.0 target, to get nicer looking lighting
 		#pragma target 3.0
@@ -33,7 +33,7 @@ Shader "Custom/UnitShader" {
 
 		//half _Glossiness;
 		//half _Metallic;
-		//fixed4 _Color;
+		fixed4 _Color;
 
 		// Add instancing support for this shader. You need to check 'Enable Instancing' on materials that use the shader.
 		// See https://docs.unity3d.com/Manual/GPUInstancing.html for more information about instancing.
@@ -71,9 +71,10 @@ Shader "Custom/UnitShader" {
 			//A - Team
 			
 
-			o.Albedo += s.a * half3(1, 0.0, 0.0);
-			o.Specular = 100;
+			o.Albedo += s.a * _Color.rgb;
+			o.Specular = 1;
 			o.Gloss = 0.1;
+			o.Emission = s.b * 2 * c.rgb;
 
 			if(_GlowAlpha > 0){
 				o.Emission = c.rgb * c.a;

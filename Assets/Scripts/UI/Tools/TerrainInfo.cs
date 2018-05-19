@@ -783,7 +783,7 @@ namespace EditMap
 			}
 
 
-			float TargetHeight = Mathf.Clamp(((Invert?(128):(BrushTarget.value)) / ScmapEditor.Current.Data.size.y) / 10f, Min, Max);
+			float TargetHeight = Mathf.Clamp(((Invert?(256):(BrushTarget.value)) / ScmapEditor.Current.Data.size.y) / 10f, Min, Max);
 
 			float BrushStrenghtValue = BrushStrength.value;
 			//float PaintStrength = BrushStrenghtValue * 0.00005f * (Invert ? (-1) : 1);

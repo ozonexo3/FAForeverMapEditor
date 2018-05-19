@@ -59,6 +59,11 @@ namespace EditMap
 
 			Loaded = DecalSettings;
 
+			if (Loaded == null)
+				ClearBtn.SetActive(true);
+			else
+				ClearBtn.SetActive(!string.IsNullOrEmpty(Loaded.Tex2Path));
+
 			CreateBtn.interactable = Loaded != null;
 			SelectAllBtn.interactable = Loaded != null;
 
@@ -103,7 +108,6 @@ namespace EditMap
 				//NearCutOff.text = DecalSettings.NearCutOffLOD.ToString();
 
 				CreateBtn.interactable = true;
-
 				switch (Loaded.Type)
 				{
 					case TerrainDecalType.TYPE_ALBEDO:
@@ -334,7 +338,7 @@ namespace EditMap
 			if (ResourceBrowser.SelectedCategory == 2)
 			{
 				//TODO Undo.RegisterStratumChange(Selected);
-				Debug.Log(ResourceBrowser.Current.LoadedPaths[ResourceBrowser.DragedObject.InstanceId]);
+				//Debug.Log(ResourceBrowser.Current.LoadedPaths[ResourceBrowser.DragedObject.InstanceId]);
 
 				if (Loaded.Tex1Path == ResourceBrowser.Current.LoadedPaths[ResourceBrowser.DragedObject.InstanceId])
 					return;
@@ -358,7 +362,7 @@ namespace EditMap
 			if (ResourceBrowser.SelectedCategory == 2)
 			{
 				//TODO Undo.RegisterStratumChange(Selected);
-				Debug.Log(ResourceBrowser.Current.LoadedPaths[ResourceBrowser.DragedObject.InstanceId]);
+				//Debug.Log(ResourceBrowser.Current.LoadedPaths[ResourceBrowser.DragedObject.InstanceId]);
 
 				if (Loaded.Tex2Path == ResourceBrowser.Current.LoadedPaths[ResourceBrowser.DragedObject.InstanceId])
 					return;
@@ -373,6 +377,18 @@ namespace EditMap
 
 				//Map.map.Layers [Selected].PathTexture = Map.Textures [Selected].AlbedoPath;
 			}
+		}
+
+		public GameObject ClearBtn;
+		public void Clear2()
+		{
+			if (string.IsNullOrEmpty(Loaded.Tex2Path))
+				return;
+
+			Loaded.Tex2Path = "";
+			Loaded.UpdateMaterial();
+			Load(Loaded);
+			DecalsInfo.Current.DecalsList.OnTexturesChanged();
 		}
 
 		public void SetTex1Path()

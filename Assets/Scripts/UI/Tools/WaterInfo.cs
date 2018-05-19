@@ -81,8 +81,8 @@ namespace EditMap
 
 			if (water < 1)
 				water = 1;
-			else if (water > 128)
-				water = 128;
+			else if (water > 256)
+				water = 256;
 
 			if (depth > water)
 				depth = water;

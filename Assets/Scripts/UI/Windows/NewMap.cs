@@ -50,15 +50,14 @@ namespace EditMap
 		}
 
 		public void WaterChange()
-		{
-			float water = WaterElv.value;
+		{			float water = WaterElv.value;
 			float depth = DepthElevation.value;
 			float abyss = AbyssElevation.value;
 
 			if (water < 0)
 				water = 0;
-			else if (water > 128)
-				water = 128;
+			else if (water > 256)
+				water = 256;
 
 			if (depth > water)
 				depth = water;
@@ -69,6 +68,7 @@ namespace EditMap
 				abyss = depth;
 			else if (abyss < 0)
 				abyss = 0;
+
 
 			WaterElv.SetValue(water);
 			DepthElevation.SetValue(depth);
