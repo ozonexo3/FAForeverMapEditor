@@ -123,7 +123,7 @@ namespace MapLua
 
 					for(int u = 0; u < Units.Length; u++)
 					{
-						//GetGamedataFile.LoadUnit(Units[u].type).CreateUnitObject(ScmapEditor.ScmapPosToWorld(Units[u].Position), Quaternion.Euler(Units[u].Orientation));
+						GetGamedataFile.LoadUnit(Units[u].type).CreateUnitObject(ScmapEditor.ScmapPosToWorld(Units[u].Position), Quaternion.Euler(Units[u].Orientation));
 					}
 				}
 

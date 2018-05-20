@@ -6,7 +6,9 @@ using System.Collections.Generic;
 public class EditorVersion : MonoBehaviour
 {
 
-	public const string EditorBuildVersion = "v0.520-Alpha";
+	public const string EditorBuildVersion = "v0.521-Alpha";
+	//public const float VersionOffset = 0f; // Release
+	public const float VersionOffset = -0.001f; // Prerelease
 	public static string LatestTag = "";
 	public static string FoundUrl;
 
@@ -38,8 +40,9 @@ public class EditorVersion : MonoBehaviour
 				LatestTag = Tags[Tags.Length - 1];
 				FoundUrl = www.url;
 
+
 				float Latest = BuildFloat(LatestTag);
-				float Current = BuildFloat(EditorBuildVersion);
+				float Current = BuildFloat(EditorBuildVersion) + VersionOffset;
 				if (Current < Latest)
 				{
 					Debug.Log("New version avaiable: " + Latest);

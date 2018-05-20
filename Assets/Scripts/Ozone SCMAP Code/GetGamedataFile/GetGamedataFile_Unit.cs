@@ -8,24 +8,147 @@ using EditMap;
 public partial struct GetGamedataFile
 {
 
-	public class UnitObject
+	public class UnitObject : MonoBehaviour
 	{
 		public UnitBluePrint BP;
 
 
+		//Rendering
+		public float[] RenderDistances;
+		const int MaxMemoryAllocation = 4096;
+		int Count;
+		CullingGroup Culling;
+		HashSet<UnitInstance> Instances;
+		UnitInstance[] InstancesArray;
+		BoundingSphere[] SpheresArray;
+		HashSet<Matrix4x4> Lod;
+
+
+		void BakeInstances()
+		{
+			Count = Instances.Count;
+			Instances.CopyTo(InstancesArray);
+
+			for (int i = 0; i < Count; i++)
+			{
+				SpheresArray[i] = InstancesArray[i].Sphere;
+			}
+			Culling.SetBoundingSpheres(SpheresArray);
+			Culling.SetBoundingSphereCount(Count);
+			IsDirty = false;
+		}
+
+		public void ApplyLods()
+		{
+			if (Lod == null)
+				Lod = new HashSet<Matrix4x4>();
+			else
+				Lod.Clear();
+
+			if(_matrices == null || _matrices.Length != 1023)
+				_matrices = new Matrix4x4[1023];
+			if (InstancesArray == null || InstancesArray.Length != MaxMemoryAllocation)
+			{
+				InstancesArray = new UnitInstance[MaxMemoryAllocation];
+				SpheresArray = new BoundingSphere[MaxMemoryAllocation];
+			}
+			if (Instances == null)
+				Instances = new HashSet<UnitInstance>();
+			else
+				Instances.Clear();
+			Count = 0;
+
+			if (Culling == null)
+			{
+				Culling = new CullingGroup();
+			}
+
+			Culling.SetBoundingDistances(RenderDistances);
+			Culling.onStateChanged = UpdateLods;
+			Culling.targetCamera = CameraControler.Current.Cam;
+		}
+
+		void UpdateLods(CullingGroupEvent evt)
+		{
+			//Debug.Log(evt.index + ", " + evt.previousDistance + " > " + evt.currentDistance);
+			int i = evt.index;
+			if (evt.currentDistance == 0)
+				Lod.Add(InstancesArray[i].LocalToWorldMatrix);
+			else
+				Lod.Remove(InstancesArray[i].LocalToWorldMatrix);
+
+		}
+
+		static Matrix4x4[] _matrices;
+		const UnityEngine.Rendering.ShadowCastingMode ShadowCasting = UnityEngine.Rendering.ShadowCastingMode.On;
+		public void Draw()
+		{
+			HashSet<Matrix4x4>.Enumerator ListEnum = Lod.GetEnumerator();
+			int n = 0;
+
+			while (ListEnum.MoveNext())
+			{
+				_matrices[n] = ListEnum.Current;
+				n++;
+
+				if (n == 1023)
+				{
+					Graphics.DrawMeshInstanced(BP.LODs[0].Mesh, 0, BP.LODs[0].Mat, _matrices, n, null, ShadowCasting);
+					//Graphics.DrawMeshInstancedIndirect(SharedMesh, 0, SharedMaterial, , null, 0, null, ShadowCasting);
+					n = 0;
+				}
+			}
+
+			if (n > 0)
+			{
+				Graphics.DrawMeshInstanced(BP.LODs[0].Mesh, 0, BP.LODs[0].Mat, _matrices, n, null, ShadowCasting);
+			}
+		}
+
+		bool IsDirty = false;
+		private void LateUpdate()
+		{
+			if (IsDirty)
+				BakeInstances();
+
+			Culling.SetDistanceReferencePoint(CameraControler.Current.Cam.transform.position);
+
+			Draw();
+		}
+
+		void OnDisable()
+		{
+			Culling.Dispose();
+		}
+
 		public void CreateUnitObject(Vector3 position, Quaternion rotation)
 		{
-			GameObject Obj = new GameObject(BP.CodeName);
+			GameObject Obj = Instantiate(UnitsInfo.Current.UnitInstancePrefab, transform) as GameObject;
+			Obj.name = BP.CodeName;
 
-			Obj.transform.localPosition = ScmapEditor.SnapToTerrain(position);
-			Obj.transform.localRotation = rotation;
-			Obj.transform.localScale = BP.UniformScale * 0.1f;
+			UnitInstance UInst = Obj.GetComponent<UnitInstance>();
+			UInst.Owner = this;
+			UInst.SetMatrix(ScmapEditor.SnapToTerrain(position), rotation);
+			AddInstance(UInst);
 
-			MeshRenderer mr = Obj.AddComponent<MeshRenderer>();
-			MeshFilter mf = Obj.AddComponent<MeshFilter>();
+		}
 
-			mr.material = BP.LODs[0].Mat;
-			mf.mesh = BP.LODs[0].Mesh;
+		public void AddInstance(UnitInstance UInst)
+		{
+			Instances.Add(UInst);
+			IsDirty = true;
+		}
+
+		public void RemoveInstance(UnitInstance UInst)
+		{
+			if (!Instances.Contains(UInst))
+				return;
+
+			Instances.Remove(UInst);
+
+			if (Lod.Contains(UInst.LocalToWorldMatrix))
+				Lod.Remove(UInst.LocalToWorldMatrix);
+			IsDirty = true;
 		}
 	}
 
@@ -46,6 +169,7 @@ public partial struct GetGamedataFile
 		public Vector3 SelectionSize;
 		public Vector3 Size;
 		public Vector3 UniformScale;
+		public Vector3 RenderScale;
 
 		// Strategic
 		public string StrategicIconName;
@@ -90,23 +214,30 @@ public partial struct GetGamedataFile
 			return LoadedUnitObjects[LocalPath];
 
 
-		UnitObject ToReturn = new UnitObject();
+		//UnitObject ToReturn = new UnitObject();
+
+
+
 
 		byte[] Bytes = LoadBytes(scd, LocalPath);
 		if (Bytes.Length == 0)
 		{
 			Debug.LogError("Unit does not exits: " + LocalPath);
-			return ToReturn;
+			return null;
 		}
 		string BluePrintString = System.Text.Encoding.UTF8.GetString(Bytes);
 
 		if (BluePrintString.Length == 0)
 		{
 			Debug.LogError("Loaded blueprint is empty");
-			return ToReturn;
+			return null;
 		}
 
 		BluePrintString = BluePrintString.Replace("UnitBlueprint {", "UnitBlueprint = {");
+
+		string[] PathSplit = LocalPath.Split(("/").ToCharArray());
+		GameObject NewUnit = new GameObject(PathSplit[PathSplit.Length - 1].Replace(".bp", ""));
+		UnitObject ToReturn = NewUnit.AddComponent<UnitObject>();
 
 		// *** Parse Blueprint
 		ToReturn.BP = new UnitBluePrint();
@@ -114,7 +245,6 @@ public partial struct GetGamedataFile
 		Lua BP = new Lua();
 		BP.LoadCLRPackage();
 
-		string[] PathSplit = LocalPath.Split(("/").ToCharArray());
 		ToReturn.BP.Name = PathSplit[PathSplit.Length - 1].Replace(".bp", "");
 		ToReturn.BP.CodeName = ToReturn.BP.Name.Replace("_unit", "");
 		//Debug.Log("Load Unit : " + ToReturn.BP.CodeName);
@@ -185,12 +315,14 @@ public partial struct GetGamedataFile
 
 
 
-
+		float BiggestLodDistance = 100;
 		//Display
 		if (BP.GetTable("UnitBlueprint.Display") != null)
 		{
 			if (BP.GetTable("UnitBlueprint.Display").RawGet("UniformScale") != null)
 				ToReturn.BP.UniformScale = Vector3.one * LuaParser.Read.StringToFloat(BP.GetTable("UnitBlueprint.Display").RawGet("UniformScale").ToString());
+
+			ToReturn.BP.RenderScale = ToReturn.BP.UniformScale * 0.1f;
 
 			// Mesh
 			if (BP.GetTable("UnitBlueprint.Display.Mesh") != null)
@@ -225,7 +357,10 @@ public partial struct GetGamedataFile
 
 					CurrentValue = LodTableValues[i].RawGet("LODCutoff");
 					if (CurrentValue != null)
+					{
 						ToReturn.BP.LODs[i].LODCutoff = LuaParser.Read.StringToFloat(CurrentValue.ToString());
+						BiggestLodDistance = ToReturn.BP.LODs[i].LODCutoff;
+					}
 
 
 					ToReturn.BP.LODs[i].Scm = LocalPath.Replace("unit.bp", "lod" + i.ToString() + ".scm");
@@ -310,14 +445,15 @@ public partial struct GetGamedataFile
 		}
 
 
-
-
+		ToReturn.RenderDistances = new float[] { BiggestLodDistance * 0.1f };
+		ToReturn.ApplyLods();
 
 		//	Debug.Log("Unit blueprint loaded: " + ToReturn.BP.CodeName + "\n" + ToReturn.BP.HelpText);
 		//Debug.Log(ToReturn.BP.HelpText);
 		//Debug.Log("StrategicIconName: " + ToReturn.BP.StrategicIconName);
 		//Debug.Log("BuildTime: " + ToReturn.BP.BuildTime);
 		//Debug.Log("BuildCostEnergy: " + ToReturn.BP.BuildCostEnergy + "\nBuildCostMass: " + ToReturn.BP.BuildCostMass);
+		LoadedUnitObjects.Add(LocalPath, ToReturn);
 
 		return ToReturn;
 	}
