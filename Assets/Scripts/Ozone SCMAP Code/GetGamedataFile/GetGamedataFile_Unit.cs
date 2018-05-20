@@ -75,6 +75,7 @@ public partial struct GetGamedataFile
 
 	public static UnitObject LoadUnit(string UnitCode)
 	{
+		UnitCode.ToLower();
 		string scdPath = "units/" + UnitCode + "/" + UnitCode + "_unit.bp";
 
 		return LoadUnit(GetGamedataFile.UnitsScd, LocalBlueprintPath(scdPath));

@@ -209,7 +209,8 @@ Shader "MapEditor/FaWater" {
 			refractionPos.xy -= refractionScale * N.xz * OneOverW * 0.1;
 
 			float4 GrabUvPos = IN.grabUV;
-			GrabUvPos.xy -= refractionScale * N.xz * OneOverW * 0.1;
+			GrabUvPos.xy -= N.xz * OneOverW * 0.1 * refractionScale;
+			//GrabUvPos.xy = clamp(GrabUvPos.xy, 0, 1);
 			// calculate the refract pixel, corrected for fetching a non-refractable pixel
 			float4 refractedPixels = tex2Dproj(_WaterGrabTexture, UNITY_PROJ_COORD(GrabUvPos)); // UNITY_PROJ_COORD(IN.grabUV)
 		    // because the range of the alpha value that we use for the water is very small
@@ -226,13 +227,13 @@ Shader "MapEditor/FaWater" {
 	   		float  NDotL = saturate( dot(-viewVector, N) );
 			//float fresnel = tex2D( FresnelSampler, float2(waterDepth, NDotL) ).r;
 			//float fresnel = tex2D(FresnelSampler, float2(pow(waterDepth - fresnelBias, fresnelPower), NDotL)).r;
-			float fresnel = tex2D(FresnelSampler, float2(waterDepth, pow(NDotL + fresnelBias, fresnelPower))).r;
+			//float fresnel = tex2D(FresnelSampler, float2(waterDepth, pow(NDotL + fresnelBias, fresnelPower))).r;
 			//fresnel = pow(fresnel, fresnelPower) + fresnelBias;
-
+			float fresnel = saturate(pow(saturate((1 - NDotL)), fresnelPower) + fresnelBias);
 
 			// figure out the sun reflection
 			float SunDotR = saturate(dot(-R, SunDirection));
-    		float3 sunReflection = pow( SunDotR, SunShininess) * sunColor.rgb * 4;
+    		float3 sunReflection = pow( SunDotR, SunShininess) * sunColor.rgb * 2;
 
     		// lerp the reflections together
    			reflectedPixels = lerp( skyReflection, reflectedPixels, saturate(unitreflectionAmount * reflectedPixels.w));
@@ -290,6 +291,7 @@ Shader "MapEditor/FaWater" {
 			o.Albedo = 0;
 			//color.rgb = exp2(-color.rgb);
 			o.Emission = returnPixels.rgb;
+			//o.Emission = tex2Dproj(_WaterGrabTexture, UNITY_PROJ_COORD(GrabUvPos));
 			//o.Emission = 0;
 			o.Alpha = returnPixels.a;
 	    }

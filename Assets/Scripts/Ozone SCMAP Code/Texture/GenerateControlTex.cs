@@ -262,8 +262,8 @@ public class GenerateControlTex : MonoBehaviour
 
 	const float FlatHeight = 0.000045f;
 	const float NonFlatHeight = 0.0022f;
-	const float AlmostUnpassableHeight = 0.005f;
-	const float UnpassableHeight = 0.0105f;
+	const float AlmostUnpassableHeight = 0.0055f;
+	const float UnpassableHeight = 0.01f;
 
 	IEnumerator GeneratingSlopeTask()
 	{

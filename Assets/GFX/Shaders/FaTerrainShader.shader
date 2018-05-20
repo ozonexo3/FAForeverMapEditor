@@ -89,6 +89,7 @@ Properties {
 			#define UNITY_BRDF_PBS BRDF3_Unity_PBS
 
 			#pragma surface surf SimpleLambert vertex:vert  fullforwardshadows addshadow nometa
+#pragma multi_compile_fog
 			//#pragma debug
 			#pragma target 3.5
 			#pragma exclude_renderers gles
@@ -102,9 +103,13 @@ Properties {
 				float3 worldPos;
 				float SlopeLerp;
 				float4 grabUV;
+				half fog;
 			};
 
 			half _GeneratingNormal;
+			uniform half4 unity_FogStart;
+			uniform half4 unity_FogEnd;
+
 
 			void vert (inout appdata_full v, out Input o){
 				UNITY_INITIALIZE_OUTPUT(Input,o);
@@ -119,6 +124,11 @@ Properties {
 				 float4 hpos = UnityObjectToClipPos (v.vertex);
 		         o.grabUV = ComputeGrabScreenPos(hpos);
 				//v.color = _Abyss;
+
+				 float pos = length(UnityObjectToViewPos(v.vertex).xyz);
+				 float diff = unity_FogEnd.x - unity_FogStart.x;
+				 float invDiff = 1.0f / diff;
+				 o.fog = saturate((unity_FogEnd.x - pos) * invDiff);
 			}
 
 			sampler2D _MyGrabTexture3;
@@ -389,8 +399,14 @@ Properties {
 					Emit += half3(0, BrushColor.r * 0.1, BrushColor.r * 0.2);
 				}
 
+				//Fog
 
-				
+				col.rgb = lerp(0, col.rgb, IN.fog);
+				Emit = lerp(unity_FogColor, Emit, IN.fog);
+				//emission.rgb = lerp(emission.rgb, exp2(-unity_FogColor), saturate(IN.fog));
+
+
+
 				o.Albedo = col;
 				o.Emission = Emit;
 
@@ -419,6 +435,7 @@ Properties {
 				//o.Emission = tex2D (_SplatNormal3, UV * 10 );
 				//o.Emission = nrm;
 
+
 				if (_TTerrainXP > 0) {
 					o.Gloss = (1 - col.a);
 					o.Specular = col.a;
@@ -427,6 +444,9 @@ Properties {
 					o.Gloss = (1 - col.a) + 0.01;
 					o.Specular = col.a + 0.01;
 				}
+
+
+
 				o.Alpha = col.a;
 			}
 			ENDCG  

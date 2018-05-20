@@ -353,7 +353,6 @@ namespace EditMap
 			ScmapEditor.GetAllHeights(ref beginHeights);
 			MapLuaParser.Current.History.RegisterTerrainHeightmapChange(beginHeights);
 
-			//float Value = float.Parse(TerrainAdd.text) / 128f;
 			float Value = float.Parse(TerrainAdd.text) * 0.1f;
 			Value /= ScmapEditor.TerrainHeight;
 
@@ -464,11 +463,6 @@ namespace EditMap
 			}
 			ExportAs.Apply();
 
-			//Debug.Log(ExportAs.GetPixel(128, 128).r + ", " + ExportAs.GetPixel(128, 128).g);
-			//Debug.Log(ExportAs.GetPixel(128, 128).r + ExportAs.GetPixel(128, 128).g * (1f / 255f));
-
-			//ExportAs = TextureScale.Bilinear(ExportAs, scale, scale);
-
 			bool differentSize = w != scale || h != scale;
 
 			h = scale;
@@ -500,9 +494,6 @@ namespace EditMap
 
 		public void ImportHeightmap()
 		{
-			//string Filename = EnvPaths.GetMapsPath() + MapLuaParser.Current.FolderName + "/heightmap.raw";
-			//string Filename = EnvPaths.GetMapsPath() + MapLuaParser.Current.FolderName + "/heightmap.raw";
-
 			var extensions = new[]
 			{
 				new ExtensionFilter("Heightmap", new string[]{"raw", "r16", "bmp" })
@@ -523,7 +514,7 @@ namespace EditMap
 
 
 			float[,] data = new float[h, w];
-			float[,] old = ScmapEditor.Current.Teren.terrainData.GetHeights(0, 0, w, h);
+			//float[,] old = ScmapEditor.Current.Teren.terrainData.GetHeights(0, 0, w, h);
 
 			if (paths[0].ToLower().EndsWith("bmp"))
 			{
@@ -536,22 +527,16 @@ namespace EditMap
 				if (ImportedImage.width != h || ImportedImage.height != w)
 				{
 					Debug.Log("Wrong size");
-					//ImportedImage.Resize(Map.map.TexturemapTex.width, Map.map.TexturemapTex.height);
 					TextureScale.Bilinear(ImportedImage, h, w);
 					ImportedImage.Apply(false);
 				}
 
-				//ImportedImage = TextureFlip.FlipTextureVertical(ImportedImage, false);
 				Color[] ImportedColors = ImportedImage.GetPixels();
-
-				Debug.Log(((float)ImportedColors[128 + 128 * w].r / old[128, 128]) * 100000f);
-				Debug.Log(((256 * 256) / (float)HeightConversion) * 100);
 
 				for (int y = 0; y < h; y++)
 				{
 					for (int x = 0; x < w; x++)
 					{
-						//data[y, x] = ((float)ImportedColors[x + y * w].r * 128f) / (float)(256 * (256 + 64));
 						data[y, x] = (float)ImportedColors[x + y * w].r / 0.567f; // 0.58
 					}
 				}
@@ -837,7 +822,7 @@ namespace EditMap
 								//else { 
 								//float FlattenStrenght = PixelPower * StrengthMultiplier * Mathf.Pow(SampleBrush, 2);
 								//heights[i, j] += FlattenStrenght;
-								ScmapEditor.ReturnValues[i, j] = MoveToValue(ScmapEditor.ReturnValues[i, j], CenterHeight, StrengthMultiplier * SampleBrush * PixelPower, 0, 128);
+								ScmapEditor.ReturnValues[i, j] = MoveToValue(ScmapEditor.ReturnValues[i, j], CenterHeight, StrengthMultiplier * SampleBrush * PixelPower, 0, ScmapEditor.MaxElevation);
 								//}
 
 								break;

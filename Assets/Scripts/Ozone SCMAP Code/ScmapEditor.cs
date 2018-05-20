@@ -92,8 +92,8 @@ public partial class ScmapEditor : MonoBehaviour
 		BloomOptPreview.intensity = map.Bloom * 4;
 
 		RenderSettings.fogColor = new Color(map.FogColor.x, map.FogColor.y, map.FogColor.z, 1);
-		RenderSettings.fogStartDistance = map.FogStart * 2;
-		RenderSettings.fogEndDistance = map.FogEnd * 2;
+		RenderSettings.fogStartDistance = map.FogStart * 2f;
+		RenderSettings.fogEndDistance = map.FogEnd * 2f;
 
 		Shader.SetGlobalFloat("_LightingMultiplier", map.LightingMultiplier);
 		Shader.SetGlobalColor("_SunColor", new Color(map.SunColor.x * 0.5f, map.SunColor.y * 0.5f, map.SunColor.z * 0.5f, 1));
@@ -103,7 +103,6 @@ public partial class ScmapEditor : MonoBehaviour
 		Shader.SetGlobalColor("_SpecularColor", new Color(map.SpecularColor.x * 0.5f, map.SpecularColor.y * 0.5f, map.SpecularColor.z * 0.5f, map.SpecularColor.w * 0.5f));
 	}
 
-	public static float TerrainHeight = 12.5f;
 
 	public IEnumerator LoadScmapFile()
 	{
@@ -241,8 +240,7 @@ public partial class ScmapEditor : MonoBehaviour
 			{
 				localY = (int)(((heightsLength - 1) - y) * HeightWidthMultiply);
 
-				//heights[y, x] = (float)((((double)map.GetHeight(x, localY)) / (256 * 256)) * (double)(TerrainHeight));
-				heights[y, x] = (float)((((double)map.GetHeight(x, localY)) / (128.0 * 256.0)));
+				heights[y, x] = (float)((((double)map.GetHeight(x, localY)) / HeightResize));
 
 				if (HeightWidthMultiply == 0.5f && y > 0 && y % 2f == 0)
 				{
@@ -383,7 +381,7 @@ public partial class ScmapEditor : MonoBehaviour
 			WaterMaterial.SetTexture("SkySampler", DefaultWaterSky);
 		}
 
-		const int WaterAnisoLevel = 1;
+		const int WaterAnisoLevel = 4;
 
 		Texture2D WaterNormal = GetGamedataFile.LoadTexture2DFromGamedata(GetGamedataFile.TexturesScd, map.Water.WaveTextures[0].TexPath);
 		WaterNormal.anisoLevel = WaterAnisoLevel;
@@ -586,13 +584,14 @@ public partial class ScmapEditor : MonoBehaviour
 	#endregion
 
 	#region Saving
-	const float HeightResize = 128 * 128; //512 * 40;
-	const double HeightConversion = 256 * (256 + 64);
+	public static float TerrainHeight = 12.5f;
+	const double HeightResize = 128.0 * 256.0; //512 * 40;
 	const double RoundingError = 0.5;
+	public const float MaxElevation = 256;
 
 	public void SaveScmapFile()
 	{
-		float LowestElevation = 128;
+		float LowestElevation = ScmapEditor.MaxElevation;
 		float HighestElevation = 0;
 
 		if (Teren)
@@ -611,12 +610,8 @@ public partial class ScmapEditor : MonoBehaviour
 					LowestElevation = Mathf.Min(LowestElevation, Height);
 					HighestElevation = Mathf.Max(HighestElevation, Height);
 
-					//heights[y, x] = (float)((((double)Height) / (256 * 64)));
-
-					double HeightValue = ((double)Height) * (128.0 * 256.0);
+					double HeightValue = ((double)Height) * HeightResize;
 					map.SetHeight(y, map.Height - x, (short)(HeightValue + RoundingError));
-
-					//map.SetHeight(y, map.Height - x, (short)(Height * HeightConversion));
 				}
 			}
 		}
@@ -721,7 +716,7 @@ public partial class ScmapEditor : MonoBehaviour
 	{
 		int xRes = (int)(256 + 1);
 		int zRes = (int)(256 + 1);
-		int yRes = (int)(128);
+		int yRes = (int)(ScmapEditor.MaxElevation);
 		heightsLength = xRes;
 		heights = new float[xRes, zRes];
 
