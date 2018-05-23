@@ -2,15 +2,31 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class UnitInstance : MonoBehaviour {
+public class UnitInstance : MonoBehaviour
+{
 
+	public BoxCollider Col;
 
-	public GetGamedataFile.UnitObject Owner;
+	public string orders;
+	public string platoon;
+
+	public GetGamedataFile.UnitObject UnitRenderer;
+	public MapLua.SaveLua.Army.UnitsGroup Group;
+
 
 	public Matrix4x4 LocalToWorldMatrix;
 
 	Vector3 Position;
 	Vector3 Scale;
+
+	public static HashSet<GameObject> AllUnitInstances = new HashSet<GameObject>();
+	public static GameObject[] GetAllUnitGo(out int[] Types)
+	{
+		GameObject[] ToReturn = new GameObject[AllUnitInstances.Count];
+		Types = new int[ToReturn.Length];
+		AllUnitInstances.CopyTo(ToReturn);
+		return ToReturn;
+	}
 
 	public void SetMatrix(Vector3 Position, Quaternion Rotation)
 	{
@@ -18,17 +34,24 @@ public class UnitInstance : MonoBehaviour {
 		this.Position = Position;
 		transform.localRotation = Rotation;
 
-		Scale = (Owner.BP.UniformScale.x * 0.1f) * Owner.BP.Size;
+		Scale = (UnitRenderer.BP.UniformScale.x * 0.1f) * UnitRenderer.BP.Size;
 
-		LocalToWorldMatrix = Matrix4x4.TRS(Position, transform.localRotation, Owner.BP.UniformScale * 0.1f);
+		LocalToWorldMatrix = Matrix4x4.TRS(Position, transform.localRotation, UnitRenderer.BP.UniformScale * 0.1f);
 	}
 
 	public void UpdateMatrix()
 	{
 		Position = transform.localPosition;
-		//Scale = Owner.BP.UniformScale.x * Owner.BP.Size;
+		LocalToWorldMatrix = Matrix4x4.TRS(Position, transform.localRotation, UnitRenderer.BP.UniformScale * 0.1f);
+	}
 
-		LocalToWorldMatrix = Matrix4x4.TRS(Position, transform.localRotation, Owner.BP.UniformScale * 0.1f);
+	public bool SphereModified = false;
+	public void UpdateMatrixTranslated()
+	{
+		UnitRenderer.RemoveInstance(this);
+		UpdateMatrix();
+		SphereModified = true;
+		UnitRenderer.AddInstance(this, true);
 	}
 
 	public BoundingSphere Sphere
@@ -41,17 +64,18 @@ public class UnitInstance : MonoBehaviour {
 
 	private void OnEnable()
 	{
-		if (Owner)
+		AllUnitInstances.Add(gameObject);
+		if (UnitRenderer)
 		{
 			UpdateMatrix();
-			Owner.AddInstance(this);
-
+			UnitRenderer.AddInstance(this);
 		}
 	}
 
 	private void OnDisable()
 	{
-		if (Owner)
-			Owner.RemoveInstance(this);
+		AllUnitInstances.Remove(gameObject);
+		if (UnitRenderer)
+			UnitRenderer.RemoveInstance(this);
 	}
 }

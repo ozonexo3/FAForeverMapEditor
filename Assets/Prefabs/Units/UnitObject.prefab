@@ -20,7 +20,8 @@ GameObject:
   m_Component:
   - component: {fileID: 4351378642158714}
   - component: {fileID: 114218379532291448}
-  m_Layer: 0
+  - component: {fileID: 65003118173281352}
+  m_Layer: 15
   m_Name: UnitObject
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -40,6 +41,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &65003118173281352
+BoxCollider:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1844318011607654}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &114218379532291448
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -51,7 +64,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 905d29a04ad6dee4f988a2b38e471fc7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Owner: {fileID: 0}
+  Col: {fileID: 65003118173281352}
+  orders: 
+  platoon: 
+  UnitRenderer: {fileID: 0}
   LocalToWorldMatrix:
     e00: 0
     e01: 0

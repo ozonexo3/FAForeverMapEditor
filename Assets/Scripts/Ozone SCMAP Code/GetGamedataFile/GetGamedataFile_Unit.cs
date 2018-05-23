@@ -23,18 +23,40 @@ public partial struct GetGamedataFile
 		BoundingSphere[] SpheresArray;
 		HashSet<Matrix4x4> Lod;
 
-
+		List<int> ForceUpdate = new List<int>();
 		void BakeInstances()
 		{
 			Count = Instances.Count;
 			Instances.CopyTo(InstancesArray);
 
+			ForceUpdate.Clear();
 			for (int i = 0; i < Count; i++)
 			{
+				if (InstancesArray[i].SphereModified)
+				{
+					ForceUpdate.Add(i);
+					InstancesArray[i].SphereModified = false;
+				}
 				SpheresArray[i] = InstancesArray[i].Sphere;
 			}
 			Culling.SetBoundingSpheres(SpheresArray);
 			Culling.SetBoundingSphereCount(Count);
+
+
+			for(int f = 0; f < ForceUpdate.Count; f++)
+			{
+				int i = ForceUpdate[f];
+				if (Culling.GetDistance(i) > 0)
+				{
+					if (Lod.Contains(InstancesArray[i].LocalToWorldMatrix))
+						Lod.Remove(InstancesArray[i].LocalToWorldMatrix);
+				}
+				else
+				{
+					if(!Lod.Contains(InstancesArray[i].LocalToWorldMatrix))
+						Lod.Add(InstancesArray[i].LocalToWorldMatrix);
+				}
+			}
 			IsDirty = false;
 		}
 
@@ -121,19 +143,31 @@ public partial struct GetGamedataFile
 			Culling.Dispose();
 		}
 
-		public void CreateUnitObject(Vector3 position, Quaternion rotation)
+		public void CreateUnitObject(MapLua.SaveLua.Army.Unit Source, MapLua.SaveLua.Army.UnitsGroup Group)
 		{
+			Vector3 position = ScmapEditor.ScmapPosToWorld(Source.Position);
+			Quaternion rotation = Quaternion.Euler(Source.Orientation);
+
+
 			GameObject Obj = Instantiate(UnitsInfo.Current.UnitInstancePrefab, transform) as GameObject;
-			Obj.name = BP.CodeName;
+			Obj.name = Source.Name;
 
 			UnitInstance UInst = Obj.GetComponent<UnitInstance>();
-			UInst.Owner = this;
+			//UInst.Owner = Owner;
+			UInst.Group = Group;
+			UInst.orders = Source.orders;
+			UInst.platoon = Source.platoon;
+			UInst.UnitRenderer = this;
 			UInst.SetMatrix(ScmapEditor.SnapToTerrain(position), rotation);
+
+			UInst.Col.size = BP.Size * 0.1f;
+			UInst.Col.center = Vector3.up * (BP.Size.y * 0.05f);
+
 			AddInstance(UInst);
 
 		}
 
-		public void AddInstance(UnitInstance UInst)
+		public void AddInstance(UnitInstance UInst, bool ForcedLod = false)
 		{
 			Instances.Add(UInst);
 			IsDirty = true;

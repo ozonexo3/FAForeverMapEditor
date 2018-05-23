@@ -55,8 +55,8 @@ namespace MapLua
 				public string Name;
 				public string orders;
 				public string platoon;
-				public UnitsGroup[] UnitGroups;
-				public Unit[] Units;
+				public HashSet<UnitsGroup> UnitGroups;
+				public HashSet<UnitInstance> UnitInstances;
 
 				public const string KEY_ORDERS = "orders";
 				public const string KEY_PLATOON = "platoon";
@@ -71,8 +71,8 @@ namespace MapLua
 					orders = "";
 					platoon = "";
 
-					UnitGroups = new UnitsGroup[0];
-					Units = new Unit[0];
+					UnitGroups = new HashSet<UnitsGroup>();
+					UnitInstances = new HashSet<UnitInstance>();
 				}
 
 				public UnitsGroup(string name, LuaTable Table)
@@ -81,14 +81,14 @@ namespace MapLua
 					orders = LuaParser.Read.StringFromTable(Table, KEY_ORDERS);
 					platoon = LuaParser.Read.StringFromTable(Table, KEY_PLATOON);
 
+					UnitGroups = new HashSet<UnitsGroup>();
+					UnitInstances = new HashSet<UnitInstance>();
+
 					LuaTable[] UnitsTables = LuaParser.Read.GetTableTables((LuaTable)Table.RawGet(KEY_UNITS));
 					string[] UnitsNames = LuaParser.Read.GetTableKeys((LuaTable)Table.RawGet(KEY_UNITS));
 
 					if (UnitsNames.Length > 0)
 					{
-						List<UnitsGroup> UnitGroupsList = new List<UnitsGroup>();
-						List<Unit> UnitsList = new List<Unit>();
-
 						for (int i = 0; i < UnitsNames.Length; i++)
 						{
 							if (LuaParser.Read.ValueExist(UnitsTables[i], KEY_TYPE))
@@ -101,29 +101,21 @@ namespace MapLua
 								//Debug.Log(UnitsTables[i].RawGet(KEY_POSITION));
 								NewUnit.Position = LuaParser.Read.Vector3FromTable(UnitsTables[i], KEY_POSITION);
 								NewUnit.Orientation = LuaParser.Read.Vector3FromTable(UnitsTables[i], KEY_ORIENTATION);
-								UnitsList.Add(NewUnit);
+
+								GetGamedataFile.LoadUnit(NewUnit.type).CreateUnitObject(NewUnit, this);
 							}
 							else
 							{
 								UnitsGroup NewUnitsGroup = new UnitsGroup(UnitsNames[i], UnitsTables[i]);
-								UnitGroupsList.Add(NewUnitsGroup);
+								UnitGroups.Add(NewUnitsGroup);
 							}
 						}
 
-						UnitGroups = UnitGroupsList.ToArray();
-						Units = UnitsList.ToArray();
-						UnitGroupsList = null;
-						UnitsList = null;
 					}
 					else
 					{
-						UnitGroups = new UnitsGroup[0];
-						Units = new Unit[0];
-					}
-
-					for(int u = 0; u < Units.Length; u++)
-					{
-						GetGamedataFile.LoadUnit(Units[u].type).CreateUnitObject(ScmapEditor.ScmapPosToWorld(Units[u].Position), Quaternion.Euler(Units[u].Orientation));
+						UnitGroups = new HashSet<UnitsGroup>();
+						UnitInstances = new HashSet<UnitInstance>();
 					}
 				}
 
@@ -136,13 +128,14 @@ namespace MapLua
 
 
 					LuaFile.OpenTab(KEY_UNITS + LuaParser.Write.OpenBracketValue);
-					for (int g = 0; g < UnitGroups.Length; g++)
+					foreach (UnitsGroup g in UnitGroups)
 					{
-						UnitGroups[g].SaveUnitsGroup(LuaFile);
+						g.SaveUnitsGroup(LuaFile);
 					}
-					for (int u = 0; u < Units.Length; u++)
+
+					foreach (UnitInstance u in UnitInstances)
 					{
-						Units[u].SaveUnit(LuaFile);
+						Unit.SaveUnit(LuaFile, u);
 					}
 					LuaFile.CloseTab(LuaParser.Write.EndBracketNext);
 
@@ -159,16 +152,17 @@ namespace MapLua
 				public string platoon;
 				public Vector3 Position;
 				public Vector3 Orientation;
+				public UnitInstance Instance;
 
-				public void SaveUnit(LuaParser.Creator LuaFile)
+				public static void SaveUnit(LuaParser.Creator LuaFile, UnitInstance Instance)
 				{
-					LuaFile.OpenTab(LuaParser.Write.PropertieToLua(Name) + LuaParser.Write.OpenBracketValue);
+					LuaFile.OpenTab(LuaParser.Write.PropertieToLua(Instance.gameObject.name) + LuaParser.Write.OpenBracketValue);
 
-					LuaFile.AddLine(LuaParser.Write.StringToLua(UnitsGroup.KEY_TYPE, type));
-					LuaFile.AddLine(LuaParser.Write.StringToLua(UnitsGroup.KEY_ORDERS, orders));
-					LuaFile.AddLine(LuaParser.Write.StringToLua(UnitsGroup.KEY_PLATOON, platoon));
-					LuaFile.AddLine(LuaParser.Write.Vector3ToLua(UnitsGroup.KEY_POSITION, Position));
-					LuaFile.AddLine(LuaParser.Write.Vector3ToLua(UnitsGroup.KEY_ORIENTATION, Orientation));
+					LuaFile.AddLine(LuaParser.Write.StringToLua(UnitsGroup.KEY_TYPE, Instance.UnitRenderer.BP.CodeName));
+					LuaFile.AddLine(LuaParser.Write.StringToLua(UnitsGroup.KEY_ORDERS, Instance.orders));
+					LuaFile.AddLine(LuaParser.Write.StringToLua(UnitsGroup.KEY_PLATOON, Instance.platoon));
+					LuaFile.AddLine(LuaParser.Write.Vector3ToLua(UnitsGroup.KEY_POSITION, Instance.transform.localPosition));
+					LuaFile.AddLine(LuaParser.Write.Vector3ToLua(UnitsGroup.KEY_ORIENTATION, Instance.transform.localEulerAngles));
 
 					LuaFile.CloseTab(LuaParser.Write.EndBracketNext);
 

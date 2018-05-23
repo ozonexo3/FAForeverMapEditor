@@ -100,6 +100,21 @@ namespace Selection
 					SelPrefab = 1;
 					MinAngle = 0;
 					break;
+				case SelectionControlTypes.Units:
+					AllowMove = true;
+					AllowUp = false;
+					AllowRotation = true;
+					AllowRotationX = false;
+					AllowLocalRotation = true;
+					AllowScale = false;
+					AllowCustomScale = false;
+					AllowSnapToGrid = true;
+					AllowSelection = true;
+					AllowSymmetry = true;
+					AllowRemove = true;
+					SelPrefab = 0;
+					MinAngle = 90;
+					break;
 				default:
 					AllowMove = false;
 					AllowUp = false;
