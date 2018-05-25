@@ -160,7 +160,10 @@ public partial struct GetGamedataFile
 			UInst.UnitRenderer = this;
 			UInst.SetMatrix(ScmapEditor.SnapToTerrain(position), rotation);
 
-			UInst.Col.size = BP.Size * 0.1f;
+			if (BP.Footprint.x > 0 && BP.Footprint.y > 0)
+				UInst.Col.size = new Vector3(BP.Footprint.x * 0.1f, BP.Size.y * 0.1f, BP.Footprint.y * 0.1f);
+			else
+				UInst.Col.size = BP.Size * 0.1f;
 			UInst.Col.center = Vector3.up * (BP.Size.y * 0.05f);
 
 			AddInstance(UInst);
@@ -204,6 +207,7 @@ public partial struct GetGamedataFile
 		public Vector3 Size;
 		public Vector3 UniformScale;
 		public Vector3 RenderScale;
+		public Vector2 Footprint = Vector2.zero;
 
 		// Strategic
 		public string StrategicIconName;
@@ -416,6 +420,19 @@ public partial struct GetGamedataFile
 		if (CurrentValue != null)
 			ToReturn.BP.Size.z = LuaParser.Read.StringToFloat(CurrentValue.ToString());
 
+
+
+		LuaTable FootprintTab = BP.GetTable("UnitBlueprint.Footprint");
+		if (FootprintTab != null)
+		{
+			CurrentValue = FootprintTab.RawGet("SizeX");
+			if (CurrentValue != null)
+				ToReturn.BP.Footprint.x = LuaParser.Read.StringToFloat(CurrentValue.ToString());
+
+			CurrentValue = FootprintTab.RawGet("SizeZ");
+			if (CurrentValue != null)
+				ToReturn.BP.Footprint.y = LuaParser.Read.StringToFloat(CurrentValue.ToString());
+		}
 
 		for (int i = 0; i < ToReturn.BP.LODs.Length; i++)
 		{

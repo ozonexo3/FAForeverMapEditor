@@ -43,6 +43,10 @@ public class AppMenu : MonoBehaviour
 				}
 				MenuOpen = false;
 			}
+			if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.S))
+			{
+				MenuButton("Save");
+			}
 		}
 	}
 

@@ -73,6 +73,11 @@ namespace Selection
 						Selection.SelectionRings[i].transform.localScale = AffectedGameObjects[ID].transform.localScale;
 						Selection.SelectionRings[i].transform.localRotation = AffectedGameObjects[ID].transform.localRotation;
 					}
+					else if(LastControlType == SelectionControlTypes.Units)
+					{
+						Selection.SelectionRings[i].transform.localScale = AffectedGameObjects[ID].GetComponent<BoxCollider>().size;
+						Selection.SelectionRings[i].transform.localRotation = AffectedGameObjects[ID].transform.localRotation;
+					}
 					else
 					{
 						MeshRenderer Mr = AffectedGameObjects[ID].GetComponent<MeshRenderer>();

@@ -73,6 +73,9 @@ public partial class ScmapEditor : MonoBehaviour
 
 	public static void ApplyChanges(int X, int Y)
 	{
+		if (X >= heightsLength || Y >= heightsLength)
+			return;
+
 		int x = 0;
 		int y = 0;
 		for (x = 0; x < LastGetWidth; x++)
@@ -90,7 +93,40 @@ public partial class ScmapEditor : MonoBehaviour
 
 		if(X + ReturnValues.GetLength(0) >= heightsLength || Y + ReturnValues.GetLength(1) >= heightsLength)
 		{
-			ApplyHeightmap(true);
+			if (X >= heightsLength || Y >= heightsLength)
+			{
+				ApplyHeightmap(true);
+			}
+			else
+			{
+				/*
+				int LeftX = ReturnValues.GetLength(0);
+				int LeftY = ReturnValues.GetLength(1);
+
+				if(X + ReturnValues.GetLength(0) >= heightsLength)
+					LeftX = heightsLength - X;
+
+				if (Y + ReturnValues.GetLength(1) >= heightsLength)
+					LeftY = heightsLength - Y;
+
+
+
+				Debug.Log(heightsLength + " / " + X);
+				Debug.Log(heightsLength + " / " + Y);
+				Debug.Log(LeftX + " / " + LeftY);
+				Debug.Log(ReturnValues.GetLength(0) + " / " + ReturnValues.GetLength(1));
+				float[,] NewReturnValues = new float[LeftX, LeftY];
+				for (x = 0; x < LeftX; x++)
+				{
+					for (y = 0; y < LeftY; y++)
+					{
+						NewReturnValues[x, y] = ReturnValues[x, y];
+					}
+				}
+				*/
+				Current.Data.SetHeightsDelayLOD(X, Y, ReturnValues);
+			}
+
 		}
 		else
 			Current.Data.SetHeightsDelayLOD(X, Y, ReturnValues);

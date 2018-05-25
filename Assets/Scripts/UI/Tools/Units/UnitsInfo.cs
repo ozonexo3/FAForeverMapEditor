@@ -100,6 +100,7 @@ namespace EditMap
 		public void SnapAction(Transform tr)
 		{
 			UpdateSelectedMatrixes = true;
+			tr.localPosition = ScmapEditor.SnapToTerrain(tr.localPosition);
 		}
 
 	}

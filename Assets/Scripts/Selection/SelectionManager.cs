@@ -112,7 +112,7 @@ namespace Selection
 					AllowSelection = true;
 					AllowSymmetry = true;
 					AllowRemove = true;
-					SelPrefab = 0;
+					SelPrefab = 2;
 					MinAngle = 90;
 					break;
 				default:
