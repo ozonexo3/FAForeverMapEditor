@@ -235,6 +235,7 @@ namespace EditMap
 						if (UpdateBrushPosition(true))
 						{
 							ScmapEditor.Current.Teren.heightmapPixelError = 20;
+							GenerateControlTex.StopGenerateNormal();
 							ScmapEditor.Current.TerrainMaterial.SetFloat("_GeneratingNormal", 1);
 							PaintStarted = true;
 							SymmetryPaint();
@@ -888,6 +889,7 @@ namespace EditMap
 		{
 			Markers.MarkersControler.UpdateMarkersHeights();
 			PropsRenderer.Current.UpdatePropsHeights();
+			UnitsControler.UpdateUnitsHeights();
 			DecalsControler.UpdateDecals();
 
 			if (ScmapEditor.Current.Slope)

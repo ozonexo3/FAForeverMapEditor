@@ -15,6 +15,7 @@ namespace EditMap
 		[Header("UI")]
 		public Text MarkerName;
 		public GameObject TogglePrefab;
+		public GameObject ToggleGroupPrefab;
 		public GameObject TitlePrefab;
 		public GameObject TitleDescPrefab;
 		public Transform ArmyTooglePivot;
@@ -106,14 +107,31 @@ namespace EditMap
 				}
 				else
 				{
+					int ToogleGroupCount = 0;
+					GameObject LastToggleGroup = Instantiate(ToggleGroupPrefab, ArmyTooglePivot.parent);
+					CreatedObjects.Add(LastToggleGroup);
+					LastToggleGroup.transform.SetSiblingIndex(CustomTablesPivot.GetSiblingIndex());
+					LastToggleGroup.SetActive(true);
+
 					CustomToggles[i] = new UiToggle[TablesData.AllTables[i].Values.Length];
 
 					for (int j = 0; j < TablesData.AllTables[i].Values.Length; j++)
 					{
-						GameObject NewToggleObj = Instantiate(TogglePrefab, ArmyTooglePivot.parent);
+						ToogleGroupCount++;
+						if(ToogleGroupCount > 3)
+						{
+							ToogleGroupCount = 0;
+							LastToggleGroup = Instantiate(ToggleGroupPrefab, ArmyTooglePivot.parent);
+							CreatedObjects.Add(LastToggleGroup);
+							LastToggleGroup.transform.SetSiblingIndex(CustomTablesPivot.GetSiblingIndex());
+							LastToggleGroup.SetActive(true);
+						}
+
+						GameObject NewToggleObj = Instantiate(TogglePrefab, LastToggleGroup.transform);
 						CreatedObjects.Add(NewToggleObj);
 						NewToggleObj.transform.SetSiblingIndex(CustomTablesPivot.GetSiblingIndex());
 						NewToggleObj.SetActive(true);
+
 
 						UiToggle NewToggle = NewToggleObj.GetComponent<UiToggle>();
 						NewToggle.Set(false, (j + 1).ToString(), OnTableToggleChanged, i, j); // TablesData.AllTables[i].Key + " " + 
@@ -342,10 +360,30 @@ namespace EditMap
 
 			switch (name)
 			{
+				case "extraHydros":
+					Prefab = TitleDescPrefab;
+					Name = "Extra Hydros";
+					Desc = "Add extra hydros to the map";
+					break;
+				case "extraMexes":
+					Prefab = TitleDescPrefab;
+					Name = "Extra Mexes";
+					Desc = "Add extra mexes to the map";
+					break;
+				case "extraBaseMexes":
+					Prefab = TitleDescPrefab;
+					Name = "Extra Base Mexes";
+					Desc = "add mexes to starting base (further away from coreMexes)";
+					break;
+				case "forwardCrazyrushMexes":
+					Prefab = TitleDescPrefab;
+					Name = "forwardCrazyrushMexes";
+					Desc = "determine forward crazy rush mexes";
+					break;
 				case "crazyrushOneMex":
 					Prefab = TitleDescPrefab;
 					Name = "Crazyrush";
-					Desc = "One mex per player";
+					Desc = "Only use these mexes/resources (refers to spwnMexArmy)";
 					break;
 				case "DuplicateListMex":
 					Prefab = TitleDescPrefab;

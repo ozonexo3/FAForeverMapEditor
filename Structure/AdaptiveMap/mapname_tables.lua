@@ -1,12 +1,12 @@
--- table of which ressources belong to which player, it is sorted in such a way that the first line 
--- corresponds to player one, the second to player 2 and so on...
+-- enter maximum possible player count (army slots) on the map
+maxPlayerOnMap = 16
 
 
 
 
 
 
-
+-- table of which resources belong to which player, it is sorted in such a way that the first line corresponds to ARMY_1, the second to ARMY_2 and so on...
 -- line number is 10 + armyumber for the mexes in the table
 spwnMexArmy = {     {},
                     {},
@@ -23,7 +23,7 @@ spwnMexArmy = {     {},
                     {},
                     {},
                     {},
-                    {}    }
+                    {}}
 
 
 
@@ -45,24 +45,45 @@ spwnHydroArmy ={    {},
                     {},
                     {}}
 
--- table for the "additional hydro" option
-spwnAdditionalHydro = {}
 
-middlemass = {{},{}}
+-- RESOURCE SCALING OPTIONS
+-- exampleMexes = {{1,2},{3,4},{5,6}},        -- exampleMexes = {{1,2}}
+-- exampleMexes = {{a},{b},{c}},              -- exampleMexes = {{a}}
+    -- option key=1 : removes a+b+c               -- option key=1 : removes a
+    -- option key=2 : spawn a, removes b+c        -- option key=2 : spawns a
+    -- option key=3 : spawn a+b, removes c
+    -- option key=4 : spawn a+b+c
 
-sidemass = {{},{}}
+-- add extra hydros to the map
+extraHydros = {{}}
 
-underwatermass = {{},{}}
+-- add extra mexes to the map
+extraMexes = {{}}
 
-islandmass ={{},{}}
+-- configure the amount of mexes at a certain map position
+middleMexes = {{},{},{}}
+sideMexes = {{},{},{}}
+underwaterMexes = {{},{},{}}
+islandMexes ={{},{},{}}
+expansionMexes = {{},{},{}}
 
-backmass = {{},{}}
 
--- table for the "dynamic spawn - crazyrush 1 mex" option
-crazyrushOneMex = {}
+-- BASE RESOURCE SCALING OPTIONS (refers to spwnMexArmy)
+-- add core mexes 
+coreMexes = {{}}
 
--- add mexes in this table also to the corresponding player (allows to increase the mex count in the starting base)
-extramass = {}
+-- add mexes to starting base (further away from coreMexes)
+extraBaseMexes = {{}}
 
--- table for the "forward crazyrush option"
-DuplicateListMex = {}
+
+-- INTENTIONAL UNEVEN RESOURCE SCALING OPTIONS
+topSideMexes = {{},{},{}}
+bottomSideMexes = {{},{},{}}
+
+
+-- CRAZYRUSH OPTIONS
+-- determine forward crazy rush mexes
+forwardCrazyrushMexes = {}
+
+-- only use these mexes/resources (refers to spwnMexArmy)
+crazyrushOneMexes = {}

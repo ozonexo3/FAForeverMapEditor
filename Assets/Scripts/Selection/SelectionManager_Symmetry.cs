@@ -151,7 +151,7 @@ namespace Selection
 						SelectionRings[i].transform.localPosition = NewPos;
 						if (CustomSnapAction != null)
 						{
-							CustomSnapAction(SelectionRings[i].transform);
+							CustomSnapAction(SelectionRings[i].transform, Current.AffectedGameObjects[Ids[i]]);
 							NewPos = SelectionRings[i].transform.localPosition;
 						}
 
@@ -170,7 +170,7 @@ namespace Selection
 						SelectionRings[i].transform.localPosition = NewPos;
 						if(CustomSnapAction != null)
 						{
-							CustomSnapAction(SelectionRings[i].transform);
+							CustomSnapAction(SelectionRings[i].transform, Current.AffectedGameObjects[Ids[i]]);
 							NewPos = SelectionRings[i].transform.localPosition;
 						}
 
@@ -197,7 +197,7 @@ namespace Selection
 
 					if (CustomSnapAction != null)
 					{
-						CustomSnapAction(SelectionRings[i].transform);
+						CustomSnapAction(SelectionRings[i].transform, Current.AffectedGameObjects[Ids[i]]);
 						NewPos = SelectionRings[i].transform.localPosition;
 						NewRot = SelectionRings[i].transform.localRotation;
 					}
@@ -235,7 +235,7 @@ namespace Selection
 
 					if (CustomSnapAction != null)
 					{
-						CustomSnapAction(SelectionRings[i].transform);
+						CustomSnapAction(SelectionRings[i].transform, Current.AffectedGameObjects[Ids[i]]);
 						NewPos = SelectionRings[i].transform.localPosition;
 						NewScale = SelectionRings[i].transform.localScale;
 					}

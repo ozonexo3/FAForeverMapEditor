@@ -137,7 +137,13 @@ public class GenerateControlTex : MonoBehaviour
 			NormalCoroutine = Current.StartCoroutine(Current.GeneratingNormal());
 	}
 
-
+	public static void StopGenerateNormal()
+	{
+		if (GeneratingNormalTex)
+		{
+			Current.StopCoroutine(NormalCoroutine);
+		}
+	}
 
 
 	static bool GeneratingNormalTex
@@ -191,11 +197,11 @@ public class GenerateControlTex : MonoBehaviour
 
 		ScmapEditor.Current.map.UncompressedNormalmapTex.SetPixels(AllColors);
 		ScmapEditor.Current.map.UncompressedNormalmapTex.Apply(false);
+		ScmapEditor.Current.TerrainMaterial.SetFloat("_GeneratingNormal", 0);
 
 		yield return null;
 		NormalCoroutine = null;
 
-		ScmapEditor.Current.TerrainMaterial.SetFloat("_GeneratingNormal", 0);
 
 
 		if (BufforNormalTex)

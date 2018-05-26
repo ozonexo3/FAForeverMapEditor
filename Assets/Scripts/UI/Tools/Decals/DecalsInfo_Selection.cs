@@ -70,11 +70,6 @@ namespace EditMap
 			DecalsList.UpdateSelection();
 		}
 
-		public void CustomSnapAction(Transform tr)
-		{
-			OzoneDecal.SnapToGround(tr);
-		}
-
 		public void DestroyDetails(List<GameObject> MarkerObjects, bool RegisterUndo = true)
 		{
 			if (RegisterUndo && MarkerObjects.Count > 0)

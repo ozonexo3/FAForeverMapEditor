@@ -783,6 +783,22 @@ namespace MapLua
 			string prefix = "";
 			if (Type == Marker.MarkerTypes.BlankMarker || Type == Marker.MarkerTypes.Mass || Type == Marker.MarkerTypes.Hydrocarbon)
 				prefix = Marker.MarkerTypeToString(Type) + " ";
+			else if(Type == Marker.MarkerTypes.LandPathNode)
+			{
+				prefix = "LandPN";
+			}
+			else if (Type == Marker.MarkerTypes.WaterPathNode)
+			{
+				prefix = "WaterPN";
+			}
+			else if (Type == Marker.MarkerTypes.AmphibiousPathNode)
+			{
+				prefix = "AmphPN";
+			}
+			else if (Type == Marker.MarkerTypes.AirPathNode)
+			{
+				prefix = "AirPN";
+			}
 			else
 			{
 				prefix = Type.ToString() + "_";

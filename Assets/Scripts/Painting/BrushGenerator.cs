@@ -79,6 +79,7 @@ public class BrushGenerator : MonoBehaviour
 
 			Brushes.Add(new Texture2D(512, 512, TextureFormat.R8, false));
 			Brushes[Brushes.Count - 1].LoadImage(fileData);
+			Brushes[Brushes.Count - 1].wrapMode = TextureWrapMode.Clamp;
 			BrushesNames.Add(AllBrushFiles[i].Replace(StructurePath, "").Replace("/", "").Replace("\\", ""));
 		}
 	}

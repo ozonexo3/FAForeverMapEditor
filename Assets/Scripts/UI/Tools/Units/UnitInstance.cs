@@ -10,7 +10,7 @@ public class UnitInstance : MonoBehaviour
 	public string orders;
 	public string platoon;
 
-	public GetGamedataFile.UnitObject UnitRenderer;
+	public UnitSource UnitRenderer;
 	public MapLua.SaveLua.Army.UnitsGroup Group;
 
 
@@ -52,6 +52,31 @@ public class UnitInstance : MonoBehaviour
 		UpdateMatrix();
 		SphereModified = true;
 		UnitRenderer.AddInstance(this, true);
+	}
+
+	public Vector3 GetSnapPosition(Vector3 Pos)
+	{
+		return ScmapEditor.SnapToTerrain(Pos, UnitRenderer.BP.PhysicsLayerWater);
+	}
+
+	public void SnapToTerrain(bool UpdateMatrixes = true)
+	{
+		transform.localPosition = GetSnapPosition(transform.localPosition);
+		if(UpdateMatrixes)
+			UpdateMatrixTranslated();
+	}
+
+	public bool UpdateAfterTerrainChange()
+	{
+		Vector3 NewPos = GetSnapPosition(transform.localPosition);
+
+		if (NewPos.y == transform.localPosition.y)
+			return false;
+
+		transform.localPosition = NewPos;
+		UpdateMatrixTranslated();
+
+		return true;
 	}
 
 	public BoundingSphere Sphere

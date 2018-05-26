@@ -422,6 +422,8 @@ public partial class MapLuaParser : MonoBehaviour
 			yield return null;
 		while (PropsRenderer.IsUpdating)
 			yield return null;
+		while (UnitsControler.IsUpdating)
+			yield return null;
 		while (DecalsControler.IsUpdating)
 			yield return null;
 

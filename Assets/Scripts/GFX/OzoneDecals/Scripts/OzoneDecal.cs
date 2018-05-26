@@ -109,7 +109,7 @@ namespace OzoneDecals
 			tr.localPosition = tr.TransformPoint(tr.InverseTransformPoint(Pos) - PivotPointLocal);
 		}
 
-		public static void SnapToGround(Transform tr)
+		public static void SnapToGround(Transform tr, GameObject Connected)
 		{
 			Vector3 Pos = tr.TransformPoint(PivotPointLocal);
 			Pos.y = ScmapEditor.Current.Teren.SampleHeight(Pos);

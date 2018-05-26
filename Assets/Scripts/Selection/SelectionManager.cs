@@ -279,8 +279,8 @@ namespace Selection
 			SelectionChangeAction = Action;
 		}
 
-		static System.Action<Transform> CustomSnapAction;
-		public void SetCustomSnapAction(System.Action<Transform> Action)
+		static System.Action<Transform, GameObject> CustomSnapAction;
+		public void SetCustomSnapAction(System.Action<Transform, GameObject> Action)
 		{
 			CustomSnapAction = Action;
 		}

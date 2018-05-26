@@ -305,7 +305,7 @@ namespace EditMap
 
 		}
 
-		public void SnapAction(Transform marker)
+		public void SnapAction(Transform marker, GameObject Connected)
 		{
 			//if (LastCreationType != MapLua.SaveLua.Marker.MarkerTypes.CameraInfo)
 			//	marker.localRotation = Quaternion.identity;

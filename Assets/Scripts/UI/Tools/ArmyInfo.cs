@@ -360,9 +360,25 @@ public class ArmyInfo : MonoBehaviour {
 		else if (TeamObject.InstanceId < 0 || TeamObject.InstanceId >= MapLuaParser.Current.ScenarioLuaFile.Data.Configurations[c].Teams.Length)
 			return;
 		else {
+			string NewArmyName = "ARMY_1";
+			int ArmyNameCounter = 1;
+			for(int i = 0; i < MapLuaParser.Current.ScenarioLuaFile.Data.Configurations[c].Teams[TeamObject.InstanceId].Armys.Count; i++)
+			{
+				if(MapLuaParser.Current.ScenarioLuaFile.Data.Configurations[c].Teams[TeamObject.InstanceId].Armys[i].Name == NewArmyName)
+				{
+					ArmyNameCounter++;
+					NewArmyName = "ARMY_" + ArmyNameCounter;
+				}
+				else
+				{
+					break;
+				}
+			}
+
+
 
 			CreatedArmy = new ScenarioLua.Army();
-			CreatedArmy.Name = "NewArmy" + (MapLuaParser.Current.ScenarioLuaFile.Data.Configurations[c].Teams[TeamObject.InstanceId].Armys.Count + 1);
+			CreatedArmy.Name = NewArmyName;
 			CreatedArmy.NoRush = new ScenarioLua.NoRusnOffset();
 			CreatedArmy.Data = new SaveLua.Army();
 			MapLuaParser.Current.ScenarioLuaFile.Data.Configurations[c].Teams[TeamObject.InstanceId].Armys.Add(CreatedArmy);

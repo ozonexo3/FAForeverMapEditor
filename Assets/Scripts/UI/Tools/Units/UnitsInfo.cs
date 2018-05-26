@@ -97,10 +97,11 @@ namespace EditMap
 		}
 
 		bool UpdateSelectedMatrixes = false;
-		public void SnapAction(Transform tr)
+		public void SnapAction(Transform tr, GameObject Connected)
 		{
 			UpdateSelectedMatrixes = true;
-			tr.localPosition = ScmapEditor.SnapToTerrain(tr.localPosition);
+			//tr.localPosition = ScmapEditor.SnapToTerrain(tr.localPosition);
+			tr.localPosition = Connected.GetComponent<UnitInstance>().GetSnapPosition(tr.localPosition);
 		}
 
 	}
