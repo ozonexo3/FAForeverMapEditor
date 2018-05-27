@@ -167,6 +167,7 @@ public class Map
 
 	}
 
+	const double HeightResize = 128.0 * 256.0; //512 * 40;
 	public Map(int _Width, int _Height, int InitialHeight, bool _Water, int WaterLevel, int DepthLevel, int AbyssLevel)
 	{
 		Width = _Width;
@@ -219,8 +220,18 @@ public class Map
 			WaterFoamMask[i] = 0;
 		}
 
-		for(int i = 0; i < HeightmapData.Length; i++)
-			HeightmapData[i] = (short)InitialHeight;
+
+		float HeightConversion = InitialHeight / 25.6f;
+		HeightConversion /= 10f;
+
+
+		short InitialHeightValue = (short)((HeightConversion * HeightResize) + 0.5f);
+		Debug.Log(InitialHeightValue);
+
+		for (int i = 0; i < HeightmapData.Length; i++)
+		{
+			HeightmapData[i] = InitialHeightValue;
+		}
 
 
 		//Version

@@ -22,6 +22,19 @@ namespace Selection
 			public Matrix4x4 SymmetryMatrix;
 			public bool InverseRotation = false;
 
+			GameObject GetAffected(int i)
+			{
+				if (i < 0 || i >= Ids.Count)
+					return null;
+
+				int Id = Ids[i];
+
+				if (Id < 0 || Id > Current.AffectedGameObjects.Length)
+					return null;
+
+				return Current.AffectedGameObjects[Id];
+			}
+
 			public void LoadSymetryIds()
 			{
 				Ids = new List<int>();
@@ -151,7 +164,7 @@ namespace Selection
 						SelectionRings[i].transform.localPosition = NewPos;
 						if (CustomSnapAction != null)
 						{
-							CustomSnapAction(SelectionRings[i].transform, Current.AffectedGameObjects[Ids[i]]);
+							CustomSnapAction(SelectionRings[i].transform, GetAffected(i));
 							NewPos = SelectionRings[i].transform.localPosition;
 						}
 
@@ -170,7 +183,7 @@ namespace Selection
 						SelectionRings[i].transform.localPosition = NewPos;
 						if(CustomSnapAction != null)
 						{
-							CustomSnapAction(SelectionRings[i].transform, Current.AffectedGameObjects[Ids[i]]);
+							CustomSnapAction(SelectionRings[i].transform, GetAffected(i));
 							NewPos = SelectionRings[i].transform.localPosition;
 						}
 
@@ -197,7 +210,7 @@ namespace Selection
 
 					if (CustomSnapAction != null)
 					{
-						CustomSnapAction(SelectionRings[i].transform, Current.AffectedGameObjects[Ids[i]]);
+						CustomSnapAction(SelectionRings[i].transform, GetAffected(i));
 						NewPos = SelectionRings[i].transform.localPosition;
 						NewRot = SelectionRings[i].transform.localRotation;
 					}
@@ -235,7 +248,7 @@ namespace Selection
 
 					if (CustomSnapAction != null)
 					{
-						CustomSnapAction(SelectionRings[i].transform, Current.AffectedGameObjects[Ids[i]]);
+						CustomSnapAction(SelectionRings[i].transform, GetAffected(i));
 						NewPos = SelectionRings[i].transform.localPosition;
 						NewScale = SelectionRings[i].transform.localScale;
 					}

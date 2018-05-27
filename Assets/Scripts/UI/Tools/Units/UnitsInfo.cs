@@ -100,8 +100,10 @@ namespace EditMap
 		public void SnapAction(Transform tr, GameObject Connected)
 		{
 			UpdateSelectedMatrixes = true;
-			//tr.localPosition = ScmapEditor.SnapToTerrain(tr.localPosition);
-			tr.localPosition = Connected.GetComponent<UnitInstance>().GetSnapPosition(tr.localPosition);
+			if(Connected == null)
+				tr.localPosition = ScmapEditor.SnapToTerrain(tr.localPosition);
+			else
+				tr.localPosition = Connected.GetComponent<UnitInstance>().GetSnapPosition(tr.localPosition);
 		}
 
 	}

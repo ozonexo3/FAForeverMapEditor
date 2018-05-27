@@ -139,7 +139,7 @@ public class UnitSource : MonoBehaviour
 		Culling.Dispose();
 	}
 
-	public void CreateUnitObject(MapLua.SaveLua.Army.Unit Source, MapLua.SaveLua.Army.UnitsGroup Group)
+	public UnitInstance CreateUnitObject(MapLua.SaveLua.Army.Unit Source, MapLua.SaveLua.Army.UnitsGroup Group)
 	{
 		Vector3 position = ScmapEditor.ScmapPosToWorld(Source.Position);
 		Quaternion rotation = Quaternion.Euler(Source.Orientation);
@@ -151,6 +151,7 @@ public class UnitSource : MonoBehaviour
 		UnitInstance UInst = Obj.GetComponent<UnitInstance>();
 		//UInst.Owner = Owner;
 		UInst.Group = Group;
+		Group.UnitInstances.Add(UInst);
 		UInst.orders = Source.orders;
 		UInst.platoon = Source.platoon;
 		UInst.UnitRenderer = this;
@@ -163,7 +164,7 @@ public class UnitSource : MonoBehaviour
 		UInst.Col.center = Vector3.up * (BP.Size.y * 0.05f);
 
 		AddInstance(UInst);
-
+		return UInst;
 	}
 
 	public void AddInstance(UnitInstance UInst, bool ForcedLod = false)

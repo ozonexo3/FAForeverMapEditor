@@ -137,6 +137,8 @@ namespace MapLua
 					{
 						Unit.SaveUnit(LuaFile, u);
 					}
+
+
 					LuaFile.CloseTab(LuaParser.Write.EndBracketNext);
 
 					LuaFile.CloseTab(LuaParser.Write.EndBracketNext);
@@ -161,7 +163,7 @@ namespace MapLua
 					LuaFile.AddLine(LuaParser.Write.StringToLua(UnitsGroup.KEY_TYPE, Instance.UnitRenderer.BP.CodeName));
 					LuaFile.AddLine(LuaParser.Write.StringToLua(UnitsGroup.KEY_ORDERS, Instance.orders));
 					LuaFile.AddLine(LuaParser.Write.StringToLua(UnitsGroup.KEY_PLATOON, Instance.platoon));
-					LuaFile.AddLine(LuaParser.Write.Vector3ToLua(UnitsGroup.KEY_POSITION, Instance.transform.localPosition));
+					LuaFile.AddLine(LuaParser.Write.Vector3ToLua(UnitsGroup.KEY_POSITION, ScmapEditor.WorldPosToScmap(Instance.transform.localPosition)));
 					LuaFile.AddLine(LuaParser.Write.Vector3ToLua(UnitsGroup.KEY_ORIENTATION, Instance.transform.localEulerAngles));
 
 					LuaFile.CloseTab(LuaParser.Write.EndBracketNext);

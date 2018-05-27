@@ -534,7 +534,6 @@ namespace MapLua
 
 			public void SaveMarkerValues(LuaParser.Creator LuaFile)
 			{
-
 				if (MarkerType == MarkerTypes.AutoPathNode)
 				{
 					// Convert to Land/Amphibious/Naval markers

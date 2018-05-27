@@ -130,7 +130,7 @@ Shader "MapEditor/FaWater" {
 	        //o.mScreenPos.xy /= o.mScreenPos.w;
 	        
 	        o.mViewVec = mul (unity_ObjectToWorld, v.vertex).xyz - _WorldSpaceCameraPos;
-	        //o.mViewVec = normalize(o.mViewVec);
+	        o.mViewVec = normalize(o.mViewVec);
 	        o.AddVar = float4(length(_WorldSpaceCameraPos - mul(unity_ObjectToWorld, v.vertex).xyz), 0, 0, 0);
 			 float4 hpos = UnityObjectToClipPos (v.vertex);
 	         o.grabUV = ComputeGrabScreenPos(hpos);

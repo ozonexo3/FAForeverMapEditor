@@ -460,7 +460,7 @@ namespace MapLua
 		public void Save(string Path)
 		{
 			LuaParser.Creator LuaFile = new LuaParser.Creator();
-			LuaFile.AddLine("version = 3");
+			LuaFile.AddLine("version = 3 -- Lua Version. Dont touch this");
 
 
 			LuaFile.OpenTab(TABLE_SCENARIOINFO + LuaParser.Write.OpenBracketValue);

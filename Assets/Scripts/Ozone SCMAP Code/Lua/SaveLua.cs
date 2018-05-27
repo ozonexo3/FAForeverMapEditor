@@ -277,7 +277,6 @@ namespace MapLua
 				{
 					for(int a = 0; a < Data.areas.Length; a++)
 					{
-						//TODO
 						LuaFile.OpenTab(LuaParser.Write.PropertieToLua(Data.areas[a].Name) + LuaParser.Write.OpenBracketValue);
 						LuaFile.AddLine(LuaParser.Write.RectangleToLua(LuaParser.Write.PropertieToLua(Areas.KEY_RECTANGLE), Data.areas[a].rectangle));
 						LuaFile.CloseTab(LuaParser.Write.EndBracketNext);
@@ -353,6 +352,8 @@ namespace MapLua
 				LuaFile.CloseTab(LuaParser.Write.EndBracketNext);
 
 				LuaFile.AddLine(LuaParser.Write.StringToLua(Scenario.KEY_NEXTPLATOONID, Data.next_platoon_id.ToString()));
+
+				Debug.Log(Data.MasterChains[0].Markers.Count);
 
 				//Platoons
 				LuaFile.AddSaveComent("");

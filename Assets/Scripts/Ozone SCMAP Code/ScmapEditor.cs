@@ -218,8 +218,25 @@ public partial class ScmapEditor : MonoBehaviour
 		WaterMaterial.SetTexture("_Reflection", cb);
 		*/
 
-		SetWaterTextures();
+		for (int i = 0; i < map.EnvCubemapsFile.Length; i++)
+		{
+			if (map.EnvCubemapsName[i] == "<default>")
+			{
 
+				try
+				{
+					Cubemap EnvironmentReflection = GetGamedataFile.GetGamedataCubemap(GetGamedataFile.TexturesScd, map.EnvCubemapsFile[i]);
+					Shader.SetGlobalTexture("environmentSampler", EnvironmentReflection);
+				}
+				catch
+				{
+					WaterMaterial.SetTexture("environmentSampler", DefaultWaterSky);
+				}
+			}
+
+		}
+
+		SetWaterTextures();
 
 		SetWater();
 

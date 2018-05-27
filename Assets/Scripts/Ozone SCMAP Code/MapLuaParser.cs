@@ -201,6 +201,19 @@ public partial class MapLuaParser : MonoBehaviour
 			}
 		}
 		string ScenarioText = System.IO.File.ReadAllText(LoadedMapFolderPath + ScenarioFileName + ".lua");
+
+		if (AllFilesExists && !ScenarioText.StartsWith("version = 3") && ScenarioText.StartsWith("version ="))
+		{
+			AllFilesExists = SearchForScenario();
+
+			if (!AllFilesExists)
+			{
+				Error = "Wrong scenario file version. Should be 3, is " + ScenarioText.Remove(11).Replace("version =", "");
+				Debug.LogError(Error);
+			}
+		}
+
+
 		if (AllFilesExists && !ScenarioText.StartsWith("version = 3"))
 		{
 			AllFilesExists = SearchForScenario();
