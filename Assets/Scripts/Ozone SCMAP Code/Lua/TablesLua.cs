@@ -44,6 +44,12 @@ namespace MapLua
 			public MexArray(string[] MexesIds)
 			{
 				this.MexesIds = MexesIds;
+
+				// Change all names with id smaller than 10 to start from 0
+				for (int s = 0; s < this.MexesIds.Length; s++)
+				{
+					this.MexesIds[s] = ConvertNumberString(this.MexesIds[s]);
+				}
 			}
 		}
 
@@ -152,6 +158,9 @@ namespace MapLua
 			//Debug.Log(Keys.Length);
 			for (int i = 0; i < Keys.Length; i++)
 			{
+				if (Keys[i] == "maxPlayerOnMap")
+					continue;
+
 				LuaTable MarkerTable = LuaFile.GetTable(Keys[i]);
 				if (MarkerTable != null)
 				{
@@ -364,9 +373,8 @@ namespace MapLua
 				}
 			}
 
-
+			LuaFile.AddLine("maxPlayerOnMap" + LuaParser.Write.SetValue + ArmyId);
 			LuaFile.NextLine(4);
-
 
 			LuaFile.AddComent("Line number is 10 + armynumber for the mexes in the table");
 			int ArmyCount = ArmyId;

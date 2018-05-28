@@ -136,6 +136,7 @@ namespace MapLua
 			}
 
 			ClearMarkersDictionary();
+			EditMap.UnitsInfo.UnloadUnits();
 			Data = new Scenario();
 			LuaTable ScenarioInfoTab = LuaFile.GetTable(KEY_Scenario);
 

@@ -18,14 +18,19 @@ public class UnitsControler : MonoBehaviour {
 		}
 	}
 
-	static bool Updating = false;
+	static bool Updating
+	{
+		get
+		{
+			return UpdateProcess != null;
+		}
+	}
 	static bool BufforUpdate = false;
 	static Coroutine UpdateProcess;
 	public static void UpdateUnitsHeights()
 	{
 		if (!Updating)
 		{
-			Updating = true;
 			UpdateProcess = Current.StartCoroutine(Current.UpdatingUnitsHeights());
 		}
 		else
@@ -67,7 +72,6 @@ public class UnitsControler : MonoBehaviour {
 
 		yield return null;
 		UpdateProcess = null;
-		Updating = false;
 		if (BufforUpdate)
 		{
 			BufforUpdate = false;

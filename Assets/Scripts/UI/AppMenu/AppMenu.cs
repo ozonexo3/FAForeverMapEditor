@@ -43,10 +43,13 @@ public class AppMenu : MonoBehaviour
 				}
 				MenuOpen = false;
 			}
-			if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.S))
-			{
-				MenuButton("Save");
-			}
+		}
+
+
+
+		if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.S))
+		{
+			MapLuaParser.Current.SaveMap();
 		}
 	}
 

@@ -7,7 +7,6 @@ public class PropsRenderer : MonoBehaviour {
 
 	public static PropsRenderer Current;
 
-	static bool Updating = false;
 	static bool BufforUpdate = false;
 	static Coroutine UpdateProcess;
 
@@ -20,17 +19,16 @@ public class PropsRenderer : MonoBehaviour {
 	{
 		get
 		{
-			return Updating;
+			return UpdateProcess != null;
 		}
 	}
 
 	public void UpdatePropsHeights()
 	{
-		if (Updating)
+		if (IsUpdating)
 			BufforUpdate = true;
 		else
 		{
-			Updating = true;
 			UpdateProcess = StartCoroutine(PropsUpdater());
 		}
 	}
@@ -74,7 +72,7 @@ public class PropsRenderer : MonoBehaviour {
 		}
 
 		yield return null;
-		Updating = false;
+		UpdateProcess = null;
 
 		if (BufforUpdate)
 		{

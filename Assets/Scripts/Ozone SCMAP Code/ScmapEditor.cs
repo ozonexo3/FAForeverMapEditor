@@ -815,6 +815,7 @@ public partial class ScmapEditor : MonoBehaviour
 
 
 		EditMap.PropsInfo.UnloadProps();
+		EditMap.UnitsInfo.UnloadUnits();
 		Markers.MarkersControler.UnloadMarkers();
 		DecalsControler.Current.UnloadDecals();
 		GenerateControlTex.StopAllTasks();

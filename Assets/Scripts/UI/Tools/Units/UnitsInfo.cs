@@ -16,7 +16,8 @@ namespace EditMap
 
 		[Header("Objects")]
 		public GameObject UnitInstancePrefab;
-
+		public Mesh NoUnitMesh;
+		public Material NoUnitMaterial;
 
 		private void OnEnable()
 		{
@@ -32,6 +33,19 @@ namespace EditMap
 		{
 			//PlacementManager.OnDropOnGameplay -= DropAtGameplay;
 			Selection.SelectionManager.Current.ClearAffectedGameObjects();
+		}
+
+		public static void UnloadUnits()
+		{
+			UnitsControler.StopUnitsUpdate();
+
+			GameObject[] AllUnits = new GameObject[UnitInstance.AllUnitInstances.Count];
+			UnitInstance.AllUnitInstances.CopyTo(AllUnits);
+
+			for(int i = 0; i < AllUnits.Length; i++)
+			{
+				Destroy(AllUnits[i]);
+			}
 		}
 
 		private void Update()

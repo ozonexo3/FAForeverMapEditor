@@ -73,6 +73,39 @@ public partial struct GetGamedataFile
 
 	public static Dictionary<string, UnitSource> LoadedUnitObjects = new Dictionary<string, UnitSource>();
 
+
+	public static UnitSource CreateEmptyUnit(string LocalPath, UnitSource ToReturn = null)
+	{
+		string[] PathSplit = LocalPath.Split(("/").ToCharArray());
+		GameObject NewUnit = new GameObject(PathSplit[PathSplit.Length - 1].Replace(".bp", ""));
+		if (ToReturn == null) {
+			ToReturn = NewUnit.AddComponent<UnitSource>();
+
+			// *** Parse Blueprint
+			ToReturn.BP = new UnitBluePrint();
+			ToReturn.BP.Name = PathSplit[PathSplit.Length - 1].Replace(".bp", "");
+			ToReturn.BP.CodeName = ToReturn.BP.Name.Replace("_unit", "");
+		}
+
+		ToReturn.BP.Size = Vector3.one;
+		ToReturn.BP.UniformScale = Vector3.one;
+		ToReturn.BP.RenderScale = Vector3.one;
+		ToReturn.BP.Categories = new string[0];
+		ToReturn.BP.LODs = new BluePrintLoD[1];
+		ToReturn.BP.LODs[0] = new BluePrintLoD();
+		ToReturn.BP.LODs[0].Mesh = UnitsInfo.Current.NoUnitMesh;
+		ToReturn.BP.LODs[0].Mat = UnitsInfo.Current.NoUnitMaterial;
+		ToReturn.BP.LODs[0].LODCutoff = 100;
+
+
+		ToReturn.RenderDistances = new float[] { ToReturn.BP.LODs[0].LODCutoff * 0.1f };
+		ToReturn.ApplyLods();
+
+		LoadedUnitObjects.Add(LocalPath, ToReturn);
+
+		return ToReturn;
+	}
+
 	public static UnitSource LoadUnit(string scd, string LocalPath)
 	{
 		if (LoadedUnitObjects.ContainsKey(LocalPath))
@@ -85,17 +118,17 @@ public partial struct GetGamedataFile
 
 
 		byte[] Bytes = LoadBytes(scd, LocalPath);
-		if (Bytes.Length == 0)
+		if (Bytes == null || Bytes.Length == 0)
 		{
 			Debug.LogError("Unit does not exits: " + LocalPath);
-			return null;
+			return CreateEmptyUnit(LocalPath);
 		}
 		string BluePrintString = System.Text.Encoding.UTF8.GetString(Bytes);
 
 		if (BluePrintString.Length == 0)
 		{
 			Debug.LogError("Loaded blueprint is empty");
-			return null;
+			return CreateEmptyUnit(LocalPath);
 		}
 
 		BluePrintString = BluePrintString.Replace("UnitBlueprint {", "UnitBlueprint = {");
@@ -135,7 +168,7 @@ public partial struct GetGamedataFile
 		catch (NLua.Exceptions.LuaException e)
 		{
 			Debug.LogError(LuaParser.Read.FormatException(e) + "\n" + LocalPath);
-			return ToReturn;
+			return CreateEmptyUnit(LocalPath, ToReturn);
 		}
 
 
