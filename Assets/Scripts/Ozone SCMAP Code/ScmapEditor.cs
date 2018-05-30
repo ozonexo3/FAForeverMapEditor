@@ -30,11 +30,14 @@ public partial class ScmapEditor : MonoBehaviour
 	public BloomOptimized BloomOpt;
 	public BloomOptimized BloomOptPreview;
 	public PreviewTex PreviewRenderer;
+	public TextAsset DefaultSkybox;
 
 	[Header("Loaded variables")]
 	public TerrainTexture[] Textures; // Loaded textures
 	public Map map; // Loaded Scmap data
-	public SkyboxData.SkyboxValues DefaultSkyboxData;
+	//public SkyboxData.SkyboxValues DefaultSkyboxData;
+	public Cubemap CurrentEnvironmentCubemap;
+
 
 	[HideInInspector]
 	public bool Grid;
@@ -133,7 +136,7 @@ public partial class ScmapEditor : MonoBehaviour
 		}
 		else
 		{
-			map.AdditionalSkyboxData.Data = new SkyboxData.SkyboxValues(DefaultSkyboxData);
+			LoadDefaultSkybox();
 		}
 
 
@@ -225,8 +228,8 @@ public partial class ScmapEditor : MonoBehaviour
 
 				try
 				{
-					Cubemap EnvironmentReflection = GetGamedataFile.GetGamedataCubemap(GetGamedataFile.TexturesScd, map.EnvCubemapsFile[i]);
-					Shader.SetGlobalTexture("environmentSampler", EnvironmentReflection);
+					CurrentEnvironmentCubemap = GetGamedataFile.GetGamedataCubemap(GetGamedataFile.TexturesScd, map.EnvCubemapsFile[i]);
+					Shader.SetGlobalTexture("environmentSampler", CurrentEnvironmentCubemap);
 				}
 				catch
 				{
@@ -642,16 +645,12 @@ public partial class ScmapEditor : MonoBehaviour
 		if (HighestElevation - LowestElevation > 49.9)
 			Debug.LogError("Height difference is too high! it might couse rendering issues! Height difference is: " + (HighestElevation - LowestElevation));
 
-		if (map.Water.HasWater)
-		{
-			//LowestElevation = Mathf.Max(LowestElevation, map.Water.Elevation);
-		}
 
 		if (MapLuaParser.Current.EditMenu.MapInfoMenu.SaveAsFa.isOn)
 		{
 			if(map.AdditionalSkyboxData.Data.Position.x == 0)
 			{
-				map.AdditionalSkyboxData.Data.CopyFrom(DefaultSkyboxData);
+				LoadDefaultSkybox();
 			}
 
 			map.VersionMinor = 60;
@@ -660,10 +659,7 @@ public partial class ScmapEditor : MonoBehaviour
 		}
 		else if(map.VersionMinor >= 60)
 		{
-			if (map.AdditionalSkyboxData.Data.Position.x == 0)
-			{
-				map.AdditionalSkyboxData.Data.CopyFrom(DefaultSkyboxData);
-			}
+			LoadDefaultSkybox();
 			map.AdditionalSkyboxData.Data.UpdateSize();
 			map.VersionMinor = 56;
 		}
@@ -759,6 +755,14 @@ public partial class ScmapEditor : MonoBehaviour
 
 		// Set terrain heights from heights array
 		Data.SetHeights(0, 0, heights);
+	}
+
+	public void LoadDefaultSkybox()
+	{
+		map.AdditionalSkyboxData = UnityEngine.JsonUtility.FromJson<SkyboxData>(DefaultSkybox.text);
+		map.AdditionalSkyboxData.Data.UpdateSize();
+
+		Skybox.LoadSkybox();
 	}
 
 	public void UnloadMap()

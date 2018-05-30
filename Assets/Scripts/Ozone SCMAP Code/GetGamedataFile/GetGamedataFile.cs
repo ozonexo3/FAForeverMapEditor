@@ -28,7 +28,7 @@ public partial struct GetGamedataFile
 	}
 
 	static Texture2D _EmptyNormal;
-	static Color NormalPixelColor = new Color(0.5f, 0, 0, 0.5f);
+	static Color NormalPixelColor = new Color(0.5f, 0.5f, 1, 0.5f);
 	static Texture2D emptyNormalTexture
 	{
 		get

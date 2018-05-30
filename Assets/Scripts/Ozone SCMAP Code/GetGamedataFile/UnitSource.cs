@@ -142,7 +142,8 @@ public class UnitSource : MonoBehaviour
 	public UnitInstance CreateUnitObject(MapLua.SaveLua.Army.Unit Source, MapLua.SaveLua.Army.UnitsGroup Group)
 	{
 		Vector3 position = ScmapEditor.ScmapPosToWorld(Source.Position);
-		Quaternion rotation = Quaternion.Euler(Source.Orientation);
+		Vector3 RadianOrientation = Vector3.zero;
+		Quaternion rotation = Quaternion.Euler(Source.Orientation * Mathf.Rad2Deg);
 
 
 		GameObject Obj = Instantiate(UnitsInfo.Current.UnitInstancePrefab, transform) as GameObject;

@@ -164,7 +164,7 @@ namespace MapLua
 					LuaFile.AddLine(LuaParser.Write.StringToLua(UnitsGroup.KEY_ORDERS, Instance.orders));
 					LuaFile.AddLine(LuaParser.Write.StringToLua(UnitsGroup.KEY_PLATOON, Instance.platoon));
 					LuaFile.AddLine(LuaParser.Write.Vector3ToLua(UnitsGroup.KEY_POSITION, ScmapEditor.WorldPosToScmap(Instance.transform.localPosition)));
-					LuaFile.AddLine(LuaParser.Write.Vector3ToLua(UnitsGroup.KEY_ORIENTATION, Instance.transform.localEulerAngles));
+					LuaFile.AddLine(LuaParser.Write.Vector3ToLua(UnitsGroup.KEY_ORIENTATION, Instance.GetScmapRotation()));
 
 					LuaFile.CloseTab(LuaParser.Write.EndBracketNext);
 

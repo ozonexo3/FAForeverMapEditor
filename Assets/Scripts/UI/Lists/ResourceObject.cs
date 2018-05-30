@@ -1,10 +1,12 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
+using UnityEngine.Events;
+using UnityEngine.EventSystems;
 
 namespace FAF.MapEditor
 {
-	public class ResourceObject : MonoBehaviour
+	public class ResourceObject : MonoBehaviour, IBeginDragHandler
 	{
 
 		//public ResourceBrowser Controler;
@@ -16,6 +18,8 @@ namespace FAF.MapEditor
 
 		public Text[] CustomTexts;
 		public UI3DMesh MeshView;
+
+		public UnityEvent BeginDrag;
 
 		public void SetImages(Texture2D Tex)
 		{
@@ -36,6 +40,12 @@ namespace FAF.MapEditor
 			ResourceBrowser.DragedObject = this;
 			//Cursor.SetCursor ((Texture2D)GetComponent<RawImage> ().texture, Vector2.zero, CursorMode.Auto);
 			Cursor.SetCursor(ResourceBrowser.Current.GetCursorImage(), Vector2.zero, CursorMode.Auto);
+		}
+
+		public void OnBeginDrag(PointerEventData eventData)
+		{
+			BeginDrag.Invoke();
+			OnBeginDrag();
 		}
 	}
 }

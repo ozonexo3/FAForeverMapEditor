@@ -66,6 +66,7 @@ public class BuildWithResources : MonoBehaviour
 	*/
 
 	//[MenuItem("Build/Do Action")]
+	/*
 	public static void ChangeModelVerts()
 	{
 		//ScmapEditor From = UnityEditor.Selection.gameObjects[0].GetComponent<ScmapEditor>();
@@ -85,5 +86,6 @@ public class BuildWithResources : MonoBehaviour
 		To.DefaultSkyboxData = NewSkybox.Data;
 		EditorUtility.SetDirty(To);
 	}
+	*/
 
 }

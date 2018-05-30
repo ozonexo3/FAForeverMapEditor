@@ -87,6 +87,11 @@ public class UnitInstance : MonoBehaviour
 		}
 	}
 
+	public Vector3 GetScmapRotation()
+	{
+		return transform.localEulerAngles * Mathf.Deg2Rad;
+	}
+
 	private void OnEnable()
 	{
 		AllUnitInstances.Add(gameObject);

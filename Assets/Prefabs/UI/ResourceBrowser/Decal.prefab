@@ -23,7 +23,6 @@ GameObject:
   - component: {fileID: 114000012781562974}
   - component: {fileID: 114000011065365692}
   - component: {fileID: 114000012971469342}
-  - component: {fileID: 114000012890614268}
   m_Layer: 5
   m_Name: Decal
   m_TagString: Untagged
@@ -159,36 +158,6 @@ MonoBehaviour:
     y: 0
     width: 1
     height: 1
---- !u!114 &114000012890614268
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1000010253168678}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: -1862395651, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Delegates:
-  - eventID: 13
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 114000012971469342}
-          m_MethodName: OnBeginDrag
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-      m_TypeName: UnityEngine.EventSystems.EventTrigger+TriggerEvent, UnityEngine.UI,
-        Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  delegates: []
 --- !u!114 &114000012971469342
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -206,6 +175,12 @@ MonoBehaviour:
   RawImages:
   - {fileID: 114000012781562974}
   CustomTexts: []
+  MeshView: {fileID: 0}
+  BeginDrag:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
 --- !u!114 &114000013650291784
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -351,6 +326,6 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0.00000023841858, y: 75.5}
+  m_AnchoredPosition: {x: 0, y: 75.5}
   m_SizeDelta: {x: -16, y: -161}
   m_Pivot: {x: 0.5, y: 0.5}
