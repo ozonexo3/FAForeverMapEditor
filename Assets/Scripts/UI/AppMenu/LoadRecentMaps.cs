@@ -40,7 +40,7 @@ public class LoadRecentMaps : MonoBehaviour {
 				GameObject NewListObj = Instantiate(ListPrefab, Pivot) as GameObject;
 				ListObject Component = NewListObj.GetComponent<ListObject>();
 				Component.ClickActionId = ClickRecentMap;
-				Component.ObjectName.text = ScenarioFileName;
+				Component.ObjectName.text = PlayerPrefs.GetString(FolderPath + i, "");
 				Component.InstanceId = i;
 			}
 		}
@@ -88,7 +88,9 @@ public class LoadRecentMaps : MonoBehaviour {
 
 		for (int i = 1; i < RecentCount; i++)
 		{
-			while (PlayerPrefs.GetString(ScenarioFile + (i - 1 + offset), "") == scenario && scenario != "" && offset < RecentCount)
+			while (PlayerPrefs.GetString(ScenarioFile + (i - 1 + offset), "") == scenario && scenario != "" 
+				&& PlayerPrefs.GetString(FolderPath + (i - 1 + offset), "") == folder && folder != ""
+				&& offset < RecentCount)
 			{
 				offset++;
 			}

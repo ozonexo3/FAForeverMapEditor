@@ -110,6 +110,8 @@ namespace EditMap
 			}
 
 			ScmapEditor.Current.UnloadMap();
+			MapLuaParser.Current.ResetUI();
+			MapLuaParser.Current.SaveLuaFile.Unload();
 
 			//string FolderName = Name.text.Replace(" ", "_");
 			string FileName = Name.text.Replace(" ", "_");
@@ -214,9 +216,17 @@ namespace EditMap
 			ScmapEditor.Current.map = new Map(MapLuaParser.Current.ScenarioLuaFile.Data.Size[0], MapLuaParser.Current.ScenarioLuaFile.Data.Size[1], InitialHeight.intValue, 
 				Water.isOn, WaterElv.intValue, DepthElevation.intValue, AbyssElevation.intValue);
 
-			GenerateControlTex.GenerateNormal();
 			//GenerateControlTex.GenerateWater();
 
+			ScmapEditor.Current.LoadHeights();
+			GenerateControlTex.GenerateNormal();
+
+			Invoke("SaveNewMap", 0.5f);
+
+		}
+
+		void SaveNewMap()
+		{
 			MapLuaParser.Current.SaveMap(false);
 			MapLuaParser.Current.SaveScriptLua(0);
 

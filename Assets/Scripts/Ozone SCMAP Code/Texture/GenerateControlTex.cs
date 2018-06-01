@@ -104,7 +104,7 @@ public class GenerateControlTex : MonoBehaviour
 
 				WaterDepth = HeightmapPixels[LerpX, LerpY] + HeightmapPixels[LerpX + 1, LerpY] + HeightmapPixels[LerpX, LerpY + 1] + HeightmapPixels[LerpX + 1, LerpY + 1];
 				WaterDepth /= 4f;
-				WaterDepth *= ScmapEditor.TerrainHeight * 2f; //16
+				WaterDepth *= ScmapEditor.TerrainHeight; //16
 				//WaterDepth /= 0.1f;
 
 

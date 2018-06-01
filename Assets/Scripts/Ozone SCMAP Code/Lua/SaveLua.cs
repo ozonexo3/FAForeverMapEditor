@@ -103,7 +103,13 @@ namespace MapLua
 
 		#endregion
 
+		public void Unload()
+		{
+			ClearMarkersDictionary();
+			EditMap.UnitsInfo.UnloadUnits();
+			Data = new Scenario();
 
+		}
 
 		public bool Load()
 		{
@@ -135,9 +141,7 @@ namespace MapLua
 				return false;
 			}
 
-			ClearMarkersDictionary();
-			EditMap.UnitsInfo.UnloadUnits();
-			Data = new Scenario();
+			Unload();
 			LuaTable ScenarioInfoTab = LuaFile.GetTable(KEY_Scenario);
 
 			Data.next_area_id = LuaParser.Read.IntFromTable(ScenarioInfoTab, Scenario.KEY_NEXTAREAID);

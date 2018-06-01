@@ -242,13 +242,21 @@ namespace EditMap
 					}
 				}
 
-				if (TerainChanged && Input.GetMouseButtonUp(0))
+				if (Input.GetMouseButtonUp(0))
 				{
-					if (Selected > 0 && Selected < 5)
-						MapLuaParser.Current.History.RegisterStratumPaint(beginColors, 0);
-					else if (Selected > 4 && Selected < 9)
-						MapLuaParser.Current.History.RegisterStratumPaint(beginColors, 1);
-					TerainChanged = false;
+					if (Painting)
+					{
+						Painting = false;
+					}
+
+					if (TerainChanged)
+					{
+						if (Selected > 0 && Selected < 5)
+							MapLuaParser.Current.History.RegisterStratumPaint(beginColors, 0);
+						else if (Selected > 4 && Selected < 9)
+							MapLuaParser.Current.History.RegisterStratumPaint(beginColors, 1);
+						TerainChanged = false;
+					}
 				}
 
 				BrushGenerator.RegeneratePaintBrushIfNeeded();
@@ -627,11 +635,24 @@ namespace EditMap
 			return false;
 		}
 		#endregion
+		bool _Painting = false;
+		bool Painting
+		{
+			set
+			{
+				_Painting = value;
+				TerrainMaterial.SetInt("_BrushPainting", _Painting ? (1) : (0));
 
+			}
+			get
+			{
+				return _Painting;
+			}
+		}
 		float ScatterValue = 0;
 		void SymmetryPaint()
 		{
-
+			Painting = true;
 			size = (int)(BrushSize.value * 0.5f);
 			ScatterValue = float.Parse(Scatter.text);
 			/*if (ScatterValue < 0)
@@ -838,8 +859,8 @@ namespace EditMap
 
 		static float ConvertToLinear(float value, float addValue)
 		{
-			value = Mathf.Clamp01(value * 2f - 1f);
-			value = Mathf.Clamp01(value + addValue);
+			value = value * 2f - 1f;
+			value = value + addValue;
 			value += 1;
 			value /= 2f;
 			value = Mathf.Clamp01(value);

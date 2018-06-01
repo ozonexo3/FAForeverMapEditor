@@ -6,7 +6,7 @@ using UnityEngine.EventSystems;
 
 namespace FAF.MapEditor
 {
-	public class ResourceObject : MonoBehaviour, IBeginDragHandler
+	public class ResourceObject : MonoBehaviour, IBeginDragHandler, IDragHandler
 	{
 
 		//public ResourceBrowser Controler;
@@ -35,17 +35,18 @@ namespace FAF.MapEditor
 		{
 
 		}
-		public void OnBeginDrag()
+
+		public void OnDrag(PointerEventData eventData)
 		{
+
+		}
+
+			public void OnBeginDrag(PointerEventData eventData)
+		{
+			BeginDrag.Invoke();
 			ResourceBrowser.DragedObject = this;
 			//Cursor.SetCursor ((Texture2D)GetComponent<RawImage> ().texture, Vector2.zero, CursorMode.Auto);
 			Cursor.SetCursor(ResourceBrowser.Current.GetCursorImage(), Vector2.zero, CursorMode.Auto);
-		}
-
-		public void OnBeginDrag(PointerEventData eventData)
-		{
-			BeginDrag.Invoke();
-			OnBeginDrag();
 		}
 	}
 }

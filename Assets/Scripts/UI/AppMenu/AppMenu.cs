@@ -76,6 +76,9 @@ public class AppMenu : MonoBehaviour
 			case "SaveAs":
 				SaveMapAs();
 				break;
+			case "SaveAsNewVersion":
+				SaveAsNewVersion();
+				break;
 			case "Undo":
 				break;
 			case "Redo":
@@ -378,14 +381,6 @@ public class AppMenu : MonoBehaviour
 
 		var paths = StandaloneFileBrowser.OpenFolderPanel("Save map as...", EnvPaths.GetMapsPath(), false);
 
-		/*
-		System.Windows.Forms.FolderBrowserDialog FolderDialog = new System.Windows.Forms.FolderBrowserDialog();
-		FolderDialog.SelectedPath = MapLuaParser.Current.FolderParentPath;
-		FolderDialog.Description = "Save map to folder";
-		FolderDialog.ShowNewFolderButton = true;
-		*/
-
-		//if (FolderDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
 		if (paths.Length > 0 && !string.IsNullOrEmpty(paths[0]))
 		{
 			if (System.IO.Directory.GetDirectories(paths[0]).Length > 0 || System.IO.Directory.GetFiles(paths[0]).Length > 0)
@@ -416,5 +411,73 @@ public class AppMenu : MonoBehaviour
 
 			MapLuaParser.Current.SaveMap(false);
 		}
+	}
+
+	public void SaveAsNewVersion()
+	{
+		int NextVersion = (int)MapLuaParser.Current.ScenarioLuaFile.Data.map_version + 1;
+
+		GenericPopup.ShowPopup(GenericPopup.PopupTypes.TwoButton, "Create new version", "Create version " + NextVersion + " of this map?", "Yes", SaveAsNewVersionYes, "No", null);
+	}
+
+	public void SaveAsNewVersionYes()
+	{
+		MapLuaParser.Current.ScenarioLuaFile.Data.map_version++;
+
+		string OldFolderName = MapLuaParser.Current.FolderName;
+		string NewFolderName = "";
+		if (OldFolderName.ToLower().Contains(".v"))
+		{
+			for (int i = 0; i < OldFolderName.Length; i++)
+			{
+				if (OldFolderName.ToLower().StartsWith(".v"))
+				{
+					break;
+				}
+				else
+				{
+					NewFolderName += OldFolderName[i];
+					OldFolderName = OldFolderName.Remove(0, 1);
+					i--;
+				}
+			}
+		}
+		else
+		{
+			NewFolderName = MapLuaParser.Current.FolderName;
+		}
+
+		NewFolderName += ".v" + ((int)MapLuaParser.Current.ScenarioLuaFile.Data.map_version).ToString("0000");
+
+
+		MapLuaParser.Current.FolderName = NewFolderName;
+
+		if (!System.IO.Directory.Exists(MapLuaParser.Current.FolderParentPath + MapLuaParser.Current.FolderName))
+		{
+			System.IO.Directory.CreateDirectory(MapLuaParser.Current.FolderParentPath + MapLuaParser.Current.FolderName);
+		}
+		else
+		{
+			GenericPopup.ShowPopup(GenericPopup.PopupTypes.OneButton, "Error", "Next map version folder already exist.\nRemove it or load never version.", "OK", null);
+
+			return;
+		}
+
+		string OldScript = MapLuaParser.Current.ScenarioLuaFile.Data.script.Replace("/maps/", MapLuaParser.Current.FolderParentPath);
+
+		MapLuaParser.Current.ScenarioLuaFile.Data.map = "/maps/" + MapLuaParser.Current.FolderName + "/" + MapLuaParser.Current.ScenarioFileName + ".scmap";
+		MapLuaParser.Current.ScenarioLuaFile.Data.save = "/maps/" + MapLuaParser.Current.FolderName + "/" + MapLuaParser.Current.ScenarioFileName + "_save.lua";
+		MapLuaParser.Current.ScenarioLuaFile.Data.script = "/maps/" + MapLuaParser.Current.FolderName + "/" + MapLuaParser.Current.ScenarioFileName + "_script.lua";
+		MapLuaParser.Current.ScenarioLuaFile.Data.preview = "";
+
+		LoadRecentMaps.MoveLastMaps(MapLuaParser.Current.ScenarioFileName, MapLuaParser.Current.FolderName, MapLuaParser.Current.FolderParentPath);
+
+
+		MapLuaParser.Current.SaveMap(false);
+
+		System.IO.File.Copy(OldScript, MapLuaParser.Current.ScenarioLuaFile.Data.script.Replace("/maps/", MapLuaParser.Current.FolderParentPath));
+
+
+		EditingMenu.MapInfoMenu.UpdateFields();
 	}
 }

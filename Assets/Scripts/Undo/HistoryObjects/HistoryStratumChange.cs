@@ -59,5 +59,10 @@ public class HistoryStratumChange : HistoryObject {
 		Undo.Current.Scmap.Textures [i].Tilling = Textures.Tilling;
 
 		Undo.Current.Scmap.SetTextures (i);
+
+		Undo.Current.EditMenu.EditStratum.ReloadStratums();
+		Undo.Current.EditMenu.EditStratum.SelectStratum(i);
+
+
 	}
 }

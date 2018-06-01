@@ -13,6 +13,8 @@ namespace EditMap
 
 		[Header("UI")]
 		public Transform Pivot;
+		public GameObject GroupPrefab;
+		public GameObject UnitPrefab;
 
 		[Header("Objects")]
 		public GameObject UnitInstancePrefab;
@@ -27,6 +29,8 @@ namespace EditMap
 			SelectionManager.Current.SetCustomSnapAction(SnapAction);
 
 			GoToSelection();
+
+			Generate();
 		}
 
 		private void OnDisable()
@@ -83,6 +87,52 @@ namespace EditMap
 			PlacementManager.Clear();
 			if (ChangeControlerType.Current)
 				ChangeControlerType.Current.UpdateButtons();
+
+		}
+
+		public void Clear()
+		{
+			if (UnitGroups == null)
+				UnitGroups = new HashSet<UnitListObject>();
+			else
+				UnitGroups.Clear();
+		}
+
+		HashSet<UnitListObject> UnitGroups = new HashSet<UnitListObject>();
+		public void Generate()
+		{
+			Clear();
+
+			var ScenarioData = MapLuaParser.Current.ScenarioLuaFile.Data;
+
+			for (int c = 0; c < ScenarioData.Configurations.Length; c++)
+			{
+				for(int t = 0; t < ScenarioData.Configurations[c].Teams.Length; t++)
+				{
+					for(int a = 0; a < ScenarioData.Configurations[c].Teams[t].Armys.Count; a++)
+					{
+						GameObject NewGroupObject = Instantiate(GroupPrefab, Pivot);
+						UnitListObject ulo = NewGroupObject.GetComponent<UnitListObject>();
+						ulo.GroupName.text = ScenarioData.Configurations[c].Teams[t].Armys[a].Data.Name;
+
+						UnitGroups.Add(ulo);
+
+						GenerateArmy(ScenarioData.Configurations[c].Teams[t].Armys[a], ulo);
+					}
+				}
+				for(int e = 0; e < ScenarioData.Configurations[c].ExtraArmys.Count; e++)
+				{
+					GameObject NewGroupObject = Instantiate(GroupPrefab, Pivot);
+					UnitListObject ulo = NewGroupObject.GetComponent<UnitListObject>();
+					ulo.GroupName.text = ScenarioData.Configurations[c].ExtraArmys[e].Data.Name;
+
+					UnitGroups.Add(ulo);
+				}
+			}
+		}
+
+		public void GenerateArmy(MapLua.ScenarioLua.Army Army, UnitListObject ArmyGroup)
+		{
 
 		}
 

@@ -264,6 +264,7 @@ namespace EditMap
 
 					if (Painting && Input.GetMouseButtonUp(0))
 					{
+						Painting = false;
 						RegenerateMaps();
 					}
 				}
@@ -644,7 +645,19 @@ namespace EditMap
 
 
 		#region Painting
-		bool Painting = false;
+		bool _Painting = false;
+		bool Painting
+		{
+			set
+			{
+				TerrainMaterial.SetInt("_BrushPainting", _Painting ? (1) : (0));
+				_Painting = value;
+			}
+			get
+			{
+				return _Painting;
+			}
+		}
 		void SymmetryPaint()
 		{
 			Painting = true;

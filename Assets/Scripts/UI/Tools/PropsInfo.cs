@@ -504,6 +504,11 @@ namespace EditMap
 					}
 					else if (Input.GetMouseButtonUp(0))
 					{
+						if (Painting)
+						{
+							Painting = false;
+						}
+
 						UndoRegistered = false;
 						UpdateBrushPosition(true);
 					}
@@ -564,6 +569,20 @@ namespace EditMap
 		#endregion
 
 		#region Painting
+		bool _Painting = false;
+		bool Painting
+		{
+			set
+			{
+				TerrainMaterial.SetInt("_BrushPainting", _Painting ? (1) : (0));
+				_Painting = value;
+			}
+			get
+			{
+				return _Painting;
+			}
+		}
+
 		float size = 0;
 		int RandomProp = 0;
 		int RandomPropGroup = 0;
@@ -571,6 +590,7 @@ namespace EditMap
 		float StepCount = 100;
 		public void SymmetryPaint(bool forced = false)
 		{
+			Painting = true;
 			int Count = PaintPropObjects.Count;
 			if (Count <= 0 && !Invert)
 			{

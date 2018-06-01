@@ -59,6 +59,7 @@ Properties {
 	[HideInInspector] _Color ("Main Color", Color) = (1,1,1,1)
 
 	[MaterialToggle] _Brush ("Brush", Int) = 0
+	[MaterialToggle] _BrushPainting ("Brush painting", Int) = 0
 	_BrushTex ("Brush (RGB)", 2D) = "white" {}
 	_BrushSize ("Brush Size", Range (0, 128)) = 0
 	_BrushUvX ("Brush X", Range (0, 1)) = 0
@@ -168,7 +169,7 @@ Properties {
 			uniform int _TTerrainXP;
 			uniform float _WaterScaleX, _WaterScaleZ;
 
-			int _Brush;
+			int _Brush, _BrushPainting;
 			sampler2D _BrushTex;
 			half _BrushSize;
 			half _BrushUvX;
@@ -396,7 +397,10 @@ Properties {
 						Emit += half3(0, 0.3, 1) * (AA * 0.8);
 					}
 
-					Emit += half3(0, BrushColor.r * 0.1, BrushColor.r * 0.2);
+					if(_BrushPainting <= 0)
+						Emit += half3(0, BrushColor.r * 0.1, BrushColor.r * 0.2);
+					else 
+						Emit += half3(0, BrushColor.r * 0.1, BrushColor.r * 0.2) * 0.2;
 				}
 
 				//Fog

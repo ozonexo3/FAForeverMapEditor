@@ -185,10 +185,11 @@ public partial class ScmapEditor : MonoBehaviour
 		Data.heightmapResolution = (int)(xRes + 1);
 		TerrainHeight = 1f / yRes;
 		TerrainHeight *= 0.1f;
+		TerrainHeight *= 2;
 
 		Data.size = new Vector3(
 			HalfxRes,
-			TerrainHeight * 2,
+			TerrainHeight,
 			HalfzRes
 			);
 
@@ -239,17 +240,38 @@ public partial class ScmapEditor : MonoBehaviour
 
 		}
 
+		LoadHeights();
+
+
 		SetWaterTextures();
 
 		SetWater();
 
 
+
+
+		Teren.gameObject.layer = 8;
+
+		SetTextures();
+
+		if (Slope)
+		{
+			ToogleSlope(Slope);
+		}
+
+		yield return null;
+		//Debug.Log("Scmap load complited");
+
+		//GetGamedataFile.UnitObject NewUnit = new GetGamedataFile.UnitObject();
+	}
+
+	public void LoadHeights()
+	{
 		heightsLength = (int)Mathf.Max((map.Height + 1), (map.Width + 1));
 		heights = new float[heightsLength, heightsLength];
 
 		float HeightWidthMultiply = (map.Height / (float)map.Width);
 
-		// Modify heights array data
 		int y = 0;
 		int x = 0;
 		int localY = 0;
@@ -271,20 +293,6 @@ public partial class ScmapEditor : MonoBehaviour
 
 		// Set terrain heights from heights array
 		ApplyHeightmap(false);
-
-		Teren.gameObject.layer = 8;
-
-		SetTextures();
-
-		if (Slope)
-		{
-			ToogleSlope(Slope);
-		}
-
-		yield return null;
-		//Debug.Log("Scmap load complited");
-
-		//GetGamedataFile.UnitObject NewUnit = new GetGamedataFile.UnitObject();
 	}
 
 
@@ -823,6 +831,7 @@ public partial class ScmapEditor : MonoBehaviour
 		Markers.MarkersControler.UnloadMarkers();
 		DecalsControler.Current.UnloadDecals();
 		GenerateControlTex.StopAllTasks();
+
 	}
 	#endregion
 

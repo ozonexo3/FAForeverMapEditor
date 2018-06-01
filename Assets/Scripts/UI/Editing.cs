@@ -13,6 +13,7 @@ namespace EditMap
 		public CameraControler KameraKontroler;
 		public MarkersInfo EditMarkers;
 		public TerrainInfo EditTerrain;
+		public StratumInfo EditStratum;
 		public GameObject[] Categorys;
 		public GameObject[] CategorysSelected;
 		public MarkersList AllMarkersList;
