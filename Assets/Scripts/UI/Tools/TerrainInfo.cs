@@ -886,15 +886,16 @@ namespace EditMap
 
 		float MoveToValue(float current, float target, float speed, float min, float max)
 		{
-			if(current > target)
+			current = Mathf.Clamp(current, min, max);
+
+			if (current > target)
 			{
-				return Mathf.Clamp(current - speed, target, max);
+				return current - speed;
 			}
-			else if (current < target)
+			else
 			{
-				return Mathf.Clamp(current + speed, min, target);
+				return current + speed;
 			}
-			return current;
 		}
 
 

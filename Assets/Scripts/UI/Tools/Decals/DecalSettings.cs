@@ -317,17 +317,17 @@ namespace EditMap
 		public void ClickTex1()
 		{
 			if (!string.IsNullOrEmpty(Texture1Path.text))
-				ResourceBrowser.Current.LoadStratumTexture(Texture1Path.text.Remove(0, 1));
+				ResourceBrowser.Current.LoadDecalTexture(Texture1Path.text.Remove(0, 1));
 			else
-				ResourceBrowser.Current.gameObject.SetActive(true);
+				ResourceBrowser.Current.LoadDecalTexture("");
 		}
 
 		public void ClickTex2()
 		{
 			if (!string.IsNullOrEmpty(Texture2Path.text))
-				ResourceBrowser.Current.LoadStratumTexture(Texture2Path.text.Remove(0, 1));
+				ResourceBrowser.Current.LoadDecalTexture(Texture2Path.text.Remove(0, 1));
 			else
-				ResourceBrowser.Current.gameObject.SetActive(true);
+				ResourceBrowser.Current.LoadDecalTexture("");
 		}
 
 		public void DropTex1()

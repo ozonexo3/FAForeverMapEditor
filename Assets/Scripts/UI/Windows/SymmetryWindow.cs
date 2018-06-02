@@ -32,8 +32,8 @@ public class SymmetryWindow : MonoBehaviour {
 	{
 		if (ToleranceInput.value != GetTolerance())
 		{
-			InvokeChange();
 			PlayerPrefs.SetFloat("SymmetryTolerance", ToleranceInput.value);
+			InvokeChange();
 
 		}
 	}
@@ -42,7 +42,6 @@ public class SymmetryWindow : MonoBehaviour {
 
 		if(AngleSlider.intValue != SymmetryWindow.GetRotationSym())
 		{
-			InvokeChange();
 			int value = AngleSlider.intValue;
 			if (value < 2)
 				value = 2;
@@ -50,13 +49,15 @@ public class SymmetryWindow : MonoBehaviour {
 				value = 16;
 
 			PlayerPrefs.SetInt("SymmetryAngleCount", value);
+			InvokeChange();
+
 		}
 	}
 
 	void InvokeChange()
 	{
 		if(OnSymmetryChanged != null)
-		OnSymmetryChanged.Invoke();
+			OnSymmetryChanged.Invoke();
 	}
 
 	public void Button(string func){
@@ -94,13 +95,16 @@ public class SymmetryWindow : MonoBehaviour {
 			if(Toggles[8].isOn) SaveSymmetry(8);
 			break;
 		}
-		
 	}
 
 	void SaveSymmetry(int id)
 	{
+		if (GetSymmetryType() == id)
+			return;
+
 		PlayerPrefs.SetInt("Symmetry", id);
 		PlayerPrefs.Save();
+		InvokeChange();
 	}
 
 

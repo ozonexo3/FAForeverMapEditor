@@ -27,6 +27,17 @@ namespace Selection
 			Current = this;
 		}
 
+		private void OnEnable()
+		{
+			SymmetryWindow.OnSymmetryChanged += OnSymmetryChanged;
+		}
+
+		private void OnDisable()
+		{
+			SymmetryWindow.OnSymmetryChanged -= OnSymmetryChanged;
+
+		}
+
 		void Update()
 		{
 			if (!Active)

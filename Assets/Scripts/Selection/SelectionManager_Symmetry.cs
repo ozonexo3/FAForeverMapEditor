@@ -282,6 +282,10 @@ namespace Selection
 			return -1;
 		}
 
+		public void OnSymmetryChanged()
+		{
+			FinishSelectionChange();
+		}
 
 		public void FinishSelectionChange()
 		{
@@ -384,6 +388,7 @@ namespace Selection
 
 					SymetrySelection[2] = new SelectedObjects();
 					SymetrySelection[2].SymmetryMatrix = SymetrySelection[0].SymmetryMatrix * SymetrySelection[1].SymmetryMatrix;
+					//SymetrySelection[2].SymmetryMatrix = Matrix4x4.TRS(Vector3.zero, Quaternion.Euler(Vector3.down * 180), new Vector3(-1, 1, -1));
 					SymetrySelection[2].InverseRotation = false;
 					SymetrySelection[2].LoadSymetryIds();
 					GenerateSymmetrySelectionRing(SymetrySelection[2]);

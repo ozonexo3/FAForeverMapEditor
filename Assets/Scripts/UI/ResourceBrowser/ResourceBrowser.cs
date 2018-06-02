@@ -267,7 +267,83 @@ namespace FAF.MapEditor
 
 		public void LoadDecalTexture(string path)
 		{
+			int LastCategory = Category.value;
+			int LastEnvType = EnvType.value;
 
+			CustomLoading = true;
+
+			if (string.IsNullOrEmpty(path))
+			{
+				DontReload = false;
+				Category.value = 2;
+			}
+			else
+			{
+				//Debug.Log ("Load browser for: " + path);
+				string BeginPath = path;
+				//SRect.normalizedPosition = Vector2.zero;
+
+
+				path = path.Replace("env/", "");
+
+				string EnvTypeFolder = "";
+
+				while (EnvTypeFolder.Length < path.Length)
+				{
+					if (path[EnvTypeFolder.Length] == "/"[0])
+					{
+						path = path.Replace(EnvTypeFolder + "/", "");
+						break;
+					}
+					EnvTypeFolder += path[EnvTypeFolder.Length];
+				}
+
+				for (int i = 0; i < EnvType.options.Count; i++)
+				{
+					if (EnvType.options[i].text.ToLower() == EnvTypeFolder.ToLower())
+					{
+						EnvType.value = i;
+						break;
+					}
+				}
+
+				string CategoryFolder = "";
+				while (CategoryFolder.Length < path.Length)
+				{
+					if (path[CategoryFolder.Length] == "/"[0])
+					{
+						CategoryFolder += "/";
+						path = path.Replace(CategoryFolder, "");
+						break;
+					}
+					CategoryFolder += path[CategoryFolder.Length];
+				}
+
+				for (int i = 0; i < Category.options.Count; i++)
+				{
+					if (CategoryPaths[i].ToLower() == CategoryFolder.ToLower())
+					{
+						Category.value = i;
+						break;
+					}
+				}
+
+				SelectedObject = BeginPath;
+				DontReload = LastCategory == Category.value && LastEnvType == EnvType.value && !IsGenerating;
+
+			}
+
+			gameObject.SetActive(true);
+
+
+			if (!DontReload)
+				Pivot.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
+
+
+			if (IsGenerating)
+				StopCoroutine(GeneratingList);
+			CustomLoading = false;
+			GeneratingList = StartCoroutine(GenerateList());
 		}
 
 		#region Generate List of Assets

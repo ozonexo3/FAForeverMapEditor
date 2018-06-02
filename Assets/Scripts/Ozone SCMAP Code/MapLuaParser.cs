@@ -78,9 +78,6 @@ public partial class MapLuaParser : MonoBehaviour
 	{
 		ICSharpCode.SharpZipLib.Zip.ZipConstants.DefaultCodePage = 0;
 
-#if UNITY_EDITOR
-		//PlayerPrefs.DeleteAll();
-#endif
 
 		EnvPaths.GenerateDefaultPaths();
 
@@ -185,7 +182,7 @@ public partial class MapLuaParser : MonoBehaviour
 		string Error = "";
 		if (!System.IO.Directory.Exists(FolderParentPath))
 		{
-			Error = "Map folder not exist: " + FolderParentPath;
+			Error = "Map folder does not exist:\n" + FolderParentPath;
 			Debug.LogError(Error);
 			AllFilesExists = false;
 		}
@@ -196,32 +193,36 @@ public partial class MapLuaParser : MonoBehaviour
 
 			if (!AllFilesExists)
 			{
-				Error = "Scenario.lua not exist: " + LoadedMapFolderPath + ScenarioFileName + ".lua";
-				Debug.LogError(Error);
-			}
-		}
-		string ScenarioText = System.IO.File.ReadAllText(LoadedMapFolderPath + ScenarioFileName + ".lua");
-
-		if (AllFilesExists && !ScenarioText.StartsWith("version = 3") && ScenarioText.StartsWith("version ="))
-		{
-			AllFilesExists = SearchForScenario();
-
-			if (!AllFilesExists)
-			{
-				Error = "Wrong scenario file version. Should be 3, is " + ScenarioText.Remove(11).Replace("version =", "");
+				Error = "Scenario.lua does not exist:\n" + LoadedMapFolderPath + ScenarioFileName + ".lua";
 				Debug.LogError(Error);
 			}
 		}
 
-
-		if (AllFilesExists && !ScenarioText.StartsWith("version = 3"))
+		if (AllFilesExists)
 		{
-			AllFilesExists = SearchForScenario();
+			string ScenarioText = System.IO.File.ReadAllText(LoadedMapFolderPath + ScenarioFileName + ".lua");
 
-			if (!AllFilesExists)
+			if (!ScenarioText.StartsWith("version = 3") && ScenarioText.StartsWith("version ="))
 			{
-				Error = "Selected file is not a proper scenario.lua file. ";
-				Debug.LogError(Error);
+				AllFilesExists = SearchForScenario();
+
+				if (!AllFilesExists)
+				{
+					Error = "Wrong scenario file version. Should be 3, is " + ScenarioText.Remove(11).Replace("version =", "");
+					Debug.LogError(Error);
+				}
+			}
+
+
+			if (AllFilesExists && !ScenarioText.StartsWith("version = 3"))
+			{
+				AllFilesExists = SearchForScenario();
+
+				if (!AllFilesExists)
+				{
+					Error = "Selected file is not a proper scenario.lua file. ";
+					Debug.LogError(Error);
+				}
 			}
 		}
 
@@ -350,7 +351,9 @@ public partial class MapLuaParser : MonoBehaviour
 		}
 		else
 		{
+			ResetUI();
 			ReturnLoadingWithError(Error);
+
 		}
 
 	}
@@ -365,6 +368,9 @@ public partial class MapLuaParser : MonoBehaviour
 
 	bool SearchForScenario()
 	{
+		if (!System.IO.Directory.Exists(LoadedMapFolderPath))
+			return false;
+
 		string[] AllFiles = System.IO.Directory.GetFiles(LoadedMapFolderPath);
 		for (int i = 0; i < AllFiles.Length; i++)
 		{
