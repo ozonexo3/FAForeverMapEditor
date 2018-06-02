@@ -152,7 +152,6 @@ public partial class ScmapEditor : MonoBehaviour
 		float HalfxRes = xRes / 10f;
 		float HalfzRes = zRes / 10f;
 
-		float yRes = (float)map.HeightScale; ;
 
 		TerrainMaterial.SetTexture("_TerrainNormal", map.UncompressedNormalmapTex);
 		Shader.SetGlobalTexture("_UtilitySamplerC", map.UncompressedWatermapTex);
@@ -182,27 +181,7 @@ public partial class ScmapEditor : MonoBehaviour
 		//Teren.terrainData.alphamapResolution = 32;
 		//Teren.terrainData.baseMapResolution = 32;
 
-		Data.heightmapResolution = (int)(xRes + 1);
-		TerrainHeight = 1f / yRes;
-		TerrainHeight *= 0.1f;
-		TerrainHeight *= 2;
 
-		Data.size = new Vector3(
-			HalfxRes,
-			TerrainHeight,
-			HalfzRes
-			);
-
-		Data.RefreshPrototypes();
-		Teren.Flush();
-		Teren.UpdateGIMaterials();
-		Teren.ApplyDelayedHeightmapModification();
-
-		//Data.SetDetailResolution((int)(xRes / 2), 8);
-		//Data.baseMapResolution = (int)(xRes / 2);
-		//Data.alphamapResolution = (int)(xRes / 2);
-
-		Teren.transform.localPosition = new Vector3(0, 0, -HalfzRes);
 
 
 		WaterLevel.transform.localScale = new Vector3(HalfxRes, 1, HalfzRes);
@@ -267,6 +246,31 @@ public partial class ScmapEditor : MonoBehaviour
 
 	public void LoadHeights()
 	{
+		int xRes = MapLuaParser.Current.ScenarioLuaFile.Data.Size[0];
+		int zRes = MapLuaParser.Current.ScenarioLuaFile.Data.Size[1];
+		float yRes = (float)map.HeightScale;
+
+		float HalfxRes = xRes / 10f;
+		float HalfzRes = zRes / 10f;
+
+		Data.heightmapResolution = (int)(xRes + 1);
+		TerrainHeight = 1f / yRes;
+		TerrainHeight *= 0.1f;
+		TerrainHeight *= 2;
+
+		Data.size = new Vector3(
+			HalfxRes,
+			TerrainHeight,
+			HalfzRes
+			);
+
+		Data.RefreshPrototypes();
+		Teren.Flush();
+		Teren.UpdateGIMaterials();
+		Teren.ApplyDelayedHeightmapModification();
+
+		Teren.transform.localPosition = new Vector3(0, 0, -HalfzRes);
+
 		heightsLength = (int)Mathf.Max((map.Height + 1), (map.Width + 1));
 		heights = new float[heightsLength, heightsLength];
 

@@ -217,9 +217,11 @@ namespace EditMap
 				Water.isOn, WaterElv.intValue, DepthElevation.intValue, AbyssElevation.intValue);
 
 			//GenerateControlTex.GenerateWater();
-
 			ScmapEditor.Current.LoadHeights();
+
+			GenerateControlTex.StopAllTasks();
 			GenerateControlTex.GenerateNormal();
+			GenerateControlTex.GenerateWater();
 
 			Invoke("SaveNewMap", 0.5f);
 

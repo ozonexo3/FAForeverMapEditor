@@ -198,6 +198,8 @@ public class GenerateControlTex : MonoBehaviour
 		ScmapEditor.Current.map.UncompressedNormalmapTex.SetPixels(AllColors);
 		ScmapEditor.Current.map.UncompressedNormalmapTex.Apply(false);
 		ScmapEditor.Current.TerrainMaterial.SetFloat("_GeneratingNormal", 0);
+		ScmapEditor.Current.TerrainMaterial.SetTexture("_TerrainNormal", ScmapEditor.Current.map.UncompressedNormalmapTex);
+
 
 		yield return null;
 		NormalCoroutine = null;
