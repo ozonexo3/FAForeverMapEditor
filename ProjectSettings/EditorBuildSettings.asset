@@ -6,5 +6,9 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/Preload.unity
+    guid: 0c84703a32be711478664f4fe72c8e1e
+  - enabled: 1
     path: Assets/MapEditor.unity
     guid: 4b48eccf8ce36f7478a4476718bc9fb4
+  m_configObjects: {}
