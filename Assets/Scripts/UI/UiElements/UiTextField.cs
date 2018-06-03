@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
@@ -11,6 +12,7 @@ namespace Ozone.UI
 		[Header("Config")]
 		public FieldTypes FieldType;
 		public float BeginValue;
+		[SerializeField] private string FiltredChars;
 		//public string Format = "N2";
 
 		[Header("UI")]
@@ -23,6 +25,19 @@ namespace Ozone.UI
 		public UnityEvent OnEndEdit;
 
 		
+		private string[] _filtredCharsArr;
+		private string[] FiltredCharsArr
+		{
+			get
+			{
+				if (_filtredCharsArr == null || _filtredCharsArr.Length == 0)
+				{
+					_filtredCharsArr = FiltredChars.ToCharArray().Select(c => c.ToString()).ToArray();
+				}
+
+				return _filtredCharsArr;
+			}
+		}
 
 		public enum FieldTypes
 		{
@@ -30,6 +45,11 @@ namespace Ozone.UI
 		}
 
 		bool HasValue = false;
+
+		private void Awake()
+		{
+			InputFieldUi.onValueChange.AddListener(CharFilter);
+		}
 
 		private void Start()
 		{
@@ -39,6 +59,11 @@ namespace Ozone.UI
 				SetValue(BeginValue);
 			else if (FieldType == FieldTypes.Int)
 				SetValue((int)BeginValue);
+		}
+
+		private void OnDestroy()
+		{
+			InputFieldUi.onValueChange.RemoveListener(CharFilter);
 		}
 
 		#region Events
@@ -187,6 +212,18 @@ namespace Ozone.UI
 			else if (InputFieldUi.contentType == InputField.ContentType.DecimalNumber)
 				InputFieldUi.text = LastValue.ToString("F2").Replace(",", ".");
 
+		}
+
+		public void CharFilter(string value)
+		{
+			var tmpstr = value;
+			foreach (var c in FiltredCharsArr)
+			{
+				tmpstr = tmpstr.Replace(c, "");
+			}
+
+			SetValue(tmpstr);
+//			InputFieldUi.text = tmpstr;
 		}
 		#endregion
 
