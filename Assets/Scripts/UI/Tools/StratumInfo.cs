@@ -653,7 +653,7 @@ namespace EditMap
 		void SymmetryPaint()
 		{
 			Painting = true;
-			size = (int)(BrushSize.value * 0.5f);
+			size = (int)(BrushSize.value);
 			ScatterValue = float.Parse(Scatter.text);
 			/*if (ScatterValue < 0)
 				ScatterValue = 0;
@@ -860,7 +860,7 @@ namespace EditMap
 		static float ConvertToLinear(float value, float addValue)
 		{
 			value = value * 2f - 1f;
-			value = value + addValue;
+			value = Mathf.Clamp(value + addValue, -0.05f, 1.05f);
 			value += 1;
 			value /= 2f;
 			value = Mathf.Clamp01(value);

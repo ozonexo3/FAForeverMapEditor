@@ -39,14 +39,16 @@ public class GenerateControlTex : MonoBehaviour
 			BufforWaterTex = true;
 		}
 		else
-			WaterCoroutine = Current.StartCoroutine(Current.GeneratingWater());
+			WaterCoroutine = Current.StartCoroutine(Current.GeneratingWaterTask());
 	}
 
 	public IEnumerator GeneratingWater()
 	{
-		Task task;
-		this.StartCoroutineAsync(GeneratingWaterTask(), out task);
-		yield return StartCoroutine(task.Wait());
+		//Task task;
+		//this.StartCoroutineAsync(GeneratingWaterTask(), out task);
+		//yield return StartCoroutine(task.Wait());
+
+		yield return StartCoroutine(GeneratingWaterTask());
 
 		WaterCoroutine = null;
 		yield return null;
@@ -62,17 +64,20 @@ public class GenerateControlTex : MonoBehaviour
 	{
 
 		float WaterHeight = ScmapEditor.Current.map.Water.Elevation * 0.1f;
+		float WaterDeep = ScmapEditor.Current.map.Water.ElevationDeep * 0.1f;
 		if (WaterHeight == 0)
 			WaterHeight = 1;
-		float WaterDeep = ScmapEditor.Current.map.Water.ElevationAbyss * 0.1f;
+		float WaterAbyss = ScmapEditor.Current.map.Water.ElevationAbyss * 0.1f;
 
 		float DeepDifference = (WaterHeight - WaterDeep) / WaterHeight;
-
+		float AbyssDifference = (WaterDeep - WaterAbyss) / WaterDeep;
 
 		int i = 0;
 		int x = 0;
 		int y = 0;
 		float WaterDepth = 0;
+		float WaterDepthDeep = 0;
+		float WaterDepthAbyss = 0;
 
 		yield return Ninja.JumpToUnity;
 		int Width = ScmapEditor.Current.map.UncompressedWatermapTex.width;
@@ -82,7 +87,7 @@ public class GenerateControlTex : MonoBehaviour
 		int HeightmapWidth = ScmapEditor.Current.Teren.terrainData.heightmapWidth - 1;
 		int HeightmapHeight = ScmapEditor.Current.Teren.terrainData.heightmapHeight - 1;
 
-		yield return Ninja.JumpBack;
+		//yield return Ninja.JumpBack;
 
 		for (x = 0; x < Width; x++)
 		{
@@ -105,21 +110,36 @@ public class GenerateControlTex : MonoBehaviour
 				WaterDepth = HeightmapPixels[LerpX, LerpY] + HeightmapPixels[LerpX + 1, LerpY] + HeightmapPixels[LerpX, LerpY + 1] + HeightmapPixels[LerpX + 1, LerpY + 1];
 				WaterDepth /= 4f;
 				WaterDepth *= ScmapEditor.TerrainHeight; //16
-				//WaterDepth /= 0.1f;
+														 //WaterDepth /= 0.1f;
 
 
-				WaterDepth = (WaterHeight - WaterDepth) / WaterHeight;
-				WaterDepth /= DeepDifference;
+				WaterDepthDeep = (WaterHeight - WaterDepth) / WaterHeight;
+				WaterDepthDeep /= DeepDifference;
+
+				WaterDepthAbyss = (WaterDeep - WaterDepth) / WaterDeep;
+				WaterDepthAbyss /= AbyssDifference;
+
+				WaterDepth = Mathf.Lerp(WaterDepthDeep * 0.5f, 1, WaterDepthAbyss);
 
 
-				AllColors[i] = new Color(AllColors[i].r, Mathf.Clamp01(WaterDepth), (1f - Mathf.Clamp01(WaterDepth * 100f)), 0);
+				AllColors[i] = new Color(AllColors[i].r, WaterDepth, (1f - Mathf.Clamp01(WaterDepth * 100f)), 0);
 			}
 		}
 
-		yield return Ninja.JumpToUnity;
+		//yield return Ninja.JumpToUnity;
 
 		ScmapEditor.Current.map.UncompressedWatermapTex.SetPixels(AllColors);
 		ScmapEditor.Current.map.UncompressedWatermapTex.Apply(false);
+
+		WaterCoroutine = null;
+
+		yield return null;
+
+		if (BufforWaterTex)
+		{
+			BufforWaterTex = false;
+			WaterCoroutine = Current.StartCoroutine(Current.GeneratingWaterTask());
+		}
 	}
 
 	#endregion
@@ -142,6 +162,8 @@ public class GenerateControlTex : MonoBehaviour
 		if (GeneratingNormalTex)
 		{
 			Current.StopCoroutine(NormalCoroutine);
+			ScmapEditor.Current.TerrainMaterial.SetFloat("_GeneratingNormal", 0);
+
 		}
 	}
 
@@ -200,7 +222,6 @@ public class GenerateControlTex : MonoBehaviour
 		ScmapEditor.Current.TerrainMaterial.SetFloat("_GeneratingNormal", 0);
 		ScmapEditor.Current.TerrainMaterial.SetTexture("_TerrainNormal", ScmapEditor.Current.map.UncompressedNormalmapTex);
 
-
 		yield return null;
 		NormalCoroutine = null;
 
@@ -212,6 +233,8 @@ public class GenerateControlTex : MonoBehaviour
 			GenerateNormal();
 		}
 	}
+
+
 
 	#endregion
 

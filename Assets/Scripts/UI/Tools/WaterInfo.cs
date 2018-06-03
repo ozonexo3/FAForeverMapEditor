@@ -105,6 +105,7 @@ namespace EditMap
 
 			ScmapEditor.Current.SetWater();
 
+			GenerateControlTex.StopAllTasks();
 			TerrainMenu.RegenerateMaps();
 
 			WaterSettings.interactable = HasWater.isOn;

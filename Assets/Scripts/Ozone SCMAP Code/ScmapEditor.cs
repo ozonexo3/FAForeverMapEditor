@@ -161,27 +161,13 @@ public partial class ScmapEditor : MonoBehaviour
 		//*****************************************
 		// ***** Set Terrain proportives
 		//*****************************************
-		if (Teren) DestroyImmediate(Teren.gameObject);
+
+		LoadHeights();
+
 
 		// Load Stratum Textures Paths
 		LoadStratumScdTextures();
 		MapLuaParser.Current.InfoPopup.Show(true, "Loading map...\n( Assing scmap data )");
-
-
-		Teren = Terrain.CreateTerrainGameObject(Data).GetComponent<Terrain>();
-		Teren.gameObject.name = "TERRAIN";
-		Teren.materialType = Terrain.MaterialType.Custom;
-		Teren.materialTemplate = TerrainMaterial;
-		Teren.heightmapPixelError = 4f;
-		Teren.basemapDistance = 10000;
-		Teren.castShadows = false;
-		Teren.drawTreesAndFoliage = false;
-		Teren.reflectionProbeUsage = UnityEngine.Rendering.ReflectionProbeUsage.Off;
-		//Teren.terrainData.detailResolution = 32;
-		//Teren.terrainData.alphamapResolution = 32;
-		//Teren.terrainData.baseMapResolution = 32;
-
-
 
 
 		WaterLevel.transform.localScale = new Vector3(HalfxRes, 1, HalfzRes);
@@ -219,9 +205,6 @@ public partial class ScmapEditor : MonoBehaviour
 
 		}
 
-		LoadHeights();
-
-
 		SetWaterTextures();
 
 		SetWater();
@@ -246,6 +229,18 @@ public partial class ScmapEditor : MonoBehaviour
 
 	public void LoadHeights()
 	{
+		if (Teren) DestroyImmediate(Teren.gameObject);
+
+		Teren = Terrain.CreateTerrainGameObject(Data).GetComponent<Terrain>();
+		Teren.gameObject.name = "TERRAIN";
+		Teren.materialType = Terrain.MaterialType.Custom;
+		Teren.materialTemplate = TerrainMaterial;
+		Teren.heightmapPixelError = 4f;
+		Teren.basemapDistance = 10000;
+		Teren.castShadows = false;
+		Teren.drawTreesAndFoliage = false;
+		Teren.reflectionProbeUsage = UnityEngine.Rendering.ReflectionProbeUsage.Off;
+
 		int xRes = MapLuaParser.Current.ScenarioLuaFile.Data.Size[0];
 		int zRes = MapLuaParser.Current.ScenarioLuaFile.Data.Size[1];
 		float yRes = (float)map.HeightScale;
@@ -297,6 +292,10 @@ public partial class ScmapEditor : MonoBehaviour
 
 		// Set terrain heights from heights array
 		ApplyHeightmap(false);
+
+		GenerateControlTex.StopAllTasks();
+		GenerateControlTex.GenerateNormal();
+		GenerateControlTex.GenerateWater();
 	}
 
 

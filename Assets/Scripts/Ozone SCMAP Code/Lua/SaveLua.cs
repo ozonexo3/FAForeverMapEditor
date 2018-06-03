@@ -117,6 +117,9 @@ namespace MapLua
 			string loadedFileSave = "";
 			//string MapPath = EnvPaths.GetMapsPath();
 
+			if (!System.IO.File.Exists(MapLuaParser.MapRelativePath(MapLuaParser.Current.ScenarioLuaFile.Data.save)))
+				return false;
+
 			loadedFileSave = System.IO.File.ReadAllText( MapLuaParser.MapRelativePath(MapLuaParser.Current.ScenarioLuaFile.Data.save), encodeType);
 
 			//string loadedFileFunctions = LuaParser.Read.GetStructureText("lua_variable_functions.lua");

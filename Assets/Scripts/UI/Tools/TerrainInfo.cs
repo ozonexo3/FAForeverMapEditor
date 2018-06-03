@@ -255,17 +255,15 @@ namespace EditMap
 					{
 						PaintStarted = false;
 						ScmapEditor.Current.Teren.heightmapPixelError = 4;
-
+						if (Painting)
+						{
+							Painting = false;
+							RegenerateMaps();
+						}
 					}
 					else
 					{
 						UpdateBrushPosition(true);
-					}
-
-					if (Painting && Input.GetMouseButtonUp(0))
-					{
-						Painting = false;
-						RegenerateMaps();
 					}
 				}
 			}
@@ -650,8 +648,8 @@ namespace EditMap
 		{
 			set
 			{
-				TerrainMaterial.SetInt("_BrushPainting", _Painting ? (1) : (0));
 				_Painting = value;
+				TerrainMaterial.SetInt("_BrushPainting", _Painting ? (1) : (0));
 			}
 			get
 			{
@@ -890,11 +888,11 @@ namespace EditMap
 
 			if (current > target)
 			{
-				return current - speed;
+				return Mathf.Clamp(current - speed, target, max) ;
 			}
 			else
 			{
-				return current + speed;
+				return Mathf.Clamp(current + speed, min, target);
 			}
 		}
 
