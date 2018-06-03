@@ -246,6 +246,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   FieldType: 0
   BeginValue: 0
+  FiltredChars: '''"\'
   InputFieldUi: {fileID: 114166052291976760}
   SliderUi: {fileID: 0}
   OnBeginChange:
