@@ -40,6 +40,8 @@ public class HistoryTerrainHeight : HistoryObject {
 			Undo.Current.EditMenu.ChangeCategory(1);
 		}
 
+		Undo.Current.EditMenu.EditTerrain.ChangePage(0);
+
 		//ScmapEditor.Current.Teren.terrainData.SetHeights(0, 0, Pixels);
 		ScmapEditor.SetAllHeights(Pixels);
 

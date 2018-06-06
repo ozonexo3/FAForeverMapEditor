@@ -76,6 +76,8 @@ public class PlacementManager : MonoBehaviour {
 		Current.GenerateSymmetry();
 		Current.enabled = true;
 		ChangeControlerType.ChangeCurrentControler(0);
+		SymmetryWindow.OnSymmetryChanged += Current.UpdateSymmetry;
+
 	}
 
 	public static void Clear()
@@ -86,6 +88,7 @@ public class PlacementManager : MonoBehaviour {
 				DestroyImmediate(Current.PlacementSymmetry[i]);
 
 		Current.enabled = false;
+		SymmetryWindow.OnSymmetryChanged -= Current.UpdateSymmetry;
 	}
 
 	Vector3 RotationStartMousePos;
@@ -274,6 +277,10 @@ public class PlacementManager : MonoBehaviour {
 	}
 
 
+	public void UpdateSymmetry()
+	{
+		GenerateSymmetry();
+	}
 
 
 	int LastSym = 0;

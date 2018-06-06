@@ -98,6 +98,7 @@ Properties {
 			#include "UnityGBuffer.cginc"
 			#include "UnityGlobalIllumination.cginc"
 			#include "Assets/GFX/Shaders/SimpleLambert.cginc"
+			#pragma multi_compile PREVIEW_OFF PREVIEW_ON
 
 			struct Input {
 				float2 uv_Control : TEXCOORD0;
@@ -322,61 +323,65 @@ Properties {
 				//half3 Emit = _SunAmbience.rgb * 2;
 				half3 Emit = 0;
 
-				if(_Slope > 0){
-					o.Normal = half3(0,0,1);
+#if defined(PREVIEW_ON)
+		
+#else
+
+				if (_Slope > 0) {
+					o.Normal = half3(0, 0, 1);
 					half3 SlopeColor = 0;
-					if(_UseSlopeTex > 0){
+					if (_UseSlopeTex > 0) {
 						//col = 0;
 						float2 UV2 = IN.uv_Control * fixed2(1, 1) + half2(0, 0) - float2(-0.00, -0.00) / _GridScale;
-						float4 splat_control = tex2D (_SlopeTex, UV2);
+						float4 splat_control = tex2D(_SlopeTex, UV2);
 						SlopeColor = splat_control.rgb;
-					
+
 					}
-					else{
+					else {
 
-						if(IN.worldPos.y < _WaterLevel){
-							if(IN.SlopeLerp > 0.75) SlopeColor = half3(0,0.4,1);
-							else SlopeColor = half3(0.6,0,1);
+						if (IN.worldPos.y < _WaterLevel) {
+							if (IN.SlopeLerp > 0.75) SlopeColor = half3(0, 0.4, 1);
+							else SlopeColor = half3(0.6, 0, 1);
 						}
-						else if(IN.SlopeLerp > 0.999) SlopeColor = half3(0,0.8,0);
-						else if(IN.SlopeLerp > 0.95) SlopeColor = half3(0.3,0.89,0);
-						else if(IN.SlopeLerp > 0.80) SlopeColor = half3(0.5,0.8,0);
-						else SlopeColor = half3(1,0,0);
+						else if (IN.SlopeLerp > 0.999) SlopeColor = half3(0, 0.8, 0);
+						else if (IN.SlopeLerp > 0.95) SlopeColor = half3(0.3, 0.89, 0);
+						else if (IN.SlopeLerp > 0.80) SlopeColor = half3(0.5, 0.8, 0);
+						else SlopeColor = half3(1, 0, 0);
 
-						}
+					}
 					Emit = SlopeColor * 0.5;
 					col.rgb = lerp(col.rgb, SlopeColor, 0.5);
 				}
-				else if(_Water > 0) col.rgb = ApplyWaterColor(WaterDepth, col.rgb);	
-				
+				else if (_Water > 0) col.rgb = ApplyWaterColor(WaterDepth, col.rgb);
 
-				if(_Grid > 0){
+
+				if (_Grid > 0) {
 					float2 GridUv = IN.uv_Control * _GridScale;
-					fixed4 GridColor = tex2D (_GridTexture, IN.uv_Control * _GridScale);
-					fixed4 GridFinal = fixed4(0,0,0,GridColor.a);
-					if(_GridCamDist < 1){
-						GridFinal.rgb = lerp(GridFinal.rgb, fixed3(1,1,1), GridColor.r * lerp(1, 0, _GridCamDist));
-						GridFinal.rgb = lerp(GridFinal.rgb, fixed3(0,1,0), GridColor.g * lerp(1, 0, _GridCamDist));
-						GridFinal.rgb = lerp(GridFinal.rgb, fixed3(0,1,0), GridColor.b * lerp(0, 1, _GridCamDist));
+					fixed4 GridColor = tex2D(_GridTexture, IN.uv_Control * _GridScale);
+					fixed4 GridFinal = fixed4(0, 0, 0, GridColor.a);
+					if (_GridCamDist < 1) {
+						GridFinal.rgb = lerp(GridFinal.rgb, fixed3(1, 1, 1), GridColor.r * lerp(1, 0, _GridCamDist));
+						GridFinal.rgb = lerp(GridFinal.rgb, fixed3(0, 1, 0), GridColor.g * lerp(1, 0, _GridCamDist));
+						GridFinal.rgb = lerp(GridFinal.rgb, fixed3(0, 1, 0), GridColor.b * lerp(0, 1, _GridCamDist));
 					}
-					else{
-						GridFinal.rgb = lerp(GridFinal.rgb, fixed3(0,1,0), GridColor.b);
+					else {
+						GridFinal.rgb = lerp(GridFinal.rgb, fixed3(0, 1, 0), GridColor.b);
 					}
 
 					GridFinal *= GridColor.a;
 
 					half CenterGridSize = lerp(0.005, 0.015, _GridCamDist) / _GridScale;
-					if(IN.uv_Control.x > 0.5 - CenterGridSize && IN.uv_Control.x < 0.5 + CenterGridSize)
-						  GridFinal.rgb = fixed3(0.4,1,0);
-					else if(IN.uv_Control.y > 0.5 - CenterGridSize && IN.uv_Control.y < 0.5 + CenterGridSize)
-						  GridFinal.rgb = fixed3(0.4,1,0);
+					if (IN.uv_Control.x > 0.5 - CenterGridSize && IN.uv_Control.x < 0.5 + CenterGridSize)
+						GridFinal.rgb = fixed3(0.4, 1, 0);
+					else if (IN.uv_Control.y > 0.5 - CenterGridSize && IN.uv_Control.y < 0.5 + CenterGridSize)
+						GridFinal.rgb = fixed3(0.4, 1, 0);
 
 					//col.rgb = lerp(col.rgb, GridFinal.rgb, GridColor.a);
 					Emit += GridFinal;
 				}
 
-				if(_Brush > 0){	
-					fixed4 BrushColor = tex2D (_BrushTex, ((IN.uv_Control - float2(_BrushUvX, _BrushUvY)) * _GridScale) / (_BrushSize * _GridScale * 0.002)  );
+				if (_Brush > 0) {
+					fixed4 BrushColor = tex2D(_BrushTex, ((IN.uv_Control - float2(_BrushUvX, _BrushUvY)) * _GridScale) / (_BrushSize * _GridScale * 0.002));
 
 					half LerpValue = clamp(_BrushSize / 20, 0, 1);
 
@@ -384,12 +389,12 @@ Properties {
 					half To = lerp(0.2f, 0.13f, LerpValue);
 					half Range = lerp(0.015f, 0.008f, LerpValue);
 
-					if(BrushColor.r >= From && BrushColor.r <= To){
+					if (BrushColor.r >= From && BrushColor.r <= To) {
 						half AA = 1;
 
 						if (BrushColor.r < From + Range)
 							AA = (BrushColor.r - From) / Range;
-						else if(BrushColor.r > To - Range)
+						else if (BrushColor.r > To - Range)
 							AA = 1 - (BrushColor.r - (To - Range)) / Range;
 
 						AA = clamp(AA, 0, 1);
@@ -397,18 +402,17 @@ Properties {
 						Emit += half3(0, 0.3, 1) * (AA * 0.8);
 					}
 
-					if(_BrushPainting <= 0)
+					if (_BrushPainting <= 0)
 						Emit += half3(0, BrushColor.r * 0.1, BrushColor.r * 0.2);
-					else 
+					else
 						Emit += half3(0, BrushColor.r * 0.1, BrushColor.r * 0.2) * 0.2;
 				}
+#endif
 
-				//Fog
-
+				//FOG
 				col.rgb = lerp(0, col.rgb, IN.fog);
 				Emit = lerp(unity_FogColor, Emit, IN.fog);
 				//emission.rgb = lerp(emission.rgb, exp2(-unity_FogColor), saturate(IN.fog));
-
 
 
 				o.Albedo = col;

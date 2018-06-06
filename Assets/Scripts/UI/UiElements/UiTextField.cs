@@ -48,7 +48,7 @@ namespace Ozone.UI
 
 		private void Awake()
 		{
-			InputFieldUi.onValueChange.AddListener(CharFilter);
+			InputFieldUi.onValueChanged.AddListener(CharFilter);
 		}
 
 		private void Start()
@@ -63,7 +63,7 @@ namespace Ozone.UI
 
 		private void OnDestroy()
 		{
-			InputFieldUi.onValueChange.RemoveListener(CharFilter);
+			InputFieldUi.onValueChanged.RemoveListener(CharFilter);
 		}
 
 		#region Events

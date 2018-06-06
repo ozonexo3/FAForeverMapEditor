@@ -136,10 +136,12 @@ namespace EditMap
 			{
 				ChangePageToSettings();
 			}
+			TerrainMaterial.EnableKeyword("PREVIEW_ON");
 		}
 
 		void OnDisable()
 		{
+			TerrainMaterial.DisableKeyword("PREVIEW_ON");
 			TerrainMaterial.SetFloat("_BrushSize", 0);
 		}
 

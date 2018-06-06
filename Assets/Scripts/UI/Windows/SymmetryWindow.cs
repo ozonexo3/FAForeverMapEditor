@@ -50,7 +50,6 @@ public class SymmetryWindow : MonoBehaviour {
 
 			PlayerPrefs.SetInt("SymmetryAngleCount", value);
 			InvokeChange();
-
 		}
 	}
 

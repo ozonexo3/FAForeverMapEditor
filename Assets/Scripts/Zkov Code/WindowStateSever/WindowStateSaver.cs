@@ -21,19 +21,31 @@ namespace WindowStateSever
 
         [DllImport("USER32.DLL")]
         private static extern int SetWindowLong(IntPtr hWnd, int nIndex, long dwNewLong);
-        
-        private const string playerPrefsKey = "WindowModelData";
+
+		[DllImport("user32.dll", EntryPoint = "SetWindowText")]
+		public static extern bool SetWindowText(System.IntPtr hwnd, System.String lpString);
+
+		private const string playerPrefsKey = "WindowModelData";
 
         private static string WindowName
         {
             get { return Application.productName; }
         }
 
-        public static bool Save()
+#if !UNITY_EDITOR
+		//Store window
+		static IntPtr windowPtr;
+#endif
+
+		public static bool Save()
         {
+#if UNITY_EDITOR
+
+#else
             WindowModel wm = new WindowModel();
 
-            IntPtr windowPtr = FindWindow(null, WindowName);
+			if(windowPtr == IntPtr.Zero)
+				windowPtr = FindWindow(null, WindowName);
 
             Rect windowrect = new Rect();
             if (!GetWindowRect(windowPtr, out windowrect))
@@ -54,12 +66,16 @@ namespace WindowStateSever
             string jsonStr = JsonUtility.ToJson(wm);
             Debug.LogFormat("Saving values: {0}", jsonStr);
             PlayerPrefs.SetString(playerPrefsKey, jsonStr);
-
+#endif
             return true;
         }
 
         public static bool Restore()
         {
+#if UNITY_EDITOR
+
+#else
+
             if (!PlayerPrefs.HasKey(playerPrefsKey))
             {
                 Debug.LogFormat("Restore window is fail: {0}", "");
@@ -78,7 +94,7 @@ namespace WindowStateSever
                 return false;
             }
 
-            IntPtr windowPtr = FindWindow(null, WindowName);
+            windowPtr = FindWindow(null, WindowName);
 
             if (SetWindowLong(windowPtr, WindowLong.GWL_STYLE, wm.WindowStyles) == 0)
             {
@@ -91,8 +107,32 @@ namespace WindowStateSever
                 Debug.LogFormat("Restore window is fail: {0}", "Can`t set window position");
                 return false;
             }
-            
+#endif
             return true;
         }
-    }
+
+		public static void ChangeWindowName(string MapName)
+		{
+#if UNITY_EDITOR
+
+#else
+			if(windowPtr == IntPtr.Zero)
+			{
+				return;
+			}
+
+			string NameString = WindowName;
+
+			if (!string.IsNullOrEmpty(MapName))
+				NameString += " - " + MapName;
+
+			if (SetWindowText(windowPtr, NameString))
+			{
+
+			}
+#endif
+		}
+
+	}
+
 }

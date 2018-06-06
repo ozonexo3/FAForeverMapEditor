@@ -25,13 +25,15 @@ public class PreviewTex : MonoBehaviour {
 	public Texture2D RenderPreview(float HeightOffset = 0, int Width = 256, int Height = 256, bool Flip = true) {
 		RenderingPreview = true;
 
-		bool Slope = ScmapEditor.Current.Slope;
-		bool Grid = ScmapEditor.Current.Grid;
+		//Sbool Slope = ScmapEditor.Current.Slope;
+		//bool Grid = ScmapEditor.Current.Grid;
 
-		if (Slope)
-		ScmapEditor.Current.ToogleSlope(false);
-		if(Grid)
-		ScmapEditor.Current.ToogleGrid(false);
+		//if (Slope)
+		//ScmapEditor.Current.ToogleSlope(false);
+		//if(Grid)
+		//ScmapEditor.Current.ToogleGrid(false);
+
+		ScmapEditor.Current.TerrainMaterial.EnableKeyword("PREVIEW_ON");
 
 		Vector3 CamPos = MapLuaParser.Current.MapCenterPoint;
 		float Size = Mathf.Max(ScmapEditor.Current.map.Width, ScmapEditor.Current.map.Height) * 0.1f;
@@ -70,10 +72,11 @@ public class PreviewTex : MonoBehaviour {
 
 		RenderTexture.active = currentActiveRT;
 
-		if(Slope)
-		ScmapEditor.Current.ToogleSlope(Slope);
-		if(Grid)
-		ScmapEditor.Current.ToogleGrid(Grid);
+		//if(Slope)
+		//ScmapEditor.Current.ToogleSlope(Slope);
+		//if(Grid)
+		//ScmapEditor.Current.ToogleGrid(Grid);
+		ScmapEditor.Current.TerrainMaterial.DisableKeyword("PREVIEW_ON");
 
 		RenderingPreview = false;
 

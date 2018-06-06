@@ -108,6 +108,8 @@ public partial class MapLuaParser : MonoBehaviour
 
 	public void ResetUI()
 	{
+		WindowStateSever.WindowStateSaver.ChangeWindowName("");
+
 		EditMenu.ButtonFunction("Map");
 		EditMenu.gameObject.SetActive(false);
 		Background.SetActive(true);
@@ -341,7 +343,7 @@ public partial class MapLuaParser : MonoBehaviour
 			}
 
 			InfoPopup.Show(false);
-
+			WindowStateSever.WindowStateSaver.ChangeWindowName(FolderName);
 			LoadingMapProcess = false;
 
 

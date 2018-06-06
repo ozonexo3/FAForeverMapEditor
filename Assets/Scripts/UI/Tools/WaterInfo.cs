@@ -12,6 +12,8 @@ namespace EditMap
 	public partial class WaterInfo : MonoBehaviour
 	{
 
+		public static WaterInfo Current;
+
 		public TerrainInfo TerrainMenu;
 
 		public Toggle HasWater;
@@ -26,9 +28,9 @@ namespace EditMap
 		public UiColor WaterColor;
 		public UiColor SunColor;
 
-		public InputField SunStrength;
+		public UiTextField SunStrength;
 		public UiTextField SunShininess;
-		public InputField SunReflection;
+		public UiTextField SunReflection;
 
 		public UiTextField FresnelPower;
 		public UiTextField FresnelBias;
@@ -39,6 +41,12 @@ namespace EditMap
 
 		bool Loading = false;
 		private void OnEnable()
+		{
+			Current = this;
+			ReloadValues();
+		}
+
+		public void ReloadValues(bool Undo = false)
 		{
 			Loading = true;
 			HasWater.isOn = ScmapEditor.Current.map.Water.HasWater;
@@ -53,9 +61,9 @@ namespace EditMap
 			WaterColor.SetColorField(ScmapEditor.Current.map.Water.SurfaceColor.x, ScmapEditor.Current.map.Water.SurfaceColor.y, ScmapEditor.Current.map.Water.SurfaceColor.z); // WaterSettingsChanged
 			SunColor.SetColorField(ScmapEditor.Current.map.Water.SunColor.x, ScmapEditor.Current.map.Water.SunColor.y, ScmapEditor.Current.map.Water.SunColor.z); // WaterSettingsChanged
 
-			SunStrength.text = ScmapEditor.Current.map.Water.SunStrength.ToString();
+			SunStrength.SetValue(ScmapEditor.Current.map.Water.SunStrength);
 			SunShininess.SetValue(ScmapEditor.Current.map.Water.SunShininess);
-			SunReflection.text = ScmapEditor.Current.map.Water.SunReflection.ToString();
+			SunReflection.SetValue(ScmapEditor.Current.map.Water.SunReflection);
 
 			FresnelPower.SetValue(ScmapEditor.Current.map.Water.FresnelPower);
 			FresnelBias.SetValue(ScmapEditor.Current.map.Water.FresnelBias);
@@ -67,17 +75,44 @@ namespace EditMap
 			WaterSettings.interactable = HasWater.isOn;
 
 			Loading = false;
+
+			if (Undo)
+			{
+				UpdateScmap(true);
+			}
+		}
+
+		void UpdateScmap(bool Maps)
+		{
+			ScmapEditor.Current.SetWater();
+
+			if (Maps)
+			{
+				GenerateControlTex.StopAllTasks();
+				TerrainMenu.RegenerateMaps();
+			}
+		}
+
+		bool UndoRegistered = false;
+		public void ElevationChangeBegin()
+		{
+			if (Loading || UndoRegistered)
+				return;
+			//Undo.Current.RegisterWaterElevationChange();
+			//UndoRegistered = true;
+			//Debug.Log("Begin");
 		}
 
 		public void ElevationChanged()
 		{
 			if (Loading)
 				return;
-			ScmapEditor.Current.map.Water.HasWater = HasWater.isOn;
 
-			float water = float.Parse(WaterElevation.text);
-			float depth = float.Parse(DepthElevation.text);
-			float abyss = float.Parse(AbyssElevation.text);
+
+
+			float water = WaterElevation.value;
+			float depth = DepthElevation.value;
+			float abyss = AbyssElevation.value;
 
 			if (water < 1)
 				water = 1;
@@ -94,36 +129,93 @@ namespace EditMap
 			else if (abyss < 0)
 				abyss = 0;
 
+			bool AnyChanged = ScmapEditor.Current.map.Water.HasWater != HasWater.isOn
+				|| ScmapEditor.Current.map.Water.Elevation != water
+				|| ScmapEditor.Current.map.Water.ElevationDeep != depth
+				|| ScmapEditor.Current.map.Water.ElevationAbyss != abyss
+				;
 
+			if (!AnyChanged)
+			{
+				return;
+			}
+
+			Undo.Current.RegisterWaterElevationChange();
+			if (!UndoRegistered)
+				ElevationChangeBegin();
+			UndoRegistered = false;
+
+			ScmapEditor.Current.map.Water.HasWater = HasWater.isOn;
 			ScmapEditor.Current.map.Water.Elevation = water;
 			ScmapEditor.Current.map.Water.ElevationDeep = depth;
 			ScmapEditor.Current.map.Water.ElevationAbyss = abyss;
 
+			Loading = true;
 			WaterElevation.SetValue(water);
 			DepthElevation.SetValue(depth);
 			AbyssElevation.SetValue(abyss);
-
-			ScmapEditor.Current.SetWater();
-
-			GenerateControlTex.StopAllTasks();
-			TerrainMenu.RegenerateMaps();
-
 			WaterSettings.interactable = HasWater.isOn;
+			Loading = false;
+
+			UpdateScmap(true);
+
 		}
 
-		public void WaterSettingsChanged()
+		public void WaterSettingsChangedBegin()
+		{
+			if (Loading || UndoRegistered)
+				return;
+			//Undo.Current.RegisterWaterSettingsChange();
+			//UndoRegistered = true;
+		}
+
+		public void WaterSettingsChanged(bool Slider)
 		{
 			if (Loading)
 				return;
+
+
+			bool AnyChanged = ScmapEditor.Current.map.Water.ColorLerp.x != ColorLerpXElevation.value
+				|| ScmapEditor.Current.map.Water.ColorLerp.y != ColorLerpYElevation.value
+				|| ScmapEditor.Current.map.Water.SurfaceColor != WaterColor.GetVectorValue()
+				|| ScmapEditor.Current.map.Water.SunColor != SunColor.GetVectorValue()
+				|| ScmapEditor.Current.map.Water.SunStrength != SunStrength.value
+				|| ScmapEditor.Current.map.Water.SunShininess != SunShininess.value
+				|| ScmapEditor.Current.map.Water.SunReflection != SunReflection.value
+				|| ScmapEditor.Current.map.Water.FresnelPower != FresnelPower.value
+				|| ScmapEditor.Current.map.Water.FresnelBias != FresnelBias.value
+				|| ScmapEditor.Current.map.Water.UnitReflection != UnitReflection.value
+				|| ScmapEditor.Current.map.Water.SkyReflection != SkyReflection.value
+				|| ScmapEditor.Current.map.Water.RefractionScale != RefractionScale.value
+				;
+
+			if (!AnyChanged)
+				return;
+
+
+			if (!UndoRegistered)
+			{
+				Undo.Current.RegisterWaterSettingsChange();
+				UndoRegistered = true;
+				WaterSettingsChangedBegin();
+
+			}
+
+			if(!Slider)
+				UndoRegistered = false;
+
+
+
+
 			ScmapEditor.Current.map.Water.ColorLerp.x = ColorLerpXElevation.value;
 			ScmapEditor.Current.map.Water.ColorLerp.y = ColorLerpYElevation.value;
 
 			ScmapEditor.Current.map.Water.SurfaceColor = WaterColor.GetVectorValue();
 			ScmapEditor.Current.map.Water.SunColor = SunColor.GetVectorValue();
 
-			ScmapEditor.Current.map.Water.SunStrength = float.Parse(SunStrength.text);
+			ScmapEditor.Current.map.Water.SunStrength = SunStrength.value;
 			ScmapEditor.Current.map.Water.SunShininess = SunShininess.value;
-			ScmapEditor.Current.map.Water.SunReflection = float.Parse(SunReflection.text);
+			ScmapEditor.Current.map.Water.SunReflection = SunReflection.value;
 
 			ScmapEditor.Current.map.Water.FresnelPower = FresnelPower.value;
 			ScmapEditor.Current.map.Water.FresnelBias = FresnelBias.value;
@@ -132,7 +224,7 @@ namespace EditMap
 			ScmapEditor.Current.map.Water.SkyReflection = SkyReflection.value;
 			ScmapEditor.Current.map.Water.RefractionScale = RefractionScale.value;
 
-			ScmapEditor.Current.SetWater();
+			UpdateScmap(false);
 		}
 
 
@@ -181,11 +273,10 @@ namespace EditMap
 			ScmapEditor.Current.map.Water.ElevationAbyss = AbyssLevel;
 			ScmapEditor.Current.map.Water.ElevationDeep = DeepLevel;
 
-			ScmapEditor.Current.SetWater();
-			ScmapEditor.Current.SetWaterTextures();
-			TerrainMenu.RegenerateMaps();
+			ReloadValues();
 
-			OnEnable();
+			UpdateScmap(true);
+
 
 		}
 	}

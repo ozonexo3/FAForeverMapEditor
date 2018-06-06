@@ -77,7 +77,8 @@ namespace EditMap
 		}
 
 
-
+		static string FolderName;
+		static string MapPath;
 		public void CreateMap()
 		{
 			if (string.IsNullOrEmpty(Name.text))
@@ -86,7 +87,7 @@ namespace EditMap
 				return;
 			}
 
-			string MapPath = EnvPaths.GetMapsPath();
+			MapPath = EnvPaths.GetMapsPath();
 			string Error = "";
 			if (!System.IO.Directory.Exists(MapPath))
 			{
@@ -97,7 +98,7 @@ namespace EditMap
 				return;
 			}
 
-			string FolderName = Name.text.Replace(" ", "_") + ".v0001";
+			FolderName = Name.text.Replace(" ", "_") + ".v0001";
 
 			string path = MapPath + FolderName;
 			Debug.Log(path);
@@ -109,14 +110,18 @@ namespace EditMap
 				return;
 			}
 
+			StartCoroutine(CreateFiles());
+		}
+
+		IEnumerator CreateFiles()
+		{
 			ScmapEditor.Current.UnloadMap();
 			MapLuaParser.Current.ResetUI();
 			MapLuaParser.Current.SaveLuaFile.Unload();
 
-			//string FolderName = Name.text.Replace(" ", "_");
 			string FileName = Name.text.Replace(" ", "_");
 
-			Debug.Log(FolderName);
+			Debug.Log("Create new map: " + FolderName);
 
 			MapLuaParser.Current.FolderName = FolderName;
 			MapLuaParser.Current.ScenarioFileName = FileName + "_scenario";
@@ -131,6 +136,7 @@ namespace EditMap
 			if (NewMapHeight > NewMapSize)
 				NewMapSize = NewMapHeight;
 
+			// Scenario - Basic
 			MapLuaParser.Current.ScenarioLuaFile.Data = new MapLua.ScenarioLua.ScenarioInfo();
 			MapLuaParser.Current.ScenarioLuaFile.Data.Configurations = new MapLua.ScenarioLua.Configuration[1];
 			MapLuaParser.Current.ScenarioLuaFile.Data.Configurations[0] = new MapLua.ScenarioLua.Configuration();
@@ -139,34 +145,31 @@ namespace EditMap
 			MapLuaParser.Current.ScenarioLuaFile.Data.Configurations[0].Teams[0] = new MapLua.ScenarioLua.Team();
 			MapLuaParser.Current.ScenarioLuaFile.Data.Configurations[0].Teams[0].name = "FFA";
 			MapLuaParser.Current.ScenarioLuaFile.Data.Configurations[0].Teams[0].Armys = new List<MapLua.ScenarioLua.Army>();
-			//MapLuaParser.Current.ScenarioLuaFile.Data.Configurations[0].Teams[0].Armys.Add(new MapLua.ScenarioLua.Army("ARMY_1"));
-			//MapLuaParser.Current.ScenarioLuaFile.Data.Configurations[0].Teams[0].Armys.Add(new MapLua.ScenarioLua.Army("ARMY_2"));
 			MapLuaParser.Current.ScenarioLuaFile.Data.Configurations[0].ExtraArmys = new List<MapLua.ScenarioLua.Army>();
 			MapLuaParser.Current.ScenarioLuaFile.Data.Configurations[0].ExtraArmys.Add(new MapLua.ScenarioLua.Army("ARMY_17"));
 			MapLuaParser.Current.ScenarioLuaFile.Data.Configurations[0].ExtraArmys.Add(new MapLua.ScenarioLua.Army("NEUTRAL_CIVILIAN"));
 			MapLuaParser.Current.ScenarioLuaFile.Data.Configurations[0].factions = new MapLua.ScenarioLua.Factions[0];
-
+			MapLuaParser.Current.ScenarioLuaFile.Data.starts = true;
+			// Scenario - User settings
 			MapLuaParser.Current.ScenarioLuaFile.Data.name = Name.text;
 			MapLuaParser.Current.ScenarioLuaFile.Data.description = Desc.text;
 			MapLuaParser.Current.ScenarioLuaFile.Data.Size = new int[2];
 			MapLuaParser.Current.ScenarioLuaFile.Data.type = MapType.options[MapType.value].text.ToLower();
 			MapLuaParser.Current.ScenarioLuaFile.Data.Size[0] = NewMapSize;
 			MapLuaParser.Current.ScenarioLuaFile.Data.Size[1] = NewMapSize;
-			MapLuaParser.Current.ScenarioLuaFile.Data.save = "/maps/" + FolderName  + "/" + FileName + "_save.lua";
+			MapLuaParser.Current.ScenarioLuaFile.Data.save = "/maps/" + FolderName + "/" + FileName + "_save.lua";
 			MapLuaParser.Current.ScenarioLuaFile.Data.script = "/maps/" + FolderName + "/" + FileName + "_script.lua";
 			MapLuaParser.Current.ScenarioLuaFile.Data.map = "/maps/" + FolderName + "/" + FileName + ".scmap";
 			MapLuaParser.Current.ScenarioLuaFile.Data.map_version = 1;
-			MapLuaParser.Current.ScenarioLuaFile.Data.starts = true;
 
 
 
 			MapLuaParser.Current.SaveLuaFile.Data = new MapLua.SaveLua.Scenario();
 			MapLuaParser.Current.SaveLuaFile.Data.MasterChains[0].Markers = new List<MapLua.SaveLua.Marker>();
 
+			// Armies
 			int Armies = ArmyCount.value + 1;
-
 			float MapArmyDistance = NewMapWidth * 0.2f;
-
 
 			for (int i = 0; i < Armies; i++)
 			{
@@ -175,24 +178,13 @@ namespace EditMap
 				MapLua.SaveLua.Marker A1marker = new MapLua.SaveLua.Marker(MapLua.SaveLua.Marker.MarkerTypes.BlankMarker, "ARMY_" + (i + 1));
 				Vector3 ArmyPosition = new Vector3((int)(NewMapWidth * 0.5f), InitialHeight.intValue, (int)(NewMapWidth * 0.5f));
 				ArmyPosition += Quaternion.Euler(Vector3.up * 360 * (i / (float)Armies)) * Vector3.forward * MapArmyDistance;
-				A1marker.position = ScmapEditor.WorldPosToScmap( ScmapEditor.SnapToGrid(ScmapEditor.ScmapPosToWorld(ArmyPosition)));
-				//Markers.MarkersControler.CreateMarker(A1marker, 0);
+				A1marker.position = ScmapEditor.WorldPosToScmap(ScmapEditor.SnapToGrid(ScmapEditor.ScmapPosToWorld(ArmyPosition)));
 				MapLuaParser.Current.SaveLuaFile.Data.MasterChains[0].Markers.Add(A1marker);
 			}
 
-			Debug.Log(MapLuaParser.Current.SaveLuaFile.Data.MasterChains[0].Markers.Count);
-
 			Markers.MarkersControler.LoadMarkers();
 
-			/*
-			MapLua.SaveLua.Marker A1marker = new MapLua.SaveLua.Marker(MapLua.SaveLua.Marker.MarkerTypes.BlankMarker, "ARMY_1");
-			A1marker.position = new Vector3((int)(NewMapWidth * 0.25f), InitialHeight.intValue, (int)(NewMapWidth * 0.25f));
-			MapLuaParser.Current.SaveLuaFile.Data.MasterChains[0].Markers.Add(A1marker);
-			MapLua.SaveLua.Marker A2marker = new MapLua.SaveLua.Marker(MapLua.SaveLua.Marker.MarkerTypes.BlankMarker, "ARMY_2");
-			A2marker.position = new Vector3((int)(NewMapWidth * 0.75f), InitialHeight.intValue, (int)(NewMapWidth * 0.75f));
-			MapLuaParser.Current.SaveLuaFile.Data.MasterChains[0].Markers.Add(A2marker);
-			*/
-
+			//Save lua
 			MapLuaParser.Current.SaveLuaFile.Data.areas = new MapLua.SaveLua.Areas[1];
 			MapLuaParser.Current.SaveLuaFile.Data.areas[0] = new MapLua.SaveLua.Areas();
 			MapLuaParser.Current.SaveLuaFile.Data.areas[0].Name = "AREA_1";
@@ -200,7 +192,7 @@ namespace EditMap
 				MapLuaParser.Current.SaveLuaFile.Data.areas[0].rectangle = new Rect(0, 0, NewMapWidth, NewMapHeight);
 			else
 			{
-				if(NewMapWidth > NewMapHeight) // Horizontal
+				if (NewMapWidth > NewMapHeight) // Horizontal
 				{
 					int Offset = (NewMapWidth - NewMapHeight) / 2;
 					MapLuaParser.Current.SaveLuaFile.Data.areas[0].rectangle = new Rect(0, Offset, NewMapWidth, NewMapHeight + Offset);
@@ -213,28 +205,20 @@ namespace EditMap
 			}
 
 
-			ScmapEditor.Current.map = new Map(MapLuaParser.Current.ScenarioLuaFile.Data.Size[0], MapLuaParser.Current.ScenarioLuaFile.Data.Size[1], InitialHeight.intValue, 
+			ScmapEditor.Current.map = new Map(MapLuaParser.Current.ScenarioLuaFile.Data.Size[0], MapLuaParser.Current.ScenarioLuaFile.Data.Size[1], InitialHeight.intValue,
 				Water.isOn, WaterElv.intValue, DepthElevation.intValue, AbyssElevation.intValue);
 
 			//GenerateControlTex.GenerateWater();
 			ScmapEditor.Current.LoadHeights();
 
-			Invoke("SaveNewMap", 0.5f);
-
-		}
-
-		void SaveNewMap()
-		{
+			yield return null;
+			yield return null;
 			MapLuaParser.Current.SaveMap(false);
 			MapLuaParser.Current.SaveScriptLua(0);
 
-			Invoke("FinishNewMap", 0.5f);
-		}
-
-		void FinishNewMap()
-		{
+			yield return null;
+			yield return null;
 			MapLuaParser.Current.LoadFile();
-			gameObject.SetActive(false);
 		}
 
 

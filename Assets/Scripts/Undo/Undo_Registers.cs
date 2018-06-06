@@ -142,6 +142,18 @@ public partial class Undo : MonoBehaviour
 	}
 	#endregion
 
+	#region Water
+	public void RegisterWaterElevationChange()
+	{
+		HistoryTerrainHeight.GenerateUndo(Prefabs.TerrainWaterElevationChange).Register();
+	}
+
+	public void RegisterWaterSettingsChange()
+	{
+		HistoryTerrainHeight.GenerateUndo(Prefabs.TerrainWaterSettingsChange).Register();
+	}
+	#endregion
+
 	#region Stratum
 	public static Color[] UndoData_Stratum;
 	public static int UndoData_StratumId;

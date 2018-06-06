@@ -1,10 +1,13 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using System.Collections.Generic;
 using EditMap;
 using System.Text;
 using System.Runtime.InteropServices;
 using SFB;
+using System.Linq;
+using B83.Win32;
 
 public class AppMenu : MonoBehaviour
 {
@@ -21,6 +24,20 @@ public class AppMenu : MonoBehaviour
 	//Local
 	bool MenuOpen = false;
 	bool ButtonClicked;
+
+	// important to keep the instance alive while the hook is active.
+	UnityDragAndDropHook hook;
+	void OnEnable()
+	{
+		// must be created on the main thread to get the right thread id.
+		hook = new UnityDragAndDropHook();
+		hook.InstallHook();
+		hook.OnDroppedFiles += OnFiles;
+	}
+	void OnDisable()
+	{
+		hook.UninstallHook();
+	}
 
 	void LateUpdate()
 	{
@@ -233,40 +250,92 @@ public class AppMenu : MonoBehaviour
 	{
 		LateUpdate();
 
-		var extensions = new[]
+		if (string.IsNullOrEmpty(StoreSelectedFile))
 		{
+
+			var extensions = new[]
+			{
 			new ExtensionFilter("Scenario", "lua")
 		};
 
-		var paths = StandaloneFileBrowser.OpenFilePanel("Open map", EnvPaths.GetMapsPath(), extensions, false);
+			var paths = StandaloneFileBrowser.OpenFilePanel("Open map", EnvPaths.GetMapsPath(), extensions, false);
 
-		/*
-		System.Windows.Forms.OpenFileDialog FileDialog = new System.Windows.Forms.OpenFileDialog();
-		FileDialog.InitialDirectory = EnvPaths.GetMapsPath();
-		FileDialog.Title = "Open map";
-		FileDialog.AddExtension = true;
-		FileDialog.DefaultExt = ".lua";
-		FileDialog.Filter = "Scenario (*.lua)|*.lua";
-		FileDialog.CheckFileExists = true;
-		*/
-
-		//if (FileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-		if (paths.Length > 0 && !string.IsNullOrEmpty(paths[0]))
-		{
-			string[] PathSeparation = paths[0].Replace("\\", "/").Replace(".lua", "").Split("/".ToCharArray());
-
-			MapLuaParser.Current.ScenarioFileName = PathSeparation[PathSeparation.Length - 1];
-			MapLuaParser.Current.FolderName = PathSeparation[PathSeparation.Length - 2];
-			string ParentPath = "";
-			for (int i = 0; i < PathSeparation.Length - 2; i++)
+			if (paths.Length > 0 && !string.IsNullOrEmpty(paths[0]) && IsScenarioPath(paths[0]))
 			{
-				ParentPath += PathSeparation[i] + "/";
+				StoreSelectedFile = paths[0];
+			}
+		}
+
+
+		LoadMapAtPath(StoreSelectedFile);
+
+	}
+
+	static void LoadMapAtPath(string path)
+	{
+		if (string.IsNullOrEmpty(path))
+			return;
+
+		string[] PathSeparation = path.Replace("\\", "/").Replace(".lua", "").Split("/".ToCharArray());
+
+		MapLuaParser.Current.ScenarioFileName = PathSeparation[PathSeparation.Length - 1];
+		MapLuaParser.Current.FolderName = PathSeparation[PathSeparation.Length - 2];
+		string ParentPath = "";
+		for (int i = 0; i < PathSeparation.Length - 2; i++)
+		{
+			ParentPath += PathSeparation[i] + "/";
+		}
+
+		MapLuaParser.Current.FolderParentPath = ParentPath;
+		MapLuaParser.Current.LoadFile();
+		StoreSelectedFile = "";
+	}
+
+	bool IsScenarioPath(string path)
+	{
+		return path.EndsWith("scenario.lua");
+	}
+
+	static string StoreSelectedFile;
+	void OnFiles(List<string> aFiles, POINT aPos)
+	{
+		// do something with the dropped file names. aPos will contain the 
+		// mouse position within the window where the files has been dropped.
+		Debug.Log("Dropped " + aFiles.Count + " files at: " + aPos + "\n" +
+			aFiles.Aggregate((a, b) => a + "\n" + b));
+
+		if (aFiles.Count == 0)
+			return;
+
+
+		if (IsScenarioPath(aFiles[0]))
+		{
+			StoreSelectedFile = aFiles[0];
+
+		}
+		else 
+		{
+			string[] AllFiles = System.IO.Directory.GetFiles(aFiles[0]);
+
+			for(int i = 0; i < AllFiles.Length; i++)
+			{
+				if (IsScenarioPath(AllFiles[i]))
+				{
+					StoreSelectedFile = AllFiles[i];
+					break;
+				}
+
 			}
 
-			MapLuaParser.Current.FolderParentPath = ParentPath;
+		}
 
 
-			MapLuaParser.Current.LoadFile();
+		if (!string.IsNullOrEmpty(StoreSelectedFile))
+		{
+			if (MapLuaParser.IsMapLoaded)
+				GenericPopup.ShowPopup(GenericPopup.PopupTypes.TriButton, "Save map", "Save current map before opening another map?", "Yes", OpenMapYes, "No", OpenMapNo, "Cancel", OpenMapCancel);
+			else
+				OpenMapProcess();
 		}
 	}
 
@@ -425,19 +494,20 @@ public class AppMenu : MonoBehaviour
 		MapLuaParser.Current.ScenarioLuaFile.Data.map_version++;
 
 		string OldFolderName = MapLuaParser.Current.FolderName;
+		string DeltaFolderName = MapLuaParser.Current.FolderName;
 		string NewFolderName = "";
-		if (OldFolderName.ToLower().Contains(".v"))
+		if (DeltaFolderName.ToLower().Contains(".v"))
 		{
-			for (int i = 0; i < OldFolderName.Length; i++)
+			for (int i = 0; i < DeltaFolderName.Length; i++)
 			{
-				if (OldFolderName.ToLower().StartsWith(".v"))
+				if (DeltaFolderName.ToLower().StartsWith(".v"))
 				{
 					break;
 				}
 				else
 				{
-					NewFolderName += OldFolderName[i];
-					OldFolderName = OldFolderName.Remove(0, 1);
+					NewFolderName += DeltaFolderName[i];
+					DeltaFolderName = DeltaFolderName.Remove(0, 1);
 					i--;
 				}
 			}
@@ -448,7 +518,6 @@ public class AppMenu : MonoBehaviour
 		}
 
 		NewFolderName += ".v" + ((int)MapLuaParser.Current.ScenarioLuaFile.Data.map_version).ToString("0000");
-
 
 		MapLuaParser.Current.FolderName = NewFolderName;
 
@@ -464,10 +533,13 @@ public class AppMenu : MonoBehaviour
 		}
 
 		string OldScript = MapLuaParser.Current.ScenarioLuaFile.Data.script.Replace("/maps/", MapLuaParser.Current.FolderParentPath);
+		string OldOptionsFile = OldScript.Replace("_script.lua", "_options.lua");
 
-		MapLuaParser.Current.ScenarioLuaFile.Data.map = "/maps/" + MapLuaParser.Current.FolderName + "/" + MapLuaParser.Current.ScenarioFileName + ".scmap";
-		MapLuaParser.Current.ScenarioLuaFile.Data.save = "/maps/" + MapLuaParser.Current.FolderName + "/" + MapLuaParser.Current.ScenarioFileName + "_save.lua";
-		MapLuaParser.Current.ScenarioLuaFile.Data.script = "/maps/" + MapLuaParser.Current.FolderName + "/" + MapLuaParser.Current.ScenarioFileName + "_script.lua";
+		string FileBeginName = MapLuaParser.Current.ScenarioFileName.Replace("_scenario", "");
+
+		MapLuaParser.Current.ScenarioLuaFile.Data.map = "/maps/" + MapLuaParser.Current.FolderName + "/" + FileBeginName + ".scmap";
+		MapLuaParser.Current.ScenarioLuaFile.Data.save = "/maps/" + MapLuaParser.Current.FolderName + "/" + FileBeginName + "_save.lua";
+		MapLuaParser.Current.ScenarioLuaFile.Data.script = "/maps/" + MapLuaParser.Current.FolderName + "/" + FileBeginName + "_script.lua";
 		MapLuaParser.Current.ScenarioLuaFile.Data.preview = "";
 
 		LoadRecentMaps.MoveLastMaps(MapLuaParser.Current.ScenarioFileName, MapLuaParser.Current.FolderName, MapLuaParser.Current.FolderParentPath);
@@ -475,7 +547,18 @@ public class AppMenu : MonoBehaviour
 
 		MapLuaParser.Current.SaveMap(false);
 
-		System.IO.File.Copy(OldScript, MapLuaParser.Current.ScenarioLuaFile.Data.script.Replace("/maps/", MapLuaParser.Current.FolderParentPath));
+		string LoadScript = System.IO.File.ReadAllText(OldScript);
+		//Replace old folder name to new one
+		LoadScript = LoadScript.Replace(OldFolderName + "/", NewFolderName + "/");
+		System.IO.File.WriteAllText(MapLuaParser.Current.ScenarioLuaFile.Data.script.Replace("/maps/", MapLuaParser.Current.FolderParentPath), LoadScript);
+
+		//System.IO.File.Copy(OldScript, MapLuaParser.Current.ScenarioLuaFile.Data.script.Replace("/maps/", MapLuaParser.Current.FolderParentPath));
+
+		if (System.IO.File.Exists(OldOptionsFile))
+		{ // Found options, copy it
+			System.IO.File.Copy(OldOptionsFile, MapLuaParser.Current.ScenarioLuaFile.Data.script.Replace("/maps/", MapLuaParser.Current.FolderParentPath).Replace("_script.lua", "_options.lua"));
+
+		}
 
 
 		EditingMenu.MapInfoMenu.UpdateFields();
