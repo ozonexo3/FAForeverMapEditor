@@ -29,7 +29,7 @@ public class RenderMap : MonoBehaviour {
 				QualitySettings.lodBias = 2000;
 				QualitySettings.shadowResolution = ShadowResolution.VeryHigh;
 				QualitySettings.shadowDistance = 500;
-
+				ScmapEditor.Current.TerrainMaterial.EnableKeyword("PREVIEW_ON");
 
 				//for (int i = 0; i < Canvases.Length; i++)
 				//	Canvases[i].enabled = false;
@@ -72,6 +72,7 @@ public class RenderMap : MonoBehaviour {
 				QualitySettings.lodBias = 4;
 				QualitySettings.shadowResolution = ShadowResolution.Low;
 				QualitySettings.shadowDistance = 23;
+				ScmapEditor.Current.TerrainMaterial.DisableKeyword("PREVIEW_ON");
 			}
 			else
 			{

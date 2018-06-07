@@ -879,6 +879,7 @@ public partial class ScmapEditor : MonoBehaviour
 
 	public static Vector3 SnapToSmallGridCenter(Vector3 Pos)
 	{
+
 		Pos.x += 0.05f;
 		Pos.z -= 0.05f;
 

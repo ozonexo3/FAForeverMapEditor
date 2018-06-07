@@ -98,7 +98,7 @@ public partial class CameraControler : MonoBehaviour {
 			Rot.x = Mathf.Clamp(Rot.x, -80, 0);
 			prevMausePos = Input.mousePosition;
 		}
-		if (Input.GetMouseButton(2))
+		if (Input.GetMouseButton(2) && !Input.GetKey(KeyCode.LeftControl))
 		{
 			float LocalPosToPanSpeed = (transform.localPosition.y * 0.08f + 0.1f) * 13;
 			PanOffsetX -= transform.right * (Input.mousePosition.x - prevMausePos.x) * LocalPosToPanSpeed * Time.unscaledDeltaTime;
@@ -191,6 +191,12 @@ public partial class CameraControler : MonoBehaviour {
 	}
 
 	Vector3 GameplayCursorPos;
+	static Vector3 GameplayCursorPosScm;
+	public static float GetLastScmHeight()
+	{
+		return Mathf.Clamp( GameplayCursorPosScm.y, 0, 256);
+	}
+
 	void CursorUiPos()
 	{
 
@@ -199,7 +205,7 @@ public partial class CameraControler : MonoBehaviour {
 		if (Physics.Raycast(ray, out hit, MaxRaycastDistance, MaskCursor))
 		{
 			GameplayCursorPos = hit.point;
-			Vector3 GameplayCursorPosScm = ScmapEditor.WorldPosToScmap(GameplayCursorPos);
+			 GameplayCursorPosScm = ScmapEditor.WorldPosToScmap(GameplayCursorPos);
 			GameplayCursorPosScm.y = hit.point.y * 10;
 			GameplayCursorPosScm.z = ScmapEditor.Current.map.Height - GameplayCursorPosScm.z;
 			string X = GameplayCursorPosScm.x.ToString("N2");

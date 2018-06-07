@@ -230,7 +230,29 @@ namespace EditMap
 				}
 				else
 				{
-					if (Edit.MauseOnGameplay && Input.GetMouseButtonDown(0))
+					if (!PaintStarted && Input.GetKey(KeyCode.LeftControl))
+					{
+						if (CameraControler.Current.DragStartedGameplay)
+						{
+							if (UpdateBrushPosition(false))
+							{
+							}
+						}
+
+						if (Input.GetMouseButton(0))
+						{
+							BrushTarget.SetValue(CameraControler.GetLastScmHeight());
+						}
+						else if (Input.GetMouseButton(1))
+						{
+							BrushMini.SetValue(CameraControler.GetLastScmHeight());
+						}
+						else if (Input.GetMouseButton(2))
+						{
+							BrushMax.SetValue(CameraControler.GetLastScmHeight());
+						}
+					}
+					else if (Edit.MauseOnGameplay && Input.GetMouseButtonDown(0))
 					{
 						if (UpdateBrushPosition(true))
 						{

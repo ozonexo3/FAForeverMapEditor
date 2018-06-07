@@ -33,6 +33,7 @@ namespace EditMap
 		public UiTextField BrushSize;
 		//public Slider BrushStrengthSlider;
 		public UiTextField BrushStrength;
+		public AnimationCurve StrengthToField;
 		public UiTextField BrushMini;
 		public UiTextField BrushMax;
 		public UiTextField Scatter;
@@ -151,6 +152,8 @@ namespace EditMap
 			TerrainMaterial.SetTexture("_BrushTex", (Texture)BrushGenerator.Current.Brushes[SelectedFalloff]);
 			AllowBrushUpdate = true;
 			UndoRegistered = false;
+
+			ReloadPropStats();
 		}
 
 		void OnDisable()
@@ -266,14 +269,36 @@ namespace EditMap
 				TotalReclaimTime += AllPropsTypes[GroupId].PropObject.BP.ReclaimTime;
 			}
 
-			TotalMass.text = TotalMassCount.ToString();
-			TotalEnergy.text = TotalEnergyCount.ToString();
-			TotalTime.text = TotalReclaimTime.ToString();
+			UpdatePropStats();
 
 			yield return null;
 			LoadingProps = false;
 
 			//Debug.Log("Props types: " + AllPropsTypes.Count);
+		}
+
+		public void ReloadPropStats()
+		{
+			TotalMassCount = 0;
+			TotalEnergyCount = 0;
+			TotalReclaimTime = 0;
+
+			int AllPropsTypesCount = AllPropsTypes.Count;
+			for (int i = 0; i < AllPropsTypesCount; i++)
+			{
+				int InstancesCount = AllPropsTypes[i].PropsInstances.Count;
+				TotalMassCount += AllPropsTypes[i].PropObject.BP.ReclaimMassMax * InstancesCount;
+				TotalEnergyCount += AllPropsTypes[i].PropObject.BP.ReclaimEnergyMax * InstancesCount;
+				TotalReclaimTime += AllPropsTypes[i].PropObject.BP.ReclaimTime * InstancesCount;
+			}
+			UpdatePropStats();
+		}
+
+		void UpdatePropStats()
+		{
+			TotalMass.text = TotalMassCount.ToString();
+			TotalEnergy.text = TotalEnergyCount.ToString();
+			TotalTime.text = TotalReclaimTime.ToString();
 		}
 
 		#endregion
@@ -370,8 +395,9 @@ namespace EditMap
 				PaintPropObjects.Add(PropObj);
 
 				GameObject NewPropListObject = Instantiate(PaintPropListObject, PaintPropPivot) as GameObject;
-				NewPropListObject.GetComponent<PropData>().SetPropPaint(PaintPropObjects.Count - 1, PropObj.BP.Name);
-				PaintButtons.Add(NewPropListObject.GetComponent<PropData>());
+				PropData pb = NewPropListObject.GetComponent<PropData>();
+				pb.SetPropPaint(PaintPropObjects.Count - 1, PropObj.BP.Name);
+				PaintButtons.Add(pb);
 				return true;
 			}
 			return false;
@@ -379,16 +405,18 @@ namespace EditMap
 
 		public void RemoveProp(int ID)
 		{
-			CleanPaintList();
+			//CleanPaintList();
 			Preview.Hide(PaintPropPivot.GetChild(ID).gameObject);
+			Destroy(PaintButtons[ID].gameObject);
 			PaintPropObjects.RemoveAt(ID);
 			PaintButtons.RemoveAt(ID);
 
 			for (int i = 0; i < PaintPropObjects.Count; i++)
 			{
-				GameObject NewPropListObject = Instantiate(PaintPropListObject, PaintPropPivot) as GameObject;
-				NewPropListObject.GetComponent<PropData>().SetPropPaint(i, PaintPropObjects[i].BP.Name);
+				//GameObject NewPropListObject = Instantiate(PaintPropListObject, PaintPropPivot) as GameObject;
+				//NewPropListObject.GetComponent<PropData>().SetPropPaint(i, PaintPropObjects[i].BP.Name);
 
+				PaintButtons[i].SetPropPaint(i, PaintPropObjects[i].BP.Name);
 			}
 		}
 
@@ -506,6 +534,7 @@ namespace EditMap
 					{
 						if (Painting)
 						{
+							UpdatePropStats();
 							Painting = false;
 						}
 
@@ -537,6 +566,9 @@ namespace EditMap
 			float SizeXprop = MapLuaParser.GetMapSizeX() / 512f;
 			float SizeZprop = MapLuaParser.GetMapSizeY() / 512f;
 			float BrushSizeValue = BrushSize.value;
+			if (BrushSizeValue < 0.2f)
+				BrushSizeValue = 0.2f;
+
 			if (Size)
 				TerrainMaterial.SetFloat("_BrushSize", BrushSizeValue / ((SizeXprop + SizeZprop) / 2f));
 
@@ -548,7 +580,11 @@ namespace EditMap
 			{
 				BrushPos = hit.point;
 				if (SnapToGround.isOn && BrushSize.value < 1.5f)
-					BrushPos = Vector3.Lerp(ScmapEditor.SnapToSmallGridCenter(BrushPos), BrushPos, (BrushSize.value - 0.2f) / 1.5f);
+				{
+					//BrushPos = Vector3.Lerp(ScmapEditor.SnapToSmallGridCenter(BrushPos), BrushPos, (BrushSize.value - 0.2f) / 1.5f);
+					BrushPos = ScmapEditor.SnapToSmallGrid(BrushPos + new Vector3(0.025f, 0, -0.025f));
+				}
+
 				BrushPos.y = ScmapEditor.Current.Teren.SampleHeight(BrushPos);
 
 				Vector3 tempCoord = ScmapEditor.Current.Teren.gameObject.transform.InverseTransformPoint(BrushPos);
@@ -612,22 +648,26 @@ namespace EditMap
 
 			//Debug.Log(size + ", " + BrushField);
 
+			float BrushField = Mathf.PI * Mathf.Pow(size, 2);
+
+			StepCount += BrushField * StrengthToField.Evaluate(BrushStrength.value);
+
 			// Check if paint
-			StepCount--;
-			if (StepCount >= Mathf.Lerp(BrushStrength.value, 100, Mathf.Sqrt(size / 7f)) && !forced)
-				return;
+			//StepCount--;
+			//if (StepCount >= Mathf.Lerp(BrushStrength.value, 100, Mathf.Sqrt(size / 7f)) && !forced)
+			//	return;
+			if (forced)
+				StepCount = 101;
 
-			StepCount = 100;
-
-			//Real brush size
-
-			if (SnapToGround.isOn)
+			while (StepCount > 100)
 			{
-				BrushPos = ScmapEditor.SnapToSmallGridCenter(BrushPos);
-
+				StepCount -= 100;
+				DoPaintSymmetryPaint();
 			}
+		}
 
-
+		void DoPaintSymmetryPaint()
+		{
 			if (Invert)
 			{
 				float Tolerance = SymmetryWindow.GetTolerance();
@@ -663,6 +703,11 @@ namespace EditMap
 						PropGameObject TestObj = SearchClosestProp(BrushGenerator.Current.PaintPositions[i], Tolerance);
 						if (TestObj != null)
 						{
+
+							TotalMassCount -= TestObj.Connected.Group.PropObject.BP.ReclaimMassMax;
+							TotalEnergyCount -= TestObj.Connected.Group.PropObject.BP.ReclaimEnergyMax;
+							TotalReclaimTime -= TestObj.Connected.Group.PropObject.BP.ReclaimTime;
+
 							TestObj.Connected.Group.PropsInstances.Remove(TestObj.Connected);
 							//AllPropsTypes[ClosestG].PropsInstances.Remove(TestObj.Connected);
 							Destroy(TestObj.gameObject);
@@ -721,8 +766,8 @@ namespace EditMap
 				}
 
 				if (!AllowWaterLevel.isOn && ScmapEditor.Current.map.Water.HasWater)
-					if(ScmapEditor.Current.Teren.SampleHeight(BrushGenerator.Current.PaintPositions[0]) <= ScmapEditor.Current.WaterLevel.position.y)
-					return;
+					if (ScmapEditor.Current.Teren.SampleHeight(BrushGenerator.Current.PaintPositions[0]) <= ScmapEditor.Current.WaterLevel.position.y)
+						return;
 
 				for (int i = 0; i < BrushGenerator.Current.PaintPositions.Length; i++)
 				{
@@ -776,6 +821,11 @@ namespace EditMap
 			NewProp.CreateObject(AtPosition, Rotation, Vector3.one * RandomScale);
 
 			AllPropsTypes[RandomPropGroup].PropsInstances.Add(NewProp);
+
+			TotalMassCount += AllPropsTypes[RandomPropGroup].PropObject.BP.ReclaimMassMax;
+			TotalEnergyCount += AllPropsTypes[RandomPropGroup].PropObject.BP.ReclaimEnergyMax;
+			TotalReclaimTime += AllPropsTypes[RandomPropGroup].PropObject.BP.ReclaimTime;
+
 		}
 
 

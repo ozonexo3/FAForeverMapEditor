@@ -19,13 +19,17 @@ public class GenericPopup : MonoBehaviour {
 	public Text NoText;
 	public Text YesText;
 
+	public Image TitleBar;
+	public Color StandardColor;
+	public Color WarningColor;
+	public Color ErrorColor;
 
 	public const string key_yes = "Yes";
 	public const string key_no = "No";
 	public const string key_cancel = "Cancel";
 
 	public enum PopupTypes{
-		OneButton, TwoButton, TriButton
+		OneButton, TwoButton, TriButton, Error, Warning
 	}
 
 	public class Popup
@@ -87,7 +91,7 @@ public class GenericPopup : MonoBehaviour {
 	bool PopupDisplayed;
 	void ShowPupup()
 	{
-		if (PopupBufor[0].PopupType == PopupTypes.OneButton)
+		if (PopupBufor[0].PopupType == PopupTypes.OneButton || PopupBufor[0].PopupType == PopupTypes.Warning || PopupBufor[0].PopupType == PopupTypes.Error)
 		{
 			YesBtn.SetActive(true);
 			NoBtn.SetActive(false);
@@ -105,6 +109,13 @@ public class GenericPopup : MonoBehaviour {
 			NoBtn.SetActive(true);
 			CancelBtn.SetActive(true);
 		}
+
+		if (PopupBufor[0].PopupType == PopupTypes.Warning)
+			TitleBar.color = WarningColor;
+		else if (PopupBufor[0].PopupType == PopupTypes.Error)
+			TitleBar.color = ErrorColor;
+		else
+			TitleBar.color = StandardColor;
 
 		TitleText.text = PopupBufor[0].Title;
 		DescriptionText.text = PopupBufor[0].Description;

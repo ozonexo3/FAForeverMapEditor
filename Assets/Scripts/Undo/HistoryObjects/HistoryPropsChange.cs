@@ -40,5 +40,6 @@ public class HistoryPropsChange : HistoryObject
 		}
 
 		Undo.Current.EditMenu.ChangeCategory(6);
+		PropsInfo.Current.ReloadPropStats();
 	}
 }

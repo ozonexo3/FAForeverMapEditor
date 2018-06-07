@@ -324,7 +324,7 @@ Properties {
 				half3 Emit = 0;
 
 #if defined(PREVIEW_ON)
-		
+				col.rgb = ApplyWaterColor(WaterDepth, col.rgb);
 #else
 
 				if (_Slope > 0) {
