@@ -115,6 +115,17 @@ public class AppMenu : MonoBehaviour
 			case "Wiki":
 				Application.OpenURL("https://wiki.faforever.com/index.php?title=FA_Forever_Map_Editor");
 				break;
+			case "EditorLog":
+				string LogPath = System.Environment.GetFolderPath(System.Environment.SpecialFolder.LocalApplicationData);
+				LogPath += "Low";
+				LogPath += "\\" + Application.companyName;
+				LogPath += "\\" + Application.productName;
+				LogPath += "\\" + "output_log.txt";
+
+				Debug.Log(LogPath);
+
+				System.Diagnostics.Process.Start("explorer.exe", "/select," + "\"" + LogPath + "\"");
+				break;
 			case "Donate":
 				Application.OpenURL("https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=LUYMTPBDH5V4E&lc=GB&item_name=FAF%20Map%20Editor&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted");
 				break;
@@ -260,7 +271,7 @@ public class AppMenu : MonoBehaviour
 
 			var paths = StandaloneFileBrowser.OpenFilePanel("Open map", EnvPaths.GetMapsPath(), extensions, false);
 
-			if (paths.Length > 0 && !string.IsNullOrEmpty(paths[0]) && IsScenarioPath(paths[0]))
+			if (paths.Length > 0 && IsLuaFilePath(paths[0]))// && !string.IsNullOrEmpty(paths[0]) && IsScenarioPath(paths[0]))
 			{
 				StoreSelectedFile = paths[0];
 			}
@@ -294,6 +305,11 @@ public class AppMenu : MonoBehaviour
 	bool IsScenarioPath(string path)
 	{
 		return path.EndsWith("scenario.lua");
+	}
+
+	bool IsLuaFilePath(string path)
+	{
+		return path.EndsWith(".lua");
 	}
 
 	static string StoreSelectedFile;
@@ -576,6 +592,8 @@ public class AppMenu : MonoBehaviour
 		}
 
 		EditingMenu.MapInfoMenu.UpdateFields();
+		WindowStateSever.WindowStateSaver.ChangeWindowName(NewFolderName);
+
 		return true;
 	}
 	#endregion

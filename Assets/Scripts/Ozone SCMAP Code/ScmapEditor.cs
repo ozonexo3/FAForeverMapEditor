@@ -617,7 +617,7 @@ public partial class ScmapEditor : MonoBehaviour
 	#region Saving
 	public static float TerrainHeight = 12.5f;
 	const double HeightResize = 128.0 * 256.0; //512 * 40;
-	const double RoundingError = 0.5;
+	public const double RoundingError = 0.5;
 	public const float MaxElevation = 256;
 
 	public void SaveScmapFile()

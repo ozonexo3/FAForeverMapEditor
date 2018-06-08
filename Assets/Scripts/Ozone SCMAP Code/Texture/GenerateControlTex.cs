@@ -64,20 +64,20 @@ public class GenerateControlTex : MonoBehaviour
 	{
 
 		float WaterHeight = ScmapEditor.Current.map.Water.Elevation * 0.1f;
-		float WaterDeep = ScmapEditor.Current.map.Water.ElevationDeep * 0.1f;
+		//float WaterDeep = ScmapEditor.Current.map.Water.ElevationDeep * 0.1f;
 		if (WaterHeight == 0)
 			WaterHeight = 1;
 		float WaterAbyss = ScmapEditor.Current.map.Water.ElevationAbyss * 0.1f;
 
-		float DeepDifference = (WaterHeight - WaterDeep) / WaterHeight;
-		float AbyssDifference = (WaterDeep - WaterAbyss) / WaterDeep;
+		float DeepDifference = (WaterHeight - WaterAbyss) / WaterHeight;
+		//float AbyssDifference = (WaterDeep - WaterAbyss) / WaterDeep;
 
 		int i = 0;
 		int x = 0;
 		int y = 0;
 		float WaterDepth = 0;
-		float WaterDepthDeep = 0;
-		float WaterDepthAbyss = 0;
+		//float WaterDepthDeep = 0;
+		//float WaterDepthAbyss = 0;
 
 		yield return Ninja.JumpToUnity;
 		int Width = ScmapEditor.Current.map.UncompressedWatermapTex.width;
@@ -113,13 +113,13 @@ public class GenerateControlTex : MonoBehaviour
 														 //WaterDepth /= 0.1f;
 
 
-				WaterDepthDeep = (WaterHeight - WaterDepth) / WaterHeight;
-				WaterDepthDeep /= DeepDifference;
+				WaterDepth = (WaterHeight - WaterDepth) / WaterHeight;
+				WaterDepth /= DeepDifference;
 
-				WaterDepthAbyss = (WaterDeep - WaterDepth) / WaterDeep;
-				WaterDepthAbyss /= AbyssDifference;
+				//WaterDepthAbyss = (WaterDeep - WaterDepth) / WaterDeep;
+				//WaterDepthAbyss /= AbyssDifference;
 
-				WaterDepth = Mathf.Lerp(WaterDepthDeep * 0.5f, 1, WaterDepthAbyss);
+				//WaterDepth = Mathf.Lerp(WaterDepthDeep * 0.5f, 1, WaterDepthAbyss);
 
 
 				AllColors[i] = new Color(AllColors[i].r, WaterDepth, (1f - Mathf.Clamp01(WaterDepth * 100f)), 0);

@@ -393,7 +393,8 @@ namespace EditMap
 			OnTerrainChanged();
 		}
 
-		public const uint HeightConversion = 256 * (256 + 64); //0xFFFF
+		//public const uint HeightConversion = 256 * (256 + 64); //0xFFFF
+		public const uint HeightConversion = 256 * (512 + 0); //0xFFFF
 
 		public void ExportHeightmap()
 		{
@@ -425,7 +426,9 @@ namespace EditMap
 				{
 					for (int x = 0; x < w; x++)
 					{
-						uint ThisPixel = (uint)(data[h - (y + 1), x] * HeightConversion);
+						// float v = (float)(((double)reader.ReadUInt16() - 0.5) / (double)HeightConversion); << Import
+
+						uint ThisPixel = (uint)((double)data[h - (y + 1), x] * (double)HeightConversion + 0.5);
 						writer.Write(System.BitConverter.GetBytes(System.BitConverter.ToUInt16(System.BitConverter.GetBytes(ThisPixel), 0)));
 					}
 				}
@@ -573,7 +576,7 @@ namespace EditMap
 					{
 						for (int x = 0; x < w; x++)
 						{
-							float v = (float)reader.ReadUInt16() / (float)HeightConversion;
+							float v = (float)(((double)reader.ReadUInt16() - 0.5) / (double)HeightConversion);
 							data[h - (y + 1), x] = v;
 						}
 					}

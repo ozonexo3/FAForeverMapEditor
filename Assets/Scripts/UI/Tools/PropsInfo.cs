@@ -693,6 +693,11 @@ namespace EditMap
 					{
 						RegisterUndo();
 						//AllPropsTypes[ClosestG].PropsInstances.RemoveAt(ClosestP);
+
+						TotalMassCount -= ClosestInstance.Connected.Group.PropObject.BP.ReclaimMassMax;
+						TotalEnergyCount -= ClosestInstance.Connected.Group.PropObject.BP.ReclaimEnergyMax;
+						TotalReclaimTime -= ClosestInstance.Connected.Group.PropObject.BP.ReclaimTime;
+
 						ClosestInstance.Connected.Group.PropsInstances.Remove(ClosestInstance.Connected);
 						//AllPropsTypes[ClosestG].PropsInstances.Remove(ClosestInstance.Connected);
 						Destroy(ClosestInstance.gameObject);
@@ -981,9 +986,34 @@ namespace EditMap
 			string data = JsonUtility.ToJson(PaintSet);
 
 			File.WriteAllText(path, data);
+		}
+
+
+		public void RemoveAllProps()
+		{
+			UndoRegistered = false;
+			RegisterUndo();
 
 
 
+			int GroupsCount = AllPropsTypes.Count;
+			int g = 0;
+			
+			for (g = 0; g < AllPropsTypes.Count; g++)
+			{
+				foreach (Prop PropInstance in AllPropsTypes[g].PropsInstances)
+				{
+					Destroy(PropInstance.Obj.gameObject);
+				}
+				AllPropsTypes[g].PropsInstances.Clear();
+			}
+
+
+			UpdatePropStats();
+			Painting = false;
+
+			UndoRegistered = false;
+			UpdateBrushPosition(true);
 		}
 
 	}
