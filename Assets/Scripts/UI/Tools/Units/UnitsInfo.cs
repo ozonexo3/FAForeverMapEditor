@@ -87,7 +87,14 @@ namespace EditMap
 			PlacementManager.Clear();
 			if (ChangeControlerType.Current)
 				ChangeControlerType.Current.UpdateButtons();
+		}
 
+		public void UpdateGroupSelection()
+		{
+			foreach(UnitListObject ulo in UnitGroups)
+			{
+				ulo.UpdateSelection(SelectedGroups.Contains(ulo));
+			}
 		}
 
 		public void Clear()
@@ -95,10 +102,22 @@ namespace EditMap
 			if (UnitGroups == null)
 				UnitGroups = new HashSet<UnitListObject>();
 			else
+			{
+
+				foreach (UnitListObject ulo in UnitGroups)
+				{
+					if(ulo != null)
+					Destroy(ulo.gameObject);
+				}
+
 				UnitGroups.Clear();
+			}
+
+			SelectedGroups.Clear();
 		}
 
 		HashSet<UnitListObject> UnitGroups = new HashSet<UnitListObject>();
+		HashSet<UnitListObject> SelectedGroups = new HashSet<UnitListObject>();
 		public void Generate()
 		{
 			Clear();
@@ -113,8 +132,8 @@ namespace EditMap
 					{
 						GameObject NewGroupObject = Instantiate(GroupPrefab, Pivot);
 						UnitListObject ulo = NewGroupObject.GetComponent<UnitListObject>();
-						ulo.GroupName.text = ScenarioData.Configurations[c].Teams[t].Armys[a].Data.Name;
-
+						ulo.AddAction = AddNewGroup;
+						ulo.SetGroup(ScenarioData.Configurations[c].Teams[t].Armys[a].Data.Name, true);
 						UnitGroups.Add(ulo);
 
 						GenerateArmy(ScenarioData.Configurations[c].Teams[t].Armys[a], ulo);
@@ -124,8 +143,8 @@ namespace EditMap
 				{
 					GameObject NewGroupObject = Instantiate(GroupPrefab, Pivot);
 					UnitListObject ulo = NewGroupObject.GetComponent<UnitListObject>();
-					ulo.GroupName.text = ScenarioData.Configurations[c].ExtraArmys[e].Data.Name;
-
+					ulo.AddAction = AddNewGroup;
+					ulo.SetGroup(ScenarioData.Configurations[c].ExtraArmys[e].Data.Name, true);
 					UnitGroups.Add(ulo);
 				}
 			}
@@ -169,6 +188,44 @@ namespace EditMap
 			else
 				tr.localPosition = Connected.GetComponent<UnitInstance>().GetSnapPosition(tr.localPosition);
 		}
+
+
+		#region Groups
+		public void AddNewGroup(UnitListObject parent)
+		{
+			SelectedGroups.Clear();
+			UpdateGroupSelection();
+		}
+
+		public void RemoveGroup(UnitListObject parent)
+		{
+			SelectedGroups.Clear();
+			UpdateGroupSelection();
+		}
+
+		public void SelectGroup(UnitListObject parent)
+		{
+			if (Input.GetKey(KeyCode.LeftShift))
+			{
+				SelectedGroups.Add(parent);
+			}
+			else if (Input.GetKey(KeyCode.LeftControl))
+			{
+				if (SelectedGroups.Contains(parent))
+					SelectedGroups.Remove(parent);
+				else
+					SelectedGroups.Add(parent);
+			}
+			else
+			{
+				SelectedGroups.Clear();
+				SelectedGroups.Add(parent);
+			}
+
+			UpdateGroupSelection();
+		}
+
+		#endregion
 
 	}
 }

@@ -182,7 +182,9 @@ namespace EditMap
 				MapLuaParser.Current.SaveLuaFile.Data.MasterChains[0].Markers.Add(A1marker);
 			}
 
+			yield return null;
 			Markers.MarkersControler.LoadMarkers();
+			yield return null;
 
 			//Save lua
 			MapLuaParser.Current.SaveLuaFile.Data.areas = new MapLua.SaveLua.Areas[1];
@@ -211,13 +213,11 @@ namespace EditMap
 			//GenerateControlTex.GenerateWater();
 			ScmapEditor.Current.LoadHeights();
 
-			yield return null;
-			yield return null;
+			yield return new WaitForSeconds(0.5f);
 			MapLuaParser.Current.SaveMap(false);
 			MapLuaParser.Current.SaveScriptLua(0);
 
-			yield return null;
-			yield return null;
+			yield return new WaitForSeconds(0.5f);
 			MapLuaParser.Current.LoadFile();
 			gameObject.SetActive(false);
 		}

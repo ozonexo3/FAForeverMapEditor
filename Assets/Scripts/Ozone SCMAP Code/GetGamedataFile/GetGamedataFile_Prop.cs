@@ -92,7 +92,7 @@ public partial struct GetGamedataFile
 			}
 			else
 			{
-				Debug.LogError("Prop is empty! " + BP.Path);
+				Debug.LogWarning("Prop is empty! " + BP.Path);
 			}
 
 			return NewProp;

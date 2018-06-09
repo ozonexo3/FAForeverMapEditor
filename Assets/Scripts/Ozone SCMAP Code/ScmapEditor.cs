@@ -312,8 +312,8 @@ public partial class ScmapEditor : MonoBehaviour
 				if (i >= map.Layers.Count)
 					map.Layers.Add(new Layer());
 
-				Textures[i].AlbedoPath = map.Layers[i].PathTexture;
-				Textures[i].NormalPath = map.Layers[i].PathNormalmap;
+				Textures[i].AlbedoPath = GetGamedataFile.FixMapsPath(map.Layers[i].PathTexture);
+				Textures[i].NormalPath = GetGamedataFile.FixMapsPath(map.Layers[i].PathNormalmap);
 				if (Textures[i].AlbedoPath.StartsWith("/"))
 				{
 					Textures[i].AlbedoPath = Textures[i].AlbedoPath.Remove(0, 1);

@@ -28,6 +28,8 @@ public partial class Prop
 		if (!BlueprintPath.StartsWith("/"))
 			BlueprintPath = "/" + BlueprintPath;
 
+		BlueprintPath = GetGamedataFile.FixMapsPath(BlueprintPath);
+
 		Position = ScmapEditor.WorldPosToScmap(Obj.Tr.position);
 
 		RotationX = Vector3.zero;
