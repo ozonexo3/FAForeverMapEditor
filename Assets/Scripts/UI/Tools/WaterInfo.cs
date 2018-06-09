@@ -227,8 +227,15 @@ namespace EditMap
 			UpdateScmap(false);
 		}
 
-
-
+		#region Import/Export
+		const string ExportPathKey = "TerrainWaterExport";
+		static string DefaultPath
+		{
+			get
+			{
+				return EnvPaths.GetLastPath(ExportPathKey, EnvPaths.GetMapsPath() + MapLuaParser.Current.FolderName);
+			}
+		}
 		public void ExportWater()
 		{
 			var extensions = new[]
@@ -236,7 +243,7 @@ namespace EditMap
 				new ExtensionFilter("Water settings", "scmwtr")
 			};
 
-			var path = StandaloneFileBrowser.SaveFilePanel("Export water", EnvPaths.GetMapsPath(), "", extensions);
+			var path = StandaloneFileBrowser.SaveFilePanel("Export water", ExportPathKey, "", extensions);
 
 			if (string.IsNullOrEmpty(path))
 				return;
@@ -245,6 +252,7 @@ namespace EditMap
 			string data = JsonUtility.ToJson(ScmapEditor.Current.map.Water);
 
 			File.WriteAllText(path, data);
+			EnvPaths.SetLastPath(ExportPathKey, System.IO.Path.GetDirectoryName(path));
 		}
 
 		public void ImportWater()
@@ -254,7 +262,7 @@ namespace EditMap
 				new ExtensionFilter("Water settings", "scmwtr")
 			};
 
-			var paths = StandaloneFileBrowser.OpenFilePanel("Import water", EnvPaths.GetMapsPath(), extensions, false);
+			var paths = StandaloneFileBrowser.OpenFilePanel("Import water", ExportPathKey, extensions, false);
 
 
 			if (paths.Length <= 0 || string.IsNullOrEmpty(paths[0]))
@@ -276,8 +284,9 @@ namespace EditMap
 			ReloadValues();
 
 			UpdateScmap(true);
-
+			EnvPaths.SetLastPath(ExportPathKey, System.IO.Path.GetDirectoryName(paths[0]));
 
 		}
+		#endregion
 	}
 }

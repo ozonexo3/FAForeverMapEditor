@@ -219,6 +219,7 @@ namespace EditMap
 			yield return null;
 			yield return null;
 			MapLuaParser.Current.LoadFile();
+			gameObject.SetActive(false);
 		}
 
 

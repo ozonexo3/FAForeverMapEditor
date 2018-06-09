@@ -866,6 +866,16 @@ namespace EditMap
 
 		#endregion
 
+		#region Import/Export
+		const string ExportPathKey = "PropsSetExport";
+		static string DefaultPath
+		{
+			get
+			{
+				return EnvPaths.GetLastPath(ExportPathKey, EnvPaths.GetMapsPath() + MapLuaParser.Current.FolderName);
+			}
+		}
+
 		[System.Serializable]
 		public class PaintButtonsSet{
 
@@ -890,7 +900,7 @@ namespace EditMap
 				new ExtensionFilter("Props paint set", "proppaintset")
 			};
 
-			var paths = StandaloneFileBrowser.OpenFilePanel("Import props paint set", EnvPaths.GetMapsPath(), extensions, false);
+			var paths = StandaloneFileBrowser.OpenFilePanel("Import props paint set", DefaultPath, extensions, false);
 
 
 			if (paths.Length <= 0 || string.IsNullOrEmpty(paths[0]))
@@ -949,6 +959,7 @@ namespace EditMap
 				}
 			}
 
+			EnvPaths.SetLastPath(ExportPathKey, System.IO.Path.GetDirectoryName(paths[0]));
 		}
 
 		public void ExportPropsSet()
@@ -958,7 +969,7 @@ namespace EditMap
 				new ExtensionFilter("Props paint set", "proppaintset")
 			};
 
-			var path = StandaloneFileBrowser.SaveFilePanel("Export props paint set", EnvPaths.GetMapsPath(), "", extensions);
+			var path = StandaloneFileBrowser.SaveFilePanel("Export props paint set", DefaultPath, "", extensions);
 
 			if (string.IsNullOrEmpty(path))
 				return;
@@ -986,8 +997,9 @@ namespace EditMap
 			string data = JsonUtility.ToJson(PaintSet);
 
 			File.WriteAllText(path, data);
+			EnvPaths.SetLastPath(ExportPathKey, System.IO.Path.GetDirectoryName(path));
 		}
-
+		#endregion
 
 		public void RemoveAllProps()
 		{
@@ -1008,6 +1020,10 @@ namespace EditMap
 				AllPropsTypes[g].PropsInstances.Clear();
 			}
 
+
+			TotalMassCount = 0;
+			TotalEnergyCount = 0;
+			TotalReclaimTime = 0;
 
 			UpdatePropStats();
 			Painting = false;

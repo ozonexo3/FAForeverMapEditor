@@ -372,6 +372,15 @@ namespace EditMap
 		}
 
 
+		const string ExportPathKey = "MarkersMarkerExport";
+		static string DefaultPath
+		{
+			get
+			{
+				return EnvPaths.GetLastPath(ExportPathKey, EnvPaths.GetMapsPath() + MapLuaParser.Current.FolderName);
+			}
+		}
+
 		[System.Serializable]
 		public class ExportMarkers
 		{
@@ -395,23 +404,8 @@ namespace EditMap
 				new ExtensionFilter("Faf Markers", "fafmapmarkers")
 			};
 
-			var paths = StandaloneFileBrowser.SaveFilePanel("Export markers", EnvPaths.GetMapsPath(), "", extensions);
+			var paths = StandaloneFileBrowser.SaveFilePanel("Export markers", DefaultPath, "", extensions);
 
-			/*
-			SaveFileDialog FileDialog = new SaveFileDialog();
-			FileDialog.Title = "Export markers";
-			FileDialog.AddExtension = true;
-
-			FileDialog.DefaultExt = ".fafmapmarkers";
-			FileDialog.Filter = "Faf Markers (*.fafmapmarkers)|*.fafmapmarkers";
-			*/
-
-			//System.Windows.Forms.FolderBrowserDialog FolderDialog = new FolderBrowserDialog();
-
-			//FolderDialog.ShowNewFolderButton = false;
-			//FolderDialog.Description = "Select 'Maps' folder.";
-
-			//if (FileDialog.ShowDialog() == DialogResult.OK)
 			if (!string.IsNullOrEmpty(paths))
 			{
 				ExportMarkers ExpMarkers = new ExportMarkers();
@@ -445,6 +439,8 @@ namespace EditMap
 
 
 				System.IO.File.WriteAllText(paths, JsonUtility.ToJson(ExpMarkers));
+				EnvPaths.SetLastPath(ExportPathKey, System.IO.Path.GetDirectoryName(paths));
+				GenericInfoPopup.ShowInfo("Markers exported");
 			}
 		}
 
@@ -455,17 +451,7 @@ namespace EditMap
 				new ExtensionFilter("Faf Markers", "fafmapmarkers")
 			};
 
-			var paths = StandaloneFileBrowser.OpenFilePanel("Import markers", EnvPaths.GetMapsPath(), extensions, false);
-
-
-			/*
-			OpenFileDialog FileDialog = new OpenFileDialog();
-			FileDialog.Title = "Import markers";
-			FileDialog.AddExtension = true;
-			FileDialog.DefaultExt = ".fafmapmarkers";
-			FileDialog.Filter = "Faf Markers (*.fafmapmarkers)|*.fafmapmarkers";
-			FileDialog.CheckFileExists = true;
-			*/
+			var paths = StandaloneFileBrowser.OpenFilePanel("Import markers", DefaultPath, extensions, false);
 
 			if (paths.Length > 0 && !string.IsNullOrEmpty(paths[0]))
 			{
@@ -510,7 +496,8 @@ namespace EditMap
 				}
 
 				RenderMarkersConnections.Current.UpdateConnections();
-
+				EnvPaths.SetLastPath(ExportPathKey, System.IO.Path.GetDirectoryName(paths[0]));
+				GenericInfoPopup.ShowInfo("Markers imported");
 			}
 		}
 

@@ -114,6 +114,10 @@ public partial struct GetGamedataFile
 		public float ReclaimMassMax;
 		public float ReclaimTime = 1;
 
+		public HashSet<string> Categories = new HashSet<string>();
+
+		public bool RECLAIMABLE = false;
+
 		public float SizeX = 1;
 		public float SizeY = 1;
 		public float SizeZ = 1;
@@ -215,6 +219,20 @@ public partial struct GetGamedataFile
 		{
 			Debug.LogError(LuaParser.Read.FormatException(e) + "\n" + LocalPath);
 			return ToReturn;
+		}
+
+		if (ToReturn.BP.Categories == null)
+			ToReturn.BP.Categories = new HashSet<string>();
+		else
+			ToReturn.BP.Categories.Clear();
+
+		if (BP.GetTable("PropBlueprint.Categories") != null)
+		{
+			string[] Categories = LuaParser.Read.StringArrayFromTable(BP.GetTable("PropBlueprint.Categories"));
+			for(int i = 0; i < Categories.Length; i++)
+				ToReturn.BP.Categories.Add(Categories[i]);
+
+			ToReturn.BP.RECLAIMABLE = ToReturn.BP.Categories.Contains("RECLAIMABLE");
 		}
 
 		// Economy

@@ -68,11 +68,13 @@ islandMexes ={{},{},{}}
 expansionMexes = {{},{},{}}
 
 
--- BASE RESOURCE SCALING OPTIONS (refers to spwnMexArmy)
+-- BASE RESOURCE SCALING OPTIONS
 -- add core mexes 
+-- dont forget to add these mexes also to spwnMexArmy
 coreMexes = {{}}
 
--- add mexes to starting base (further away from coreMexes)
+-- add mexes to starting base (further away from coreMexes) 
+-- dont forget to add these mexes also to spwnMexArmy
 extraBaseMexes = {{}}
 
 
@@ -85,5 +87,6 @@ bottomSideMexes = {{},{},{}}
 -- determine forward crazy rush mexes
 forwardCrazyrushMexes = {}
 
--- only use these mexes/resources (refers to spwnMexArmy)
+-- table for the "crazyrush 1 core mex" option.
+-- dont forget to add these mexes also to spwnMexArmy
 crazyrushOneMexes = {}

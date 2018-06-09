@@ -605,6 +605,8 @@ namespace FAF.MapEditor
 			return false;
 		}
 
+		const int MaxPropMass = 300;
+		const int MaxPropEnergy = 200;
 
 		bool GeneratePropButton(string localpath, string LocalName, GameObject Prefab)
 		{
@@ -645,6 +647,21 @@ namespace FAF.MapEditor
 
 			Ro.CustomTexts[0].text = LoadedProp.BP.ReclaimMassMax.ToString();
 			Ro.CustomTexts[1].text = LoadedProp.BP.ReclaimEnergyMax.ToString();
+
+			if (LoadedProp.BP.RECLAIMABLE)
+			{
+				Ro.CustomTexts[0].color = ReclaimColor(LoadedProp.BP.ReclaimMassMax, MaxPropMass);
+				Ro.CustomTexts[1].color = ReclaimColor(LoadedProp.BP.ReclaimEnergyMax, MaxPropEnergy);
+				Ro.CustomTexts[3].gameObject.SetActive(false);
+			}
+			else
+			{
+				Ro.CustomTexts[0].color = ReclaimEmpty;
+				Ro.CustomTexts[1].color = ReclaimEmpty;
+				Ro.CustomTexts[3].gameObject.SetActive(true);
+			}
+
+
 			LoadedPaths.Add(localpath);
 			LoadedProps.Add(LoadedProp);
 
