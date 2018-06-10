@@ -350,6 +350,8 @@ public partial class MapLuaParser : MonoBehaviour
 			RenderMarkersConnections.Current.UpdateConnections();
 
 			EditMenu.Categorys[0].GetComponent<MapInfo>().UpdateFields();
+
+			GenericInfoPopup.ShowInfo("Map successfully loaded!\n" + FolderName + "/" + ScenarioFileName + ".lua");
 		}
 		else
 		{
@@ -484,6 +486,7 @@ public partial class MapLuaParser : MonoBehaviour
 
 		InfoPopup.Show(false);
 		SavingMapProcess = false;
+		GenericInfoPopup.ShowInfo("Map saved!\n" + FolderName + "/" + ScenarioFileName + ".lua" );
 	}
 
 	void GenerateBackupPath()

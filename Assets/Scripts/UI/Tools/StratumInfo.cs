@@ -25,12 +25,11 @@ namespace EditMap
 
 		public RawImage Stratum_Albedo;
 		public RawImage Stratum_Normal;
+		public Text Stratum_Albedo_Name;
+		public Text Stratum_Normal_Name;
+
 		public UiTextField Stratum_Albedo_Input;
 		public UiTextField Stratum_Normal_Input;
-		//public Slider Stratum_Albedo_Slider;
-		//public InputField Stratum_Albedo_Input;
-		//public Slider Stratum_Normal_Slider;
-		//public InputField Stratum_Normal_Input;
 
 		public GameObject Page_Stratum;
 		public GameObject Page_StratumSelected;
@@ -47,6 +46,8 @@ namespace EditMap
 		public UiTextField BrushStrength;
 		//public Slider BrushRotationSlider;
 		public UiTextField BrushRotation;
+
+		public UiTextField TargetValue;
 
 		public UiTextField BrushMini;
 		public UiTextField BrushMax;
@@ -348,11 +349,12 @@ namespace EditMap
 			Stratum_Albedo.texture = ScmapEditor.Current.Textures[Selected].Albedo;
 			Stratum_Normal.texture = ScmapEditor.Current.Textures[Selected].Normal;
 
+			Stratum_Albedo_Name.text = ScmapEditor.Current.Textures[Selected].AlbedoPath;
+			Stratum_Normal_Name.text = ScmapEditor.Current.Textures[Selected].NormalPath;
 
-			//Stratum_Albedo_Slider.value = ScmapEditor.Current.Textures[Selected].AlbedoScale;
+
 			Stratum_Albedo_Input.SetValue(ScmapEditor.Current.Textures[Selected].AlbedoScale);
 
-			//Stratum_Normal_Slider.value = ScmapEditor.Current.Textures[Selected].NormalScale;
 			Stratum_Normal_Input.SetValue(ScmapEditor.Current.Textures[Selected].NormalScale);
 			LoadingStratum = false;
 		}
@@ -435,8 +437,6 @@ namespace EditMap
 					}
 					if (!LoadingStratum)
 					{
-						//Stratum_Albedo_Input.text = Stratum_Albedo_Slider.value.ToString();
-						//Stratum_Normal_Input.text = Stratum_Normal_Slider.value.ToString();
 					}
 				}
 				else
@@ -444,8 +444,6 @@ namespace EditMap
 					if (!LoadingStratum)
 					{
 						Undo.RegisterStratumChange(Selected);
-						//Stratum_Albedo_Slider.value = float.Parse(Stratum_Albedo_Input.text);
-						//Stratum_Normal_Slider.value = float.Parse(Stratum_Normal_Input.text);
 					}
 				}
 				if (!LoadingStratum)
@@ -454,9 +452,6 @@ namespace EditMap
 					ScmapEditor.Current.Textures[Selected].NormalScale = Stratum_Normal_Input.value;
 				}
 
-				//Map.map.Layers [Selected].ScaleTexture = Map.Textures [Selected].AlbedoScale;
-				//Map.map.Layers [Selected].ScaleNormalmap = Map.Textures [Selected].NormalScale;
-
 				ScmapEditor.Current.UpdateScales(Selected);
 
 			}
@@ -464,24 +459,13 @@ namespace EditMap
 			{
 				if (Slider)
 				{
-					//BrushSize.text = BrushSizeSlider.value.ToString();
-					//BrushStrength.text = BrushStrengthSlider.value.ToString();
-					//BrushRotation.text = BrushRotationSlider.value.ToString();
+
 				}
 				else
 				{
-					//BrushSizeSlider.value = float.Parse(BrushSize.text);
-					//BrushStrengthSlider.value = int.Parse(BrushStrength.text);
-					//BrushRotationSlider.value = int.Parse(BrushRotation.text);
+
 				}
 
-				//BrushSizeSlider.value = Mathf.Clamp(BrushSizeSlider.value, 1, 256);
-				//BrushStrengthSlider.value = (int)Mathf.Clamp(BrushStrengthSlider.value, 0, 100);
-				//BrushRotationSlider.value = (int)Mathf.Clamp(BrushStrengthSlider.value, -360, 360);
-
-				//BrushSize.text = BrushSizeSlider.value.ToString();
-				//BrushStrength.text = BrushStrengthSlider.value.ToString();
-				//BrushRotation.text = BrushRotationSlider.value.ToString();
 
 				Min = BrushMini.intValue;
 				Max = BrushMax.intValue;
@@ -491,6 +475,11 @@ namespace EditMap
 
 				BrushMini.SetValue(Min);
 				BrushMax.SetValue(Max);
+
+				if (TargetValue.value < 0)
+					TargetValue.SetValue(0);
+				else if (TargetValue.value > 1)
+					TargetValue.SetValue(1);
 
 				//BrushMini.text = Min.ToString("0");
 				//BrushMax.text = Max.ToString("0");
@@ -650,21 +639,13 @@ namespace EditMap
 			}
 		}
 		float ScatterValue = 0;
+		static float TargetPaintValue = 1;
 		void SymmetryPaint()
 		{
 			Painting = true;
 			size = (int)(BrushSize.value);
-			ScatterValue = float.Parse(Scatter.text);
-			/*if (ScatterValue < 0)
-				ScatterValue = 0;
-			else if (ScatterValue > 50)
-				ScatterValue = 50;
-
-			ScatterValue *= size * 0.03f;
-
-			if (ScatterValue > 0) {
-				BrushPos += (Quaternion.Euler (Vector3.up * Random.Range (0, 360)) * Vector3.forward) * Mathf.Lerp(ScatterValue, 0, Mathf.Pow(Random.Range(0f, 1f), 2));
-			}*/
+			ScatterValue = Scatter.value;
+			TargetPaintValue = Mathf.Clamp01((TargetValue.value + 1f) / 2f);
 
 			BrushGenerator.Current.GenerateSymmetry(BrushPos, 0, ScatterValue, size * 0.03f);
 
@@ -804,16 +785,16 @@ namespace EditMap
 							switch (PaintType)
 							{
 								case 0:
-										StratumData[XY].r += SampleBrush * LocalBrushStrength;
+										StratumData[XY].r = ToTarget(StratumData[XY].r, SampleBrush * LocalBrushStrength);
 									break;
 								case 1:
-										StratumData[XY].g += SampleBrush * LocalBrushStrength;
+										StratumData[XY].g = ToTarget(StratumData[XY].g, SampleBrush * LocalBrushStrength);
 									break;
 								case 2:
-										StratumData[XY].b += SampleBrush * LocalBrushStrength;
+										StratumData[XY].b = ToTarget(StratumData[XY].b, SampleBrush * LocalBrushStrength);
 									break;
 								case 3:
-										StratumData[XY].a += SampleBrush * LocalBrushStrength;
+										StratumData[XY].a = ToTarget(StratumData[XY].a, SampleBrush * LocalBrushStrength);
 									break;
 								case 10:
 										StratumData[XY].r = ConvertToLinear(StratumData[XY].r, SampleBrush * LocalBrushStrength);
@@ -857,10 +838,27 @@ namespace EditMap
 			//Map.map.TexturemapTex.SetPixels(StratumData);
 		}
 
+		static float ToTarget(float source, float addValue)
+		{
+			if(addValue < 0)
+			{
+				return Mathf.Clamp(source + addValue, 0, 1);
+			}
+			else if(source < TargetPaintValue)
+			{
+				return Mathf.Clamp(source + addValue, 0, TargetPaintValue);
+			}
+			else
+			{
+				return Mathf.Clamp(source - addValue, TargetPaintValue, 1);
+			}
+		}
+
 		static float ConvertToLinear(float value, float addValue)
 		{
 			value = value * 2f - 1f;
-			value = Mathf.Clamp(value + addValue, -0.05f, 1.05f);
+			//value = Mathf.Clamp(value + addValue, -0.05f, 1.05f);
+			value = ToTarget(value, addValue);
 			value += 1;
 			value /= 2f;
 			value = Mathf.Clamp01(value);
@@ -1137,6 +1135,8 @@ namespace EditMap
 				ScmapEditor.Current.map.TexturemapTex.SetPixels(StratumData);
 				ScmapEditor.Current.map.TexturemapTex.Apply(false);
 			}
+
+			GenericInfoPopup.ShowInfo("Cleared stratum mask for layer " + Selected);
 		}
 
 		public void ImportStratumMask()
@@ -1150,19 +1150,10 @@ namespace EditMap
 				//new ExtensionFilter("Stratum mask", "raw, bmp")
 			};
 
-			var paths = StandaloneFileBrowser.OpenFilePanel("Import stratum mask", EnvPaths.GetMapsPath(), extensions, false);
+			var paths = StandaloneFileBrowser.OpenFilePanel("Import stratum mask", DefaultPath, extensions, false);
 
-			/*
-			System.Windows.Forms.OpenFileDialog FolderDialog = new System.Windows.Forms.OpenFileDialog();
-
-			FolderDialog.Filter = "BMP (*.bmp)|*.bmp|All files (*.*)|*.*";
-			FolderDialog.FilterIndex = 0;
-			FolderDialog.RestoreDirectory = true;
-			FolderDialog.InitialDirectory = EnvPaths.GetMapsPath();
-			*/
 
 			if (paths.Length > 0 && !string.IsNullOrEmpty(paths[0]))
-			//if (FolderDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
 			{
 				if (paths[0].ToLower().EndsWith("bmp"))
 				{
@@ -1221,6 +1212,7 @@ namespace EditMap
 						ScmapEditor.Current.map.TexturemapTex.SetPixels(StratumData);
 						ScmapEditor.Current.map.TexturemapTex.Apply(false);
 					}
+					GenericInfoPopup.ShowInfo("Stratim mask import success!\n" + System.IO.Path.GetFileName(paths[0]));
 
 				}
 				else if(paths[0].ToLower().EndsWith("raw"))
@@ -1274,18 +1266,31 @@ namespace EditMap
 					}
 
 
+					GenericInfoPopup.ShowInfo("Stratim mask import success!\n" + System.IO.Path.GetFileName(paths[0]));
 
 				}
 				else
 				{
 					// Wrong file type
+					GenericInfoPopup.ShowInfo("Wrong file type!");
 
 				}
 
+				EnvPaths.SetLastPath(ExportPathKey, System.IO.Path.GetDirectoryName(paths[0]));
 
 				ScmapEditor.Current.SetTextures(Selected);
 
 				ReloadStratums();
+
+			}
+		}
+
+		const string ExportPathKey = "TexturesStratumMaskExport";
+		static string DefaultPath
+		{
+			get
+			{
+				return EnvPaths.GetLastPath(ExportPathKey, EnvPaths.GetMapsPath() + MapLuaParser.Current.FolderName);
 			}
 		}
 
@@ -1300,21 +1305,10 @@ namespace EditMap
 				new ExtensionFilter("Stratum mask", "raw")
 			};
 
-			var path = StandaloneFileBrowser.SaveFilePanel("Import stratum mask", EnvPaths.GetMapsPath(), "stratum_" + Selected, extensions);
-
-			/*
-			System.Windows.Forms.OpenFileDialog FolderDialog = new System.Windows.Forms.OpenFileDialog();
-
-			FolderDialog.Filter = "BMP (*.bmp)|*.bmp|All files (*.*)|*.*";
-			FolderDialog.FilterIndex = 0;
-			FolderDialog.RestoreDirectory = true;
-			FolderDialog.InitialDirectory = EnvPaths.GetMapsPath();
-			*/
+			var path = StandaloneFileBrowser.SaveFilePanel("Export stratum mask", DefaultPath, "stratum_" + Selected, extensions);
 
 			if (!string.IsNullOrEmpty(path))
-			//if (FolderDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
 			{
-				//string Filename = EnvPaths.GetMapsPath() + MapLuaParser.Current.FolderName + "/heightmap.raw";
 
 				int h = ScmapEditor.Current.map.TexturemapTex.width;
 				int w = ScmapEditor.Current.map.TexturemapTex.height;
@@ -1364,6 +1358,8 @@ namespace EditMap
 					}
 					writer.Close();
 				}
+				EnvPaths.SetLastPath(ExportPathKey, System.IO.Path.GetDirectoryName(path));
+				GenericInfoPopup.ShowInfo("Stratum mask export success!\n" + System.IO.Path.GetFileName(path));
 			}
 
 		}
@@ -1379,23 +1375,17 @@ namespace EditMap
 				new ExtensionFilter("Stratum setting file", "scmsl")
 			};
 
-			var paths = StandaloneFileBrowser.SaveFilePanel("Import stratum mask", EnvPaths.GetMapsPath(), "", extensions);
+			var paths = StandaloneFileBrowser.SaveFilePanel("Import stratum mask", DefaultPath, "", extensions);
 
-			/*
-			System.Windows.Forms.SaveFileDialog FolderDialog = new System.Windows.Forms.SaveFileDialog();
-
-			FolderDialog.Filter = "scmstratum files (*.scmsl)|*.scmsl|All files (*.*)|*.*";
-			FolderDialog.FilterIndex = 0;
-			FolderDialog.RestoreDirectory = true;
-			FolderDialog.InitialDirectory = EnvPaths.GetMapsPath();
-			*/
 
 			if(!string.IsNullOrEmpty(paths))
-			//if (FolderDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
 			{
 				string data = UnityEngine.JsonUtility.ToJson(ScmapEditor.Current.Textures[Selected]);
 
 				File.WriteAllText(paths, data);
+
+				GenericInfoPopup.ShowInfo("Stratum settings export success!\n" + System.IO.Path.GetFileName(paths));
+				EnvPaths.SetLastPath(ExportPathKey, System.IO.Path.GetDirectoryName(paths));
 			}
 		}
 
@@ -1407,19 +1397,7 @@ namespace EditMap
 				new ExtensionFilter("Stratum setting file", "scmsl")
 			};
 
-			var paths = StandaloneFileBrowser.OpenFilePanel("Import stratum mask", EnvPaths.GetMapsPath(), extensions, false);
-
-			/*
-			System.Windows.Forms.OpenFileDialog FolderDialog = new System.Windows.Forms.OpenFileDialog();
-
-			//FolderDialog.DefaultExt = "scmstratum";
-			//FolderDialog.AddExtension = true;
-			FolderDialog.Filter = "scmstratum files (*.scmsl)|*.scmsl|All files (*.*)|*.*";
-			FolderDialog.FilterIndex = 0;
-			FolderDialog.RestoreDirectory = true;
-			FolderDialog.InitialDirectory = EnvPaths.GetMapsPath();
-			//FolderDialog.
-			*/
+			var paths = StandaloneFileBrowser.OpenFilePanel("Import stratum mask", DefaultPath, extensions, false);
 
 			if (paths.Length > 0 && !string.IsNullOrEmpty(paths[0]))
 			{
@@ -1435,6 +1413,9 @@ namespace EditMap
 				ScmapEditor.Current.SetTextures(Selected);
 
 				ReloadStratums();
+
+				GenericInfoPopup.ShowInfo("Stratum settings import success!\n" + System.IO.Path.GetFileName(paths[0]));
+				EnvPaths.SetLastPath(ExportPathKey, System.IO.Path.GetDirectoryName(paths[0]));
 			}
 		}
 
@@ -1460,15 +1441,8 @@ namespace EditMap
 				new ExtensionFilter("Stratum template", "scmst")
 			};
 
-			var paths = StandaloneFileBrowser.SaveFilePanel("Export stratum mask", EnvPaths.GetMapsPath(), "", extensions);
-			/*
-			System.Windows.Forms.SaveFileDialog FolderDialog = new System.Windows.Forms.SaveFileDialog();
+			var paths = StandaloneFileBrowser.SaveFilePanel("Export stratum mask", DefaultPath, "", extensions);
 
-			FolderDialog.Filter = "scmstratum files (*.scmst)|*.scmst|All files (*.*)|*.*";
-			FolderDialog.FilterIndex = 0;
-			FolderDialog.RestoreDirectory = true;
-			FolderDialog.InitialDirectory = EnvPaths.GetMapsPath();
-			*/
 
 			if (!string.IsNullOrEmpty(paths))
 			{
@@ -1489,6 +1463,7 @@ namespace EditMap
 				string data = UnityEngine.JsonUtility.ToJson(NewTemplate);
 
 				File.WriteAllText(paths, data);
+				EnvPaths.SetLastPath(ExportPathKey, System.IO.Path.GetDirectoryName(paths));
 			}
 		}
 
@@ -1500,15 +1475,7 @@ namespace EditMap
 				new ExtensionFilter("Stratum setting file", "scmst")
 			};
 
-			var paths = StandaloneFileBrowser.OpenFilePanel("Import stratum mask", EnvPaths.GetMapsPath(), extensions, false);
-
-			/*
-			System.Windows.Forms.OpenFileDialog FolderDialog = new System.Windows.Forms.OpenFileDialog();
-
-			FolderDialog.Filter = "scmstratum files (*.scmst)|*.scmst|All files (*.*)|*.*";
-			FolderDialog.FilterIndex = 0;
-			FolderDialog.RestoreDirectory = true;
-			*/
+			var paths = StandaloneFileBrowser.OpenFilePanel("Import stratum mask", DefaultPath, extensions, false);
 
 			if (paths.Length > 0 && !string.IsNullOrEmpty(paths[0]))
 			{
@@ -1534,7 +1501,7 @@ namespace EditMap
 				ScmapEditor.Current.LoadStratumScdTextures(false);
 
 				ScmapEditor.Current.SetTextures();
-
+				EnvPaths.SetLastPath(ExportPathKey, System.IO.Path.GetDirectoryName(paths[0]));
 
 				ReloadStratums();
 			}

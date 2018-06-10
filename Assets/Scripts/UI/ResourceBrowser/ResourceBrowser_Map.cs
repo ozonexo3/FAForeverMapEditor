@@ -85,6 +85,21 @@ namespace FAF.MapEditor
 
 			Ro.CustomTexts[0].text = LoadedProp.BP.ReclaimMassMax.ToString();
 			Ro.CustomTexts[1].text = LoadedProp.BP.ReclaimEnergyMax.ToString();
+
+			if (LoadedProp.BP.RECLAIMABLE)
+			{
+				Ro.CustomTexts[0].color = ReclaimColor(LoadedProp.BP.ReclaimMassMax, MaxPropMass);
+				Ro.CustomTexts[1].color = ReclaimColor(LoadedProp.BP.ReclaimEnergyMax, MaxPropEnergy);
+				Ro.CustomTexts[3].gameObject.SetActive(false);
+			}
+			else
+			{
+				Ro.CustomTexts[0].color = ReclaimEmpty;
+				Ro.CustomTexts[1].color = ReclaimEmpty;
+				Ro.CustomTexts[3].gameObject.SetActive(true);
+			}
+
+
 			LoadedPaths.Add(RelativePath);
 			LoadedProps.Add(LoadedProp);
 
@@ -95,6 +110,16 @@ namespace FAF.MapEditor
 			}
 
 			return 1;
+		}
+
+		public Color ReclaimEmpty;
+		public Gradient ReclaimColors;
+		Color ReclaimColor(float count, float max = 300)
+		{
+			if (count <= 0)
+				return ReclaimEmpty;
+
+			return ReclaimColors.Evaluate(count / max);
 		}
 	}
 

@@ -130,4 +130,18 @@ public class EnvPaths : MonoBehaviour {
 		return "";
 	}
 	#endregion
+
+
+	#region Save
+	public static string GetLastPath(string key, string defaultPath)
+	{
+		return PlayerPrefs.GetString(key, defaultPath);
+	}
+
+	public static void SetLastPath(string key, string path)
+	{
+		PlayerPrefs.SetString(key, path);
+	}
+
+	#endregion
 }

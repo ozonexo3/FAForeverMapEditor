@@ -49,7 +49,7 @@ public partial struct GetGamedataFile
 	/// <returns></returns>
 	public static byte[] LoadBytes(string scd, string LocalPath)
 	{
-		if (LocalPath.ToLower().StartsWith("/maps") || LocalPath.ToLower().StartsWith("maps"))
+		if (IsMapPath(LocalPath))
 		{
 			return LoadBytes(LocalPath); 
 		}
@@ -115,6 +115,91 @@ public partial struct GetGamedataFile
 		if (!mapPath.StartsWith("/"))
 			mapPath = "/" + mapPath;
 
-		return System.IO.File.ReadAllBytes(mapPath.Replace("/maps", MapLuaParser.Current.FolderParentPath));
+		string FilePath = MapAssetSystemPath(mapPath);
+
+		if (!System.IO.File.Exists(FilePath))
+		{
+
+			mapPath = TryRecoverMapAsset(mapPath);
+			FilePath = MapAssetSystemPath(mapPath);
+
+			if (!System.IO.File.Exists(FilePath))
+			{
+				Debug.LogError("File does not exist! " + FilePath);
+				return null;
+			}
+			else
+			{
+				Debug.Log("File " + FilePath + " restored from old map folder!");
+			}
+		}
+
+		return System.IO.File.ReadAllBytes(FilePath);
+	}
+
+	public static bool IsMapPath(string mapPath)
+	{
+		mapPath = mapPath.ToLower();
+		if (!mapPath.StartsWith("/"))
+			mapPath = "/" + mapPath;
+
+		return mapPath.StartsWith("/maps");
+	}
+
+	public static string MapAssetSystemPath(string mapPath)
+	{
+		if (!mapPath.StartsWith("/"))
+			mapPath = "/" + mapPath;
+
+		return mapPath.Replace("/maps", MapLuaParser.Current.FolderParentPath);
+	}
+
+	public static string TryRecoverMapAsset(string WrongPath)
+	{
+		if (WrongPath.StartsWith("/"))
+			WrongPath = WrongPath.Remove(0, 1);
+
+		WrongPath = WrongPath.Replace("\\", "/");
+
+		string NewPath = "";
+		try
+		{
+			string[] SplitedName = WrongPath.Split('/');
+			SplitedName[1] = MapLuaParser.Current.FolderName;
+
+
+			for(int i = 0; i < SplitedName.Length; i++)
+			{
+				if (i > 0)
+					NewPath += "/";
+				NewPath += SplitedName[i];
+			}
+		}
+		catch (System.Exception e)
+		{
+			Debug.LogError(e);
+		}
+		return NewPath;
+	}
+
+	public static string FixMapsPath(string BlueprintPath)
+	{
+		if (GetGamedataFile.IsMapPath(BlueprintPath))
+		{
+			if (!System.IO.File.Exists(GetGamedataFile.MapAssetSystemPath(BlueprintPath)))
+			{
+				string NewBlueprintPath = GetGamedataFile.TryRecoverMapAsset(BlueprintPath);
+
+				if (!string.IsNullOrEmpty(NewBlueprintPath))
+				{
+					return NewBlueprintPath;
+				}
+				else
+				{
+					Debug.LogError("Unable to recover wrong map path: " + BlueprintPath);
+				}
+			}
+		}
+		return BlueprintPath;
 	}
 }

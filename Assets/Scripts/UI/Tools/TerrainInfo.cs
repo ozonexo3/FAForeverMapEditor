@@ -393,7 +393,8 @@ namespace EditMap
 			OnTerrainChanged();
 		}
 
-		public const uint HeightConversion = 256 * (256 + 64); //0xFFFF
+		//public const uint HeightConversion = 256 * (256 + 64); //0xFFFF
+		public const uint HeightConversion = 256 * (512 + 0); //0xFFFF
 
 		public void ExportHeightmap()
 		{
@@ -407,7 +408,8 @@ namespace EditMap
 				//new ExtensionFilter("Stratum mask", "raw, bmp")
 			};
 
-			var paths = StandaloneFileBrowser.SaveFilePanel("Import stratum mask", EnvPaths.GetMapsPath() + MapLuaParser.Current.FolderName, "heightmap", extensions);
+			var paths = StandaloneFileBrowser.SaveFilePanel("Export heightmap", DefaultPath, "heightmap", extensions);
+
 
 
 			if (paths == null || string.IsNullOrEmpty(paths))
@@ -425,15 +427,28 @@ namespace EditMap
 				{
 					for (int x = 0; x < w; x++)
 					{
-						uint ThisPixel = (uint)(data[h - (y + 1), x] * HeightConversion);
+						// float v = (float)(((double)reader.ReadUInt16() - 0.5) / (double)HeightConversion); << Import
+
+						uint ThisPixel = (uint)((double)data[h - (y + 1), x] * (double)HeightConversion + 0.5);
 						writer.Write(System.BitConverter.GetBytes(System.BitConverter.ToUInt16(System.BitConverter.GetBytes(ThisPixel), 0)));
 					}
 				}
 				writer.Close();
 			}
+			EnvPaths.SetLastPath(ExportPathKey, System.IO.Path.GetDirectoryName(paths));
+			GenericInfoPopup.ShowInfo("Heightmap export success!\n" + System.IO.Path.GetFileName(paths));
 		}
 
 		public Texture2D ExportAs;
+		const string ExportPathKey = "TerrainHeightmapExport";
+		static string DefaultPath
+		{
+			get
+			{
+				return EnvPaths.GetLastPath(ExportPathKey, EnvPaths.GetMapsPath() + MapLuaParser.Current.FolderName);
+			}
+		}
+
 		public void ExportWithSizeHeightmap()
 		{
 
@@ -448,7 +463,7 @@ namespace EditMap
 				//new ExtensionFilter("Stratum mask", "raw, bmp")
 			};
 
-			var paths = StandaloneFileBrowser.SaveFilePanel("Import stratum mask", EnvPaths.GetMapsPath() + MapLuaParser.Current.FolderName, "heightmap", extensions);
+			var paths = StandaloneFileBrowser.SaveFilePanel("Export heightmap scalled", DefaultPath, "heightmap", extensions);
 
 
 			if (paths == null || string.IsNullOrEmpty(paths))
@@ -504,14 +519,17 @@ namespace EditMap
 							pixel = ExportAs.GetPixel(y, x);
 						//float value = (pixel.r + pixel.g * (1f / 255f));
 						float value = pixel.r;
-						uint ThisPixel = (uint)(value * HeightConversion);
+						//uint ThisPixel = (uint)(value * HeightConversion);
+						uint ThisPixel = (uint)((double)value * (double)HeightConversion + 0.5);
 						writer.Write(System.BitConverter.GetBytes(System.BitConverter.ToUInt16(System.BitConverter.GetBytes(ThisPixel), 0)));
 					}
 				}
 				writer.Close();
 			}
 			//ExportAs = null;
+			EnvPaths.SetLastPath(ExportPathKey, System.IO.Path.GetDirectoryName(paths));
 
+			GenericInfoPopup.ShowInfo("Rescaled Heightmap export success!\n" + System.IO.Path.GetFileName(paths));
 		}
 
 		public void ImportHeightmap()
@@ -522,7 +540,7 @@ namespace EditMap
 				//new ExtensionFilter("Stratum mask", "raw, bmp")
 			};
 
-			var paths = StandaloneFileBrowser.OpenFilePanel("Import stratum mask", EnvPaths.GetMapsPath() + MapLuaParser.Current.FolderName, extensions, false);
+			var paths = StandaloneFileBrowser.OpenFilePanel("Import heightmap", DefaultPath, extensions, false);
 
 
 			if (paths == null || paths.Length == 0 || string.IsNullOrEmpty(paths[0]))
@@ -573,16 +591,19 @@ namespace EditMap
 					{
 						for (int x = 0; x < w; x++)
 						{
-							float v = (float)reader.ReadUInt16() / (float)HeightConversion;
+							float v = (float)(((double)reader.ReadUInt16() - 0.5) / (double)HeightConversion);
 							data[h - (y + 1), x] = v;
 						}
 					}
 				}
 			}
+
 			//ScmapEditor.Current.Teren.terrainData.SetHeights(0, 0, data);
 			ScmapEditor.SetAllHeights(data);
 			RegenerateMaps();
 			OnTerrainChanged();
+			EnvPaths.SetLastPath(ExportPathKey, System.IO.Path.GetDirectoryName(paths[0]));
+			GenericInfoPopup.ShowInfo("Heightmap import success!\n" + System.IO.Path.GetFileName(paths[0]));
 		}
 		#endregion
 

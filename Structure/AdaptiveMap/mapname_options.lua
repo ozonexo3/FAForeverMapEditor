@@ -19,6 +19,7 @@
 -- the explanation text. Most options that spawn a specific number of mexes have translations prepared
 -- for up to 9 mex. Just use for example "adaptive_middle_mex_key_7_help" when you want to have the
 -- text for 7 mex. Keep in mind that you also have to adjust the label, but NOT the key = XX of the option.
+
 -- If you do not want to use the standard text and write something different, just remove the 
 -- "<LOC adaptive_somethingsomething> the standard text you dont want" part and write your own text.
 -- Obviously this text wont translate and will always show english.

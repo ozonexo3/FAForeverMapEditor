@@ -33,6 +33,14 @@ local optional_civilian_base = ScenarioInfo.Options.optional_civilian_base or 1
 local optional_civilian_defenses = ScenarioInfo.Options.optional_civilian_defenses or 1
 local jamming = ScenarioInfo.Options.jamming or 1
 
+local spawnedMassSpots={}
+local spawnedMexNumber = 0
+
+--ensure all core mexes to use/spawn crazyrushOneMexes
+if(crazyrush_mexes == 3) then
+	core_mexes = 2
+end
+
 --stuff for crazyrush script
 local currentResSpot = 0
 local generatedMass = {}
@@ -40,8 +48,6 @@ local checkedExtractor = {}
 local MexList ={}
 
 --stuff for expansion script
-local spawnedMassSpots={}
-local spawnedMexNumber = 0
 local expand_map = ScenarioInfo.Options.expand_map or 1 --works with 1, but default/key = 2 in options
 
 --stuff for tree script

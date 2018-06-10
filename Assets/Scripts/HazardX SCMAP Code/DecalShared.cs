@@ -111,8 +111,8 @@ public partial class Decal {
 		public void Load(Decal Source)
 		{
 			Type = Source.Type;
-			Tex1Path = Source.TexPathes[0];
-			Tex2Path = Source.TexPathes[1];
+			Tex1Path = GetGamedataFile.FixMapsPath(Source.TexPathes[0]);
+			Tex2Path = GetGamedataFile.FixMapsPath(Source.TexPathes[1]);
 
 			UpdateMaterial();
 		}

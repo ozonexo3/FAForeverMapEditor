@@ -191,22 +191,7 @@ namespace EditMap
 
 			Scmap.UpdateLighting();
 			Scmap.Skybox.LoadSkybox();
-			/*
-			// Set light
-			Scmap.Sun.transform.rotation = Quaternion.Euler(new Vector3(DA.value, -360 + RA.value, 0));
 
-			Scmap.map.SunDirection = Scmap.Sun.transform.rotation * Vector3.back;
-
-			Vector3 SunDIr = new Vector3(-Scmap.map.SunDirection.x, -Scmap.map.SunDirection.y, -Scmap.map.SunDirection.z);
-			Scmap.Sun.transform.rotation = Quaternion.LookRotation(SunDIr);
-			Scmap.Sun.color = new Color(Scmap.map.SunColor.x, Scmap.map.SunColor.y, Scmap.map.SunColor.z, 1);
-			Scmap.Sun.intensity = Scmap.map.LightingMultiplier * SunMultipiler;
-
-			Shader.SetGlobalFloat("_LightingMultiplier", Scmap.map.LightingMultiplier);
-			Shader.SetGlobalColor("_SunColor", new Color(Scmap.map.SunColor.x * 0.5f, Scmap.map.SunColor.y * 0.5f, Scmap.map.SunColor.z * 0.5f, 1));
-			Shader.SetGlobalColor("_SunAmbience", new Color(Scmap.map.SunAmbience.x * 0.5f, Scmap.map.SunAmbience.y * 0.5f, Scmap.map.SunAmbience.z * 0.5f, 1));
-			Shader.SetGlobalColor("_ShadowColor", new Color(Scmap.map.ShadowFillColor.x * 0.5f, Scmap.map.ShadowFillColor.y * 0.5f, Scmap.map.ShadowFillColor.z * 0.5f, 1));
-		*/
 		}
 
 
@@ -226,6 +211,24 @@ namespace EditMap
 
 		}
 
+		#region Import/Export
+		const string ExportPathKey = "LightingExport";
+		const string ExportPathKey2 = "LightingSkyboxExport";
+		static string DefaultPath
+		{
+			get
+			{
+				return EnvPaths.GetLastPath(ExportPathKey, EnvPaths.GetMapsPath() + MapLuaParser.Current.FolderName);
+			}
+		}
+		static string DefaultPath2
+		{
+			get
+			{
+				return EnvPaths.GetLastPath(ExportPathKey2, EnvPaths.GetMapsPath() + MapLuaParser.Current.FolderName);
+			}
+		}
+
 		public void ExportLightingData()
 		{
 			var extensions = new[]
@@ -233,7 +236,7 @@ namespace EditMap
 				new ExtensionFilter("Lighting settings", "scmlighting")
 			};
 
-			var path = StandaloneFileBrowser.SaveFilePanel("Export Lighting", EnvPaths.GetMapsPath(), "", extensions);
+			var path = StandaloneFileBrowser.SaveFilePanel("Export Lighting", DefaultPath, "", extensions);
 
 			if (string.IsNullOrEmpty(path))
 				return;
@@ -254,7 +257,7 @@ namespace EditMap
 
 			string DataString = JsonUtility.ToJson(Data);
 			File.WriteAllText(path, DataString);
-
+			EnvPaths.SetLastPath(ExportPathKey, System.IO.Path.GetDirectoryName(path));
 		}
 
 		public void ImportLightingData()
@@ -265,7 +268,7 @@ namespace EditMap
 				new ExtensionFilter("Lighting settings", "scmlighting")
 			};
 
-			var paths = StandaloneFileBrowser.OpenFilePanel("Import Lighting", EnvPaths.GetMapsPath(), extensions, false);
+			var paths = StandaloneFileBrowser.OpenFilePanel("Import Lighting", DefaultPath, extensions, false);
 
 
 			if (paths.Length == 0 || string.IsNullOrEmpty(paths[0]))
@@ -289,6 +292,7 @@ namespace EditMap
 
 
 			LoadValues();
+			EnvPaths.SetLastPath(ExportPathKey, System.IO.Path.GetDirectoryName(paths[0]));
 		}
 
 
@@ -299,13 +303,14 @@ namespace EditMap
 				new ExtensionFilter("Procedural skybox", "scmskybox")
 			};
 
-			var path = StandaloneFileBrowser.SaveFilePanel("Export skybox", EnvPaths.GetMapsPath(), "", extensions);
+			var path = StandaloneFileBrowser.SaveFilePanel("Export skybox", DefaultPath2, "", extensions);
 
 			if (string.IsNullOrEmpty(path))
 				return;
 
 			string DataString = JsonUtility.ToJson(Scmap.map.AdditionalSkyboxData);
 			File.WriteAllText(path, DataString);
+			EnvPaths.SetLastPath(ExportPathKey2, System.IO.Path.GetDirectoryName(path));
 		}
 
 		public void ImportProceduralSkybox()
@@ -315,7 +320,7 @@ namespace EditMap
 				new ExtensionFilter("Procedural skybox", "scmskybox")
 			};
 
-			var paths = StandaloneFileBrowser.OpenFilePanel("Import skybox", EnvPaths.GetMapsPath(), extensions, false);
+			var paths = StandaloneFileBrowser.OpenFilePanel("Import skybox", DefaultPath2, extensions, false);
 
 
 			if (paths.Length == 0 || string.IsNullOrEmpty(paths[0]))
@@ -326,6 +331,8 @@ namespace EditMap
 			Scmap.map.AdditionalSkyboxData.Data.UpdateSize();
 
 			Scmap.Skybox.LoadSkybox();
+			EnvPaths.SetLastPath(ExportPathKey2, System.IO.Path.GetDirectoryName(paths[0]));
 		}
+		#endregion
 	}
 }

@@ -693,6 +693,11 @@ namespace EditMap
 					{
 						RegisterUndo();
 						//AllPropsTypes[ClosestG].PropsInstances.RemoveAt(ClosestP);
+
+						TotalMassCount -= ClosestInstance.Connected.Group.PropObject.BP.ReclaimMassMax;
+						TotalEnergyCount -= ClosestInstance.Connected.Group.PropObject.BP.ReclaimEnergyMax;
+						TotalReclaimTime -= ClosestInstance.Connected.Group.PropObject.BP.ReclaimTime;
+
 						ClosestInstance.Connected.Group.PropsInstances.Remove(ClosestInstance.Connected);
 						//AllPropsTypes[ClosestG].PropsInstances.Remove(ClosestInstance.Connected);
 						Destroy(ClosestInstance.gameObject);
@@ -861,6 +866,16 @@ namespace EditMap
 
 		#endregion
 
+		#region Import/Export
+		const string ExportPathKey = "PropsSetExport";
+		static string DefaultPath
+		{
+			get
+			{
+				return EnvPaths.GetLastPath(ExportPathKey, EnvPaths.GetMapsPath() + MapLuaParser.Current.FolderName);
+			}
+		}
+
 		[System.Serializable]
 		public class PaintButtonsSet{
 
@@ -885,7 +900,7 @@ namespace EditMap
 				new ExtensionFilter("Props paint set", "proppaintset")
 			};
 
-			var paths = StandaloneFileBrowser.OpenFilePanel("Import props paint set", EnvPaths.GetMapsPath(), extensions, false);
+			var paths = StandaloneFileBrowser.OpenFilePanel("Import props paint set", DefaultPath, extensions, false);
 
 
 			if (paths.Length <= 0 || string.IsNullOrEmpty(paths[0]))
@@ -944,6 +959,7 @@ namespace EditMap
 				}
 			}
 
+			EnvPaths.SetLastPath(ExportPathKey, System.IO.Path.GetDirectoryName(paths[0]));
 		}
 
 		public void ExportPropsSet()
@@ -953,7 +969,7 @@ namespace EditMap
 				new ExtensionFilter("Props paint set", "proppaintset")
 			};
 
-			var path = StandaloneFileBrowser.SaveFilePanel("Export props paint set", EnvPaths.GetMapsPath(), "", extensions);
+			var path = StandaloneFileBrowser.SaveFilePanel("Export props paint set", DefaultPath, "", extensions);
 
 			if (string.IsNullOrEmpty(path))
 				return;
@@ -981,9 +997,39 @@ namespace EditMap
 			string data = JsonUtility.ToJson(PaintSet);
 
 			File.WriteAllText(path, data);
+			EnvPaths.SetLastPath(ExportPathKey, System.IO.Path.GetDirectoryName(path));
+		}
+		#endregion
+
+		public void RemoveAllProps()
+		{
+			UndoRegistered = false;
+			RegisterUndo();
 
 
 
+			int GroupsCount = AllPropsTypes.Count;
+			int g = 0;
+			
+			for (g = 0; g < AllPropsTypes.Count; g++)
+			{
+				foreach (Prop PropInstance in AllPropsTypes[g].PropsInstances)
+				{
+					Destroy(PropInstance.Obj.gameObject);
+				}
+				AllPropsTypes[g].PropsInstances.Clear();
+			}
+
+
+			TotalMassCount = 0;
+			TotalEnergyCount = 0;
+			TotalReclaimTime = 0;
+
+			UpdatePropStats();
+			Painting = false;
+
+			UndoRegistered = false;
+			UpdateBrushPosition(true);
 		}
 
 	}
