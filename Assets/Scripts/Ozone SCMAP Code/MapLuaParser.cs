@@ -228,9 +228,9 @@ public partial class MapLuaParser : MonoBehaviour
 			}
 		}
 
-		if (AllFilesExists && !System.IO.File.Exists(EnvPaths.GetGamedataPath() + "/env.scd"))
+		if (AllFilesExists && !System.IO.File.Exists(EnvPaths.GamedataPath + "/env.scd"))
 		{
-			Error = "No source files in gamedata folder: " + EnvPaths.GetGamedataPath();
+			Error = "No source files in gamedata folder: " + EnvPaths.GamedataPath;
 			Debug.LogError(Error);
 			AllFilesExists = false;
 		}
@@ -648,12 +648,45 @@ public partial class MapLuaParser : MonoBehaviour
 
 	}
 
+
+	static Bounds PlayableAreaBounds = new Bounds();
+	void SetBounds(Rect CurrentArea)
+	{
+		Vector3 Point0 = CurrentArea.min * 0.1f;
+		Vector3 Point1 = CurrentArea.max * 0.1f;
+
+		Point0.z = -Point1.y;
+		Point1.z = -Point0.y;
+
+		Point0.y = -0.1f;
+		Point1.y = 26f;
+
+		//Debug.Log(Point0);
+		//Debug.Log(Point1);
+
+		PlayableAreaBounds.min = Point0;
+		PlayableAreaBounds.max = Point1;
+	}
+
+	void ClearBounds()
+	{
+		PlayableAreaBounds.center = MapCenterPoint;
+		PlayableAreaBounds.size = new Vector3(ScenarioLuaFile.Data.Size[0] * 0.1f, 26, ScenarioLuaFile.Data.Size[1]);
+	}
+
+	public static bool IsInArea(Vector3 point)
+	{
+		return PlayableAreaBounds.Contains(point);
+	}
+
 	public void UpdateArea(bool Round = true)
 	{
+		ClearBounds();
 		if (SaveLuaFile.Data.areas.Length > 0 && !AreaInfo.HideArea)
 		{
 			//int bigestAreaId = 0;
 			Rect bigestAreaRect = GetAreaRect(Round);
+
 
 			if (bigestAreaRect.width > 0 && bigestAreaRect.height > 0)
 			{
@@ -661,7 +694,7 @@ public partial class MapLuaParser : MonoBehaviour
 				// Set shaders
 				Shader.SetGlobalInt("_Area", 1);
 				Shader.SetGlobalVector("_AreaRect", new Vector4(bigestAreaRect.x / 10f, bigestAreaRect.y / 10f, bigestAreaRect.width / 10f, bigestAreaRect.height / 10f));
-
+				SetBounds(bigestAreaRect);
 			}
 			else
 			{

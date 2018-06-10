@@ -817,6 +817,9 @@ namespace EditMap
 
 		void Paint(Vector3 AtPosition, Quaternion Rotation)
 		{
+			if (!MapLuaParser.IsInArea(AtPosition))
+				return;
+
 			RegisterUndo();
 
 			AtPosition.y = ScmapEditor.Current.Teren.SampleHeight(AtPosition);

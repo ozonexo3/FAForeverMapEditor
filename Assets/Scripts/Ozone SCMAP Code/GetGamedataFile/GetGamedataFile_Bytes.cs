@@ -25,13 +25,14 @@ public partial struct GetGamedataFile
 	{
 		if (!Init)
 		{
+			FafNotInstalled = !System.IO.Directory.Exists(EnvPaths.FAFGamedataPath);
 			ZipConstants.DefaultCodePage = 0;
 			Init = true;
 		}
 
 		if (!ScdFiles.ContainsKey(scd))
 		{
-			FileStream fs = File.OpenRead(EnvPaths.GetGamedataPath() + scd);
+			FileStream fs = File.OpenRead(EnvPaths.GamedataPath + scd);
 			ZipFile NewZipFile = new ZipFile(fs);
 			ScdFiles.Add(scd, NewZipFile);
 		}
@@ -79,6 +80,29 @@ public partial struct GetGamedataFile
 
 		ZipEntry zipEntry2 = ZipFileInstance.GetEntry(LocalPath);
 
+		// FafEntry
+		ZipFile FafZipFileInstance = GetFAFZipFileInstance(scd);
+		if (FafZipFileInstance != null)
+		{
+			// Found nx2 file, try load it instead
+			ZipEntry zipEntryFAF = FafZipFileInstance.GetEntry(LocalPath);
+
+			if (zipEntryFAF == null)
+			{
+				int FoundEntry = FafZipFileInstance.FindEntry(LocalPath, true);
+
+				if (FoundEntry >= 0 && FoundEntry < FafZipFileInstance.Count)
+					zipEntryFAF = FafZipFileInstance[FoundEntry];
+			}
+
+			if (zipEntryFAF != null)
+			{
+				byte[] FafBytes = ReadZipEntryBytes(ref zipEntryFAF, ref FafZipFileInstance);
+				if (FafBytes != null && FafBytes.Length > 0)
+					return FafBytes;
+			}
+		}
+
 		if (zipEntry2 == null)
 		{
 
@@ -94,14 +118,20 @@ public partial struct GetGamedataFile
 			}
 		}
 
+		return ReadZipEntryBytes(ref zipEntry2, ref ZipFileInstance);
+	}
+
+	static byte[] ReadZipEntryBytes(ref ZipEntry ze, ref ZipFile File)
+	{
 		byte[] FinalBytes = new byte[4096]; // 4K is optimum
 
-		Stream s = ZipFileInstance.GetInputStream(zipEntry2);
-		FinalBytes = new byte[zipEntry2.Size];
+		Stream s = File.GetInputStream(ze);
+		FinalBytes = new byte[ze.Size];
 		s.Read(FinalBytes, 0, FinalBytes.Length);
 		s.Close();
 
 		return FinalBytes;
+
 	}
 
 
@@ -136,6 +166,8 @@ public partial struct GetGamedataFile
 
 		return System.IO.File.ReadAllBytes(FilePath);
 	}
+
+	#region Map folder path
 
 	public static bool IsMapPath(string mapPath)
 	{
@@ -202,4 +234,5 @@ public partial struct GetGamedataFile
 		}
 		return BlueprintPath;
 	}
+	#endregion
 }

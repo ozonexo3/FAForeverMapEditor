@@ -68,7 +68,7 @@ public partial class ScmapEditor : MonoBehaviour
 	{
 		Current = this;
 		ResBrowser.Instantiate();
-		EnvPaths.CurrentGamedataPath = EnvPaths.GetGamedataPath();
+		EnvPaths.CurrentGamedataPath = EnvPaths.GamedataPath;
 	}
 
 	void Start()
@@ -140,7 +140,7 @@ public partial class ScmapEditor : MonoBehaviour
 		}
 
 
-		EnvPaths.CurrentGamedataPath = EnvPaths.GetGamedataPath();
+		EnvPaths.CurrentGamedataPath = EnvPaths.GamedataPath;
 
 		//Shader
 		MapLuaParser.Current.EditMenu.TexturesMenu.TTerrainXP.isOn = map.TerrainShader == "TTerrainXP";
