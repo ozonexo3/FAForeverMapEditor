@@ -64,11 +64,12 @@ namespace SFB {
                 finalFilename = GetDirectoryPath(directory);
             }
 
+
             if (!string.IsNullOrEmpty(defaultName)) {
                 finalFilename += defaultName;
             }
 
-            fd.FileName = finalFilename;
+			fd.FileName = finalFilename;
             if (extensions != null) {
                 fd.Filter = GetFilterFromFileExtensionList(extensions);
                 fd.FilterIndex = 1;
@@ -110,12 +111,19 @@ namespace SFB {
             return filterString;
         }
 
-        private static string GetDirectoryPath(string directory) {
+        public static string GetDirectoryPath(string directory) {
             var directoryPath = Path.GetFullPath(directory);
-            if (!directoryPath.EndsWith("\\")) {
+
+
+			if (!directoryPath.EndsWith("\\")) {
                 directoryPath += "\\";
             }
-            return Path.GetDirectoryName(directoryPath) + Path.DirectorySeparatorChar;
+
+			if (System.IO.Path.GetPathRoot(directoryPath) == directoryPath)
+				return directoryPath;
+
+
+			return Path.GetDirectoryName(directoryPath) + Path.DirectorySeparatorChar;
         }
     }
 }

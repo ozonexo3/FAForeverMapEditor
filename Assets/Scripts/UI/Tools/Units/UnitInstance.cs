@@ -54,8 +54,25 @@ public class UnitInstance : MonoBehaviour
 		UnitRenderer.AddInstance(this, true);
 	}
 
+	const float SubDepth = 0.2f;
 	public Vector3 GetSnapPosition(Vector3 Pos)
 	{
+		if (UnitRenderer.BP.PhysicsLayerSub)
+		{
+			Vector3 PositionOnWater = ScmapEditor.SnapToTerrain(Pos, true);
+			if (PositionOnWater.y > ScmapEditor.GetWaterLevel())
+				return PositionOnWater;
+
+			Vector3 PositionUnderWater = ScmapEditor.SnapToTerrain(Pos, false);
+
+			if (Mathf.Abs(PositionOnWater.y - PositionUnderWater.y) < UnitRenderer.BP.PhysicsElevation * 0.2f)
+				return Vector3.Lerp(PositionOnWater, PositionUnderWater, 0.5f);
+
+			PositionOnWater.y += UnitRenderer.BP.PhysicsElevation * 0.1f;
+
+			return PositionOnWater;
+
+		}
 		return ScmapEditor.SnapToTerrain(Pos, UnitRenderer.BP.PhysicsLayerWater);
 	}
 

@@ -315,14 +315,14 @@
     <Reference Include="ICSharpCode.SharpZipLib">
       <HintPath>E:/GithubDesktop/FAForeverMapEditor/Assets/Plugins/ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
-    <Reference Include="System.Windows.Forms">
-      <HintPath>E:/GithubDesktop/FAForeverMapEditor/Assets/Plugins/System.Windows.Forms.dll</HintPath>
-    </Reference>
     <Reference Include="Ookii.Dialogs">
       <HintPath>E:/GithubDesktop/FAForeverMapEditor/Assets/StandaloneFileBrowser/Plugins/Ookii.Dialogs.dll</HintPath>
     </Reference>
     <Reference Include="SyntaxTree.VisualStudio.Unity.Bridge">
       <HintPath>C:/Program Files (x86)/Microsoft Visual Studio Tools for Unity/15.0/Editor/SyntaxTree.VisualStudio.Unity.Bridge.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Windows.Forms">
+      <HintPath>E:/GithubDesktop/FAForeverMapEditor/Assets/StandaloneFileBrowser/Plugins/System.Windows.Forms.dll</HintPath>
     </Reference>
     <Reference Include="mscorlib">
       <HintPath>C:/Program Files/Unity/Editor/Data/MonoBleedingEdge/lib/mono/4.7.1-api/mscorlib.dll</HintPath>

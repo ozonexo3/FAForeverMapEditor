@@ -71,6 +71,7 @@ public partial class ScmapEditor : MonoBehaviour
 		EnvPaths.CurrentGamedataPath = EnvPaths.GamedataPath;
 	}
 
+
 	void Start()
 	{
 		ToogleGrid(false);

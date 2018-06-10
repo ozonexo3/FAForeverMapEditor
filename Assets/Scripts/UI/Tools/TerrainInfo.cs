@@ -445,7 +445,17 @@ namespace EditMap
 		{
 			get
 			{
-				return EnvPaths.GetLastPath(ExportPathKey, EnvPaths.GetMapsPath() + MapLuaParser.Current.FolderName);
+				string ToReturn = EnvPaths.GetLastPath(ExportPathKey, EnvPaths.GetMapsPath() + MapLuaParser.Current.FolderName);
+				Debug.Log("Default path: " + EnvPaths.GetMapsPath() + MapLuaParser.Current.FolderName);
+				Debug.Log("Last path: " + ToReturn);
+
+				if (string.IsNullOrEmpty(ToReturn) || !Directory.Exists(ToReturn))
+				{
+					Debug.Log("Send my documents " + EnvPaths.MyDocuments);
+					return EnvPaths.MyDocuments;
+				}
+
+				return ToReturn;
 			}
 		}
 

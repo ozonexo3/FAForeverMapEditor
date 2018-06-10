@@ -31,13 +31,15 @@ public class UnitListObject : MonoBehaviour {
 		Layout.padding.left = 2 + count * 6;
 	}
 
+
+	bool IsRoot = false;
 	public void SetGroup(string Name, bool root)
 	{
 		GroupName.text = Name;
 		NameInputField.SetValue(Name);
+		IsRoot = root;
 
-
-		if (root)
+		if (IsRoot)
 		{
 			RemoveButton.SetActive(false);
 
@@ -73,6 +75,11 @@ public class UnitListObject : MonoBehaviour {
 	float LastClickTime = 0;
 	public void OnTitleClick()
 	{
+		SelectAction(this);
+
+		if (IsRoot)
+			return;
+
 		if(Time.realtimeSinceStartup - LastClickTime < DoubleClickTime)
 		{
 			SelectButton.SetActive(false);

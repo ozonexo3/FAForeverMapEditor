@@ -27,7 +27,7 @@ Shader "MapEditor/FaWater" {
 		//_WaterScaleZ ("Water Scale Z", float) = 1024
 	}
     SubShader {
-    	Tags { "Queue"="Transparent+2" "RenderType"="Transparent" }
+    	Tags { "Queue"="Transparent+6" "RenderType"="Transparent" }
 
 	    GrabPass 
 	     {

@@ -25,6 +25,7 @@ public partial struct GetGamedataFile
 		public bool PhysicsLayerSeabed;
 		public bool PhysicsLayerSub;
 		public bool PhysicsLayerWater;
+		public float PhysicsElevation = 0;
 
 		public string[] Categories;
 		public string GeneralCategory;
@@ -236,6 +237,15 @@ public partial struct GetGamedataFile
 			CurrentValue = PhisicsLayersTab.RawGet("LAYER_Water");
 			if (CurrentValue != null)
 				ToReturn.BP.PhysicsLayerWater = LuaParser.Read.StringToBool(CurrentValue.ToString());
+			
+		}
+
+		PhisicsLayersTab = BP.GetTable("UnitBlueprint.Physics");
+		if (PhisicsLayersTab != null)
+		{
+			CurrentValue = PhisicsLayersTab.RawGet("Elevation");
+			if (CurrentValue != null)
+				ToReturn.BP.PhysicsElevation = LuaParser.Read.StringToFloat(CurrentValue.ToString());
 		}
 
 		float BiggestLodDistance = 100;

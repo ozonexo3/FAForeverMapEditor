@@ -164,6 +164,9 @@ public class EnvPaths : MonoBehaviour {
 	#region Save
 	public static string GetLastPath(string key, string defaultPath)
 	{
+		if (string.IsNullOrEmpty(defaultPath))
+			defaultPath = MyDocuments;
+
 		string SavedPath = PlayerPrefs.GetString(key, defaultPath);
 
 		if (System.IO.Directory.Exists(SavedPath))

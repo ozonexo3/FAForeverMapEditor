@@ -156,7 +156,7 @@ public class UnitSource : MonoBehaviour
 		UInst.orders = Source.orders;
 		UInst.platoon = Source.platoon;
 		UInst.UnitRenderer = this;
-		UInst.SetMatrix(ScmapEditor.SnapToTerrain(position), rotation);
+		UInst.SetMatrix(UInst.GetSnapPosition(position), rotation);
 
 		if (BP.Footprint.x > 0 && BP.Footprint.y > 0)
 			UInst.Col.size = new Vector3(BP.Footprint.x * 0.1f, BP.Size.y * 0.1f, BP.Footprint.y * 0.1f);

@@ -115,6 +115,9 @@ public class AppMenu : MonoBehaviour
 			case "Wiki":
 				Application.OpenURL("https://wiki.faforever.com/index.php?title=FA_Forever_Map_Editor");
 				break;
+			case "UnitDb":
+				Application.OpenURL("http://direct.faforever.com/faf/unitsDB/");
+				break;
 			case "EditorLog":
 				string LogPath = System.Environment.GetFolderPath(System.Environment.SpecialFolder.LocalApplicationData);
 				LogPath += "Low";

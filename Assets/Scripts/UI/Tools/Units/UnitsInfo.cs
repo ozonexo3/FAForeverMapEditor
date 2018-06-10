@@ -133,6 +133,8 @@ namespace EditMap
 						GameObject NewGroupObject = Instantiate(GroupPrefab, Pivot);
 						UnitListObject ulo = NewGroupObject.GetComponent<UnitListObject>();
 						ulo.AddAction = AddNewGroup;
+						ulo.RemoveAction = RemoveGroup;
+						ulo.SelectAction = SelectGroup;
 						ulo.SetGroup(ScenarioData.Configurations[c].Teams[t].Armys[a].Data.Name, true);
 						UnitGroups.Add(ulo);
 
