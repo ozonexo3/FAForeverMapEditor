@@ -130,33 +130,41 @@ namespace EditMap
 				{
 					for(int a = 0; a < ScenarioData.Configurations[c].Teams[t].Armys.Count; a++)
 					{
-						GameObject NewGroupObject = Instantiate(GroupPrefab, Pivot);
-						UnitListObject ulo = NewGroupObject.GetComponent<UnitListObject>();
-						ulo.AddAction = AddNewGroup;
-						ulo.RemoveAction = RemoveGroup;
-						ulo.SelectAction = SelectGroup;
-						ulo.SetGroup(ScenarioData.Configurations[c].Teams[t].Armys[a].Data.Name, true);
-						UnitGroups.Add(ulo);
-
-						GenerateArmy(ScenarioData.Configurations[c].Teams[t].Armys[a], ulo);
+						CreateGroup(ScenarioData.Configurations[c].Teams[t].Armys[a].Data, ScenarioData.Configurations[c].Teams[t].Armys[a].Data.Units, Pivot, true);
 					}
 				}
 				for(int e = 0; e < ScenarioData.Configurations[c].ExtraArmys.Count; e++)
 				{
-					GameObject NewGroupObject = Instantiate(GroupPrefab, Pivot);
-					UnitListObject ulo = NewGroupObject.GetComponent<UnitListObject>();
-					ulo.AddAction = AddNewGroup;
-					ulo.SetGroup(ScenarioData.Configurations[c].ExtraArmys[e].Data.Name, true);
-					UnitGroups.Add(ulo);
+					CreateGroup(ScenarioData.Configurations[c].ExtraArmys[e].Data, ScenarioData.Configurations[c].ExtraArmys[e].Data.Units, Pivot, true);
 				}
 			}
 		}
 
-		public void GenerateArmy(MapLua.ScenarioLua.Army Army, UnitListObject ArmyGroup)
+		public void GenerateGroups(MapLua.SaveLua.Army Army, MapLua.SaveLua.Army.UnitsGroup Grp, UnitListObject ParentGrp)
 		{
+			int GrpCount = Grp.UnitGroups.Count;
+			if (GrpCount == 0)
+				return;
 
+			foreach(MapLua.SaveLua.Army.UnitsGroup iGrp in Grp.UnitGroups)
+			{
+				CreateGroup(Army, iGrp, ParentGrp.Pivot);
+			}
 		}
 
+
+		public void CreateGroup(MapLua.SaveLua.Army Army, MapLua.SaveLua.Army.UnitsGroup Grp, Transform Pivot, bool Root = false)
+		{
+			GameObject NewGroupObject = Instantiate(GroupPrefab, Pivot);
+			UnitListObject ulo = NewGroupObject.GetComponent<UnitListObject>();
+			ulo.AddAction = AddNewGroup;
+			ulo.RemoveAction = RemoveGroup;
+			ulo.SelectAction = SelectGroup;
+			ulo.SetGroup(Army, Grp, Root);
+			UnitGroups.Add(ulo);
+
+			GenerateGroups(Army, Grp, ulo);
+		}
 
 
 		public void DestroyUnits(List<GameObject> MarkerObjects, bool RegisterUndo = true)

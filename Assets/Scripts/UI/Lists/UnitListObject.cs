@@ -7,18 +7,25 @@ using Ozone.UI;
 public class UnitListObject : MonoBehaviour {
 
 	public Text GroupName;
+	public Color NameRoot;
+	public Color NameGroup;
+
 	public Text UnitsCount;
 	public Transform Pivot;
 	public VerticalLayoutGroup Layout;
 	public int InstanceId;
 
-	public GameObject Selection;
+	public Image Selection;
+	public Color ColorNormal;
+	public Color ColorSelected;
 
 	public UiTextField NameInputField;
 	public GameObject SelectButton;
 	public GameObject RemoveButton;
 
 
+	public MapLua.SaveLua.Army Owner;
+	public MapLua.SaveLua.Army.UnitsGroup Source;
 	public System.Action<UnitListObject> AddAction;
 	public System.Action<UnitListObject> RemoveAction;
 	public System.Action<UnitListObject> SelectAction;
@@ -33,27 +40,40 @@ public class UnitListObject : MonoBehaviour {
 
 
 	bool IsRoot = false;
-	public void SetGroup(string Name, bool root)
+	public void SetGroup(MapLua.SaveLua.Army Owner, MapLua.SaveLua.Army.UnitsGroup Data, bool root)
 	{
-		GroupName.text = Name;
-		NameInputField.SetValue(Name);
+		this.Owner = Owner;
 		IsRoot = root;
+
 
 		if (IsRoot)
 		{
+			GroupName.text = Owner.Name;
+			NameInputField.SetValue(Owner.Name);
 			RemoveButton.SetActive(false);
-
+			UnitsCount.gameObject.SetActive(false);
 		}
 		else
 		{
+			GroupName.text = Data.Name;
+			NameInputField.SetValue(Data.Name);
 			RemoveButton.SetActive(true);
+			UnitsCount.gameObject.SetActive(true);
 		}
-		Selection.SetActive(false);
+
+		UnitsCount.text = Data.UnitInstances.Count.ToString();
+
+		OnRenamed();
+		Selection.color = ColorNormal;
+		GroupName.color = IsRoot ? NameRoot : NameGroup;
 	}
+
+
 
 	public void UpdateSelection(bool Selected)
 	{
-		Selection.gameObject.SetActive(Selected);
+		//Selection.gameObject.SetActive(Selected);
+		Selection.color = Selected ? ColorSelected : ColorNormal;
 	}
 
 	public void UpdateValues(int UnitCounts)

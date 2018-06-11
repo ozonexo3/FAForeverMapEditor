@@ -1,30 +1,17 @@
-﻿// Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
-
-// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
-
-// Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
-
-Shader "MapEditor/FaWater" {
+﻿Shader "MapEditor/FaWater" {
 	Properties {
 		waterColor  ("waterColor", Color) = (0.0, 0.7, 1.5, 1)
 		sunColor  ("Sun Color", Color) = (1.1, 0.7, 0.5, 1)
-		//SunDirection  ("Sun Color", float3) = float3( -0.2 , -0.967, -0.453)
-		//_UtilitySamplerC ("_UtilitySamplerC", 2D) = "white" {}
 		_WaterData ("Water Data", 2D) = "white" {}
 		SkySampler("SkySampler", CUBE) = "" {}
 		ReflectionSampler ("ReflectionSampler", 2D) = "white" {}
 		
-		//RefractionSampler ("RefractionSampler", 2D) = "white" {}
-		//_Reflection("Reflection", CUBE) = "" {}
-		FresnelSampler ("FresnelSampler", 2D) = "white" {}
 		NormalSampler0 ("NormalSampler0", 2D) = "white" {}
 		NormalSampler1 ("NormalSampler1", 2D) = "white" {}
 		NormalSampler2 ("NormalSampler2", 2D) = "white" {}
 		NormalSampler3 ("NormalSampler3", 2D) = "white" {}
 
 		_GridScale ("Grid Scale", Range (0, 2048)) = 512
-		//_WaterScaleX ("Water Scale X", float) = 1024
-		//_WaterScaleZ ("Water Scale Z", float) = 1024
 	}
     SubShader {
     	Tags { "Queue"="Transparent+6" "RenderType"="Transparent" }
@@ -142,7 +129,6 @@ Shader "MapEditor/FaWater" {
 	    uniform sampler2D RefractionSampler;
 	    sampler2D  ReflectionSampler;
 		sampler2D _ReflectionTexture;
-	    uniform sampler2D FresnelSampler;
 	    uniform sampler2D NormalSampler0, NormalSampler1, NormalSampler2, NormalSampler3;
 		//samplerCUBE _Reflection;
 		samplerCUBE SkySampler;
@@ -224,11 +210,7 @@ Shader "MapEditor/FaWater" {
 			float4 reflectedPixels = tex2D( _ReflectionTexture, refractionPos);
 
 
-	   		float  NDotL = saturate( dot(-viewVector, N) );
-			//float fresnel = tex2D( FresnelSampler, float2(waterDepth, NDotL) ).r;
-			//float fresnel = tex2D(FresnelSampler, float2(pow(waterDepth - fresnelBias, fresnelPower), NDotL)).r;
-			//float fresnel = tex2D(FresnelSampler, float2(waterDepth, pow(NDotL + fresnelBias, fresnelPower))).r;
-			//fresnel = pow(fresnel, fresnelPower) + fresnelBias;
+			float  NDotL = saturate(dot(-viewVector, N));
 			float fresnel = saturate(pow(saturate((1 - NDotL)), fresnelPower) + fresnelBias);
 
 			// figure out the sun reflection

@@ -6,9 +6,9 @@ using System.Collections.Generic;
 public class EditorVersion : MonoBehaviour
 {
 
-	public const string EditorBuildVersion = "v0.523-Alpha";
-	public const float VersionOffset = 0f; // Release
-	//public const float VersionOffset = -0.001f; // Prerelease
+	public const string EditorBuildVersion = "v0.524-Alpha";
+	//public const float VersionOffset = 0f; // Release
+	public const float VersionOffset = -0.001f; // Prerelease
 	public static string LatestTag = "";
 	public static string FoundUrl;
 

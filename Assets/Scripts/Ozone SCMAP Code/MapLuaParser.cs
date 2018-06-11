@@ -76,26 +76,30 @@ public partial class MapLuaParser : MonoBehaviour
 
 	void Awake()
 	{
-		ICSharpCode.SharpZipLib.Zip.ZipConstants.DefaultCodePage = 0;
-
-
-		EnvPaths.GenerateDefaultPaths();
-
-		if (string.IsNullOrEmpty(EnvPaths.GetInstalationPath())){
-			EnvPaths.GenerateGamedataPath();
-			EnvPaths.SetInstalationPath(EnvPaths.DefaultGamedataPath);
-		}
-
 		Current = this;
-		StructurePath = Application.dataPath + "/Structure/"; ;
-#if UNITY_EDITOR
-		StructurePath = StructurePath.Replace("Assets", "");
-#endif
-
+		LoadStructurePaths();
 
 		DecalsInfo.Current = DecalsMenu;
 		PropsInfo.Current = PropsMenu;
 		UnitsInfo.Current = UnitsMenu;
+	}
+
+	public static void LoadStructurePaths()
+	{
+		ICSharpCode.SharpZipLib.Zip.ZipConstants.DefaultCodePage = 0;
+
+		EnvPaths.GenerateDefaultPaths();
+
+		if (string.IsNullOrEmpty(EnvPaths.GetInstalationPath()))
+		{
+			EnvPaths.GenerateGamedataPath();
+			EnvPaths.SetInstalationPath(EnvPaths.DefaultGamedataPath);
+		}
+
+		StructurePath = Application.dataPath + "/Structure/"; ;
+#if UNITY_EDITOR
+		StructurePath = StructurePath.Replace("Assets", "");
+#endif
 	}
 
 	public static bool IsMapLoaded
