@@ -202,13 +202,13 @@ options ={
 {
     default = 1,
     label = "<LOC adaptive_core_mex_label> Core Mexes",
-    help = "<LOC adaptive_core_mex_help> Spawn 3 or 4 core mexes.",
+    help = "<LOC adaptive_core_mex_2_help> Spawn 4 or 5 core mexes.",
     key = 'core_mexes',
     pref = 'core_mexes',
     values = {
 		-- there are no additional translations for this option
-        { text = "3", help = "<LOC adaptive_core_mex_key_3> Spawn 3 core mexes.", key = 1, },
-        { text = "4", help = "<LOC adaptive_core_mex_key_4> Spawn 4 core mexes.", key = 2, },
+        { text = "4", help = "<LOC adaptive_core_mex_key_4> Spawn 4 core mexes.", key = 1, },
+        { text = "5", help = "<LOC adaptive_core_mex_key_5> Spawn 5 core mexes.", key = 2, },
     },
 },
 
@@ -292,8 +292,8 @@ options ={
     pref = 'optional_civilian_base',
     values = {
         { text = "<LOC adaptive_disabled> disabled", help = "<LOC adaptive_civ_base_key_1_help> No civilian base.", key = 1, },
-        { text = "<LOC adaptive_civ_base_key_1> wreckage", help = "<LOC adaptive_civ_base_key_2_help> Spawn civilian base wreckage.", key = 2, },
-        { text = "<LOC adaptive_civ_base_key_2> operational", help = "<LOC adaptive_civ_base_key_3_help> Spawn operational civilian base.", key = 3, },
+        { text = "<LOC adaptive_civ_base_key_2> wreckage", help = "<LOC adaptive_civ_base_key_2_help> Spawn civilian base wreckage.", key = 2, },
+        { text = "<LOC adaptive_civ_base_key_3> operational", help = "<LOC adaptive_civ_base_key_3_help> Spawn operational civilian base.", key = 3, },
     },
 },
 
