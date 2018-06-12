@@ -151,8 +151,9 @@ public class UnitSource : MonoBehaviour
 
 		UnitInstance UInst = Obj.GetComponent<UnitInstance>();
 		//UInst.Owner = Owner;
-		UInst.Group = Group;
-		Group.UnitInstances.Add(UInst);
+		UInst.Owner = Source;
+		Source.Instance = UInst;
+		//Group.Units.Add(Source);
 		UInst.orders = Source.orders;
 		UInst.platoon = Source.platoon;
 		UInst.UnitRenderer = this;

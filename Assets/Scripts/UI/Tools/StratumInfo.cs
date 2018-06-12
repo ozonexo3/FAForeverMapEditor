@@ -1027,6 +1027,7 @@ namespace EditMap
 			ScmapEditor.Current.Textures[NewSelected] = Prev;
 
 			ScmapEditor.Current.SetTextures(Selected);
+			ScmapEditor.Current.SetTextures(NewSelected);
 
 			ReloadStratums();
 			SelectStratum(NewSelected);
@@ -1077,6 +1078,7 @@ namespace EditMap
 			ScmapEditor.Current.Textures[NewSelected] = Prev;
 
 			ScmapEditor.Current.SetTextures(Selected);
+			ScmapEditor.Current.SetTextures(NewSelected);
 
 			ReloadStratums();
 			SelectStratum(NewSelected);

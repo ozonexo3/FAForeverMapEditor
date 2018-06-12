@@ -7,9 +7,13 @@ using FAF.MapEditor;
 
 namespace EditMap
 {
-	public class UnitsInfo : MonoBehaviour
+	public partial class UnitsInfo : MonoBehaviour
 	{
 		public static UnitsInfo Current;
+
+		[Header("Pages")]
+		public GameObject[] PageSelected;
+		public GameObject[] Page;
 
 		[Header("UI")]
 		public Transform Pivot;
@@ -89,153 +93,28 @@ namespace EditMap
 				ChangeControlerType.Current.UpdateButtons();
 		}
 
-		public void UpdateGroupSelection()
+		int CurrentPage = 0;
+		public static bool TerrainPageChange = false;
+		public void ChangePage(int PageId)
 		{
-			foreach(UnitListObject ulo in UnitGroups)
-			{
-				ulo.UpdateSelection(SelectedGroups.Contains(ulo));
-			}
-		}
-
-		public void Clear()
-		{
-			if (UnitGroups == null)
-				UnitGroups = new HashSet<UnitListObject>();
-			else
-			{
-
-				foreach (UnitListObject ulo in UnitGroups)
-				{
-					if(ulo != null)
-					Destroy(ulo.gameObject);
-				}
-
-				UnitGroups.Clear();
-			}
-
-			SelectedGroups.Clear();
-		}
-
-		HashSet<UnitListObject> UnitGroups = new HashSet<UnitListObject>();
-		HashSet<UnitListObject> SelectedGroups = new HashSet<UnitListObject>();
-		public void Generate()
-		{
-			Clear();
-
-			var ScenarioData = MapLuaParser.Current.ScenarioLuaFile.Data;
-
-			for (int c = 0; c < ScenarioData.Configurations.Length; c++)
-			{
-				for(int t = 0; t < ScenarioData.Configurations[c].Teams.Length; t++)
-				{
-					for(int a = 0; a < ScenarioData.Configurations[c].Teams[t].Armys.Count; a++)
-					{
-						CreateGroup(ScenarioData.Configurations[c].Teams[t].Armys[a].Data, ScenarioData.Configurations[c].Teams[t].Armys[a].Data.Units, Pivot, true);
-					}
-				}
-				for(int e = 0; e < ScenarioData.Configurations[c].ExtraArmys.Count; e++)
-				{
-					CreateGroup(ScenarioData.Configurations[c].ExtraArmys[e].Data, ScenarioData.Configurations[c].ExtraArmys[e].Data.Units, Pivot, true);
-				}
-			}
-		}
-
-		public void GenerateGroups(MapLua.SaveLua.Army Army, MapLua.SaveLua.Army.UnitsGroup Grp, UnitListObject ParentGrp)
-		{
-			int GrpCount = Grp.UnitGroups.Count;
-			if (GrpCount == 0)
+			if (CurrentPage == PageId && Page[CurrentPage].activeSelf && PageSelected[CurrentPage].activeSelf)
 				return;
+			TerrainPageChange = true;
 
-			foreach(MapLua.SaveLua.Army.UnitsGroup iGrp in Grp.UnitGroups)
+			//PreviousPage = CurrentPage;
+			CurrentPage = PageId;
+
+			for (int i = 0; i < Page.Length; i++)
 			{
-				CreateGroup(Army, iGrp, ParentGrp.Pivot);
-			}
-		}
-
-
-		public void CreateGroup(MapLua.SaveLua.Army Army, MapLua.SaveLua.Army.UnitsGroup Grp, Transform Pivot, bool Root = false)
-		{
-			GameObject NewGroupObject = Instantiate(GroupPrefab, Pivot);
-			UnitListObject ulo = NewGroupObject.GetComponent<UnitListObject>();
-			ulo.AddAction = AddNewGroup;
-			ulo.RemoveAction = RemoveGroup;
-			ulo.SelectAction = SelectGroup;
-			ulo.SetGroup(Army, Grp, Root);
-			UnitGroups.Add(ulo);
-
-			GenerateGroups(Army, Grp, ulo);
-		}
-
-
-		public void DestroyUnits(List<GameObject> MarkerObjects, bool RegisterUndo = true)
-		{
-			if (RegisterUndo && MarkerObjects.Count > 0)
-				Undo.Current.RegisterDecalsRemove();
-
-			int Count = MarkerObjects.Count;
-			for (int i = 0; i < Count; i++)
-			{
-				DestroyImmediate(MarkerObjects[i]);
+				Page[i].SetActive(false);
+				PageSelected[i].SetActive(false);
 			}
 
-			SelectionManager.Current.CleanSelection();
-			GoToSelection();
+
+			Page[CurrentPage].SetActive(true);
+			PageSelected[CurrentPage].SetActive(true);
+			TerrainPageChange = false;
 		}
-
-		public void SelectUnit()
-		{
-			// ToDo Reload Selection UI info
-
-			//DecalsList.UpdateSelection();
-		}
-
-		bool UpdateSelectedMatrixes = false;
-		public void SnapAction(Transform tr, GameObject Connected)
-		{
-			UpdateSelectedMatrixes = true;
-			if(Connected == null)
-				tr.localPosition = ScmapEditor.SnapToTerrain(tr.localPosition);
-			else
-				tr.localPosition = Connected.GetComponent<UnitInstance>().GetSnapPosition(tr.localPosition);
-		}
-
-
-		#region Groups
-		public void AddNewGroup(UnitListObject parent)
-		{
-			SelectedGroups.Clear();
-			UpdateGroupSelection();
-		}
-
-		public void RemoveGroup(UnitListObject parent)
-		{
-			SelectedGroups.Clear();
-			UpdateGroupSelection();
-		}
-
-		public void SelectGroup(UnitListObject parent)
-		{
-			if (Input.GetKey(KeyCode.LeftShift))
-			{
-				SelectedGroups.Add(parent);
-			}
-			else if (Input.GetKey(KeyCode.LeftControl))
-			{
-				if (SelectedGroups.Contains(parent))
-					SelectedGroups.Remove(parent);
-				else
-					SelectedGroups.Add(parent);
-			}
-			else
-			{
-				SelectedGroups.Clear();
-				SelectedGroups.Add(parent);
-			}
-
-			UpdateGroupSelection();
-		}
-
-		#endregion
 
 	}
 }

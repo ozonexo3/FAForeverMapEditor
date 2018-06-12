@@ -11,7 +11,7 @@ public class UnitInstance : MonoBehaviour
 	public string platoon;
 
 	public UnitSource UnitRenderer;
-	public MapLua.SaveLua.Army.UnitsGroup Group;
+	public MapLua.SaveLua.Army.Unit Owner;
 
 
 	public Matrix4x4 LocalToWorldMatrix;

@@ -56,7 +56,7 @@ namespace MapLua
 				public string orders;
 				public string platoon;
 				public HashSet<UnitsGroup> UnitGroups;
-				public HashSet<UnitInstance> UnitInstances;
+				public HashSet<Unit> Units;
 
 				public const string KEY_ORDERS = "orders";
 				public const string KEY_PLATOON = "platoon";
@@ -72,7 +72,7 @@ namespace MapLua
 					platoon = "";
 
 					UnitGroups = new HashSet<UnitsGroup>();
-					UnitInstances = new HashSet<UnitInstance>();
+					Units = new HashSet<Unit>();
 				}
 
 				public UnitsGroup(string name, LuaTable Table)
@@ -82,7 +82,7 @@ namespace MapLua
 					platoon = LuaParser.Read.StringFromTable(Table, KEY_PLATOON);
 
 					UnitGroups = new HashSet<UnitsGroup>();
-					UnitInstances = new HashSet<UnitInstance>();
+					Units = new HashSet<Unit>();
 
 					LuaTable[] UnitsTables = LuaParser.Read.GetTableTables((LuaTable)Table.RawGet(KEY_UNITS));
 					string[] UnitsNames = LuaParser.Read.GetTableKeys((LuaTable)Table.RawGet(KEY_UNITS));
@@ -101,8 +101,8 @@ namespace MapLua
 								//Debug.Log(UnitsTables[i].RawGet(KEY_POSITION));
 								NewUnit.Position = LuaParser.Read.Vector3FromTable(UnitsTables[i], KEY_POSITION);
 								NewUnit.Orientation = LuaParser.Read.Vector3FromTable(UnitsTables[i], KEY_ORIENTATION);
-
-								GetGamedataFile.LoadUnit(NewUnit.type).CreateUnitObject(NewUnit, this);
+								Units.Add(NewUnit);
+								//GetGamedataFile.LoadUnit(NewUnit.type).CreateUnitObject(NewUnit, this);
 							}
 							else
 							{
@@ -115,8 +115,10 @@ namespace MapLua
 					else
 					{
 						UnitGroups = new HashSet<UnitsGroup>();
-						UnitInstances = new HashSet<UnitInstance>();
+						Units = new HashSet<Unit>();
 					}
+
+					InstantiateGroup(false);
 				}
 
 				public void SaveUnitsGroup(LuaParser.Creator LuaFile)
@@ -133,15 +135,38 @@ namespace MapLua
 						g.SaveUnitsGroup(LuaFile);
 					}
 
-					foreach (UnitInstance u in UnitInstances)
+					foreach (Unit u in Units)
 					{
-						Unit.SaveUnit(LuaFile, u);
+						Unit.SaveUnit(LuaFile, u.Instance);
 					}
 
 
 					LuaFile.CloseTab(LuaParser.Write.EndBracketNext);
 
 					LuaFile.CloseTab(LuaParser.Write.EndBracketNext);
+				}
+
+				public void ClearGroup(bool childs)
+				{
+					foreach(Unit u in Units)
+					{
+						u.ClearInstance();
+					}
+
+					foreach (UnitsGroup ug in UnitGroups)
+						ug.ClearGroup(childs);
+				}
+
+				public void InstantiateGroup(bool childs)
+				{
+					foreach (Unit u in Units)
+					{
+						u.Instantiate(this);
+					}
+
+					if(childs)
+					foreach (UnitsGroup ug in UnitGroups)
+						ug.InstantiateGroup(childs);
 				}
 			}
 
@@ -167,6 +192,21 @@ namespace MapLua
 					LuaFile.AddLine(LuaParser.Write.Vector3ToLua(UnitsGroup.KEY_ORIENTATION, Instance.GetScmapRotation()));
 
 					LuaFile.CloseTab(LuaParser.Write.EndBracketNext);
+
+				}
+
+
+				public void ClearInstance()
+				{
+					if (Instance && Instance.gameObject)
+						Object.Destroy(Instance.gameObject);
+				}
+
+				public void Instantiate(UnitsGroup Parent)
+				{
+					if (Instance && Instance.gameObject)
+						return;
+					GetGamedataFile.LoadUnit(type).CreateUnitObject(this, Parent);
 
 				}
 			}

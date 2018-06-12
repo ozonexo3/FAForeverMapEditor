@@ -26,6 +26,7 @@ public class UnitListObject : MonoBehaviour {
 
 	public MapLua.SaveLua.Army Owner;
 	public MapLua.SaveLua.Army.UnitsGroup Source;
+	public MapLua.SaveLua.Army.UnitsGroup Parent;
 	public System.Action<UnitListObject> AddAction;
 	public System.Action<UnitListObject> RemoveAction;
 	public System.Action<UnitListObject> SelectAction;
@@ -39,10 +40,12 @@ public class UnitListObject : MonoBehaviour {
 	}
 
 
-	bool IsRoot = false;
-	public void SetGroup(MapLua.SaveLua.Army Owner, MapLua.SaveLua.Army.UnitsGroup Data, bool root)
+	public bool IsRoot = false;
+	public void SetGroup(MapLua.SaveLua.Army Owner, MapLua.SaveLua.Army.UnitsGroup Data, MapLua.SaveLua.Army.UnitsGroup Parent, bool root)
 	{
 		this.Owner = Owner;
+		this.Source = Data;
+		this.Parent = Parent;
 		IsRoot = root;
 
 
@@ -61,7 +64,7 @@ public class UnitListObject : MonoBehaviour {
 			UnitsCount.gameObject.SetActive(true);
 		}
 
-		UnitsCount.text = Data.UnitInstances.Count.ToString();
+		UnitsCount.text = Data.Units.Count.ToString();
 
 		OnRenamed();
 		Selection.color = ColorNormal;
