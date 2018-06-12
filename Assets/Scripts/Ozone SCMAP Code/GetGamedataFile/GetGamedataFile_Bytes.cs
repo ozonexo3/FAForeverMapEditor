@@ -95,7 +95,7 @@ public partial struct GetGamedataFile
 					zipEntryFAF = FafZipFileInstance[FoundEntry];
 			}
 
-			if (zipEntryFAF != null)
+			if (zipEntryFAF != null && zipEntryFAF.IsFile)
 			{
 				byte[] FafBytes = ReadZipEntryBytes(ref zipEntryFAF, ref FafZipFileInstance);
 				if (FafBytes != null && FafBytes.Length > 0)

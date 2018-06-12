@@ -481,7 +481,7 @@ namespace FAF.MapEditor
 					yield return null;
 
 					bool Breaked = false;
-					bool ReplacedByFaf = false;
+					//bool ReplacedByFaf = false;
 
 					ZipEntry Current;
 					foreach (ZipEntry zipEntry in zf)
@@ -494,7 +494,7 @@ namespace FAF.MapEditor
 						if (!IsProperFile(Current.Name))
 							continue;
 
-						ReplacedByFaf = false;
+						//ReplacedByFaf = false;
 						if (HasFafFile)
 						{
 							ZipEntry FafEntry = zf_faf.GetEntry(Current.Name);
@@ -502,7 +502,7 @@ namespace FAF.MapEditor
 							{
 								//Debug.Log("Replace " + Current.Name + "\nwith FAF file: " + FafEntry.Name);
 								Current = FafEntry;
-								ReplacedByFaf = true;
+								//ReplacedByFaf = true;
 							}
 						}
 
@@ -513,8 +513,8 @@ namespace FAF.MapEditor
 							continue;
 						}
 
-						if (ReplacedByFaf)
-							Debug.Log("Replace with FAF file: " + Current.Name);
+						//if (ReplacedByFaf)
+						//	Debug.Log("Replace with FAF file: " + Current.Name);
 
 						if (Breaked)
 							break;
