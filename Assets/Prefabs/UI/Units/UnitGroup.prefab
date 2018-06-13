@@ -398,7 +398,8 @@ MonoBehaviour:
   InstanceId: 0
   Selection: {fileID: 114926184284329368}
   ColorNormal: {r: 0.40000004, g: 0.40000004, b: 0.40000004, a: 1}
-  ColorSelected: {r: 0, g: 0.53200006, b: 1, a: 1}
+  ColorSelected: {r: 0.68284976, g: 0.78758526, b: 0.8773585, a: 1}
+  ColorSelectedFirst: {r: 0, g: 0.53333336, b: 1, a: 1}
   NameInputField: {fileID: 114432563629962152}
   SelectButton: {fileID: 1930059592484296}
   RemoveButton: {fileID: 1214542051069552}
@@ -414,6 +415,7 @@ MonoBehaviour:
     Alliances: []
     nextPlatoonBuilderId: 1
     PlatoonBuilders: []
+  IsRoot: 0
 --- !u!114 &114202195700076536
 MonoBehaviour:
   m_ObjectHideFlags: 1

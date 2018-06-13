@@ -15,7 +15,7 @@ namespace EditMap
 		{
 			foreach (UnitListObject ulo in UnitGroups)
 			{
-				ulo.UpdateSelection(SelectedGroups.Contains(ulo));
+				ulo.UpdateSelection(SelectedGroups.Contains(ulo), ulo == FirstSelected);
 			}
 		}
 
@@ -39,12 +39,14 @@ namespace EditMap
 		}
 
 		HashSet<UnitListObject> UnitGroups = new HashSet<UnitListObject>();
-		HashSet<UnitListObject> SelectedGroups = new HashSet<UnitListObject>();
-		static List<MapLua.SaveLua.Army.UnitsGroup> StoreSelection;
 
-		public void Generate()
+		public void Generate(bool HoldSelection = true)
 		{
-			StoreSelection = GetAllSelectedGroups();
+			if (HoldSelection)
+			{
+				StoreSelection.Clear();
+				StoreSelection = GetAllSelectedGroups();
+			}
 
 			Clear();
 
@@ -68,6 +70,7 @@ namespace EditMap
 			UpdateGroupSelection();
 		}
 
+
 		public void GenerateGroups(MapLua.SaveLua.Army Army, MapLua.SaveLua.Army.UnitsGroup Grp, UnitListObject ParentGrp)
 		{
 			int GrpCount = Grp.UnitGroups.Count;
@@ -88,12 +91,13 @@ namespace EditMap
 			ulo.AddAction = AddNewGroup;
 			ulo.RemoveAction = RemoveGroup;
 			ulo.SelectAction = SelectGroup;
+			ulo.RenameAction = RenameGroup;
 			ulo.SetGroup(Army, Grp, Parent, Root);
 			UnitGroups.Add(ulo);
 
 			if (StoreSelection.Contains(Grp))
 			{
-				SelectedGroups.Add(ulo);
+				AddToGrpSelection(ulo);
 			}
 
 			GenerateGroups(Army, Grp, ulo);
@@ -134,14 +138,59 @@ namespace EditMap
 
 
 		#region Groups
+		const string DefaultGroupName = "GROUP";
+
 		public void AddNewGroup(UnitListObject parent)
 		{
-			//TODO Register Undo
+			Undo.RegisterGroupRemove(parent.Source);
 
-			SelectedGroups.Clear();
+			ClearGrpSelection();
 			UpdateGroupSelection();
 
+			string NamePrefix = DefaultGroupName;
+			int NameCount = 0;
+			bool found = false;
 
+			if (parent.IsRoot && parent.Source.UnitGroups.Count == 0)
+			{
+				NamePrefix = "INITIAL";
+			}
+			else if (parent.Source.UnitGroups.Count > 0)
+			{
+				HashSet<string> AllNames = new HashSet<string>();
+				foreach (MapLua.SaveLua.Army.UnitsGroup ug in parent.Source.UnitGroups)
+					AllNames.Add(ug.Name);
+
+				while (!found)
+				{
+					if (!AllNames.Contains(NamePrefix + "_" + NameCount.ToString("00")))
+					{
+						found = true;
+						break;
+					}
+					else
+						NameCount++;
+				}
+				NamePrefix = DefaultGroupName + "_" + NameCount.ToString("00");
+
+			}
+			else
+			{
+				NamePrefix = DefaultGroupName + "_00";
+
+			}
+
+
+			MapLua.SaveLua.Army.UnitsGroup NewGroup = new MapLua.SaveLua.Army.UnitsGroup();
+			NewGroup.Name = NamePrefix;
+
+			parent.Source.UnitGroups.Add(NewGroup);
+
+			StoreSelection.Clear();
+			StoreSelection.Add(NewGroup);
+
+
+			Generate(false);
 		}
 
 		void RemoveGroupYes()
@@ -168,11 +217,12 @@ namespace EditMap
 				return;
 			}
 
-			//TODO Register Undo
+			Undo.RegisterGroupRemove(parent.Parent);
 
+			StoreSelection.Clear();
 			StoreSelection = GetAllSelectedGroups();
 
-			SelectedGroups.Clear();
+			ClearGrpSelection();
 			UpdateGroupSelection();
 
 
@@ -180,29 +230,91 @@ namespace EditMap
 
 			parent.Parent.UnitGroups.Remove(parent.Source);
 
-			Generate();
+			Generate(false);
 		}
 
 		public void SelectGroup(UnitListObject parent)
 		{
 			if (Input.GetKey(KeyCode.LeftShift))
 			{
-				SelectedGroups.Add(parent);
+				AddToGrpSelection(parent);
 			}
 			else if (Input.GetKey(KeyCode.LeftControl))
 			{
 				if (SelectedGroups.Contains(parent))
-					SelectedGroups.Remove(parent);
+					RemoveFromGrpSelection(parent);
 				else
-					SelectedGroups.Add(parent);
+					AddToGrpSelection(parent);
 			}
 			else
 			{
-				SelectedGroups.Clear();
-				SelectedGroups.Add(parent);
+				ClearGrpSelection();
+				AddToGrpSelection(parent);
 			}
 
 			UpdateGroupSelection();
+		}
+
+		public void RenameGroup(UnitListObject parent)
+		{
+			string NewValue = parent.NameInputField.text;
+
+			if (parent.Source.Name == NewValue)
+				return; // No changes
+
+			if (parent.Source.UnitGroups.Count > 1)
+			{
+				HashSet<string> AllNames = new HashSet<string>();
+				foreach (MapLua.SaveLua.Army.UnitsGroup ug in parent.Source.UnitGroups)
+					AllNames.Add(ug.Name);
+
+				if (AllNames.Contains(NewValue))
+					return; // Already exist
+			}
+
+			// TODO Register undo: Group name
+			Undo.RegisterGroupChange(parent.Source);
+
+			parent.Source.Name = NewValue;
+			Generate(true);
+		}
+
+		#endregion
+
+		public void Reparrent()
+		{
+
+		}
+
+		public void TransferUnits()
+		{
+
+		}
+
+		#region Selection
+		static UnitListObject FirstSelected
+		{
+			get
+			{
+				if (SelectedGroups.Count == 0)
+					return null;
+				return SelectedGroups[SelectedGroups.Count - 1];
+			}
+		}
+		static List<UnitListObject> SelectedGroups = new List<UnitListObject>();
+		static List<MapLua.SaveLua.Army.UnitsGroup> StoreSelection = new List<MapLua.SaveLua.Army.UnitsGroup>();
+
+		static void AddToGrpSelection(UnitListObject ulo)
+		{
+			SelectedGroups.Add(ulo);
+		}
+		static void RemoveFromGrpSelection(UnitListObject ulo)
+		{
+			SelectedGroups.Remove(ulo);
+		}
+		static void ClearGrpSelection()
+		{
+			SelectedGroups.Clear();
 		}
 
 		public List<MapLua.SaveLua.Army.UnitsGroup> GetAllSelectedGroups()
@@ -215,7 +327,6 @@ namespace EditMap
 
 			return ToReturn;
 		}
-
 		#endregion
 
 	}

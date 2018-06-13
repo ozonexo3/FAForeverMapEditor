@@ -18,6 +18,7 @@ public class UnitListObject : MonoBehaviour {
 	public Image Selection;
 	public Color ColorNormal;
 	public Color ColorSelected;
+	public Color ColorSelectedFirst;
 
 	public UiTextField NameInputField;
 	public GameObject SelectButton;
@@ -30,6 +31,7 @@ public class UnitListObject : MonoBehaviour {
 	public System.Action<UnitListObject> AddAction;
 	public System.Action<UnitListObject> RemoveAction;
 	public System.Action<UnitListObject> SelectAction;
+	public System.Action<UnitListObject> RenameAction;
 
 	public void SetTab(int count)
 	{
@@ -66,17 +68,17 @@ public class UnitListObject : MonoBehaviour {
 
 		UnitsCount.text = Data.Units.Count.ToString();
 
-		OnRenamed();
+		RenameEnd();
 		Selection.color = ColorNormal;
 		GroupName.color = IsRoot ? NameRoot : NameGroup;
 	}
 
 
 
-	public void UpdateSelection(bool Selected)
+	public void UpdateSelection(bool Selected, bool First = false)
 	{
 		//Selection.gameObject.SetActive(Selected);
-		Selection.color = Selected ? ColorSelected : ColorNormal;
+		Selection.color = Selected ? (First ? ColorSelectedFirst : ColorSelected) : ColorNormal;
 	}
 
 	public void UpdateValues(int UnitCounts)
@@ -115,12 +117,18 @@ public class UnitListObject : MonoBehaviour {
 	}
 	public void OnRenamed()
 	{
+		RenameAction(this);
+		RenameEnd();
+	}
+
+
+	void RenameEnd()
+	{
 		SelectButton.SetActive(false);
 		NameInputField.gameObject.SetActive(false);
 		GroupName.gameObject.SetActive(true);
 		SelectButton.SetActive(true);
 	}
-
 
 
 }

@@ -395,12 +395,12 @@ namespace EditMap
 
 			if (!BrusheshLoaded) LoadBrushesh();
 			UpdateStratumMenu();
+
 			TerrainMaterial.SetInt("_Brush", 1);
-			BrushGenerator.Current.Brushes[SelectedFalloff].wrapMode = TextureWrapMode.Clamp;
-			BrushGenerator.Current.Brushes[SelectedFalloff].mipMapBias = -1f;
-			BrushGenerator.Current.Brushes[SelectedFalloff].filterMode = FilterMode.Bilinear;
-			BrushGenerator.Current.Brushes[SelectedFalloff].anisoLevel = 2;
+			BrushGenerator.SetFallof(SelectedFalloff, LastRotation);
 			TerrainMaterial.SetTexture("_BrushTex", (Texture)BrushGenerator.Current.Brushes[SelectedFalloff]);
+
+			
 		}
 
 		public void ChangePageToSettings()
@@ -567,21 +567,13 @@ namespace EditMap
 		public void ChangeFalloff(int id)
 		{
 			SelectedFalloff = id;
-			BrushGenerator.Current.Brushes[SelectedFalloff].wrapMode = TextureWrapMode.Clamp;
-			BrushGenerator.Current.Brushes[SelectedFalloff].mipMapBias = -1f;
-			BrushGenerator.Current.Brushes[SelectedFalloff].filterMode = FilterMode.Bilinear;
-			BrushGenerator.Current.Brushes[SelectedFalloff].anisoLevel = 2;
+
 			LastRotation = BrushRotation.intValue;
-			if (LastRotation == 0)
-			{
-				BrushGenerator.Current.RotatedBrush = BrushGenerator.Current.Brushes[SelectedFalloff];
-			}
-			else
-			{
-				BrushGenerator.Current.RotatedBrush = BrushGenerator.rotateTexture(BrushGenerator.Current.Brushes[SelectedFalloff], LastRotation);
-			}
+
+			BrushGenerator.SetFallof(SelectedFalloff, LastRotation);
+
 			TerrainMaterial.SetTexture("_BrushTex", (Texture)BrushGenerator.Current.RotatedBrush);
-			BrushGenerator.RegeneratePaintBrushIfNeeded(true);
+			//BrushGenerator.RegeneratePaintBrushIfNeeded(true);
 		}
 
 

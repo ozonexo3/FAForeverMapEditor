@@ -655,7 +655,10 @@ public partial class ScmapEditor : MonoBehaviour
 		Debug.Log("Highest point: " + HighestElevation);
 
 		if (HighestElevation - LowestElevation > 49.9)
+		{
 			Debug.LogError("Height difference is too high! it might couse rendering issues! Height difference is: " + (HighestElevation - LowestElevation));
+			GenericInfoPopup.ShowInfo("Height difference " + (HighestElevation - LowestElevation) + " is too high!\nIt might couse rendering issues!");
+		}
 
 
 		if (MapLuaParser.Current.EditMenu.MapInfoMenu.SaveAsFa.isOn)
