@@ -132,7 +132,7 @@ options ={
     pref = 'middle_mexes',
     values = {
 		-- there are translations prepared for up to 9 mex.
-        { text = "0", help = "<LOC adaptive_middle_mex_key_0_help> No additional mexes in the middle.", key = 1, }
+        { text = "0", help = "<LOC adaptive_middle_mex_key_0_help> No additional mexes in the middle.", key = 1, },
         { text = "2", help = "<LOC adaptive_middle_mex_key_2_help> Spawn 2 mexes in the middle.", key = 2, },
         { text = "4", help = "<LOC adaptive_middle_mex_key_4_help> Spawn 4 mexes in the middle.", key = 3, },
         { text = "6", help = "<LOC adaptive_middle_mex_key_6_help> Spawn 6 mexes in the middle.", key = 4, },
