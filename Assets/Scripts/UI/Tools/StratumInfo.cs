@@ -359,6 +359,13 @@ namespace EditMap
 			LoadingStratum = false;
 		}
 
+		public void ResetVisibility()
+		{
+			for (int i = 0; i < StratumHide.Length; i++)
+				StratumHide[i] = false;
+
+			VisibleStratums();
+		}
 
 		public void ToggleLayerVisibility(int id)
 		{

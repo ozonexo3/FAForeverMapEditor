@@ -13,11 +13,11 @@ namespace MapLua
 		{
 			public string Name;
 			public string personality = "";
-			public string plans = "";
+			public string plans = "/lua/ai/OpAI/DefaultBlankPlanlist.lua";
 			public int color = 0;
 			public int faction = 0;
 			public EconomyTab Economy;
-			public Aliance[] Alliances;
+			public List<Aliance> Alliances;
 			public UnitsGroup Units;
 			public string nextPlatoonBuilderId = "";
 			public PlatoonBuilder[] PlatoonBuilders;
@@ -32,7 +32,6 @@ namespace MapLua
 			const string KEY_PLATOONBUILDERS = "PlatoonBuilders";
 
 			#region Classes
-			[System.Serializable]
 			public class EconomyTab
 			{
 				public float mass = 0;
@@ -42,28 +41,71 @@ namespace MapLua
 				public const string KEY_ENERGY = "energy";
 			}
 
-			[System.Serializable]
 			public class Aliance
 			{
 				public string Army = "";
+				public Army ConnectedArmy;
 				public string AllianceType = "Enemy";
 			}
+
+			public enum AllianceTypes
+			{
+				None, Ally, Enemy
+			}
+
+
+			public Color ArmyColor
+			{
+				get
+				{
+					return GetArmyColor(color);
+				}
+			}
+
 
 			//[System.Serializable]
 			public class UnitsGroup
 			{
 				public string Name;
+				public string Prefix;
+
 				public string orders;
 				public string platoon;
 				public HashSet<UnitsGroup> UnitGroups;
 				public HashSet<Unit> Units;
 
+				public const string KEY_PREFIX = "prefix";
 				public const string KEY_ORDERS = "orders";
 				public const string KEY_PLATOON = "platoon";
 				public const string KEY_UNITS = "Units";
 				public const string KEY_TYPE = "type";
 				public const string KEY_POSITION = "Position";
 				public const string KEY_ORIENTATION = "Orientation";
+
+
+				public string NoPrefixName
+				{
+					get
+					{
+						return Name.Remove(0, Prefix.Length + 1);
+					}
+					set
+					{
+						Name = Prefix + "_" + value;
+					}
+				}
+
+				public string PrefixName
+				{
+					get
+					{
+						return Prefix;
+					}
+					set
+					{
+						Prefix = value;
+					}
+				}
 
 				public UnitsGroup()
 				{
@@ -78,6 +120,9 @@ namespace MapLua
 				public UnitsGroup(string name, LuaTable Table)
 				{
 					Name = name;
+
+					Prefix = LuaParser.Read.StringFromTable(Table, KEY_PREFIX);
+
 					orders = LuaParser.Read.StringFromTable(Table, KEY_ORDERS);
 					platoon = LuaParser.Read.StringFromTable(Table, KEY_PLATOON);
 
@@ -124,6 +169,9 @@ namespace MapLua
 				public void SaveUnitsGroup(LuaParser.Creator LuaFile)
 				{
 					LuaFile.OpenTab(LuaParser.Write.PropertieToLua(Name) + LuaParser.Write.SetValue + "GROUP " + LuaParser.Write.OpenBracket);
+
+					if (!string.IsNullOrEmpty(Prefix))
+						LuaFile.AddLine(LuaParser.Write.StringToLua(KEY_PREFIX, Prefix));
 
 					LuaFile.AddLine(LuaParser.Write.StringToLua(KEY_ORDERS, orders));
 					LuaFile.AddLine(LuaParser.Write.StringToLua(KEY_PLATOON, platoon));
@@ -312,11 +360,16 @@ namespace MapLua
 			{
 				Name = "";
 				personality = "";
-				plans = "";
+				if(MapLuaParser.Current == null || MapLuaParser.Current.ScenarioLuaFile.Data == null)
+					plans = "";
+				else if (MapLuaParser.Current.ScenarioLuaFile.Data.type == "campaign_coop" || MapLuaParser.Current.ScenarioLuaFile.Data.type == "campaign")
+					plans = "/lua/ai/OpAI/DefaultBlankPlanlist.lua";
+				else
+					plans = "";
 				color = 0;
 				faction = 0;
 				Economy = new EconomyTab();
-				Alliances = new Aliance[0];
+				Alliances = new List<Aliance>();
 				Units = new UnitsGroup();
 				nextPlatoonBuilderId = "1";
 				PlatoonBuilders = new PlatoonBuilder[0];
@@ -340,12 +393,13 @@ namespace MapLua
 				string[] AlliancesKeys = LuaParser.Read.GetTableKeys(AlliancesTable);
 				string[] AlliancesValues = LuaParser.Read.GetTableValues(AlliancesTable);
 
-				Alliances = new Aliance[AlliancesKeys.Length];
+				Alliances = new List<Aliance>();
 				for (int a = 0; a < AlliancesKeys.Length; a++)
 				{
-					Alliances[a] = new Aliance();
-					Alliances[a].Army = AlliancesKeys[a];
-					Alliances[a].AllianceType = AlliancesValues[a];
+					Aliance ala = new Aliance();
+					ala.Army = AlliancesKeys[a];
+					ala.AllianceType = AlliancesValues[a];
+					Alliances.Add(ala);
 				}
 
 				LuaTable UnitsTable = (LuaTable)Table.RawGet(KEY_UNITS);
@@ -377,7 +431,6 @@ namespace MapLua
 				LuaFile.AddLine(LuaParser.Write.PropertieToLua(ArmyName) + LuaParser.Write.SetValue);
 				LuaFile.OpenTab(LuaParser.Write.OpenBracket);
 
-
 				LuaFile.AddLine(LuaParser.Write.StringToLua(KEY_PERSONALITY, personality));
 				LuaFile.AddLine(LuaParser.Write.StringToLua(KEY_PLANS, plans));
 				LuaFile.AddLine(LuaParser.Write.IntToLua(KEY_COLOR, color));
@@ -391,9 +444,12 @@ namespace MapLua
 
 				// Aliances
 				LuaFile.OpenTab(KEY_ALLIANCES + LuaParser.Write.OpenBracketValue);
-				for (int a = 0; a < Alliances.Length; a++)
+				for (int a = 0; a < Alliances.Count; a++)
 				{
-					LuaFile.AddLine(LuaParser.Write.StringToLua(LuaParser.Write.PropertieToLua(Alliances[a].Army), Alliances[a].AllianceType));
+					if (Alliances[a].ConnectedArmy == null)
+						continue;
+
+					LuaFile.AddLine(LuaParser.Write.StringToLua(LuaParser.Write.PropertieToLua(Alliances[a].ConnectedArmy.Name), Alliances[a].AllianceType));
 				}
 				LuaFile.CloseTab(LuaParser.Write.EndBracketNext);
 

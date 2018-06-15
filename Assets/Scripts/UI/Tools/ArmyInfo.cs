@@ -4,6 +4,8 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 using MapLua;
+using Ozone.UI;
+using UnityEngine.Events;
 
 public class ArmyInfo : MonoBehaviour {
 
@@ -21,7 +23,16 @@ public class ArmyInfo : MonoBehaviour {
 	public GameObject TeamsOptions;
 	public GameObject ExtraArmies;
 
-	public InputField ArmyNameInput;
+	[Header("Army settings")]
+	public UiTextField ArmyNameInput;
+	public UiTextField PlansInput;
+	public UiTextField ColorInput;
+	public Dropdown FactionInput;
+	public UiTextField MassInput;
+	public UiTextField EnergyInput;
+	public Image ArmyColor;
+
+	public GameObject TogglePrefab;
 
 	private void Awake()
 	{
@@ -464,9 +475,69 @@ public class ArmyInfo : MonoBehaviour {
 		UpdateList();
 	}
 
+	bool Repainting = false;
+	static List<UiAlliance> CreatedAllianceToggles = new List<UiAlliance>();
+	static List<SaveLua.Army> AllianceValues = new List<SaveLua.Army>();
+
 	public void RepaintArmy()
 	{
-		ArmyNameInput.text = SelectedArmy.Name;
+		Repainting = true;
+		ArmyNameInput.SetValue(SelectedArmy.Name);
+		PlansInput.SetValue(SelectedArmy.Data.plans);
+		ColorInput.SetValue(SelectedArmy.Data.color);
+		FactionInput.value = SelectedArmy.Data.faction;
+		MassInput.SetValue(SelectedArmy.Data.Economy.mass);
+		EnergyInput.SetValue(SelectedArmy.Data.Economy.energy);
+
+		ArmyColor.color = SelectedArmy.Data.ArmyColor;
+
+		foreach(UiAlliance utog in CreatedAllianceToggles)
+		{
+			Destroy(utog.gameObject);
+		}
+		CreatedAllianceToggles.Clear();
+
+		AllianceValues = MapLuaParser.Current.ScenarioLuaFile.GetAllArmies();
+		int ArmyCount = AllianceValues.Count;
+		for (int i = 0; i < ArmyCount; i++)
+		{
+			if (SelectedArmy.Data == AllianceValues[i])
+				continue;
+
+			GameObject NewToggleObj = Instantiate(TogglePrefab, TogglePrefab.transform.parent) as GameObject;
+			NewToggleObj.transform.SetSiblingIndex(TogglePrefab.transform.GetSiblingIndex());
+			NewToggleObj.SetActive(true);
+			UiAlliance UiToggle = NewToggleObj.GetComponent<UiAlliance>();
+
+			SaveLua.Army.AllianceTypes HasValue = SaveLua.Army.AllianceTypes.None;
+
+
+			for(int a = 0; a < SelectedArmy.Data.Alliances.Count; a++)
+			{
+				if(SelectedArmy.Data.Alliances[a].ConnectedArmy == AllianceValues[i])
+				{
+					switch (SelectedArmy.Data.Alliances[a].AllianceType)
+					{
+						case "Ally":
+							HasValue = SaveLua.Army.AllianceTypes.Ally;
+							break;
+						case "Enemy":
+							HasValue = SaveLua.Army.AllianceTypes.Enemy;
+							break;
+						default:
+							Debug.LogError("Wrong alliance type! " + SelectedArmy.Data.Alliances[a].AllianceType);
+							break;
+					}
+					break;
+				}
+			}
+
+			UiToggle.Set(HasValue, AllianceValues[i].Name, OnAllianceChange, i);
+			CreatedAllianceToggles.Add(UiToggle);
+		}
+
+
+		Repainting = false;
 	}
 
 
@@ -475,6 +546,8 @@ public class ArmyInfo : MonoBehaviour {
 
 	public void ArmyNameChange()
 	{
+		if (Repainting)
+			return;
 		Undo.Current.RegisterArmyChange(SelectedArmy);
 
 		SelectedArmy.Name = ArmyNameInput.text;
@@ -482,6 +555,76 @@ public class ArmyInfo : MonoBehaviour {
 		Markers.MarkersControler.UpdateBlankMarkersGraphics();
 
 		UpdateList();
+	}
+
+	public void ArmyValuesChange()
+	{
+		if (Repainting)
+			return;
+
+		Undo.Current.RegisterArmyChange(SelectedArmy);
+
+		SelectedArmy.Data.plans = PlansInput.text;
+		SelectedArmy.Data.color = ColorInput.intValue;
+		SelectedArmy.Data.faction = FactionInput.value;
+		SelectedArmy.Data.Economy.mass = MassInput.value;
+		SelectedArmy.Data.Economy.energy = EnergyInput.value;
+
+		ArmyColor.color = SelectedArmy.Data.ArmyColor;
+	}
+
+	public void UpdateColor()
+	{
+		ArmyColor.color = SaveLua.GetArmyColor(ColorInput.intValue);
+	}
+
+	string GetAllianceString(SaveLua.Army.AllianceTypes value)
+	{
+		switch (value)
+		{
+			case SaveLua.Army.AllianceTypes.Ally:
+				return "Ally";
+			case SaveLua.Army.AllianceTypes.Enemy:
+				return "Enemy";
+		}
+
+		return "";
+	}
+
+	public void OnAllianceChange(int i, MapLua.SaveLua.Army.AllianceTypes NewValue)
+	{
+		if (Repainting)
+			return;
+
+		Undo.Current.RegisterArmyChange(SelectedArmy);
+
+		bool Found = false;
+		for (int a = 0; a < SelectedArmy.Data.Alliances.Count; a++)
+		{
+			if (SelectedArmy.Data.Alliances[a].ConnectedArmy == AllianceValues[i])
+			{
+				if(NewValue == SaveLua.Army.AllianceTypes.None)
+				{
+					SelectedArmy.Data.Alliances.RemoveAt(a);
+				}
+				else
+				{
+					SelectedArmy.Data.Alliances[a].AllianceType = GetAllianceString(NewValue);
+				}
+				Found = true;
+			}
+		}
+
+		if (!Found && NewValue != SaveLua.Army.AllianceTypes.None)
+		{
+			SaveLua.Army.Aliance NewAlliance = new SaveLua.Army.Aliance();
+			NewAlliance.ConnectedArmy = AllianceValues[i];
+			NewAlliance.AllianceType = GetAllianceString(NewValue);
+
+			SelectedArmy.Data.Alliances.Add(NewAlliance);
+		}
+
+		//RepaintArmy();
 	}
 
 	public void ReturnFromArmy()

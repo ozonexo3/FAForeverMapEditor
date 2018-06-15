@@ -213,6 +213,8 @@ namespace EditMap
 			//GenerateControlTex.GenerateWater();
 			ScmapEditor.Current.LoadHeights();
 
+			MapLuaParser.Current.EditMenu.TexturesMenu.TTerrainXP.isOn = true;
+
 			yield return new WaitForSeconds(0.5f);
 			MapLuaParser.Current.SaveMap(false);
 			MapLuaParser.Current.SaveScriptLua(0);

@@ -241,7 +241,7 @@ namespace MapLua
 
 		public void CheckForEmptyArmy()
 		{
-
+			Dictionary<string, SaveLua.Army> AllArmies = new Dictionary<string, SaveLua.Army>();
 			for (int c = 0; c < Data.Configurations.Length; c++)
 			{
 				for (int t = 0; t < Data.Configurations[c].Teams.Length; t++)
@@ -254,6 +254,7 @@ namespace MapLua
 							Data.Configurations[c].Teams[t].Armys[a].Data = new SaveLua.Army();
 							Data.Configurations[c].Teams[t].Armys[a].Data.Name = Data.Configurations[c].Teams[t].Armys[a].Name;
 						}
+						AllArmies.Add(Data.Configurations[c].Teams[t].Armys[a].Name, Data.Configurations[c].Teams[t].Armys[a].Data);
 
 					}
 
@@ -266,10 +267,52 @@ namespace MapLua
 						Debug.Log("Fix army: " + Data.Configurations[c].ExtraArmys[a].Name);
 						Data.Configurations[c].ExtraArmys[a].Data = new SaveLua.Army();
 						Data.Configurations[c].ExtraArmys[a].Data.Name = Data.Configurations[c].ExtraArmys[a].Name;
+					}
+					AllArmies.Add(Data.Configurations[c].ExtraArmys[a].Name, Data.Configurations[c].ExtraArmys[a].Data);
 
+				}
+			}
+
+
+			foreach(KeyValuePair<string, SaveLua.Army> ka in AllArmies)
+			{
+				for(int i = 0; i < ka.Value.Alliances.Count; i++)
+				{
+					if(AllArmies.ContainsKey(ka.Value.Alliances[i].Army))
+						ka.Value.Alliances[i].ConnectedArmy = AllArmies[ka.Value.Alliances[i].Army];
+				}
+			}
+		}
+
+		public List<SaveLua.Army> GetAllArmies()
+		{
+			List<SaveLua.Army> ToReturn = new List<SaveLua.Army>();
+
+			for (int c = 0; c < Data.Configurations.Length; c++)
+			{
+				for (int t = 0; t < Data.Configurations[c].Teams.Length; t++)
+				{
+					for (int a = 0; a < Data.Configurations[c].Teams[t].Armys.Count; a++)
+					{
+						if (Data.Configurations[c].Teams[t].Armys[a].Data != null)
+						{
+							ToReturn.Add(Data.Configurations[c].Teams[t].Armys[a].Data);
+						}
+
+					}
+
+				}
+
+				for (int a = 0; a < Data.Configurations[c].ExtraArmys.Count; a++)
+				{
+					if (Data.Configurations[c].ExtraArmys[a].Data != null)
+					{
+						ToReturn.Add(Data.Configurations[c].ExtraArmys[a].Data);
 					}
 				}
 			}
+
+			return ToReturn;
 		}
 
 		public void SaveArmys(LuaParser.Creator LuaFile)

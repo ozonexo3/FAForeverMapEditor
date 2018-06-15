@@ -121,6 +121,8 @@ public partial class MapLuaParser : MonoBehaviour
 		FolderParentPath = "";
 		FolderName = "";
 		ScenarioFileName = "";
+
+		EditMenu.TexturesMenu.ResetVisibility();
 	}
 
 	#region Loading
@@ -176,6 +178,7 @@ public partial class MapLuaParser : MonoBehaviour
 	bool LoadDecals = true;
 
 	public static bool LoadingMapProcess = false;
+	public static Coroutine LoadScmapFile;
 	IEnumerator LoadingFile()
 	{
 
@@ -273,7 +276,7 @@ public partial class MapLuaParser : MonoBehaviour
 			yield return null;
 
 			// SCMAP
-			var LoadScmapFile = HeightmapControler.StartCoroutine(ScmapEditor.Current.LoadScmapFile());
+			LoadScmapFile = HeightmapControler.StartCoroutine(ScmapEditor.Current.LoadScmapFile());
 			yield return LoadScmapFile;
 			CameraControler.Current.RestartCam();
 

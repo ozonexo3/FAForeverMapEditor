@@ -127,8 +127,8 @@ public partial class ScmapEditor : MonoBehaviour
 		}
 		else
 		{
-			Debug.LogError("File not found");
-			StopCoroutine("LoadScmapFile");
+			Debug.LogError("File not found!" + path);
+			MapLuaParser.Current.StopCoroutine(MapLuaParser.LoadScmapFile);
 		}
 
 

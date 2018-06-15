@@ -42,8 +42,13 @@ public class HistoryArmyChange : HistoryObject {
 		faction = Army.Data.faction;
 		nextPlatoonBuilderId = Army.Data.nextPlatoonBuilderId;
 
-		Alliances = new SaveLua.Army.Aliance[Army.Data.Alliances.Length];
-		Army.Data.Alliances.CopyTo(Alliances, 0);
+		Alliances = new SaveLua.Army.Aliance[Army.Data.Alliances.Count];
+		for(int i = 0; i < Alliances.Length; i++)
+		{
+			Alliances[i] = new SaveLua.Army.Aliance();
+			Alliances[i].AllianceType = Army.Data.Alliances[i].AllianceType;
+			Alliances[i].ConnectedArmy = Army.Data.Alliances[i].ConnectedArmy;
+		}
 	}
 
 

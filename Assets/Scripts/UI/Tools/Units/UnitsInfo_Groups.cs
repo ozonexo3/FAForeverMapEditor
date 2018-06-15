@@ -92,6 +92,7 @@ namespace EditMap
 			ulo.RemoveAction = RemoveGroup;
 			ulo.SelectAction = SelectGroup;
 			ulo.RenameAction = RenameGroup;
+			ulo.PrefixAction = PrefixChangeGroup;
 			ulo.SetGroup(Army, Grp, Parent, Root);
 			UnitGroups.Add(ulo);
 
@@ -275,8 +276,30 @@ namespace EditMap
 			// TODO Register undo: Group name
 			Undo.RegisterGroupChange(parent.Source);
 
-			parent.Source.Name = NewValue;
+			parent.Source.NoPrefixName = NewValue;
 			Generate(true);
+		}
+
+		public void PrefixChangeGroup(UnitListObject parent)
+		{
+			string OldPrefix = parent.Source.PrefixName;
+			string NewValue = parent.PrefixInputField.text;
+
+			//TODO Register undo: Army Groups prefix
+			if(!string.IsNullOrEmpty(OldPrefix))
+				ChangeAllPrefix(parent.Owner.Units, OldPrefix, NewValue);
+		}
+
+		public static void ChangeAllPrefix(MapLua.SaveLua.Army.UnitsGroup Source, string Old, string New)
+		{
+			if(Source.PrefixName == Old)
+			{
+				Source.PrefixName = New;
+			}
+			foreach(MapLua.SaveLua.Army.UnitsGroup ug in Source.UnitGroups)
+			{
+				ChangeAllPrefix(ug, Old, New);
+			}
 		}
 
 		#endregion
