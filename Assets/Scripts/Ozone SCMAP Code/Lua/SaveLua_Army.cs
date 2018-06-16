@@ -73,6 +73,7 @@ namespace MapLua
 				public string platoon;
 				public HashSet<UnitsGroup> UnitGroups;
 				public HashSet<Unit> Units;
+				public Army Owner;
 
 				public const string KEY_PREFIX = "prefix";
 				public const string KEY_ORDERS = "orders";
@@ -107,8 +108,9 @@ namespace MapLua
 					}
 				}
 
-				public UnitsGroup()
+				public UnitsGroup(Army Owner)
 				{
+					this.Owner = Owner;
 					Name = "Units";
 					orders = "";
 					platoon = "";
@@ -117,8 +119,10 @@ namespace MapLua
 					Units = new HashSet<Unit>();
 				}
 
-				public UnitsGroup(string name, LuaTable Table)
+				public UnitsGroup(string name, LuaTable Table, Army Owner, bool StoreForLaterInstantiate = false)
 				{
+					this.Owner = Owner;
+
 					Name = name;
 
 					Prefix = LuaParser.Read.StringFromTable(Table, KEY_PREFIX);
@@ -151,7 +155,7 @@ namespace MapLua
 							}
 							else
 							{
-								UnitsGroup NewUnitsGroup = new UnitsGroup(UnitsNames[i], UnitsTables[i]);
+								UnitsGroup NewUnitsGroup = new UnitsGroup(UnitsNames[i], UnitsTables[i], Owner, StoreForLaterInstantiate);
 								UnitGroups.Add(NewUnitsGroup);
 							}
 						}
@@ -163,7 +167,12 @@ namespace MapLua
 						Units = new HashSet<Unit>();
 					}
 
-					InstantiateGroup(false);
+					if (StoreForLaterInstantiate)
+					{
+						InstantiateGroupLater(false);
+					}
+					else
+						InstantiateGroup(false);
 				}
 
 				public void SaveUnitsGroup(LuaParser.Creator LuaFile)
@@ -216,6 +225,38 @@ namespace MapLua
 					foreach (UnitsGroup ug in UnitGroups)
 						ug.InstantiateGroup(childs);
 				}
+
+				public void InstantiateGroupLater(bool childs)
+				{
+
+					foreach (Unit u in Units)
+					{
+						//u.Instantiate(this);
+						if (!UnitsToLoad.Contains(u))
+						{
+							u.Parent = this;
+							UnitsToLoad.Add(u);
+						}
+					}
+
+					if (childs)
+						foreach (UnitsGroup ug in UnitGroups)
+							ug.InstantiateGroupLater(childs);
+				}
+
+
+				public void UpdateGroupArmy(Army SourceOwner)
+				{
+					Owner = SourceOwner;
+
+					foreach (Unit u in Units)
+					{
+						u.Instance.ArmyColor = SourceOwner.ArmyColor;
+					}
+
+					foreach (UnitsGroup ug in UnitGroups)
+						ug.UpdateGroupArmy(SourceOwner);
+				}
 			}
 
 			//[System.Serializable]
@@ -228,6 +269,7 @@ namespace MapLua
 				public Vector3 Position;
 				public Vector3 Orientation;
 				public UnitInstance Instance;
+				public UnitsGroup Parent;
 
 				public static void SaveUnit(LuaParser.Creator LuaFile, UnitInstance Instance)
 				{
@@ -370,7 +412,7 @@ namespace MapLua
 				faction = 0;
 				Economy = new EconomyTab();
 				Alliances = new List<Aliance>();
-				Units = new UnitsGroup();
+				Units = new UnitsGroup(this);
 				nextPlatoonBuilderId = "1";
 				PlatoonBuilders = new PlatoonBuilder[0];
 			}
@@ -403,7 +445,7 @@ namespace MapLua
 				}
 
 				LuaTable UnitsTable = (LuaTable)Table.RawGet(KEY_UNITS);
-				Units = new UnitsGroup(KEY_UNITS, UnitsTable);
+				Units = new UnitsGroup(KEY_UNITS, UnitsTable, this, true);
 
 				//TODO Read PlatoonBuilders
 				LuaTable PbTable = (LuaTable)Table.RawGet(KEY_PLATOONBUILDERS);

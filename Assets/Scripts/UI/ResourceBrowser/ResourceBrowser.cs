@@ -177,6 +177,20 @@ namespace FAF.MapEditor
 
 		bool DontReload = false;
 
+		public void ShowBrowser()
+		{
+			gameObject.SetActive(true);
+			if (LoadedEnvPaths[EnvType.value] == CurrentMapFolderPath)
+			{
+				
+				DontReload = false;
+				if (IsGenerating)
+					StopCoroutine(GeneratingList);
+				CustomLoading = false;
+				GeneratingList = StartCoroutine(GenerateList());
+			}
+		}
+
 		public void LoadStratumTexture(string path)
 		{
 			int LastCategory = Category.value;
@@ -237,7 +251,8 @@ namespace FAF.MapEditor
 
 			gameObject.SetActive(true);
 
-			DontReload = LastCategory == Category.value && LastEnvType == EnvType.value && !IsGenerating;
+			if(LoadedEnvPaths[EnvType.value] != CurrentMapFolderPath)
+				DontReload = LastCategory == Category.value && LastEnvType == EnvType.value && !IsGenerating;
 
 			if (!DontReload)
 				Pivot.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
@@ -329,7 +344,9 @@ namespace FAF.MapEditor
 				}
 
 				SelectedObject = BeginPath;
-				DontReload = LastCategory == Category.value && LastEnvType == EnvType.value && !IsGenerating;
+
+				if (LoadedEnvPaths[EnvType.value] != CurrentMapFolderPath)
+					DontReload = LastCategory == Category.value && LastEnvType == EnvType.value && !IsGenerating;
 
 			}
 

@@ -111,8 +111,12 @@ namespace MapLua
 
 		}
 
+		static HashSet<Army.Unit> UnitsToLoad = new HashSet<Army.Unit>();
+
 		public bool Load()
 		{
+			UnitsToLoad.Clear();
+
 			System.Text.Encoding encodeType = System.Text.Encoding.ASCII;
 			string loadedFileSave = "";
 			//string MapPath = EnvPaths.GetMapsPath();
@@ -251,6 +255,44 @@ namespace MapLua
 			ConnectAdjacentMarkers();
 
 			return true;
+		}
+
+
+		public IEnumerator LoadUnits()
+		{
+			var ListEnum = UnitsToLoad.GetEnumerator();
+
+			int count = UnitsToLoad.Count;
+			int counter = 1;
+			int BreakCounter = 0;
+
+			MapLuaParser.Current.InfoPopup.Show(true, "Loading map...\n( Loading units " + counter + "/" + count);
+			yield return null;
+
+			bool NeedReload = false;
+			while (ListEnum.MoveNext())
+			{
+				NeedReload = !GetGamedataFile.IsUnitSourceLoaded(ListEnum.Current.type);
+
+				ListEnum.Current.Instantiate(ListEnum.Current.Parent);
+				counter++;
+				BreakCounter++;
+
+				if (BreakCounter > 100)
+				{
+					BreakCounter = 0;
+					NeedReload = true;
+				}
+
+				if (NeedReload)
+				{
+					MapLuaParser.Current.InfoPopup.Show(true, "Loading map...\n( Loading units " + counter + "/" + count);
+					yield return null;
+				}
+			}
+			ListEnum.Dispose();
+
+			yield return null;
 		}
 		
 		public void Save(string Path)

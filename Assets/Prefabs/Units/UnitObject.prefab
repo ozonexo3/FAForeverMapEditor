@@ -68,6 +68,7 @@ MonoBehaviour:
   orders: 
   platoon: 
   UnitRenderer: {fileID: 0}
+  ArmyColor: {r: 1, g: 1, b: 1, a: 1}
   LocalToWorldMatrix:
     e00: 0
     e01: 0
@@ -85,3 +86,4 @@ MonoBehaviour:
     e31: 0
     e32: 0
     e33: 0
+  SphereModified: 0

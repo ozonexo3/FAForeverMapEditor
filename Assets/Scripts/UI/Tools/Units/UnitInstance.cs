@@ -13,7 +13,7 @@ public class UnitInstance : MonoBehaviour
 	public UnitSource UnitRenderer;
 	public MapLua.SaveLua.Army.Unit Owner;
 
-
+	public Color ArmyColor;
 	public Matrix4x4 LocalToWorldMatrix;
 
 	Vector3 Position;

@@ -62,6 +62,14 @@ public partial struct GetGamedataFile
 		public bool Wreckage_Layer_Water;
 	}
 
+	public static bool IsUnitSourceLoaded(string UnitCode)
+	{
+		UnitCode.ToLower();
+		string scdPath = "units/" + UnitCode + "/" + UnitCode + "_unit.bp";
+
+		return LoadedUnitObjects.ContainsKey(LocalBlueprintPath(scdPath));
+	}
+
 
 	public static UnitSource LoadUnit(string UnitCode)
 	{
@@ -106,6 +114,7 @@ public partial struct GetGamedataFile
 
 		return ToReturn;
 	}
+
 
 	public static UnitSource LoadUnit(string scd, string LocalPath)
 	{

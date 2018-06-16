@@ -2,7 +2,7 @@
 
 Shader "Custom/UnitShader" {
 	Properties {
-		_Color ("Army", Color) = (1,1,1,1)
+		[PerRendererData] _Color ("Army", Color) = (1,1,1,1)
 		_MainTex ("Albedo (RGB)", 2D) = "white" {}
 		_BumpMap ("Normal ", 2D) = "gray" {}
 		_SpecTeam("SpecTeam ", 2D) = "black" {}
@@ -40,7 +40,7 @@ Shader "Custom/UnitShader" {
 
 		//half _Glossiness;
 		//half _Metallic;
-		fixed4 _Color;
+		//fixed4 _Color;
 		uniform float3 SunDirection;
 		uniform samplerCUBE environmentSampler;
 
@@ -48,6 +48,7 @@ Shader "Custom/UnitShader" {
 		// See https://docs.unity3d.com/Manual/GPUInstancing.html for more information about instancing.
 		// #pragma instancing_options assumeuniformscaling
 		UNITY_INSTANCING_BUFFER_START(Props)
+			UNITY_DEFINE_INSTANCED_PROP(float4, _Color)
 			// put more per-instance properties here
 		UNITY_INSTANCING_BUFFER_END(Props)
 
@@ -65,13 +66,10 @@ Shader "Custom/UnitShader" {
 
 		void surf (Input IN, inout SurfaceOutput o) {
 
-
-
-
-
 			// Albedo comes from a texture tinted by color
 			fixed4 albedo = tex2D (_MainTex, IN.uv_MainTex);
 			fixed4 bump = tex2D(_BumpMap, IN.uv_MainTex);
+			bump.a = 1 - bump.a;
 			//B - 
 			//A - 
 			o.Normal = UnpackNormalDXT5nm(bump);			
@@ -83,7 +81,11 @@ Shader "Custom/UnitShader" {
 			//G
 			//B - 
 			//A - Team
-			
+
+			float3 AlbedoColor = lerp(UNITY_ACCESS_INSTANCED_PROP(Props, _Color).rgb * 2, albedo.rgb, 1 - specular.a);
+
+
+			//Lighting
 			float dotLightNormal = dot(SunDirection, o.Normal);
 
 
@@ -91,9 +93,12 @@ Shader "Custom/UnitShader" {
 
 			float phongAmount = saturate(dot(reflect(SunDirection, WorldSpaceNormal), -IN.mViewVec));
 			float3 phongAdditive = NormalMappedPhongCoeff * pow(phongAmount, 2) * specular.g;
-			float3 phongMultiplicative = clamp(float3(environment * specular.r) * Luminance(_Color.rgb), 0, 2);
+			float3 phongMultiplicative = clamp(float3(environment * specular.r) * specular.g, 0, 2);
 
-			o.Albedo = lerp(_Color.rgb, albedo.rgb * 0.7, 1 - specular.a);
+
+			//Setters
+
+			o.Albedo = AlbedoColor;
 
 			o.Specular = specular.g;
 			o.Gloss = 0.1;

@@ -485,11 +485,10 @@ public class ArmyInfo : MonoBehaviour {
 		ArmyNameInput.SetValue(SelectedArmy.Name);
 		PlansInput.SetValue(SelectedArmy.Data.plans);
 		ColorInput.SetValue(SelectedArmy.Data.color);
+		UpdateColor();
 		FactionInput.value = SelectedArmy.Data.faction;
 		MassInput.SetValue(SelectedArmy.Data.Economy.mass);
 		EnergyInput.SetValue(SelectedArmy.Data.Economy.energy);
-
-		ArmyColor.color = SelectedArmy.Data.ArmyColor;
 
 		foreach(UiAlliance utog in CreatedAllianceToggles)
 		{
@@ -570,12 +569,18 @@ public class ArmyInfo : MonoBehaviour {
 		SelectedArmy.Data.Economy.mass = MassInput.value;
 		SelectedArmy.Data.Economy.energy = EnergyInput.value;
 
-		ArmyColor.color = SelectedArmy.Data.ArmyColor;
+		UpdateColor();
 	}
 
+	int LastDisplayedColor = 0;
 	public void UpdateColor()
 	{
+		if (ColorInput.intValue == LastDisplayedColor)
+			return;
+
+		LastDisplayedColor = ColorInput.intValue;
 		ArmyColor.color = SaveLua.GetArmyColor(ColorInput.intValue);
+		SelectedArmy.Data.Units.UpdateGroupArmy(SelectedArmy.Data);
 	}
 
 	string GetAllianceString(SaveLua.Army.AllianceTypes value)

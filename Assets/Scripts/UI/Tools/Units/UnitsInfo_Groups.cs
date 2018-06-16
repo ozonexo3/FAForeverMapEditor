@@ -182,7 +182,7 @@ namespace EditMap
 			}
 
 
-			MapLua.SaveLua.Army.UnitsGroup NewGroup = new MapLua.SaveLua.Army.UnitsGroup();
+			MapLua.SaveLua.Army.UnitsGroup NewGroup = new MapLua.SaveLua.Army.UnitsGroup(parent.Source.Owner);
 			NewGroup.Name = NamePrefix;
 
 			parent.Source.UnitGroups.Add(NewGroup);

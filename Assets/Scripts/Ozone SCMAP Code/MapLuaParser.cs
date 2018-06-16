@@ -123,6 +123,8 @@ public partial class MapLuaParser : MonoBehaviour
 		ScenarioFileName = "";
 
 		EditMenu.TexturesMenu.ResetVisibility();
+
+		ScmapEditor.Current.ResBrowser.gameObject.SetActive(false);
 	}
 
 	#region Loading
@@ -293,6 +295,9 @@ public partial class MapLuaParser : MonoBehaviour
 				SetSaveLua();
 				//LoadSaveLua();
 				yield return null;
+
+				Coroutine UnitsLoader = StartCoroutine(SaveLuaFile.LoadUnits());
+				yield return UnitsLoader;
 			}
 
 			//GetGamedataFile.LoadUnit("XEL0209").CreateUnitObject(MapLuaParser.Current.MapCenterPoint, Quaternion.identity);
