@@ -188,8 +188,12 @@ public partial struct GetGamedataFile
 
 	public static string TryRecoverMapAsset(string WrongPath)
 	{
+		bool StartChar = false;
 		if (WrongPath.StartsWith("/"))
+		{
+			StartChar = true;
 			WrongPath = WrongPath.Remove(0, 1);
+		}
 
 		WrongPath = WrongPath.Replace("\\", "/");
 
@@ -211,16 +215,20 @@ public partial struct GetGamedataFile
 		{
 			Debug.LogError(e);
 		}
-		return NewPath;
+		return (StartChar?"/":"") +  NewPath;
 	}
 
 	public static string FixMapsPath(string BlueprintPath)
 	{
 		if (GetGamedataFile.IsMapPath(BlueprintPath))
 		{
-			if (!System.IO.File.Exists(GetGamedataFile.MapAssetSystemPath(BlueprintPath)))
-			{
+			//Debug.Log(MapLuaParser.Current.FolderName);
+			if (!BlueprintPath.StartsWith("/maps/" + MapLuaParser.Current.FolderName) && !BlueprintPath.StartsWith("maps/" + MapLuaParser.Current.FolderName))
+			{ 
+			//if (!System.IO.File.Exists(GetGamedataFile.MapAssetSystemPath(BlueprintPath)))
+			//{
 				string NewBlueprintPath = GetGamedataFile.TryRecoverMapAsset(BlueprintPath);
+				Debug.Log("Before: " + BlueprintPath + ", after: " + NewBlueprintPath);
 
 				if (!string.IsNullOrEmpty(NewBlueprintPath))
 				{

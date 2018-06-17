@@ -713,6 +713,9 @@ public partial class ScmapEditor : MonoBehaviour
 
 		for (int i = 0; i < map.Layers.Count; i++)
 		{
+			Textures[i].AlbedoPath = GetGamedataFile.FixMapsPath(Textures[i].AlbedoPath);
+			Textures[i].NormalPath = GetGamedataFile.FixMapsPath(Textures[i].NormalPath);
+
 			map.Layers[i].PathTexture = Textures[i].AlbedoPath;
 			map.Layers[i].PathNormalmap = Textures[i].NormalPath;
 

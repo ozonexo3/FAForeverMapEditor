@@ -98,13 +98,15 @@ namespace Ozone.UI
 			Started = false;
 		}
 
+		bool SliderStarted = false;
 		public void OnSliderChanged()
 		{
 			if (ChangingValue)
 				return;
 
-			InvokeStart();
 
+			InvokeStart();
+			SliderStarted = true;
 			ChangingValue = true;
 			HasValue = true;
 			LastValue = SliderUi.value;
@@ -123,6 +125,10 @@ namespace Ozone.UI
 
 		public void OnSliderFinished()
 		{
+			if (!SliderStarted)
+				return;
+
+			SliderStarted = false;
 			ChangingValue = true;
 			HasValue = true;
 			LastValue = SliderUi.value;

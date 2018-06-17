@@ -25,6 +25,7 @@ public class UnitListObject : MonoBehaviour {
 	public GameObject SelectButton;
 	public GameObject RemoveButton;
 
+	public Transform ExpandBtn;
 
 	public MapLua.SaveLua.Army Owner;
 	public MapLua.SaveLua.Army.UnitsGroup Source;
@@ -34,6 +35,7 @@ public class UnitListObject : MonoBehaviour {
 	public System.Action<UnitListObject> SelectAction;
 	public System.Action<UnitListObject> RenameAction;
 	public System.Action<UnitListObject> PrefixAction;
+	public System.Action<UnitListObject> ExpandAction;
 
 	public void SetTab(int count)
 	{
@@ -45,6 +47,22 @@ public class UnitListObject : MonoBehaviour {
 
 
 	public bool IsRoot = false;
+	bool _expand;
+	public bool IsExpanded
+	{
+		get
+		{
+			return _expand;
+		}
+		set
+		{
+			_expand = value;
+
+			ExpandBtn.localRotation = Quaternion.Euler(Vector3.back * (_expand ? (90) : (0)));
+			Pivot.gameObject.SetActive(_expand);
+
+		}
+	}
 	public void SetGroup(MapLua.SaveLua.Army Owner, MapLua.SaveLua.Army.UnitsGroup Data, MapLua.SaveLua.Army.UnitsGroup Parent, bool root)
 	{
 		this.Owner = Owner;
@@ -52,23 +70,24 @@ public class UnitListObject : MonoBehaviour {
 		this.Parent = Parent;
 		IsRoot = root;
 
+		IsExpanded = Data.Expanded;
 
 		if (IsRoot)
 		{
 			GroupName.text = Owner.Name;
-			NameInputField.SetValue(Owner.Name);
+			//NameInputField.SetValue(Owner.Name);
 			RemoveButton.SetActive(false);
-			UnitsCount.gameObject.SetActive(false);
+			//UnitsCount.gameObject.SetActive(false);
 		}
 		else
 		{
 			GroupName.text = Data.Name;
-			NameInputField.SetValue(Data.Name);
+			//NameInputField.SetValue(Data.Name);
 			RemoveButton.SetActive(true);
-			UnitsCount.gameObject.SetActive(true);
+			//UnitsCount.gameObject.SetActive(true);
 		}
+		UpdateValues(Data.Units.Count, Data.UnitGroups.Count);
 
-		UnitsCount.text = Data.Units.Count.ToString();
 
 		RenameEnd();
 		Selection.color = ColorNormal;
@@ -83,9 +102,9 @@ public class UnitListObject : MonoBehaviour {
 		Selection.color = Selected ? (First ? ColorSelectedFirst : ColorSelected) : ColorNormal;
 	}
 
-	public void UpdateValues(int UnitCounts)
+	public void UpdateValues(int UnitCounts, int GroupCounts)
 	{
-		UnitsCount.text = "Count: " + UnitCounts;
+		UnitsCount.text = GroupCounts + " - " + UnitCounts;
 	}
 
 	public void AddNew()
@@ -98,11 +117,23 @@ public class UnitListObject : MonoBehaviour {
 		RemoveAction(this);
 	}
 
+	public void OnGroupClick()
+	{
+		SelectAction(this);
+
+	}
+
+	public void OnExpandClick()
+	{
+		Source.Expanded = !Source.Expanded;
+		IsExpanded = Source.Expanded;
+		ExpandAction(this);
+	}
+
 	const float DoubleClickTime = 0.3f;
 	float LastClickTime = 0;
 	public void OnTitleClick()
 	{
-		SelectAction(this);
 
 		if (IsRoot)
 			return;
@@ -143,8 +174,8 @@ public class UnitListObject : MonoBehaviour {
 	void RenameEnd()
 	{
 		SelectButton.SetActive(false);
-		NameInputField.gameObject.SetActive(false);
-		PrefixInputField.gameObject.SetActive(false);
+		//NameInputField.gameObject.SetActive(false);
+		//PrefixInputField.gameObject.SetActive(false);
 
 		GroupName.gameObject.SetActive(true);
 		SelectButton.SetActive(true);

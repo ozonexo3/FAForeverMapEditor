@@ -38,19 +38,31 @@ namespace Ozone.UI
 				AlphaSlider.maxValue = Clamp;
 		}
 
+		Vector4 LastValue = Vector4.one;
+		void UpdateLastValue()
+		{
+			LastValue.x = RedSlider.value;
+			LastValue.y = GreenSlider.value;
+			LastValue.z = BlueSlider.value;
+			if (AlphaSlider)
+				LastValue.w = AlphaSlider.value;
+			else
+				LastValue.w = 1;
+		}
+
 		public Color GetColorValue()
 		{
-			return new Color(RedSlider.value, GreenSlider.value, BlueSlider.value, 1);
+			return new Color(LastValue.x, LastValue.y, LastValue.z, LastValue.w);
 		}
 
 		public Vector3 GetVectorValue()
 		{
-			return new Vector3(RedSlider.value, GreenSlider.value, BlueSlider.value);
+			return LastValue;
 		}
 
 		public Vector4 GetVector4Value()
 		{
-			return new Vector4(RedSlider.value, GreenSlider.value, BlueSlider.value, AlphaSlider.value);
+			return LastValue;
 		}
 
 		public void SetColorField(float R, float G, float B, float A = 1)
@@ -67,6 +79,8 @@ namespace Ozone.UI
 			Red.text = RedSlider.value.ToString();
 			Green.text = GreenSlider.value.ToString();
 			Blue.text = BlueSlider.value.ToString();
+
+			UpdateLastValue();
 
 			if (AlphaSlider)
 			{
@@ -93,6 +107,8 @@ namespace Ozone.UI
 			Red.text = RedSlider.value.ToString();
 			Green.text = GreenSlider.value.ToString();
 			Blue.text = BlueSlider.value.ToString();
+
+			UpdateLastValue();
 
 			if (AlphaSlider)
 			{
@@ -127,6 +143,8 @@ namespace Ozone.UI
 			Green.text = GreenSlider.value.ToString();
 			Blue.text = BlueSlider.value.ToString();
 
+			UpdateLastValue();
+
 			if (AlphaSlider)
 			{
 				AlphaSlider.value = FormatFloat(Mathf.Clamp(LuaParser.Read.StringToFloat(Alpha.text), 0, Clamp));
@@ -141,11 +159,15 @@ namespace Ozone.UI
 			OnInputFinish.Invoke();
 		}
 
+
 		bool UpdatingSlider = false;
 		bool Begin = false;
 		public void SliderUpdate(bool Finish)
 		{
 			if (Loading || UpdatingSlider)
+				return;
+
+			if (Finish && !Begin)
 				return;
 
 			if (!Begin)
@@ -159,10 +181,11 @@ namespace Ozone.UI
 			GreenSlider.value = FormatFloat(GreenSlider.value);
 			BlueSlider.value = FormatFloat(BlueSlider.value);
 
-
 			Red.text = RedSlider.value.ToString();
 			Green.text = GreenSlider.value.ToString();
 			Blue.text = BlueSlider.value.ToString();
+
+			UpdateLastValue();
 
 			if (AlphaSlider)
 			{

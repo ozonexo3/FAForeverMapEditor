@@ -23,6 +23,8 @@ public partial class Prop
 
 	public void Bake()
 	{
+		//Group.Blueprint = GetGamedataFile.FixMapsPath(Group.Blueprint.Replace("\\", "/"));
+
 		BlueprintPath = Group.Blueprint.Replace("\\", "/");
 
 		if (!BlueprintPath.StartsWith("/"))

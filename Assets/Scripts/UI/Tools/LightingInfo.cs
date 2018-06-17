@@ -128,7 +128,6 @@ namespace EditMap
 			if (IgnoreUpdate)
 				return;
 
-			Debug.Log("Register lighting undo");
 			Undo.Current.RegisterLightingChange();
 		}
 
@@ -195,7 +194,52 @@ namespace EditMap
 		}
 
 
-		class LightingData{
+		public void ResetSun()
+		{
+			BeginUpdateMenu();
+
+			RA.SetValue(-48);
+			DA.SetValue(34);
+			LightMultipiler.SetValue(1.54f);
+			LightColor.SetColorField(new Color(1.38f, 1.29f, 1.14f, 1));
+
+			UpdateMenu();
+		}
+
+		public void ResetAmbient()
+		{
+			BeginUpdateMenu();
+
+			AmbienceColor.SetColorField(Color.black);
+			ShadowColor.SetColorField(new Color(0.54f, 0.54f, 0.7f));
+
+			UpdateMenu();
+		}
+
+		public void ResetFog() {
+			BeginUpdateMenu();
+
+			FogColor.SetColorField(new Color(0.37f, 0.49f, 0.45f));
+			FogStart.SetValue(0);
+			FogEnd.SetValue(750);
+
+			UpdateMenu();
+		}
+
+		public void ResetEffects()
+		{
+			BeginUpdateMenu();
+
+			Bloom.SetValue(0.03f);
+			Specular.SetColorField(new Color(0.31f, 0, 0, 0));
+
+			UpdateMenu();
+		}
+
+
+		#region Import/Export
+		class LightingData
+		{
 			public float LightingMultiplier;
 			public Vector3 SunDirection;
 
@@ -208,10 +252,8 @@ namespace EditMap
 			public Vector3 FogColor;
 			public float FogStart;
 			public float FogEnd;
-
 		}
 
-		#region Import/Export
 		const string ExportPathKey = "LightingExport";
 		const string ExportPathKey2 = "LightingSkyboxExport";
 		static string DefaultPath
@@ -276,6 +318,8 @@ namespace EditMap
 
 			string data = File.ReadAllText(paths[0]);
 			LightingData LightingData = UnityEngine.JsonUtility.FromJson<LightingData>(data);
+
+			BeginUpdateMenu();
 
 			Scmap.map.LightingMultiplier = LightingData.LightingMultiplier;
 			Scmap.map.SunDirection = LightingData.SunDirection;

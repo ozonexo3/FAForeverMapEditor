@@ -93,6 +93,7 @@ namespace EditMap
 			ulo.SelectAction = SelectGroup;
 			ulo.RenameAction = RenameGroup;
 			ulo.PrefixAction = PrefixChangeGroup;
+			ulo.ExpandAction = ExpandAction;
 			ulo.SetGroup(Army, Grp, Parent, Root);
 			UnitGroups.Add(ulo);
 
@@ -303,6 +304,11 @@ namespace EditMap
 		}
 
 		#endregion
+
+		public void ExpandAction(UnitListObject parent)
+		{
+
+		}
 
 		public void Reparrent()
 		{

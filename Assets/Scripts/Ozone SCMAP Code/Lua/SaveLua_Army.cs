@@ -74,6 +74,7 @@ namespace MapLua
 				public HashSet<UnitsGroup> UnitGroups;
 				public HashSet<Unit> Units;
 				public Army Owner;
+				public bool Expanded;
 
 				public const string KEY_PREFIX = "prefix";
 				public const string KEY_ORDERS = "orders";

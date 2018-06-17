@@ -414,6 +414,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   FieldType: 1
   BeginValue: 0
+  FiltredChars: 
   InputFieldUi: {fileID: 114161430723240616}
   SliderUi: {fileID: 114487296845569024}
   OnBeginChange:
@@ -515,6 +516,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Delegates:
   - eventID: 14
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 114716158341763642}
+          m_MethodName: OnSliderFinished
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+      m_TypeName: UnityEngine.EventSystems.EventTrigger+TriggerEvent, UnityEngine.UI,
+        Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+  - eventID: 3
     callback:
       m_PersistentCalls:
         m_Calls:

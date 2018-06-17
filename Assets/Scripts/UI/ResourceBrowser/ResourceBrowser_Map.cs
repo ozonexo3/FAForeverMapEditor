@@ -12,7 +12,7 @@ namespace FAF.MapEditor
 			Texture2D LoadedTex;
 
 			string RelativePath = "/" + absolutePath.Replace(MapLuaParser.LoadedMapFolderPath, MapLuaParser.RelativeLoadedMapFolderPath);
-			Debug.Log(RelativePath);
+			//Debug.Log(RelativePath);
 
 			try
 			{

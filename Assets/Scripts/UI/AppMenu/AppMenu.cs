@@ -580,6 +580,11 @@ public class AppMenu : MonoBehaviour
 
 		LoadRecentMaps.MoveLastMaps(MapLuaParser.Current.ScenarioFileName, MapLuaParser.Current.FolderName, MapLuaParser.Current.FolderParentPath);
 
+		string EnvPath = MapLuaParser.Current.FolderParentPath + OldFolderName + "/env";
+		if (System.IO.Directory.Exists(EnvPath))
+		{
+			DirectoryCopy(EnvPath, MapLuaParser.Current.FolderParentPath + NewFolderName + "/env", true);
+		}
 
 		MapLuaParser.Current.SaveMap(false);
 
@@ -593,12 +598,6 @@ public class AppMenu : MonoBehaviour
 		if (System.IO.File.Exists(OldOptionsFile))
 		{ // Found options, copy it
 			System.IO.File.Copy(OldOptionsFile, MapLuaParser.Current.ScenarioLuaFile.Data.script.Replace("/maps/", MapLuaParser.Current.FolderParentPath).Replace("_script.lua", "_options.lua"));
-		}
-
-		string EnvPath = MapLuaParser.Current.FolderParentPath + OldFolderName + "/env";
-		if (System.IO.Directory.Exists(EnvPath))
-		{
-			DirectoryCopy(EnvPath, MapLuaParser.Current.FolderParentPath + NewFolderName + "/env", true);
 		}
 
 		EditingMenu.MapInfoMenu.UpdateFields();
