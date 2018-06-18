@@ -91,8 +91,7 @@ namespace EditMap
 			ulo.AddAction = AddNewGroup;
 			ulo.RemoveAction = RemoveGroup;
 			ulo.SelectAction = SelectGroup;
-			ulo.RenameAction = RenameGroup;
-			ulo.PrefixAction = PrefixChangeGroup;
+			ulo.RenameAction = RenameStart;
 			ulo.ExpandAction = ExpandAction;
 			ulo.SetGroup(Army, Grp, Parent, Root);
 			UnitGroups.Add(ulo);
@@ -257,9 +256,35 @@ namespace EditMap
 			UpdateGroupSelection();
 		}
 
+
+		static UnitListObject RenameObject;
+		public void RenameStart(UnitListObject parent)
+		{
+			RenameObject = parent;
+			RenameField.SetParent(parent.transform, false);
+			RenameField.gameObject.SetActive(true);
+
+			NameInputField.SetValue(parent.Source.NoPrefixName);
+			PrefixInputField.SetValue(parent.Source.PrefixName);
+
+			NameInputField.InputFieldUi.ActivateInputField();
+		}
+
+		public void RenameApply(bool Apply)
+		{
+			if (Apply)
+			{
+				RenameGroup(RenameObject);
+				PrefixChangeGroup(RenameObject);
+			}
+			RenameObject.RenameEnd();
+			RenameField.SetParent(Pivot, false);
+			RenameField.gameObject.SetActive(false);
+		}
+
 		public void RenameGroup(UnitListObject parent)
 		{
-			string NewValue = parent.NameInputField.text;
+			string NewValue = NameInputField.text;
 
 			if (parent.Source.Name == NewValue)
 				return; // No changes
@@ -284,7 +309,10 @@ namespace EditMap
 		public void PrefixChangeGroup(UnitListObject parent)
 		{
 			string OldPrefix = parent.Source.PrefixName;
-			string NewValue = parent.PrefixInputField.text;
+			string NewValue = PrefixInputField.text;
+
+			if (OldPrefix == NewValue)
+				return; // No changes
 
 			//TODO Register undo: Army Groups prefix
 			if(!string.IsNullOrEmpty(OldPrefix))

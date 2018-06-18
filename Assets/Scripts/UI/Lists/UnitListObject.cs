@@ -20,8 +20,7 @@ public class UnitListObject : MonoBehaviour {
 	public Color ColorSelected;
 	public Color ColorSelectedFirst;
 
-	public UiTextField NameInputField;
-	public UiTextField PrefixInputField;
+	public GameObject Header;
 	public GameObject SelectButton;
 	public GameObject RemoveButton;
 
@@ -34,7 +33,6 @@ public class UnitListObject : MonoBehaviour {
 	public System.Action<UnitListObject> RemoveAction;
 	public System.Action<UnitListObject> SelectAction;
 	public System.Action<UnitListObject> RenameAction;
-	public System.Action<UnitListObject> PrefixAction;
 	public System.Action<UnitListObject> ExpandAction;
 
 	public void SetTab(int count)
@@ -140,45 +138,29 @@ public class UnitListObject : MonoBehaviour {
 
 		if(Time.realtimeSinceStartup - LastClickTime < DoubleClickTime)
 		{
-			SelectButton.SetActive(false);
-			GroupName.gameObject.SetActive(false);
-			NameInputField.gameObject.SetActive(true);
-			PrefixInputField.gameObject.SetActive(true);
-
-			NameInputField.InputFieldUi.ActivateInputField();
-
+			RenameStart();
 		}
+
 
 		LastClickTime = Time.realtimeSinceStartup;
 	}
-	public void OnRenamed()
-	{
-		if (PrefixInputField.InputFieldUi.isFocused)
-			return; // Switched
-
-		RenameAction(this);
-		RenameEnd();
-	}
-
-	public void OnPrefixChanged()
-	{
-		if (NameInputField.InputFieldUi.isFocused)
-			return; // Switched field
-
-		PrefixAction(this);
-
-		RenameEnd();
-	}
 
 
-	void RenameEnd()
+	void RenameStart()
 	{
 		SelectButton.SetActive(false);
-		//NameInputField.gameObject.SetActive(false);
-		//PrefixInputField.gameObject.SetActive(false);
+		GroupName.gameObject.SetActive(false);
+		Header.SetActive(false);
+		RenameAction(this);
+		Pivot.gameObject.SetActive(false);
+	}
 
-		GroupName.gameObject.SetActive(true);
+	public void RenameEnd()
+	{
 		SelectButton.SetActive(true);
+		GroupName.gameObject.SetActive(true);
+		Header.SetActive(true);
+		Pivot.gameObject.SetActive(_expand);
 	}
 
 

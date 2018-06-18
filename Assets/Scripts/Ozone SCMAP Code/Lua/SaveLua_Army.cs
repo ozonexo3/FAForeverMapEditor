@@ -89,11 +89,22 @@ namespace MapLua
 				{
 					get
 					{
-						return Name.Remove(0, Prefix.Length + 1);
+						if (Prefix.Length == 0)
+							return Name;
+
+						string ToReturn = Name.Remove(0, Prefix.Length);
+
+						if (ToReturn.StartsWith("_"))
+							ToReturn = ToReturn.Remove(0, 1);
+
+						return ToReturn;
 					}
 					set
 					{
-						Name = Prefix + "_" + value;
+						if (Prefix.Length == 0)
+							Name = value;
+						else 
+							Name = Prefix + "_" + value;
 					}
 				}
 

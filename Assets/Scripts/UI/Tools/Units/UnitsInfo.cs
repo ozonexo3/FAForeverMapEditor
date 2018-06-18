@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Selection;
 using FAF.MapEditor;
+using Ozone.UI;
 
 namespace EditMap
 {
@@ -19,6 +20,9 @@ namespace EditMap
 		public Transform Pivot;
 		public GameObject GroupPrefab;
 		public GameObject UnitPrefab;
+		public RectTransform RenameField;
+		public UiTextField NameInputField;
+		public UiTextField PrefixInputField;
 
 		[Header("Objects")]
 		public GameObject UnitInstancePrefab;
@@ -73,9 +77,15 @@ namespace EditMap
 					{
 						AllObjects[SelectionManager.Current.SymetrySelection[s].Ids[i]].GetComponent<UnitInstance>().UpdateMatrixTranslated();
 					}
-
-
 				}
+			}
+
+			if (Input.GetKeyDown(KeyCode.P) && FirstSelected != null)
+			{
+				// Parent all groups to selected
+
+
+				// Parent all units to selected
 			}
 		}
 		GameObject[] AllObjects;
