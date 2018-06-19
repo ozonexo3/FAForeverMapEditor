@@ -13,13 +13,15 @@ public class HistoryUnitGroupChange : HistoryObject
 
 	public MapLua.SaveLua.Army.UnitsGroup RegisteredGroup;
 	public string Name;
+	public string Prefix;
 	public string Orders;
 	public string Platoons;
 
 	public override void Register()
 	{
 		RegisteredGroup = RegisterGroup;
-		Name = RegisteredGroup.Name;
+		Name = RegisteredGroup.NoPrefixName;
+		Prefix = RegisteredGroup.PrefixName;
 		Orders = RegisteredGroup.orders;
 		Platoons = RegisteredGroup.platoon;
 	}
@@ -39,7 +41,22 @@ public class HistoryUnitGroupChange : HistoryObject
 
 	public override void DoRedo()
 	{
-		RegisteredGroup.Name = Name;
+
+		if(RegisteredGroup.NoPrefixName != Name)
+		{
+			RegisteredGroup.NoPrefixName = Name;
+
+
+		}
+		if (RegisteredGroup.PrefixName != Prefix)
+		{
+			RegisteredGroup.PrefixName = Prefix;
+
+			UnitsInfo.ChangeAllPrefix(RegisteredGroup, RegisteredGroup.PrefixName, Prefix);
+		}
+
+
+
 		RegisteredGroup.orders = Orders;
 		RegisteredGroup.platoon = Platoons;
 

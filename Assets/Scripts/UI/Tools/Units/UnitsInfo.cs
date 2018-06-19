@@ -83,7 +83,7 @@ namespace EditMap
 			if (Input.GetKeyDown(KeyCode.P) && FirstSelected != null)
 			{
 				// Parent all groups to selected
-
+				Reparrent();
 
 				// Parent all units to selected
 			}

@@ -263,6 +263,7 @@ namespace EditMap
 			RenameObject = parent;
 			RenameField.SetParent(parent.transform, false);
 			RenameField.gameObject.SetActive(true);
+			RenameField.GetComponent<LayoutElement>().enabled = true;
 
 			NameInputField.SetValue(parent.Source.NoPrefixName);
 			PrefixInputField.SetValue(parent.Source.PrefixName);
@@ -270,6 +271,7 @@ namespace EditMap
 			NameInputField.InputFieldUi.ActivateInputField();
 		}
 
+		bool RenameUndoApplyied = false;
 		public void RenameApply(bool Apply)
 		{
 			if (Apply)
@@ -280,6 +282,7 @@ namespace EditMap
 			RenameObject.RenameEnd();
 			RenameField.SetParent(Pivot, false);
 			RenameField.gameObject.SetActive(false);
+			RenameUndoApplyied = false;
 		}
 
 		public void RenameGroup(UnitListObject parent)
@@ -299,7 +302,7 @@ namespace EditMap
 					return; // Already exist
 			}
 
-			// TODO Register undo: Group name
+			RenameUndoApplyied = true;
 			Undo.RegisterGroupChange(parent.Source);
 
 			parent.Source.NoPrefixName = NewValue;
@@ -314,9 +317,22 @@ namespace EditMap
 			if (OldPrefix == NewValue)
 				return; // No changes
 
-			//TODO Register undo: Army Groups prefix
-			if(!string.IsNullOrEmpty(OldPrefix))
+			if(!RenameUndoApplyied)
+				Undo.RegisterGroupChange(parent.Source);
+
+			if (!string.IsNullOrEmpty(OldPrefix))
+			{
 				ChangeAllPrefix(parent.Owner.Units, OldPrefix, NewValue);
+				foreach (UnitListObject ulo in UnitGroups)
+					ulo.GroupName.text = ulo.Source.Name;
+			}
+			else
+			{
+				parent.Source.PrefixName = NewValue;
+				parent.GroupName.text = parent.Source.Name;
+
+			}
+
 		}
 
 		public static void ChangeAllPrefix(MapLua.SaveLua.Army.UnitsGroup Source, string Old, string New)
@@ -340,13 +356,32 @@ namespace EditMap
 
 		public void Reparrent()
 		{
+			// TODO Register Undo
 
+			foreach(UnitListObject sel in SelectedGroups)
+			{
+				if (sel == FirstSelected)
+					continue;
+
+				
+
+				sel.transform.SetParent(FirstSelected.Pivot, false);
+			}
 		}
 
-		public void TransferUnits()
+		public static void Reparent(MapLua.SaveLua.Army.UnitsGroup Source, MapLua.SaveLua.Army.UnitsGroup NewOwner, MapLua.SaveLua.Army.UnitsGroup OldOwner )
 		{
 
+			if(OldOwner == null)
+			{
+
+			}
+
+			OldOwner.UnitGroups.Remove(Source);
+			NewOwner.UnitGroups.Add(Source);
 		}
+
+
 
 		#region Selection
 		static UnitListObject FirstSelected

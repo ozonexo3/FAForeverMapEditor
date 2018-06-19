@@ -89,7 +89,7 @@ namespace MapLua
 				{
 					get
 					{
-						if (Prefix.Length == 0)
+						if (string.IsNullOrEmpty(Prefix))
 							return Name;
 
 						string ToReturn = Name.Remove(0, Prefix.Length);
@@ -101,9 +101,12 @@ namespace MapLua
 					}
 					set
 					{
-						if (Prefix.Length == 0)
+						if (string.IsNullOrEmpty(Prefix))
+						{
+							Prefix = "";
 							Name = value;
-						else 
+						}
+						else
 							Name = Prefix + "_" + value;
 					}
 				}
@@ -116,7 +119,16 @@ namespace MapLua
 					}
 					set
 					{
-						Prefix = value;
+						if (string.IsNullOrEmpty(value))
+						{
+							Name = NoPrefixName;
+							Prefix = "";
+						}
+						else
+						{
+							Name = value + "_" + NoPrefixName;
+							Prefix = value;
+						}
 					}
 				}
 
