@@ -8,7 +8,8 @@ Material:
   m_PrefabInternal: {fileID: 0}
   m_Name: TerrainShader
   m_Shader: {fileID: 4800000, guid: 07332981e20e66d40a9ee102d13a9be8, type: 3}
-  m_ShaderKeywords: _AREA_ON _BRUSH_ON
+  m_ShaderKeywords: _AREA_ON _BRUSH_ON _HIDESPLAT0_ON _HIDESPLAT1_ON _HIDESPLAT2_ON
+    _HIDESPLAT3_ON _HIDESPLAT4_ON _HIDESPLAT5_ON _HIDESPLAT6_ON _HIDESPLAT7_ON
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -222,6 +223,10 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _TerrainTypeAlbedo:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _UtilitySamplerC:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -240,14 +245,14 @@ Material:
     - _Brush: 0
     - _BrushPainting: 0
     - _BrushSize: 0
-    - _BrushUvX: 0.53297186
-    - _BrushUvY: 0.4650196
+    - _BrushUvX: 0.21685126
+    - _BrushUvY: 0.90409905
     - _DeepLevel: 1.675625
     - _DepthLevel: 1.5
     - _GeneratingNormal: 0
     - _Grid: 0
     - _GridCamDist: 0.049673967
-    - _GridScale: 102.4
+    - _GridScale: 25.6
     - _HideSplat0: 0
     - _HideSplat1: 0
     - _HideSplat2: 0
@@ -257,30 +262,32 @@ Material:
     - _HideSplat6: 0
     - _HideSplat7: 0
     - _HideSplat8: 0
+    - _HideSplat9: 0
+    - _HideTerrainType: 0
     - _LightingMultiplier: 1.27
-    - _LowerScale: 256
-    - _LowerScaleNormal: 117.02857
+    - _LowerScale: 64
+    - _LowerScaleNormal: 64
     - _Shininess: 0.03
     - _Slope: 0
-    - _Splat0Scale: 256
-    - _Splat0ScaleNormal: 256
-    - _Splat1Scale: 292.57144
-    - _Splat1ScaleNormal: 89.04348
-    - _Splat2Scale: 60.952385
-    - _Splat2ScaleNormal: 512
-    - _Splat3Scale: 170.66667
-    - _Splat3ScaleNormal: 256
-    - _Splat4Scale: 256
-    - _Splat4ScaleNormal: 256
-    - _Splat5Scale: 256
-    - _Splat5ScaleNormal: 256
-    - _Splat6Scale: 256
-    - _Splat6ScaleNormal: 256
-    - _Splat7Scale: 256
-    - _Splat7ScaleNormal: 256
+    - _Splat0Scale: 64
+    - _Splat0ScaleNormal: 64
+    - _Splat1Scale: 64
+    - _Splat1ScaleNormal: 64
+    - _Splat2Scale: 64
+    - _Splat2ScaleNormal: 64
+    - _Splat3Scale: 64
+    - _Splat3ScaleNormal: 64
+    - _Splat4Scale: 64
+    - _Splat4ScaleNormal: 64
+    - _Splat5Scale: 64
+    - _Splat5ScaleNormal: 64
+    - _Splat6Scale: 64
+    - _Splat6ScaleNormal: 64
+    - _Splat7Scale: 64
+    - _Splat7ScaleNormal: 64
     - _TTerrainXP: 0
-    - _UpperScale: 8
-    - _UpperScaleNormal: 256
+    - _UpperScale: 2
+    - _UpperScaleNormal: 64
     - _UseSlopeTex: 1
     - _Water: 0
     - _WaterLevel: 1.75
