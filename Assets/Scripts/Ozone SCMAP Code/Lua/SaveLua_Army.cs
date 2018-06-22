@@ -73,8 +73,41 @@ namespace MapLua
 				public string platoon;
 				public HashSet<UnitsGroup> UnitGroups;
 				public HashSet<Unit> Units;
-				public Army Owner;
+
+				#region Editor Values
 				public bool Expanded;
+				#endregion
+
+				#region Parents
+				public Army Owner;
+				public UnitsGroup Parent;
+				public void AddGroup(UnitsGroup ug)
+				{
+					ug.Owner = Owner;
+					ug.Parent = this;
+					UnitGroups.Add(ug);
+				}
+				public void RemoveGroup(UnitsGroup ug)
+				{
+					ug.Owner = null;
+					ug.Parent = null;
+					UnitGroups.Remove(ug);
+				}
+				public void AddUnit(Unit u)
+				{
+					u.Parent = this;
+					Units.Add(u);
+				}
+				public void RemoveUnit(Unit u)
+				{
+					u.Parent = null;
+					Units.Remove(u);
+				}
+				public void ClearUnitInstances()
+				{
+
+				}
+				#endregion
 
 				public const string KEY_PREFIX = "prefix";
 				public const string KEY_ORDERS = "orders";
@@ -171,17 +204,16 @@ namespace MapLua
 								NewUnit.type = LuaParser.Read.StringFromTable(UnitsTables[i], KEY_TYPE);
 								NewUnit.orders = LuaParser.Read.StringFromTable(UnitsTables[i], KEY_ORDERS);
 								NewUnit.platoon = LuaParser.Read.StringFromTable(UnitsTables[i], KEY_PLATOON);
-								//Debug.Log(UnitsTables[i].RawGet(KEY_POSITION));
 								NewUnit.Position = LuaParser.Read.Vector3FromTable(UnitsTables[i], KEY_POSITION);
 								NewUnit.Orientation = LuaParser.Read.Vector3FromTable(UnitsTables[i], KEY_ORIENTATION);
-								Units.Add(NewUnit);
-								//GetGamedataFile.LoadUnit(NewUnit.type).CreateUnitObject(NewUnit, this);
+								AddUnit(NewUnit);
 							}
 							else
 							{
 								UnitsGroup NewUnitsGroup = new UnitsGroup(UnitsNames[i], UnitsTables[i], Owner, StoreForLaterInstantiate);
-								UnitGroups.Add(NewUnitsGroup);
+								AddGroup(NewUnitsGroup);
 							}
+
 						}
 
 					}
@@ -242,7 +274,7 @@ namespace MapLua
 				{
 					foreach (Unit u in Units)
 					{
-						u.Instantiate(this);
+						u.Instantiate();
 					}
 
 					if(childs)
@@ -258,7 +290,7 @@ namespace MapLua
 						//u.Instantiate(this);
 						if (!UnitsToLoad.Contains(u))
 						{
-							u.Parent = this;
+							//u.Parent = this;
 							UnitsToLoad.Add(u);
 						}
 					}
@@ -293,6 +325,7 @@ namespace MapLua
 				public Vector3 Position;
 				public Vector3 Orientation;
 				public UnitInstance Instance;
+				public Army Owner;
 				public UnitsGroup Parent;
 
 				public static void SaveUnit(LuaParser.Creator LuaFile, UnitInstance Instance)
@@ -316,7 +349,7 @@ namespace MapLua
 						Object.Destroy(Instance.gameObject);
 				}
 
-				public void Instantiate(UnitsGroup Parent)
+				public void Instantiate()
 				{
 					if (Instance && Instance.gameObject)
 						return;

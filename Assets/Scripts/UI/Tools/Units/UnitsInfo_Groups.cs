@@ -185,7 +185,8 @@ namespace EditMap
 			MapLua.SaveLua.Army.UnitsGroup NewGroup = new MapLua.SaveLua.Army.UnitsGroup(parent.Source.Owner);
 			NewGroup.Name = NamePrefix;
 
-			parent.Source.UnitGroups.Add(NewGroup);
+			//parent.Source.UnitGroups.Add(NewGroup);
+			parent.Source.AddGroup(NewGroup);
 
 			StoreSelection.Clear();
 			StoreSelection.Add(NewGroup);
@@ -229,7 +230,8 @@ namespace EditMap
 
 			parent.Source.ClearGroup(true);
 
-			parent.Parent.UnitGroups.Remove(parent.Source);
+			//parent.Parent.UnitGroups.Remove(parent.Source);
+			parent.Parent.RemoveGroup(parent.Source);
 
 			Generate(false);
 		}
@@ -377,8 +379,8 @@ namespace EditMap
 
 			}
 
-			OldOwner.UnitGroups.Remove(Source);
-			NewOwner.UnitGroups.Add(Source);
+			OldOwner.RemoveGroup(Source);
+			NewOwner.AddGroup(Source);
 		}
 
 

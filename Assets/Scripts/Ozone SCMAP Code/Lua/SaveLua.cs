@@ -274,7 +274,7 @@ namespace MapLua
 			{
 				NeedReload = !GetGamedataFile.IsUnitSourceLoaded(ListEnum.Current.type);
 
-				ListEnum.Current.Instantiate(ListEnum.Current.Parent);
+				ListEnum.Current.Instantiate();
 				counter++;
 				BreakCounter++;
 
