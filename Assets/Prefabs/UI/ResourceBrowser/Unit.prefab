@@ -163,13 +163,13 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Texture: {fileID: 2800000, guid: d8a8d2c78ec58db4f82b712682c2b402, type: 3}
+  m_Texture: {fileID: 0}
   m_UVRect:
     serializedVersion: 2
     x: 0
     y: 0
     width: 1
-    height: 1
+    height: -1
 --- !u!114 &114166519625556286
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -189,13 +189,13 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Texture: {fileID: 2800000, guid: 16f62052d575f8340a9d8dbca8b6b7ac, type: 3}
+  m_Texture: {fileID: 0}
   m_UVRect:
     serializedVersion: 2
     x: 0
     y: 0
     width: 1
-    height: 1
+    height: -1
 --- !u!114 &114171675876925684
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -272,7 +272,7 @@ MonoBehaviour:
     m_PressedTrigger: Pressed
     m_DisabledTrigger: Disabled
   m_Interactable: 1
-  m_TargetGraphic: {fileID: 0}
+  m_TargetGraphic: {fileID: 114089498272466286}
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
@@ -336,9 +336,12 @@ MonoBehaviour:
   InstanceId: 0
   NameField: {fileID: 114641165085064450}
   Selected: {fileID: 1940258104190462}
+  ContentType: 3
   RawImages:
-  - {fileID: 0}
-  CustomTexts: []
+  - {fileID: 114166519625556286}
+  - {fileID: 114144323140750030}
+  CustomTexts:
+  - {fileID: 114992574163581240}
   MeshView: {fileID: 0}
   BeginDrag:
     m_PersistentCalls:
@@ -391,7 +394,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: 'Building
+  m_Text: 'Experimental
 
     Tech 1'
 --- !u!222 &222130800419046836
@@ -465,10 +468,10 @@ RectTransform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 77, y: -34}
+  m_SizeDelta: {x: 150, y: 64}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &224306859314091094
 RectTransform:
@@ -483,10 +486,10 @@ RectTransform:
   m_Father: {fileID: 224155945933407174}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 32, y: -16}
-  m_SizeDelta: {x: -64, y: 16}
+  m_SizeDelta: {x: -64, y: -16}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!224 &224340956974849580
 RectTransform:

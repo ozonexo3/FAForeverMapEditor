@@ -871,7 +871,10 @@ namespace EditMap
 		#region Select Texture
 		public void SelectAlbedo()
 		{
-			if (!ResourceBrowser.Current.gameObject.activeSelf && ResourceBrowser.DragedObject)
+			if(ResourceBrowser.DragedObject == null || ResourceBrowser.DragedObject.ContentType != ResourceObject.ContentTypes.Texture)
+				return;
+
+			if (!ResourceBrowser.Current.gameObject.activeSelf)
 				return;
 			if (ResourceBrowser.SelectedCategory == 0 || ResourceBrowser.SelectedCategory == 1)
 			{
@@ -892,6 +895,9 @@ namespace EditMap
 
 		public void SelectNormal()
 		{
+			if (ResourceBrowser.DragedObject == null || ResourceBrowser.DragedObject.ContentType != ResourceObject.ContentTypes.Texture)
+				return;
+
 			if (!ResourceBrowser.Current.gameObject.activeSelf)
 				return;
 			if (ResourceBrowser.SelectedCategory == 0 || ResourceBrowser.SelectedCategory == 1)
@@ -915,12 +921,12 @@ namespace EditMap
 
 		public void ClickAlbedo()
 		{
-			ScmapEditor.Current.ResBrowser.LoadStratumTexture(ScmapEditor.Current.Textures[Selected].AlbedoPath);
+			ResourceBrowser.Current.LoadStratumTexture(ScmapEditor.Current.Textures[Selected].AlbedoPath);
 		}
 
 		public void ClickNormal()
 		{
-			ScmapEditor.Current.ResBrowser.LoadStratumTexture(ScmapEditor.Current.Textures[Selected].NormalPath);
+			ResourceBrowser.Current.LoadStratumTexture(ScmapEditor.Current.Textures[Selected].NormalPath);
 		}
 		#endregion
 

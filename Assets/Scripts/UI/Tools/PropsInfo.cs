@@ -380,11 +380,15 @@ namespace EditMap
 
 		public void DropProp()
 		{
-			if (!ResourceBrowser.Current.gameObject.activeSelf && ResourceBrowser.DragedObject)
-				return;
-			if (ResourceBrowser.SelectedCategory == 3)
+			if (ResourceBrowser.DragedObject && ResourceBrowser.DragedObject.ContentType == ResourceObject.ContentTypes.Prop)
 			{
-				LoadProp(ResourceBrowser.Current.LoadedProps[ResourceBrowser.DragedObject.InstanceId]);
+
+				if (!ResourceBrowser.Current.gameObject.activeSelf && ResourceBrowser.DragedObject)
+					return;
+				if (ResourceBrowser.SelectedCategory == 3)
+				{
+					LoadProp(ResourceBrowser.Current.LoadedProps[ResourceBrowser.DragedObject.InstanceId]);
+				}
 			}
 		}
 

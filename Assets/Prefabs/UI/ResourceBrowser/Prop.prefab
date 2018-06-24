@@ -258,6 +258,7 @@ MonoBehaviour:
   InstanceId: 0
   NameField: {fileID: 114491064649820864}
   Selected: {fileID: 1000014267462054}
+  ContentType: 2
   RawImages:
   - {fileID: 114000010130277044}
   CustomTexts:

@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using EditMap;
 using NLua;
 using MapLua;
+using FAF.MapEditor;
 
 public partial class MapLuaParser : MonoBehaviour
 {
@@ -124,7 +125,7 @@ public partial class MapLuaParser : MonoBehaviour
 
 		EditMenu.TexturesMenu.ResetVisibility();
 
-		ScmapEditor.Current.ResBrowser.gameObject.SetActive(false);
+		ResourceBrowser.Current.gameObject.SetActive(false);
 	}
 
 	#region Loading

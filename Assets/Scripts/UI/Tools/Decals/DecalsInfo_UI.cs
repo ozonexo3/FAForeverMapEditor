@@ -15,7 +15,7 @@ namespace EditMap
 		public DecalsList DecalsList;
 
 		public void DropAtDecals() {
-			if (ResourceBrowser.DragedObject == null)
+			if (ResourceBrowser.DragedObject == null || ResourceBrowser.DragedObject.ContentType != ResourceObject.ContentTypes.Decal)
 				return;
 
 			if (!ResourceBrowser.IsDecal())
@@ -61,7 +61,7 @@ namespace EditMap
 
 		public void DropAtGameplay()
 		{
-			if (ResourceBrowser.DragedObject == null)
+			if (ResourceBrowser.DragedObject == null || ResourceBrowser.DragedObject.ContentType != ResourceObject.ContentTypes.Decal)
 				return;
 
 			if (!ResourceBrowser.IsDecal())

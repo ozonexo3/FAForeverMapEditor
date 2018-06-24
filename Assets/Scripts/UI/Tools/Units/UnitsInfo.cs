@@ -31,6 +31,8 @@ namespace EditMap
 
 		private void OnEnable()
 		{
+			ForceExitCreate();
+			PlacementManager.OnDropOnGameplay += DropAtGameplay;
 			SelectionManager.Current.DisableLayer = 15;
 			SelectionManager.Current.SetRemoveAction(DestroyUnits);
 			SelectionManager.Current.SetSelectionChangeAction(SelectUnit);
@@ -43,7 +45,8 @@ namespace EditMap
 
 		private void OnDisable()
 		{
-			//PlacementManager.OnDropOnGameplay -= DropAtGameplay;
+			ForceExitCreate();
+			PlacementManager.OnDropOnGameplay -= DropAtGameplay;
 			Selection.SelectionManager.Current.ClearAffectedGameObjects();
 		}
 
@@ -110,6 +113,8 @@ namespace EditMap
 			if (CurrentPage == PageId && Page[CurrentPage].activeSelf && PageSelected[CurrentPage].activeSelf)
 				return;
 			TerrainPageChange = true;
+
+			ForceExitCreate();
 
 			//PreviousPage = CurrentPage;
 			CurrentPage = PageId;

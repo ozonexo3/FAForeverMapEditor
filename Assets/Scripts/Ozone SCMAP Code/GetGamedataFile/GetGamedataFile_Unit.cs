@@ -116,6 +116,7 @@ public partial struct GetGamedataFile
 	}
 
 
+
 	public static UnitSource LoadUnit(string scd, string LocalPath)
 	{
 		if (LoadedUnitObjects.ContainsKey(LocalPath))
@@ -123,10 +124,6 @@ public partial struct GetGamedataFile
 
 
 		//UnitObject ToReturn = new UnitObject();
-
-
-
-
 		byte[] Bytes = LoadBytes(scd, LocalPath);
 		if (Bytes == null || Bytes.Length == 0)
 		{
@@ -143,7 +140,7 @@ public partial struct GetGamedataFile
 
 		BluePrintString = BluePrintString.Replace("UnitBlueprint {", "UnitBlueprint = {");
 
-		string[] PathSplit = LocalPath.Split(("/").ToCharArray());
+		string[] PathSplit = LocalPath.Split('/');
 		GameObject NewUnit = new GameObject(PathSplit[PathSplit.Length - 1].Replace(".bp", ""));
 		UnitSource ToReturn = NewUnit.AddComponent<UnitSource>();
 

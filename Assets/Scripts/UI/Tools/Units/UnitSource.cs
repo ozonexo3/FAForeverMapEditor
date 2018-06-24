@@ -163,6 +163,11 @@ public class UnitSource : MonoBehaviour
 
 
 		GameObject Obj = Instantiate(UnitsInfo.Current.UnitInstancePrefab, transform) as GameObject;
+		return FillGameObjectValues(Obj, Source, Group, position, rotation);
+	}
+
+	public UnitInstance FillGameObjectValues(GameObject Obj, MapLua.SaveLua.Army.Unit Source, MapLua.SaveLua.Army.UnitsGroup Group, Vector3 position, Quaternion rotation)
+	{
 		Obj.name = Source.Name;
 
 		UnitInstance UInst = Obj.GetComponent<UnitInstance>();

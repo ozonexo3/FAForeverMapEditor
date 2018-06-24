@@ -170,7 +170,6 @@ namespace FAF.MapEditor
 			NewOptions.Add(NewOptionInstance3);
 
 			EnvType.AddOptions(NewOptions);
-
 		}
 		#endregion
 

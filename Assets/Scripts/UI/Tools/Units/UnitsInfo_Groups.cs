@@ -105,37 +105,6 @@ namespace EditMap
 		}
 
 
-		public void DestroyUnits(List<GameObject> MarkerObjects, bool RegisterUndo = true)
-		{
-			if (RegisterUndo && MarkerObjects.Count > 0)
-				Undo.Current.RegisterDecalsRemove();
-
-			int Count = MarkerObjects.Count;
-			for (int i = 0; i < Count; i++)
-			{
-				DestroyImmediate(MarkerObjects[i]);
-			}
-
-			SelectionManager.Current.CleanSelection();
-			GoToSelection();
-		}
-
-		public void SelectUnit()
-		{
-			// ToDo Reload Selection UI info
-
-			//DecalsList.UpdateSelection();
-		}
-
-		bool UpdateSelectedMatrixes = false;
-		public void SnapAction(Transform tr, GameObject Connected)
-		{
-			UpdateSelectedMatrixes = true;
-			if (Connected == null)
-				tr.localPosition = ScmapEditor.SnapToTerrain(tr.localPosition);
-			else
-				tr.localPosition = Connected.GetComponent<UnitInstance>().GetSnapPosition(tr.localPosition);
-		}
 
 
 		#region Groups

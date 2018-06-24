@@ -21,6 +21,7 @@ public partial class ScmapEditor : MonoBehaviour
 	public TerrainData Data;
 	public Transform WaterLevel;
 	public ResourceBrowser ResBrowser;
+	public UnitBrowser UnBrowser;
 	public Light Sun;
 	public ProceduralSkybox Skybox;
 	public Material TerrainMaterial;
@@ -74,6 +75,8 @@ public partial class ScmapEditor : MonoBehaviour
 
 	void Start()
 	{
+		UnBrowser.Instantiate();
+
 		ToogleGrid(false);
 		heightsLength = 10;
 		heights = new float[10, 10];
