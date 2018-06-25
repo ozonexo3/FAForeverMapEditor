@@ -245,6 +245,25 @@ namespace Selection
 			}
 		}
 
+		public static void DoForEverySelected(System.Action<GameObject, int> Task, bool Symmetry = true)
+		{
+			int ID = 0;
+			for (int i = 0; i < Current.Selection.Ids.Count; i++)
+			{
+				ID = SelectionManager.Current.Selection.Ids[i];
+				Task(Current.AffectedGameObjects[ID], Current.AffectedTypes[ID]);
+			}
+
+			for (int s = 0; s < SelectionManager.Current.SymetrySelection.Length; s++)
+			{
+				for (int i = 0; i < SelectionManager.Current.SymetrySelection[s].Ids.Count; i++)
+				{
+					ID = Current.SymetrySelection[s].Ids[i];
+					Task(Current.AffectedGameObjects[ID], Current.AffectedTypes[ID]);
+				}
+			}
+		}
+
 
 		#region Action Events
 		static System.Action<List<GameObject>, bool> RemoveAction;

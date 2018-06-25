@@ -86,6 +86,11 @@ namespace EditMap
 
 		public void CreateGroup(MapLua.SaveLua.Army Army, MapLua.SaveLua.Army.UnitsGroup Grp, MapLua.SaveLua.Army.UnitsGroup Parent, Transform Pivot, bool Root = false)
 		{
+			if (Root)
+			{
+				Grp.Expanded = true;
+			}
+
 			GameObject NewGroupObject = Instantiate(GroupPrefab, Pivot);
 			UnitListObject ulo = NewGroupObject.GetComponent<UnitListObject>();
 			ulo.AddAction = AddNewGroup;

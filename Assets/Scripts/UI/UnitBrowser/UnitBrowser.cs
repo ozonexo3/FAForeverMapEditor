@@ -184,7 +184,7 @@ namespace FAF.MapEditor
 
 				GenerateCount++;
 
-				if (GenerateCount > 5)
+				if (GenerateCount > 7)
 				{
 					GenerateCount = 0;
 					yield return null;
@@ -254,6 +254,9 @@ namespace FAF.MapEditor
 					break;
 			}
 
+			if (!FactionCorrect)
+				return false;
+
 			for(int i = 0; i < SearchTags.Length; i++)
 			{
 				string SearchValue = SearchTags[i].ToUpper();
@@ -290,39 +293,28 @@ namespace FAF.MapEditor
 						break;
 						//TechLevel
 					case "T1":
-						if (UnitDB.TechLevel != "TECH1")
-							return false;
-						break;
-					case "T2":
-						if (UnitDB.TechLevel != "TECH2")
-							return false;
-						break;
-					case "T3":
-						if (UnitDB.TechLevel != "TECH3")
-							return false;
-						break;
-					case "T4":
-						if (UnitDB.TechLevel != "EXPERIMENTAL")
-							return false;
-						break;
 					case "TECH1":
 						if (UnitDB.TechLevel != "TECH1")
 							return false;
 						break;
+					case "T2":
 					case "TECH2":
 						if (UnitDB.TechLevel != "TECH2")
 							return false;
 						break;
+					case "T3":
 					case "TECH3":
 						if (UnitDB.TechLevel != "TECH3")
 							return false;
 						break;
+					case "T4":
 					case "TECH4":
 						if (UnitDB.TechLevel != "EXPERIMENTAL")
 							return false;
 						break;
 						// Tags
 					case "EXPERIMENTAL":
+					case "EXP":
 						if (!UnitDB.CategoriesHash.Contains("EXPERIMENTAL"))
 							return false;
 						break;
@@ -359,6 +351,7 @@ namespace FAF.MapEditor
 							return false;
 						break;
 					case "PRODUCTSC1":
+					case "SC1":
 						if (!UnitDB.CategoriesHash.Contains("PRODUCTSC1"))
 							return false;
 						break;

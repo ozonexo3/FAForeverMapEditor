@@ -328,6 +328,13 @@ namespace MapLua
 				public Army Owner;
 				public UnitsGroup Parent;
 
+
+				static HashSet<string> AllNames = new HashSet<string>();
+				public static string GetFreeName(string Tag)
+				{
+					return Tag + AllNames.Count;
+				}
+
 				public static void SaveUnit(LuaParser.Creator LuaFile, UnitInstance Instance)
 				{
 					LuaFile.OpenTab(LuaParser.Write.PropertieToLua(Instance.gameObject.name) + LuaParser.Write.OpenBracketValue);
@@ -346,7 +353,10 @@ namespace MapLua
 				public void ClearInstance()
 				{
 					if (Instance && Instance.gameObject)
+					{
 						Object.Destroy(Instance.gameObject);
+						AllNames.Remove(Name);
+					}
 				}
 
 				public void Instantiate()
@@ -354,6 +364,7 @@ namespace MapLua
 					if (Instance && Instance.gameObject)
 						return;
 					GetGamedataFile.LoadUnit(type).CreateUnitObject(this, Parent);
+					AllNames.Add(Name);
 
 				}
 			}

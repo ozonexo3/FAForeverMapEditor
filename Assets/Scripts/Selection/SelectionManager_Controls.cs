@@ -281,6 +281,24 @@ namespace Selection
 			}
 		}
 
+
+		public void SelectObjects(GameObject[] ToSelect)
+		{
+			bool AnyChanged = false;
+			for(int i = 0; i < ToSelect.Length; i++)
+			{
+				int ObjectId = GetIdOfObject(ToSelect[i]);
+				if (!Selection.Ids.Contains(ObjectId))
+				{
+					Selection.Ids.Add(ObjectId);
+					AnyChanged = true;
+				}
+			}
+
+			if(AnyChanged)
+				FinishSelectionChange();
+		}
+
 		public void SelectObjectAdd(GameObject Obj)
 		{
 			int ObjectId = GetIdOfObject(Obj);

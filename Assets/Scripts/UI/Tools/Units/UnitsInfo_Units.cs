@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Selection;
 using FAF.MapEditor;
+using MapLua;
 
 namespace EditMap
 {
@@ -22,14 +23,14 @@ namespace EditMap
 		public Toggle RandomRotation;
 
 		GetGamedataFile.UnitDB SelectedUnit;
-		MapLua.SaveLua.Army.Unit SelectedUnitSource;
+		SaveLua.Army.Unit SelectedUnitSource;
 		public void OnDropUnit()
 		{
 			if (ResourceBrowser.DragedObject == null || ResourceBrowser.DragedObject.ContentType != ResourceObject.ContentTypes.Unit)
 				return;
 
 			SelectedUnit = UnitBrowser.GetDragUnit();
-			SelectedUnitSource = new MapLua.SaveLua.Army.Unit();
+			SelectedUnitSource = new SaveLua.Army.Unit();
 			SelectedUnitSource.Name = SelectedUnit.CodeName;
 			SelectedUnitSource.type = SelectedUnit.CodeName;
 
@@ -112,7 +113,7 @@ namespace EditMap
 				PlacementManager.InstantiateAction = CreatePrefabAction;
 				PlacementManager.MinRotAngle = FreeRotation.isOn ? (0) : (90);
 				PlacementManager.SnapToWater = false;
-				PlacementManager.BeginPlacement(CreationPrefab, DecalsInfo.Current.Place);
+				PlacementManager.BeginPlacement(CreationPrefab, Place);
 			}
 			else
 			{
@@ -159,26 +160,33 @@ namespace EditMap
 				return;
 
 			if (Positions.Length > 0)
-				Undo.Current.RegisterDecalsAdd();
+			{
+				//TODO Register Undo
+				//Undo.Current.RegisterDecalsAdd();
+				Undo.RegisterUnitsRemove(FirstSelected.Source);
+			}
 
 
 			for (int i = 0; i < Positions.Length; i++)
 			{
 				if (RandomRotation.isOn)
 				{
-					if (FreeRotation.isOn)
-					{
-						Rotations[i] = Quaternion.Euler(Vector3.up * Random.Range(0, 360f));
-					}
-					else
-					{
-						Rotations[i] = Quaternion.Euler(Vector3.up * (90 * Random.Range(0, 4)));
-					}
+					Rotations[i] = GetRandomRotation;
 				}
 
 
 				// TODO Create unit
 
+				SaveLua.Army.Unit NewUnit = new SaveLua.Army.Unit();
+				NewUnit.Name = SaveLua.Army.Unit.GetFreeName("UNIT_");
+				NewUnit.type = SelectedUnit.CodeName;
+				NewUnit.orders = "";
+				NewUnit.platoon = "";
+				NewUnit.Position = ScmapEditor.WorldPosToScmap(Positions[i]);
+				NewUnit.Orientation = Rotations[i].eulerAngles * Mathf.Deg2Rad;
+
+				FirstSelected.Source.AddUnit(NewUnit);
+				NewUnit.Instantiate();
 
 				/*
 				GameObject NewDecalObject = Instantiate(DecalPrefab, DecalPivot);
@@ -208,14 +216,58 @@ namespace EditMap
 
 
 		#region Tools
+		Quaternion GetRandomRotation
+		{
+			get
+			{
+				if (FreeRotation.isOn)
+				{
+					return Quaternion.Euler(Vector3.up * Random.Range(0, 360f));
+				}
+				else
+				{
+					return Quaternion.Euler(Vector3.up * (90 * Random.Range(0, 4)));
+				}
+			}
+		}
+
 		public void RandomizeRotation()
 		{
+			if (IsCreating)
+				return;
 
+			SelectionManager.DoForEverySelected(RandomizeTransform);
+		}
+
+		void RandomizeTransform(GameObject obj, int Type)
+		{
+			obj.transform.rotation = GetRandomRotation;
+		}
+
+
+		HashSet<UnitSource> GatheredUnitTypes = new HashSet<UnitSource>();
+		void GatherUnitTypes(GameObject obj, int Type)
+		{
+			GatheredUnitTypes.Add(obj.GetComponent<UnitInstance>().UnitRenderer);
 		}
 
 		public void SelectAllOfType()
 		{
+			GatheredUnitTypes.Clear();
+			SelectionManager.DoForEverySelected(GatherUnitTypes);
 
+			SelectionManager.Current.CleanSelection();
+
+			List<GameObject> NewSelection = new List<GameObject>();
+			for(int i = 0; i < SelectionManager.Current.AffectedGameObjects.Length; i++)
+			{
+				if (GatheredUnitTypes.Contains(SelectionManager.Current.AffectedGameObjects[i].GetComponent<UnitInstance>().UnitRenderer))
+					NewSelection.Add(SelectionManager.Current.AffectedGameObjects[i]);
+			}
+			SelectionManager.Current.SelectObjects(NewSelection.ToArray());
+
+			NewSelection.Clear();
+			GatheredUnitTypes.Clear();
 		}
 
 		public void ReplaceSelected()
