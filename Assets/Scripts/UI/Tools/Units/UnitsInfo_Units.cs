@@ -132,7 +132,8 @@ namespace EditMap
 			UnitSource us = GetGamedataFile.LoadUnit(SelectedUnit.CodeName);
 			SelectedUnitSource.Parent = FirstSelected.Source;
 			SelectedUnitSource.Owner = FirstSelected.Owner;
-			UnitInstance ui = us.FillGameObjectValues(InstancedPrefab, SelectedUnitSource, FirstSelected.Source, Vector3.zero, Quaternion.identity);
+			//UnitInstance ui = 
+			us.FillGameObjectValues(InstancedPrefab, SelectedUnitSource, FirstSelected.Source, Vector3.zero, Quaternion.identity);
 		}
 
 		public void DropAtGameplay()
@@ -174,9 +175,6 @@ namespace EditMap
 					Rotations[i] = GetRandomRotation;
 				}
 
-
-				// TODO Create unit
-
 				SaveLua.Army.Unit NewUnit = new SaveLua.Army.Unit();
 				NewUnit.Name = SaveLua.Army.Unit.GetFreeName("UNIT_");
 				NewUnit.type = SelectedUnit.CodeName;
@@ -188,28 +186,7 @@ namespace EditMap
 				FirstSelected.Source.AddUnit(NewUnit);
 				NewUnit.Instantiate();
 
-				/*
-				GameObject NewDecalObject = Instantiate(DecalPrefab, DecalPivot);
-				OzoneDecal Obj = NewDecalObject.GetComponent<OzoneDecal>();
-				Decal component = new Decal();
-				component.Obj = Obj;
-				Obj.Dec = component;
-				Obj.Dec.Shared = DecalSettings.GetLoaded;
-				Obj.tr = NewDecalObject.transform;
-
-				Obj.tr.localPosition = Positions[i];
-				Obj.tr.localRotation = Rotations[i];
-				Obj.tr.localScale = Scales[i];
-
-				Obj.CutOffLOD = DecalSettingsUi.CutOff.value;
-				Obj.NearCutOffLOD = DecalSettingsUi.NearCutOff.value;
-
-				Obj.Material = component.Shared.SharedMaterial;
-
-				Obj.Bake();
-
-				DecalsControler.AddDecal(Obj.Dec);
-				*/
+				FirstSelected.Refresh();
 			}
 		}
 		#endregion
@@ -237,11 +214,13 @@ namespace EditMap
 				return;
 
 			SelectionManager.DoForEverySelected(RandomizeTransform);
+			SelectionManager.Current.FinishSelectionChange();
 		}
 
 		void RandomizeTransform(GameObject obj, int Type)
 		{
 			obj.transform.rotation = GetRandomRotation;
+			obj.SendMessage("UpdateMatrixTranslated");
 		}
 
 

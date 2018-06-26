@@ -184,7 +184,7 @@ namespace FAF.MapEditor
 
 				GenerateCount++;
 
-				if (GenerateCount > 7)
+				if (GenerateCount >= 7)
 				{
 					GenerateCount = 0;
 					yield return null;
@@ -339,6 +339,7 @@ namespace FAF.MapEditor
 							return false;
 						break;
 					case "STRUCTURE":
+					case "BUILDING":
 						if (!UnitDB.CategoriesHash.Contains("STRUCTURE"))
 							return false;
 						break;

@@ -95,15 +95,17 @@ namespace EditMap
 		public void GoToSelection()
 		{
 
+			PlacementManager.Clear();
+			if (ChangeControlerType.Current)
+				ChangeControlerType.Current.UpdateButtons();
+
 			int[] AllTypes;
 			AllObjects = UnitInstance.GetAllUnitGo(out AllTypes);
 			SelectionManager.Current.SetAffectedGameObjects(AllObjects, SelectionManager.SelectionControlTypes.Units);
 			SelectionManager.Current.SetAffectedTypes(AllTypes);
 
 
-			PlacementManager.Clear();
-			if (ChangeControlerType.Current)
-				ChangeControlerType.Current.UpdateButtons();
+
 		}
 
 		int CurrentPage = 0;

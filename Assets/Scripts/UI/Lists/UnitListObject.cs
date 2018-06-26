@@ -79,12 +79,12 @@ public class UnitListObject : MonoBehaviour {
 		}
 		else
 		{
-			GroupName.text = Data.Name;
-			//NameInputField.SetValue(Data.Name);
+			GroupName.text = Source.Name;
+			//NameInputField.SetValue(Source.Name);
 			RemoveButton.SetActive(true);
 			//UnitsCount.gameObject.SetActive(true);
 		}
-		UpdateValues(Data.Units.Count, Data.UnitGroups.Count);
+		UpdateValues(Source.Units.Count, Source.UnitGroups.Count);
 
 
 		RenameEnd();
@@ -92,6 +92,10 @@ public class UnitListObject : MonoBehaviour {
 		GroupName.color = IsRoot ? NameRoot : NameGroup;
 	}
 
+	public void Refresh()
+	{
+		UpdateValues(Source.Units.Count, Source.UnitGroups.Count);
+	}
 
 
 	public void UpdateSelection(bool Selected, bool First = false)
@@ -132,7 +136,7 @@ public class UnitListObject : MonoBehaviour {
 	float LastClickTime = 0;
 	public void OnTitleClick()
 	{
-
+		OnGroupClick();
 		if (IsRoot)
 			return;
 

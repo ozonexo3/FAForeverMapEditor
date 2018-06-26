@@ -266,7 +266,7 @@ namespace MapLua
 			int counter = 1;
 			int BreakCounter = 0;
 
-			MapLuaParser.Current.InfoPopup.Show(true, "Loading map...\n( Loading units " + counter + "/" + count);
+			MapLuaParser.Current.InfoPopup.Show(true, "Loading map...\n( Loading units " + counter + "/" + count + ")");
 			yield return null;
 
 			bool NeedReload = false;
@@ -286,7 +286,7 @@ namespace MapLua
 
 				if (NeedReload)
 				{
-					MapLuaParser.Current.InfoPopup.Show(true, "Loading map...\n( Loading units " + counter + "/" + count);
+					MapLuaParser.Current.InfoPopup.Show(true, "Loading map...\n( Loading units " + counter + "/" + count + ")");
 					yield return null;
 				}
 			}

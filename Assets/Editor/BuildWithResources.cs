@@ -32,7 +32,7 @@ public class BuildWithResources : MonoBehaviour
 		if (string.IsNullOrEmpty(path))
 			return;
 
-		string[] levels = new string[] { "Assets/MapEditor.unity" };
+		string[] levels = new string[] { "Assets/Preload.unity", "Assets/MapEditor.unity" };
 
 		//PlayerSettings.SetScriptingBackend(BuildTargetGroup.Standalone, ScriptingImplementation.IL2CPP);
 		PlayerSettings.SetScriptingBackend(BuildTargetGroup.Standalone, ScriptingImplementation.Mono2x);

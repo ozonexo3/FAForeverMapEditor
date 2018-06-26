@@ -14,7 +14,7 @@ public partial struct GetGamedataFile
 
 	static Dictionary<string, ZipFile> FAFScdFiles = new Dictionary<string, ZipFile>();
 	static Dictionary<string, string[]> FAFNewEntries = new Dictionary<string, string[]>();
-	static Dictionary<string, string[]> FAFNewFolders = new Dictionary<string, string[]>();
+	//static Dictionary<string, string[]> FAFNewFolders = new Dictionary<string, string[]>();
 
 	static bool FafNotInstalled = false;
 
@@ -41,6 +41,7 @@ public partial struct GetGamedataFile
 			FileStream fs = File.OpenRead(ScdPath);
 			ZipFile NewZipFile = new ZipFile(fs);
 			FAFScdFiles.Add(scd, NewZipFile);
+
 			LoadNewEntriesPaths(scd);
 		}
 
@@ -58,6 +59,7 @@ public partial struct GetGamedataFile
 		return FAFNewEntries[scd];
 	}
 
+	/*
 	public static string[] GetNewFafFolders(string scd)
 	{
 		if (!FAFScdFiles.ContainsKey(scd))
@@ -65,13 +67,15 @@ public partial struct GetGamedataFile
 
 		return FAFNewFolders[scd];
 	}
+	*/
 
 	static void LoadNewEntriesPaths(string scd)
 	{
 		ZipFile Source = ScdFiles[scd];
 		ZipFile Faf = FAFScdFiles[scd];
+
 		List<string> NewPaths = new List<string>();
-		List<string> NewFolders = new List<string>();
+		//List<string> NewFolders = new List<string>();
 		bool IsTexturesScd = scd == TexturesScd;
 		string Log = "";
 		foreach (ZipEntry zipEntry in Faf)
@@ -80,8 +84,8 @@ public partial struct GetGamedataFile
 
 			if (!zipEntry.IsFile)
 			{
-				if (Source.FindEntry(name, false) < 0)
-					NewFolders.Add(name);
+				//if (Source.FindEntry(name, false) < 0)
+				//	NewFolders.Add(name);
 				continue;
 			}
 
@@ -104,7 +108,7 @@ public partial struct GetGamedataFile
 			//Debug.Log("New FAF files: " + scd + ": " + NewPaths.Count);
 		}
 		FAFNewEntries.Add(scd, NewPaths.ToArray());
-		FAFNewFolders.Add(scd, NewFolders.ToArray());
+		//FAFNewFolders.Add(scd, NewFolders.ToArray());
 	}
 
 }
