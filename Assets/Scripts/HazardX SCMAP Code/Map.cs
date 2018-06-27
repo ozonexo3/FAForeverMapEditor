@@ -65,8 +65,8 @@ public class Map
 	public SkyboxData AdditionalSkyboxData = new SkyboxData();
 
 	[HideInInspector]
-	public List<byte> TerrainTypeData;
-
+	public byte[] TerrainTypeData;
+	
 	[HideInInspector]
     public List<WaveGenerator> WaveGenerators = new List<WaveGenerator>();
     public List<Layer> Layers = new List<Layer>();
@@ -124,8 +124,8 @@ public class Map
 		WatermapTex = new Texture2D(0, 0);
 		WaterDataTexture = new Texture2D(0, 0);
 
-//		TerrainTypeData = new byte[Height * Width];
-		TerrainTypeData = new List<byte>();
+		TerrainTypeData = new byte[Height * Width];
+//		TerrainTypeData = new List<byte>();
         HeightmapData = new short[(Height + 1) * (Width + 1)];
         WaterDepthBiasMask = new byte[(Height * Width) / 4];
         WaterFlatnessMask = new byte[(Height * Width) / 4];
@@ -210,8 +210,8 @@ public class Map
 		NormalmapHeader = DefaultScmapHeaders.Current.NormalmapHeader;
 		WatermapHeader = DefaultScmapHeaders.Current.WatermapHeader;
 
-//		TerrainTypeData = new byte[Height * Width];
-		TerrainTypeData = new List<byte>();
+		TerrainTypeData = new byte[Height * Width];
+//		TerrainTypeData = new List<byte>();
 		HeightmapData = new short[(Height + 1) * (Width + 1)];
 		WaterDepthBiasMask = new byte[(Height * Width) / 4];
 		WaterFlatnessMask = new byte[(Height * Width) / 4];
@@ -729,7 +729,8 @@ public class Map
 			WaterDataTexture.SetPixels32 (NewColors);
 			WaterDataTexture.Apply ();
 
-            TerrainTypeData = _with1.ReadBytes(Width * Height).ToList();
+            TerrainTypeData = _with1.ReadBytes(Width * Height);
+//            TerrainTypeData = _with1.ReadBytes(Width * Height).ToList();
 
             if (VersionMinor <= 52)
                 _with1.ReadInt16();

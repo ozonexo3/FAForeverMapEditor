@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0a9a85aeeb68483aa15f93805e3e27e8, type: 3}
+  m_Name: Layers Settings
+  m_EditorClassIdentifier: 
+  layersSettings:
+  - name: Default
+    index: 1
+    color: {r: 0, g: 0, b: 0, a: 0}
+    blocking: 0
+    style: 0
+    description: 
+  - name: Water01
+    index: 220
+    color: {r: 0.79356635, g: 0.8, b: 0.13333331, a: 1}
+    blocking: 0
+    style: 0
+    description: 
+  - name: Lava
+    index: 230
+    color: {r: 0.8000001, g: 0.13333334, b: 0.32941177, a: 1}
+    blocking: 1
+    style: 5
+    description: 'Lava
+
+      No! Please! NO!'

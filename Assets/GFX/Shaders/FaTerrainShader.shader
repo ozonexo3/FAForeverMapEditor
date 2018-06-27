@@ -73,8 +73,8 @@ Shader "MapEditor/FaTerrainShader" {
 	    _LowerScaleNormal ("Lower Normal Level", Range (1, 128)) = 1
     
 	    //Upper Stratum
-	    _SplatUpper ("Layer Upper (R)", 2D) = "black" {}
-//	    _SplatUpper ("Layer Upper (R)", 2D) = "white" {}
+//	    _SplatUpper ("Layer Upper (R)", 2D) = "black" {}
+	    _SplatUpper ("Layer Upper (R)", 2D) = "white" {}
 	    _NormalUpper ("Normal Upper (R)", 2D) = "bump" {}
 	    _UpperScale ("Upper Level", Range (1, 128)) = 1
 	    _UpperScaleNormal ("Upper Normal Level", Range (1, 128)) = 1
@@ -83,6 +83,7 @@ Shader "MapEditor/FaTerrainShader" {
 	    _GridTexture ("Grid Texture", 2D) = "white" {}
 	    
 	    _TerrainTypeAlbedo ("Terrain Type Albedo", 2D) = "black" {}
+	    _TerrainTypeCoof ("Terrain Type Coof", Range(0,1)) = 0.228
 	    
 	    
 	    //_GridCamDist ("Grid Scale", Range (0, 10)) = 5
@@ -162,6 +163,7 @@ Shader "MapEditor/FaTerrainShader" {
 		sampler2D _TerrainNormal;
 		sampler2D _SplatLower;
 		sampler2D _SplatUpper;
+		sampler2D _TerrainTypeAlbedo;
 		sampler2D  _NormalLower;
 		//sampler2D _SplatNormal0, _SplatNormal1, _SplatNormal2, _SplatNormal3, _SplatNormal4, _SplatNormal5, _SplatNormal6, _SplatNormal7;
 		
@@ -196,6 +198,7 @@ Shader "MapEditor/FaTerrainShader" {
 		int _HideSplat7;
 		int _HideSplat8;
 		int _HideTerrainType;
+		float _TerrainTypeCoof;
 
 		half _LowerScale, _UpperScale;
 		half _LowerScaleNormal, _UpperScaleNormal;
@@ -290,8 +293,9 @@ Shader "MapEditor/FaTerrainShader" {
 			
 			if(_HideTerrainType == 0) {
 				float4 TerrainTypeAlbedo = tex2D (_TerrainTypeAlbedo, UV);
-				col = lerp(col, UpperAlbedo, UpperAlbedo.a);
+				col = lerp(col, TerrainTypeAlbedo, TerrainTypeAlbedo.a*_TerrainTypeCoof);
 			}
+//            col = _HideTerrainType;
 
 			//col = 1;
 			half4 nrm;
@@ -430,6 +434,7 @@ Shader "MapEditor/FaTerrainShader" {
 					AA = clamp(AA, 0, 1);
 
 					Emit += half3(0, 0.3, 1) * (AA * 0.8);
+					Emit += half3(0, 0.3, 1) * (1 * 0.8);
 				}
 
 				if (_BrushPainting <= 0)
