@@ -34,8 +34,8 @@ public class BuildWithResources : MonoBehaviour
 
 		string[] levels = new string[] { "Assets/Preload.unity", "Assets/MapEditor.unity" };
 
-		//PlayerSettings.SetScriptingBackend(BuildTargetGroup.Standalone, ScriptingImplementation.IL2CPP);
-		PlayerSettings.SetScriptingBackend(BuildTargetGroup.Standalone, ScriptingImplementation.Mono2x);
+		PlayerSettings.SetScriptingBackend(BuildTargetGroup.Standalone, ScriptingImplementation.IL2CPP);
+		//PlayerSettings.SetScriptingBackend(BuildTargetGroup.Standalone, ScriptingImplementation.Mono2x);
 		BuildPipeline.BuildPlayer(levels, path + "/FAForeverMapEditor.exe", BuildTarget.StandaloneWindows64, (BuildOptions.CompressWithLz4HC));
 
 		// Copy structure files

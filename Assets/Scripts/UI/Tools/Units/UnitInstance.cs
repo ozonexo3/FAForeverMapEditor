@@ -15,6 +15,7 @@ public class UnitInstance : MonoBehaviour
 
 	public Color ArmyColor;
 	public Matrix4x4 LocalToWorldMatrix;
+	public float IsWreckage;
 
 	Vector3 Position;
 	Vector3 Scale;

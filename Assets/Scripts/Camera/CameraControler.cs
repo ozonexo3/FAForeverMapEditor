@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 using System.Collections;
 using System.Collections.Generic;
 using EditMap;
@@ -174,13 +175,15 @@ public partial class CameraControler : MonoBehaviour {
 		if (Menu.IsMenuOpen())
 			return;
 		if (Input.GetKey (KeyCode.LeftControl)) {
-			if(Input.GetKeyDown(KeyCode.G)){
+			if(Input.GetKeyDown(KeyCode.G) && !IsInputFieldFocused())
+			{
 				Menu.SlopeToggle.isOn = !Menu.SlopeToggle.isOn;
 				MapLuaParser.Current.HeightmapControler.ToogleSlope(Menu.SlopeToggle.isOn);
 			}
 		}
 		else{
-			if(Input.GetKeyDown(KeyCode.G)){
+			if(Input.GetKeyDown(KeyCode.G) && !IsInputFieldFocused())
+			{
 				Menu.GridToggle.isOn = !Menu.GridToggle.isOn;
 				MapLuaParser.Current.HeightmapControler.ToogleGrid(Menu.GridToggle.isOn);
 			}
@@ -191,6 +194,13 @@ public partial class CameraControler : MonoBehaviour {
 			Focus ();
 		}
 	}
+
+	public static bool IsInputFieldFocused()
+	{
+		GameObject obj = EventSystem.current.currentSelectedGameObject;
+		return (obj != null && obj.GetComponent<InputField>() != null && obj.GetComponent<InputField>().isFocused);
+	}
+
 
 
 	float ZoomCamPos(){

@@ -43,7 +43,7 @@ namespace Selection
 			if (!Active)
 				return;
 
-			if (AllowRemove && Input.GetKeyDown(KeyCode.Delete))
+			if (AllowRemove && Input.GetKeyDown(KeyCode.Delete) && !CameraControler.IsInputFieldFocused())
 			{
 				DestroySelectedObjects();
 			}

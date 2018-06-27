@@ -45,6 +45,7 @@ namespace EditMap
 
 		private void OnDisable()
 		{
+			ClearRename();
 			ForceExitCreate();
 			PlacementManager.OnDropOnGameplay -= DropAtGameplay;
 			Selection.SelectionManager.Current.ClearAffectedGameObjects();
@@ -83,7 +84,7 @@ namespace EditMap
 				}
 			}
 
-			if (Input.GetKeyDown(KeyCode.P) && FirstSelected != null)
+			if (Input.GetKeyDown(KeyCode.P) && FirstSelected != null && !CameraControler.IsInputFieldFocused())
 			{
 				// Parent all groups to selected
 				Reparrent();

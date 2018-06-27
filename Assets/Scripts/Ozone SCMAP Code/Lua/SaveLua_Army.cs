@@ -76,6 +76,7 @@ namespace MapLua
 
 				#region Editor Values
 				public bool Expanded;
+				public bool IsWreckage = false;
 				#endregion
 
 				#region Parents
@@ -143,6 +144,8 @@ namespace MapLua
 						}
 						else
 							Name = Prefix + "_" + value;
+
+						UpdateGroupTags();
 					}
 				}
 
@@ -164,6 +167,23 @@ namespace MapLua
 							Name = value + "_" + NoPrefixName;
 							Prefix = value;
 						}
+						UpdateGroupTags();
+					}
+				}
+
+				public void UpdateGroupTags()
+				{
+					bool ShouldBeWreckage = NoPrefixName.ToUpper().Contains("WRECKAGE");
+
+					if (IsWreckage == ShouldBeWreckage)
+						return;
+
+					IsWreckage = ShouldBeWreckage;
+
+					if (Units != null)
+					foreach (Unit u in Units) {
+						if (u.Instance)
+							u.Instance.IsWreckage = IsWreckage?1:0;
 					}
 				}
 
@@ -189,11 +209,14 @@ namespace MapLua
 					orders = LuaParser.Read.StringFromTable(Table, KEY_ORDERS);
 					platoon = LuaParser.Read.StringFromTable(Table, KEY_PLATOON);
 
+					UpdateGroupTags();
+
 					UnitGroups = new HashSet<UnitsGroup>();
 					Units = new HashSet<Unit>();
 
 					LuaTable[] UnitsTables = LuaParser.Read.GetTableTables((LuaTable)Table.RawGet(KEY_UNITS));
 					string[] UnitsNames = LuaParser.Read.GetTableKeys((LuaTable)Table.RawGet(KEY_UNITS));
+
 
 					if (UnitsNames.Length > 0)
 					{
@@ -224,6 +247,8 @@ namespace MapLua
 						UnitGroups = new HashSet<UnitsGroup>();
 						Units = new HashSet<Unit>();
 					}
+
+
 
 					if (StoreForLaterInstantiate)
 					{
@@ -365,7 +390,9 @@ namespace MapLua
 				{
 					if (Instance && Instance.gameObject)
 						return;
-					GetGamedataFile.LoadUnit(type).CreateUnitObject(this, Parent);
+					UnitInstance ui = GetGamedataFile.LoadUnit(type).CreateUnitObject(this, Parent);
+
+					ui.IsWreckage = Parent.IsWreckage ? 1 : 0;
 					AllNames.Add(Name);
 
 				}

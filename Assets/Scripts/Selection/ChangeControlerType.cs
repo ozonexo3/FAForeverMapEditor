@@ -60,22 +60,22 @@ namespace Selection
 
 		private void Update()
 		{
-			if (Input.GetKeyDown(KeyCode.W))
+			if (Input.GetKeyDown(KeyCode.W) && !CameraControler.IsInputFieldFocused())
 			{
 				if(Position.interactable)
 				ChangeControler(0);
 			}
-			else if (Input.GetKeyDown(KeyCode.E))
+			else if (Input.GetKeyDown(KeyCode.E) && !CameraControler.IsInputFieldFocused())
 			{
 				if(Rotation.interactable)
 				ChangeControler(1);
 			}
-			else if (Input.GetKeyDown(KeyCode.R))
+			else if (Input.GetKeyDown(KeyCode.R) && !CameraControler.IsInputFieldFocused())
 			{
 				if(Scale.interactable)
 				ChangeControler(2);
 			}
-			else if (Input.GetKeyDown(KeyCode.T))
+			else if (Input.GetKeyDown(KeyCode.T) && !CameraControler.IsInputFieldFocused())
 			{
 				if (Snap.interactable)
 					ToggleSnap();

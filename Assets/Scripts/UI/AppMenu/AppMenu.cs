@@ -65,7 +65,7 @@ public class AppMenu : MonoBehaviour
 
 
 
-		if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.S))
+		if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.S) && !CameraControler.IsInputFieldFocused())
 		{
 			MapLuaParser.Current.SaveMap();
 		}

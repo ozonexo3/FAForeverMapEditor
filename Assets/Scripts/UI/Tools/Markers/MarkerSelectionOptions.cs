@@ -67,11 +67,11 @@ namespace EditMap
 		{
 			if (Connect.activeSelf)
 			{
-				if (Input.GetKeyDown(KeyCode.C))
+				if (Input.GetKeyDown(KeyCode.C) && !CameraControler.IsInputFieldFocused())
 				{
 					ConnectSelected();
 				}
-				else if (Input.GetKeyDown(KeyCode.D))
+				else if (Input.GetKeyDown(KeyCode.D) && !CameraControler.IsInputFieldFocused())
 				{
 					DisconnectSelected();
 				}

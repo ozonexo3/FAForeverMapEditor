@@ -185,7 +185,7 @@ namespace EditMap
 
 		void HideUpdate()
 		{
-			if (Input.GetKeyDown(KeyCode.H))
+			if (Input.GetKeyDown(KeyCode.H) && !CameraControler.IsInputFieldFocused())
 			{
 				HashSet<OzoneDecal> Selected = SelectedDecals;
 

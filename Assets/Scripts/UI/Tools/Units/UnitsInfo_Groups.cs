@@ -21,6 +21,8 @@ namespace EditMap
 
 		public void Clear()
 		{
+			ClearRename();
+
 			if (UnitGroups == null)
 				UnitGroups = new HashSet<UnitListObject>();
 			else
@@ -117,6 +119,8 @@ namespace EditMap
 
 		public void AddNewGroup(UnitListObject parent)
 		{
+			ClearRename();
+
 			Undo.RegisterGroupRemove(parent.Source);
 
 			ClearGrpSelection();
@@ -193,6 +197,8 @@ namespace EditMap
 				return;
 			}
 
+			ClearRename();
+
 			Undo.RegisterGroupRemove(parent.Parent);
 
 			StoreSelection.Clear();
@@ -212,6 +218,7 @@ namespace EditMap
 
 		public void SelectGroup(UnitListObject parent)
 		{
+			ClearRename();
 			if (Input.GetKey(KeyCode.LeftShift))
 			{
 				AddToGrpSelection(parent);
@@ -236,6 +243,8 @@ namespace EditMap
 		static UnitListObject RenameObject;
 		public void RenameStart(UnitListObject parent)
 		{
+			ClearRename();
+
 			RenameObject = parent;
 			RenameField.SetParent(parent.transform, false);
 			RenameField.gameObject.SetActive(true);
@@ -259,6 +268,18 @@ namespace EditMap
 			RenameField.SetParent(Pivot, false);
 			RenameField.gameObject.SetActive(false);
 			RenameUndoApplyied = false;
+		}
+
+		void ClearRename()
+		{
+			if (RenameField.gameObject.activeSelf)
+			{
+				if(RenameObject)
+					RenameObject.RenameEnd();
+				RenameField.SetParent(Pivot, false);
+				RenameField.gameObject.SetActive(false);
+				RenameUndoApplyied = false;
+			}
 		}
 
 		public void RenameGroup(UnitListObject parent)
