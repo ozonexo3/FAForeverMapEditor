@@ -17,18 +17,334 @@ MonoBehaviour:
     color: {r: 0, g: 0, b: 0, a: 0}
     blocking: 0
     style: 0
-    description: 
-  - name: Water01
-    index: 220
-    color: {r: 0.79356635, g: 0.8, b: 0.13333331, a: 1}
+    description: Default
+  - name: Dirt01
+    index: 2
+    color: {r: 1, g: 0, b: 0, a: 1}
     blocking: 0
     style: 0
-    description: 
-  - name: Lava
+    description: Default Dirt
+  - name: Dirt02
+    index: 3
+    color: {r: 0.26666668, g: 0.027450982, b: 0.027450982, a: 1}
+    blocking: 0
+    style: 1
+    description: Red/brown/biege dirt, with slight vegetation
+  - name: Dirt03
+    index: 4
+    color: {r: 0.53333336, g: 0.73333335, b: 0.9725491, a: 1}
+    blocking: 0
+    style: 0
+    description: Brown/gray earth
+  - name: Dirt05
+    index: 5
+    color: {r: 0.53333336, g: 0, b: 0.40000004, a: 1}
+    blocking: 0
+    style: 2
+    description: Red earth
+  - name: Dirt06
+    index: 6
+    color: {r: 0.53333336, g: 0.40000004, b: 0.06666667, a: 1}
+    blocking: 0
+    style: 2
+    description: darker red/brown earth
+  - name: Dirt07
+    index: 7
+    color: {r: 0.53333336, g: 0.1764706, b: 0.38431376, a: 1}
+    blocking: 0
+    style: 0
+    description: White/Beige Desert
+  - name: Dirt08
+    index: 8
+    color: {r: 0.34509805, g: 0.7411765, b: 0.3372549, a: 1}
+    blocking: 0
+    style: 0
+    description: Beige/Brown Rocky Desert
+  - name: Sand01
+    index: 40
+    color: {r: 1, g: 1, b: 1, a: 1}
+    blocking: 0
+    style: 4
+    description: White sand
+  - name: Sand02
+    index: 41
+    color: {r: 0.8705883, g: 0.8705883, b: 0.7254902, a: 1}
+    blocking: 0
+    style: 1
+    description: Sand Grassy
+  - name: Vegetation01
+    index: 80
+    color: {r: 0, g: 1, b: 0, a: 1}
+    blocking: 0
+    style: 0
+    description: Default Vegetation
+  - name: Vegetation02
+    index: 81
+    color: {r: 0, g: 1, b: 1, a: 1}
+    blocking: 0
+    style: 1
+    description: Rocky grass
+  - name: Vegetation03
+    index: 82
+    color: {r: 0.5647059, g: 0, b: 0, a: 1}
+    blocking: 0
+    style: 1
+    description: Light green olive vegetation
+  - name: Vegetation04
+    index: 83
+    color: {r: 1, g: 0.13333334, b: 0.13333334, a: 1}
+    blocking: 0
+    style: 1
+    description: Dark green olive vegetation
+  - name: Vegetation05
+    index: 84
+    color: {r: 0.20000002, g: 0.53333336, b: 0.13333334, a: 1}
+    blocking: 0
+    style: 4
+    description: Green olive vegetation
+  - name: Rocky01
+    index: 150
+    color: {r: 1, g: 0.40000004, b: 1, a: 1}
+    blocking: 0
+    style: 0
+    description: Default Rocky
+  - name: Concrete01
+    index: 151
+    color: {r: 0.13333334, g: 0, b: 0.13333334, a: 1}
+    blocking: 0
+    style: 0
+    description: Concrete
+  - name: Rocky02
+    index: 152
+    color: {r: 1, g: 0.20000002, b: 1, a: 1}
+    blocking: 0
+    style: 1
+    description: Gray rock
+  - name: Rocky03
+    index: 153
+    color: {r: 0.6, g: 0.13333334, b: 0.6, a: 1}
+    blocking: 0
+    style: 7
+    description: Gray rock
+  - name: Rocky04
+    index: 154
+    color: {r: 0.53333336, g: 0, b: 0, a: 1}
+    blocking: 0
+    style: 2
+    description: Red rock
+  - name: Rocky05
+    index: 155
+    color: {r: 0.53333336, g: 0, b: 0, a: 1}
+    blocking: 0
+    style: 3
+    description: Beige dusty rock
+  - name: Rocky06
+    index: 156
+    color: {r: 0.40000004, g: 0.37647063, b: 0.73333335, a: 1}
+    blocking: 0
+    style: 5
+    description: Light Lava Rock
+  - name: Rocky07
+    index: 157
+    color: {r: 0.13333334, g: 0.53333336, b: 0.13333334, a: 1}
+    blocking: 0
+    style: 5
+    description: Dark Lava Rock
+  - name: Rocky08
+    index: 158
+    color: {r: 0.06666667, g: 0.06666667, b: 1, a: 1}
+    blocking: 0
+    style: 1
+    description: Green rock
+  - name: Rocky09
+    index: 159
+    color: {r: 0.06666667, g: 0.06666667, b: 0.33333334, a: 1}
+    blocking: 0
+    style: 4
+    description: Green/gray/black rock w/ vegetation
+  - name: Rocky10
+    index: 160
+    color: {r: 0.20000002, g: 0.20000002, b: 0.20000002, a: 1}
+    blocking: 0
+    style: 4
+    description: Green/brown rock, cliff sides
+  - name: Rocky11
+    index: 161
+    color: {r: 0.20000002, g: 0.20000002, b: 0.20000002, a: 1}
+    blocking: 0
+    style: 6
+    description: Geothermal dark green/gray rock
+  - name: Rocky12
+    index: 162
+    color: {r: 0.20000002, g: 0.20000002, b: 0.53333336, a: 1}
+    blocking: 0
+    style: 6
+    description: Geothermal gray rock
+  - name: Rocky13
+    index: 163
+    color: {r: 0.53333336, g: 0.20000002, b: 0.53333336, a: 1}
+    blocking: 0
+    style: 6
+    description: Geothermal light gray/green rock
+  - name: TermacUEF
+    index: 190
+    color: {r: 1, g: 0, b: 1, a: 1}
+    blocking: 0
+    style: 0
+    description: UEF Termac
+  - name: TermacAeon
+    index: 191
+    color: {r: 1, g: 0, b: 1, a: 1}
+    blocking: 0
+    style: 0
+    description: Aeon Termac
+  - name: TermacCybran
+    index: 192
+    color: {r: 1, g: 0, b: 1, a: 1}
+    blocking: 0
+    style: 0
+    description: Cybran Termac
+  - name: Snowy01
+    index: 200
+    color: {r: 0.6, g: 0.6, b: 1, a: 1}
+    blocking: 0
+    style: 7
+    description: Snowy, dark blue, hard ice
+  - name: Snowy02
+    index: 201
+    color: {r: 0.73333335, g: 0.73333335, b: 0.73333335, a: 1}
+    blocking: 0
+    style: 7
+    description: Snowy, light blue snow pack
+  - name: Snowy03
+    index: 202
+    color: {r: 0.6, g: 0.33333334, b: 0.6, a: 1}
+    blocking: 0
+    style: 7
+    description: Snowy, hight albedo, bright white snow
+  - name: Water01
+    index: 220
+    color: {r: 1, g: 1, b: 0, a: 1}
+    blocking: 0
+    style: 0
+    description: Default water
+  - name: Water02
+    index: 221
+    color: {r: 0.5019608, g: 0.5019608, b: 0, a: 1}
+    blocking: 0
+    style: 1
+    description: Shoreline water
+  - name: Water03
+    index: 222
+    color: {r: 0.1254902, g: 0.5019608, b: 0.26666668, a: 1}
+    blocking: 0
+    style: 1
+    description: Deep Dark Blue Ocean Water
+  - name: Water04
+    index: 223
+    color: {r: 0.53333336, g: 0.7843138, b: 0.5803922, a: 1}
+    blocking: 0
+    style: 1
+    description: Shallow Light Blue Water
+  - name: Water05
+    index: 224
+    color: {r: 0.53333336, g: 0.7843138, b: 0.5803922, a: 1}
+    blocking: 0
+    style: 2
+    description: Shoreline red rock water
+  - name: Water06
+    index: 225
+    color: {r: 0.6, g: 0.13333334, b: 0.32941177, a: 1}
+    blocking: 0
+    style: 2
+    description: Deep defaultred rock water
+  - name: Water07
+    index: 226
+    color: {r: 0.6, g: 0.13333334, b: 0.32941177, a: 1}
+    blocking: 0
+    style: 4
+    description: Tropical Shoreline
+  - name: Water08
+    index: 227
+    color: {r: 0.53333336, g: 0.7843138, b: 0.5803922, a: 1}
+    blocking: 0
+    style: 4
+    description: Tropical light blue water shallows
+  - name: Water09
+    index: 228
+    color: {r: 0.1254902, g: 0.5019608, b: 0.26666668, a: 1}
+    blocking: 0
+    style: 4
+    description: Tropical mid-depth blue
+  - name: Water10
+    index: 229
+    color: {r: 0.0627451, g: 0.2509804, b: 0.078431375, a: 1}
+    blocking: 0
+    style: 4
+    description: Tropical deep water, dark blue
+  - name: Lava01
     index: 230
     color: {r: 0.8000001, g: 0.13333334, b: 0.32941177, a: 1}
     blocking: 1
     style: 5
-    description: 'Lava
-
-      No! Please! NO!'
+    description: LAVA!!!!!!!!!!!!
+  - name: Water11
+    index: 231
+    color: {r: 0.1254902, g: 0.5019608, b: 0.26666668, a: 1}
+    blocking: 0
+    style: 3
+    description: Desrt shoreline water
+  - name: Water12
+    index: 232
+    color: {r: 0.0627451, g: 0.2509804, b: 0.078431375, a: 1}
+    blocking: 0
+    style: 3
+    description: Desert deep water
+  - name: Water13
+    index: 233
+    color: {r: 0.1254902, g: 0.5019608, b: 0.5176471, a: 1}
+    blocking: 0
+    style: 7
+    description: Tundra shoreline water
+  - name: Water14
+    index: 234
+    color: {r: 0.0627451, g: 0.2509804, b: 0.078431375, a: 1}
+    blocking: 0
+    style: 7
+    description: Tundra deep water, blue
+  - name: Water15
+    index: 235
+    color: {r: 0.0627451, g: 0.75294125, b: 0.078431375, a: 1}
+    blocking: 0
+    style: 7
+    description: Tundra mid-level water, aquamarine
+  - name: Water16
+    index: 236
+    color: {r: 0.0627451, g: 0.75294125, b: 0.078431375, a: 1}
+    blocking: 0
+    style: 5
+    description: Lava water shoreline
+  - name: Water17
+    index: 237
+    color: {r: 0.0627451, g: 0.2509804, b: 0.078431375, a: 1}
+    blocking: 0
+    style: 5
+    description: Lava water
+  - name: Water18
+    index: 238
+    color: {r: 0.0627451, g: 0.2509804, b: 0.078431375, a: 1}
+    blocking: 0
+    style: 6
+    description: Geothermal shoreline water
+  - name: Water19
+    index: 239
+    color: {r: 0.5647059, g: 0.2509804, b: 0.078431375, a: 1}
+    blocking: 0
+    style: 6
+    description: Geothermal olive water
+  - name: Water20
+    index: 240
+    color: {r: 0.5647059, g: 0.2509804, b: 0.5803922, a: 1}
+    blocking: 0
+    style: 6
+    description: Geothermal mint water

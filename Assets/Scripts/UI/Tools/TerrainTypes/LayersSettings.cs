@@ -8,7 +8,7 @@ namespace EditMap.TerrainTypes
 {
 //    [CreateAssetMenu("LayersSettings.sco","Create Layers Settings",0)]
     [CreateAssetMenu]
-    public class LayersSettings : ScriptableObject
+    public class LayersSettings : ScriptableObject, IEnumerable
     {
         public List<TerrainTypeLayerSettings> layersSettings;
 
@@ -32,6 +32,11 @@ namespace EditMap.TerrainTypes
             layersSettings = new List<TerrainTypeLayerSettings>();
         }
 
+        public TerrainTypeLayerSettings GetFirstLayer()
+        {
+            return layersSettings[0];
+        }
+
         public TerrainTypeLayerSettings this[int index]
         {
             get { return layersSettings.Find(settings => settings.index == index); }
@@ -44,6 +49,11 @@ namespace EditMap.TerrainTypes
                 }
                 layersSettings.Add(value);
             }
+        }
+
+        public IEnumerator GetEnumerator()
+        {
+            return layersSettings.GetEnumerator();
         }
     }
 }
