@@ -87,13 +87,19 @@ namespace EditMap
 		}
 		public void SwitchCreate()
 		{
-			if (FirstSelected != null)
+			if (FirstSelected == null)
 			{
-				OnClickCreate(!Creating);
+				ShowGroupError();
+				ForceExitCreate();
+			}
+			else if (string.IsNullOrEmpty(SelectedUnit.CodeName))
+			{
+				ShowUnitError();
+				ForceExitCreate();
 			}
 			else
 			{
-				ForceExitCreate();
+				OnClickCreate(!Creating);
 			}
 		}
 
@@ -121,9 +127,23 @@ namespace EditMap
 			}
 		}
 
+		void ShowGroupError()
+		{
+			if (!GenericInfoPopup.HasAnyInfo())
+				GenericInfoPopup.ShowInfo("No unit group selected!");
+		}
+
+		void ShowUnitError()
+		{
+			if (!GenericInfoPopup.HasAnyInfo())
+				GenericInfoPopup.ShowInfo("No unit selected!");
+		}
+
 		public void OnChangeFreeRotation()
 		{
-			PlacementManager.MinRotAngle = FreeRotation.isOn ? (0) : (90);
+			int Angle = FreeRotation.isOn ? (0) : (90);
+			SelectionManager.Current.ChangeMinAngle(Angle);
+			PlacementManager.MinRotAngle = Angle;
 		}
 
 		void CreatePrefabAction(GameObject InstancedPrefab)
@@ -139,7 +159,10 @@ namespace EditMap
 		public void DropAtGameplay()
 		{
 			if (FirstSelected == null)
+			{
+				ShowGroupError();
 				return;
+			}
 
 			if (ResourceBrowser.DragedObject == null || ResourceBrowser.DragedObject.ContentType != ResourceObject.ContentTypes.Unit)
 				return;
@@ -158,7 +181,11 @@ namespace EditMap
 		public void Place(Vector3[] Positions, Quaternion[] Rotations, Vector3[] Scales)
 		{
 			if (FirstSelected == null)
+			{
+				ShowGroupError();
 				return;
+
+			}
 
 			if (Positions.Length > 0)
 			{
@@ -251,6 +278,13 @@ namespace EditMap
 
 		public void ReplaceSelected()
 		{
+			if (string.IsNullOrEmpty(SelectedUnit.CodeName))
+			{
+				ShowUnitError();
+				return;
+			}
+
+
 
 		}
 		#endregion

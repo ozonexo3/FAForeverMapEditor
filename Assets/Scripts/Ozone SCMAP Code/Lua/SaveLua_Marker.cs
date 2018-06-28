@@ -38,6 +38,11 @@ namespace MapLua
 			public bool canSetCamera = true;
 			public bool canSyncCamera = true;
 
+			// Effect
+			public Vector3 offset = Vector3.zero;
+			public string EffectTemplate = "";
+			public float scale = 1;
+
 			//WeatherGenerator
 			public float cloudCount = 1;
 			public float cloudEmitterScale = 10;
@@ -77,6 +82,10 @@ namespace MapLua
 			public const string KEY_EDITORICON = "editorIcon";
 			public const string KEY_HINT = "hint";
 
+			public const string KEY_OFFSET = "offset";
+			public const string KEY_EFFECTTEMPLATE = "EffectTemplate";
+			public const string KEY_SCALE = "scale";
+
 			public const string KEY_ZOOM = "zoom";
 			public const string KEY_CANSETCAMERA = "canSetCamera";
 			public const string KEY_CANSYNCCAMERA = "canSyncCamera";
@@ -106,6 +115,7 @@ namespace MapLua
 				TransportMarker,
 				Island,
 				WeatherGenerator, WeatherDefinition,
+				Effect,
 				Count
 			}
 
@@ -143,6 +153,8 @@ namespace MapLua
 					return false;
 				else if (MarkerType == MarkerTypes.CameraInfo)
 					return Key == KEY_ZOOM || Key == KEY_CANSETCAMERA || Key == KEY_CANSYNCCAMERA;
+				else if (MarkerType == MarkerTypes.Effect)
+					return Key == KEY_OFFSET || Key == KEY_EFFECTTEMPLATE || Key == KEY_COLOR || Key == KEY_SCALE;
 				else if (MarkerType == MarkerTypes.WeatherGenerator)
 					return Key == KEY_CLOUDCOUNT || Key == KEY_CLOUDEMITTERSCALE || Key == KEY_CLOUDEMITTERSCALERANGE || Key == KEY_CLOUDCOUNTRANGE || Key == KEY_CLOUDSPREAD || Key == KEY_CLOUDHEIGHTRANGE
 						|| Key == KEY_SPAWNCHANCE || Key == KEY_FORCETYPE || Key == KEY_CLOUDHEIGHT;
@@ -177,6 +189,13 @@ namespace MapLua
 						canSyncCamera = true;
 						canSetCamera = true;
 						zoom = 30;
+						break;
+					case MarkerTypes.Effect:
+						prop = "/env/common/props/markers/M_Defensive_prop.bp";
+						color = "ffbffcd0";
+						scale = 1;
+						offset = Vector3.zero;
+						EffectTemplate = "";
 						break;
 					case MarkerTypes.CombatZone:
 						prop = "/env/common/props/markers/M_CombatZone_prop.bp";
@@ -447,6 +466,16 @@ namespace MapLua
 						case KEY_CANSYNCCAMERA:
 							canSyncCamera = LuaParser.Read.BoolFromTable(Table, KEY_CANSYNCCAMERA);
 							break;
+						//Effect
+						case KEY_OFFSET:
+							offset = LuaParser.Read.Vector3FromTable(Table, KEY_OFFSET);
+							break;
+						case KEY_EFFECTTEMPLATE:
+							EffectTemplate = LuaParser.Read.StringFromTable(Table, KEY_EFFECTTEMPLATE);
+							break;
+						case KEY_SCALE:
+							scale = LuaParser.Read.FloatFromTable(Table, KEY_SCALE);
+							break;
 						// Weather Generator
 						case KEY_CLOUDCOUNT:
 							cloudCount = LuaParser.Read.FloatFromTable(Table, KEY_CLOUDCOUNT);
@@ -648,19 +677,7 @@ namespace MapLua
 							if (i > 0)
 								adjacentTo += " ";
 
-							/*if (AdjacentToMarker[i].MarkerType == MarkerTypes.AutoPathNode)
-							{
-								if (MarkerType == MarkerTypes.LandPathNode)
-									adjacentTo += AdjacentToMarker[i].AutoMarker_Land.Name;
-								else if (MarkerType == MarkerTypes.WaterPathNode)
-									adjacentTo += AdjacentToMarker[i].AutoMarker_Water.Name;
-								else if (MarkerType == MarkerTypes.AmphibiousPathNode)
-									adjacentTo += AdjacentToMarker[i].AutoMarker_Amphibious.Name;
-								else
-									adjacentTo += AdjacentToMarker[i].Name;
-							}
-							else*/
-								adjacentTo += AdjacentToMarker[i].Name;
+							adjacentTo += AdjacentToMarker[i].Name;
 						}
 
 						LuaFile.AddLine(LuaParser.Write.StringToLuaFunction(LuaParser.Write.PropertieToLua(KEY_ADJACENTTO), adjacentTo));
@@ -676,6 +693,14 @@ namespace MapLua
 						LuaFile.AddLine(LuaParser.Write.BoolToLuaFunction(LuaParser.Write.PropertieToLua(KEY_CANSETCAMERA), canSetCamera));
 					if (AllowByType(KEY_CANSYNCCAMERA))
 						LuaFile.AddLine(LuaParser.Write.BoolToLuaFunction(LuaParser.Write.PropertieToLua(KEY_CANSYNCCAMERA), canSyncCamera));
+
+
+					if (AllowByType(KEY_OFFSET))
+						LuaFile.AddLine(LuaParser.Write.Vector3ToLuaFunction(LuaParser.Write.PropertieToLua(KEY_OFFSET), offset));
+					if (AllowByType(KEY_EFFECTTEMPLATE))
+						LuaFile.AddLine(LuaParser.Write.StringToLuaFunction(LuaParser.Write.PropertieToLua(KEY_EFFECTTEMPLATE), EffectTemplate));
+					if (AllowByType(KEY_SCALE))
+						LuaFile.AddLine(LuaParser.Write.FloatToLuaFunction(LuaParser.Write.PropertieToLua(KEY_SCALE), scale));
 
 					if (MarkerType == MarkerTypes.WeatherGenerator)
 					{

@@ -146,6 +146,11 @@ namespace Selection
 
 		}
 
+		public void ChangeMinAngle(int value)
+		{
+			MinAngle = value;
+		}
+
 		public static bool AllowSelection = true;
 		public static bool AllowSymmetry = true;
 		public static bool AllowRemove = true;

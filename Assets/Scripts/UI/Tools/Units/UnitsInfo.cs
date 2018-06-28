@@ -97,15 +97,17 @@ namespace EditMap
 		{
 
 			PlacementManager.Clear();
-			if (ChangeControlerType.Current)
-				ChangeControlerType.Current.UpdateButtons();
+
 
 			int[] AllTypes;
 			AllObjects = UnitInstance.GetAllUnitGo(out AllTypes);
 			SelectionManager.Current.SetAffectedGameObjects(AllObjects, SelectionManager.SelectionControlTypes.Units);
 			SelectionManager.Current.SetAffectedTypes(AllTypes);
 
+			OnChangeFreeRotation();
 
+			if (ChangeControlerType.Current)
+				ChangeControlerType.Current.UpdateButtons();
 
 		}
 

@@ -257,7 +257,12 @@ namespace FAF.MapEditor
 			if (!FactionCorrect)
 				return false;
 
-			for(int i = 0; i < SearchTags.Length; i++)
+
+			// UnitDB categories
+			// https://github.com/FAForever/UnitDB/blob/master/res/scripts/functions.php#L15
+			//
+
+			for (int i = 0; i < SearchTags.Length; i++)
 			{
 				string SearchValue = SearchTags[i].ToUpper();
 				switch (SearchValue)
@@ -398,6 +403,15 @@ namespace FAF.MapEditor
 						break;
 					case "SONAR":
 						if (!UnitDB.CategoriesHash.Contains("SONAR"))
+							return false;
+						break;
+					case "PLAYABLE":
+					case "MULTIPLAYER":
+						if (UnitDB.CategoriesHash.Contains("OPERATION") || UnitDB.CategoriesHash.Contains("CIVILIAN") || UnitDB.CategoriesHash.Contains("INSIGNIFICANTUNIT"))
+							return false;
+						break;
+					case "Wall":
+						if (!UnitDB.CategoriesHash.Contains("WALL") && !UnitDB.CategoriesHash.Contains("AIRSTAGINGPLATFORM") && !UnitDB.CategoriesHash.Contains("ORBITALSYSTEM"))
 							return false;
 						break;
 				}

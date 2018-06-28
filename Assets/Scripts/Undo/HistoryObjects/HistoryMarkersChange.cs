@@ -35,6 +35,9 @@ public class HistoryMarkersChange : HistoryObject
 		public bool canSyncCamera;
 		public float size;
 		public float amount;
+		public Vector3 offset;
+		public float scale;
+		public string effectTemplate;
 
 		public void Load(MapLua.SaveLua.Marker RegisterMarker)
 		{
@@ -45,6 +48,10 @@ public class HistoryMarkersChange : HistoryObject
 			canSyncCamera = Marker.canSyncCamera;
 			size = Marker.size;
 			amount = Marker.amount;
+			offset = Marker.offset;
+			scale = Marker.scale;
+			effectTemplate = Marker.EffectTemplate;
+
 		}
 
 		public void Redo()
@@ -69,6 +76,9 @@ public class HistoryMarkersChange : HistoryObject
 			Marker.canSyncCamera = canSyncCamera;
 			Marker.size = size;
 			Marker.amount = amount;
+			Marker.offset = offset;
+			Marker.scale = scale;
+			Marker.EffectTemplate = effectTemplate;
 		}
 	}
 

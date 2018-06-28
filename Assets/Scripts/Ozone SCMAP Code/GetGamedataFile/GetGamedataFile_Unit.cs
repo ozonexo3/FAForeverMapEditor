@@ -60,6 +60,15 @@ public partial struct GetGamedataFile
 		public bool Wreckage_Layer_Seabed;
 		public bool Wreckage_Layer_Sub;
 		public bool Wreckage_Layer_Water;
+
+		public void GenerateEmptyLod()
+		{
+			LODs = new BluePrintLoD[1];
+			LODs[0] = new BluePrintLoD();
+			LODs[0].Mesh = UnitsInfo.Current.NoUnitMesh;
+			LODs[0].Mat = UnitsInfo.Current.NoUnitMaterial;
+			LODs[0].LODCutoff = 100;
+		}
 	}
 
 	public static bool IsUnitSourceLoaded(string UnitCode)
@@ -100,11 +109,7 @@ public partial struct GetGamedataFile
 		ToReturn.BP.UniformScale = Vector3.one;
 		ToReturn.BP.RenderScale = Vector3.one;
 		ToReturn.BP.Categories = new string[0];
-		ToReturn.BP.LODs = new BluePrintLoD[1];
-		ToReturn.BP.LODs[0] = new BluePrintLoD();
-		ToReturn.BP.LODs[0].Mesh = UnitsInfo.Current.NoUnitMesh;
-		ToReturn.BP.LODs[0].Mat = UnitsInfo.Current.NoUnitMaterial;
-		ToReturn.BP.LODs[0].LODCutoff = 100;
+		ToReturn.BP.GenerateEmptyLod();
 
 
 		ToReturn.RenderDistances = new float[] { ToReturn.BP.LODs[0].LODCutoff * 0.1f };
@@ -114,7 +119,6 @@ public partial struct GetGamedataFile
 
 		return ToReturn;
 	}
-
 
 
 	public static UnitSource LoadUnit(string scd, string LocalPath)
@@ -335,67 +339,75 @@ public partial struct GetGamedataFile
 				ToReturn.BP.Footprint.y = LuaParser.Read.StringToFloat(CurrentValue.ToString());
 		}
 
-		for (int i = 0; i < ToReturn.BP.LODs.Length; i++)
+
+		if (ToReturn.BP.LODs.Length == 0)
 		{
-			if (i > 0)
-				continue;
-
-			ToReturn.BP.LODs[i].Mesh = LoadModel(scd, ToReturn.BP.LODs[i].Scm);
-
-			//ToReturn.BP.LODs[i].Mat = new Material(Shader.Find("Standard (Specular setup)"));
-			ToReturn.BP.LODs[i].Mat = new Material(EditMap.PropsInfo.Current.UnitMaterial);
-
-			ToReturn.BP.LODs[i].Mat.name = ToReturn.BP.CodeName + "_LOD" + i + " mat";
-
-			if (ToReturn.BP.LODs[i].AlbedoName.Length == 0)
-			{
-				ToReturn.BP.LODs[i].AlbedoName = LocalPath.Replace("unit.bp", "albedo.dds");
-			}
-			else
-			{
-				ToReturn.BP.LODs[i].AlbedoName = OffsetRelativePath(LocalPath, ToReturn.BP.LODs[i].AlbedoName, true);
-			}
-
-			ToReturn.BP.LODs[i].Albedo = LoadTexture2DFromGamedata(scd, ToReturn.BP.LODs[i].AlbedoName, false);
-			ToReturn.BP.LODs[i].Albedo.anisoLevel = 2;
-			ToReturn.BP.LODs[i].Mat.SetTexture("_MainTex", ToReturn.BP.LODs[i].Albedo);
-
-
-			if (ToReturn.BP.LODs[i].NormalsName.Length == 0)
-			{
-				ToReturn.BP.LODs[i].NormalsName = LocalPath.Replace("unit.bp", "NormalsTS.dds");
-			}
-			else
-			{
-				ToReturn.BP.LODs[i].NormalsName = OffsetRelativePath(LocalPath, ToReturn.BP.LODs[i].NormalsName, true);
-			}
-
-			if (!string.IsNullOrEmpty(ToReturn.BP.LODs[i].NormalsName))
-			{
-				ToReturn.BP.LODs[i].Normal = LoadTexture2DFromGamedata(scd, ToReturn.BP.LODs[i].NormalsName, true);
-				ToReturn.BP.LODs[i].Normal.anisoLevel = 2;
-				ToReturn.BP.LODs[i].Mat.SetTexture("_BumpMap", ToReturn.BP.LODs[i].Normal);
-			}
-
-
-			if (ToReturn.BP.LODs[i].SpecularName.Length == 0)
-			{
-				ToReturn.BP.LODs[i].SpecularName = LocalPath.Replace("unit.bp", "SpecTeam.dds");
-			}
-			else
-			{
-				ToReturn.BP.LODs[i].SpecularName = OffsetRelativePath(LocalPath, ToReturn.BP.LODs[i].SpecularName, true);
-			}
-
-			if (!string.IsNullOrEmpty(ToReturn.BP.LODs[i].SpecularName))
-			{
-				ToReturn.BP.LODs[i].Specular = LoadTexture2DFromGamedata(scd, ToReturn.BP.LODs[i].SpecularName, false);
-				ToReturn.BP.LODs[i].Specular.anisoLevel = 2;
-				ToReturn.BP.LODs[i].Mat.SetTexture("_SpecTeam", ToReturn.BP.LODs[i].Specular);
-			}
-
+			ToReturn.BP.GenerateEmptyLod();
 		}
+		else
+		{
+			for (int i = 0; i < ToReturn.BP.LODs.Length; i++)
+			{
+				if (i > 0)
+					continue;
 
+				ToReturn.BP.LODs[i].Mesh = LoadModel(scd, ToReturn.BP.LODs[i].Scm);
+				if (ToReturn.BP.LODs[i].Mesh == null)
+					ToReturn.BP.LODs[i].Mesh = UnitsInfo.Current.NoUnitMesh;
+
+				//ToReturn.BP.LODs[i].Mat = new Material(Shader.Find("Standard (Specular setup)"));
+				ToReturn.BP.LODs[i].Mat = new Material(EditMap.PropsInfo.Current.UnitMaterial);
+
+				ToReturn.BP.LODs[i].Mat.name = ToReturn.BP.CodeName + "_LOD" + i + " mat";
+
+				if (ToReturn.BP.LODs[i].AlbedoName.Length == 0)
+				{
+					ToReturn.BP.LODs[i].AlbedoName = LocalPath.Replace("unit.bp", "albedo.dds");
+				}
+				else
+				{
+					ToReturn.BP.LODs[i].AlbedoName = OffsetRelativePath(LocalPath, ToReturn.BP.LODs[i].AlbedoName, true);
+				}
+
+				ToReturn.BP.LODs[i].Albedo = LoadTexture2DFromGamedata(scd, ToReturn.BP.LODs[i].AlbedoName, false);
+				ToReturn.BP.LODs[i].Albedo.anisoLevel = 2;
+				ToReturn.BP.LODs[i].Mat.SetTexture("_MainTex", ToReturn.BP.LODs[i].Albedo);
+
+
+				if (ToReturn.BP.LODs[i].NormalsName.Length == 0)
+				{
+					ToReturn.BP.LODs[i].NormalsName = LocalPath.Replace("unit.bp", "NormalsTS.dds");
+				}
+				else
+				{
+					ToReturn.BP.LODs[i].NormalsName = OffsetRelativePath(LocalPath, ToReturn.BP.LODs[i].NormalsName, true);
+				}
+
+				if (!string.IsNullOrEmpty(ToReturn.BP.LODs[i].NormalsName))
+				{
+					ToReturn.BP.LODs[i].Normal = LoadTexture2DFromGamedata(scd, ToReturn.BP.LODs[i].NormalsName, true);
+					ToReturn.BP.LODs[i].Normal.anisoLevel = 2;
+					ToReturn.BP.LODs[i].Mat.SetTexture("_BumpMap", ToReturn.BP.LODs[i].Normal);
+				}
+
+
+				if (ToReturn.BP.LODs[i].SpecularName.Length == 0)
+				{
+					ToReturn.BP.LODs[i].SpecularName = LocalPath.Replace("unit.bp", "SpecTeam.dds");
+				}
+				else
+				{
+					ToReturn.BP.LODs[i].SpecularName = OffsetRelativePath(LocalPath, ToReturn.BP.LODs[i].SpecularName, true);
+				}
+
+				if (!string.IsNullOrEmpty(ToReturn.BP.LODs[i].SpecularName))
+				{
+					ToReturn.BP.LODs[i].Specular = LoadTexture2DFromGamedata(scd, ToReturn.BP.LODs[i].SpecularName, false);
+					ToReturn.BP.LODs[i].Specular.anisoLevel = 2;
+					ToReturn.BP.LODs[i].Mat.SetTexture("_SpecTeam", ToReturn.BP.LODs[i].Specular);
+				}
+			}
+		}
 
 		ToReturn.RenderDistances = new float[] { BiggestLodDistance * 0.1f };
 		ToReturn.ApplyLods();
