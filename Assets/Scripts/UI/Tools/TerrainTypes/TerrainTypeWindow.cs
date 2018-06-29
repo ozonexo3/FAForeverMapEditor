@@ -1,9 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using Ozone.UI;
 using UnityEngine;
 using UnityEngine.UI;
+using ZkovCode.Utils;
+using Array = UnityScript.Lang.Array;
 
 namespace EditMap.TerrainTypes
 {
@@ -21,6 +24,8 @@ namespace EditMap.TerrainTypes
         [Header("Settings")] [SerializeField] private UiTextField sizeField;
         [SerializeField] private Transform layersPivot;
         [SerializeField] private ToggleGroup layersToggleGroup;
+        [SerializeField] private Button clearAllButton;
+        [SerializeField] private Button clearCurrentButton;
 
         [SerializeField] private GameObject moreInfoGO;
         [SerializeField] private RectTransform moreInfoRectTransform;
@@ -40,6 +45,8 @@ namespace EditMap.TerrainTypes
                 {
                     terrainTypeTexture = new Texture2D(TerrainTypeSize.x, TerrainTypeSize.y, TextureFormat.ARGB32,
                         false, false);
+                    terrainTypeTexture.anisoLevel = 0;
+                    terrainTypeTexture.filterMode = FilterMode.Point;
                     for (int j = 0; j < TerrainTypeSize.y; j++)
                     {
                         for (int i = 0; i < TerrainTypeSize.x; i++)
@@ -60,6 +67,7 @@ namespace EditMap.TerrainTypes
 
                 return terrainTypeTexture;
             }
+            set { terrainTypeTexture = value; }
         }
 
         private Texture2D brushTexture;
@@ -99,30 +107,6 @@ namespace EditMap.TerrainTypes
             }
         }
 
-        private byte oldLayerIndex;
-        private Texture2D currentLayerBrush;
-
-        private Texture2D CurrentLayerBrush
-        {
-            get
-            {
-                if (currentLayerBrush == null)
-                {
-                    currentLayerBrush =
-                        new Texture2D(BrushTexture.width, BrushTexture.height, TextureFormat.ARGB32, false, false);
-                }
-
-                if (oldLayerIndex != currentLayer.index)
-                {
-                    oldLayerIndex = currentLayer.index;
-                    currentLayerBrush.SetPixels(BrushTexture.GetPixels().Select(color => color * currentLayer.color)
-                        .ToArray());
-                    currentLayerBrush.Apply();
-                }
-
-                return currentLayerBrush;
-            }
-        }
 
         private Map Map
         {
@@ -132,6 +116,7 @@ namespace EditMap.TerrainTypes
         private byte[] TerrainTypeData
         {
             get { return Map.TerrainTypeData; }
+            set { Map.TerrainTypeData = value; }
         }
 
         private byte[,] terrainTypeData2D;
@@ -154,6 +139,7 @@ namespace EditMap.TerrainTypes
 
                 return terrainTypeData2D;
             }
+            set { terrainTypeData2D = value; }
         }
 
         private Vector2Int terrainTypeSize;
@@ -308,7 +294,7 @@ namespace EditMap.TerrainTypes
 
         private float BrushSizeRecalc
         {
-            get { return sizeField.value / ((SizeProp.x + SizeProp.y) / 2f); }
+            get { return sizeField.value / ((SizeProp.x + SizeProp.y) / 4); }
         }
 
         private Vector2 BrushUVSize
@@ -332,22 +318,12 @@ namespace EditMap.TerrainTypes
 
         private TerrainTypeLayerSettings currentLayer;
 
-        private void Start()
-        {
-            Init();
-        }
-
         private void OnEnable()
         {
             Init();
         }
 
         private void OnDisable()
-        {
-            Close();
-        }
-
-        private void OnDestroy()
         {
             Close();
         }
@@ -360,15 +336,21 @@ namespace EditMap.TerrainTypes
 
                 if (Input.GetMouseButton(0) && HasHit)
                 {
-                    Debug.LogFormat("TerrainPos2:{0}, TerrainTypeSize:{1}, BrushSize:{2}", TerrainPos2, TerrainTypeSize,
-                        BrushSize);
-                    Paint(TerrainPos2 * 10, BrushSize, CurrentLayerBrush);
+//                    Debug.LogFormat("TerrainPos2:{0}, TerrainTypeSize:{1}, BrushSize:{2}", TerrainPos2, TerrainTypeSize, BrushSize);
+                    Paint(new Vector2(TerrainPos2.x * 10, TerrainTypeSize.y - TerrainPos2.y * 10), BrushSize,
+                        currentLayer);
                 }
+            }
 
-                if (Input.GetMouseButtonUp(0))
-                {
-                    ApplyChanges();
-                }
+            if (Input.GetMouseButtonUp(0))
+            {
+                ApplyChanges();
+            }
+
+            if (Input.GetMouseButtonDown(0) && HasHit)
+            {
+//                    Debug.LogFormat("TerrainPos2:{0}, TerrainTypeSize:{1}, BrushSize:{2}", TerrainPos2, TerrainTypeSize, BrushSize);
+                Paint(new Vector2(TerrainPos2.x * 10, TerrainTypeSize.y - TerrainPos2.y * 10), BrushSize, currentLayer);
             }
         }
 
@@ -376,18 +358,63 @@ namespace EditMap.TerrainTypes
         {
             sizeField.OnValueChanged.AddListener(OnSizeChanged);
             sizeField.OnEndEdit.AddListener(OnSizeChangeEnd);
+            clearAllButton.onClick.AddListener(OnClearAllButtonPressed);
+            clearCurrentButton.onClick.AddListener(OnClearCurrentButtonPressed);
 //            sizeField.OnEndEdit.AddListener();
-            terrainTypeSize = Vector2Int.zero;
+            terrainTypeSize = new Vector2Int(Map.Width, Map.Height);
             sizeProp = Vector2.zero;
+
+            currentLayer = layersSettings.GetFirstLayer();
+            RebuildBrush(BrushSize);
+
             terrainMaterial.SetInt("_Brush", 1);
-            terrainMaterial.SetTexture("_BrushTex", BrushTexture);
+            terrainMaterial.SetTexture("_BrushTex", brushTexture);
             terrainMaterial.SetFloat("_BrushSize", BrushSizeRecalc);
             terrainMaterial.SetTexture("_TerrainTypeAlbedo", TerrainTypeTexture);
-            currentLayer = layersSettings.GetFirstLayer();
+            terrainMaterial.SetInt("_HideTerrainType", 0);
 
             CreateUILayerSettings();
             HideMoreLayerInfo();
-            RebuildBrush(BrushSize);
+        }
+
+        private void OnClearAllButtonPressed()
+        {
+//            TerrainTypeTexture.SetPixels(new byte[TerrainTypeTexture.width*TerrainTypeTexture.height].Select(b => defaultColor).ToArray());
+            TerrainTypeTexture = null;
+            byte defaultIndex = layersSettings.GetFirstLayer().index;
+
+            for (int j = 0; j < TerrainTypeSize.y; j++)
+            {
+                for (int i = 0; i < TerrainTypeSize.x; i++)
+                {
+                    TerrainTypeData2D[i, j] = defaultIndex;
+                }
+            }
+
+            TerrainTypeData = TerrainTypeData.Select(b => defaultIndex).ToArray();
+            ApplyTerrainTypeChanges();
+            terrainMaterial.SetTexture("_TerrainTypeAlbedo", TerrainTypeTexture);
+        }
+
+        private void OnClearCurrentButtonPressed()
+        {
+            Color defaultColor = layersSettings.GetFirstLayer().color;
+            byte defaultIndex = layersSettings.GetFirstLayer().index;
+
+            for (int j = 0; j < TerrainTypeSize.y; j++)
+            {
+                for (int i = 0; i < TerrainTypeSize.x; i++)
+                {
+                    if (TerrainTypeData2D[i, j] == currentLayer.index)
+                    {
+                        TerrainTypeData2D[i, j] = defaultIndex;
+                    }
+                }
+            }
+
+//            TerrainTypeTexture.SetPixels(new byte[TerrainTypeTexture.width*TerrainTypeTexture.height].Select(b => defaultColor).ToArray());
+            TerrainTypeTexture = null;
+            terrainMaterial.SetTexture("_TerrainTypeAlbedo", TerrainTypeTexture);
         }
 
         private void CreateUILayerSettings()
@@ -413,18 +440,28 @@ namespace EditMap.TerrainTypes
         private void Close()
         {
             sizeField.OnValueChanged.RemoveAllListeners();
+            sizeField.OnEndEdit.RemoveAllListeners();
+            clearAllButton.onClick.RemoveAllListeners();
+            clearCurrentButton.onClick.RemoveAllListeners();
+
             terrainMaterial.SetInt("_Brush", 0);
+            terrainMaterial.SetInt("_HideTerrainType", 1);
             ApplyTerrainTypeChanges();
             HideMoreLayerInfo();
         }
 
         private void ApplyTerrainTypeChanges()
         {
+            bool terrainTypeData2DFlag = false;
             for (var j = 0; j < TerrainTypeSize.y; j++)
             {
                 for (var i = 0; i < TerrainTypeSize.x; i++)
                 {
                     TerrainTypeData[(j * TerrainTypeSize.x) + i] = TerrainTypeData2D[i, j];
+                    if (TerrainTypeData2D[i, j] != 1)
+                    {
+                        terrainTypeData2DFlag = true;
+                    }
                 }
             }
         }
@@ -443,6 +480,7 @@ namespace EditMap.TerrainTypes
         private void OnLayerChanged(byte layer)
         {
             currentLayer = layersSettings[layer];
+            RebuildBrush(BrushSize);
         }
 
         private void UpdateBrushPos(Vector2 position)
@@ -455,8 +493,9 @@ namespace EditMap.TerrainTypes
         private void RebuildBrush(float brushSize)
         {
 //            Vector2Int brushTextureReferenceSize = new Vector2Int((int)brushSize/terrainTypeSize.x, (int)brushSize/terrainTypeSize.y);
-            int size = (int) brushSize / terrainTypeSize.x * TerrainTypeTexture.width;
-            brushTexture = new Texture2D(size * 2, size * 2, TextureFormat.ARGB32, false, false);
+            float sizeF = brushSize / terrainTypeSize.x * TerrainTypeSize.x;
+            int size = (int) sizeF;
+            brushTexture = new Texture2D((int) size * 2, (int) size * 2, TextureFormat.ARGB32, false, false);
             brushTexture.anisoLevel = 0;
             brushTexture.wrapMode = TextureWrapMode.Clamp;
             Color empty = new Color(0, 0, 0, 0);
@@ -477,16 +516,9 @@ namespace EditMap.TerrainTypes
 
             brushTexture.Apply();
 
-            currentLayerBrush =
-                new Texture2D(BrushTexture.width, BrushTexture.height, TextureFormat.ARGB32, false, false);
 
-            if (oldLayerIndex != currentLayer.index)
-            {
-                oldLayerIndex = currentLayer.index;
-                currentLayerBrush.SetPixels(BrushTexture.GetPixels().Select(color => color * currentLayer.color)
-                    .ToArray());
-                currentLayerBrush.Apply();
-            }
+//            oldLayerIndex = currentLayer.index;
+//            currentLayerBrush.SetPixels(BrushTexture.GetPixels().Select(color => color * currentLayer.color).ToArray());
         }
 
         /// <summary>
@@ -495,20 +527,52 @@ namespace EditMap.TerrainTypes
         /// <param name="position">Brush position</param>
         /// <param name="brushSize"></param>
         /// <param name="layer">Layer index</param>
-        private void Paint(Vector2 positionCenter, float brushSize, Texture2D layerBrush)
+        private void Paint(Vector2 positionCenter, float brushSize, TerrainTypeLayerSettings layer)
         {
-            Rect rect = Rect.zero;
-            rect.center = positionCenter;
-            rect.size = new Vector2(brushSize, brushSize);
+            Rect rect = Rect.MinMaxRect(
+                positionCenter.x - brushSize, positionCenter.y - brushSize,
+                positionCenter.x + brushSize, positionCenter.y + brushSize
+            );
 
-            rect.xMin = rect.xMin >= 0 ? rect.xMin : 0;
-            rect.xMax = rect.xMax < TerrainTypeSize.x ? rect.xMax : 0;
-            rect.yMin = rect.yMin >= 0 ? rect.yMin : 0;
-            rect.xMin = rect.xMin > TerrainTypeSize.y ? rect.xMin : 0;
+//            if (RectUtils.IsCrossed(new Rect(Vector2.zero, TerrainTypeSize), rect))
+//            {
 
-            Debug.LogFormat("Paint rect: {0}", rect);
-            TerrainTypeTexture.SetPixels((int) rect.x, (int) rect.y, (int) rect.width, (int) rect.height,
-                layerBrush.GetPixels());
+            var crossRect = RectUtils.Cross(new Rect(Vector2.zero, TerrainTypeSize), rect);
+            int size = (int) brushSize;
+            Vector2 positionCenterLocal = positionCenter - crossRect.position;
+//            Vector2 positionCenterLocal = positionCenter - crossRect.position;
+
+            TerrainTypeTexture.SetPixels(
+                Mathf.RoundToInt(crossRect.x), Mathf.RoundToInt(crossRect.y),
+                Mathf.RoundToInt(crossRect.width), Mathf.RoundToInt(crossRect.height),
+                TerrainTypeTexture.GetPixels(
+                        Mathf.RoundToInt(crossRect.x), Mathf.RoundToInt(crossRect.y),
+                        Mathf.RoundToInt(crossRect.width), Mathf.RoundToInt(crossRect.height))
+                    .Select((color, i) =>
+                        {
+                            int x = i % Mathf.RoundToInt(crossRect.width) + Mathf.RoundToInt(crossRect.xMin) - Mathf.RoundToInt(positionCenter.x);
+                            int y = i / Mathf.RoundToInt(crossRect.width) + Mathf.RoundToInt(crossRect.yMin) - Mathf.RoundToInt(positionCenter.y);
+                            
+                            return (x * x + y * y > size * size) ? color : layer.color;
+                        }
+                    )
+                    .ToArray()
+            );
+
+            for (int j = (int) crossRect.yMin; j < (int) crossRect.yMax; j++)
+            {
+                for (int i = (int) crossRect.xMin; i < (int) crossRect.xMax; i++)
+                {
+                    int x = (int) (i - positionCenter.x);
+                    int y = (int) (j - positionCenter.y);
+                    if (x * x + y * y <= size * size)
+                    {
+                            TerrainTypeData2D[i, j] = layer.index;
+                    }
+                }
+            }
+
+            TerrainTypeTexture.Apply();
         }
 
         private void ApplyChanges()

@@ -52,7 +52,7 @@ namespace EditMap.TerrainTypes
 //                World Corners: [0](278.0, 480.2, 0.0), [1](278.0, 536.0, 0.0), [2](539.6, 536.0, 0.0), [3](539.6, 480.2, 0.0)
                 
                 Rect rect = Rect.MinMaxRect(corners[0].x, corners[0].y, corners[2].x, corners[2].y);
-                Debug.LogFormat("World Corners: {0}", String.Join(", ", corners));
+//                Debug.LogFormat("World Corners: {0}", String.Join(", ", corners));
 //                Debug.LogFormat("New Local Corners: {0}", String.Join(", ", corners.Select(vector => transform.InverseTransformPoint(vector))));
                 showMoreInfo(rect, index.ToString(), description);
             }
