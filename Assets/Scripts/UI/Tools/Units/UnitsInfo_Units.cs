@@ -52,7 +52,10 @@ namespace EditMap
 			int Count = MarkerObjects.Count;
 			for (int i = 0; i < Count; i++)
 			{
-				DestroyImmediate(MarkerObjects[i]);
+				//DestroyImmediate(MarkerObjects[i]);
+				SaveLua.Army.Unit u = MarkerObjects[i].GetComponent<UnitInstance>().Owner;
+				u.ClearInstance();
+				u.Parent.RemoveUnit(u);
 			}
 
 			SelectionManager.Current.CleanSelection();
@@ -191,7 +194,7 @@ namespace EditMap
 			{
 				//TODO Register Undo
 				//Undo.Current.RegisterDecalsAdd();
-				Undo.RegisterUnitsRemove(FirstSelected.Source);
+				Undo.RegisterUnitsRemove(new SaveLua.Army.UnitsGroup[] { FirstSelected.Source });
 			}
 
 
@@ -284,6 +287,11 @@ namespace EditMap
 				return;
 			}
 
+
+			//TODO
+
+			//Find all groups and register UNDO
+			//Remove old units and create new with same position and rotation
 
 
 		}

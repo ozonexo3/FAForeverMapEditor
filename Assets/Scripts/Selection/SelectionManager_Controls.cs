@@ -475,6 +475,10 @@ namespace Selection
 			{
 				Undo.Current.RegisterDecalsMove();
 			}
+			else if(LastControlType == SelectionControlTypes.Units)
+			{
+				Undo.RegisterUnitsMove();
+			}
 		}
 
 		bool Draged = false;

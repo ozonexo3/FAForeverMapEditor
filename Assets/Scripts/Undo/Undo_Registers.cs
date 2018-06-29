@@ -189,7 +189,12 @@ public partial class Undo : MonoBehaviour
 		HistoryUnitGroupChange.GenerateUndo(Current.Prefabs.UnitGroupChange).Register();
 	}
 
-	public static void RegisterUnitsRemove(MapLua.SaveLua.Army.UnitsGroup source)
+	public static void RegisterUnitsRemove(MapLua.SaveLua.Army.UnitsGroup[] sources)
+	{
+
+	}
+
+	public static void RegisterUnitsMove()
 	{
 
 	}

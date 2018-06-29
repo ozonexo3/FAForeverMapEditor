@@ -43,5 +43,7 @@ namespace UndoHistory
 		[Header("Units")]
 		public GameObject UnitGroupRemove;
 		public GameObject UnitGroupChange;
+		public GameObject UnitRemove;
+		public GameObject UnitMove;
 	}
 }
