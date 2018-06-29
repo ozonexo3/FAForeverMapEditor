@@ -3369,6 +3369,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ad18a34b98fd4332a72906255d87b37f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  editingTool: {fileID: 0}
   terrainMaterial: {fileID: 2100000, guid: 869424636fdf59642bae55582eca31d9, type: 2}
   camera: {fileID: 0}
   RayCastTerrainLayer:

@@ -12,6 +12,7 @@ namespace EditMap.TerrainTypes
 {
     public class TerrainTypeWindow : MonoBehaviour
     {
+        [SerializeField] private Editing editingTool;
         [SerializeField] private Material terrainMaterial;
         [SerializeField] private Camera camera;
 
@@ -142,49 +143,19 @@ namespace EditMap.TerrainTypes
             set { terrainTypeData2D = value; }
         }
 
-        private Vector2Int terrainTypeSize;
-
         private Vector2Int TerrainTypeSize
         {
-            get
-            {
-                if (terrainTypeSize == Vector2Int.zero)
-                {
-                    terrainTypeSize = new Vector2Int(Map.Width, Map.Height);
-                }
-
-                return terrainTypeSize;
-            }
+            get { return new Vector2Int(Map.Width, Map.Height); }
         }
-
-        private Vector2 mapSize;
 
         private Vector2 MapSize
         {
-            get
-            {
-                if (mapSize == Vector2.zero)
-                {
-                    mapSize = new Vector2(MapLuaParser.GetMapSizeX(), MapLuaParser.GetMapSizeY());
-                }
-
-                return mapSize;
-            }
+            get { return new Vector2(MapLuaParser.GetMapSizeX(), MapLuaParser.GetMapSizeY()); }
         }
-
-        private Vector2 sizeProp;
 
         private Vector2 SizeProp
         {
-            get
-            {
-                if (sizeProp == Vector2.zero)
-                {
-                    sizeProp = MapSize / 512f;
-                }
-
-                return sizeProp;
-            }
+            get { return MapSize / 512f; }
         }
 
         private Vector3 mousePos;
@@ -330,27 +301,31 @@ namespace EditMap.TerrainTypes
 
         private void Update()
         {
-            if (ChangedMousePos)
+            if (editingTool.MauseOnGameplay)
             {
-                UpdateBrushPos(UVPos);
+                if (ChangedMousePos)
+                {
+                    UpdateBrushPos(UVPos);
 
-                if (Input.GetMouseButton(0) && HasHit)
+                    if (Input.GetMouseButton(0) && HasHit)
+                    {
+//                    Debug.LogFormat("TerrainPos2:{0}, TerrainTypeSize:{1}, BrushSize:{2}", TerrainPos2, TerrainTypeSize, BrushSize);
+                        Paint(new Vector2(TerrainPos2.x * 10, TerrainTypeSize.y - TerrainPos2.y * 10), BrushSize,
+                            currentLayer);
+                    }
+                }
+
+                if (Input.GetMouseButtonUp(0))
+                {
+                    ApplyChanges();
+                }
+
+                if (Input.GetMouseButtonDown(0) && HasHit)
                 {
 //                    Debug.LogFormat("TerrainPos2:{0}, TerrainTypeSize:{1}, BrushSize:{2}", TerrainPos2, TerrainTypeSize, BrushSize);
                     Paint(new Vector2(TerrainPos2.x * 10, TerrainTypeSize.y - TerrainPos2.y * 10), BrushSize,
                         currentLayer);
                 }
-            }
-
-            if (Input.GetMouseButtonUp(0))
-            {
-                ApplyChanges();
-            }
-
-            if (Input.GetMouseButtonDown(0) && HasHit)
-            {
-//                    Debug.LogFormat("TerrainPos2:{0}, TerrainTypeSize:{1}, BrushSize:{2}", TerrainPos2, TerrainTypeSize, BrushSize);
-                Paint(new Vector2(TerrainPos2.x * 10, TerrainTypeSize.y - TerrainPos2.y * 10), BrushSize, currentLayer);
             }
         }
 
@@ -361,8 +336,6 @@ namespace EditMap.TerrainTypes
             clearAllButton.onClick.AddListener(OnClearAllButtonPressed);
             clearCurrentButton.onClick.AddListener(OnClearCurrentButtonPressed);
 //            sizeField.OnEndEdit.AddListener();
-            terrainTypeSize = new Vector2Int(Map.Width, Map.Height);
-            sizeProp = Vector2.zero;
 
             currentLayer = layersSettings.GetFirstLayer();
             RebuildBrush(BrushSize);
@@ -446,6 +419,13 @@ namespace EditMap.TerrainTypes
 
             terrainMaterial.SetInt("_Brush", 0);
             terrainMaterial.SetInt("_HideTerrainType", 1);
+            
+//            terrainMaterial.SetTexture("_BrushTex", null);
+            terrainMaterial.SetTexture("_TerrainTypeAlbedo", null);
+            
+            TerrainTypeTexture = null;
+            TerrainTypeData2D = null;
+            
             ApplyTerrainTypeChanges();
             HideMoreLayerInfo();
         }
@@ -493,7 +473,7 @@ namespace EditMap.TerrainTypes
         private void RebuildBrush(float brushSize)
         {
 //            Vector2Int brushTextureReferenceSize = new Vector2Int((int)brushSize/terrainTypeSize.x, (int)brushSize/terrainTypeSize.y);
-            float sizeF = brushSize / terrainTypeSize.x * TerrainTypeSize.x;
+            float sizeF = brushSize / TerrainTypeSize.x * TerrainTypeSize.x;
             int size = (int) sizeF;
             brushTexture = new Texture2D((int) size * 2, (int) size * 2, TextureFormat.ARGB32, false, false);
             brushTexture.anisoLevel = 0;
@@ -550,9 +530,11 @@ namespace EditMap.TerrainTypes
                         Mathf.RoundToInt(crossRect.width), Mathf.RoundToInt(crossRect.height))
                     .Select((color, i) =>
                         {
-                            int x = i % Mathf.RoundToInt(crossRect.width) + Mathf.RoundToInt(crossRect.xMin) - Mathf.RoundToInt(positionCenter.x);
-                            int y = i / Mathf.RoundToInt(crossRect.width) + Mathf.RoundToInt(crossRect.yMin) - Mathf.RoundToInt(positionCenter.y);
-                            
+                            int x = i % Mathf.RoundToInt(crossRect.width) + Mathf.RoundToInt(crossRect.xMin) -
+                                    Mathf.RoundToInt(positionCenter.x);
+                            int y = i / Mathf.RoundToInt(crossRect.width) + Mathf.RoundToInt(crossRect.yMin) -
+                                    Mathf.RoundToInt(positionCenter.y);
+
                             return (x * x + y * y > size * size) ? color : layer.color;
                         }
                     )
@@ -567,7 +549,7 @@ namespace EditMap.TerrainTypes
                     int y = (int) (j - positionCenter.y);
                     if (x * x + y * y <= size * size)
                     {
-                            TerrainTypeData2D[i, j] = layer.index;
+                        TerrainTypeData2D[i, j] = layer.index;
                     }
                 }
             }
