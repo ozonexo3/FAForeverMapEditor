@@ -281,9 +281,9 @@ namespace EditMap.TerrainTypes
         {
             get
             {
-                Vector2 pos = new Vector2((TerrainPos2.x * 10 - BrushSizeRecalc / 4) / MapSize.x,
-                    (TerrainPos2.y * 10 - BrushSizeRecalc / 4) / MapSize.y);
-                return pos;
+//                return (TerrainPos2*10-new Vector2(BrushSizeRecalc, BrushSizeRecalc)/4)/MapSize;
+//                return TerrainPos2*10/MapSize-new Vector2(BrushSizeRecalc, BrushSizeRecalc);
+                return (TerrainPos2*10-new Vector2(BrushSize, BrushSize))/MapSize;
             }
         }
 
@@ -417,17 +417,18 @@ namespace EditMap.TerrainTypes
             clearAllButton.onClick.RemoveAllListeners();
             clearCurrentButton.onClick.RemoveAllListeners();
 
-            terrainMaterial.SetInt("_Brush", 0);
-            terrainMaterial.SetInt("_HideTerrainType", 1);
             
 //            terrainMaterial.SetTexture("_BrushTex", null);
+            
+            ApplyTerrainTypeChanges();
+            HideMoreLayerInfo();
+            
+            terrainMaterial.SetInt("_Brush", 0);
+            terrainMaterial.SetInt("_HideTerrainType", 1);
             terrainMaterial.SetTexture("_TerrainTypeAlbedo", null);
             
             TerrainTypeTexture = null;
             TerrainTypeData2D = null;
-            
-            ApplyTerrainTypeChanges();
-            HideMoreLayerInfo();
         }
 
         private void ApplyTerrainTypeChanges()
