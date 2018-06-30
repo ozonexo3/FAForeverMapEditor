@@ -12,6 +12,8 @@ namespace EditMap.TerrainTypes
 {
     public class TerrainTypeWindow : MonoBehaviour
     {
+        private static TerrainTypeWindow instance;
+        
         [SerializeField] private Editing editingTool;
         [SerializeField] private Material terrainMaterial;
         [SerializeField] private Camera camera;
@@ -289,6 +291,11 @@ namespace EditMap.TerrainTypes
 
         private TerrainTypeLayerSettings currentLayer;
 
+        private void Awake()
+        {
+            instance = this;
+        }
+
         private void OnEnable()
         {
             Init();
@@ -323,6 +330,7 @@ namespace EditMap.TerrainTypes
                 if (Input.GetMouseButtonDown(0) && HasHit)
                 {
 //                    Debug.LogFormat("TerrainPos2:{0}, TerrainTypeSize:{1}, BrushSize:{2}", TerrainPos2, TerrainTypeSize, BrushSize);
+                    Undo.Current.RegisterTerrainTypePaint();
                     Paint(new Vector2(TerrainPos2.x * 10, TerrainTypeSize.y - TerrainPos2.y * 10), BrushSize,
                         currentLayer);
                 }
@@ -353,6 +361,7 @@ namespace EditMap.TerrainTypes
         private void OnClearAllButtonPressed()
         {
 //            TerrainTypeTexture.SetPixels(new byte[TerrainTypeTexture.width*TerrainTypeTexture.height].Select(b => defaultColor).ToArray());
+            Undo.Current.RegisterTerrainTypePaint();
             TerrainTypeTexture = null;
             byte defaultIndex = layersSettings.GetFirstLayer().index;
 
@@ -371,6 +380,7 @@ namespace EditMap.TerrainTypes
 
         private void OnClearCurrentButtonPressed()
         {
+            Undo.Current.RegisterTerrainTypePaint();
             Color defaultColor = layersSettings.GetFirstLayer().color;
             byte defaultIndex = layersSettings.GetFirstLayer().index;
 
@@ -387,6 +397,7 @@ namespace EditMap.TerrainTypes
 
 //            TerrainTypeTexture.SetPixels(new byte[TerrainTypeTexture.width*TerrainTypeTexture.height].Select(b => defaultColor).ToArray());
             TerrainTypeTexture = null;
+            ApplyTerrainTypeChanges();
             terrainMaterial.SetTexture("_TerrainTypeAlbedo", TerrainTypeTexture);
         }
 
@@ -560,6 +571,7 @@ namespace EditMap.TerrainTypes
 
         private void ApplyChanges()
         {
+//            Undo.Current.RegisterTerrainTypePaint();
             TerrainTypeTexture.Apply();
             ApplyTerrainTypeChanges();
         }
@@ -584,6 +596,41 @@ namespace EditMap.TerrainTypes
             moreInfoGO.SetActive(false);
             indexMoreInfoText.text = "null";
             descriptionMoreInfoText.text = "null";
+        }
+
+        private void SetFromUndo(byte[] terrainTypeData)
+        {
+            TerrainTypeData = terrainTypeData;
+            TerrainTypeData2D = null;
+            TerrainTypeTexture = null;
+//            TerrainTypeTexture.SetPixels(texData);
+//            TerrainTypeTexture.Apply();
+            terrainMaterial.SetTexture("_TerrainTypeAlbedo", TerrainTypeTexture);
+        }
+        
+        private byte[] GetToUndo()
+        {
+            return TerrainTypeData;
+        }
+        
+        private Color[] GetToUndoTex()
+        {
+            return TerrainTypeTexture.GetPixels();
+        }
+        
+        public static void SetUndoData(byte[] terrainTypeData)
+        {
+            instance.SetFromUndo(terrainTypeData);
+        }
+
+        public static byte[] GetUndoData()
+        {
+            return instance.GetToUndo();
+        }
+        
+        public static Color[] GetUndoTexData()
+        {
+            return instance.GetToUndoTex();
         }
     }
 }

@@ -34,6 +34,7 @@ namespace UndoHistory
 		public GameObject TerrainHeightChange;
 		public GameObject TerrainWaterElevationChange;
 		public GameObject TerrainWaterSettingsChange;
+		public GameObject TerrainTypePaint;
 		[Header("Stratum")]
 		public GameObject StratumPaint;
 		public GameObject StratumChange;
