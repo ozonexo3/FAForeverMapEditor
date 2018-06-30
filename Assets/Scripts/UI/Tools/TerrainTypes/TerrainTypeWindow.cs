@@ -24,7 +24,9 @@ namespace EditMap.TerrainTypes
         [SerializeField] private LayersSettings layersSettings;
         [SerializeField] private GameObject layerSettingsItemGO;
 
-        [Header("Settings")] [SerializeField] private UiTextField sizeField;
+        [Header("Settings")]
+        [SerializeField] private UiTextField sizeField;
+        [SerializeField] private UiTextField layerCapacityField;
         [SerializeField] private Transform layersPivot;
         [SerializeField] private ToggleGroup layersToggleGroup;
         [SerializeField] private Button clearAllButton;
@@ -34,6 +36,8 @@ namespace EditMap.TerrainTypes
         [SerializeField] private RectTransform moreInfoRectTransform;
         [SerializeField] private Text indexMoreInfoText;
         [SerializeField] private Text descriptionMoreInfoText;
+
+        private static TerrainTypeLayerSettings savedLayer;
 
 
         private List<LayerSettingsItem> layerSettingsItems;
@@ -343,17 +347,18 @@ namespace EditMap.TerrainTypes
             sizeField.OnEndEdit.AddListener(OnSizeChangeEnd);
             clearAllButton.onClick.AddListener(OnClearAllButtonPressed);
             clearCurrentButton.onClick.AddListener(OnClearCurrentButtonPressed);
+            layerCapacityField.OnValueChanged.AddListener(OnCapacityChanged);
 //            sizeField.OnEndEdit.AddListener();
-
-            currentLayer = layersSettings.GetFirstLayer();
+            
             RebuildBrush(BrushSize);
-
+            
             terrainMaterial.SetInt("_Brush", 1);
             terrainMaterial.SetTexture("_BrushTex", brushTexture);
             terrainMaterial.SetFloat("_BrushSize", BrushSizeRecalc);
             terrainMaterial.SetTexture("_TerrainTypeAlbedo", TerrainTypeTexture);
             terrainMaterial.SetInt("_HideTerrainType", 0);
-
+            
+            layerCapacityField.SetValue(0.228f * 100);
             CreateUILayerSettings();
             HideMoreLayerInfo();
         }
@@ -409,6 +414,15 @@ namespace EditMap.TerrainTypes
             }
 
             layerSettingsItems = new List<LayerSettingsItem>();
+            
+            currentLayer = layersSettings.GetFirstLayer();
+            if (savedLayer != null)
+            {
+                currentLayer = savedLayer;
+            }
+
+            LayerSettingsItem currentLayerItem = null;
+                
             foreach (TerrainTypeLayerSettings layerSettings in layersSettings)
             {
                 GameObject tmpItem = Instantiate<GameObject>(layerSettingsItemGO);
@@ -418,7 +432,20 @@ namespace EditMap.TerrainTypes
                 layerSettingsItem.onActive += OnLayerChanged;
 
                 layerSettingsItems.Add(layerSettingsItem);
+
+                if (layerSettingsItem.index == currentLayer.index)
+                {
+                    currentLayerItem = layerSettingsItem;
+                }
             }
+
+            if (currentLayerItem == null)
+            {
+                Debug.LogError("Can`t find default layer");
+                currentLayerItem = layerSettingsItems[0];
+            }
+
+            currentLayerItem.SetActive(true);
         }
 
         private void Close()
@@ -427,6 +454,7 @@ namespace EditMap.TerrainTypes
             sizeField.OnEndEdit.RemoveAllListeners();
             clearAllButton.onClick.RemoveAllListeners();
             clearCurrentButton.onClick.RemoveAllListeners();
+            layerCapacityField.OnValueChanged.RemoveAllListeners();
 
             
 //            terrainMaterial.SetTexture("_BrushTex", null);
@@ -440,20 +468,16 @@ namespace EditMap.TerrainTypes
             
             TerrainTypeTexture = null;
             TerrainTypeData2D = null;
+            savedLayer = currentLayer;
         }
 
         private void ApplyTerrainTypeChanges()
         {
-            bool terrainTypeData2DFlag = false;
             for (var j = 0; j < TerrainTypeSize.y; j++)
             {
                 for (var i = 0; i < TerrainTypeSize.x; i++)
                 {
                     TerrainTypeData[(j * TerrainTypeSize.x) + i] = TerrainTypeData2D[i, j];
-                    if (TerrainTypeData2D[i, j] != 1)
-                    {
-                        terrainTypeData2DFlag = true;
-                    }
                 }
             }
         }
@@ -461,6 +485,11 @@ namespace EditMap.TerrainTypes
         private void OnSizeChanged()
         {
             terrainMaterial.SetFloat("_BrushSize", BrushSizeRecalc);
+        }
+        
+        private void OnCapacityChanged()
+        {
+            terrainMaterial.SetFloat("_TerrainTypeCapacity", layerCapacityField.value*0.01f);
         }
 
         private void OnSizeChangeEnd()
@@ -487,6 +516,7 @@ namespace EditMap.TerrainTypes
 //            Vector2Int brushTextureReferenceSize = new Vector2Int((int)brushSize/terrainTypeSize.x, (int)brushSize/terrainTypeSize.y);
             float sizeF = brushSize / TerrainTypeSize.x * TerrainTypeSize.x;
             int size = (int) sizeF;
+            int spacing = 5;
             brushTexture = new Texture2D((int) size * 2, (int) size * 2, TextureFormat.ARGB32, false, false);
             brushTexture.anisoLevel = 0;
             brushTexture.wrapMode = TextureWrapMode.Clamp;
@@ -495,7 +525,7 @@ namespace EditMap.TerrainTypes
             {
                 for (int i = -size; i < size; i++)
                 {
-                    if (i * i + j * j > size * size)
+                    if (i * i + j * j > size * size - spacing*spacing)
                     {
                         brushTexture.SetPixel(i + size, j + size, empty);
                     }
@@ -531,7 +561,7 @@ namespace EditMap.TerrainTypes
 
             var crossRect = RectUtils.Cross(new Rect(Vector2.zero, TerrainTypeSize), rect);
             int size = (int) brushSize;
-            Vector2 positionCenterLocal = positionCenter - crossRect.position;
+//            Vector2 positionCenterLocal = positionCenter - crossRect.position;
 //            Vector2 positionCenterLocal = positionCenter - crossRect.position;
 
             TerrainTypeTexture.SetPixels(

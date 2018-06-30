@@ -21,7 +21,7 @@ namespace EditMap.TerrainTypes
         private Action<Rect, string, string> showMoreInfo;
         private Action hideMoreInfo;
 
-        private byte index;
+        public byte index { get; private set; }
         private string description;
 
         public void Init(TerrainTypeLayerSettings layerSettings, ToggleGroup layersToggleGroup, Action<Rect, string, string> showMoreInfoCallback,
@@ -77,6 +77,11 @@ namespace EditMap.TerrainTypes
         private void Clear()
         {
             onActive = null;
+        }
+
+        public void SetActive(bool active)
+        {
+            toggle.isOn = active;
         }
     }
 }
