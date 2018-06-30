@@ -38,6 +38,10 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _GridBuildTexture:
+        m_Texture: {fileID: 2800000, guid: 4609af58a2a7b434889072fc1981af4b, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _GridTexture:
         m_Texture: {fileID: 2800000, guid: 73e3d60bfbccd0548b778fb57562d7de, type: 3}
         m_Scale: {x: 1, y: 1}
@@ -240,8 +244,9 @@ Material:
     - _Brush: 0
     - _BrushPainting: 0
     - _BrushSize: 0
-    - _BrushUvX: 0.53297186
-    - _BrushUvY: 0.4650196
+    - _BrushUvX: 0.4956722
+    - _BrushUvY: 0.66925
+    - _BuildGrid: 0
     - _DeepLevel: 1.675625
     - _DepthLevel: 1.5
     - _GeneratingNormal: 0
@@ -258,25 +263,25 @@ Material:
     - _HideSplat7: 0
     - _HideSplat8: 0
     - _LightingMultiplier: 1.27
-    - _LowerScale: 256
-    - _LowerScaleNormal: 117.02857
+    - _LowerScale: 117.02857
+    - _LowerScaleNormal: 78.76923
     - _Shininess: 0.03
     - _Slope: 0
-    - _Splat0Scale: 256
+    - _Splat0Scale: 128
     - _Splat0ScaleNormal: 256
-    - _Splat1Scale: 292.57144
-    - _Splat1ScaleNormal: 89.04348
-    - _Splat2Scale: 60.952385
-    - _Splat2ScaleNormal: 512
-    - _Splat3Scale: 170.66667
+    - _Splat1Scale: 85.333336
+    - _Splat1ScaleNormal: 256
+    - _Splat2Scale: 128
+    - _Splat2ScaleNormal: 256
+    - _Splat3Scale: 85.333336
     - _Splat3ScaleNormal: 256
-    - _Splat4Scale: 256
+    - _Splat4Scale: 128
     - _Splat4ScaleNormal: 256
-    - _Splat5Scale: 256
+    - _Splat5Scale: 128
     - _Splat5ScaleNormal: 256
-    - _Splat6Scale: 256
+    - _Splat6Scale: 85.333336
     - _Splat6ScaleNormal: 256
-    - _Splat7Scale: 256
+    - _Splat7Scale: 64
     - _Splat7ScaleNormal: 256
     - _TTerrainXP: 0
     - _UpperScale: 8

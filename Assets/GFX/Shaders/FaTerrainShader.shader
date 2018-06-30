@@ -4,12 +4,11 @@ Shader "MapEditor/FaTerrainShader" {
 Properties {
 	_SpecColor ("Specular Color", Color) = (0.5, 0.5, 0.5, 1)
 	_Shininess ("Shininess", Range (0.03, 1)) = 0.078125
-	//[MaterialToggle] _Water("Has Water", Int) = 0
 	[MaterialToggle] _Grid("Grid", Int) = 0
+	[MaterialToggle] _BuildGrid("Grid", Int) = 0
 	[MaterialToggle] _Slope("Slope", Int) = 0
 	[MaterialToggle] _UseSlopeTex("Use Slope Data", Int) = 0
 	_SlopeTex ("Slope data", 2D) = "black" {}
-	//[MaterialToggle] _TTerrainXP("_TTerrainXP", Int) = 0
 		
 	// set by terrain engine
 	_Control ("Control (RGBA)", 2D) = "black" {}
@@ -79,9 +78,7 @@ Properties {
 
 	_GridScale ("Grid Scale", Range (0, 2048)) = 512
 	_GridTexture ("Grid Texture", 2D) = "white" {}
-	//_GridCamDist ("Grid Scale", Range (0, 10)) = 5
-	//_WaterScaleX ("Water Scale X", float) = 1024
-	//_WaterScaleZ ("Water Scale Z", float) = 1024
+	_GridBuildTexture("Grid build Texture", 2D) = "white" {}
 }
 	
 	SubShader {
@@ -144,10 +141,10 @@ Properties {
 			int _Slope, _UseSlopeTex;
 			sampler2D _SlopeTex;
 
-			int _Grid;
+			int _Grid, _BuildGrid;
 			half _GridScale;
 			half _GridCamDist;
-			sampler2D _GridTexture;
+			sampler2D _GridTexture, _GridBuildTexture;
 
 			//uniform
 			sampler2D _ControlXP;
@@ -156,7 +153,6 @@ Properties {
 			sampler2D _TerrainNormal;
 			sampler2D _SplatLower, _SplatUpper;
 			sampler2D  _NormalLower;
-			//sampler2D _SplatNormal0, _SplatNormal1, _SplatNormal2, _SplatNormal3, _SplatNormal4, _SplatNormal5, _SplatNormal6, _SplatNormal7;
 			half _Splat0Scale, _Splat1Scale, _Splat2Scale, _Splat3Scale, _Splat4Scale, _Splat5Scale, _Splat6Scale, _Splat7Scale;
 			half _Splat0ScaleNormal, _Splat1ScaleNormal, _Splat2ScaleNormal, _Splat3ScaleNormal, _Splat4ScaleNormal, _Splat5ScaleNormal, _Splat6ScaleNormal, _Splat7ScaleNormal;
 
@@ -184,8 +180,31 @@ Properties {
 			float3 ApplyWaterColor( float depth, float3  inColor){
 				float4 wcolor = tex2D(_WaterRam, float2(depth,0));
 				return lerp( inColor.rgb, wcolor.rgb, wcolor.a );
-				//return inColor.rgb;
-				//return inColor;
+			}
+
+			float4 RenderGrid(sampler2D _GridTex, float2 uv_Control) {
+				//float2 GridUv = IN.uv_Control * _GridScale;
+				fixed4 GridColor = tex2D(_GridTex, uv_Control * _GridScale);
+				fixed4 GridFinal = fixed4(0, 0, 0, GridColor.a);
+				if (_GridCamDist < 1) {
+					GridFinal.rgb = lerp(GridFinal.rgb, fixed3(1, 1, 1), GridColor.r * lerp(1, 0, _GridCamDist));
+					GridFinal.rgb = lerp(GridFinal.rgb, fixed3(0, 1, 0), GridColor.g * lerp(1, 0, _GridCamDist));
+					GridFinal.rgb = lerp(GridFinal.rgb, fixed3(0, 1, 0), GridColor.b * lerp(0, 1, _GridCamDist));
+				}
+				else {
+					GridFinal.rgb = lerp(GridFinal.rgb, fixed3(0, 1, 0), GridColor.b);
+				}
+
+				GridFinal *= GridColor.a;
+
+				half CenterGridSize = lerp(0.005, 0.015, _GridCamDist) / _GridScale;
+				if (uv_Control.x > 0.5 - CenterGridSize && uv_Control.x < 0.5 + CenterGridSize)
+					GridFinal.rgb = fixed3(0.4, 1, 0);
+				else if (uv_Control.y > 0.5 - CenterGridSize && uv_Control.y < 0.5 + CenterGridSize)
+					GridFinal.rgb = fixed3(0.4, 1, 0);
+
+				//col.rgb = lerp(col.rgb, GridFinal.rgb, GridColor.a);
+				return GridFinal;
 			}
 
 			inline fixed3 UnpackNormalDXT5nmScaled (fixed4 packednormal, fixed scale)
@@ -214,41 +233,29 @@ Properties {
 
 				float2 UVCtrl = IN.uv_Control * fixed2(1, -1) + half2(0, 1);
 				float2 UV = IN.uv_Control * fixed2(1, -1) + half2(0, 1);
-				//float2 UV = IN.uv_Control * half2(1, -1)  + half2(0, 1);
 				float4 splat_control = saturate(tex2D (_ControlXP, UVCtrl) * 2 - 1);
 				float4 splat_control2 = saturate(tex2D (_Control2XP, UVCtrl) * 2 - 1);
 
-				//float4 col = tex2Dproj( _MyGrabTexture3, UNITY_PROJ_COORD(IN.grabUV));
-
-				
 
 				float4 col = tex2D(_SplatLower, UV * _LowerScale);
 
 				if(_HideSplat0 == 0)
-					//col = lerp(col, tex2D(_Splat0XP, UV * _Splat0Scale), splat_control.r);
 					col = lerp(col, UNITY_SAMPLE_TEX2DARRAY(_SplatAlbedoArray, float3(UV * _Splat0Scale, 0)), splat_control.r);
 				if(_HideSplat1 == 0)
-					//col = lerp(col, tex2D(_Splat1XP, UV * _Splat1Scale), splat_control.g);
 					col = lerp(col, UNITY_SAMPLE_TEX2DARRAY(_SplatAlbedoArray, float3(UV * _Splat1Scale, 1)), splat_control.g);
 				if(_HideSplat2 == 0)
-					//col = lerp(col, tex2D(_Splat2XP, UV * _Splat2Scale), splat_control.b);
 					col = lerp(col, UNITY_SAMPLE_TEX2DARRAY(_SplatAlbedoArray, float3(UV * _Splat2Scale, 2)), splat_control.b);
 				if(_HideSplat3 == 0)
-					//col = lerp(col, tex2D(_Splat3XP, UV * _Splat3Scale), splat_control.a);
 					col = lerp(col, UNITY_SAMPLE_TEX2DARRAY(_SplatAlbedoArray, float3(UV * _Splat3Scale, 3)), splat_control.a);
 
 				if (_TTerrainXP > 0) {
 					if(_HideSplat4 == 0)
-					//col = lerp(col, tex2D(_Splat4XP, UV * _Splat4Scale), splat_control2.r);
 					col = lerp(col, UNITY_SAMPLE_TEX2DARRAY(_SplatAlbedoArray, float3(UV * _Splat4Scale, 4)), splat_control2.r);
 					if(_HideSplat5 == 0)
-					//col = lerp(col, tex2D(_Splat5XP, UV * _Splat5Scale), splat_control2.g);
 					col = lerp(col, UNITY_SAMPLE_TEX2DARRAY(_SplatAlbedoArray, float3(UV * _Splat5Scale, 5)), splat_control2.g);
 					if(_HideSplat6 == 0)
-					//col = lerp(col, tex2D(_Splat6XP, UV * _Splat6Scale), splat_control2.b);
 					col = lerp(col, UNITY_SAMPLE_TEX2DARRAY(_SplatAlbedoArray, float3(UV * _Splat6Scale, 6)), splat_control2.b);
 					if(_HideSplat7 == 0)
-					//col = lerp(col, tex2D(_Splat7XP, UV * _Splat7Scale), splat_control2.a);
 					col = lerp(col, UNITY_SAMPLE_TEX2DARRAY(_SplatAlbedoArray, float3(UV * _Splat7Scale, 7)), splat_control2.a);
 				}
 
@@ -258,11 +265,6 @@ Properties {
 				}
 
 
-
-
-
-
-				//col = 1;
 				half4 nrm;
 				//UV *= 0.01;
 				nrm = tex2D (_NormalLower, UV * _LowerScaleNormal);
@@ -356,28 +358,10 @@ Properties {
 
 
 				if (_Grid > 0) {
-					float2 GridUv = IN.uv_Control * _GridScale;
-					fixed4 GridColor = tex2D(_GridTexture, IN.uv_Control * _GridScale);
-					fixed4 GridFinal = fixed4(0, 0, 0, GridColor.a);
-					if (_GridCamDist < 1) {
-						GridFinal.rgb = lerp(GridFinal.rgb, fixed3(1, 1, 1), GridColor.r * lerp(1, 0, _GridCamDist));
-						GridFinal.rgb = lerp(GridFinal.rgb, fixed3(0, 1, 0), GridColor.g * lerp(1, 0, _GridCamDist));
-						GridFinal.rgb = lerp(GridFinal.rgb, fixed3(0, 1, 0), GridColor.b * lerp(0, 1, _GridCamDist));
-					}
-					else {
-						GridFinal.rgb = lerp(GridFinal.rgb, fixed3(0, 1, 0), GridColor.b);
-					}
-
-					GridFinal *= GridColor.a;
-
-					half CenterGridSize = lerp(0.005, 0.015, _GridCamDist) / _GridScale;
-					if (IN.uv_Control.x > 0.5 - CenterGridSize && IN.uv_Control.x < 0.5 + CenterGridSize)
-						GridFinal.rgb = fixed3(0.4, 1, 0);
-					else if (IN.uv_Control.y > 0.5 - CenterGridSize && IN.uv_Control.y < 0.5 + CenterGridSize)
-						GridFinal.rgb = fixed3(0.4, 1, 0);
-
-					//col.rgb = lerp(col.rgb, GridFinal.rgb, GridColor.a);
-					Emit += GridFinal;
+					if(_BuildGrid)
+						Emit += RenderGrid(_GridBuildTexture, IN.uv_Control);
+					else
+						Emit += RenderGrid(_GridTexture, IN.uv_Control);
 				}
 
 				if (_Brush > 0) {

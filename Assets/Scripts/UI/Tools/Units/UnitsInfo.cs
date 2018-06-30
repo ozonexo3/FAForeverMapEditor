@@ -87,9 +87,10 @@ namespace EditMap
 			if (Input.GetKeyDown(KeyCode.P) && FirstSelected != null && !CameraControler.IsInputFieldFocused())
 			{
 				// Parent all groups to selected
-				Reparrent();
+				ReparrentGroups();
 
 				// Parent all units to selected
+				ReparrentUnits();
 			}
 		}
 		GameObject[] AllObjects;

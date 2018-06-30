@@ -43,6 +43,8 @@ public partial class ScmapEditor : MonoBehaviour
 	[HideInInspector]
 	public bool Grid;
 	[HideInInspector]
+	public bool BuildGrid;
+	[HideInInspector]
 	public bool Slope;
 	//string Shader;
 	//public		TerrainMesh		TerrainM;
@@ -990,6 +992,12 @@ public partial class ScmapEditor : MonoBehaviour
 	{
 		Grid = To;
 		TerrainMaterial.SetInt("_Grid", Grid ? 1 : 0);
+	}
+
+	public void ToogleBuildGrid(bool To)
+	{
+		BuildGrid = To;
+		TerrainMaterial.SetInt("_BuildGrid", BuildGrid ? 1 : 0);
 	}
 
 	public void ToogleSlope(bool To)

@@ -20,6 +20,7 @@ public class AppMenu : MonoBehaviour
 	public GameObject[] Popups;
 	public GameObject RecentMaps;
 	public Toggle GridToggle;
+	public Toggle BuildGridToggle;
 	public Toggle SlopeToggle;
 
 	//Local
@@ -106,6 +107,9 @@ public class AppMenu : MonoBehaviour
 				break;
 			case "Grid":
 				ScmapEditor.Current.ToogleGrid(GridToggle.isOn);
+				break;
+			case "BuildGrid":
+				ScmapEditor.Current.ToogleBuildGrid(BuildGridToggle.isOn);
 				break;
 			case "Slope":
 				ScmapEditor.Current.ToogleSlope(SlopeToggle.isOn);

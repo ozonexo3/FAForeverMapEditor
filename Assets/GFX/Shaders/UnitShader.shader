@@ -8,7 +8,8 @@
 	SubShader {
 		Tags { "RenderType"="TransparentCutout" "Queue" = "Transparent+2" }
 		LOD 200
-		
+		Offset 0.025, 0
+
 		CGPROGRAM
 		#pragma surface surf BlinnPhong vertex:vert addshadow
 

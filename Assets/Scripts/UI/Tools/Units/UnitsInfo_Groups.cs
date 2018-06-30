@@ -351,7 +351,7 @@ namespace EditMap
 
 		}
 
-		public void Reparrent()
+		void ReparrentGroups()
 		{
 			// TODO Register Undo
 
@@ -360,13 +360,15 @@ namespace EditMap
 				if (sel == FirstSelected)
 					continue;
 
-				
+				if (FirstSelected.Source == sel.Parent)
+					continue;
 
 				sel.transform.SetParent(FirstSelected.Pivot, false);
+				ReparentGroup(sel.Source, FirstSelected.Source, sel.Parent);
 			}
 		}
 
-		public static void Reparent(MapLua.SaveLua.Army.UnitsGroup Source, MapLua.SaveLua.Army.UnitsGroup NewOwner, MapLua.SaveLua.Army.UnitsGroup OldOwner )
+		public static void ReparentGroup(MapLua.SaveLua.Army.UnitsGroup Source, MapLua.SaveLua.Army.UnitsGroup NewOwner, MapLua.SaveLua.Army.UnitsGroup OldOwner )
 		{
 
 			if(OldOwner == null)

@@ -96,14 +96,23 @@ namespace MapLua
 				}
 				public void AddUnit(Unit u)
 				{
+					if(u.Parent != null && u.Parent != this)
+					{
+						// Already used by other group!
+						u.Parent.RemoveUnit(u);
+					}
+
 					u.Parent = this;
 					u.Owner = Owner;
 					Units.Add(u);
 				}
 				public void RemoveUnit(Unit u)
 				{
-					u.Parent = null;
-					u.Owner = null;
+					if (u.Parent == this)
+					{
+						u.Parent = null;
+						u.Owner = null;
+					}
 					Units.Remove(u);
 				}
 				public void ClearUnitInstances()

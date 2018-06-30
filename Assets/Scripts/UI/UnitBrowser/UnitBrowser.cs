@@ -177,6 +177,7 @@ namespace FAF.MapEditor
 				NewResObject.InstanceId = i;
 				NewResObject.NameField.text = UnitDB.CodeName;
 				NewResObject.CustomTexts[0].text = SortDescription(UnitDB);
+				NewResObject.CustomTexts[1].text = UnitDB.Name;
 				NewButton.SetActive(CheckSorting(UnitDB));
 
 				LoadedButtons.Add(NewResObject);

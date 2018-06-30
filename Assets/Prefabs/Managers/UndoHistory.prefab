@@ -84,6 +84,8 @@ MonoBehaviour:
     LightingChange: {fileID: 103088, guid: 255f6ee70b130fa40ba8d1743ce94ab7, type: 2}
     UnitGroupRemove: {fileID: 108316, guid: a186b684f22a9a34a99e0a7990b98fc1, type: 2}
     UnitGroupChange: {fileID: 108316, guid: 052df0f2448e609469dc2606eb10b10a, type: 2}
+    UnitRemove: {fileID: 108316, guid: 160662eff6292b64cb24f1b610d24daa, type: 2}
+    UnitMove: {fileID: 108316, guid: 07dcbcb4b2e0336498313a39676340f0, type: 2}
   History: []
   RedoHistory: []
   CurrentStage: 0

@@ -42,14 +42,23 @@ namespace EditMap
 			UnitIcon.enabled = UnitIcon.texture != Texture2D.whiteTexture;
 		}
 
-
-
 		public void DestroyUnits(List<GameObject> MarkerObjects, bool RegisterUndo = true)
 		{
-			if (RegisterUndo && MarkerObjects.Count > 0)
-				Undo.Current.RegisterDecalsRemove();
-
 			int Count = MarkerObjects.Count;
+
+			if (RegisterUndo && MarkerObjects.Count > 0)
+			{
+				List<SaveLua.Army.UnitsGroup> AllGroups = new List<SaveLua.Army.UnitsGroup>();
+
+				for (int i = 0; i < Count; i++)
+				{
+					UnitInstance uinst = MarkerObjects[i].GetComponent<UnitInstance>();
+					if (!AllGroups.Contains(uinst.Owner.Parent))
+						AllGroups.Add(uinst.Owner.Parent);
+				}
+				Undo.RegisterUnitsRemove(AllGroups.ToArray());
+			}
+
 			for (int i = 0; i < Count; i++)
 			{
 				//DestroyImmediate(MarkerObjects[i]);
@@ -65,8 +74,6 @@ namespace EditMap
 		public void SelectUnit()
 		{
 			// ToDo Reload Selection UI info
-
-			//DecalsList.UpdateSelection();
 		}
 
 		bool UpdateSelectedMatrixes = false;
@@ -151,11 +158,9 @@ namespace EditMap
 
 		void CreatePrefabAction(GameObject InstancedPrefab)
 		{
-			// TODO Fill prefab with render values
 			UnitSource us = GetGamedataFile.LoadUnit(SelectedUnit.CodeName);
 			SelectedUnitSource.Parent = FirstSelected.Source;
 			SelectedUnitSource.Owner = FirstSelected.Owner;
-			//UnitInstance ui = 
 			us.FillGameObjectValues(InstancedPrefab, SelectedUnitSource, FirstSelected.Source, Vector3.zero, Quaternion.identity);
 		}
 
@@ -179,9 +184,12 @@ namespace EditMap
 
 		}
 
-
-
 		public void Place(Vector3[] Positions, Quaternion[] Rotations, Vector3[] Scales)
+		{
+			Place(Positions, Rotations, Scales, true);
+		}
+
+		public void Place(Vector3[] Positions, Quaternion[] Rotations, Vector3[] Scales, bool RegisterUndo)
 		{
 			if (FirstSelected == null)
 			{
@@ -190,10 +198,8 @@ namespace EditMap
 
 			}
 
-			if (Positions.Length > 0)
+			if (Positions.Length > 0 && RegisterUndo)
 			{
-				//TODO Register Undo
-				//Undo.Current.RegisterDecalsAdd();
 				Undo.RegisterUnitsRemove(new SaveLua.Army.UnitsGroup[] { FirstSelected.Source });
 			}
 
@@ -219,6 +225,31 @@ namespace EditMap
 				FirstSelected.Refresh();
 			}
 		}
+		#endregion
+
+		#region Parrenting
+		void ReparrentUnits()
+		{
+			if (FirstSelected == null)
+				return;
+
+			SelectionManager.DoForEverySelected(ReparrentUnit, true);
+		}
+
+		public static void ReparrentUnit(GameObject obj, int Type)
+		{
+			if (obj == null || FirstSelected == null)
+				return;
+
+			UnitInstance uinst = obj.GetComponent<UnitInstance>();
+
+			if (uinst == null)
+				return;
+
+			uinst.Owner.Parent.RemoveUnit(uinst.Owner);
+			FirstSelected.Source.AddUnit(uinst.Owner);
+		}
+
 		#endregion
 
 
@@ -281,18 +312,55 @@ namespace EditMap
 
 		public void ReplaceSelected()
 		{
+			if(FirstSelected == null)
+			{
+				ShowGroupError();
+
+				return;
+			}
+
 			if (string.IsNullOrEmpty(SelectedUnit.CodeName))
 			{
 				ShowUnitError();
 				return;
 			}
 
+			List<SaveLua.Army.UnitsGroup> AllGroups = new List<SaveLua.Army.UnitsGroup>();
+			List<GameObject> AllObjects = SelectionManager.GetAllSelectedGameobjects();
+			int Count = AllObjects.Count;
 
-			//TODO
+			if (Count == 0)
+				return;
 
-			//Find all groups and register UNDO
-			//Remove old units and create new with same position and rotation
+			for (int i = 0; i < Count; i++)
+			{
+				UnitInstance uinst = AllObjects[i].GetComponent<UnitInstance>();
+				if (!AllGroups.Contains(uinst.Owner.Parent))
+					AllGroups.Add(uinst.Owner.Parent);
+			}
+			Undo.RegisterUnitsRemove(AllGroups.ToArray());
 
+
+			Vector3[] Positions = new Vector3[Count];
+			Quaternion[] Rotations = new Quaternion[Count];
+			Vector3[] Scales = new Vector3[Count];
+
+			for (int i = 0; i < Count; i++)
+			{
+				UnitInstance uinst = AllObjects[i].GetComponent<UnitInstance>();
+
+				Positions[i] = uinst.transform.position;
+				Rotations[i] = uinst.transform.rotation;
+				Scales[i] = uinst.transform.localScale;
+
+				SaveLua.Army.Unit u = uinst.Owner;
+
+				u.ClearInstance();
+				u.Parent.RemoveUnit(u);
+			}
+
+			Place(Positions, Rotations, Scales, false);
+			GoToSelection();
 
 		}
 		#endregion

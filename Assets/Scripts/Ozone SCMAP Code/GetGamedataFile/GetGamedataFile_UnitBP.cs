@@ -11,6 +11,7 @@ public partial struct GetGamedataFile
 	{
 		public string CodeName;
 		public string Path;
+		public string Name;
 		public string HelpText;
 
 		public string FactionName;
@@ -25,6 +26,7 @@ public partial struct GetGamedataFile
 		{
 			CodeName = GetCodenameFromPath(LocalPath);
 			Path = LocalPath;
+			Name = "";
 			HelpText = "";
 			FactionName = DefaultFaction;
 			Icon = "land";
@@ -58,6 +60,24 @@ public partial struct GetGamedataFile
 			LuaTable GeneralTab = BP.GetTable("UnitBlueprint.General");
 			if (GeneralTab != null)
 			{
+				CurrentValue = GeneralTab.RawGet("UnitName");
+				if (CurrentValue != null)
+				{
+					Name = CurrentValue.ToString();
+				}
+				else
+				{
+					if (!string.IsNullOrEmpty(HelpText))
+					{
+						Name = HelpText;
+					}
+					else
+					{
+						Name = CodeName;
+					}
+				}
+
+
 				CurrentValue = GeneralTab.RawGet("FactionName");
 				if (CurrentValue != null)
 					FactionName = CurrentValue.ToString();
@@ -82,6 +102,13 @@ public partial struct GetGamedataFile
 				FactionName = DefaultFaction;
 				Icon = "land";
 				Category = "";
+				Name = CodeName;
+			}
+
+			if (Name.Contains(">"))
+			{
+				string[] SplitedName = Name.Split('>');
+				Name = SplitedName[SplitedName.Length - 1];
 			}
 
 

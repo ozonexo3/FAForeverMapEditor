@@ -269,6 +269,27 @@ namespace Selection
 			}
 		}
 
+		public static List<GameObject> GetAllSelectedGameobjects(bool Symmetry = true)
+		{
+			List<GameObject> ToReturn = new List<GameObject>();
+			int ID = 0;
+			for (int i = 0; i < Current.Selection.Ids.Count; i++)
+			{
+				ID = SelectionManager.Current.Selection.Ids[i];
+				ToReturn.Add(Current.AffectedGameObjects[ID]);
+			}
+
+			for (int s = 0; s < SelectionManager.Current.SymetrySelection.Length; s++)
+			{
+				for (int i = 0; i < SelectionManager.Current.SymetrySelection[s].Ids.Count; i++)
+				{
+					ID = Current.SymetrySelection[s].Ids[i];
+					ToReturn.Add(Current.AffectedGameObjects[ID]);
+				}
+			}
+			return ToReturn;
+		}
+
 
 		#region Action Events
 		static System.Action<List<GameObject>, bool> RemoveAction;
