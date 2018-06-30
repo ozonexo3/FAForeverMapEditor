@@ -60,6 +60,13 @@ MonoBehaviour:
     blocking: 0
     style: 0
     description: Beige/Brown Rocky Desert
+  - name: Dirt09
+    index: 9
+    color: {r: 1, g: 0.39215687, b: 0.15294118, a: 1}
+    blocking: 1
+    style: 1
+    description: Blocking variant of Red/brown/biege dirt, with slight vegetation
+      (Dirt02)
   - name: Sand01
     index: 40
     color: {r: 1, g: 1, b: 1, a: 1}
@@ -186,6 +193,18 @@ MonoBehaviour:
     blocking: 0
     style: 6
     description: Geothermal light gray/green rock
+  - name: Rocky14
+    index: 164
+    color: {r: 1, g: 0, b: 0, a: 1}
+    blocking: 0
+    style: 0
+    description: Blue Crystal
+  - name: Rocky15
+    index: 165
+    color: {r: 1, g: 1, b: 0.07058824, a: 1}
+    blocking: 0
+    style: 0
+    description: Cyber Strata
   - name: TermacUEF
     index: 190
     color: {r: 1, g: 0, b: 1, a: 1}
