@@ -7,11 +7,13 @@
 // *
 // ******************************************************************************
 
+using System;
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using UndoHistory;
 using EditMap;
+using UndoHistory.HistoryObjects;
 
 public partial class Undo : MonoBehaviour
 {
@@ -200,5 +202,10 @@ public partial class Undo : MonoBehaviour
 		HistoryUnitsMove.GenerateUndo(Current.Prefabs.UnitMove).Register();
 	}
 	#endregion
+	
+	public void RegisterTerrainTypePaint()
+	{
+		HistoryTerrainType.GenerateUndo(Prefabs.TerrainTypePaint).Register();
+	}
 
 }

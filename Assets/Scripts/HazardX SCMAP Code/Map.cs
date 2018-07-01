@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
+using System.Linq;
 
 #if UNITY_EDITOR
 [System.Serializable, PreferBinarySerialization]
@@ -65,7 +66,7 @@ public class Map
 
 	[HideInInspector]
 	public byte[] TerrainTypeData;
-
+	
 	[HideInInspector]
     public List<WaveGenerator> WaveGenerators = new List<WaveGenerator>();
     public List<Layer> Layers = new List<Layer>();
@@ -124,6 +125,7 @@ public class Map
 		WaterDataTexture = new Texture2D(0, 0);
 
 		TerrainTypeData = new byte[Height * Width];
+//		TerrainTypeData = new List<byte>();
         HeightmapData = new short[(Height + 1) * (Width + 1)];
         WaterDepthBiasMask = new byte[(Height * Width) / 4];
         WaterFlatnessMask = new byte[(Height * Width) / 4];
@@ -209,6 +211,7 @@ public class Map
 		WatermapHeader = DefaultScmapHeaders.Current.WatermapHeader;
 
 		TerrainTypeData = new byte[Height * Width];
+//		TerrainTypeData = new List<byte>();
 		HeightmapData = new short[(Height + 1) * (Width + 1)];
 		WaterDepthBiasMask = new byte[(Height * Width) / 4];
 		WaterFlatnessMask = new byte[(Height * Width) / 4];
@@ -727,6 +730,7 @@ public class Map
 			WaterDataTexture.Apply ();
 
             TerrainTypeData = _with1.ReadBytes(Width * Height);
+//            TerrainTypeData = _with1.ReadBytes(Width * Height).ToList();
 
             if (VersionMinor <= 52)
                 _with1.ReadInt16();
@@ -1139,7 +1143,7 @@ public class Map
         _with2.Write(WaterFlatnessMask);
         _with2.Write(WaterDepthBiasMask);
 
-        _with2.Write(TerrainTypeData);
+        _with2.Write(TerrainTypeData.ToArray());
 
         if (MapFileVersion <= 52)
             _with2.Write(Convert.ToInt16(0));

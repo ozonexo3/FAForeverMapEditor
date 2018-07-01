@@ -25,6 +25,7 @@ Properties {
 	[MaterialToggle] _HideSplat6("Hide splat 7", Int) = 0
 	[MaterialToggle] _HideSplat7("Hide splat 8", Int) = 0
 	[MaterialToggle] _HideSplat8("Hide splat Upper", Int) = 0
+	[MaterialToggle] _HideTerrainType("Hide Terrain Type", Int) = 0
 
 	_SplatAlbedoArray ("Albedo array", 2DArray) = "" {}
 	_SplatNormalArray ("Normal array", 2DArray) = "" {}
@@ -79,6 +80,9 @@ Properties {
 	_GridScale ("Grid Scale", Range (0, 2048)) = 512
 	_GridTexture ("Grid Texture", 2D) = "white" {}
 	_GridBuildTexture("Grid build Texture", 2D) = "white" {}
+	
+	_TerrainTypeAlbedo ("Terrain Type Albedo", 2D) = "black" {}
+	_TerrainTypeCoof ("Terrain Type Coof", Range(0,1)) = 0.228
 }
 	
 	SubShader {
@@ -152,6 +156,7 @@ Properties {
 			uniform sampler2D _UtilitySamplerC;
 			sampler2D _TerrainNormal;
 			sampler2D _SplatLower, _SplatUpper;
+			sampler2D _TerrainTypeAlbedo;
 			sampler2D  _NormalLower;
 			half _Splat0Scale, _Splat1Scale, _Splat2Scale, _Splat3Scale, _Splat4Scale, _Splat5Scale, _Splat6Scale, _Splat7Scale;
 			half _Splat0ScaleNormal, _Splat1ScaleNormal, _Splat2ScaleNormal, _Splat3ScaleNormal, _Splat4ScaleNormal, _Splat5ScaleNormal, _Splat6ScaleNormal, _Splat7ScaleNormal;
@@ -160,7 +165,9 @@ Properties {
 			 UNITY_DECLARE_TEX2DARRAY(_SplatNormalArray);
 
 			int _HideSplat0, _HideSplat1, _HideSplat2, _HideSplat3, _HideSplat4, _HideSplat5, _HideSplat6, _HideSplat7, _HideSplat8;
-
+			int _HideTerrainType;
+			float _TerrainTypeCoof;
+		
 			half _LowerScale, _UpperScale;
 			half _LowerScaleNormal, _UpperScaleNormal;
 			uniform int _TTerrainXP;
@@ -263,7 +270,10 @@ Properties {
 					float4 UpperAlbedo = tex2D (_SplatUpper, UV * _UpperScale);
 					col = lerp(col, UpperAlbedo, UpperAlbedo.a);
 				}
-
+				if(_HideTerrainType == 0) {
+					float4 TerrainTypeAlbedo = tex2D (_TerrainTypeAlbedo, UV);
+					col = lerp(col, TerrainTypeAlbedo, TerrainTypeAlbedo.a*_TerrainTypeCoof);
+				}
 
 				half4 nrm;
 				//UV *= 0.01;
@@ -365,31 +375,35 @@ Properties {
 				}
 
 				if (_Brush > 0) {
-					fixed4 BrushColor = tex2D(_BrushTex, ((IN.uv_Control - float2(_BrushUvX, _BrushUvY)) * _GridScale) / (_BrushSize * _GridScale * 0.002));
+					float2 BrushUv = ((IN.uv_Control - float2(_BrushUvX, _BrushUvY)) * _GridScale) / (_BrushSize * _GridScale * 0.002);
+					fixed4 BrushColor = tex2D(_BrushTex, BrushUv);
 
-					half LerpValue = clamp(_BrushSize / 20, 0, 1);
+					if (BrushUv.x >= 0 && BrushUv.y >= 0 && BrushUv.x <= 1 && BrushUv.y <= 1) {
 
-					half From = 0.1f;
-					half To = lerp(0.2f, 0.13f, LerpValue);
-					half Range = lerp(0.015f, 0.008f, LerpValue);
+						half LerpValue = clamp(_BrushSize / 20, 0, 1);
 
-					if (BrushColor.r >= From && BrushColor.r <= To) {
-						half AA = 1;
+						half From = 0.1f;
+						half To = lerp(0.2f, 0.13f, LerpValue);
+						half Range = lerp(0.015f, 0.008f, LerpValue);
 
-						if (BrushColor.r < From + Range)
-							AA = (BrushColor.r - From) / Range;
-						else if (BrushColor.r > To - Range)
-							AA = 1 - (BrushColor.r - (To - Range)) / Range;
+						if (BrushColor.r >= From && BrushColor.r <= To) {
+							half AA = 1;
 
-						AA = clamp(AA, 0, 1);
+							if (BrushColor.r < From + Range)
+								AA = (BrushColor.r - From) / Range;
+							else if (BrushColor.r > To - Range)
+								AA = 1 - (BrushColor.r - (To - Range)) / Range;
 
-						Emit += half3(0, 0.3, 1) * (AA * 0.8);
+							AA = clamp(AA, 0, 1);
+
+							Emit += half3(0, 0.3, 1) * (AA * 0.8);
+						}
+
+						if (_BrushPainting <= 0)
+							Emit += half3(0, BrushColor.r * 0.1, BrushColor.r * 0.2);
+						else
+							Emit += half3(0, BrushColor.r * 0.1, BrushColor.r * 0.2) * 0.2;
 					}
-
-					if (_BrushPainting <= 0)
-						Emit += half3(0, BrushColor.r * 0.1, BrushColor.r * 0.2);
-					else
-						Emit += half3(0, BrushColor.r * 0.1, BrushColor.r * 0.2) * 0.2;
 				}
 #endif
 

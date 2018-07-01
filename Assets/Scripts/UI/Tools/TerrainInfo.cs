@@ -62,6 +62,11 @@ namespace EditMap
 
 			if (!BrusheshLoaded) LoadBrushes();
 			UpdateMenu();
+			SetBrush();
+		}
+
+		void SetBrush()
+		{
 			TerrainMaterial.SetInt("_Brush", 1);
 			BrushGenerator.SetFallof(SelectedFalloff, LastRotation);
 			TerrainMaterial.SetTexture("_BrushTex", (Texture)BrushGenerator.Current.Brushes[SelectedFalloff]);
@@ -91,6 +96,10 @@ namespace EditMap
 			}
 
 			if(CurrentPage == 0)
+			{
+				SetBrush();
+			}
+			else if(CurrentPage == 2)
 			{
 				TerrainMaterial.SetInt("_Brush", 1);
 			}
