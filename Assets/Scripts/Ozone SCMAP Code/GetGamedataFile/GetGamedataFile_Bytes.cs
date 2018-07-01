@@ -32,7 +32,14 @@ public partial struct GetGamedataFile
 
 		if (!ScdFiles.ContainsKey(scd))
 		{
-			FileStream fs = File.OpenRead(EnvPaths.GamedataPath + scd);
+			string ScdPath = EnvPaths.GamedataPath + scd;
+			if (!System.IO.Directory.Exists(System.IO.Path.GetDirectoryName(ScdPath)) || !System.IO.File.Exists(ScdPath))
+			{
+
+				return null;
+			}
+		
+			FileStream fs = File.OpenRead(ScdPath);
 			ZipFile NewZipFile = new ZipFile(fs);
 			ScdFiles.Add(scd, NewZipFile);
 		}

@@ -7,7 +7,6 @@ public class Preload : MonoBehaviour {
 
 	private void Start()
 	{
-
 		StartCoroutine(PreloadEditor());
 	}
 

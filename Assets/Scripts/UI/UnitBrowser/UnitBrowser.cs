@@ -23,6 +23,8 @@ namespace FAF.MapEditor
 
 		// Drag data
 
+		public FafEditorSettings Preferences;
+
 		[Header("UI")]
 		public GameObject Prefab;
 		public Transform Pivot;
@@ -48,6 +50,17 @@ namespace FAF.MapEditor
 
 		private void OnEnable()
 		{
+			if (!Initialised)
+			{
+				ReadAllUnits();
+			}
+
+			if (!Initialised)
+			{
+				gameObject.SetActive(false);
+				return;
+			}
+
 			if (!IsGenerated && !IsGenerating)
 				GenerateUnits();
 			else
@@ -80,18 +93,26 @@ namespace FAF.MapEditor
 		public List<GetGamedataFile.UnitDB> LoadedUnits = new List<GetGamedataFile.UnitDB>();
 		List<ResourceObject> LoadedButtons = new List<ResourceObject>();
 
+		bool Initialised = false;
 		void ReadAllUnits()
 		{
 			FoundUnits.Clear();
 			IconBackgrounds.Clear();
 
+			ZipFile zf = GetGamedataFile.GetZipFileInstance(GetGamedataFile.UnitsScd);
+			ZipFile FAF_zf = GetGamedataFile.GetFAFZipFileInstance(GetGamedataFile.UnitsScd);
+
+			if (zf == null)
+			{
+				Preferences.Open();
+				GenericInfoPopup.ShowInfo("Gamedata path not exist!");
+				return;
+			}
+
 			IconBackgrounds.Add("land", GetGamedataFile.LoadTexture2DFromGamedata(GetGamedataFile.TexturesScd, "/textures/ui/common/icons/units/land_up.dds"));
 			IconBackgrounds.Add("amph", GetGamedataFile.LoadTexture2DFromGamedata(GetGamedataFile.TexturesScd, "/textures/ui/common/icons/units/amph_up.dds"));
 			IconBackgrounds.Add("sea", GetGamedataFile.LoadTexture2DFromGamedata(GetGamedataFile.TexturesScd, "/textures/ui/common/icons/units/sea_up.dds"));
 			IconBackgrounds.Add("air", GetGamedataFile.LoadTexture2DFromGamedata(GetGamedataFile.TexturesScd, "/textures/ui/common/icons/units/air_up.dds"));
-
-			ZipFile zf = GetGamedataFile.GetZipFileInstance(GetGamedataFile.UnitsScd);
-			ZipFile FAF_zf = GetGamedataFile.GetFAFZipFileInstance(GetGamedataFile.UnitsScd);
 
 			foreach (ZipEntry zipEntry in zf)
 			{
@@ -131,6 +152,7 @@ namespace FAF.MapEditor
 			Debug.Log("Found " + FoundUnits.Count + " units ( FAF: " + (FoundUnits.Count - Count) + ")");
 
 			FoundUnits.Sort();
+			Initialised = true;
 		}
 
 

@@ -30,6 +30,12 @@ public partial struct GetGamedataFile
 		if (FafNotInstalled)
 			return null;
 
+		if (!ScdFiles.ContainsKey(scd))
+		{
+			// Original files not loaded, return
+			return null;
+		}
+
 		if (!FAFScdFiles.ContainsKey(scd))
 		{
 			string ScdPath = EnvPaths.FAFGamedataPath + scd.Replace("scd", "nx2");
