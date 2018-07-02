@@ -21,7 +21,7 @@ namespace FAF.MapEditor
 			catch (System.Exception e)
 			{
 				LoadedTex = new Texture2D(128, 128);
-				Debug.LogError("Can't load DDS texture: " + e);
+				Debug.LogWarning("Can't load DDS texture: " + e);
 				return 0;
 			}
 

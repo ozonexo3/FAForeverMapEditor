@@ -661,7 +661,7 @@ public partial class ScmapEditor : MonoBehaviour
 
 		if (HighestElevation - LowestElevation > 49.9)
 		{
-			Debug.LogError("Height difference is too high! it might couse rendering issues! Height difference is: " + (HighestElevation - LowestElevation));
+			Debug.LogWarning("Height difference is too high! it might couse rendering issues! Height difference is: " + (HighestElevation - LowestElevation));
 			GenericInfoPopup.ShowInfo("Height difference " + (HighestElevation - LowestElevation) + " is too high!\nIt might couse rendering issues!");
 		}
 

@@ -80,7 +80,7 @@ public class EditorVersion : MonoBehaviour
 		}
 		else
 		{
-			Debug.LogError("Wrong tag! Cant parse build version to float! Tag: " + ToParse);
+			Debug.LogWarning("Wrong tag! Cant parse build version to float! Tag: " + ToParse);
 			return 0;
 		}
 	}

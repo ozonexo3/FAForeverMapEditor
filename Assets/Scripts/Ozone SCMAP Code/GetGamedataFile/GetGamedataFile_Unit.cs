@@ -131,14 +131,14 @@ public partial struct GetGamedataFile
 		byte[] Bytes = LoadBytes(scd, LocalPath);
 		if (Bytes == null || Bytes.Length == 0)
 		{
-			Debug.LogError("Unit does not exits: " + LocalPath);
+			Debug.LogWarning("Unit does not exits: " + LocalPath);
 			return CreateEmptyUnit(LocalPath);
 		}
 		string BluePrintString = System.Text.Encoding.UTF8.GetString(Bytes);
 
 		if (BluePrintString.Length == 0)
 		{
-			Debug.LogError("Loaded blueprint is empty");
+			Debug.LogWarning("Loaded blueprint is empty");
 			return CreateEmptyUnit(LocalPath);
 		}
 
@@ -178,7 +178,7 @@ public partial struct GetGamedataFile
 		}
 		catch (NLua.Exceptions.LuaException e)
 		{
-			Debug.LogError(LuaParser.Read.FormatException(e) + "\n" + LocalPath);
+			Debug.LogWarning(LuaParser.Read.FormatException(e) + "\n" + LocalPath);
 			return CreateEmptyUnit(LocalPath, ToReturn);
 		}
 

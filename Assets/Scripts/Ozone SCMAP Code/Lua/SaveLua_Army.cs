@@ -368,7 +368,13 @@ namespace MapLua
 				static HashSet<string> AllNames = new HashSet<string>();
 				public static string GetFreeName(string Tag)
 				{
-					return Tag + AllNames.Count;
+					int Id = 0;
+					while(AllNames.Contains(Tag + Id))
+					{
+						Id++;
+					}
+
+					return Tag + Id;
 				}
 
 				public static void SaveUnit(LuaParser.Creator LuaFile, UnitInstance Instance)
@@ -402,6 +408,10 @@ namespace MapLua
 					UnitInstance ui = GetGamedataFile.LoadUnit(type).CreateUnitObject(this, Parent);
 
 					ui.IsWreckage = Parent.IsWreckage ? 1 : 0;
+					if (AllNames.Contains(Name))
+					{
+						Name = GetFreeName("UNIT_");
+					}
 					AllNames.Add(Name);
 
 				}

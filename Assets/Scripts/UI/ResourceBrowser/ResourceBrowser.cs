@@ -119,7 +119,7 @@ namespace FAF.MapEditor
 
 			if (!Directory.Exists(EnvPaths.GamedataPath))
 			{
-				Debug.LogError("Gamedata path not exist!");
+				Debug.LogWarning("Gamedata path not exist!");
 				return;
 			}
 
@@ -686,7 +686,7 @@ namespace FAF.MapEditor
 			catch (System.Exception e)
 			{
 				LoadedTex = new Texture2D(128, 128);
-				Debug.LogError("Can't load DDS texture: " + e);
+				Debug.LogWarning("Can't load DDS texture: " + e);
 			}
 
 			string TexPath = "";

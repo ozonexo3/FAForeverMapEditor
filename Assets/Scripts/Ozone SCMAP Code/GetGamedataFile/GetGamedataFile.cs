@@ -231,7 +231,7 @@ public partial struct GetGamedataFile
 
 		if (!File.Exists(FinalImagePath))
 		{
-			Debug.LogError("File not exist!");
+			Debug.LogWarning("File not exist!");
 			return TextureFormat.DXT5;
 		}
 

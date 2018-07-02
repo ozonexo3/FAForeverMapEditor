@@ -25,7 +25,7 @@ public partial struct GetGamedataFile
 			if (!Header.IsValid())
 			{
 				// File is not valid, cancel reading file
-				Debug.LogError("Invalid header: " + Header.fourcc + ", " + Header.Version);
+				Debug.LogWarning("Invalid header: " + Header.fourcc + ", " + Header.Version);
 				return;
 			}
 
@@ -169,7 +169,7 @@ public partial struct GetGamedataFile
 			if (fourcc != "MODL") return false;
 			if (Version != 5)
 			{
-				Debug.LogError("Wrong SCM file format! Found " + Version + ", but should be 5");
+				Debug.LogWarning("Wrong SCM file format! Found " + Version + ", but should be 5");
 				return false;
 			}
 			return true;
