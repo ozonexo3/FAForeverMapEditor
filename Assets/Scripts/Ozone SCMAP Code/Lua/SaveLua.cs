@@ -124,6 +124,35 @@ namespace MapLua
 			if (!System.IO.File.Exists(MapLuaParser.MapRelativePath(MapLuaParser.Current.ScenarioLuaFile.Data.save)))
 				return false;
 
+			/*
+			// Fix broken unit names
+			if (true)
+			{
+				string[] AllLines = System.IO.File.ReadAllLines(MapLuaParser.MapRelativePath(MapLuaParser.Current.ScenarioLuaFile.Data.save), encodeType);
+				int UnitId = 0;
+				for (int i = 0; i < AllLines.Length; i++)
+				{
+					if (AllLines[i].Contains("'UNIT_"))
+					{
+						string NewLineString = "";
+						int CharId = 0;
+						while(CharId < AllLines[i].Length && AllLines[i][CharId] != '\'')
+						{
+							NewLineString += AllLines[i][CharId];
+							CharId++;
+						}
+
+						NewLineString += "'UNIT_" + UnitId + "'] = {";
+						UnitId++;
+						AllLines[i] = NewLineString;
+					}
+				}
+
+				Debug.Log("Fixed " + UnitId + " units");
+				System.IO.File.WriteAllLines(MapLuaParser.MapRelativePath(MapLuaParser.Current.ScenarioLuaFile.Data.save), AllLines);
+			}
+			*/
+
 			loadedFileSave = System.IO.File.ReadAllText( MapLuaParser.MapRelativePath(MapLuaParser.Current.ScenarioLuaFile.Data.save), encodeType);
 
 			//string loadedFileFunctions = LuaParser.Read.GetStructureText("lua_variable_functions.lua");
@@ -136,6 +165,8 @@ namespace MapLua
 			LuaFile.LoadCLRPackage();
 
 			loadedFileSave = loadedFileSave.Replace("GROUP ", "");
+
+			
 
 			try
 			{
@@ -266,7 +297,7 @@ namespace MapLua
 			int counter = 1;
 			int BreakCounter = 0;
 
-			MapLuaParser.Current.InfoPopup.Show(true, "Loading map...\n( Loading units " + counter + "/" + count);
+			MapLuaParser.Current.InfoPopup.Show(true, "Loading map...\n( Loading units " + counter + "/" + count + ")");
 			yield return null;
 
 			bool NeedReload = false;
@@ -274,7 +305,7 @@ namespace MapLua
 			{
 				NeedReload = !GetGamedataFile.IsUnitSourceLoaded(ListEnum.Current.type);
 
-				ListEnum.Current.Instantiate(ListEnum.Current.Parent);
+				ListEnum.Current.Instantiate();
 				counter++;
 				BreakCounter++;
 
@@ -286,7 +317,7 @@ namespace MapLua
 
 				if (NeedReload)
 				{
-					MapLuaParser.Current.InfoPopup.Show(true, "Loading map...\n( Loading units " + counter + "/" + count);
+					MapLuaParser.Current.InfoPopup.Show(true, "Loading map...\n( Loading units " + counter + "/" + count + ")");
 					yield return null;
 				}
 			}

@@ -73,8 +73,53 @@ namespace MapLua
 				public string platoon;
 				public HashSet<UnitsGroup> UnitGroups;
 				public HashSet<Unit> Units;
-				public Army Owner;
+
+				#region Editor Values
 				public bool Expanded;
+				public bool IsWreckage = false;
+				#endregion
+
+				#region Parents
+				public Army Owner;
+				public UnitsGroup Parent;
+				public void AddGroup(UnitsGroup ug)
+				{
+					ug.Owner = Owner;
+					ug.Parent = this;
+					UnitGroups.Add(ug);
+				}
+				public void RemoveGroup(UnitsGroup ug)
+				{
+					ug.Owner = null;
+					ug.Parent = null;
+					UnitGroups.Remove(ug);
+				}
+				public void AddUnit(Unit u)
+				{
+					if(u.Parent != null && u.Parent != this)
+					{
+						// Already used by other group!
+						u.Parent.RemoveUnit(u);
+					}
+
+					u.Parent = this;
+					u.Owner = Owner;
+					Units.Add(u);
+				}
+				public void RemoveUnit(Unit u)
+				{
+					if (u.Parent == this)
+					{
+						u.Parent = null;
+						u.Owner = null;
+					}
+					Units.Remove(u);
+				}
+				public void ClearUnitInstances()
+				{
+
+				}
+				#endregion
 
 				public const string KEY_PREFIX = "prefix";
 				public const string KEY_ORDERS = "orders";
@@ -108,6 +153,8 @@ namespace MapLua
 						}
 						else
 							Name = Prefix + "_" + value;
+
+						UpdateGroupTags();
 					}
 				}
 
@@ -129,6 +176,23 @@ namespace MapLua
 							Name = value + "_" + NoPrefixName;
 							Prefix = value;
 						}
+						UpdateGroupTags();
+					}
+				}
+
+				public void UpdateGroupTags()
+				{
+					bool ShouldBeWreckage = NoPrefixName.ToUpper().Contains("WRECKAGE");
+
+					if (IsWreckage == ShouldBeWreckage)
+						return;
+
+					IsWreckage = ShouldBeWreckage;
+
+					if (Units != null)
+					foreach (Unit u in Units) {
+						if (u.Instance)
+							u.Instance.IsWreckage = IsWreckage?1:0;
 					}
 				}
 
@@ -154,11 +218,14 @@ namespace MapLua
 					orders = LuaParser.Read.StringFromTable(Table, KEY_ORDERS);
 					platoon = LuaParser.Read.StringFromTable(Table, KEY_PLATOON);
 
+					UpdateGroupTags();
+
 					UnitGroups = new HashSet<UnitsGroup>();
 					Units = new HashSet<Unit>();
 
 					LuaTable[] UnitsTables = LuaParser.Read.GetTableTables((LuaTable)Table.RawGet(KEY_UNITS));
 					string[] UnitsNames = LuaParser.Read.GetTableKeys((LuaTable)Table.RawGet(KEY_UNITS));
+
 
 					if (UnitsNames.Length > 0)
 					{
@@ -171,17 +238,16 @@ namespace MapLua
 								NewUnit.type = LuaParser.Read.StringFromTable(UnitsTables[i], KEY_TYPE);
 								NewUnit.orders = LuaParser.Read.StringFromTable(UnitsTables[i], KEY_ORDERS);
 								NewUnit.platoon = LuaParser.Read.StringFromTable(UnitsTables[i], KEY_PLATOON);
-								//Debug.Log(UnitsTables[i].RawGet(KEY_POSITION));
 								NewUnit.Position = LuaParser.Read.Vector3FromTable(UnitsTables[i], KEY_POSITION);
 								NewUnit.Orientation = LuaParser.Read.Vector3FromTable(UnitsTables[i], KEY_ORIENTATION);
-								Units.Add(NewUnit);
-								//GetGamedataFile.LoadUnit(NewUnit.type).CreateUnitObject(NewUnit, this);
+								AddUnit(NewUnit);
 							}
 							else
 							{
 								UnitsGroup NewUnitsGroup = new UnitsGroup(UnitsNames[i], UnitsTables[i], Owner, StoreForLaterInstantiate);
-								UnitGroups.Add(NewUnitsGroup);
+								AddGroup(NewUnitsGroup);
 							}
+
 						}
 
 					}
@@ -190,6 +256,8 @@ namespace MapLua
 						UnitGroups = new HashSet<UnitsGroup>();
 						Units = new HashSet<Unit>();
 					}
+
+
 
 					if (StoreForLaterInstantiate)
 					{
@@ -242,7 +310,7 @@ namespace MapLua
 				{
 					foreach (Unit u in Units)
 					{
-						u.Instantiate(this);
+						u.Instantiate();
 					}
 
 					if(childs)
@@ -258,7 +326,7 @@ namespace MapLua
 						//u.Instantiate(this);
 						if (!UnitsToLoad.Contains(u))
 						{
-							u.Parent = this;
+							//u.Parent = this;
 							UnitsToLoad.Add(u);
 						}
 					}
@@ -293,7 +361,21 @@ namespace MapLua
 				public Vector3 Position;
 				public Vector3 Orientation;
 				public UnitInstance Instance;
+				public Army Owner;
 				public UnitsGroup Parent;
+
+
+				static HashSet<string> AllNames = new HashSet<string>();
+				public static string GetFreeName(string Tag)
+				{
+					int Id = 0;
+					while(AllNames.Contains(Tag + Id))
+					{
+						Id++;
+					}
+
+					return Tag + Id;
+				}
 
 				public static void SaveUnit(LuaParser.Creator LuaFile, UnitInstance Instance)
 				{
@@ -313,14 +395,24 @@ namespace MapLua
 				public void ClearInstance()
 				{
 					if (Instance && Instance.gameObject)
+					{
 						Object.Destroy(Instance.gameObject);
+						AllNames.Remove(Name);
+					}
 				}
 
-				public void Instantiate(UnitsGroup Parent)
+				public void Instantiate()
 				{
 					if (Instance && Instance.gameObject)
 						return;
-					GetGamedataFile.LoadUnit(type).CreateUnitObject(this, Parent);
+					UnitInstance ui = GetGamedataFile.LoadUnit(type).CreateUnitObject(this, Parent);
+
+					ui.IsWreckage = Parent.IsWreckage ? 1 : 0;
+					if (AllNames.Contains(Name))
+					{
+						Name = GetFreeName("UNIT_");
+					}
+					AllNames.Add(Name);
 
 				}
 			}

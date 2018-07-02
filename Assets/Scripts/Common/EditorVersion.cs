@@ -6,16 +6,19 @@ using System.Collections.Generic;
 public class EditorVersion : MonoBehaviour
 {
 
-	public const string EditorBuildVersion = "v0.524-Alpha";
-	//public const float VersionOffset = 0f; // Release
-	public const float VersionOffset = -0.001f; // Prerelease
+	public const string EditorBuildVersion = "v0.600-Alpha";
+	public const float VersionOffset = 0f; // Release
+	//public const float VersionOffset = -0.001f; // Prerelease
+	//public const float VersionOffset = 0.523f - 0.600f; // Prerelease v0600
 	public static string LatestTag = "";
 	public static string FoundUrl;
+	public bool SearchForNew = false;
 
 	void Start()
 	{
 		GetComponent<Text>().text = EditorBuildVersion;
-		StartCoroutine(FindLatest());
+		if(SearchForNew)
+			StartCoroutine(FindLatest());
 	}
 
 	public string url = "https://github.com/ozonexo3/FAForeverMapEditor/releases/latest";
@@ -77,7 +80,7 @@ public class EditorVersion : MonoBehaviour
 		}
 		else
 		{
-			Debug.LogError("Wrong tag! Cant parse build version to float! Tag: " + ToParse);
+			Debug.LogWarning("Wrong tag! Cant parse build version to float! Tag: " + ToParse);
 			return 0;
 		}
 	}

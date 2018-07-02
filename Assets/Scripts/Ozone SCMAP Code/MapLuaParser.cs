@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using EditMap;
 using NLua;
 using MapLua;
+using FAF.MapEditor;
 
 public partial class MapLuaParser : MonoBehaviour
 {
@@ -124,7 +125,7 @@ public partial class MapLuaParser : MonoBehaviour
 
 		EditMenu.TexturesMenu.ResetVisibility();
 
-		ScmapEditor.Current.ResBrowser.gameObject.SetActive(false);
+		ResourceBrowser.Current.gameObject.SetActive(false);
 	}
 
 	#region Loading
@@ -194,7 +195,7 @@ public partial class MapLuaParser : MonoBehaviour
 		if (!System.IO.Directory.Exists(FolderParentPath))
 		{
 			Error = "Map folder does not exist:\n" + FolderParentPath;
-			Debug.LogError(Error);
+			Debug.LogWarning(Error);
 			AllFilesExists = false;
 		}
 
@@ -205,7 +206,7 @@ public partial class MapLuaParser : MonoBehaviour
 			if (!AllFilesExists)
 			{
 				Error = "Scenario.lua does not exist:\n" + LoadedMapFolderPath + ScenarioFileName + ".lua";
-				Debug.LogError(Error);
+				Debug.LogWarning(Error);
 			}
 		}
 
@@ -220,7 +221,7 @@ public partial class MapLuaParser : MonoBehaviour
 				if (!AllFilesExists)
 				{
 					Error = "Wrong scenario file version. Should be 3, is " + ScenarioText.Remove(11).Replace("version =", "");
-					Debug.LogError(Error);
+					Debug.LogWarning(Error);
 				}
 			}
 
@@ -232,7 +233,7 @@ public partial class MapLuaParser : MonoBehaviour
 				if (!AllFilesExists)
 				{
 					Error = "Selected file is not a proper scenario.lua file. ";
-					Debug.LogError(Error);
+					Debug.LogWarning(Error);
 				}
 			}
 		}
@@ -240,7 +241,7 @@ public partial class MapLuaParser : MonoBehaviour
 		if (AllFilesExists && !System.IO.File.Exists(EnvPaths.GamedataPath + "/env.scd"))
 		{
 			Error = "No source files in gamedata folder: " + EnvPaths.GamedataPath;
-			Debug.LogError(Error);
+			Debug.LogWarning(Error);
 			AllFilesExists = false;
 		}
 

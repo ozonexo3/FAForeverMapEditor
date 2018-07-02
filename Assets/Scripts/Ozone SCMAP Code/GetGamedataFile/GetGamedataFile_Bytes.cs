@@ -32,7 +32,14 @@ public partial struct GetGamedataFile
 
 		if (!ScdFiles.ContainsKey(scd))
 		{
-			FileStream fs = File.OpenRead(EnvPaths.GamedataPath + scd);
+			string ScdPath = EnvPaths.GamedataPath + scd;
+			if (!System.IO.Directory.Exists(System.IO.Path.GetDirectoryName(ScdPath)) || !System.IO.File.Exists(ScdPath))
+			{
+
+				return null;
+			}
+		
+			FileStream fs = File.OpenRead(ScdPath);
 			ZipFile NewZipFile = new ZipFile(fs);
 			ScdFiles.Add(scd, NewZipFile);
 		}
@@ -60,7 +67,7 @@ public partial struct GetGamedataFile
 
 		if (!Directory.Exists(EnvPaths.CurrentGamedataPath))
 		{
-			Debug.LogError("Gamedata path not exist!");
+			Debug.LogWarning("Gamedata path not exist!");
 			return null;
 		}
 
@@ -69,7 +76,7 @@ public partial struct GetGamedataFile
 		ZipFile ZipFileInstance = GetZipFileInstance(scd);
 		if(ZipFileInstance == null)
 		{
-			Debug.LogError("Can't load ZipFile");
+			Debug.LogWarning("Can't load ZipFile");
 			return null;
 		}
 
@@ -155,7 +162,7 @@ public partial struct GetGamedataFile
 
 			if (!System.IO.File.Exists(FilePath))
 			{
-				Debug.LogError("File does not exist! " + FilePath);
+				Debug.LogWarning("File does not exist! " + FilePath);
 				return null;
 			}
 			else

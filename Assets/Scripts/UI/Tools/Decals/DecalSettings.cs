@@ -333,7 +333,7 @@ namespace EditMap
 		public void DropTex1()
 		{
 
-			if (Loaded == null || !ResourceBrowser.Current.gameObject.activeSelf && ResourceBrowser.DragedObject)
+			if (Loaded == null || !ResourceBrowser.Current.gameObject.activeSelf && ResourceBrowser.DragedObject || ResourceBrowser.DragedObject.ContentType != ResourceObject.ContentTypes.Decal)
 				return;
 			if (ResourceBrowser.SelectedCategory == 2)
 			{
@@ -357,7 +357,7 @@ namespace EditMap
 		
 		public void DropTex2()
 		{
-			if (Loaded == null || !ResourceBrowser.Current.gameObject.activeSelf && ResourceBrowser.DragedObject)
+			if (Loaded == null || !ResourceBrowser.Current.gameObject.activeSelf && ResourceBrowser.DragedObject || ResourceBrowser.DragedObject.ContentType != ResourceObject.ContentTypes.Decal)
 				return;
 			if (ResourceBrowser.SelectedCategory == 2)
 			{
@@ -526,7 +526,6 @@ namespace EditMap
 			Obj.CutOffLOD = CutOff.value;
 			Obj.NearCutOffLOD = NearCutOff.value;
 			Obj.Bake();
-
 		}
 	}
 

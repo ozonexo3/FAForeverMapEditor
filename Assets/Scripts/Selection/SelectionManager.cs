@@ -43,7 +43,7 @@ namespace Selection
 			if (!Active)
 				return;
 
-			if (AllowRemove && Input.GetKeyDown(KeyCode.Delete))
+			if (AllowRemove && Input.GetKeyDown(KeyCode.Delete) && !CameraControler.IsInputFieldFocused())
 			{
 				DestroySelectedObjects();
 			}
@@ -146,6 +146,11 @@ namespace Selection
 
 		}
 
+		public void ChangeMinAngle(int value)
+		{
+			MinAngle = value;
+		}
+
 		public static bool AllowSelection = true;
 		public static bool AllowSymmetry = true;
 		public static bool AllowRemove = true;
@@ -243,6 +248,46 @@ namespace Selection
 				AffectedTypes = new int[0];
 				CleanSelection();
 			}
+		}
+
+		public static void DoForEverySelected(System.Action<GameObject, int> Task, bool Symmetry = true)
+		{
+			int ID = 0;
+			for (int i = 0; i < Current.Selection.Ids.Count; i++)
+			{
+				ID = SelectionManager.Current.Selection.Ids[i];
+				Task(Current.AffectedGameObjects[ID], Current.AffectedTypes[ID]);
+			}
+
+			for (int s = 0; s < SelectionManager.Current.SymetrySelection.Length; s++)
+			{
+				for (int i = 0; i < SelectionManager.Current.SymetrySelection[s].Ids.Count; i++)
+				{
+					ID = Current.SymetrySelection[s].Ids[i];
+					Task(Current.AffectedGameObjects[ID], Current.AffectedTypes[ID]);
+				}
+			}
+		}
+
+		public static List<GameObject> GetAllSelectedGameobjects(bool Symmetry = true)
+		{
+			List<GameObject> ToReturn = new List<GameObject>();
+			int ID = 0;
+			for (int i = 0; i < Current.Selection.Ids.Count; i++)
+			{
+				ID = SelectionManager.Current.Selection.Ids[i];
+				ToReturn.Add(Current.AffectedGameObjects[ID]);
+			}
+
+			for (int s = 0; s < SelectionManager.Current.SymetrySelection.Length; s++)
+			{
+				for (int i = 0; i < SelectionManager.Current.SymetrySelection[s].Ids.Count; i++)
+				{
+					ID = Current.SymetrySelection[s].Ids[i];
+					ToReturn.Add(Current.AffectedGameObjects[ID]);
+				}
+			}
+			return ToReturn;
 		}
 
 

@@ -15,6 +15,7 @@ public class UnitInstance : MonoBehaviour
 
 	public Color ArmyColor;
 	public Matrix4x4 LocalToWorldMatrix;
+	public float IsWreckage;
 
 	Vector3 Position;
 	Vector3 Scale;
@@ -22,6 +23,8 @@ public class UnitInstance : MonoBehaviour
 	public static HashSet<GameObject> AllUnitInstances = new HashSet<GameObject>();
 	public static GameObject[] GetAllUnitGo(out int[] Types)
 	{
+		AllUnitInstances.Remove(null);
+
 		GameObject[] ToReturn = new GameObject[AllUnitInstances.Count];
 		Types = new int[ToReturn.Length];
 		AllUnitInstances.CopyTo(ToReturn);
@@ -124,5 +127,10 @@ public class UnitInstance : MonoBehaviour
 		AllUnitInstances.Remove(gameObject);
 		if (UnitRenderer)
 			UnitRenderer.RemoveInstance(this);
+	}
+
+	private void OnDestroy()
+	{
+		AllUnitInstances.Remove(gameObject);
 	}
 }

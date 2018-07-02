@@ -16,16 +16,16 @@ namespace EditMap.TerrainTypes.Editor
         private float colorWidth = 100f;
         private float blockingWidth = 60f;
         private float styleWidth = 110f;
-        private float descriptionWidth = 0.2f;
+        //private float descriptionWidth = 0.2f;
         private float descriptionHeight = 1 - 0.25f;
-        private float descriptionButtonWidth = 0.2f;
+        //private float descriptionButtonWidth = 0.2f;
 
-        private static Vector4 border = new Vector4(0, 3, 0, 3);
+        //private static Vector4 border = new Vector4(0, 3, 0, 3);
 
         private static float defaultElementHeight = 21f;
         private static float selectedElementHeight = defaultElementHeight * 4;
 
-        private int selectedIndex = -1;
+        //private int selectedIndex = -1;
 
         private void OnEnable()
         {

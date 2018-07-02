@@ -144,19 +144,19 @@ namespace B83.Image.BMP
 			BMPImage bmp = new BMPImage();
 			if (!ReadFileHeader(aReader, ref bmp.header))
 			{
-				Debug.LogError("Not a BMP file");
+				Debug.LogWarning("Not a BMP file");
 				return null;
 			}
 			if (!ReadInfoHeader(aReader, ref bmp.info))
 			{
-				Debug.LogError("Unsupported header format");
+				Debug.LogWarning("Unsupported header format");
 				return null;
 			}
 			if (bmp.info.compressionMethod != BMPComressionMode.BI_RGB
 				&& bmp.info.compressionMethod != BMPComressionMode.BI_BITFIELDS
 				&& bmp.info.compressionMethod != BMPComressionMode.BI_ALPHABITFIELDS)
 			{
-				Debug.LogError("Unsupported format: " + bmp.info.compressionMethod);
+				Debug.LogWarning("Unsupported format: " + bmp.info.compressionMethod);
 				return null;
 			}
 
@@ -197,7 +197,7 @@ namespace B83.Image.BMP
 				ReadIndexedImage(aReader, bmp);
 			else
 			{
-				Debug.LogError("Unsupported file format: " + bmp.info.compressionMethod + " BPP: " + bmp.info.nBitsPerPixel);
+				Debug.LogWarning("Unsupported file format: " + bmp.info.compressionMethod + " BPP: " + bmp.info.nBitsPerPixel);
 				return null;
 			}
 			return bmp;

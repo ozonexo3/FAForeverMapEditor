@@ -20,6 +20,7 @@ public class AppMenu : MonoBehaviour
 	public GameObject[] Popups;
 	public GameObject RecentMaps;
 	public Toggle GridToggle;
+	public Toggle BuildGridToggle;
 	public Toggle SlopeToggle;
 
 	//Local
@@ -34,10 +35,44 @@ public class AppMenu : MonoBehaviour
 		hook = new UnityDragAndDropHook();
 		hook.InstallHook();
 		hook.OnDroppedFiles += OnFiles;
+		Application.logMessageReceived += HandleLog;
 	}
 	void OnDisable()
 	{
 		hook.UninstallHook();
+		Application.logMessageReceived -= HandleLog;
+	}
+
+	bool ErrorFound = false;
+	void HandleLog(string logString, string stackTrace, LogType type)
+	{
+
+		switch (type)
+		{
+			case LogType.Exception:
+				if(!ErrorFound)
+					GenericPopup.ShowPopup(GenericPopup.PopupTypes.TwoButton, "Crash! (Exception)", "Editor crashed is now unsafe! Report bug with log file!\n" + logString, "Show log", ShowEditorLog, "Continue", null);
+				ErrorFound = true;
+				break;
+			case LogType.Error:
+				if (!ErrorFound)
+					GenericPopup.ShowPopup(GenericPopup.PopupTypes.TwoButton, "Error", logString, "Show log", ShowEditorLog, "Continue", null);
+				ErrorFound = true;
+				break;
+		}
+	}
+
+	void ShowEditorLog()
+	{
+		string LogPath = System.Environment.GetFolderPath(System.Environment.SpecialFolder.LocalApplicationData);
+		LogPath += "Low";
+		LogPath += "\\" + Application.companyName;
+		LogPath += "\\" + Application.productName;
+		LogPath += "\\" + "output_log.txt";
+
+		Debug.Log(LogPath);
+
+		System.Diagnostics.Process.Start("explorer.exe", "/select," + "\"" + LogPath + "\"");
 	}
 
 	void LateUpdate()
@@ -65,7 +100,7 @@ public class AppMenu : MonoBehaviour
 
 
 
-		if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.S))
+		if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.S) && !CameraControler.IsInputFieldFocused())
 		{
 			MapLuaParser.Current.SaveMap();
 		}
@@ -107,6 +142,9 @@ public class AppMenu : MonoBehaviour
 			case "Grid":
 				ScmapEditor.Current.ToogleGrid(GridToggle.isOn);
 				break;
+			case "BuildGrid":
+				ScmapEditor.Current.ToogleBuildGrid(BuildGridToggle.isOn);
+				break;
 			case "Slope":
 				ScmapEditor.Current.ToogleSlope(SlopeToggle.isOn);
 				break;
@@ -120,15 +158,7 @@ public class AppMenu : MonoBehaviour
 				Application.OpenURL("http://direct.faforever.com/faf/unitsDB/");
 				break;
 			case "EditorLog":
-				string LogPath = System.Environment.GetFolderPath(System.Environment.SpecialFolder.LocalApplicationData);
-				LogPath += "Low";
-				LogPath += "\\" + Application.companyName;
-				LogPath += "\\" + Application.productName;
-				LogPath += "\\" + "output_log.txt";
-
-				Debug.Log(LogPath);
-
-				System.Diagnostics.Process.Start("explorer.exe", "/select," + "\"" + LogPath + "\"");
+				ShowEditorLog();
 				break;
 			case "Donate":
 				Application.OpenURL("https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=LUYMTPBDH5V4E&lc=GB&item_name=FAF%20Map%20Editor&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted");
@@ -162,7 +192,7 @@ public class AppMenu : MonoBehaviour
 						else
 						{
 
-							Debug.LogError("Game executable not exist at given path: " + EnvPaths.GetInstalationPath() + "bin/");
+							Debug.LogWarning("Game executable not exist at given path: " + EnvPaths.GetInstalationPath() + "bin/");
 							return;
 						}
 					}
@@ -473,7 +503,7 @@ public class AppMenu : MonoBehaviour
 		{
 			if (System.IO.Directory.GetDirectories(paths[0]).Length > 0 || System.IO.Directory.GetFiles(paths[0]).Length > 0)
 			{
-				Debug.LogError("Selected directory is not empty! " + paths[0]);
+				Debug.LogWarning("Selected directory is not empty! " + paths[0]);
 				GenericPopup.ShowPopup(GenericPopup.PopupTypes.Error, "Error", "Selected folder is not empty! Select empty folder.", "OK", null);
 				return;
 			}

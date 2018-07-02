@@ -281,6 +281,24 @@ namespace Selection
 			}
 		}
 
+
+		public void SelectObjects(GameObject[] ToSelect)
+		{
+			bool AnyChanged = false;
+			for(int i = 0; i < ToSelect.Length; i++)
+			{
+				int ObjectId = GetIdOfObject(ToSelect[i]);
+				if (!Selection.Ids.Contains(ObjectId))
+				{
+					Selection.Ids.Add(ObjectId);
+					AnyChanged = true;
+				}
+			}
+
+			if(AnyChanged)
+				FinishSelectionChange();
+		}
+
 		public void SelectObjectAdd(GameObject Obj)
 		{
 			int ObjectId = GetIdOfObject(Obj);
@@ -449,6 +467,7 @@ namespace Selection
 
 		void UndoRegisterMove()
 		{
+			Debug.Log(LastControlType);
 			if(LastControlType == SelectionControlTypes.Marker || LastControlType == SelectionControlTypes.MarkerChain)
 			{
 				Undo.Current.RegisterMarkersMove();
@@ -456,6 +475,10 @@ namespace Selection
 			else if(LastControlType == SelectionControlTypes.Decal)
 			{
 				Undo.Current.RegisterDecalsMove();
+			}
+			else if(LastControlType == SelectionControlTypes.Units)
+			{
+				Undo.RegisterUnitsMove();
 			}
 		}
 

@@ -31,6 +31,8 @@ namespace EditMap
 
 		private void OnEnable()
 		{
+			ForceExitCreate();
+			PlacementManager.OnDropOnGameplay += DropAtGameplay;
 			SelectionManager.Current.DisableLayer = 15;
 			SelectionManager.Current.SetRemoveAction(DestroyUnits);
 			SelectionManager.Current.SetSelectionChangeAction(SelectUnit);
@@ -43,7 +45,9 @@ namespace EditMap
 
 		private void OnDisable()
 		{
-			//PlacementManager.OnDropOnGameplay -= DropAtGameplay;
+			ClearRename();
+			ForceExitCreate();
+			PlacementManager.OnDropOnGameplay -= DropAtGameplay;
 			Selection.SelectionManager.Current.ClearAffectedGameObjects();
 		}
 
@@ -80,27 +84,32 @@ namespace EditMap
 				}
 			}
 
-			if (Input.GetKeyDown(KeyCode.P) && FirstSelected != null)
+			if (Input.GetKeyDown(KeyCode.P) && FirstSelected != null && !CameraControler.IsInputFieldFocused())
 			{
 				// Parent all groups to selected
-				Reparrent();
+				ReparrentGroups();
 
 				// Parent all units to selected
+				ReparrentUnits();
 			}
 		}
 		GameObject[] AllObjects;
 		public void GoToSelection()
 		{
 
+			PlacementManager.Clear();
+
+
 			int[] AllTypes;
 			AllObjects = UnitInstance.GetAllUnitGo(out AllTypes);
 			SelectionManager.Current.SetAffectedGameObjects(AllObjects, SelectionManager.SelectionControlTypes.Units);
 			SelectionManager.Current.SetAffectedTypes(AllTypes);
 
+			OnChangeFreeRotation();
 
-			PlacementManager.Clear();
 			if (ChangeControlerType.Current)
 				ChangeControlerType.Current.UpdateButtons();
+
 		}
 
 		int CurrentPage = 0;
@@ -110,6 +119,8 @@ namespace EditMap
 			if (CurrentPage == PageId && Page[CurrentPage].activeSelf && PageSelected[CurrentPage].activeSelf)
 				return;
 			TerrainPageChange = true;
+
+			ForceExitCreate();
 
 			//PreviousPage = CurrentPage;
 			CurrentPage = PageId;

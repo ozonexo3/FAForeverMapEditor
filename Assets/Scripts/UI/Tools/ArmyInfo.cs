@@ -572,13 +572,14 @@ public class ArmyInfo : MonoBehaviour {
 		UpdateColor();
 	}
 
-	int LastDisplayedColor = 0;
+	int LastDisplayedColor = -1;
 	public void UpdateColor()
 	{
 		if (ColorInput.intValue == LastDisplayedColor)
 			return;
 
 		LastDisplayedColor = ColorInput.intValue;
+		SelectedArmy.Data.color = ColorInput.intValue;
 		ArmyColor.color = SaveLua.GetArmyColor(ColorInput.intValue);
 		SelectedArmy.Data.Units.UpdateGroupArmy(SelectedArmy.Data);
 	}

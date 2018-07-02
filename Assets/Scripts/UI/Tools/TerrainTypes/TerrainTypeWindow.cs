@@ -14,9 +14,9 @@ namespace EditMap.TerrainTypes
     {
         private static TerrainTypeWindow instance;
         
-        [SerializeField] private Editing editingTool;
-        [SerializeField] private Material terrainMaterial;
-        [SerializeField] private Camera camera;
+        //[SerializeField] private Editing editingTool;
+        //[SerializeField] private Material terrainMaterial;
+        //[SerializeField] private Camera camera;
 
         [Header("Editor Settings")] [SerializeField]
         private LayerMask RayCastTerrainLayer;
@@ -78,7 +78,7 @@ namespace EditMap.TerrainTypes
         }
 
         private Texture2D brushTexture;
-        private int brushTextureSize = 512;
+        //private int brushTextureSize = 512;
 
         private Texture2D BrushTexture
         {
@@ -196,7 +196,7 @@ namespace EditMap.TerrainTypes
             {
                 if (ChangedMousePos)
                 {
-                    terrainRay = camera.ScreenPointToRay(MousePos);
+                    terrainRay = CameraControler.Current.Cam.ScreenPointToRay(MousePos);
                 }
 
                 return terrainRay;
@@ -312,7 +312,7 @@ namespace EditMap.TerrainTypes
 
         private void Update()
         {
-            if (editingTool.MauseOnGameplay)
+            if (MapLuaParser.Current.EditMenu.MauseOnGameplay)
             {
                 if (ChangedMousePos)
                 {
@@ -352,11 +352,11 @@ namespace EditMap.TerrainTypes
             
             RebuildBrush(BrushSize);
             
-            terrainMaterial.SetInt("_Brush", 1);
-            terrainMaterial.SetTexture("_BrushTex", brushTexture);
-            terrainMaterial.SetFloat("_BrushSize", BrushSizeRecalc);
-            terrainMaterial.SetTexture("_TerrainTypeAlbedo", TerrainTypeTexture);
-            terrainMaterial.SetInt("_HideTerrainType", 0);
+            ScmapEditor.Current.TerrainMaterial.SetInt("_Brush", 1);
+			ScmapEditor.Current.TerrainMaterial.SetTexture("_BrushTex", brushTexture);
+			ScmapEditor.Current.TerrainMaterial.SetFloat("_BrushSize", BrushSizeRecalc);
+			ScmapEditor.Current.TerrainMaterial.SetTexture("_TerrainTypeAlbedo", TerrainTypeTexture);
+			ScmapEditor.Current.TerrainMaterial.SetInt("_HideTerrainType", 0);
             
             layerCapacityField.SetValue(0.228f * 100);
             CreateUILayerSettings();
@@ -380,13 +380,13 @@ namespace EditMap.TerrainTypes
 
             TerrainTypeData = TerrainTypeData.Select(b => defaultIndex).ToArray();
             ApplyTerrainTypeChanges();
-            terrainMaterial.SetTexture("_TerrainTypeAlbedo", TerrainTypeTexture);
+			ScmapEditor.Current.TerrainMaterial.SetTexture("_TerrainTypeAlbedo", TerrainTypeTexture);
         }
 
         private void OnClearCurrentButtonPressed()
         {
             Undo.Current.RegisterTerrainTypePaint();
-            Color defaultColor = layersSettings.GetFirstLayer().color;
+            //Color defaultColor = layersSettings.GetFirstLayer().color;
             byte defaultIndex = layersSettings.GetFirstLayer().index;
 
             for (int j = 0; j < TerrainTypeSize.y; j++)
@@ -403,7 +403,7 @@ namespace EditMap.TerrainTypes
 //            TerrainTypeTexture.SetPixels(new byte[TerrainTypeTexture.width*TerrainTypeTexture.height].Select(b => defaultColor).ToArray());
             TerrainTypeTexture = null;
             ApplyTerrainTypeChanges();
-            terrainMaterial.SetTexture("_TerrainTypeAlbedo", TerrainTypeTexture);
+			ScmapEditor.Current.TerrainMaterial.SetTexture("_TerrainTypeAlbedo", TerrainTypeTexture);
         }
 
         private void CreateUILayerSettings()
@@ -461,10 +461,10 @@ namespace EditMap.TerrainTypes
             
             ApplyTerrainTypeChanges();
             HideMoreLayerInfo();
-            
-            terrainMaterial.SetInt("_Brush", 0);
-            terrainMaterial.SetInt("_HideTerrainType", 1);
-            terrainMaterial.SetTexture("_TerrainTypeAlbedo", null);
+
+			ScmapEditor.Current.TerrainMaterial.SetInt("_Brush", 0);
+			ScmapEditor.Current.TerrainMaterial.SetInt("_HideTerrainType", 1);
+			ScmapEditor.Current.TerrainMaterial.SetTexture("_TerrainTypeAlbedo", null);
             
             TerrainTypeTexture = null;
             TerrainTypeData2D = null;
@@ -484,12 +484,12 @@ namespace EditMap.TerrainTypes
 
         private void OnSizeChanged()
         {
-            terrainMaterial.SetFloat("_BrushSize", BrushSizeRecalc);
+			ScmapEditor.Current.TerrainMaterial.SetFloat("_BrushSize", BrushSizeRecalc);
         }
         
         private void OnCapacityChanged()
         {
-            terrainMaterial.SetFloat("_TerrainTypeCapacity", layerCapacityField.value*0.01f);
+			ScmapEditor.Current.TerrainMaterial.SetFloat("_TerrainTypeCapacity", layerCapacityField.value*0.01f);
         }
 
         private void OnSizeChangeEnd()
@@ -506,21 +506,23 @@ namespace EditMap.TerrainTypes
 
         private void UpdateBrushPos(Vector2 position)
         {
-            terrainMaterial.SetFloat("_BrushUvX", position.x);
-            terrainMaterial.SetFloat("_BrushUvY", position.y);
+			ScmapEditor.Current.TerrainMaterial.SetFloat("_BrushUvX", position.x);
+			ScmapEditor.Current.TerrainMaterial.SetFloat("_BrushUvY", position.y);
 //            Debug.LogFormat("Pos:{0}, Size:{1}", position, BrushSize);
         }
 
         private void RebuildBrush(float brushSize)
         {
-//            Vector2Int brushTextureReferenceSize = new Vector2Int((int)brushSize/terrainTypeSize.x, (int)brushSize/terrainTypeSize.y);
-            float sizeF = brushSize / TerrainTypeSize.x * TerrainTypeSize.x;
-            int size = (int) sizeF;
+			//            Vector2Int brushTextureReferenceSize = new Vector2Int((int)brushSize/terrainTypeSize.x, (int)brushSize/terrainTypeSize.y);
+			//float sizeF = brushSize / TerrainTypeSize.x * TerrainTypeSize.x;
+			float sizeF = brushSize;
+			int size = (int) sizeF;
             int spacing = 5;
             brushTexture = new Texture2D((int) size * 2, (int) size * 2, TextureFormat.ARGB32, false, false);
             brushTexture.anisoLevel = 0;
             brushTexture.wrapMode = TextureWrapMode.Clamp;
-            Color empty = new Color(0, 0, 0, 0);
+			brushTexture.filterMode = FilterMode.Point;
+			Color empty = new Color(0, 0, 0, 0);
             for (int j = -size; j < size; j++)
             {
                 for (int i = -size; i < size; i++)
@@ -633,9 +635,9 @@ namespace EditMap.TerrainTypes
             TerrainTypeData = terrainTypeData;
             TerrainTypeData2D = null;
             TerrainTypeTexture = null;
-//            TerrainTypeTexture.SetPixels(texData);
-//            TerrainTypeTexture.Apply();
-            terrainMaterial.SetTexture("_TerrainTypeAlbedo", TerrainTypeTexture);
+			//            TerrainTypeTexture.SetPixels(texData);
+			//            TerrainTypeTexture.Apply();
+			ScmapEditor.Current.TerrainMaterial.SetTexture("_TerrainTypeAlbedo", TerrainTypeTexture);
         }
         
         private byte[] GetToUndo()

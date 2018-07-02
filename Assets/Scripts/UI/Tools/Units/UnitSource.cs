@@ -73,6 +73,7 @@ public class UnitSource : MonoBehaviour
 		{
 			_matrices = new Matrix4x4[MaxInstancingCount];
 			_colors = new Vector4[MaxInstancingCount];
+			_wreckage = new float[MaxInstancingCount];
 		}
 		if (InstancesArray == null || InstancesArray.Length != MaxMemoryAllocation)
 		{
@@ -108,6 +109,7 @@ public class UnitSource : MonoBehaviour
 
 	static Matrix4x4[] _matrices;
 	static Vector4[] _colors;
+	static float[] _wreckage;
 	static MaterialPropertyBlock Mpb;
 	const UnityEngine.Rendering.ShadowCastingMode ShadowCasting = UnityEngine.Rendering.ShadowCastingMode.On;
 	public void Draw()
@@ -120,11 +122,13 @@ public class UnitSource : MonoBehaviour
 		{
 			_matrices[n] = ListEnum.Current.LocalToWorldMatrix;
 			_colors[n] = ListEnum.Current.ArmyColor;
+			_wreckage[n] = ListEnum.Current.IsWreckage;
 			n++;
 
 			if (n == MaxInstancingCount)
 			{
 				Mpb.SetVectorArray("_Color", _colors);
+				Mpb.SetFloatArray("_Wreckage", _wreckage);
 				Graphics.DrawMeshInstanced(BP.LODs[0].Mesh, 0, BP.LODs[0].Mat, _matrices, n, Mpb, ShadowCasting);
 				//Graphics.DrawMeshInstancedIndirect(SharedMesh, 0, SharedMaterial, , null, 0, null, ShadowCasting);
 				n = 0;
@@ -135,6 +139,7 @@ public class UnitSource : MonoBehaviour
 		if (n > 0)
 		{
 			Mpb.SetVectorArray("_Color", _colors);
+			Mpb.SetFloatArray("_Wreckage", _wreckage);
 			Graphics.DrawMeshInstanced(BP.LODs[0].Mesh, 0, BP.LODs[0].Mat, _matrices, n, Mpb, ShadowCasting);
 		}
 	}
@@ -163,6 +168,11 @@ public class UnitSource : MonoBehaviour
 
 
 		GameObject Obj = Instantiate(UnitsInfo.Current.UnitInstancePrefab, transform) as GameObject;
+		return FillGameObjectValues(Obj, Source, Group, position, rotation);
+	}
+
+	public UnitInstance FillGameObjectValues(GameObject Obj, MapLua.SaveLua.Army.Unit Source, MapLua.SaveLua.Army.UnitsGroup Group, Vector3 position, Quaternion rotation)
+	{
 		Obj.name = Source.Name;
 
 		UnitInstance UInst = Obj.GetComponent<UnitInstance>();

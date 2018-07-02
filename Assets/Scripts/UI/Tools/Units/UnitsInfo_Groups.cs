@@ -21,6 +21,8 @@ namespace EditMap
 
 		public void Clear()
 		{
+			ClearRename();
+
 			if (UnitGroups == null)
 				UnitGroups = new HashSet<UnitListObject>();
 			else
@@ -86,6 +88,11 @@ namespace EditMap
 
 		public void CreateGroup(MapLua.SaveLua.Army Army, MapLua.SaveLua.Army.UnitsGroup Grp, MapLua.SaveLua.Army.UnitsGroup Parent, Transform Pivot, bool Root = false)
 		{
+			if (Root)
+			{
+				Grp.Expanded = true;
+			}
+
 			GameObject NewGroupObject = Instantiate(GroupPrefab, Pivot);
 			UnitListObject ulo = NewGroupObject.GetComponent<UnitListObject>();
 			ulo.AddAction = AddNewGroup;
@@ -105,37 +112,6 @@ namespace EditMap
 		}
 
 
-		public void DestroyUnits(List<GameObject> MarkerObjects, bool RegisterUndo = true)
-		{
-			if (RegisterUndo && MarkerObjects.Count > 0)
-				Undo.Current.RegisterDecalsRemove();
-
-			int Count = MarkerObjects.Count;
-			for (int i = 0; i < Count; i++)
-			{
-				DestroyImmediate(MarkerObjects[i]);
-			}
-
-			SelectionManager.Current.CleanSelection();
-			GoToSelection();
-		}
-
-		public void SelectUnit()
-		{
-			// ToDo Reload Selection UI info
-
-			//DecalsList.UpdateSelection();
-		}
-
-		bool UpdateSelectedMatrixes = false;
-		public void SnapAction(Transform tr, GameObject Connected)
-		{
-			UpdateSelectedMatrixes = true;
-			if (Connected == null)
-				tr.localPosition = ScmapEditor.SnapToTerrain(tr.localPosition);
-			else
-				tr.localPosition = Connected.GetComponent<UnitInstance>().GetSnapPosition(tr.localPosition);
-		}
 
 
 		#region Groups
@@ -143,6 +119,8 @@ namespace EditMap
 
 		public void AddNewGroup(UnitListObject parent)
 		{
+			ClearRename();
+
 			Undo.RegisterGroupRemove(parent.Source);
 
 			ClearGrpSelection();
@@ -185,7 +163,8 @@ namespace EditMap
 			MapLua.SaveLua.Army.UnitsGroup NewGroup = new MapLua.SaveLua.Army.UnitsGroup(parent.Source.Owner);
 			NewGroup.Name = NamePrefix;
 
-			parent.Source.UnitGroups.Add(NewGroup);
+			//parent.Source.UnitGroups.Add(NewGroup);
+			parent.Source.AddGroup(NewGroup);
 
 			StoreSelection.Clear();
 			StoreSelection.Add(NewGroup);
@@ -218,6 +197,8 @@ namespace EditMap
 				return;
 			}
 
+			ClearRename();
+
 			Undo.RegisterGroupRemove(parent.Parent);
 
 			StoreSelection.Clear();
@@ -229,13 +210,15 @@ namespace EditMap
 
 			parent.Source.ClearGroup(true);
 
-			parent.Parent.UnitGroups.Remove(parent.Source);
+			//parent.Parent.UnitGroups.Remove(parent.Source);
+			parent.Parent.RemoveGroup(parent.Source);
 
 			Generate(false);
 		}
 
 		public void SelectGroup(UnitListObject parent)
 		{
+			ClearRename();
 			if (Input.GetKey(KeyCode.LeftShift))
 			{
 				AddToGrpSelection(parent);
@@ -260,6 +243,8 @@ namespace EditMap
 		static UnitListObject RenameObject;
 		public void RenameStart(UnitListObject parent)
 		{
+			ClearRename();
+
 			RenameObject = parent;
 			RenameField.SetParent(parent.transform, false);
 			RenameField.gameObject.SetActive(true);
@@ -283,6 +268,18 @@ namespace EditMap
 			RenameField.SetParent(Pivot, false);
 			RenameField.gameObject.SetActive(false);
 			RenameUndoApplyied = false;
+		}
+
+		void ClearRename()
+		{
+			if (RenameField.gameObject.activeSelf)
+			{
+				if(RenameObject)
+					RenameObject.RenameEnd();
+				RenameField.SetParent(Pivot, false);
+				RenameField.gameObject.SetActive(false);
+				RenameUndoApplyied = false;
+			}
 		}
 
 		public void RenameGroup(UnitListObject parent)
@@ -354,7 +351,7 @@ namespace EditMap
 
 		}
 
-		public void Reparrent()
+		void ReparrentGroups()
 		{
 			// TODO Register Undo
 
@@ -363,13 +360,15 @@ namespace EditMap
 				if (sel == FirstSelected)
 					continue;
 
-				
+				if (FirstSelected.Source == sel.Parent)
+					continue;
 
 				sel.transform.SetParent(FirstSelected.Pivot, false);
+				ReparentGroup(sel.Source, FirstSelected.Source, sel.Parent);
 			}
 		}
 
-		public static void Reparent(MapLua.SaveLua.Army.UnitsGroup Source, MapLua.SaveLua.Army.UnitsGroup NewOwner, MapLua.SaveLua.Army.UnitsGroup OldOwner )
+		public static void ReparentGroup(MapLua.SaveLua.Army.UnitsGroup Source, MapLua.SaveLua.Army.UnitsGroup NewOwner, MapLua.SaveLua.Army.UnitsGroup OldOwner )
 		{
 
 			if(OldOwner == null)
@@ -377,8 +376,8 @@ namespace EditMap
 
 			}
 
-			OldOwner.UnitGroups.Remove(Source);
-			NewOwner.UnitGroups.Add(Source);
+			OldOwner.RemoveGroup(Source);
+			NewOwner.AddGroup(Source);
 		}
 
 

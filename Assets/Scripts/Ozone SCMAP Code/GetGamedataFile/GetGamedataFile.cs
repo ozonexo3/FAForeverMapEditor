@@ -47,6 +47,7 @@ public partial struct GetGamedataFile
 	}
 
 
+
 	public static Texture2D LoadTexture2DFromGamedata(string scd, string LocalPath, bool NormalMap = false, bool StoreInMemory = true)
 	{
 		if (string.IsNullOrEmpty(LocalPath))
@@ -230,7 +231,7 @@ public partial struct GetGamedataFile
 
 		if (!File.Exists(FinalImagePath))
 		{
-			Debug.LogError("File not exist!");
+			Debug.LogWarning("File not exist!");
 			return TextureFormat.DXT5;
 		}
 

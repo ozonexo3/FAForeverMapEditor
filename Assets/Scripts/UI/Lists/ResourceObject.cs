@@ -13,6 +13,12 @@ namespace FAF.MapEditor
 		public int InstanceId;
 		public Text NameField;
 		public GameObject Selected;
+		public ContentTypes ContentType;
+
+		public enum ContentTypes
+		{
+			Texture, Decal, Prop, Unit
+		}
 
 		public RawImage[] RawImages;
 
@@ -41,7 +47,7 @@ namespace FAF.MapEditor
 
 		}
 
-			public void OnBeginDrag(PointerEventData eventData)
+		public void OnBeginDrag(PointerEventData eventData)
 		{
 			BeginDrag.Invoke();
 			ResourceBrowser.DragedObject = this;

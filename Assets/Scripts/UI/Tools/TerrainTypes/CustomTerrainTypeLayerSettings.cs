@@ -2,6 +2,6 @@
 {
     public class CustomTerrainTypeLayerSettings:TerrainTypeLayerSettings
     {
-        public string style;
+        //public string style;
     }
 }

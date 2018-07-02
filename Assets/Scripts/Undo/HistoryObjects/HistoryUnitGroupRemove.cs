@@ -38,10 +38,20 @@ public class HistoryUnitGroupRemove : HistoryObject
 	public override void DoRedo()
 	{
 
-		RegisteredGroup.UnitGroups.Clear();
-		for(int i = 0; i < AllGroups.Length; i++)
+		MapLua.SaveLua.Army.UnitsGroup[] RemoveOld = new MapLua.SaveLua.Army.UnitsGroup[RegisteredGroup.UnitGroups.Count];
+		RegisteredGroup.UnitGroups.CopyTo(RemoveOld);
+
+		for (int i = 0; i < RemoveOld.Length; i++)
 		{
-			RegisteredGroup.UnitGroups.Add(AllGroups[i]);
+			RegisteredGroup.RemoveGroup(AllGroups[i]);
+		}
+
+		RegisteredGroup.UnitGroups.Clear();
+
+		for (int i = 0; i < AllGroups.Length; i++)
+		{
+			//RegisteredGroup.UnitGroups.Add(AllGroups[i]);
+			RegisteredGroup.AddGroup(AllGroups[i]);
 		}
 
 

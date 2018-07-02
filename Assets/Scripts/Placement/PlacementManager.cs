@@ -43,7 +43,7 @@ public class PlacementManager : MonoBehaviour {
 		}
 	}
 
-	int PlaceAngle = 0;
+	//int PlaceAngle = 0;
 
 
 	static Quaternion OldRot;
@@ -127,14 +127,14 @@ public class PlacementManager : MonoBehaviour {
 			{
 				if (Input.GetKeyDown(KeyCode.E))
 				{
-					if (MinRotAngle > 1)
+					/*if (MinRotAngle > 1)
 					{
 						PlaceAngle += MinRotAngle;
 						if (PlaceAngle >= 360)
 							PlaceAngle = 0;
 						PlacementObject.transform.rotation = Quaternion.Euler(Vector3.up * PlaceAngle);
 					}
-					else
+					else*/
 					{
 						RotationStartMousePos = Input.mousePosition;
 						StartRotation = PlacementObject.transform.eulerAngles;
@@ -147,7 +147,17 @@ public class PlacementManager : MonoBehaviour {
 				else if (Input.GetKey(KeyCode.E))
 				{
 					Rotating = true;
-					PlacementObject.transform.eulerAngles = StartRotation + Vector3.down * ((Input.mousePosition.x - RotationStartMousePos.x) * 0.5f);
+
+					Vector3 NewRot = StartRotation + Vector3.down * ((Input.mousePosition.x - RotationStartMousePos.x) * 0.5f);
+
+					if (MinRotAngle > 1)
+					{
+						int ClampedRot = (int)(NewRot.y / MinRotAngle);
+						NewRot.y = MinRotAngle * ClampedRot;
+					}
+
+					PlacementObject.transform.eulerAngles = NewRot;
+
 				}
 			}
 

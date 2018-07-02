@@ -14,6 +14,7 @@ public partial struct GetGamedataFile
 
 	static Dictionary<string, ZipFile> FAFScdFiles = new Dictionary<string, ZipFile>();
 	static Dictionary<string, string[]> FAFNewEntries = new Dictionary<string, string[]>();
+	//static Dictionary<string, string[]> FAFNewFolders = new Dictionary<string, string[]>();
 
 	static bool FafNotInstalled = false;
 
@@ -29,10 +30,15 @@ public partial struct GetGamedataFile
 		if (FafNotInstalled)
 			return null;
 
+		if (!ScdFiles.ContainsKey(scd))
+		{
+			// Original files not loaded, return
+			return null;
+		}
+
 		if (!FAFScdFiles.ContainsKey(scd))
 		{
 			string ScdPath = EnvPaths.FAFGamedataPath + scd.Replace("scd", "nx2");
-			//Debug.Log("Try load FAF zip file: " + ScdPath);
 			if (!System.IO.Directory.Exists(System.IO.Path.GetDirectoryName(ScdPath)) || !System.IO.File.Exists(ScdPath))
 			{
 				FAFScdFiles.Add(scd, null);
@@ -41,6 +47,7 @@ public partial struct GetGamedataFile
 			FileStream fs = File.OpenRead(ScdPath);
 			ZipFile NewZipFile = new ZipFile(fs);
 			FAFScdFiles.Add(scd, NewZipFile);
+
 			LoadNewEntriesPaths(scd);
 		}
 
@@ -50,24 +57,44 @@ public partial struct GetGamedataFile
 	public static string[] GetNewFafFiles(string scd)
 	{
 		if (!FAFScdFiles.ContainsKey(scd))
+		{
+			Debug.LogWarning("No FAF scd");
 			return new string[0];
+		}
 
 		return FAFNewEntries[scd];
 	}
+
+	/*
+	public static string[] GetNewFafFolders(string scd)
+	{
+		if (!FAFScdFiles.ContainsKey(scd))
+			return new string[0];
+
+		return FAFNewFolders[scd];
+	}
+	*/
 
 	static void LoadNewEntriesPaths(string scd)
 	{
 		ZipFile Source = ScdFiles[scd];
 		ZipFile Faf = FAFScdFiles[scd];
+
 		List<string> NewPaths = new List<string>();
+		//List<string> NewFolders = new List<string>();
 		bool IsTexturesScd = scd == TexturesScd;
 		string Log = "";
 		foreach (ZipEntry zipEntry in Faf)
 		{
-			if (!zipEntry.IsFile)
-				continue;
-
 			string name = zipEntry.Name;
+
+			if (!zipEntry.IsFile)
+			{
+				//if (Source.FindEntry(name, false) < 0)
+				//	NewFolders.Add(name);
+				continue;
+			}
+
 
 			if (IsTexturesScd)
 			{
@@ -84,10 +111,10 @@ public partial struct GetGamedataFile
 
 		if (NewPaths.Count > 0)
 		{
-			Debug.Log("New FAF files: " + scd + ": " + NewPaths.Count);
-			//Debug.Log(Log);
+			//Debug.Log("New FAF files: " + scd + ": " + NewPaths.Count);
 		}
 		FAFNewEntries.Add(scd, NewPaths.ToArray());
+		//FAFNewFolders.Add(scd, NewFolders.ToArray());
 	}
 
 }

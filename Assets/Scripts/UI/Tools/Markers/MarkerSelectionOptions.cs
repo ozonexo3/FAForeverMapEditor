@@ -24,6 +24,8 @@ namespace EditMap
 		public GameObject ViewCamera;
 		public GameObject Size;
 		public GameObject Amount;
+		public GameObject Scale;
+		public GameObject EffectTemplate;
 
 		public Text MarkerTypeField;
 		public InputField NameField;
@@ -32,6 +34,9 @@ namespace EditMap
 		public Toggle Camera_Sync;
 		public InputField SizeField;
 		public InputField AmountField;
+
+		public InputField ScaleField;
+		public InputField EffectTemplateField;
 
 		public MarkersList MarkerListControler;
 
@@ -67,11 +72,11 @@ namespace EditMap
 		{
 			if (Connect.activeSelf)
 			{
-				if (Input.GetKeyDown(KeyCode.C))
+				if (Input.GetKeyDown(KeyCode.C) && !CameraControler.IsInputFieldFocused())
 				{
 					ConnectSelected();
 				}
-				else if (Input.GetKeyDown(KeyCode.D))
+				else if (Input.GetKeyDown(KeyCode.D) && !CameraControler.IsInputFieldFocused())
 				{
 					DisconnectSelected();
 				}
@@ -531,7 +536,41 @@ namespace EditMap
 			}
 			Loading = false;
 		}
-		
+
+
+
+		public void ScaleChanged()
+		{
+			if (Loading || Count <= 0)
+				return;
+			Loading = true;
+			float ReadValue = LuaParser.Read.StringToFloat(ScaleField.text, -1);
+
+			Undo.Current.RegisterMarkerChange(AllMarkers);
+
+			if (ReadValue >= 0)
+			{
+				for (int i = 0; i < Count; i++)
+				{
+					SelectedGameObjects[i].GetComponent<MarkerObject>().Owner.scale = ReadValue;
+				}
+				ScaleField.text = ReadValue.ToString();
+			}
+			else
+			{
+				if (ScaleField.contentType == InputField.ContentType.DecimalNumber)
+				{
+					ScaleField.text = SelectedGameObjects[0].GetComponent<MarkerObject>().Owner.scale.ToString();
+				}
+				else
+				{
+					ScaleField.text = ValueDifferent;
+				}
+			}
+			Loading = false;
+		}
+
+
 
 		public void ConnectSelected()
 		{

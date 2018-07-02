@@ -40,6 +40,10 @@ SubShader {
 			v2f vert (appdata_t v)
 			{
 				v2f o;
+
+				UNITY_SETUP_INSTANCE_ID(v);
+				//UNITY_TRANSFER_INSTANCE_ID(v, o); // necessary only if you want to access instanced properties in the fragment Shader.
+
 				o.vertex = UnityObjectToClipPos(v.vertex);
 				o.texcoord = TRANSFORM_TEX(v.texcoord, _MainTex);
 				return o;

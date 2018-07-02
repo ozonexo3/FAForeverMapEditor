@@ -21,6 +21,7 @@ public partial class ScmapEditor : MonoBehaviour
 	public TerrainData Data;
 	public Transform WaterLevel;
 	public ResourceBrowser ResBrowser;
+	public UnitBrowser UnBrowser;
 	public Light Sun;
 	public ProceduralSkybox Skybox;
 	public Material TerrainMaterial;
@@ -41,6 +42,8 @@ public partial class ScmapEditor : MonoBehaviour
 
 	[HideInInspector]
 	public bool Grid;
+	[HideInInspector]
+	public bool BuildGrid;
 	[HideInInspector]
 	public bool Slope;
 	//string Shader;
@@ -74,6 +77,8 @@ public partial class ScmapEditor : MonoBehaviour
 
 	void Start()
 	{
+		UnBrowser.Instantiate();
+
 		ToogleGrid(false);
 		heightsLength = 10;
 		heights = new float[10, 10];
@@ -656,7 +661,7 @@ public partial class ScmapEditor : MonoBehaviour
 
 		if (HighestElevation - LowestElevation > 49.9)
 		{
-			Debug.LogError("Height difference is too high! it might couse rendering issues! Height difference is: " + (HighestElevation - LowestElevation));
+			Debug.LogWarning("Height difference is too high! it might couse rendering issues! Height difference is: " + (HighestElevation - LowestElevation));
 			GenericInfoPopup.ShowInfo("Height difference " + (HighestElevation - LowestElevation) + " is too high!\nIt might couse rendering issues!");
 		}
 
@@ -987,6 +992,12 @@ public partial class ScmapEditor : MonoBehaviour
 	{
 		Grid = To;
 		TerrainMaterial.SetInt("_Grid", Grid ? 1 : 0);
+	}
+
+	public void ToogleBuildGrid(bool To)
+	{
+		BuildGrid = To;
+		TerrainMaterial.SetInt("_BuildGrid", BuildGrid ? 1 : 0);
 	}
 
 	public void ToogleSlope(bool To)
