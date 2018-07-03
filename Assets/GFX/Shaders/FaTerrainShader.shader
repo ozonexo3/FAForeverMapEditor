@@ -123,10 +123,8 @@ Properties {
 					v.normal = float3(0,1,0);
 				v.tangent.xyz = cross(v.normal, float3(0,0,1));
 				v.tangent.w = -1;
-				//o.normal = v.normal;
 				 float4 hpos = UnityObjectToClipPos (v.vertex);
 		         o.grabUV = ComputeGrabScreenPos(hpos);
-				//v.color = _Abyss;
 
 				 float pos = length(UnityObjectToViewPos(v.vertex).xyz);
 				 float diff = unity_FogEnd.x - unity_FogStart.x;
@@ -190,7 +188,6 @@ Properties {
 			}
 
 			float4 RenderGrid(sampler2D _GridTex, float2 uv_Control) {
-				//float2 GridUv = IN.uv_Control * _GridScale;
 				fixed4 GridColor = tex2D(_GridTex, uv_Control * _GridScale);
 				fixed4 GridFinal = fixed4(0, 0, 0, GridColor.a);
 				if (_GridCamDist < 1) {
@@ -210,7 +207,6 @@ Properties {
 				else if (uv_Control.y > 0.5 - CenterGridSize && uv_Control.y < 0.5 + CenterGridSize)
 					GridFinal.rgb = fixed3(0.4, 1, 0);
 
-				//col.rgb = lerp(col.rgb, GridFinal.rgb, GridColor.a);
 				return GridFinal;
 			}
 
@@ -270,53 +266,39 @@ Properties {
 					float4 UpperAlbedo = tex2D (_SplatUpper, UV * _UpperScale);
 					col = lerp(col, UpperAlbedo, UpperAlbedo.a);
 				}
+
+#if defined(PREVIEW_ON)
+				
+#else
 				if(_HideTerrainType == 0) {
 					float4 TerrainTypeAlbedo = tex2D (_TerrainTypeAlbedo, UV);
 					col = lerp(col, TerrainTypeAlbedo, TerrainTypeAlbedo.a*_TerrainTypeCapacity);
 				}
+#endif
 
 				half4 nrm;
-				//UV *= 0.01;
 				nrm = tex2D (_NormalLower, UV * _LowerScaleNormal);
 				if(_HideSplat0 == 0)
-				//nrm = lerp(nrm, tex2D (_SplatNormal0, UV * _Splat0ScaleNormal), splat_control.r);
 				nrm = lerp(nrm, UNITY_SAMPLE_TEX2DARRAY(_SplatNormalArray, float3(UV * _Splat0ScaleNormal, 0)), splat_control.r);
 				if(_HideSplat1 == 0)
-				//nrm =  lerp(nrm, tex2D (_SplatNormal1, UV * _Splat1ScaleNormal), splat_control.g);
 				nrm = lerp(nrm, UNITY_SAMPLE_TEX2DARRAY(_SplatNormalArray, float3(UV * _Splat1ScaleNormal, 1)), splat_control.g);
 				if(_HideSplat2 == 0)
-				//nrm =  lerp(nrm, tex2D (_SplatNormal2, UV * _Splat2ScaleNormal), splat_control.b);
 				nrm = lerp(nrm, UNITY_SAMPLE_TEX2DARRAY(_SplatNormalArray, float3(UV * _Splat2ScaleNormal, 2)), splat_control.b);
 				if(_HideSplat3 == 0)
-				//nrm =  lerp(nrm, tex2D (_SplatNormal3, UV * _Splat3ScaleNormal), splat_control.a);
 				nrm = lerp(nrm, UNITY_SAMPLE_TEX2DARRAY(_SplatNormalArray, float3(UV * _Splat3ScaleNormal, 3)), splat_control.a);
 
 				if (_TTerrainXP > 0) {
 					if(_HideSplat4 == 0)
-					//nrm = lerp(nrm, tex2D(_SplatNormal4, UV * _Splat4ScaleNormal), splat_control2.r);
 					nrm = lerp(nrm, UNITY_SAMPLE_TEX2DARRAY(_SplatNormalArray, float3(UV * _Splat4ScaleNormal, 4)), splat_control2.r);
 					if(_HideSplat5 == 0)
-					//nrm = lerp(nrm, tex2D(_SplatNormal5, UV * _Splat5ScaleNormal), splat_control2.g);
 					nrm = lerp(nrm, UNITY_SAMPLE_TEX2DARRAY(_SplatNormalArray, float3(UV * _Splat5ScaleNormal, 5)), splat_control2.g);
 					if(_HideSplat6 == 0)
-					//nrm = lerp(nrm, tex2D(_SplatNormal6, UV * _Splat6ScaleNormal), splat_control2.b);
 					nrm = lerp(nrm, UNITY_SAMPLE_TEX2DARRAY(_SplatNormalArray, float3(UV * _Splat6ScaleNormal, 6)), splat_control2.b);
 					if(_HideSplat7 == 0)
-					//nrm = lerp(nrm, tex2D(_SplatNormal7, UV * _Splat7ScaleNormal), splat_control2.a);
 					nrm = lerp(nrm, UNITY_SAMPLE_TEX2DARRAY(_SplatNormalArray, float3(UV * _Splat7ScaleNormal, 7)), splat_control2.a);
 				}
 
 
-
-				//nrm = tex2D (_NormalLower, UV * 1000);
-				//nrm.rg *= 5;
-				//nrm.b = 1;
-				//nrm.rgb = UnpackNormal(nrm);
-				//nrm.rgb = nrm.rgb * 2 - half3(1, 1, 1);
-				//nrm.rg *= 3;
-				//nrm.rgb = normalize(nrm.rgb);
-				//o.Normal = UnpackNormalDXT5nm(tex2D(_TerrainNormal, UV ));
-				//o.Normal = (UnpackNormalDXT5nm(tex2D(_TerrainNormal, UV )) + UnpackNormalDXT5nmScaled(nrm.rgbg, 2));
 				if(_GeneratingNormal == 0){
 					half4 TerrainNormal = tex2D(_TerrainNormal, UVCtrl );
 					half3 TerrainNormalVector = UnpackNormalDXT5nm( half4(TerrainNormal.r, 1 - TerrainNormal.g, TerrainNormal.b, TerrainNormal.a));
@@ -410,7 +392,6 @@ Properties {
 				//FOG
 				col.rgb = lerp(0, col.rgb, IN.fog);
 				Emit = lerp(unity_FogColor, Emit, IN.fog);
-				//emission.rgb = lerp(emission.rgb, exp2(-unity_FogColor), saturate(IN.fog));
 
 
 				o.Albedo = col;
@@ -436,11 +417,6 @@ Properties {
 						o.Albedo = Albedo;
 					}
 				}
-
-				//o.Albedo = 0.5;
-				//o.Emission = tex2D (_SplatNormal3, UV * 10 );
-				//o.Emission = nrm;
-
 
 				if (_TTerrainXP > 0) {
 					o.Gloss = (1 - col.a);

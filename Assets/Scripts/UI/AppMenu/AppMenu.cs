@@ -510,10 +510,30 @@ public class AppMenu : MonoBehaviour
 
 			string[] PathSeparation = paths[0].Replace("\\", "/").Split("/".ToCharArray());
 
-			string FileBeginName = PathSeparation[PathSeparation.Length - 1].ToLower();
+			string FileBeginName = PathSeparation[PathSeparation.Length - 1].Replace(" ", "_");
 			//MapLuaParser.Current.ScenarioFileName = FileBeginName + "_scenario";
 
 			string NewFolderName = PathSeparation[PathSeparation.Length - 1];
+			NewFolderName = NewFolderName.Replace(" ", "_");
+
+			if (!NewFolderName.Contains(".v"))
+			{
+				NewFolderName += ".v0001";
+				MapLuaParser.Current.ScenarioLuaFile.Data.map_version = 1;
+			}
+			else
+			{
+				int MapVersion = 1;
+
+				if(int.TryParse(NewFolderName.Remove(0, NewFolderName.Length - 4), out MapVersion))
+				{
+
+				}
+
+				MapLuaParser.Current.ScenarioLuaFile.Data.map_version = MapVersion;
+
+			}
+
 			SaveAsNewFolder(NewFolderName, FileBeginName);
 		}
 	}
@@ -568,7 +588,6 @@ public class AppMenu : MonoBehaviour
 
 	bool SaveAsNewFolder(string NewFolderName, string FileBeginName = "")
 	{
-
 		string SystemPath = MapLuaParser.Current.FolderParentPath + NewFolderName;
 
 		if (!System.IO.Directory.Exists(SystemPath))

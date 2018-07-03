@@ -775,9 +775,14 @@ namespace MapLua
 				AllMarkersDictionary.Clear();
 		}
 
-		public static void AddNewMarker(SaveLua.Marker NewMarker)
+		public static bool AddNewMarker(SaveLua.Marker NewMarker)
 		{
-			AllMarkersDictionary.Add(NewMarker.Name, NewMarker);
+			if (!AllMarkersDictionary.ContainsKey(NewMarker.Name))
+			{
+				AllMarkersDictionary.Add(NewMarker.Name, NewMarker);
+				return true;
+			}
+			return false;
 		}
 
 		public static void RemoveMarker(string Name)

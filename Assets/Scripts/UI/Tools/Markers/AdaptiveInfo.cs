@@ -23,8 +23,8 @@ namespace EditMap
 
 		public HashSet<GameObject> CreatedObjects = new HashSet<GameObject>();
 
-		UiToggle[] ArmyToogles;
-		UiToggle[][] CustomToggles;
+		UiToggle[] ArmyToogles = new UiToggle[0];
+		UiToggle[][] CustomToggles = new UiToggle[0][];
 
 
 
