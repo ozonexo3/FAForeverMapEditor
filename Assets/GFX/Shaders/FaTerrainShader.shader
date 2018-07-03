@@ -82,7 +82,7 @@ Properties {
 	_GridBuildTexture("Grid build Texture", 2D) = "white" {}
 	
 	_TerrainTypeAlbedo ("Terrain Type Albedo", 2D) = "black" {}
-	_TerrainTypeCoof ("Terrain Type Coof", Range(0,1)) = 0.228
+	_TerrainTypeCapacity ("Terrain Type Capacity", Range(0,1)) = 0.228
 }
 	
 	SubShader {
