@@ -154,6 +154,8 @@ namespace EditMap
 			UndoRegistered = false;
 
 			ReloadPropStats();
+
+			MapLuaParser.Current.UpdateArea();
 		}
 
 		void OnDisable()

@@ -364,6 +364,8 @@ public partial class MapLuaParser : MonoBehaviour
 
 			EditMenu.Categorys[0].GetComponent<MapInfo>().UpdateFields();
 
+			MapLuaParser.Current.UpdateArea();
+
 			GenericInfoPopup.ShowInfo("Map successfully loaded!\n" + FolderName + "/" + ScenarioFileName + ".lua");
 		}
 		else
@@ -692,8 +694,16 @@ public partial class MapLuaParser : MonoBehaviour
 		return PlayableAreaBounds.Contains(point);
 	}
 
-	public void UpdateArea(bool Round = true)
+	public void UpdateArea()
 	{
+		UpdateArea(LastRounding);
+
+	}
+
+	bool LastRounding = true;
+	public void UpdateArea(bool Round)
+	{
+		LastRounding = Round;
 		ClearBounds();
 		if (SaveLuaFile.Data.areas.Length > 0 && !AreaInfo.HideArea)
 		{
