@@ -246,11 +246,11 @@ Material:
     - _AreaX: 0
     - _AreaY: 76.8
     - _Brush: 0
-    - _BrushPainting: 0
-    - _BrushSize: 62.96
-    - _BrushUvX: 0.2024701
-    - _BrushUvY: 0.30861205
-    - _BuildGrid: 0
+    - _BrushPainting: 1
+    - _BrushSize: 0
+    - _BrushUvX: 0.05838113
+    - _BrushUvY: 0.17434055
+    - _BuildGrid: 1
     - _DeepLevel: 1.675625
     - _DepthLevel: 1.5
     - _GeneratingNormal: 0
@@ -289,6 +289,7 @@ Material:
     - _Splat7Scale: 128
     - _Splat7ScaleNormal: 128
     - _TTerrainXP: 0
+    - _TerrainTypeCapacity: 0.228
     - _TerrainTypeCoof: 0.228
     - _UpperScale: 4
     - _UpperScaleNormal: 128

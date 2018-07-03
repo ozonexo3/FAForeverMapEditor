@@ -917,12 +917,22 @@ namespace EditMap
 
 			PaintButtonsSet PaintSet = JsonUtility.FromJson<PaintButtonsSet>(data);
 
-			bool[] Exist = new bool[PaintPropObjects.Count];
+
+
+			while(PaintButtons.Count > 0)
+			{
+				RemoveProp(0);
+			}
+
+
+
+			//bool[] Exist = new bool[PaintPropObjects.Count];
 
 			for(int i = 0; i < PaintSet.PaintProps.Length; i++)
 			{
-				bool Found = false;
+				//bool Found = false;
 				int o = 0;
+				/*
 				for(o = 0; i < PaintPropObjects.Count; o++)
 				{
 					if(PaintPropObjects[i].BP.Path == PaintSet.PaintProps[i].Blueprint)
@@ -932,9 +942,9 @@ namespace EditMap
 						Found = true;
 						break;
 					}
-				}
+				}*/
 
-				if (!Found)
+				//if (!Found)
 				{
 					// Load
 					if (!LoadProp(GetGamedataFile.LoadProp(PaintSet.PaintProps[i].Blueprint)))
@@ -944,10 +954,7 @@ namespace EditMap
 					}
 
 					o = PaintButtons.Count - 1;
-
 				}
-
-
 
 				PaintButtons[o].ScaleMin.SetValue(PaintSet.PaintProps[i].ScaleMin);
 				PaintButtons[o].ScaleMax.SetValue(PaintSet.PaintProps[i].ScaleMax);
@@ -958,6 +965,7 @@ namespace EditMap
 				PaintButtons[o].Chance.SetValue(PaintSet.PaintProps[i].Chance);
 			}
 
+			/*
 			for(int i = Exist.Length - 1; i >= 0; i--)
 			{
 				if (!Exist[i])
@@ -965,6 +973,7 @@ namespace EditMap
 					RemoveProp(i);
 				}
 			}
+			*/
 
 			EnvPaths.SetLastPath(ExportPathKey, System.IO.Path.GetDirectoryName(paths[0]));
 		}

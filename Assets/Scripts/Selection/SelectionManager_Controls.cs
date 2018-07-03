@@ -467,7 +467,7 @@ namespace Selection
 
 		void UndoRegisterMove()
 		{
-			Debug.Log(LastControlType);
+			//Debug.Log(LastControlType);
 			if(LastControlType == SelectionControlTypes.Marker || LastControlType == SelectionControlTypes.MarkerChain)
 			{
 				Undo.Current.RegisterMarkersMove();

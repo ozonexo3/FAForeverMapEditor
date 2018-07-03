@@ -110,8 +110,12 @@ namespace FAF.MapEditor
 			ReadAllFolders();
 		}
 
+		bool Initialised = false;
 		void ReadAllFolders()
 		{
+			if (Initialised)
+				return;
+
 			EnvType.ClearOptions();
 
 			LoadedEnvPaths = new List<string>();
@@ -170,6 +174,8 @@ namespace FAF.MapEditor
 			NewOptions.Add(NewOptionInstance3);
 
 			EnvType.AddOptions(NewOptions);
+
+			Initialised = true;
 		}
 		#endregion
 
@@ -178,6 +184,7 @@ namespace FAF.MapEditor
 
 		public void ShowBrowser()
 		{
+			ReadAllFolders();
 			gameObject.SetActive(true);
 			if (LoadedEnvPaths[EnvType.value] == CurrentMapFolderPath)
 			{
@@ -192,6 +199,8 @@ namespace FAF.MapEditor
 
 		public void LoadStratumTexture(string path)
 		{
+			ReadAllFolders();
+
 			int LastCategory = Category.value;
 			int LastEnvType = EnvType.value;
 
@@ -250,7 +259,11 @@ namespace FAF.MapEditor
 
 			gameObject.SetActive(true);
 
-			if(LoadedEnvPaths[EnvType.value] != CurrentMapFolderPath)
+			if(LoadedEnvPaths.Count <= EnvType.value)
+			{
+				Debug.LogError("Env paths count is lower than selected Env type!");
+			}
+			else if(LoadedEnvPaths[EnvType.value] != CurrentMapFolderPath)
 				DontReload = LastCategory == Category.value && LastEnvType == EnvType.value && !IsGenerating;
 
 			if (!DontReload)
@@ -265,6 +278,7 @@ namespace FAF.MapEditor
 
 		public void LoadPropBlueprint()
 		{
+			ReadAllFolders();
 			if (Category.value != 3)
 			{
 				Category.value = 3;
@@ -281,6 +295,7 @@ namespace FAF.MapEditor
 
 		public void LoadDecalTexture(string path)
 		{
+			ReadAllFolders();
 			int LastCategory = Category.value;
 			int LastEnvType = EnvType.value;
 

@@ -6,7 +6,7 @@ using System.Collections.Generic;
 public class EditorVersion : MonoBehaviour
 {
 
-	public const string EditorBuildVersion = "v0.600-Alpha";
+	public const string EditorBuildVersion = "v0.601-Alpha";
 	public const float VersionOffset = 0f; // Release
 	//public const float VersionOffset = -0.001f; // Prerelease
 	//public const float VersionOffset = 0.523f - 0.600f; // Prerelease v0600
