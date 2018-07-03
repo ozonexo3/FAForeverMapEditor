@@ -74,7 +74,7 @@ namespace EditMap.TerrainTypes
             }
         }
         
-        private void Clear()
+        public void Clear()
         {
             onActive = null;
         }
