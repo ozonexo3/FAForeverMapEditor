@@ -164,7 +164,7 @@ Properties {
 
 			int _HideSplat0, _HideSplat1, _HideSplat2, _HideSplat3, _HideSplat4, _HideSplat5, _HideSplat6, _HideSplat7, _HideSplat8;
 			int _HideTerrainType;
-			float _TerrainTypeCoof;
+			float _TerrainTypeCapacity;
 		
 			half _LowerScale, _UpperScale;
 			half _LowerScaleNormal, _UpperScaleNormal;
@@ -272,7 +272,7 @@ Properties {
 #else
 				if(_HideTerrainType == 0) {
 					float4 TerrainTypeAlbedo = tex2D (_TerrainTypeAlbedo, UV);
-					col = lerp(col, TerrainTypeAlbedo, TerrainTypeAlbedo.a*_TerrainTypeCoof);
+					col = lerp(col, TerrainTypeAlbedo, TerrainTypeAlbedo.a*_TerrainTypeCapacity);
 				}
 #endif
 

@@ -40,6 +40,7 @@ GameObject:
   - component: {fileID: 224207262214856910}
   - component: {fileID: 222589962758082102}
   - component: {fileID: 114654630165132400}
+  - component: {fileID: 114982487164477434}
   m_Layer: 5
   m_Name: BlockingImage
   m_TagString: Untagged
@@ -140,6 +141,7 @@ GameObject:
   - component: {fileID: 224756648620585770}
   - component: {fileID: 222647010279951768}
   - component: {fileID: 114064799455821554}
+  - component: {fileID: 114834616837893476}
   m_Layer: 5
   m_Name: TypeColorImage
   m_TagString: Untagged
@@ -221,6 +223,7 @@ MonoBehaviour:
   nameText: {fileID: 114358286946856944}
   styleText: {fileID: 114161406031002340}
   colorImage: {fileID: 114064799455821554}
+  selectImage: {fileID: 114364213442368728}
   blockingImageGO: {fileID: 1095668990831820}
   moreInfoRectTransform: {fileID: 224565886066185892}
   toggle: {fileID: 114858462103372246}
@@ -371,6 +374,19 @@ MonoBehaviour:
   m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
+--- !u!114 &114834616837893476
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1907062328983538}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1254083943, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_AspectMode: 2
+  m_AspectRatio: 1
 --- !u!114 &114858462103372246
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -416,6 +432,19 @@ MonoBehaviour:
     m_TypeName: UnityEngine.UI.Toggle+ToggleEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
   m_IsOn: 0
+--- !u!114 &114982487164477434
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1095668990831820}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1254083943, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_AspectMode: 2
+  m_AspectRatio: 1
 --- !u!222 &222226101155590908
 CanvasRenderer:
   m_ObjectHideFlags: 1
