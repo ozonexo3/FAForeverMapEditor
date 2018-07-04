@@ -30,6 +30,7 @@ namespace EditMap.TerrainTypes
         [SerializeField] private ToggleGroup layersToggleGroup;
         [SerializeField] private Button clearAllButton;
         [SerializeField] private Button clearCurrentButton;
+        [SerializeField] private LayerSettingsItem currentLayerSettingsItem;
 
         [SerializeField] private GameObject moreInfoGO;
         [SerializeField] private RectTransform moreInfoRectTransform;
@@ -294,6 +295,20 @@ namespace EditMap.TerrainTypes
         }
 
         private TerrainTypeLayerSettings currentLayer;
+
+        public TerrainTypeLayerSettings CurrentLayer
+        {
+            get
+            {
+                return currentLayer;
+            }
+            set
+            {
+                currentLayerSettingsItem.Init(value, null, ShowMoreLayerInfo, HideMoreLayerInfo, true);
+                currentLayer = value;
+            }
+        }
+
         private TerrainTypeLayerSettings defaultLayer;
 
         private void Awake()
@@ -383,6 +398,7 @@ namespace EditMap.TerrainTypes
             clearAllButton.onClick.AddListener(OnClearAllButtonPressed);
             clearCurrentButton.onClick.AddListener(OnClearCurrentButtonPressed);
             layerCapacityField.OnValueChanged.AddListener(OnCapacityChanged);
+            currentLayerSettingsItem.onActive += OnCurrentLayerPressed;
 //            sizeField.OnEndEdit.AddListener();
 
             RebuildBrush(BrushSize);
@@ -396,6 +412,11 @@ namespace EditMap.TerrainTypes
             layerCapacityField.SetValue(0.228f * 100);
             CreateUILayerSettings();
             HideMoreLayerInfo();
+        }
+
+        private void OnCurrentLayerPressed(byte layerIndex, bool isOn)
+        {
+            FocusLayer(layerIndex);
         }
 
         private void OnClearAllButtonPressed()
@@ -456,8 +477,6 @@ namespace EditMap.TerrainTypes
                 currentLayer = savedLayer;
             }
 
-            LayerSettingsItem currentLayerItem = null;
-
             foreach (TerrainTypeLayerSettings layerSettings in layersSettings)
             {
                 GameObject tmpItem = Instantiate<GameObject>(layerSettingsItemGO);
@@ -467,20 +486,17 @@ namespace EditMap.TerrainTypes
                 layerSettingsItem.onActive += OnLayerChanged;
 
                 layerSettingsItems.Add(layerSettingsItem.index, layerSettingsItem);
-
-                if (layerSettingsItem.index == currentLayer.index)
-                {
-                    currentLayerItem = layerSettingsItem;
-                }
             }
 
-            if (currentLayerItem == null)
+            if (!layerSettingsItems.ContainsKey(currentLayer.index))
             {
                 Debug.LogError("Can`t find default layer");
-                currentLayerItem = layerSettingsItems[0];
+                currentLayer.index = 1;
+                savedLayer = null;
             }
 
-            currentLayerItem.SetActive(true);
+            layerSettingsItems[currentLayer.index].SetActive(true);
+            
         }
 
         private void ClearUILayerSettings()
@@ -516,13 +532,29 @@ namespace EditMap.TerrainTypes
         private void SelectLayer(LayerSettingsItem layerItem, bool focus = false)
         {
             layerItem.SetActive(true);
+            
             if (focus)
             {
-                Vector3 tmpPos = layersPivot.localPosition;
-                tmpPos.y = -layerItem.transform.localPosition.y;
-                layersPivot.localPosition = tmpPos;
+                FocusLayer(layerItem);
             }
         }
+        
+        private void FocusLayer(byte layerIndex)
+        {
+            if (!layerSettingsItems.ContainsKey(layerIndex))
+            {
+                layerIndex = 1;// default layer index
+            }
+            FocusLayer(layerSettingsItems[layerIndex]);
+        }
+
+        private void FocusLayer(LayerSettingsItem layerItem)
+        {
+            Vector3 tmpPos = layersPivot.localPosition;
+            tmpPos.y = -layerItem.transform.localPosition.y;
+            layersPivot.localPosition = tmpPos;
+        }
+        
         
         private void Close()
         {
@@ -531,7 +563,7 @@ namespace EditMap.TerrainTypes
             clearAllButton.onClick.RemoveAllListeners();
             clearCurrentButton.onClick.RemoveAllListeners();
             layerCapacityField.OnValueChanged.RemoveAllListeners();
-
+            currentLayerSettingsItem.onActive -= OnCurrentLayerPressed;
 
 //            terrainMaterial.SetTexture("_BrushTex", null);
 
@@ -545,6 +577,7 @@ namespace EditMap.TerrainTypes
             TerrainTypeTexture = null;
             TerrainTypeData2D = null;
             savedLayer = currentLayer;
+            currentLayerSettingsItem.Clear();
 //            ClearUILayerSettings();
         }
 
@@ -575,9 +608,14 @@ namespace EditMap.TerrainTypes
             RebuildBrush(BrushSize);
         }
 
-        private void OnLayerChanged(byte layer)
+        private void OnLayerChanged(byte layer, bool isActive)
         {
+            if (!isActive)
+            {
+                return;
+            }
             currentLayer = layersSettings[layer];
+            currentLayerSettingsItem.Init(currentLayer, null, ShowMoreLayerInfo, HideMoreLayerInfo, true);
             RebuildBrush(BrushSize);
         }
 
