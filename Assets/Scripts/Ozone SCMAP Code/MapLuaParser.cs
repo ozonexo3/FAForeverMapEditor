@@ -301,23 +301,6 @@ public partial class MapLuaParser : MonoBehaviour
 				yield return UnitsLoader;
 			}
 
-			//GetGamedataFile.LoadUnit("XEL0209").CreateUnitObject(MapLuaParser.Current.MapCenterPoint, Quaternion.identity);
-
-			//GetGamedataFile.LoadUnit("UEB0201").CreateUnitObject(MapLuaParser.Current.MapCenterPoint + Vector3.forward * 0.7f, Quaternion.identity);
-
-			//GetGamedataFile.LoadUnit("UEL0001").CreateUnitObject(MapLuaParser.Current.MapCenterPoint + Vector3.left * 0.3f, Quaternion.identity);
-
-			/*
-			//4k Sparkys with GPU instancing
-			for (int x = 0; x < 63; x++)
-			{
-				for(int y = 0; y < 63; y++)
-				{
-					Vector3 Pos = MapLuaParser.Current.MapCenterPoint + new Vector3(x * -0.1f, 0, y * -0.1f);
-					GetGamedataFile.LoadUnit("XEL0209").CreateUnitObject(Pos, Quaternion.identity);
-				}
-			}
-			*/
 
 			// Load Props
 			if (LoadProps)
@@ -354,6 +337,18 @@ public partial class MapLuaParser : MonoBehaviour
 			{
 				//Map Loaded
 			}
+
+			// Fix map version
+			if (FolderName.Contains(".v"))
+			{
+				int ParsedValue = (int)ScenarioLuaFile.Data.map_version;
+
+				if (int.TryParse(FolderName.Remove(0, FolderName.Length - 4), out ParsedValue))
+				{
+					ScenarioLuaFile.Data.map_version = ParsedValue;
+				}
+			}
+
 
 			InfoPopup.Show(false);
 			WindowStateSever.WindowStateSaver.ChangeWindowName(FolderName);

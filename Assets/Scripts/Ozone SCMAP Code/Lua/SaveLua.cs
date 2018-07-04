@@ -434,8 +434,6 @@ namespace MapLua
 
 				LuaFile.AddLine(LuaParser.Write.StringToLua(Scenario.KEY_NEXTPLATOONID, Data.next_platoon_id.ToString()));
 
-				Debug.Log(Data.MasterChains[0].Markers.Count);
-
 				//Platoons
 				LuaFile.AddSaveComent("");
 				LuaFile.AddSaveComent("Platoons");

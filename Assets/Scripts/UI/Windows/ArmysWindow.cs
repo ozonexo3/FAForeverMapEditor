@@ -156,7 +156,7 @@ public class ArmysWindow : MonoBehaviour {
 
 		if (ToMarker != null && FromMarker != null)
 		{
-			Undo.Current.RegisterMarkersMove(false);
+			Undo.RegisterUndo(new UndoHistory.HistoryMarkersMove(), new UndoHistory.HistoryMarkersMove.MarkersMoveHistoryParameter(false));
 
 			Vector3 OldPos = FromMarker.MarkerObj.Tr.localPosition;
 			FromMarker.MarkerObj.Tr.localPosition = ToMarker.MarkerObj.Tr.localPosition;

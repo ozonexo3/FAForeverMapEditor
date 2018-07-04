@@ -2,96 +2,110 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using UndoHistory;
 using EditMap;
 using Markers;
 using MapLua;
 
-public class HistoryUnitsRemove : HistoryObject
+namespace UndoHistory
 {
-
-	public static MapLua.SaveLua.Army.UnitsGroup[] RegisterGroups;
-
-	public GroupUnits[] GroupsUnits;
-
-	[System.Serializable]
-	public class GroupUnits
+	public class HistoryUnitsRemove : HistoryObject
 	{
-		public MapLua.SaveLua.Army.UnitsGroup Parent;
-		public HashSet<MapLua.SaveLua.Army.Unit> Units;
-	}
 
-	public override void Register()
-	{
-		GroupsUnits = new GroupUnits[RegisterGroups.Length];
-		for (int i = 0; i < GroupsUnits.Length; i++)
+		//public static MapLua.SaveLua.Army.UnitsGroup[] RegisterGroups;
+
+		private UnitsRemoveParam parameter;
+		public class UnitsRemoveParam : HistoryParameter
 		{
-			GroupsUnits[i] = new GroupUnits();
-			GroupsUnits[i].Parent = RegisterGroups[i];
-			GroupsUnits[i].Units = new HashSet<SaveLua.Army.Unit>();
-			foreach (SaveLua.Army.Unit u in GroupsUnits[i].Parent.Units)
-				GroupsUnits[i].Units.Add(u);
+			public MapLua.SaveLua.Army.UnitsGroup[] RegisterGroups;
+
+			public UnitsRemoveParam(MapLua.SaveLua.Army.UnitsGroup[] RegisterGroups)
+			{
+				this.RegisterGroups = RegisterGroups;
+			}
 		}
-	}
 
-	public override void DoUndo()
-	{
-		if (!RedoGenerated)
+		public GroupUnits[] GroupsUnits;
+
+		[System.Serializable]
+		public class GroupUnits
 		{
-			RegisterGroups = new MapLua.SaveLua.Army.UnitsGroup[GroupsUnits.Length];
+			public MapLua.SaveLua.Army.UnitsGroup Parent;
+			public HashSet<MapLua.SaveLua.Army.Unit> Units;
+		}
+
+		public override void Register(HistoryParameter Param)
+		{
+			parameter = (Param as UnitsRemoveParam);
+			GroupsUnits = new GroupUnits[parameter.RegisterGroups.Length];
 			for (int i = 0; i < GroupsUnits.Length; i++)
-				RegisterGroups[i] = GroupsUnits[i].Parent;
-
-			HistoryUnitsRemove.GenerateRedo(Undo.Current.Prefabs.UnitRemove).Register();
+			{
+				GroupsUnits[i] = new GroupUnits();
+				GroupsUnits[i].Parent = parameter.RegisterGroups[i];
+				GroupsUnits[i].Units = new HashSet<SaveLua.Army.Unit>();
+				foreach (SaveLua.Army.Unit u in GroupsUnits[i].Parent.Units)
+					GroupsUnits[i].Units.Add(u);
+			}
 		}
-		RedoGenerated = true;
-		DoRedo();
-	}
+
+		public override void DoUndo()
+		{
+			if (!RedoGenerated)
+			{
+				MapLua.SaveLua.Army.UnitsGroup[]  RegisterGroups = new MapLua.SaveLua.Army.UnitsGroup[GroupsUnits.Length];
+				for (int i = 0; i < GroupsUnits.Length; i++)
+					RegisterGroups[i] = GroupsUnits[i].Parent;
+
+				Undo.RegisterRedo(new HistoryUnitsRemove(), new UnitsRemoveParam(RegisterGroups));
+			}
+			RedoGenerated = true;
+			DoRedo();
+		}
 
 
 
-	public override void DoRedo()
-	{
-
-		for (int i = 0; i < GroupsUnits.Length; i++)
+		public override void DoRedo()
 		{
 
-			foreach (SaveLua.Army.Unit u in GroupsUnits[i].Units)
+			for (int i = 0; i < GroupsUnits.Length; i++)
 			{
-				if (GroupsUnits[i].Parent.Units.Contains(u))
-					continue;
 
-				// Add
+				foreach (SaveLua.Army.Unit u in GroupsUnits[i].Units)
+				{
+					if (GroupsUnits[i].Parent.Units.Contains(u))
+						continue;
 
-				GroupsUnits[i].Parent.AddUnit(u);
-				u.Instantiate();
+					// Add
+
+					GroupsUnits[i].Parent.AddUnit(u);
+					u.Instantiate();
+				}
+
+				List<SaveLua.Army.Unit> ToRemove = new List<SaveLua.Army.Unit>();
+				foreach (SaveLua.Army.Unit u in GroupsUnits[i].Parent.Units)
+				{
+					if (GroupsUnits[i].Units.Contains(u))
+						continue;
+
+					ToRemove.Add(u);
+				}
+
+				foreach (SaveLua.Army.Unit u in ToRemove)
+				{
+					GroupsUnits[i].Parent.RemoveUnit(u);
+					u.ClearInstance();
+				}
+
+
+				Undo.Current.EditMenu.ChangeCategory(7);
+				MapLuaParser.Current.UnitsMenu.ChangePage(1);
+				MapLuaParser.Current.UnitsMenu.Generate();
+
+				UnitsInfo.Current.GoToSelection();
+
 			}
-
-			List<SaveLua.Army.Unit> ToRemove = new List<SaveLua.Army.Unit>();
-			foreach (SaveLua.Army.Unit u in GroupsUnits[i].Parent.Units)
-			{
-				if (GroupsUnits[i].Units.Contains(u))
-					continue;
-
-				ToRemove.Add(u);
-			}
-
-			foreach (SaveLua.Army.Unit u in ToRemove)
-			{
-				GroupsUnits[i].Parent.RemoveUnit(u);
-				u.ClearInstance();
-			}
-
-
-			Undo.Current.EditMenu.ChangeCategory(7);
-			MapLuaParser.Current.UnitsMenu.ChangePage(1);
-			MapLuaParser.Current.UnitsMenu.Generate();
-
-			UnitsInfo.Current.GoToSelection();
 
 		}
 
+
 	}
-
-
 }

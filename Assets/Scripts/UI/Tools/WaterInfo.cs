@@ -140,7 +140,7 @@ namespace EditMap
 				return;
 			}
 
-			Undo.Current.RegisterWaterElevationChange();
+			Undo.RegisterUndo(new UndoHistory.HistoryWaterElevation());
 			if (!UndoRegistered)
 				ElevationChangeBegin();
 			UndoRegistered = false;
@@ -195,7 +195,7 @@ namespace EditMap
 
 			if (!UndoRegistered)
 			{
-				Undo.Current.RegisterWaterSettingsChange();
+				Undo.RegisterUndo(new UndoHistory.HistoryWaterSettings());
 				UndoRegistered = true;
 				WaterSettingsChangedBegin();
 

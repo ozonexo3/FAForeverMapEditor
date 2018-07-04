@@ -2,73 +2,78 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using UndoHistory;
 using EditMap;
 using Markers;
 
-public class HistoryUnitGroupChange : HistoryObject
+namespace UndoHistory
 {
-
-	public static MapLua.SaveLua.Army.UnitsGroup RegisterGroup;
-
-	public MapLua.SaveLua.Army.UnitsGroup RegisteredGroup;
-	public string Name;
-	public string Prefix;
-	public string Orders;
-	public string Platoons;
-
-	public override void Register()
+	public class HistoryUnitGroupChange : HistoryObject
 	{
-		RegisteredGroup = RegisterGroup;
-		Name = RegisteredGroup.NoPrefixName;
-		Prefix = RegisteredGroup.PrefixName;
-		Orders = RegisteredGroup.orders;
-		Platoons = RegisteredGroup.platoon;
-	}
 
-	public override void DoUndo()
-	{
-		if (!RedoGenerated)
+		private UnitGroupChangeParam parameter;
+		public class UnitGroupChangeParam : HistoryParameter
 		{
-			RegisterGroup = RegisteredGroup;
-			HistoryUnitGroupChange.GenerateRedo(Undo.Current.Prefabs.UnitGroupChange).Register();
+			public MapLua.SaveLua.Army.UnitsGroup RegisterGroup;
+
+			public UnitGroupChangeParam(MapLua.SaveLua.Army.UnitsGroup RegisterGroup)
+			{
+				this.RegisterGroup = RegisterGroup;
+			}
 		}
-		RedoGenerated = true;
-		DoRedo();
-	}
 
+		public MapLua.SaveLua.Army.UnitsGroup RegisteredGroup;
+		public string Name;
+		public string Prefix;
+		public string Orders;
+		public string Platoons;
 
-
-	public override void DoRedo()
-	{
-
-		if(RegisteredGroup.NoPrefixName != Name)
+		public override void Register(HistoryParameter Param)
 		{
-			RegisteredGroup.NoPrefixName = Name;
-
-
+			parameter = (Param as UnitGroupChangeParam);
+			RegisteredGroup = parameter.RegisterGroup;
+			Name = RegisteredGroup.NoPrefixName;
+			Prefix = RegisteredGroup.PrefixName;
+			Orders = RegisteredGroup.orders;
+			Platoons = RegisteredGroup.platoon;
 		}
-		if (RegisteredGroup.PrefixName != Prefix)
-		{
-			RegisteredGroup.PrefixName = Prefix;
 
-			UnitsInfo.ChangeAllPrefix(RegisteredGroup, RegisteredGroup.PrefixName, Prefix);
+		public override void DoUndo()
+		{
+			if (!RedoGenerated)
+			{
+				Undo.RegisterRedo(new HistoryUnitGroupChange(), new UnitGroupChangeParam(RegisteredGroup));
+			}
+			RedoGenerated = true;
+			DoRedo();
 		}
 
 
 
-		RegisteredGroup.orders = Orders;
-		RegisteredGroup.platoon = Platoons;
+		public override void DoRedo()
+		{
 
-		Undo.Current.EditMenu.ChangeCategory(7);
-		MapLuaParser.Current.UnitsMenu.ChangePage(0);
-		MapLuaParser.Current.UnitsMenu.Generate();
-		//NewMarkersInfo.Current.ClearCreateNew();
-		//MarkersInfo.Current.ChangePage(0);
+			if (RegisteredGroup.NoPrefixName != Name)
+			{
+				RegisteredGroup.NoPrefixName = Name;
 
-		//NewMarkersInfo.Current.GoToSelection();
+
+			}
+			if (RegisteredGroup.PrefixName != Prefix)
+			{
+				RegisteredGroup.PrefixName = Prefix;
+
+				UnitsInfo.ChangeAllPrefix(RegisteredGroup, RegisteredGroup.PrefixName, Prefix);
+			}
+
+
+
+			RegisteredGroup.orders = Orders;
+			RegisteredGroup.platoon = Platoons;
+
+			Undo.Current.EditMenu.ChangeCategory(7);
+			MapLuaParser.Current.UnitsMenu.ChangePage(0);
+			MapLuaParser.Current.UnitsMenu.Generate();
+		}
 
 	}
-
-
 }

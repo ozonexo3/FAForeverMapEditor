@@ -3,50 +3,69 @@ using System.Collections;
 using UndoHistory;
 using EditMap;
 
-public class HistoryTerrainHeight : HistoryObject {
+namespace UndoHistory
+{
+	public class HistoryTerrainHeight : HistoryObject
+	{
 
-	public		float[,]		Pixels;
+		private TerrainHeightHistoryParameter parameter;
+		public class TerrainHeightHistoryParameter : HistoryParameter
+		{
+			public float[,] newheights;
 
-	public override void Register(){
-		Undo.RegisterMarkersDelete = true;
-
-		int x = Undo.UndoData_newheights.GetLength (0);
-		int y = Undo.UndoData_newheights.GetLength (1);
-
-		Pixels = new float[x, y];
-		for (int i = 0; i < x; i++) {
-			for (int j = 0; j < y; j++) {
-				Pixels [i, j] = Undo.UndoData_newheights [i, j];
+			public TerrainHeightHistoryParameter(float[,] newheights)
+			{
+				this.newheights = newheights;
 			}
 		}
-	}
+		public float[,] Pixels;
 
-
-	public override void DoUndo(){
-		if (!RedoGenerated)
+		public override void Register(HistoryParameter Param)
 		{
-			//Undo.UndoData_newheights = ScmapEditor.Current.Teren.terrainData.GetHeights(0, 0, ScmapEditor.Current.Teren.terrainData.heightmapWidth, ScmapEditor.Current.Teren.terrainData.heightmapHeight);
-			ScmapEditor.GetAllHeights(ref Undo.UndoData_newheights);
-			HistoryTerrainHeight.GenerateRedo(Undo.Current.Prefabs.TerrainHeightChange).Register();
+			parameter = Param as TerrainHeightHistoryParameter;
+
+			int x = parameter.newheights.GetLength(0);
+			int y = parameter.newheights.GetLength(1);
+
+			Pixels = new float[x, y];
+			for (int i = 0; i < x; i++)
+			{
+				for (int j = 0; j < y; j++)
+				{
+					Pixels[i, j] = parameter.newheights[i, j];
+				}
+			}
 		}
-		RedoGenerated = true;
-		DoRedo ();
 
-	}
 
-	public override void DoRedo(){
-		if(Undo.Current.EditMenu.State != Editing.EditStates.TerrainStat){
-			Undo.Current.EditMenu.State = Editing.EditStates.TerrainStat;
-			Undo.Current.EditMenu.ChangeCategory(1);
+		public override void DoUndo()
+		{
+			if (!RedoGenerated)
+			{
+				float[,] UndoData_newheights = new float[0, 0];
+				ScmapEditor.GetAllHeights(ref UndoData_newheights);
+				Undo.RegisterRedo(new HistoryTerrainHeight(), new TerrainHeightHistoryParameter(UndoData_newheights));
+
+			}
+			RedoGenerated = true;
+			DoRedo();
+
 		}
 
-		Undo.Current.EditMenu.EditTerrain.ChangePage(0);
+		public override void DoRedo()
+		{
+			if (Undo.Current.EditMenu.State != Editing.EditStates.TerrainStat)
+			{
+				Undo.Current.EditMenu.State = Editing.EditStates.TerrainStat;
+				Undo.Current.EditMenu.ChangeCategory(1);
+			}
 
-		//ScmapEditor.Current.Teren.terrainData.SetHeights(0, 0, Pixels);
-		ScmapEditor.SetAllHeights(Pixels);
+			Undo.Current.EditMenu.EditTerrain.ChangePage(0);
 
-		//Markers.MarkersControler.UpdateMarkersHeights();
-		Undo.Current.EditMenu.EditTerrain.OnTerrainChanged();
-		Undo.Current.EditMenu.EditTerrain.RegenerateMaps();
+			ScmapEditor.SetAllHeights(Pixels);
+
+			Undo.Current.EditMenu.EditTerrain.OnTerrainChanged();
+			Undo.Current.EditMenu.EditTerrain.RegenerateMaps();
+		}
 	}
 }

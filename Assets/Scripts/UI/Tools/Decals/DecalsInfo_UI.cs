@@ -89,7 +89,7 @@ namespace EditMap
 				return;
 			HashSet<OzoneDecal> Sd = SelectedDecals;
 			if (Sd.Count > 0)
-				Undo.Current.RegisterDecalsOrderChange();
+				Undo.RegisterUndo(new UndoHistory.HistoryDecalsChange());
 
 			foreach (OzoneDecal Odec in Sd)
 			{
@@ -104,7 +104,7 @@ namespace EditMap
 				return;
 			HashSet<OzoneDecal> Sd = SelectedDecals;
 			if (Sd.Count > 0)
-				Undo.Current.RegisterDecalsOrderChange();
+				Undo.RegisterUndo(new UndoHistory.HistoryDecalsChange());
 			foreach (OzoneDecal Odec in Sd)
 			{
 				DecalsControler.MoveDown(Odec.Dec);
@@ -118,7 +118,7 @@ namespace EditMap
 				return;
 			HashSet<OzoneDecal> Sd = SelectedDecals;
 			if (Sd.Count > 0)
-				Undo.Current.RegisterDecalsOrderChange();
+				Undo.RegisterUndo(new UndoHistory.HistoryDecalsChange());
 			foreach (OzoneDecal Odec in Sd)
 			{
 				DecalsControler.MoveTop(Odec.Dec);
@@ -133,7 +133,7 @@ namespace EditMap
 
 			HashSet<OzoneDecal> Sd = SelectedDecals;
 			if (Sd.Count > 0)
-				Undo.Current.RegisterDecalsOrderChange();
+				Undo.RegisterUndo(new UndoHistory.HistoryDecalsChange());
 			foreach (OzoneDecal Odec in Sd)
 			{
 				DecalsControler.MoveBottom(Odec.Dec);

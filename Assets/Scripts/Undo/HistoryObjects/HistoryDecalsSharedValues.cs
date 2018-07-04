@@ -6,50 +6,57 @@ using UndoHistory;
 using EditMap;
 using OzoneDecals;
 
-public class HistoryDecalsSharedValues : HistoryObject
+namespace UndoHistory
 {
-
-	public static Decal.DecalSharedSettings RegisterShared;
-	Decal.DecalSharedSettings Shared;
-	public TerrainDecalType Type;
-	public string Tex1Path;
-	public string Tex2Path;
-
-	public override void Register()
+	public class HistoryDecalsSharedValues : HistoryObject
 	{
-		Shared = RegisterShared;// DecalSettings.GetLoaded;
 
-		Type = Shared.Type;
-		Tex1Path = Shared.Tex1Path;
-		Tex2Path = Shared.Tex2Path;
-	}
+		private DecalsSharedValuesHistoryParameter parameter;
+		public class DecalsSharedValuesHistoryParameter : HistoryParameter
+		{
+			public Decal.DecalSharedSettings RegisterShared;
 
+			public DecalsSharedValuesHistoryParameter(Decal.DecalSharedSettings RegisterShared)
+			{
+				this.RegisterShared = RegisterShared;
+			}
+		}
 
-	public override void DoUndo()
-	{
-		RegisterShared = Shared;
+		Decal.DecalSharedSettings Shared;
+		public TerrainDecalType Type;
+		public string Tex1Path;
+		public string Tex2Path;
 
-		if (!RedoGenerated)
-			HistoryDecalsSharedValues.GenerateRedo(Undo.Current.Prefabs.DecalSharedValues).Register();
-		RedoGenerated = true;
-		DoRedo();
-	}
+		public override void Register(HistoryParameter Param)
+		{
+			parameter = (Param as DecalsSharedValuesHistoryParameter);
+			Shared = parameter.RegisterShared;
 
-	public override void DoRedo()
-	{
-		Shared.Type = Type;
-		Shared.Tex1Path = Tex1Path;
-		Shared.Tex2Path = Tex2Path;
-
-		Shared.UpdateMaterial();
-
-		Undo.Current.EditMenu.ChangeCategory(5);
-		DecalsInfo.Current.GoToSelection();
-		DecalsInfo.Current.DecalSettingsUi.Load(Shared);
+			Type = Shared.Type;
+			Tex1Path = Shared.Tex1Path;
+			Tex2Path = Shared.Tex2Path;
+		}
 
 
-		//DecalsInfo.Current.GoToSelection();
-		//Selection.SelectionManager.Current.FinishSelectionChange();
+		public override void DoUndo()
+		{
+			if (!RedoGenerated)
+				Undo.RegisterRedo(new HistoryDecalsSharedValues(), new DecalsSharedValuesHistoryParameter(Shared));
+			RedoGenerated = true;
+			DoRedo();
+		}
 
+		public override void DoRedo()
+		{
+			Shared.Type = Type;
+			Shared.Tex1Path = Tex1Path;
+			Shared.Tex2Path = Tex2Path;
+
+			Shared.UpdateMaterial();
+
+			Undo.Current.EditMenu.ChangeCategory(5);
+			DecalsInfo.Current.GoToSelection();
+			DecalsInfo.Current.DecalSettingsUi.Load(Shared);
+		}
 	}
 }

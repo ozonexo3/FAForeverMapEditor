@@ -332,7 +332,6 @@ public partial class ScmapEditor : MonoBehaviour
 				Textures[i].AlbedoScale = map.Layers[i].ScaleTexture;
 				Textures[i].NormalScale = map.Layers[i].ScaleNormalmap;
 			}
-			//Debug.Log("Load textures: " + i);
 
 			string Env = GetGamedataFile.EnvScd;
 			if (Textures[i].AlbedoPath.ToLower().StartsWith("maps"))
@@ -340,8 +339,9 @@ public partial class ScmapEditor : MonoBehaviour
 
 			try
 			{
-				
-				GetGamedataFile.LoadTextureFromGamedata(Env, Textures[i].AlbedoPath, i, false);
+				Textures[i].AlbedoPath = GetGamedataFile.FindFile(Env, Textures[i].AlbedoPath);
+				//Debug.Log("Found: " + Textures[i].AlbedoPath);
+				GetGamedataFile.LoadTextureFromGamedata(GetGamedataFile.EnvScd, Textures[i].AlbedoPath, i, false);
 			}
 			catch (System.Exception e)
 			{
@@ -355,7 +355,9 @@ public partial class ScmapEditor : MonoBehaviour
 
 			try
 			{
-				GetGamedataFile.LoadTextureFromGamedata(Env, Textures[i].NormalPath, i, true);
+				Textures[i].NormalPath = GetGamedataFile.FindFile(Env, Textures[i].NormalPath);
+				//Debug.Log("Found: " + Textures[i].NormalPath);
+				GetGamedataFile.LoadTextureFromGamedata(GetGamedataFile.EnvScd, Textures[i].NormalPath, i, true);
 			}
 			catch (System.Exception e)
 			{

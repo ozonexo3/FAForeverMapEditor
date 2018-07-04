@@ -73,7 +73,7 @@ namespace EditMap
 		public void DestroyDetails(List<GameObject> MarkerObjects, bool RegisterUndo = true)
 		{
 			if (RegisterUndo && MarkerObjects.Count > 0)
-				Undo.Current.RegisterDecalsRemove();
+				Undo.RegisterUndo(new UndoHistory.HistoryDecalsChange());
 
 			int Count = MarkerObjects.Count;
 			for (int i = 0; i < Count; i++)
@@ -89,7 +89,7 @@ namespace EditMap
 		public void Place(Vector3[] Positions, Quaternion[] Rotations, Vector3[] Scales)
 		{
 			if (Positions.Length > 0)
-				Undo.Current.RegisterDecalsAdd();
+				Undo.RegisterUndo(new UndoHistory.HistoryDecalsChange());
 
 			for (int i = 0; i < Positions.Length; i++)
 			{

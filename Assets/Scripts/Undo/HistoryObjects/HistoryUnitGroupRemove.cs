@@ -2,68 +2,73 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using UndoHistory;
 using EditMap;
 using Markers;
 
-public class HistoryUnitGroupRemove : HistoryObject
+namespace UndoHistory
 {
-
-	public static MapLua.SaveLua.Army.UnitsGroup RegisterGroup;
-
-
-	public MapLua.SaveLua.Army.UnitsGroup RegisteredGroup;
-	public MapLua.SaveLua.Army.UnitsGroup[] AllGroups;
-
-	public override void Register()
+	public class HistoryUnitGroupRemove : HistoryObject
 	{
-		RegisteredGroup = RegisterGroup;
-		AllGroups = new MapLua.SaveLua.Army.UnitsGroup[RegisteredGroup.UnitGroups.Count];
-		RegisteredGroup.UnitGroups.CopyTo(AllGroups);
-	}
 
-	public override void DoUndo()
-	{
-		if (!RedoGenerated)
+		private UnitGroupRemoveHistoryParameter parameter;
+		public class UnitGroupRemoveHistoryParameter : HistoryParameter
 		{
-			RegisterGroup = RegisteredGroup;
-			HistoryUnitGroupRemove.GenerateRedo(Undo.Current.Prefabs.UnitGroupRemove).Register();
-		}
-		RedoGenerated = true;
-		DoRedo();
-	}
+			public MapLua.SaveLua.Army.UnitsGroup RegisterGroup;
 
-
-
-	public override void DoRedo()
-	{
-
-		MapLua.SaveLua.Army.UnitsGroup[] RemoveOld = new MapLua.SaveLua.Army.UnitsGroup[RegisteredGroup.UnitGroups.Count];
-		RegisteredGroup.UnitGroups.CopyTo(RemoveOld);
-
-		for (int i = 0; i < RemoveOld.Length; i++)
-		{
-			RegisteredGroup.RemoveGroup(AllGroups[i]);
+			public UnitGroupRemoveHistoryParameter(MapLua.SaveLua.Army.UnitsGroup RegisterGroup)
+			{
+				this.RegisterGroup = RegisterGroup;
+			}
 		}
 
-		RegisteredGroup.UnitGroups.Clear();
+		public MapLua.SaveLua.Army.UnitsGroup RegisteredGroup;
+		public MapLua.SaveLua.Army.UnitsGroup[] AllGroups;
 
-		for (int i = 0; i < AllGroups.Length; i++)
+		public override void Register(HistoryParameter Param)
 		{
-			//RegisteredGroup.UnitGroups.Add(AllGroups[i]);
-			RegisteredGroup.AddGroup(AllGroups[i]);
+			parameter = (Param as UnitGroupRemoveHistoryParameter);
+			RegisteredGroup = parameter.RegisterGroup;
+			AllGroups = new MapLua.SaveLua.Army.UnitsGroup[RegisteredGroup.UnitGroups.Count];
+			RegisteredGroup.UnitGroups.CopyTo(AllGroups);
+		}
+
+		public override void DoUndo()
+		{
+			if (!RedoGenerated)
+			{
+				Undo.RegisterRedo(new HistoryUnitGroupRemove(), new UnitGroupRemoveHistoryParameter(RegisteredGroup));
+			}
+			RedoGenerated = true;
+			DoRedo();
 		}
 
 
-		Undo.Current.EditMenu.ChangeCategory(7);
-		MapLuaParser.Current.UnitsMenu.ChangePage(0);
-		MapLuaParser.Current.UnitsMenu.Generate();
-		//NewMarkersInfo.Current.ClearCreateNew();
-		//MarkersInfo.Current.ChangePage(0);
 
-		//NewMarkersInfo.Current.GoToSelection();
+		public override void DoRedo()
+		{
+
+			MapLua.SaveLua.Army.UnitsGroup[] RemoveOld = new MapLua.SaveLua.Army.UnitsGroup[RegisteredGroup.UnitGroups.Count];
+			RegisteredGroup.UnitGroups.CopyTo(RemoveOld);
+
+			for (int i = 0; i < RemoveOld.Length; i++)
+			{
+				RegisteredGroup.RemoveGroup(AllGroups[i]);
+			}
+
+			RegisteredGroup.UnitGroups.Clear();
+
+			for (int i = 0; i < AllGroups.Length; i++)
+			{
+				RegisteredGroup.AddGroup(AllGroups[i]);
+			}
+
+
+			Undo.Current.EditMenu.ChangeCategory(7);
+			MapLuaParser.Current.UnitsMenu.ChangePage(0);
+			MapLuaParser.Current.UnitsMenu.Generate();
+
+		}
+
 
 	}
-
-
 }

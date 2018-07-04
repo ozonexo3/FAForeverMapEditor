@@ -248,9 +248,9 @@ Material:
     - _Brush: 0
     - _BrushPainting: 1
     - _BrushSize: 0
-    - _BrushUvX: 0.05838113
-    - _BrushUvY: 0.17434055
-    - _BuildGrid: 1
+    - _BrushUvX: 0.032142095
+    - _BrushUvY: 0.3803858
+    - _BuildGrid: 0
     - _DeepLevel: 1.675625
     - _DepthLevel: 1.5
     - _GeneratingNormal: 0

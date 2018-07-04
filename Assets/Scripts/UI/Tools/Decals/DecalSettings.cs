@@ -304,8 +304,7 @@ namespace EditMap
 			if (Loaded.Type == TypeByDropdown())
 				return;
 
-			//TODO Register Undo
-			Undo.Current.RegisterDecalsSharedValuesChange();
+			Undo.RegisterUndo(new UndoHistory.HistoryDecalsSharedValues(), new UndoHistory.HistoryDecalsSharedValues.DecalsSharedValuesHistoryParameter(DecalSettings.GetLoaded));
 
 			Loaded.Type = TypeByDropdown();
 			UpdateTextureNames();
@@ -337,21 +336,15 @@ namespace EditMap
 				return;
 			if (ResourceBrowser.SelectedCategory == 2)
 			{
-				//TODO Undo.RegisterStratumChange(Selected);
-				//Debug.Log(ResourceBrowser.Current.LoadedPaths[ResourceBrowser.DragedObject.InstanceId]);
 
 				if (Loaded.Tex1Path == ResourceBrowser.Current.LoadedPaths[ResourceBrowser.DragedObject.InstanceId])
 					return;
 
-				Undo.Current.RegisterDecalsSharedValuesChange();
+				Undo.RegisterUndo(new UndoHistory.HistoryDecalsSharedValues(), new UndoHistory.HistoryDecalsSharedValues.DecalsSharedValuesHistoryParameter(DecalSettings.GetLoaded));
 				Loaded.Tex1Path = ResourceBrowser.Current.LoadedPaths[ResourceBrowser.DragedObject.InstanceId];
 				Loaded.UpdateMaterial();
 				Load(Loaded);
 				DecalsInfo.Current.DecalsList.OnTexturesChanged();
-				//ScmapEditor.Current.Textures[Selected].Albedo = ResourceBrowser.Current.LoadedTextures[ResourceBrowser.DragedObject.InstanceId];
-				//ScmapEditor.Current.Textures[Selected].AlbedoPath = ResourceBrowser.Current.LoadedPaths[ResourceBrowser.DragedObject.InstanceId];
-
-				//Map.map.Layers [Selected].PathTexture = Map.Textures [Selected].AlbedoPath;
 			}
 		}
 		
@@ -361,21 +354,14 @@ namespace EditMap
 				return;
 			if (ResourceBrowser.SelectedCategory == 2)
 			{
-				//TODO Undo.RegisterStratumChange(Selected);
-				//Debug.Log(ResourceBrowser.Current.LoadedPaths[ResourceBrowser.DragedObject.InstanceId]);
-
 				if (Loaded.Tex2Path == ResourceBrowser.Current.LoadedPaths[ResourceBrowser.DragedObject.InstanceId])
 					return;
 
-				Undo.Current.RegisterDecalsSharedValuesChange();
+				Undo.RegisterUndo(new UndoHistory.HistoryDecalsSharedValues(), new UndoHistory.HistoryDecalsSharedValues.DecalsSharedValuesHistoryParameter(DecalSettings.GetLoaded));
 				Loaded.Tex2Path = ResourceBrowser.Current.LoadedPaths[ResourceBrowser.DragedObject.InstanceId];
 				Loaded.UpdateMaterial();
 				Load(Loaded);
 				DecalsInfo.Current.DecalsList.OnTexturesChanged();
-				//ScmapEditor.Current.Textures[Selected].Albedo = ResourceBrowser.Current.LoadedTextures[ResourceBrowser.DragedObject.InstanceId];
-				//ScmapEditor.Current.Textures[Selected].AlbedoPath = ResourceBrowser.Current.LoadedPaths[ResourceBrowser.DragedObject.InstanceId];
-
-				//Map.map.Layers [Selected].PathTexture = Map.Textures [Selected].AlbedoPath;
 			}
 		}
 
@@ -412,7 +398,7 @@ namespace EditMap
 			if (Loaded == null || Loading)
 				return;
 
-			Undo.Current.RegisterDecalsValuesChange();
+			Undo.RegisterUndo(new UndoHistory.HistoryDecalsValues());
 
 			HashSet<OzoneDecal>.Enumerator ListEnum = DecalsInfo.Current.SelectedDecals.GetEnumerator();
 			while (ListEnum.MoveNext())
@@ -429,7 +415,7 @@ namespace EditMap
 			if (Loaded == null || Loading)
 				return;
 
-			Undo.Current.RegisterDecalsValuesChange();
+			Undo.RegisterUndo(new UndoHistory.HistoryDecalsValues());
 
 			HashSet<OzoneDecal>.Enumerator ListEnum = DecalsInfo.Current.SelectedDecals.GetEnumerator();
 			while (ListEnum.MoveNext())
@@ -443,7 +429,7 @@ namespace EditMap
 
 		public void SampleCutoffFromCamera()
 		{
-			Undo.Current.RegisterDecalsValuesChange();
+			Undo.RegisterUndo(new UndoHistory.HistoryDecalsValues());
 
 			float Dist = (int)CameraControler.GetCurrentZoom();
 			HashSet<OzoneDecal>.Enumerator ListEnum = DecalsInfo.Current.SelectedDecals.GetEnumerator();
@@ -457,7 +443,7 @@ namespace EditMap
 
 		public void SampleNearCutoffFromCamera()
 		{
-			Undo.Current.RegisterDecalsValuesChange();
+			Undo.RegisterUndo(new UndoHistory.HistoryDecalsValues());
 
 			float Dist = (int)CameraControler.GetCurrentZoom();
 			HashSet<OzoneDecal>.Enumerator ListEnum = DecalsInfo.Current.SelectedDecals.GetEnumerator();

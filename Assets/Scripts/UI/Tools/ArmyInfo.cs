@@ -286,8 +286,7 @@ public class ArmyInfo : MonoBehaviour {
 
 		if (!WrongName)
 		{
-			//TODO Register Undo
-			Undo.Current.RegisterArmiesChange();
+			Undo.RegisterUndo(new UndoHistory.HistoryArmiesChange());
 			MapLuaParser.Current.ScenarioLuaFile.Data.Configurations[c].Teams[id.InstanceId].name = NewName;
 			id.ObjectName.text = NewName;
 		}
@@ -298,8 +297,7 @@ public class ArmyInfo : MonoBehaviour {
 
 	public void RemoveTeam(ListObject id)
 	{
-		//TODO Register Undo
-		Undo.Current.RegisterArmiesChange();
+		Undo.RegisterUndo(new UndoHistory.HistoryArmiesChange());
 		int c = 0;
 		List<ScenarioLua.Team> TeamsList = MapLuaParser.Current.ScenarioLuaFile.Data.Configurations[c].Teams.ToList();
 		TeamsList.RemoveAt(id.InstanceId);
@@ -310,8 +308,7 @@ public class ArmyInfo : MonoBehaviour {
 
 	public void AddTeam()
 	{
-		//TODO Register Undo
-		Undo.Current.RegisterArmiesChange();
+		Undo.RegisterUndo(new UndoHistory.HistoryArmiesChange());
 		int c = 0;
 
 		ScenarioLua.Team NewTeam = new ScenarioLua.Team();
@@ -353,8 +350,7 @@ public class ArmyInfo : MonoBehaviour {
 
 	public void AddArmy(TeamListObject TeamObject)
 	{
-		//TODO Register Undo
-		Undo.Current.RegisterArmiesChange();
+		Undo.RegisterUndo(new UndoHistory.HistoryArmiesChange());
 		ScenarioLua.Army CreatedArmy;
 		//string CreatedName;
 		int c = 0;
@@ -415,7 +411,7 @@ public class ArmyInfo : MonoBehaviour {
 			{
 				if (MapLuaParser.Current.ScenarioLuaFile.Data.Configurations[c].Teams[t].Armys[a] == SelectedArmy)
 				{
-					Undo.Current.RegisterArmiesChange();
+					Undo.RegisterUndo(new UndoHistory.HistoryArmiesChange());
 					MapLuaParser.Current.ScenarioLuaFile.Data.Configurations[c].Teams[t].Armys.RemoveAt(a);
 					SelectedArmy = null;
 					UpdateList();
@@ -431,7 +427,7 @@ public class ArmyInfo : MonoBehaviour {
 			if (MapLuaParser.Current.ScenarioLuaFile.Data.Configurations[c].ExtraArmys[a] == SelectedArmy)
 			{
 
-				Undo.Current.RegisterArmiesChange();
+				Undo.RegisterUndo(new UndoHistory.HistoryArmiesChange());
 				MapLuaParser.Current.ScenarioLuaFile.Data.Configurations[c].ExtraArmys.RemoveAt(a);
 				SelectedArmy = null;
 				UpdateList();
@@ -547,7 +543,7 @@ public class ArmyInfo : MonoBehaviour {
 	{
 		if (Repainting)
 			return;
-		Undo.Current.RegisterArmyChange(SelectedArmy);
+		Undo.RegisterUndo(new UndoHistory.HistoryArmyChange(), new UndoHistory.HistoryArmyChange.ArmyChangeHistoryParameter(SelectedArmy));
 
 		SelectedArmy.Name = ArmyNameInput.text;
 
@@ -561,7 +557,7 @@ public class ArmyInfo : MonoBehaviour {
 		if (Repainting)
 			return;
 
-		Undo.Current.RegisterArmyChange(SelectedArmy);
+		Undo.RegisterUndo(new UndoHistory.HistoryArmyChange(), new UndoHistory.HistoryArmyChange.ArmyChangeHistoryParameter(SelectedArmy));
 
 		SelectedArmy.Data.plans = PlansInput.text;
 		SelectedArmy.Data.color = ColorInput.intValue;
@@ -602,7 +598,7 @@ public class ArmyInfo : MonoBehaviour {
 		if (Repainting)
 			return;
 
-		Undo.Current.RegisterArmyChange(SelectedArmy);
+		Undo.RegisterUndo(new UndoHistory.HistoryArmyChange(), new UndoHistory.HistoryArmyChange.ArmyChangeHistoryParameter(SelectedArmy));
 
 		bool Found = false;
 		for (int a = 0; a < SelectedArmy.Data.Alliances.Count; a++)
@@ -654,8 +650,7 @@ public class ArmyInfo : MonoBehaviour {
 		int c = 0;
 
 
-		//TODO Register Undo
-		Undo.Current.RegisterArmiesChange();
+		Undo.RegisterUndo(new UndoHistory.HistoryArmiesChange());
 
 		ScenarioLua.Army Army;
 		if (ListObject.DragBeginId.ListId >= 0)
@@ -694,8 +689,7 @@ public class ArmyInfo : MonoBehaviour {
 		if (AllTeamFields.Contains(ListObject.DragBeginId))
 			return;
 
-		//TODO Register Undo
-		Undo.Current.RegisterArmiesChange();
+		Undo.RegisterUndo(new UndoHistory.HistoryArmiesChange());
 
 		ScenarioLua.Army Army;
 

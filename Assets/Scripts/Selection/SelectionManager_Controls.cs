@@ -470,15 +470,15 @@ namespace Selection
 			//Debug.Log(LastControlType);
 			if(LastControlType == SelectionControlTypes.Marker || LastControlType == SelectionControlTypes.MarkerChain)
 			{
-				Undo.Current.RegisterMarkersMove();
+				Undo.RegisterUndo(new UndoHistory.HistoryMarkersMove(), new UndoHistory.HistoryMarkersMove.MarkersMoveHistoryParameter(true));
 			}
 			else if(LastControlType == SelectionControlTypes.Decal)
 			{
-				Undo.Current.RegisterDecalsMove();
+				Undo.RegisterUndo(new UndoHistory.HistoryDecalsMove(), new UndoHistory.HistoryDecalsMove.DecalsMoveHistoryParameter(true));
 			}
 			else if(LastControlType == SelectionControlTypes.Units)
 			{
-				Undo.RegisterUnitsMove();
+				Undo.RegisterUndo(new UndoHistory.HistoryUnitsMove());
 			}
 		}
 

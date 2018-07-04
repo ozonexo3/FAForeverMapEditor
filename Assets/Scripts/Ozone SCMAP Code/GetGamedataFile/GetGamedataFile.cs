@@ -47,7 +47,6 @@ public partial struct GetGamedataFile
 	}
 
 
-
 	public static Texture2D LoadTexture2DFromGamedata(string scd, string LocalPath, bool NormalMap = false, bool StoreInMemory = true)
 	{
 		if (string.IsNullOrEmpty(LocalPath))

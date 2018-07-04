@@ -818,7 +818,7 @@ namespace EditMap
 			if (UndoRegistered)
 				return;
 			UndoRegistered = true;
-			Undo.Current.RegisterPropsChange();
+			Undo.RegisterUndo(new UndoHistory.HistoryPropsChange());
 		}
 
 		void Paint(Vector3 AtPosition, Quaternion Rotation)

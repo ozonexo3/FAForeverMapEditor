@@ -56,7 +56,7 @@ namespace EditMap
 					if (!AllGroups.Contains(uinst.Owner.Parent))
 						AllGroups.Add(uinst.Owner.Parent);
 				}
-				Undo.RegisterUnitsRemove(AllGroups.ToArray());
+				Undo.RegisterUndo(new UndoHistory.HistoryUnitsRemove(), new UndoHistory.HistoryUnitsRemove.UnitsRemoveParam(AllGroups.ToArray()));
 			}
 
 			for (int i = 0; i < Count; i++)
@@ -64,7 +64,8 @@ namespace EditMap
 				//DestroyImmediate(MarkerObjects[i]);
 				SaveLua.Army.Unit u = MarkerObjects[i].GetComponent<UnitInstance>().Owner;
 				u.ClearInstance();
-				u.Parent.RemoveUnit(u);
+				if(u.Parent != null)
+					u.Parent.RemoveUnit(u);
 			}
 
 			SelectionManager.Current.CleanSelection();
@@ -200,7 +201,7 @@ namespace EditMap
 
 			if (Positions.Length > 0 && RegisterUndo)
 			{
-				Undo.RegisterUnitsRemove(new SaveLua.Army.UnitsGroup[] { FirstSelected.Source });
+				Undo.RegisterUndo(new UndoHistory.HistoryUnitsRemove(), new UndoHistory.HistoryUnitsRemove.UnitsRemoveParam(new SaveLua.Army.UnitsGroup[] { FirstSelected.Source }));
 			}
 
 
@@ -338,7 +339,7 @@ namespace EditMap
 				if (!AllGroups.Contains(uinst.Owner.Parent))
 					AllGroups.Add(uinst.Owner.Parent);
 			}
-			Undo.RegisterUnitsRemove(AllGroups.ToArray());
+			Undo.RegisterUndo(new UndoHistory.HistoryUnitsRemove(), new UndoHistory.HistoryUnitsRemove.UnitsRemoveParam(AllGroups.ToArray()));
 
 
 			Vector3[] Positions = new Vector3[Count];

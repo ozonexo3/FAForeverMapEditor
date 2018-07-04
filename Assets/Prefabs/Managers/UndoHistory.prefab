@@ -51,41 +51,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7253bdeb0eee871489a10ffec7d44ffc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Scenario: {fileID: 0}
-  Scmap: {fileID: 0}
   Menu: {fileID: 0}
   EditMenu: {fileID: 0}
   MapInfoMenu: {fileID: 0}
   MaxHistoryLength: 20
-  Prefabs:
-    MapInfo: {fileID: 103088, guid: e858d370420b66741be17ea857192b5b, type: 2}
-    ArmiesChange: {fileID: 103088, guid: 743b415eb37e1d94da0066439b1f7a8b, type: 2}
-    ArmyChange: {fileID: 103088, guid: ea31adf2ba229bc4e88cbd70a5ecf14a, type: 2}
-    AreasChange: {fileID: 103088, guid: 584dcce24c6f1a142a33472b838ff274, type: 2}
-    AreaChange: {fileID: 103088, guid: 17b38c3339e2ca44a974c07f91ceacd7, type: 2}
-    MarkersRemove: {fileID: 108316, guid: 1811d59cead26af4eac883fd34c24644, type: 2}
-    MarkersMove: {fileID: 108316, guid: 0a27146c30a41694cbfb19f1ff01866e, type: 2}
-    MarkersChange: {fileID: 108316, guid: 5d01288a742a7344c82e71c4bc778134, type: 2}
-    ChainChange: {fileID: 108316, guid: 405c10942dabc1d448736660e402a3d6, type: 2}
-    ChainMarkers: {fileID: 108316, guid: 08ae059369b092b4982dd40dfcb209cd, type: 2}
-    DecalsMove: {fileID: 108316, guid: 968fefc981081e843b66126b53b3a5c7, type: 2}
-    DecalsChange: {fileID: 108316, guid: 8b446778201ec8f4e94b8616c6b05af2, type: 2}
-    DecalValues: {fileID: 108316, guid: a3349105112c4ef46bb34b9776ed9105, type: 2}
-    DecalSharedValues: {fileID: 108316, guid: 60db73ab10af80b4197a2cad95692388, type: 2}
-    PropsChange: {fileID: 108316, guid: ab7188e35e878ed4f9b3de651f878cda, type: 2}
-    TerrainHeightChange: {fileID: 108316, guid: 4bb07b69e4d435345b460a2b2bedd5a7,
-      type: 2}
-    TerrainWaterElevationChange: {fileID: 108316, guid: a2722bc3a47e63c43b4b16db9924e2f7,
-      type: 2}
-    TerrainWaterSettingsChange: {fileID: 108316, guid: 8f9a58b4b31466743b3976d896cc20e1,
-      type: 2}
-    StratumPaint: {fileID: 108316, guid: e63bba23a97814a4096cbfce91883e87, type: 2}
-    StratumChange: {fileID: 108316, guid: 89641b6d2cae32949b00edfa4cd8ed48, type: 2}
-    LightingChange: {fileID: 103088, guid: 255f6ee70b130fa40ba8d1743ce94ab7, type: 2}
-    UnitGroupRemove: {fileID: 108316, guid: a186b684f22a9a34a99e0a7990b98fc1, type: 2}
-    UnitGroupChange: {fileID: 108316, guid: 052df0f2448e609469dc2606eb10b10a, type: 2}
-    UnitRemove: {fileID: 108316, guid: 160662eff6292b64cb24f1b610d24daa, type: 2}
-    UnitMove: {fileID: 108316, guid: 07dcbcb4b2e0336498313a39676340f0, type: 2}
-  History: []
-  RedoHistory: []
   CurrentStage: 0

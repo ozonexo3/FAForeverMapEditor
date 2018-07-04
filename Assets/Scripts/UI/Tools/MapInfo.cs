@@ -83,7 +83,7 @@ namespace EditMap
 
 		public void EndFieldEdit()
 		{
-			if (HasChanged()) Scenario.History.RegisterMapInfo();
+			if (HasChanged()) Undo.RegisterUndo(new UndoHistory.HistoryMapInfo());
 			Scenario.ScenarioLuaFile.Data.name = Name.text;
 			Scenario.ScenarioLuaFile.Data.description = Desc.text;
 			Scenario.ScenarioLuaFile.Data.map_version = float.Parse(Version.text);
@@ -91,7 +91,7 @@ namespace EditMap
 
 		public void ChangeScript(int id = 0)
 		{
-			if (Scenario.ScriptId != id) Scenario.History.RegisterMapInfo();
+			if (Scenario.ScriptId != id) Undo.RegisterUndo(new UndoHistory.HistoryMapInfo());
 			Scenario.ScriptId = id;
 		}
 

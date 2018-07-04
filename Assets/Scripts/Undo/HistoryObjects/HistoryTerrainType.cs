@@ -1,12 +1,12 @@
 ﻿using EditMap.TerrainTypes;
 
-namespace UndoHistory.HistoryObjects
+namespace UndoHistory
 {
     public class HistoryTerrainType : HistoryObject
     {
         private byte[] terrainTypeData;
         
-        public override void Register()
+        public override void Register(HistoryParameter Param)
         {
             this.terrainTypeData = (byte[])TerrainTypeWindow.GetUndoData().Clone();
         }
@@ -15,7 +15,7 @@ namespace UndoHistory.HistoryObjects
         {
             if (!RedoGenerated)
             {
-                HistoryTerrainType.GenerateRedo(Undo.Current.Prefabs.TerrainTypePaint).Register();
+				Undo.RegisterRedo(new HistoryTerrainType());
             }
             RedoGenerated = true;
             DoRedo();

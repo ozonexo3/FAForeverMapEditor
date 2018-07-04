@@ -121,7 +121,7 @@ namespace EditMap
 		{
 			ClearRename();
 
-			Undo.RegisterGroupRemove(parent.Source);
+			Undo.RegisterUndo(new UndoHistory.HistoryUnitGroupRemove(), new UndoHistory.HistoryUnitGroupRemove.UnitGroupRemoveHistoryParameter(parent.Source));
 
 			ClearGrpSelection();
 			UpdateGroupSelection();
@@ -199,7 +199,7 @@ namespace EditMap
 
 			ClearRename();
 
-			Undo.RegisterGroupRemove(parent.Parent);
+			Undo.RegisterUndo(new UndoHistory.HistoryUnitGroupRemove(), new UndoHistory.HistoryUnitGroupRemove.UnitGroupRemoveHistoryParameter(parent.Parent));
 
 			StoreSelection.Clear();
 			StoreSelection = GetAllSelectedGroups();
@@ -300,7 +300,7 @@ namespace EditMap
 			}
 
 			RenameUndoApplyied = true;
-			Undo.RegisterGroupChange(parent.Source);
+			Undo.RegisterUndo(new UndoHistory.HistoryUnitGroupChange(), new UndoHistory.HistoryUnitGroupChange.UnitGroupChangeParam(parent.Source));
 
 			parent.Source.NoPrefixName = NewValue;
 			Generate(true);
@@ -315,7 +315,7 @@ namespace EditMap
 				return; // No changes
 
 			if(!RenameUndoApplyied)
-				Undo.RegisterGroupChange(parent.Source);
+				Undo.RegisterUndo(new UndoHistory.HistoryUnitGroupChange(), new UndoHistory.HistoryUnitGroupChange.UnitGroupChangeParam(parent.Source));
 
 			if (!string.IsNullOrEmpty(OldPrefix))
 			{

@@ -50,6 +50,42 @@ public partial struct GetGamedataFile
 	static bool Init = false;
 
 	/// <summary>
+	/// Find and return real path from SCD
+	/// </summary>
+	/// <param name="scd"></param>
+	/// <param name="LocalPath"></param>
+	/// <returns></returns>
+	public static string FindFile(string scd, string LocalPath)
+	{
+		if (IsMapPath(LocalPath))
+		{
+			return LocalPath;
+		}
+
+
+		if (string.IsNullOrEmpty(LocalPath))
+		{
+			return LocalPath;
+		}
+
+		ZipFile ZipFileInstance = GetZipFileInstance(scd);
+		if (ZipFileInstance == null)
+		{
+			Debug.LogWarning("Can't load ZipFile");
+			return null;
+		}
+
+		int EntryId = ZipFileInstance.FindEntry(LocalPath, true);
+
+		if(EntryId >= 0 && ZipFileInstance[EntryId] != null)
+		{
+			return ZipFileInstance[EntryId].Name;
+		}
+		return LocalPath;
+	}
+
+
+	/// <summary>
 	/// Loads bytes from *.scd files from game gamedata folder. Returns decompressed bytes of that file.
 	/// </summary>
 	/// <param name="scd"></param>

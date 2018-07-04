@@ -470,7 +470,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!1 &1832280516039296
 GameObject:
   m_ObjectHideFlags: 1
@@ -1097,6 +1097,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   FieldType: 1
   BeginValue: 1
+  FiltredChars: 
   InputFieldUi: {fileID: 114226237324387216}
   SliderUi: {fileID: 0}
   OnBeginChange:
@@ -1127,6 +1128,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   FieldType: 2
   BeginValue: 360
+  FiltredChars: 
   InputFieldUi: {fileID: 114510921813939316}
   SliderUi: {fileID: 114644361265583564}
   OnBeginChange:
@@ -1238,6 +1240,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   FieldType: 2
   BeginValue: 0
+  FiltredChars: 
   InputFieldUi: {fileID: 114799158646090148}
   SliderUi: {fileID: 114515083728861288}
   OnBeginChange:
@@ -1328,6 +1331,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   FieldType: 2
   BeginValue: 100
+  FiltredChars: 
   InputFieldUi: {fileID: 114683520203043370}
   SliderUi: {fileID: 114514618127567082}
   OnBeginChange:
@@ -1387,7 +1391,7 @@ MonoBehaviour:
   m_MinWidth: -1
   m_MinHeight: -1
   m_PreferredWidth: -1
-  m_PreferredHeight: 81
+  m_PreferredHeight: 61
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
@@ -1423,7 +1427,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: ' Procent'
+  m_Text: ' Spawn chance'
 --- !u!114 &114510921813939316
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2291,6 +2295,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   FieldType: 1
   BeginValue: 1
+  FiltredChars: 
   InputFieldUi: {fileID: 114216572268778048}
   SliderUi: {fileID: 0}
   OnBeginChange:
@@ -2563,10 +2568,10 @@ RectTransform:
   m_Father: {fileID: 224501674876974960}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 2, y: -20}
+  m_SizeDelta: {x: 255.70001, y: 20}
   m_Pivot: {x: 0, y: 1}
 --- !u!224 &224015283887815846
 RectTransform:

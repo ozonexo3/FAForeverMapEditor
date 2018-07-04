@@ -298,7 +298,7 @@ namespace EditMap
 
 			if (TerainChanged && Input.GetMouseButtonUp(0))
 			{
-				MapLuaParser.Current.History.RegisterTerrainHeightmapChange(beginHeights);
+				Undo.RegisterUndo(new UndoHistory.HistoryTerrainHeight(), new UndoHistory.HistoryTerrainHeight.TerrainHeightHistoryParameter(beginHeights));
 				TerainChanged = false;
 			}
 
@@ -364,7 +364,7 @@ namespace EditMap
 				}
 			}
 
-			MapLuaParser.Current.History.RegisterTerrainHeightmapChange(beginHeights);
+			Undo.RegisterUndo(new UndoHistory.HistoryTerrainHeight(), new UndoHistory.HistoryTerrainHeight.TerrainHeightHistoryParameter(beginHeights));
 
 			ScmapEditor.SetAllHeights(heights);
 
@@ -379,7 +379,7 @@ namespace EditMap
 			int h = ScmapEditor.Current.Teren.terrainData.heightmapHeight;
 			int w = ScmapEditor.Current.Teren.terrainData.heightmapWidth;
 			ScmapEditor.GetAllHeights(ref beginHeights);
-			MapLuaParser.Current.History.RegisterTerrainHeightmapChange(beginHeights);
+			Undo.RegisterUndo(new UndoHistory.HistoryTerrainHeight(), new UndoHistory.HistoryTerrainHeight.TerrainHeightHistoryParameter(beginHeights));
 
 			float Value = float.Parse(TerrainAdd.text) * 0.1f;
 			Value /= ScmapEditor.TerrainHeight;
@@ -566,7 +566,7 @@ namespace EditMap
 			int h = ScmapEditor.Current.Teren.terrainData.heightmapHeight;
 			int w = ScmapEditor.Current.Teren.terrainData.heightmapWidth;
 			ScmapEditor.GetAllHeights(ref beginHeights);
-			MapLuaParser.Current.History.RegisterTerrainHeightmapChange(beginHeights);
+			Undo.RegisterUndo(new UndoHistory.HistoryTerrainHeight(), new UndoHistory.HistoryTerrainHeight.TerrainHeightHistoryParameter(beginHeights));
 
 
 			float[,] data = new float[h, w];

@@ -104,7 +104,7 @@ namespace EditMap
 
 		public void BeginColorsChange()
 		{
-			Undo.Current.RegisterLightingChange();
+			Undo.RegisterUndo(new UndoHistory.HistoryLighting());
 		}
 
 		public void FinishColorChange()
@@ -128,7 +128,7 @@ namespace EditMap
 			if (IgnoreUpdate)
 				return;
 
-			Undo.Current.RegisterLightingChange();
+			Undo.RegisterUndo(new UndoHistory.HistoryLighting());
 		}
 
 		public void UpdateMenu(bool Slider = false)

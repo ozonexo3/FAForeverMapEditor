@@ -253,9 +253,9 @@ namespace EditMap
 					if (TerainChanged)
 					{
 						if (Selected > 0 && Selected < 5)
-							MapLuaParser.Current.History.RegisterStratumPaint(beginColors, 0);
+							Undo.RegisterUndo(new UndoHistory.HistoryStratumPaint(), new UndoHistory.HistoryStratumPaint.StratumPaintHistoryParameter(0, beginColors));
 						else if (Selected > 4 && Selected < 9)
-							MapLuaParser.Current.History.RegisterStratumPaint(beginColors, 1);
+							Undo.RegisterUndo(new UndoHistory.HistoryStratumPaint(), new UndoHistory.HistoryStratumPaint.StratumPaintHistoryParameter(1, beginColors));
 						TerainChanged = false;
 					}
 				}
@@ -440,7 +440,7 @@ namespace EditMap
 					{
 						StratumChangeCheck = true;
 						if (!LoadingStratum)
-							Undo.RegisterStratumChange(Selected);
+							Undo.RegisterUndo(new UndoHistory.HistoryStratumChange(), new UndoHistory.HistoryStratumChange.StratumChangeHistoryParameter(Selected));
 					}
 					if (!LoadingStratum)
 					{
@@ -450,7 +450,7 @@ namespace EditMap
 				{
 					if (!LoadingStratum)
 					{
-						Undo.RegisterStratumChange(Selected);
+						Undo.RegisterUndo(new UndoHistory.HistoryStratumChange(), new UndoHistory.HistoryStratumChange.StratumChangeHistoryParameter(Selected));
 					}
 				}
 				if (!LoadingStratum)
@@ -878,7 +878,7 @@ namespace EditMap
 				return;
 			if (ResourceBrowser.SelectedCategory == 0 || ResourceBrowser.SelectedCategory == 1)
 			{
-				Undo.RegisterStratumChange(Selected);
+				Undo.RegisterUndo(new UndoHistory.HistoryStratumChange(), new UndoHistory.HistoryStratumChange.StratumChangeHistoryParameter(Selected));
 				Debug.Log(ResourceBrowser.Current.LoadedPaths[ResourceBrowser.DragedObject.InstanceId]);
 
 				ScmapEditor.Current.Textures[Selected].Albedo = ResourceBrowser.Current.LoadedTextures[ResourceBrowser.DragedObject.InstanceId];
@@ -903,7 +903,7 @@ namespace EditMap
 			if (ResourceBrowser.SelectedCategory == 0 || ResourceBrowser.SelectedCategory == 1)
 			{
 
-				Undo.RegisterStratumChange(Selected);
+				Undo.RegisterUndo(new UndoHistory.HistoryStratumChange(), new UndoHistory.HistoryStratumChange.StratumChangeHistoryParameter(Selected));
 				Debug.Log(ResourceBrowser.Current.LoadedPaths[ResourceBrowser.DragedObject.InstanceId]);
 
 				//Map.Textures [Selected].Normal = ResourceBrowser.Current.LoadedTextures [ResourceBrowser.DragedObject.InstanceId];
@@ -1114,9 +1114,9 @@ namespace EditMap
 			}
 
 			if (Selected > 0 && Selected < 5)
-				MapLuaParser.Current.History.RegisterStratumPaint(beginColors, 0);
+				Undo.RegisterUndo(new UndoHistory.HistoryStratumPaint(), new UndoHistory.HistoryStratumPaint.StratumPaintHistoryParameter(0, beginColors));
 			else if (Selected > 4 && Selected < 9)
-				MapLuaParser.Current.History.RegisterStratumPaint(beginColors, 1);
+				Undo.RegisterUndo(new UndoHistory.HistoryStratumPaint(), new UndoHistory.HistoryStratumPaint.StratumPaintHistoryParameter(1, beginColors));
 
 
 			for (int i = 0; i < StratumData.Length; i++)
@@ -1180,9 +1180,9 @@ namespace EditMap
 					}
 
 					if (Selected > 0 && Selected < 5)
-						MapLuaParser.Current.History.RegisterStratumPaint(beginColors, 0);
+						Undo.RegisterUndo(new UndoHistory.HistoryStratumPaint(), new UndoHistory.HistoryStratumPaint.StratumPaintHistoryParameter(0, beginColors));
 					else if (Selected > 4 && Selected < 9)
-						MapLuaParser.Current.History.RegisterStratumPaint(beginColors, 1);
+						Undo.RegisterUndo(new UndoHistory.HistoryStratumPaint(), new UndoHistory.HistoryStratumPaint.StratumPaintHistoryParameter(1, beginColors));
 
 					Texture2D ImportedImage = img.ToTexture2D();
 					if(ImportedImage.width != ScmapEditor.Current.map.TexturemapTex.width || ImportedImage.height != ScmapEditor.Current.map.TexturemapTex.height)

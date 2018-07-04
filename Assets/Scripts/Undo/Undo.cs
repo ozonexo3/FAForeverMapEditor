@@ -16,22 +16,17 @@ public partial class Undo : MonoBehaviour {
 	public static Undo Current;
 
 	[Header("Classes")]
-	public		MapLuaParser		Scenario;
-	public		ScmapEditor			Scmap;
 	public		AppMenu				Menu;
 	public		Editing				EditMenu;
 	public		MapInfo				MapInfoMenu;
 
 	[Header("Config")]
 	public		int				MaxHistoryLength;
-	public		UndoPrefabs		Prefabs;
 
-	[Header("History")]
-	public		List<HistoryObject>		History;
-	public		List<HistoryObject>		RedoHistory;
-	public		int				CurrentStage;
-
-	public static	bool		RegisterMarkersDelete = false;
+	//[Header("History")]
+				List<HistoryObject>		History;
+				List<HistoryObject>		RedoHistory;
+				int				CurrentStage;
 
 	void Awake(){
 		Current = this;
@@ -46,9 +41,9 @@ public partial class Undo : MonoBehaviour {
 	{
 		while(History.Count > CurrentStage)
 		{
-			Destroy(History[History.Count - 1].gameObject);
+			//Destroy(History[History.Count - 1]);
 			History.RemoveAt(History.Count - 1);
-			Destroy(RedoHistory[0].gameObject);
+			//Destroy(RedoHistory[0]);
 			RedoHistory.RemoveAt(0);
 		}
 	}
@@ -63,13 +58,13 @@ public partial class Undo : MonoBehaviour {
 
 		for (int i = 0; i < History.Count; i++)
 		{
-			if(History[i] && History[i].gameObject)
-				Destroy(History[i].gameObject);
+			//if(History[i] && History[i].gameObject)
+			//	Destroy(History[i].gameObject);
 		}
 		for (int i = 0; i < RedoHistory.Count; i++)
 		{
-			if(RedoHistory[i] && RedoHistory[i].gameObject)
-				Destroy(RedoHistory[i].gameObject);
+			//if(RedoHistory[i] && RedoHistory[i].gameObject)
+			//	Destroy(RedoHistory[i].gameObject);
 		}
 
 		CurrentStage = 0;
@@ -128,7 +123,7 @@ public partial class Undo : MonoBehaviour {
 	public int AddToHistory(HistoryObject NewHistoryStep){
 		History.Add (NewHistoryStep);
 		if (History.Count - 1 >= MaxHistoryLength) {
-			Destroy(History[0].gameObject);
+			//Destroy(History[0].gameObject);
 			History.RemoveAt(0);
 		}
 		return History.Count - 1;
@@ -137,9 +132,36 @@ public partial class Undo : MonoBehaviour {
 	public int AddToRedoHistory(HistoryObject NewHistoryStep){
 		RedoHistory.Add (NewHistoryStep);
 		if (RedoHistory.Count - 1 >= MaxHistoryLength) {
-			Destroy(RedoHistory[0].gameObject);
+			//Destroy(RedoHistory[0].gameObject);
 			RedoHistory.RemoveAt(0);
 		}
 		return RedoHistory.Count - 1;
+	}
+
+
+	public static void RegisterUndo(HistoryObject UndoStep, HistoryObject.HistoryParameter Params = null)
+	{
+		Current.AddUndoCleanup();
+		Current.AddToHistory(UndoStep);
+		Current.CurrentStage = Undo.Current.History.Count;
+		UndoStep.Register(Params);
+	}
+
+	public static void RegisterRedo(HistoryObject RedoStep, HistoryObject.HistoryParameter Params = null)
+	{
+		Undo.Current.AddToRedoHistory(RedoStep);
+		Undo.Current.CurrentStage = Undo.Current.History.Count;
+		RedoStep.Register(Params);
+	}
+
+	//*********************************************  REGISTER UNDO
+	public void RegisterSelectionChange()
+	{
+		// NotImplemented
+	}
+
+	public void RegisterSelectionRangeChange()
+	{
+		// NotImplemented
 	}
 }

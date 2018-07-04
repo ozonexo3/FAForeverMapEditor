@@ -6,50 +6,53 @@ using UndoHistory;
 using EditMap;
 using OzoneDecals;
 
-public class HistoryDecalsValues : HistoryObject
+namespace UndoHistory
 {
-	public float[] CutOffLOD;
-	public float[] NearCutOffLOD;
-
-	public static bool UndoMenu;
-	public bool UndoToDecalsMenu;
-
-	public override void Register()
+	public class HistoryDecalsValues : HistoryObject
 	{
-		UndoToDecalsMenu = UndoMenu;
+		public float[] CutOffLOD;
+		public float[] NearCutOffLOD;
 
-		CutOffLOD = new float[DecalsControler.Current.AllDecals.Count];
-		NearCutOffLOD = new float[CutOffLOD.Length];
+		public static bool UndoMenu;
+		public bool UndoToDecalsMenu;
 
-		for (int i = 0; i < CutOffLOD.Length; i++)
+		public override void Register(HistoryParameter Param)
 		{
-			CutOffLOD[i] = DecalsControler.Current.AllDecals[i].Obj.CutOffLOD;
-			NearCutOffLOD[i] = DecalsControler.Current.AllDecals[i].Obj.NearCutOffLOD;
-		}
-	}
+			UndoToDecalsMenu = UndoMenu;
 
-	public override void DoUndo()
-	{
-		UndoMenu = UndoToDecalsMenu;
+			CutOffLOD = new float[DecalsControler.Current.AllDecals.Count];
+			NearCutOffLOD = new float[CutOffLOD.Length];
 
-		if (!RedoGenerated)
-			HistoryDecalsValues.GenerateRedo(Undo.Current.Prefabs.DecalValues).Register();
-		RedoGenerated = true;
-		DoRedo();
-	}
-
-	public override void DoRedo()
-	{
-		for (int i = 0; i < CutOffLOD.Length; i++)
-		{
-			DecalsControler.Current.AllDecals[i].Obj.CutOffLOD = CutOffLOD[i];
-			DecalsControler.Current.AllDecals[i].Obj.NearCutOffLOD = NearCutOffLOD[i];
+			for (int i = 0; i < CutOffLOD.Length; i++)
+			{
+				CutOffLOD[i] = DecalsControler.Current.AllDecals[i].Obj.CutOffLOD;
+				NearCutOffLOD[i] = DecalsControler.Current.AllDecals[i].Obj.NearCutOffLOD;
+			}
 		}
 
-		Undo.Current.EditMenu.ChangeCategory(5);
+		public override void DoUndo()
+		{
+			UndoMenu = UndoToDecalsMenu;
 
-		DecalsInfo.Current.GoToSelection();
-		DecalsInfo.Current.DecalSettingsUi.Load(DecalSettings.GetLoaded);
-		Selection.SelectionManager.Current.FinishSelectionChange();
+			if (!RedoGenerated)
+				Undo.RegisterRedo(new HistoryDecalsValues());
+			RedoGenerated = true;
+			DoRedo();
+		}
+
+		public override void DoRedo()
+		{
+			for (int i = 0; i < CutOffLOD.Length; i++)
+			{
+				DecalsControler.Current.AllDecals[i].Obj.CutOffLOD = CutOffLOD[i];
+				DecalsControler.Current.AllDecals[i].Obj.NearCutOffLOD = NearCutOffLOD[i];
+			}
+
+			Undo.Current.EditMenu.ChangeCategory(5);
+
+			DecalsInfo.Current.GoToSelection();
+			DecalsInfo.Current.DecalSettingsUi.Load(DecalSettings.GetLoaded);
+			Selection.SelectionManager.Current.FinishSelectionChange();
+		}
 	}
 }

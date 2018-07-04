@@ -1,58 +1,79 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-using UndoHistory;
 using EditMap;
 
+namespace UndoHistory
+{
+	public class HistoryStratumPaint : HistoryObject
+	{
 
-public class HistoryStratumPaint : HistoryObject {
-
-	int Id;
-	Color[] Colors;
-
-	public override void Register(){
-		Undo.RegisterMarkersDelete = true;
-
-		Colors = new Color[Undo.UndoData_Stratum.Length];
-		Undo.UndoData_Stratum.CopyTo (Colors, 0);
-		Id = Undo.UndoData_StratumId;
-	}
-
-
-	public override void DoUndo(){
-		//Undo.UndoData_newheights = Undo.Current.Scmap.Teren.terrainData.GetHeights(0, 0, Undo.Current.Scmap.Teren.terrainData.heightmapWidth, Undo.Current.Scmap.Teren.terrainData.heightmapHeight);
-		if (!RedoGenerated)
+		private StratumPaintHistoryParameter parameter;
+		public class StratumPaintHistoryParameter : HistoryParameter
 		{
+			public int StratumId;
+			public Color[] Stratum;
+
+			public StratumPaintHistoryParameter(int StratumId, Color[] Stratum)
+			{
+				this.StratumId = StratumId;
+				this.Stratum = Stratum;
+			}
+		}
+
+		int Id;
+		Color[] Colors;
+
+		public override void Register(HistoryParameter Param)
+		{
+			parameter = (Param as StratumPaintHistoryParameter);
+
+			Colors = new Color[parameter.Stratum.Length];
+			parameter.Stratum.CopyTo(Colors, 0);
+			Id = parameter.StratumId;
+		}
+
+
+		public override void DoUndo()
+		{
+			if (!RedoGenerated)
+			{
+				Color[] Stratum;
+
+				if (Id == 1)
+				{
+					Stratum = ScmapEditor.Current.map.TexturemapTex2.GetPixels();
+				}
+				else
+				{
+					Stratum = ScmapEditor.Current.map.TexturemapTex.GetPixels();
+				}
+
+				Undo.RegisterRedo(new HistoryStratumPaint(), new StratumPaintHistoryParameter(Id, Stratum));
+			}
+			RedoGenerated = true;
+			DoRedo();
+		}
+
+		public override void DoRedo()
+		{
+			if (Undo.Current.EditMenu.State != Editing.EditStates.TexturesStat)
+			{
+				Undo.Current.EditMenu.State = Editing.EditStates.TexturesStat;
+				Undo.Current.EditMenu.ChangeCategory(2);
+			}
+
 			if (Id == 1)
 			{
-				Undo.UndoData_StratumId = Id;
-				Undo.UndoData_Stratum = Undo.Current.Scmap.map.TexturemapTex2.GetPixels();
+				ScmapEditor.Current.map.TexturemapTex2.SetPixels(Colors);
+				ScmapEditor.Current.map.TexturemapTex2.Apply();
 			}
 			else
 			{
-				Undo.UndoData_StratumId = Id;
-				Undo.UndoData_Stratum = Undo.Current.Scmap.map.TexturemapTex.GetPixels();
+				ScmapEditor.Current.map.TexturemapTex.SetPixels(Colors);
+				ScmapEditor.Current.map.TexturemapTex.Apply();
 			}
 
-			HistoryStratumPaint.GenerateRedo(Undo.Current.Prefabs.StratumPaint).Register();
 		}
-		RedoGenerated = true;
-		DoRedo ();
-	}
-
-	public override void DoRedo(){
-		if(Undo.Current.EditMenu.State != Editing.EditStates.TexturesStat){
-			Undo.Current.EditMenu.State = Editing.EditStates.TexturesStat;
-			Undo.Current.EditMenu.ChangeCategory(2);
-		}
-
-		if (Id == 1) {
-			Undo.Current.Scmap.map.TexturemapTex2.SetPixels (Colors);
-			Undo.Current.Scmap.map.TexturemapTex2.Apply ();
-		} else {
-			Undo.Current.Scmap.map.TexturemapTex.SetPixels (Colors);
-			Undo.Current.Scmap.map.TexturemapTex.Apply ();
-		}
-
 	}
 }

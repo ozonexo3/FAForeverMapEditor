@@ -376,7 +376,7 @@ namespace EditMap
 
 			SaveLua.Marker Current = SelectedGameObjects[0].GetComponent<MarkerObject>().Owner;
 
-			Undo.Current.RegisterMarkerChange(new SaveLua.Marker[] { Current });
+			Undo.RegisterUndo(new UndoHistory.HistoryMarkersChange(), new UndoHistory.HistoryMarkersChange.MarkersChangeHistoryParameter(new SaveLua.Marker[] { Current }));
 
 			//MapLua.SaveLua.RemoveMarkerName(SelectedGameObjects[0].name);
 			//MapLua.SaveLua.RegisterMarkerName(NameToChange);
@@ -416,7 +416,7 @@ namespace EditMap
 			Loading = true;
 			float ReadValue = LuaParser.Read.StringToFloat(Camera_Zoom.text, -1);
 
-			Undo.Current.RegisterMarkerChange(AllMarkers);
+			Undo.RegisterUndo(new UndoHistory.HistoryMarkersChange(), new UndoHistory.HistoryMarkersChange.MarkersChangeHistoryParameter(AllMarkers));
 
 			if (ReadValue >= 0)
 			{
@@ -446,7 +446,7 @@ namespace EditMap
 				return;
 			Camera_Set.graphic.color = CheckmarkNormal;
 
-			Undo.Current.RegisterMarkerChange(AllMarkers);
+			Undo.RegisterUndo(new UndoHistory.HistoryMarkersChange(), new UndoHistory.HistoryMarkersChange.MarkersChangeHistoryParameter(AllMarkers));
 
 			for (int i = 0; i < Count; i++)
 			{
@@ -460,7 +460,7 @@ namespace EditMap
 				return;
 			Camera_Sync.graphic.color = CheckmarkNormal;
 
-			Undo.Current.RegisterMarkerChange(AllMarkers);
+			Undo.RegisterUndo(new UndoHistory.HistoryMarkersChange(), new UndoHistory.HistoryMarkersChange.MarkersChangeHistoryParameter(AllMarkers));
 
 			for (int i = 0; i < Count; i++)
 			{
@@ -482,7 +482,7 @@ namespace EditMap
 			Loading = true;
 			float ReadValue = LuaParser.Read.StringToFloat(SizeField.text, -1);
 
-			Undo.Current.RegisterMarkerChange(AllMarkers);
+			Undo.RegisterUndo(new UndoHistory.HistoryMarkersChange(), new UndoHistory.HistoryMarkersChange.MarkersChangeHistoryParameter(AllMarkers));
 
 			if (ReadValue >= 0)
 			{
@@ -513,7 +513,7 @@ namespace EditMap
 			Loading = true;
 			float ReadValue = LuaParser.Read.StringToFloat(AmountField.text, -1);
 
-			Undo.Current.RegisterMarkerChange(AllMarkers);
+			Undo.RegisterUndo(new UndoHistory.HistoryMarkersChange(), new UndoHistory.HistoryMarkersChange.MarkersChangeHistoryParameter(AllMarkers));
 
 			if (ReadValue >= 0)
 			{
@@ -546,7 +546,7 @@ namespace EditMap
 			Loading = true;
 			float ReadValue = LuaParser.Read.StringToFloat(ScaleField.text, -1);
 
-			Undo.Current.RegisterMarkerChange(AllMarkers);
+			Undo.RegisterUndo(new UndoHistory.HistoryMarkersChange(), new UndoHistory.HistoryMarkersChange.MarkersChangeHistoryParameter(AllMarkers));
 
 			if (ReadValue >= 0)
 			{

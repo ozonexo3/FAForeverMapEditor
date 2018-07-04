@@ -158,7 +158,7 @@ namespace EditMap
 					for (int m = 0; m < Mpreset.Markers.Length; m++)
 					{
 						if(!AnyCreated)
-							Undo.Current.RegisterMarkersAdd();
+							Undo.RegisterUndo(new UndoHistory.HistoryMarkersRemove());
 						AnyCreated = true;
 
 						//Debug.Log(Mpreset.Markers[m].Tr.localPosition);
@@ -187,7 +187,7 @@ namespace EditMap
 				for (int i = 0; i < Positions.Length; i++)
 				{
 					if (!AnyCreated)
-						Undo.Current.RegisterMarkersAdd();
+						Undo.RegisterUndo(new UndoHistory.HistoryMarkersRemove());
 					AnyCreated = true;
 
 					MapLua.SaveLua.Marker NewMarker = new MapLua.SaveLua.Marker(LastCreationType);
@@ -254,7 +254,7 @@ namespace EditMap
 					}
 				}
 
-				Undo.Current.RegisterMarkersRemove();
+				Undo.RegisterUndo(new UndoHistory.HistoryMarkersRemove());
 			}
 
 			//List<MapLua.SaveLua.Marker> NewMarkers = new List<MapLua.SaveLua.Marker>();
@@ -466,7 +466,7 @@ namespace EditMap
 				for (int m = 0; m < ImpMarkers.Markers.Length; m++)
 				{
 					if (!AnyCreated)
-						Undo.Current.RegisterMarkersAdd();
+						Undo.RegisterUndo(new UndoHistory.HistoryMarkersRemove());
 					AnyCreated = true;
 
 

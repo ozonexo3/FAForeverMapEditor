@@ -6,42 +6,45 @@ using UndoHistory;
 using EditMap;
 using OzoneDecals;
 
-public class HistoryDecalsChange : HistoryObject
+namespace UndoHistory
 {
-
-	public Decal[] Decals;
-
-	public override void Register()
+	public class HistoryDecalsChange : HistoryObject
 	{
-		int count = DecalsControler.Current.AllDecals.Count;
-		Decals = new Decal[count];
-		DecalsControler.Current.AllDecals.CopyTo(Decals);
-	}
 
+		public Decal[] Decals;
 
-	public override void DoUndo()
-	{
-		if (!RedoGenerated)
-			HistoryDecalsChange.GenerateRedo(Undo.Current.Prefabs.DecalsChange).Register();
-		RedoGenerated = true;
-		DoRedo();
-	}
-
-	public override void DoRedo()
-	{
-		bool CleanSelection = DecalsControler.Current.AllDecals.Count != Decals.Length || DecalsInfo.Current.DecalSettingsUi.IsCreating || !DecalsInfo.Current.gameObject.activeInHierarchy;
-
-		if (CleanSelection)
-			Selection.SelectionManager.Current.CleanSelection();
-
-		DecalsControler.ChangeDecalsList(Decals.ToList<Decal>());
-
-		if (CleanSelection)
+		public override void Register(HistoryParameter Param)
 		{
-			Undo.Current.EditMenu.ChangeCategory(5);
-			DecalsInfo.Current.GoToSelection();
+			int count = DecalsControler.Current.AllDecals.Count;
+			Decals = new Decal[count];
+			DecalsControler.Current.AllDecals.CopyTo(Decals);
 		}
-		//Selection.SelectionManager.Current.FinishSelectionChange();
 
+
+		public override void DoUndo()
+		{
+			if (!RedoGenerated)
+				Undo.RegisterRedo(new HistoryDecalsChange());
+			RedoGenerated = true;
+			DoRedo();
+		}
+
+		public override void DoRedo()
+		{
+			bool CleanSelection = DecalsControler.Current.AllDecals.Count != Decals.Length || DecalsInfo.Current.DecalSettingsUi.IsCreating || !DecalsInfo.Current.gameObject.activeInHierarchy;
+
+			if (CleanSelection)
+				Selection.SelectionManager.Current.CleanSelection();
+
+			DecalsControler.ChangeDecalsList(Decals.ToList<Decal>());
+
+			if (CleanSelection)
+			{
+				Undo.Current.EditMenu.ChangeCategory(5);
+				DecalsInfo.Current.GoToSelection();
+			}
+			//Selection.SelectionManager.Current.FinishSelectionChange();
+
+		}
 	}
 }

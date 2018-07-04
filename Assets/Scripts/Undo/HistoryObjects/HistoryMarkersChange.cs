@@ -1,170 +1,135 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-using UndoHistory;
 using EditMap;
 using Selection;
 using Markers;
 
-public class HistoryMarkersChange : HistoryObject
+namespace UndoHistory
 {
-
-	//public List<MapLuaParser.Mex> Mexes = new List<MapLuaParser.Mex>();
-	//public List<MapLuaParser.Hydro> Hydros = new List<MapLuaParser.Hydro>();
-	//public List<MapLuaParser.Army> ARMY_ = new List<MapLuaParser.Army>();
-	//public List<MapLuaParser.Marker> SiMarkers = new List<MapLuaParser.Marker>();
-
-	//public List<MarkersInfo.WorkingElement> Selected = new List<MarkersInfo.WorkingElement>();
-	//public MarkersInfo.SymmetrySelection[] SymmetrySelectionList = new MarkersInfo.SymmetrySelection[0];
-
-	//public List<MapLuaParser.SaveArmy> SaveArmys = new List<MapLuaParser.SaveArmy>();
-
-	public static MapLua.SaveLua.Marker[] RegisterMarkers;
-
-
-	public MarkerChange[] Markers;
-
-	[System.Serializable]
-	public class MarkerChange
+	public class HistoryMarkersChange : HistoryObject
 	{
-		public MapLua.SaveLua.Marker Marker;
-		public bool Many;
-		public string Name;
-		public float zoom;
-		public bool canSetCamera;
-		public bool canSyncCamera;
-		public float size;
-		public float amount;
-		public Vector3 offset;
-		public float scale;
-		public string effectTemplate;
 
-		public void Load(MapLua.SaveLua.Marker RegisterMarker)
+		private MarkersChangeHistoryParameter parameter;
+		public class MarkersChangeHistoryParameter : HistoryParameter
 		{
-			Marker = RegisterMarker;
-			Name = Marker.Name;
-			zoom = Marker.zoom;
-			canSetCamera = Marker.canSetCamera;
-			canSyncCamera = Marker.canSyncCamera;
-			size = Marker.size;
-			amount = Marker.amount;
-			offset = Marker.offset;
-			scale = Marker.scale;
-			effectTemplate = Marker.EffectTemplate;
+			public MapLua.SaveLua.Marker[] RegisterMarkers;
 
-		}
-
-		public void Redo()
-		{
-			if (Marker.Name != Name)
+			public MarkersChangeHistoryParameter(MapLua.SaveLua.Marker[] RegisterMarkers)
 			{
-				if (MapLua.SaveLua.MarkerExist(Name))
-				{
-					// Cant Undo, Name already exist
-				}
-				else
-				{
-					MapLua.SaveLua.RemoveMarker(Marker.Name);
-					Marker.Name = Name;
-					Marker.MarkerObj.gameObject.name = Name;
-					MapLua.SaveLua.AddNewMarker(Marker);
-
-				}
+				this.RegisterMarkers = RegisterMarkers;
 			}
-			Marker.zoom = zoom;
-			Marker.canSetCamera = canSetCamera;
-			Marker.canSyncCamera = canSyncCamera;
-			Marker.size = size;
-			Marker.amount = amount;
-			Marker.offset = offset;
-			Marker.scale = scale;
-			Marker.EffectTemplate = effectTemplate;
 		}
-	}
 
 
-	public override void Register()
-	{
-		/*
-		Selected = new List<MarkersInfo.WorkingElement>();
-		for (int i = 0; i < Undo.Current.EditMenu.EditMarkers.Selected.Count; i++)
+		public MarkerChange[] Markers;
+
+		[System.Serializable]
+		public class MarkerChange
 		{
-			Selected.Add(Undo.Current.EditMenu.EditMarkers.Selected[i]);
+			public MapLua.SaveLua.Marker Marker;
+			public bool Many;
+			public string Name;
+			public float zoom;
+			public bool canSetCamera;
+			public bool canSyncCamera;
+			public float size;
+			public float amount;
+			public Vector3 offset;
+			public float scale;
+			public string effectTemplate;
+
+			public void Load(MapLua.SaveLua.Marker RegisterMarker)
+			{
+				Marker = RegisterMarker;
+				Name = Marker.Name;
+				zoom = Marker.zoom;
+				canSetCamera = Marker.canSetCamera;
+				canSyncCamera = Marker.canSyncCamera;
+				size = Marker.size;
+				amount = Marker.amount;
+				offset = Marker.offset;
+				scale = Marker.scale;
+				effectTemplate = Marker.EffectTemplate;
+
+			}
+
+			public void Redo()
+			{
+				if (Marker.Name != Name)
+				{
+					if (MapLua.SaveLua.MarkerExist(Name))
+					{
+						// Cant Undo, Name already exist
+					}
+					else
+					{
+						MapLua.SaveLua.RemoveMarker(Marker.Name);
+						Marker.Name = Name;
+						Marker.MarkerObj.gameObject.name = Name;
+						MapLua.SaveLua.AddNewMarker(Marker);
+
+					}
+				}
+				Marker.zoom = zoom;
+				Marker.canSetCamera = canSetCamera;
+				Marker.canSyncCamera = canSyncCamera;
+				Marker.size = size;
+				Marker.amount = amount;
+				Marker.offset = offset;
+				Marker.scale = scale;
+				Marker.EffectTemplate = effectTemplate;
+			}
 		}
-		SymmetrySelectionList = Undo.Current.EditMenu.EditMarkers.SymmetrySelectionList;
-		*/
-		/*
-		ARMY_ = Undo.Current.Scenario.ARMY_;
-		Mexes = Undo.Current.Scenario.Mexes;
-		Hydros = Undo.Current.Scenario.Hydros;
-		SiMarkers = Undo.Current.Scenario.SiMarkers;
-		SaveArmys = Undo.Current.Scenario.SaveArmys;
-		*/
 
-		//OldName = SelectionManager.Current.AffectedGameObjects[SelectionManager.Current.Selection.Ids[0]].GetComponent<MarkerObject>().Owner.Name;
 
-		//Marker = SelectionManager.Current.AffectedGameObjects[SelectionManager.Current.Selection.Ids[0]].GetComponent<MarkerObject>().Owner;
-		Markers = new MarkerChange[RegisterMarkers.Length];
-		for (int i = 0; i < RegisterMarkers.Length; i++)
+		public override void Register(HistoryParameter Param)
 		{
-			Markers[i] = new MarkerChange();
-			Markers[i].Load(RegisterMarkers[i]);
+			UndoCommandName = "Markers change";
+			parameter = Param as MarkersChangeHistoryParameter;
+
+			Markers = new MarkerChange[parameter.RegisterMarkers.Length];
+			for (int i = 0; i < parameter.RegisterMarkers.Length; i++)
+			{
+				Markers[i] = new MarkerChange();
+				Markers[i].Load(parameter.RegisterMarkers[i]);
+			}
 		}
 
 
-	}
-
-
-	public override void DoUndo()
-	{
-		HistoryMarkersChange.RegisterMarkers = new MapLua.SaveLua.Marker[Markers.Length];
-		for (int i = 0; i < Markers.Length; i++)
-			HistoryMarkersChange.RegisterMarkers[i] = Markers[i].Marker;
-
-		HistoryMarkersChange.GenerateRedo(Undo.Current.Prefabs.MarkersChange).Register();
-		DoRedo();
-	}
-
-	public override void DoRedo()
-	{
-
-		if (Undo.Current.EditMenu.State != Editing.EditStates.MarkersStat)
+		public override void DoUndo()
 		{
-			Undo.Current.EditMenu.State = Editing.EditStates.MarkersStat;
-			Undo.Current.EditMenu.ChangeCategory(4);
+			MapLua.SaveLua.Marker[] RegisterMarkers = new MapLua.SaveLua.Marker[Markers.Length];
+			for (int i = 0; i < Markers.Length; i++)
+				RegisterMarkers[i] = Markers[i].Marker;
+
+			Undo.RegisterRedo(new HistoryMarkersChange(), new MarkersChangeHistoryParameter(RegisterMarkers));
+			DoRedo();
 		}
 
-		for(int i = 0; i < Markers.Length; i++)
+		public override void DoRedo()
 		{
-			Markers[i].Redo();
-			if(i == 0)
-				SelectionManager.Current.SelectObject(Markers[i].Marker.MarkerObj.gameObject);
-			else
-				SelectionManager.Current.SelectObjectAdd(Markers[i].Marker.MarkerObj.gameObject);
+
+			if (Undo.Current.EditMenu.State != Editing.EditStates.MarkersStat)
+			{
+				Undo.Current.EditMenu.State = Editing.EditStates.MarkersStat;
+				Undo.Current.EditMenu.ChangeCategory(4);
+			}
+
+			for (int i = 0; i < Markers.Length; i++)
+			{
+				Markers[i].Redo();
+				if (i == 0)
+					SelectionManager.Current.SelectObject(Markers[i].Marker.MarkerObj.gameObject);
+				else
+					SelectionManager.Current.SelectObjectAdd(Markers[i].Marker.MarkerObj.gameObject);
+
+			}
+
+
+			MarkerSelectionOptions.UpdateOptions();
+
 
 		}
-
-
-		MarkerSelectionOptions.UpdateOptions();
-
-
-		/*
-		Undo.Current.Scenario.ARMY_ = ARMY_;
-		Undo.Current.Scenario.Mexes = Mexes;
-		Undo.Current.Scenario.Hydros = Hydros;
-		Undo.Current.Scenario.SiMarkers = SiMarkers;
-		Undo.Current.Scenario.SaveArmys = SaveArmys;
-		*/
-
-		/*
-		Undo.Current.EditMenu.EditMarkers.GenerateAllWorkingElements();
-		Undo.Current.EditMenu.EditMarkers.AllMarkersList.UpdateList();
-		Undo.Current.Scenario.MarkerRend.Regenerate();
-
-		Undo.Current.EditMenu.EditMarkers.Selected = Selected;
-		Undo.Current.EditMenu.EditMarkers.SymmetrySelectionList = SymmetrySelectionList;
-		Undo.Current.EditMenu.EditMarkers.UpdateSelectionRing();
-		*/
-
 	}
 }

@@ -224,7 +224,7 @@ namespace EditMap
 
 		public void RemoveCurrentChain()
 		{
-			Undo.Current.RegisterChainsChange();
+			Undo.RegisterUndo(new UndoHistory.HistoryMarkersMove(), new UndoHistory.HistoryMarkersMove.MarkersMoveHistoryParameter(true));
 
 			List<MapLua.SaveLua.Chain> Chains = MapLuaParser.Current.SaveLuaFile.Data.Chains.ToList();
 
@@ -243,7 +243,7 @@ namespace EditMap
 
 		public void AddChain()
 		{
-			Undo.Current.RegisterChainsChange();
+			Undo.RegisterUndo(new UndoHistory.HistoryMarkersMove(), new UndoHistory.HistoryMarkersMove.MarkersMoveHistoryParameter(true));
 
 			List<MapLua.SaveLua.Chain> Chains = MapLuaParser.Current.SaveLuaFile.Data.Chains.ToList();
 			MapLua.SaveLua.Chain NewChain = new MapLua.SaveLua.Chain();
@@ -343,7 +343,7 @@ namespace EditMap
 					{
 						if (!AnyChanged)
 						{
-							Undo.Current.RegisterChainMarkersChange(ChainSelected);
+							Undo.RegisterUndo(new UndoHistory.HistoryChainMarkers(), new UndoHistory.HistoryChainMarkers.ChainMarkersHistoryParameter(ChainSelected));
 							AnyChanged = true;
 						}
 						MapLuaParser.Current.SaveLuaFile.Data.Chains[ChainSelected].ConnectedMarkers.Add(Mobj.Owner);
@@ -367,7 +367,7 @@ namespace EditMap
 						{
 							if (!AnyChanged)
 							{
-								Undo.Current.RegisterChainMarkersChange(ChainSelected);
+								Undo.RegisterUndo(new UndoHistory.HistoryChainMarkers(), new UndoHistory.HistoryChainMarkers.ChainMarkersHistoryParameter(ChainSelected));
 								AnyChanged = true;
 							}
 							MapLuaParser.Current.SaveLuaFile.Data.Chains[ChainSelected].ConnectedMarkers.Add(Mobj.Owner);
@@ -403,7 +403,7 @@ namespace EditMap
 					{
 						if (!AnyChanged)
 						{
-							Undo.Current.RegisterChainMarkersChange(ChainSelected);
+							Undo.RegisterUndo(new UndoHistory.HistoryChainMarkers(), new UndoHistory.HistoryChainMarkers.ChainMarkersHistoryParameter(ChainSelected));
 							AnyChanged = true;
 						}
 						MapLuaParser.Current.SaveLuaFile.Data.Chains[ChainSelected].ConnectedMarkers.Remove(Mobj.Owner);
@@ -427,7 +427,7 @@ namespace EditMap
 						{
 							if (!AnyChanged)
 							{
-								Undo.Current.RegisterChainMarkersChange(ChainSelected);
+								Undo.RegisterUndo(new UndoHistory.HistoryChainMarkers(), new UndoHistory.HistoryChainMarkers.ChainMarkersHistoryParameter(ChainSelected));
 								AnyChanged = true;
 							}
 							MapLuaParser.Current.SaveLuaFile.Data.Chains[ChainSelected].ConnectedMarkers.Remove(Mobj.Owner);
@@ -477,7 +477,7 @@ namespace EditMap
 
 			if (MapLuaParser.Current.SaveLuaFile.Data.Chains[ChainSelected].Name != ChainName.text.Replace("'", ""))
 			{
-				Undo.Current.RegisterChainMarkersChange(ChainSelected);
+				Undo.RegisterUndo(new UndoHistory.HistoryChainMarkers(), new UndoHistory.HistoryChainMarkers.ChainMarkersHistoryParameter(ChainSelected));
 
 				MapLuaParser.Current.SaveLuaFile.Data.Chains[ChainSelected].Name = ChainName.text.Replace("'", "");
 				ChainName.text = MapLuaParser.Current.SaveLuaFile.Data.Chains[ChainSelected].Name;

@@ -1,68 +1,86 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-using UndoHistory;
 using EditMap;
 
-
-public class HistoryStratumChange : HistoryObject {
-
-	public int i = 0;
-	public		ScmapEditor.TerrainTexture	Textures;
-
+namespace UndoHistory
+{
+	public class HistoryStratumChange : HistoryObject
+	{
 
 
-	public override void Register(){
-		Undo.RegisterMarkersDelete = true;
+		private StratumChangeHistoryParameter parameter;
+		public class StratumChangeHistoryParameter : HistoryParameter
+		{
+			public int StratumId;
 
-		Textures = new ScmapEditor.TerrainTexture();
+			public StratumChangeHistoryParameter(int StratumId)
+			{
+				this.StratumId = StratumId;
+			}
+		}
 
-		i = Undo.UndoData_StratumId;
-			
-		Textures.Albedo = Undo.Current.Scmap.Textures [i].Albedo;
-		Textures.AlbedoPath = Undo.Current.Scmap.Textures [i].AlbedoPath;
-		Textures.AlbedoScale = Undo.Current.Scmap.Textures [i].AlbedoScale;
-
-		Textures.Normal = Undo.Current.Scmap.Textures [i].Normal;
-		Textures.NormalPath = Undo.Current.Scmap.Textures [i].NormalPath;
-		Textures.NormalScale = Undo.Current.Scmap.Textures [i].NormalScale;
-
-		Textures.Tilling = Undo.Current.Scmap.Textures [i].Tilling;
-}
+		public int i = 0;
+		public ScmapEditor.TerrainTexture Textures;
 
 
-	public override void DoUndo(){
-		if (!RedoGenerated)
-			HistoryStratumChange.GenerateRedo (Undo.Current.Prefabs.StratumChange).Register();
-		RedoGenerated = true;
-		DoRedo ();
-	}
 
-	public override void DoRedo(){
-		if(Undo.Current.EditMenu.State != Editing.EditStates.TexturesStat){
-			Undo.Current.EditMenu.State = Editing.EditStates.TexturesStat;
-			Undo.Current.EditMenu.ChangeCategory(2);
+		public override void Register(HistoryParameter Param)
+		{
+			parameter = (Param as StratumChangeHistoryParameter);
+
+			Textures = new ScmapEditor.TerrainTexture();
+
+			i = parameter.StratumId;
+
+			Textures.Albedo = ScmapEditor.Current.Textures[i].Albedo;
+			Textures.AlbedoPath = ScmapEditor.Current.Textures[i].AlbedoPath;
+			Textures.AlbedoScale = ScmapEditor.Current.Textures[i].AlbedoScale;
+
+			Textures.Normal = ScmapEditor.Current.Textures[i].Normal;
+			Textures.NormalPath = ScmapEditor.Current.Textures[i].NormalPath;
+			Textures.NormalScale = ScmapEditor.Current.Textures[i].NormalScale;
+
+			Textures.Tilling = ScmapEditor.Current.Textures[i].Tilling;
 		}
 
 
-		Undo.Current.Scmap.Textures [i].Albedo = Textures.Albedo;
-		Undo.Current.Scmap.Textures [i].AlbedoPath = Textures.AlbedoPath;
-		Undo.Current.Scmap.Textures [i].AlbedoScale = Textures.AlbedoScale;
+		public override void DoUndo()
+		{
+			if (!RedoGenerated)
+				Undo.RegisterRedo(new HistoryStratumChange(), new StratumChangeHistoryParameter(parameter.StratumId));
+			RedoGenerated = true;
+			DoRedo();
+		}
 
-		Undo.Current.Scmap.Textures [i].Normal = Textures.Normal;
-		Undo.Current.Scmap.Textures [i].NormalPath = Textures.NormalPath;
-		Undo.Current.Scmap.Textures [i].NormalScale = Textures.NormalScale;
-
-		Undo.Current.Scmap.map.Layers [i].PathTexture = Textures.AlbedoPath;
-		Undo.Current.Scmap.map.Layers [i].PathNormalmap = Textures.NormalPath;
-
-		Undo.Current.Scmap.Textures [i].Tilling = Textures.Tilling;
-
-		Undo.Current.Scmap.SetTextures (i);
-
-		Undo.Current.EditMenu.EditStratum.ReloadStratums();
-		Undo.Current.EditMenu.EditStratum.SelectStratum(i);
+		public override void DoRedo()
+		{
+			if (Undo.Current.EditMenu.State != Editing.EditStates.TexturesStat)
+			{
+				Undo.Current.EditMenu.State = Editing.EditStates.TexturesStat;
+				Undo.Current.EditMenu.ChangeCategory(2);
+			}
 
 
+			ScmapEditor.Current.Textures[i].Albedo = Textures.Albedo;
+			ScmapEditor.Current.Textures[i].AlbedoPath = Textures.AlbedoPath;
+			ScmapEditor.Current.Textures[i].AlbedoScale = Textures.AlbedoScale;
+
+			ScmapEditor.Current.Textures[i].Normal = Textures.Normal;
+			ScmapEditor.Current.Textures[i].NormalPath = Textures.NormalPath;
+			ScmapEditor.Current.Textures[i].NormalScale = Textures.NormalScale;
+
+			ScmapEditor.Current.map.Layers[i].PathTexture = Textures.AlbedoPath;
+			ScmapEditor.Current.map.Layers[i].PathNormalmap = Textures.NormalPath;
+
+			ScmapEditor.Current.Textures[i].Tilling = Textures.Tilling;
+
+			ScmapEditor.Current.SetTextures(i);
+
+			Undo.Current.EditMenu.EditStratum.ReloadStratums();
+			Undo.Current.EditMenu.EditStratum.SelectStratum(i);
+
+
+		}
 	}
 }
