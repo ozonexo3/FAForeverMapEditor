@@ -98,7 +98,7 @@ namespace EditMap
 				return;
 			}
 
-			FolderName = Name.text.Replace(" ", "_") + ".v0001";
+			FolderName = AppMenu.ForceVersionControllValue(Name.text, 1);// Name.text.Replace(" ", "_") + ".v0001";
 
 			string path = MapPath + FolderName;
 			Debug.Log(path);
@@ -119,7 +119,7 @@ namespace EditMap
 			MapLuaParser.Current.ResetUI();
 			MapLuaParser.Current.SaveLuaFile.Unload();
 
-			string FileName = Name.text.Replace(" ", "_");
+			string FileName = AppMenu.NonVersionControlledName(FolderName);
 
 			Debug.Log("Create new map: " + FolderName);
 

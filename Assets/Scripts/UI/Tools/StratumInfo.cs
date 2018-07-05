@@ -642,7 +642,8 @@ namespace EditMap
 		void SymmetryPaint()
 		{
 			Painting = true;
-			size = (int)(BrushSize.value);
+			float SizeProportion = (float)ScmapEditor.Current.map.TexturemapTex.width / (float)ScmapEditor.Current.map.Width;
+			size = (int)(BrushSize.value * SizeProportion);
 			ScatterValue = Scatter.value;
 			TargetPaintValue = Mathf.Clamp01((TargetValue.value + 1f) / 2f);
 

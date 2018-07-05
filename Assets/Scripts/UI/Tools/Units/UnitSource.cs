@@ -164,7 +164,7 @@ public class UnitSource : MonoBehaviour
 	{
 		Vector3 position = ScmapEditor.ScmapPosToWorld(Source.Position);
 		Vector3 RadianOrientation = Vector3.zero;
-		Quaternion rotation = Quaternion.Euler(Source.Orientation * Mathf.Rad2Deg);
+		Quaternion rotation = UnitInstance.RotationFromScmapRotation(Source.Orientation);
 
 
 		GameObject Obj = Instantiate(UnitsInfo.Current.UnitInstancePrefab, transform) as GameObject;

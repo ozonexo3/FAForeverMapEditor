@@ -628,7 +628,7 @@ namespace EditMap
 		float size = 0;
 		int RandomProp = 0;
 		int RandomPropGroup = 0;
-		float RandomScale = 1f;
+		//float RandomScale = 1f;
 		float StepCount = 100;
 		public void SymmetryPaint(bool forced = false)
 		{
@@ -732,7 +732,7 @@ namespace EditMap
 			{
 
 				RandomProp = GetRandomProp();
-				RandomScale = Random.Range(PaintButtons[RandomProp].ScaleMin.value, PaintButtons[RandomProp].ScaleMax.value);
+				//RandomScale = Random.Range(PaintButtons[RandomProp].ScaleMin.value, PaintButtons[RandomProp].ScaleMax.value);
 
 				BrushGenerator.Current.GenerateSymmetry(BrushPos, size, Scatter.value, size);
 
@@ -832,7 +832,7 @@ namespace EditMap
 
 			Prop NewProp = new Prop();
 			NewProp.GroupId = RandomPropGroup;
-			NewProp.CreateObject(AtPosition, Rotation, Vector3.one * RandomScale);
+			NewProp.CreateObject(AtPosition, Rotation, Vector3.one);
 
 			AllPropsTypes[RandomPropGroup].PropsInstances.Add(NewProp);
 
