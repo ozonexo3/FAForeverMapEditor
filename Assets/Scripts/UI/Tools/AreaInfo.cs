@@ -148,7 +148,7 @@ public class AreaInfo : MonoBehaviour {
 	#region UI
 	public void OnValuesChange(int instanceID)
 	{
-		Undo.RegisterUndo(new UndoHistory.HistoryAreaChange(), new UndoHistory.HistoryAreaChange.AreaChangeHistoryParameter(MapLuaParser.Current.SaveLuaFile.Data.areas[instanceID]));
+		Undo.RegisterUndo(new UndoHistory.HistoryAreaChange(), new UndoHistory.HistoryAreaChange.AreaChangeParam(MapLuaParser.Current.SaveLuaFile.Data.areas[instanceID]));
 
 		MapLuaParser.Current.SaveLuaFile.Data.areas[instanceID].Name = Created[instanceID].Name.text;
 

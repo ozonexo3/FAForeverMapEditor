@@ -27,6 +27,7 @@ namespace UndoHistory
 
 		public override void Register(HistoryParameter Param)
 		{
+			UndoCommandName = "Stratum change";
 			parameter = (Param as StratumChangeHistoryParameter);
 
 			Textures = new ScmapEditor.TerrainTexture();

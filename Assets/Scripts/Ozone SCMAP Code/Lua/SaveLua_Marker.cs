@@ -116,6 +116,7 @@ namespace MapLua
 				Island,
 				WeatherGenerator, WeatherDefinition,
 				Effect,
+				NavalExclude,
 				Count
 			}
 
@@ -139,31 +140,40 @@ namespace MapLua
 
 			public bool AllowByType(string Key)
 			{
-				if (MarkerType == MarkerTypes.Mass)
-					return Key == KEY_SIZE || Key == KEY_RESOURCE || Key == KEY_AMOUNT || Key == KEY_EDITORICON;
-				else if (MarkerType == MarkerTypes.Hydrocarbon)
-					return Key == KEY_SIZE || Key == KEY_RESOURCE || Key == KEY_AMOUNT;
-				else if (MarkerType == MarkerTypes.BlankMarker)
-					return false;
-				else if (MarkerType == MarkerTypes.LandPathNode || MarkerType == MarkerTypes.AirPathNode || MarkerType == MarkerTypes.WaterPathNode || MarkerType == MarkerTypes.AmphibiousPathNode || MarkerType == MarkerTypes.AutoPathNode)
-					return Key == KEY_HINT || Key == KEY_GRAPH || Key == KEY_ADJACENTTO;
-				else if (MarkerType == MarkerTypes.NavalLink)
-					return false;
-				else if (MarkerType == MarkerTypes.TransportMarker)
-					return false;
-				else if (MarkerType == MarkerTypes.CameraInfo)
-					return Key == KEY_ZOOM || Key == KEY_CANSETCAMERA || Key == KEY_CANSYNCCAMERA;
-				else if (MarkerType == MarkerTypes.Effect)
-					return Key == KEY_OFFSET || Key == KEY_EFFECTTEMPLATE || Key == KEY_COLOR || Key == KEY_SCALE;
-				else if (MarkerType == MarkerTypes.WeatherGenerator)
-					return Key == KEY_CLOUDCOUNT || Key == KEY_CLOUDEMITTERSCALE || Key == KEY_CLOUDEMITTERSCALERANGE || Key == KEY_CLOUDCOUNTRANGE || Key == KEY_CLOUDSPREAD || Key == KEY_CLOUDHEIGHTRANGE
-						|| Key == KEY_SPAWNCHANCE || Key == KEY_FORCETYPE || Key == KEY_CLOUDHEIGHT;
-				else if (MarkerType == MarkerTypes.WeatherDefinition)
-					return Key == KEY_WEATHERDRIFTDIRECTION || Key == KEY_MAPSTYLE
-						|| Key == KEY_WEATHERTYPE01 || Key == KEY_WEATHERTYPE02 || Key == KEY_WEATHERTYPE03 || Key == KEY_WEATHERTYPE04
-						|| Key == KEY_WEATHERTYPE01CHANCE || Key == KEY_WEATHERTYPE02CHANCE || Key == KEY_WEATHERTYPE03CHANCE || Key == KEY_WEATHERTYPE04CHANCE;
-				else //Unknown
-					return Key == KEY_HINT;
+				switch (MarkerType)
+				{
+					case MarkerTypes.Mass:
+						return Key == KEY_SIZE || Key == KEY_RESOURCE || Key == KEY_AMOUNT || Key == KEY_EDITORICON;
+					case MarkerTypes.Hydrocarbon:
+						return Key == KEY_SIZE || Key == KEY_RESOURCE || Key == KEY_AMOUNT;
+					case MarkerTypes.BlankMarker:
+						return false;
+					case MarkerTypes.LandPathNode:
+					case MarkerTypes.AirPathNode:
+					case MarkerTypes.WaterPathNode:
+					case MarkerTypes.AmphibiousPathNode:
+					case MarkerTypes.AutoPathNode:
+						return Key == KEY_HINT || Key == KEY_GRAPH || Key == KEY_ADJACENTTO;
+					case MarkerTypes.NavalLink:
+						return false;
+					case MarkerTypes.NavalExclude:
+						return Key == KEY_HINT;
+					case MarkerTypes.TransportMarker:
+						return false;
+					case MarkerTypes.CameraInfo:
+						return Key == KEY_ZOOM || Key == KEY_CANSETCAMERA || Key == KEY_CANSYNCCAMERA;
+					case MarkerTypes.Effect:
+						return Key == KEY_OFFSET || Key == KEY_EFFECTTEMPLATE || Key == KEY_COLOR || Key == KEY_SCALE;
+					case MarkerTypes.WeatherGenerator:
+						return Key == KEY_CLOUDCOUNT || Key == KEY_CLOUDEMITTERSCALE || Key == KEY_CLOUDEMITTERSCALERANGE || Key == KEY_CLOUDCOUNTRANGE || Key == KEY_CLOUDSPREAD || Key == KEY_CLOUDHEIGHTRANGE
+							|| Key == KEY_SPAWNCHANCE || Key == KEY_FORCETYPE || Key == KEY_CLOUDHEIGHT;
+					case MarkerTypes.WeatherDefinition:
+						return Key == KEY_WEATHERDRIFTDIRECTION || Key == KEY_MAPSTYLE
+							|| Key == KEY_WEATHERTYPE01 || Key == KEY_WEATHERTYPE02 || Key == KEY_WEATHERTYPE03 || Key == KEY_WEATHERTYPE04
+							|| Key == KEY_WEATHERTYPE01CHANCE || Key == KEY_WEATHERTYPE02CHANCE || Key == KEY_WEATHERTYPE03CHANCE || Key == KEY_WEATHERTYPE04CHANCE;
+					default:
+						return Key == KEY_HINT;
+				}
 			}
 
 			void DefaultsByType()
@@ -272,6 +282,11 @@ namespace MapLua
 						hint = false;
 						color = "ffff0000";
 						break;
+					case MarkerTypes.NavalExclude:
+						prop = "/env/common/props/markers/M_CombatZone_prop.bp";
+						hint = true;
+						color = "ff0000AA";
+						break;
 					case MarkerTypes.TransportMarker:
 						prop = "/env/common/props/markers/M_Blank_prop.bp";
 						hint = false;
@@ -317,7 +332,7 @@ namespace MapLua
 					orientation = Vector3.zero;
 					color = "ff008000";
 				}
-				else if(MarkerType == MarkerTypes.CameraInfo)
+				else if (MarkerType == MarkerTypes.CameraInfo)
 				{
 
 				}
@@ -609,7 +624,7 @@ namespace MapLua
 							if (AutoMarker_Amphibious.AdjacentToMarker[i].AutoMarker_Amphibious != null)
 								AutoMarker_Amphibious.AdjacentToMarker[i] = AutoMarker_Amphibious.AdjacentToMarker[i].AutoMarker_Amphibious;
 							else
-								{
+							{
 								AutoMarker_Amphibious.AdjacentToMarker.RemoveAt(i);
 								i--;
 							}
@@ -623,7 +638,7 @@ namespace MapLua
 					if (MarkerObj != null)
 					{
 						position = ScmapEditor.WorldPosToScmap(MarkerObj.transform.position);
-						if(MarkerType != MarkerTypes.CameraInfo)
+						if (MarkerType != MarkerTypes.CameraInfo)
 							MarkerObj.transform.localRotation = Quaternion.identity;
 						orientation = MarkerObj.transform.eulerAngles;
 					}
@@ -800,7 +815,7 @@ namespace MapLua
 
 		public static bool MarkerExist(string Name, bool WithObject = true)
 		{
-			if(WithObject)
+			if (WithObject)
 				return AllMarkersDictionary.ContainsKey(Name) && AllMarkersDictionary[Name].MarkerObj != null;
 
 			return AllMarkersDictionary.ContainsKey(Name);
@@ -812,7 +827,7 @@ namespace MapLua
 			string prefix = "";
 			if (Type == Marker.MarkerTypes.BlankMarker || Type == Marker.MarkerTypes.Mass || Type == Marker.MarkerTypes.Hydrocarbon)
 				prefix = Marker.MarkerTypeToString(Type) + " ";
-			else if(Type == Marker.MarkerTypes.LandPathNode)
+			else if (Type == Marker.MarkerTypes.LandPathNode)
 			{
 				prefix = "LandPN";
 			}
@@ -889,7 +904,7 @@ namespace MapLua
 				int Mcount = Data.MasterChains[mc].Markers.Count;
 				for (int m = 0; m < Mcount; m++)
 				{
-					if(Data.MasterChains[mc].Markers[m].MarkerType == Marker.MarkerTypes.AutoPathNode)
+					if (Data.MasterChains[mc].Markers[m].MarkerType == Marker.MarkerTypes.AutoPathNode)
 					{
 						if (Data.MasterChains[mc].Markers[m].IsOnWater())
 						{

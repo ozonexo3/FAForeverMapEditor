@@ -305,10 +305,6 @@ public partial struct GetGamedataFile
 			}
 		}
 
-		ToReturn.BP.LocalScale = Vector3.one * (ToReturn.BP.UniformScale * 0.1f);
-
-
-
 		for (int i = 0; i < ToReturn.BP.LODs.Length; i++)
 		{
 			ToReturn.BP.LODs[i].Mesh = LoadModel(scd, ToReturn.BP.LODs[i].Scm);
@@ -366,8 +362,27 @@ public partial struct GetGamedataFile
 				ToReturn.BP.LODs[i].Normal.anisoLevel = 2;
 				ToReturn.BP.LODs[i].Mat.SetTexture("_BumpMap", ToReturn.BP.LODs[i].Normal);
 			}
-
 		}
+		if(ToReturn.BP.LODs.Length <= 0){
+			ToReturn.BP.LODs = new BluePrintLoD[1];
+			ToReturn.BP.LODs[0].LODCutoff = 100;
+		}
+
+		if (ToReturn.BP.LODs[0].Mesh == null)
+		{
+			ToReturn.BP.LODs[0].Mesh = PropsInfo.Current.NoPropMesh;
+			ToReturn.BP.UniformScale = 0.5f;
+		}
+
+		if (ToReturn.BP.LODs[0].Mat == null)
+			ToReturn.BP.LODs[0].Mat = PropsInfo.Current.NoPropMaterial;
+
+		if (ToReturn.BP.UniformScale <= 0.01f)
+			ToReturn.BP.UniformScale = 0.01f;
+
+		ToReturn.BP.LocalScale = Vector3.one * (ToReturn.BP.UniformScale * 0.1f);
+
+
 
 		LoadedPropObjects.Add(LocalPath, ToReturn);
 

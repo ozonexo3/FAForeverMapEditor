@@ -11,12 +11,12 @@ namespace UndoHistory
 	public class HistoryAreaChange : HistoryObject
 	{
 
-		private AreaChangeHistoryParameter parameter;
-		public class AreaChangeHistoryParameter : HistoryParameter
+		private AreaChangeParam parameter;
+		public class AreaChangeParam : HistoryParameter
 		{
 			public MapLua.SaveLua.Areas Area;
 
-			public AreaChangeHistoryParameter(MapLua.SaveLua.Areas Area)
+			public AreaChangeParam(MapLua.SaveLua.Areas Area)
 			{
 				this.Area = Area;
 			}
@@ -32,7 +32,7 @@ namespace UndoHistory
 
 		public override void Register(HistoryParameter Param)
 		{
-			parameter = Param as AreaChangeHistoryParameter;
+			parameter = Param as AreaChangeParam;
 			Area = parameter.Area;
 			Name = Area.Name;
 			X = Area.rectangle.x;
@@ -46,7 +46,7 @@ namespace UndoHistory
 		public override void DoUndo()
 		{
 			if (!RedoGenerated)
-				Undo.RegisterRedo(new HistoryAreaChange(), new AreaChangeHistoryParameter(Area));
+				Undo.RegisterRedo(new HistoryAreaChange(), new AreaChangeParam(Area));
 			RedoGenerated = true;
 			DoRedo();
 		}

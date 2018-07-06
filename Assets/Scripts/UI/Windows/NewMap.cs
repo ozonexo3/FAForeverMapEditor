@@ -207,12 +207,14 @@ namespace EditMap
 			}
 
 
+
 			ScmapEditor.Current.map = new Map(MapLuaParser.Current.ScenarioLuaFile.Data.Size[0], MapLuaParser.Current.ScenarioLuaFile.Data.Size[1], InitialHeight.intValue,
 				Water.isOn, WaterElv.intValue, DepthElevation.intValue, AbyssElevation.intValue);
 
 			//GenerateControlTex.GenerateWater();
 			ScmapEditor.Current.LoadHeights();
 
+			MapLuaParser.Current.EditMenu.MapInfoMenu.SaveAsFa.isOn = false;
 			MapLuaParser.Current.EditMenu.TexturesMenu.TTerrainXP.isOn = true;
 
 			yield return new WaitForSeconds(0.5f);

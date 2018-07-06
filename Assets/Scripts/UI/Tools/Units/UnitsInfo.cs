@@ -26,6 +26,7 @@ namespace EditMap
 
 		[Header("Objects")]
 		public GameObject UnitInstancePrefab;
+		public Material UnitMaterial;
 		public Mesh NoUnitMesh;
 		public Material NoUnitMaterial;
 

@@ -55,7 +55,7 @@ namespace EditMap
 			if (ChangeControlerType.Current)
 				ChangeControlerType.Current.UpdateButtons();
 
-			//MarkerSelectionOptions.UpdateOptions();
+			UpdateTotalCount();
 		}
 
 
@@ -83,7 +83,7 @@ namespace EditMap
 
 			SelectionManager.Current.CleanSelection();
 			GoToSelection();
-
+			UpdateTotalCount();
 		}
 
 		public void Place(Vector3[] Positions, Quaternion[] Rotations, Vector3[] Scales)
@@ -115,6 +115,7 @@ namespace EditMap
 
 				DecalsControler.AddDecal(Obj.Dec);
 			}
+			UpdateTotalCount();
 		}
 
 

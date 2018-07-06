@@ -15,6 +15,14 @@ public class DecalsControler : MonoBehaviour {
 		Current = this;
 	}
 
+	public static int DecalCount
+	{
+		get
+		{
+			return Current.AllDecals.Count;
+		}
+	}
+
 	public static List<Decal> GetAllDecals()
 	{
 		int Count = Current.AllDecals.Count;

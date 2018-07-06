@@ -167,6 +167,22 @@ namespace EditMap
 			}
 		}
 
+		public void UpdateTotalCount()
+		{
+			DecalTotalCount.text = DecalsControler.DecalCount.ToString();
+		}
+
+		int LastDecalScreenCount = 0;
+		public void UpdateScreenCount(int count)
+		{
+			if (count != LastDecalScreenCount)
+			{
+				LastDecalScreenCount = count;
+				DecalScreenCount.text = count.ToString();
+
+			}
+		}
+
 		public void CreateNewDecalType()
 		{
 			//TODO Undo Create

@@ -43,6 +43,8 @@ namespace EditMap
 		public Material TerrainMaterial;
 		public Material PropMaterial;
 		public Material UnitMaterial;
+		public Mesh NoPropMesh;
+		public Material NoPropMaterial;
 
 		float TotalMassCount = 0;
 		float TotalEnergyCount = 0;

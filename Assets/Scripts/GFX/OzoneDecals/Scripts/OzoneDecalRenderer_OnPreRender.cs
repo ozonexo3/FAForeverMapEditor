@@ -29,6 +29,13 @@ namespace OzoneDecals
 				return;
 #endif
 
+
+			if (DecalsInfo.Current)
+			{
+				int ScreenDecalsCount = _DecalsAlbedo.Count + _Decals.Count;
+				DecalsInfo.Current.UpdateScreenCount(ScreenDecalsCount);
+			}
+
 			if (_Decals.Count == 0 && _DecalsAlbedo.Count == 0)
 				return;
 
@@ -40,6 +47,7 @@ namespace OzoneDecals
 			_bufferDeferred.Clear();
 			DrawDeferredDecals_Albedo(cam);
 			DrawDeferredDecals_Normal(cam);
+
 
 			// Clear 
 			var decalEnum = _Decals.GetEnumerator();

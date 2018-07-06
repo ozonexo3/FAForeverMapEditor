@@ -17,6 +17,9 @@ namespace EditMap
 		public Material AlbedoMaterial;
 		public Material NormalMaterial;
 
+		public Text DecalTotalCount;
+		public Text DecalScreenCount;
+
 		public class PropTypeGroup
 		{
 			public string Blueprint = "";
@@ -62,24 +65,6 @@ namespace EditMap
 			for (int i = 0; i < Count; i++)
 			{
 				CreateGameObjectFromDecal(ScmapEditor.Current.map.Decals[i]);
-
-				/*
-				GameObject NewDecalObject = Instantiate(DecalPrefab, DecalPivot);
-				OzoneDecal Dec = NewDecalObject.GetComponent<OzoneDecal>();
-				Decal Component = ScmapEditor.Current.map.Decals[i];
-				Dec.Dec = Component;
-				Dec.tr = NewDecalObject.transform;
-
-				Dec.tr.localRotation = Quaternion.Euler(Component.Rotation * Mathf.Rad2Deg);
-				Dec.tr.localScale = new Vector3(Component.Scale.x * 0.1f, Component.Scale.x * 0.1f, Component.Scale.z * 0.1f);
-
-				Dec.CutOffLOD = Component.CutOffLOD;
-				Dec.NearCutOffLOD = Component.NearCutOffLOD;
-
-				Dec.MovePivotPoint(ScmapEditor.ScmapPosToWorld(Component.Position));
-
-				Dec.Material = Component.Shared.SharedMaterial;
-				*/
 
 				if (ScmapEditor.Current.map.Decals[i].Type != TerrainDecalType.TYPE_ALBEDO
 				&& ScmapEditor.Current.map.Decals[i].Type != TerrainDecalType.TYPE_NORMALS && ScmapEditor.Current.map.Decals[i].Type != TerrainDecalType.TYPE_NORMALS_ALPHA

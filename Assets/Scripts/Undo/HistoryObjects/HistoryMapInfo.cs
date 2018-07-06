@@ -15,6 +15,7 @@ namespace UndoHistory
 
 		public override void Register(HistoryParameter Param)
 		{
+			UndoCommandName = "Map settings";
 			Name = MapLuaParser.Current.ScenarioLuaFile.Data.name;
 			Desc = MapLuaParser.Current.ScenarioLuaFile.Data.description;
 			Version = MapLuaParser.Current.ScenarioLuaFile.Data.map_version;

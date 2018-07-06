@@ -356,7 +356,7 @@ public partial struct GetGamedataFile
 					ToReturn.BP.LODs[i].Mesh = UnitsInfo.Current.NoUnitMesh;
 
 				//ToReturn.BP.LODs[i].Mat = new Material(Shader.Find("Standard (Specular setup)"));
-				ToReturn.BP.LODs[i].Mat = new Material(EditMap.PropsInfo.Current.UnitMaterial);
+				ToReturn.BP.LODs[i].Mat = new Material(UnitsInfo.Current.UnitMaterial);
 
 				ToReturn.BP.LODs[i].Mat.name = ToReturn.BP.CodeName + "_LOD" + i + " mat";
 

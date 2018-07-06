@@ -338,15 +338,12 @@ public partial class MapLuaParser : MonoBehaviour
 				//Map Loaded
 			}
 
-			// Fix map version
-			if (FolderName.Contains(".v"))
-			{
-				int ParsedValue = (int)ScenarioLuaFile.Data.map_version;
 
-				if (int.TryParse(FolderName.Remove(0, FolderName.Length - 4), out ParsedValue))
-				{
-					ScenarioLuaFile.Data.map_version = ParsedValue;
-				}
+			int ParsedVersionValue = AppMenu.GetVersionControll(FolderName);
+
+			if(ParsedVersionValue > 0)
+			{
+				ScenarioLuaFile.Data.map_version = ParsedVersionValue;
 			}
 
 

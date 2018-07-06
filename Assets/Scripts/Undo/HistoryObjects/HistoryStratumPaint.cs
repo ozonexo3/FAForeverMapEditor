@@ -26,6 +26,7 @@ namespace UndoHistory
 
 		public override void Register(HistoryParameter Param)
 		{
+			UndoCommandName = "Stratum paint";
 			parameter = (Param as StratumPaintHistoryParameter);
 
 			Colors = new Color[parameter.Stratum.Length];

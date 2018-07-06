@@ -670,13 +670,12 @@ public partial class ScmapEditor : MonoBehaviour
 
 		if (MapLuaParser.Current.EditMenu.MapInfoMenu.SaveAsFa.isOn)
 		{
-			if(map.AdditionalSkyboxData.Data.Position.x == 0)
+			if(map.AdditionalSkyboxData == null || map.AdditionalSkyboxData.Data == null || map.AdditionalSkyboxData.Data.Position.x == 0)
 			{
 				LoadDefaultSkybox();
 			}
 
 			map.VersionMinor = 60;
-
 			map.AdditionalSkyboxData.Data.UpdateSize();
 		}
 		else if(map.VersionMinor >= 60)
