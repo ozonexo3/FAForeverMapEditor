@@ -40,6 +40,7 @@ namespace EditMap
 			UnitBg.texture = UnitBrowser.IconBackgrounds[SelectedUnit.Icon];
 			UnitIcon.texture = UnitBrowser.GetDragUnitIcon();
 			UnitIcon.enabled = UnitIcon.texture != Texture2D.whiteTexture;
+			ResourceBrowser.ClearDrag();
 		}
 
 		public void DestroyUnits(List<GameObject> MarkerObjects, bool RegisterUndo = true)

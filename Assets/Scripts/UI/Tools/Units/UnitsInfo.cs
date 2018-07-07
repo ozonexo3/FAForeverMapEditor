@@ -99,7 +99,7 @@ namespace EditMap
 		{
 
 			PlacementManager.Clear();
-
+			SelectionManager.Current.CleanSelection();
 
 			int[] AllTypes;
 			AllObjects = UnitInstance.GetAllUnitGo(out AllTypes);

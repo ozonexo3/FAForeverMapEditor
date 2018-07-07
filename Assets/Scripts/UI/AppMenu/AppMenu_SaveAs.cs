@@ -1,13 +1,5 @@
 ﻿using UnityEngine;
-using UnityEngine.UI;
-using System.Collections;
-using System.Collections.Generic;
-using EditMap;
-using System.Text;
-using System.Runtime.InteropServices;
 using SFB;
-using System.Linq;
-using B83.Win32;
 using System.IO;
 
 public partial class AppMenu : MonoBehaviour
@@ -26,49 +18,111 @@ public partial class AppMenu : MonoBehaviour
 
 		if (paths.Length > 0 && !string.IsNullOrEmpty(paths[0]))
 		{
-			if (System.IO.Directory.GetDirectories(paths[0]).Length > 0 || System.IO.Directory.GetFiles(paths[0]).Length > 0)
+			// If its the same folder, then its the same map
+			if (paths[0].Replace("\\", "/") + "/" == MapLuaParser.LoadedMapFolderPath)
 			{
-				Debug.LogWarning("Selected directory is not empty! " + paths[0]);
-				GenericPopup.ShowPopup(GenericPopup.PopupTypes.Error, "Error", "Selected folder is not empty! Select empty folder.", "OK", null);
+				MapLuaParser.Current.SaveMap();
 				return;
 			}
 
 			string[] PathSeparation = paths[0].Replace("\\", "/").Split("/".ToCharArray());
-
-
 			string ChosenFolderName = PathSeparation[PathSeparation.Length - 1];
-
 			string NewFolderName = ChosenFolderName;
 			NewFolderName = NewFolderName.Replace(" ", "_");
-
 			int ReplaceVersion = GetVersionControll(NewFolderName);
-			if(ReplaceVersion >= 0)
+			if (ReplaceVersion <= 0)
+				ReplaceVersion = 1; // Map without versioning should always be v1
+				//ReplaceVersion = (int)MapLuaParser.Current.ScenarioLuaFile.Data.map_version;
+			NewFolderName = ForceVersionControllValue(NewFolderName, ReplaceVersion);
+
+			string ChosenPath = "";
+
+			if (ChosenFolderName != NewFolderName)
 			{
-				Debug.Log("Replace version: " + ReplaceVersion);
-				MapLuaParser.Current.ScenarioLuaFile.Data.map_version = ReplaceVersion;
+				// Combine system path using old separation and new folder name
+				ChosenPath = "";
+				for (int i = 0; i < PathSeparation.Length - 1; i++)
+				{
+					ChosenPath += PathSeparation[i] + "/";
+				}
+				ChosenPath += NewFolderName;
+
+				// If selected folder does not exist, then remove wrong folder, and make a new, proper one
+				if (!Directory.Exists(ChosenPath))
+				{
+					Directory.CreateDirectory(ChosenPath);
+
+					// Remove only when folder is empty
+					if (Directory.GetFiles(paths[0]).Length <= 0 && System.IO.Directory.GetFiles(paths[0]).Length <= 0)
+					{
+						Directory.Delete(paths[0]);
+					}
+				}
 			}
 			else
 			{
-				MapLuaParser.Current.ScenarioLuaFile.Data.map_version = 1;
+				ChosenPath = paths[0];
 			}
 
-			NewFolderName = ForceVersionControllValue(NewFolderName, (int)MapLuaParser.Current.ScenarioLuaFile.Data.map_version);
-			string FileBeginName = NonVersionControlledName(NewFolderName);
 
-
-			if(SaveAsNewFolder(NewFolderName, FileBeginName))
+			string[] FilePaths = System.IO.Directory.GetFiles(ChosenPath);
+			if (System.IO.Directory.GetDirectories(ChosenPath).Length > 0 || System.IO.Directory.GetFiles(ChosenPath).Length > 0)
 			{
-				if(ChosenFolderName != NewFolderName)
-				{
-					string LogText = "Wrong folder name: " + ChosenFolderName + "\n Instead saved as : " + NewFolderName;
-					Debug.Log(LogText);
-					GenericInfoPopup.ShowInfo(LogText);
+				Debug.LogWarning("Selected directory is not empty! " + ChosenPath);
 
+				// Check if its a map folder 
+				foreach (string path in FilePaths)
+				{
+					// If contains any of the map files, then it need to be a map
+					if (path.EndsWith("_scenario.lua") || path.EndsWith("_save.lua") || path.EndsWith(".scmap"))
+					{
+						OverwritePath = ChosenPath;
+						GenericPopup.ShowPopup(GenericPopup.PopupTypes.TwoButton, "Folder is not empty!", "Overwrite map " + NewFolderName + "?\nThis can't be undone!", "Overwrite", OverwriteYes, "Cancel", null);
+						return;
+					}
 				}
 
+				// Not a map folder, return error to prevent data lose
+				GenericPopup.ShowPopup(GenericPopup.PopupTypes.Error, "Error!", "Selected " + NewFolderName + " folder is not empty and it's not a map folder!", "OK", null);
+				return;
+			}
+
+			if(SaveAsNewFolder(NewFolderName, NonVersionControlledName(NewFolderName)))
+			{
+				// Inform user, that map was saved into different folder than he chose
+				if (ChosenFolderName != NewFolderName)
+				{
+					string LogText = "Wrong folder name: " + ChosenFolderName + "\n Instead saved as: " + NewFolderName;
+					Debug.Log(LogText);
+					GenericInfoPopup.ShowInfo(LogText);
+				}
 			}
 		}
 	}
+
+	static string OverwritePath = "";
+	void OverwriteYes()
+	{
+		Debug.Log("Overwrite path: " + OverwritePath);
+
+		// Remove files from folder
+		string[] FilePaths = System.IO.Directory.GetFiles(OverwritePath);
+		foreach (string path in FilePaths)
+		{
+			File.Delete(path);
+		}
+
+		// Remove directories from folder
+		string[] DirPaths = System.IO.Directory.GetDirectories(OverwritePath);
+		foreach (string path in DirPaths)
+		{
+			Directory.Delete(path, true);
+		}
+
+		// Now we can save to clean folder
+		SaveAsNewFolder(OverwritePath, NonVersionControlledName(OverwritePath));
+	}
+
 
 	public void SaveAsNewVersion()
 	{
@@ -111,7 +165,7 @@ public partial class AppMenu : MonoBehaviour
 		}
 		else
 		{
-			GenericPopup.ShowPopup(GenericPopup.PopupTypes.Error, "Error", "Next map version folder already exist.\nRemove it or load never version.", "OK", null);
+			GenericPopup.ShowPopup(GenericPopup.PopupTypes.Error, "Error", "Trying to save map, but folder " + NewFolderName + " is not empty!\nSave as can be only used for empty folders.", "OK", null);
 
 			return false;
 		}

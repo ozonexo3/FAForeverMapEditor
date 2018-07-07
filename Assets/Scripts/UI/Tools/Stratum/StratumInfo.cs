@@ -885,6 +885,12 @@ namespace EditMap
 				return;
 			if (ResourceBrowser.SelectedCategory == 0 || ResourceBrowser.SelectedCategory == 1)
 			{
+				if (ResourceBrowser.Current.LoadedPaths[ResourceBrowser.DragedObject.InstanceId].ToLower().Contains("normal"))
+				{
+					GenericInfoPopup.ShowInfo("Can't assign normal map as albedo!");
+					return;
+				}
+
 				Undo.RegisterUndo(new UndoHistory.HistoryStratumChange(), new UndoHistory.HistoryStratumChange.StratumChangeHistoryParameter(Selected));
 				Debug.Log(ResourceBrowser.Current.LoadedPaths[ResourceBrowser.DragedObject.InstanceId]);
 
@@ -893,7 +899,7 @@ namespace EditMap
 
 				//Map.map.Layers [Selected].PathTexture = Map.Textures [Selected].AlbedoPath;
 
-
+				ResourceBrowser.ClearDrag();
 				ScmapEditor.Current.SetTextures(Selected);
 				ReloadStratums();
 				SelectStratum(Selected);
@@ -909,6 +915,11 @@ namespace EditMap
 				return;
 			if (ResourceBrowser.SelectedCategory == 0 || ResourceBrowser.SelectedCategory == 1)
 			{
+				if (!ResourceBrowser.Current.LoadedPaths[ResourceBrowser.DragedObject.InstanceId].ToLower().Contains("normal"))
+				{
+					GenericInfoPopup.ShowInfo("Can't assign albedo as normal map!");
+					return;
+				}
 
 				Undo.RegisterUndo(new UndoHistory.HistoryStratumChange(), new UndoHistory.HistoryStratumChange.StratumChangeHistoryParameter(Selected));
 				Debug.Log(ResourceBrowser.Current.LoadedPaths[ResourceBrowser.DragedObject.InstanceId]);
@@ -920,6 +931,7 @@ namespace EditMap
 
 				//Map.map.Layers [Selected].PathNormalmap = Map.Textures [Selected].NormalPath;
 
+				ResourceBrowser.ClearDrag();
 				ScmapEditor.Current.SetTextures(Selected);
 				ReloadStratums();
 				SelectStratum(Selected);
@@ -992,11 +1004,6 @@ namespace EditMap
 		}
 
 #endregion
-
-		#region Reorder
-
-
-		#endregion
 
 
 		#region Import/Export

@@ -345,6 +345,7 @@ namespace EditMap
 				Loaded.UpdateMaterial();
 				Load(Loaded);
 				DecalsInfo.Current.DecalsList.OnTexturesChanged();
+				ResourceBrowser.ClearDrag();
 			}
 		}
 		
@@ -362,6 +363,7 @@ namespace EditMap
 				Loaded.UpdateMaterial();
 				Load(Loaded);
 				DecalsInfo.Current.DecalsList.OnTexturesChanged();
+				ResourceBrowser.ClearDrag();
 			}
 		}
 

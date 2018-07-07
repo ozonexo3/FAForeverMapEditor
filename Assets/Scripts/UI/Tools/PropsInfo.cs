@@ -392,6 +392,7 @@ namespace EditMap
 				if (ResourceBrowser.SelectedCategory == 3)
 				{
 					LoadProp(ResourceBrowser.Current.LoadedProps[ResourceBrowser.DragedObject.InstanceId]);
+					ResourceBrowser.ClearDrag();
 				}
 			}
 		}

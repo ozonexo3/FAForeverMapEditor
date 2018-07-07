@@ -80,13 +80,21 @@ namespace FAF.MapEditor
 
 
 		#region UI
-		void Update()
+		void LateUpdate()
 		{
 			if (Input.GetMouseButtonUp(0))
 			{
 				if (DragedObject)
-					Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
+				{
+					ResourceBrowser.ClearDrag();
+				}
 			}
+		}
+
+		public static void ClearDrag()
+		{
+			Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
+			DragedObject = null;
 		}
 
 		public void OnDropdownChanged()

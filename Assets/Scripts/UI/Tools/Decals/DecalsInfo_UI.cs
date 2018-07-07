@@ -22,6 +22,7 @@ namespace EditMap
 				return;
 
 			string DropPath = ResourceBrowser.Current.LoadedPaths[ResourceBrowser.DragedObject.InstanceId];
+			ResourceBrowser.ClearDrag();
 			if (!DropPath.StartsWith("/"))
 			{
 				DropPath = DropPath.ToLower().Replace("env", "/env");
