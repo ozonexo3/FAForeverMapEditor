@@ -16,6 +16,8 @@ public partial struct GetGamedataFile
 		public string Name = "";
 		public string HelpText = "";
 
+		public int TypeId;
+
 		// Display
 		public BluePrintLoD[] LODs = new BluePrintLoD[0];
 
@@ -105,6 +107,8 @@ public partial struct GetGamedataFile
 			ToReturn.BP.CodeName = ToReturn.BP.Name.Replace("_unit", "");
 		}
 
+		ToReturn.BP.TypeId = 0;
+
 		ToReturn.BP.Size = Vector3.one;
 		ToReturn.BP.UniformScale = Vector3.one;
 		ToReturn.BP.RenderScale = Vector3.one;
@@ -156,6 +160,10 @@ public partial struct GetGamedataFile
 
 		ToReturn.BP.Name = PathSplit[PathSplit.Length - 1].Replace(".bp", "");
 		ToReturn.BP.CodeName = ToReturn.BP.Name.Replace("_unit", "");
+
+
+		ToReturn.BP.TypeId = ToReturn.BP.CodeName.GetHashCode();
+
 		//Debug.Log("Load Unit : " + ToReturn.BP.CodeName);
 
 		//Fix LUA

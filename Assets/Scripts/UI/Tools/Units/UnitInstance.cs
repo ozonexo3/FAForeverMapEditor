@@ -28,6 +28,15 @@ public class UnitInstance : MonoBehaviour
 		GameObject[] ToReturn = new GameObject[AllUnitInstances.Count];
 		Types = new int[ToReturn.Length];
 		AllUnitInstances.CopyTo(ToReturn);
+
+		for (int i = 0; i < Types.Length; i++)
+		{
+			if (ToReturn[i] == null)
+				Types[i] = -1;
+			else
+				Types[i] = ToReturn[i].GetComponent<UnitInstance>().UnitRenderer.BP.TypeId;
+		}
+
 		return ToReturn;
 	}
 
@@ -88,12 +97,20 @@ public class UnitInstance : MonoBehaviour
 
 	public bool UpdateAfterTerrainChange()
 	{
-		Vector3 NewPos = GetSnapPosition(transform.localPosition);
+		Transform tr = transform;
 
-		if (NewPos.y == transform.localPosition.y)
+		if (tr == null)
+		{
+			Debug.LogWarning("Transform component was null! Skip Unit");
+			return false;
+		}
+
+		Vector3 NewPos = GetSnapPosition(tr.localPosition);
+
+		if (NewPos.y == tr.localPosition.y)
 			return false;
 
-		transform.localPosition = NewPos;
+		tr.localPosition = NewPos;
 		UpdateMatrixTranslated();
 
 		return true;

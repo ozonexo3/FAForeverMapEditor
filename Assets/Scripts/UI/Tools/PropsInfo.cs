@@ -476,7 +476,7 @@ namespace EditMap
 
 			if (Edit.MauseOnGameplay || ChangingStrength || ChangingSize)
 			{
-				if (!ChangingSize && (Input.GetKey(KeyCode.M) || ChangingStrength))
+				if (!ChangingSize && (KeyboardManager.BrushStrengthHold() || ChangingStrength))
 				{
 					// Change Strength
 					if (Input.GetMouseButtonDown(0))
@@ -497,7 +497,7 @@ namespace EditMap
 
 					}
 				}
-				else if (Input.GetKey(KeyCode.B) || ChangingSize)
+				else if (KeyboardManager.BrushSizeHold() || ChangingSize)
 				{
 					// Change Size
 					if (Input.GetMouseButtonDown(0))

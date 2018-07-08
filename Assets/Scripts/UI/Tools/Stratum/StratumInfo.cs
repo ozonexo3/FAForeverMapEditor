@@ -174,7 +174,7 @@ namespace EditMap
 
 				if (Edit.MauseOnGameplay || ChangingStrength || ChangingSize)
 				{
-					if (!ChangingSize && (Input.GetKey(KeyCode.M) || ChangingStrength))
+					if (!ChangingSize && (KeyboardManager.BrushStrengthHold() || ChangingStrength))
 					{
 						// Change Strength
 						if (Input.GetMouseButtonDown(0))
@@ -196,7 +196,7 @@ namespace EditMap
 
 						}
 					}
-					else if (Input.GetKey(KeyCode.B) || ChangingSize)
+					else if (KeyboardManager.BrushSizeHold() || ChangingSize)
 					{
 						// Change Size
 						if (Input.GetMouseButtonDown(0))
@@ -241,6 +241,33 @@ namespace EditMap
 							UpdateBrushPosition(true);
 						}
 					}
+				}
+
+				if (Input.GetMouseButton(0))
+				{
+				}
+				else if (KeyboardManager.SwitchTypeNext())
+				{
+					LinearBrush.isOn = !LinearBrush.isOn;
+				}
+				else if (KeyboardManager.SwitchType1())
+				{
+					LinearBrush.isOn = false;
+				}
+				else if (KeyboardManager.SwitchType2())
+				{
+					LinearBrush.isOn = true;
+				}
+
+				if (KeyboardManager.IncreaseTarget())
+				{
+					if (TargetValue.value < 1)
+						TargetValue.SetValue(TargetValue.value + 0.05f);
+				}
+				else if (KeyboardManager.DecreaseTarget())
+				{
+					if (TargetValue.value > 0)
+						TargetValue.SetValue(TargetValue.value - 0.05f);
 				}
 
 				if (Input.GetMouseButtonUp(0))
@@ -651,7 +678,11 @@ namespace EditMap
 			float SizeProportion = (float)ScmapEditor.Current.map.TexturemapTex.width / (float)ScmapEditor.Current.map.Width;
 			size = (int)(BrushSize.value * SizeProportion);
 			ScatterValue = Scatter.value;
-			TargetPaintValue = Mathf.Clamp01((TargetValue.value + 1f) / 2f);
+
+			if (LinearBrush.isOn)
+				TargetPaintValue = TargetValue.value;
+			else
+				TargetPaintValue = Mathf.Clamp01((TargetValue.value + 1f) / 2f);
 
 			BrushGenerator.Current.GenerateSymmetry(BrushPos, 0, ScatterValue, size * 0.03f);
 
@@ -868,6 +899,7 @@ namespace EditMap
 			value += 1;
 			value /= 2f;
 			value = Mathf.Clamp01(value);
+
 			return value;
 			//return Mathf.Clamp01((Mathf.Clamp01(value * 0.5f + 0.5f) + addValue) * 2f - 1f);
 			//return Mathf.Pow(Mathf.Pow(value, 0.454545f) + addValue, 2.2f);

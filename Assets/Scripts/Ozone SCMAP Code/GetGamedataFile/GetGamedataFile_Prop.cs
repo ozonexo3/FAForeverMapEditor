@@ -19,6 +19,8 @@ public partial struct GetGamedataFile
 
 		public PropGameObject CreatePropGameObject(Vector3 position, Quaternion rotation, Vector3 scale, bool AllowFarLod = true)
 		{
+			//Reset scale, because it's not supported anyway
+			scale = Vector3.one;
 
 			PropGameObject NewProp = GameObject.Instantiate(PropsInfo.Current.PropObjectPrefab, PropsInfo.Current.PropsParent).GetComponent<PropGameObject>();
 			NewProp.gameObject.name = BP.Name;
@@ -217,7 +219,7 @@ public partial struct GetGamedataFile
 		}
 		catch (NLua.Exceptions.LuaException e)
 		{
-			Debug.LogError(LuaParser.Read.FormatException(e) + "\n" + LocalPath);
+			Debug.LogWarning(LuaParser.Read.FormatException(e) + "\n" + LocalPath);
 			return ToReturn;
 		}
 
@@ -365,13 +367,14 @@ public partial struct GetGamedataFile
 		}
 		if(ToReturn.BP.LODs.Length <= 0){
 			ToReturn.BP.LODs = new BluePrintLoD[1];
+			ToReturn.BP.LODs[0] = new BluePrintLoD();
 			ToReturn.BP.LODs[0].LODCutoff = 100;
 		}
 
 		if (ToReturn.BP.LODs[0].Mesh == null)
 		{
 			ToReturn.BP.LODs[0].Mesh = PropsInfo.Current.NoPropMesh;
-			ToReturn.BP.UniformScale = 0.5f;
+			ToReturn.BP.UniformScale = 2f;
 		}
 
 		if (ToReturn.BP.LODs[0].Mat == null)

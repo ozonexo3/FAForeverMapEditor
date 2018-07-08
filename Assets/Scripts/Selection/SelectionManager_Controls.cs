@@ -39,7 +39,7 @@ namespace Selection
 			ResetControlerPosition();
 		}
 
-#endregion
+		#endregion
 
 
 		#region Events
@@ -159,11 +159,11 @@ namespace Selection
 			{
 				ControlerDrag();
 			}
-			else if(DragType == DragTypes.RotateY)
+			else if (DragType == DragTypes.RotateY)
 			{
 				ControlerDragRotateY();
 			}
-			else if(DragType == DragTypes.ScaleX || DragType == DragTypes.ScaleZ || DragType == DragTypes.ScaleXYZ)
+			else if (DragType == DragTypes.ScaleX || DragType == DragTypes.ScaleZ || DragType == DragTypes.ScaleXYZ)
 			{
 				ControlerDragScale();
 			}
@@ -180,7 +180,7 @@ namespace Selection
 				UpdateSelectionBox(false);
 				AddSelectionBoxObjects();
 			}
-			else if(DragType == DragTypes.MoveX || DragType == DragTypes.MoveZ || DragType == DragTypes.MoveXZ || DragType == DragTypes.RotateY)
+			else if (DragType == DragTypes.MoveX || DragType == DragTypes.MoveZ || DragType == DragTypes.MoveXZ || DragType == DragTypes.RotateY)
 			{
 				ControlerFinish();
 			}
@@ -219,7 +219,7 @@ namespace Selection
 			{
 				SelectObject(hit.collider.gameObject);
 			}
-			else if(Selection.Ids.Count > 0)
+			else if (Selection.Ids.Count > 0)
 			{
 				Undo.Current.RegisterSelectionChange();
 				Selection.Ids = new List<int>();
@@ -228,24 +228,32 @@ namespace Selection
 		}
 
 		float LastClickTime = 0;
-		//GameObject LastSelectObject;
+		GameObject LastSelectObject;
 		public void SelectObject(GameObject Obj)
 		{
 			int ObjectId = GetIdOfObject(Obj);
 
 			bool contains = Selection.Ids.Contains(ObjectId);
-			
-			if( contains && !IsSelectionRemove() && !IsSelectionAdd())
+
+			if (contains && LastSelectObject == Obj)
 			{
-				if(Time.time < LastClickTime + 0.2f)
+				if (Time.time < LastClickTime + 0.2f)
+				{
+					// Select all of same type
+					SelectAllOfType(AffectedTypes[ObjectId]);
+					return;
+				}
+			}
+			else if (contains && !IsSelectionRemove() && !IsSelectionAdd())
+			{
+				if (Time.time < LastClickTime + 0.2f)
 					CameraControler.FocusOnObject(Obj);
 				LastClickTime = Time.time;
 
 				return;
 			}
 
-			//LastSelectObject = Obj;
-
+			LastSelectObject = Obj;
 			LastClickTime = Time.time;
 
 
@@ -281,6 +289,31 @@ namespace Selection
 			}
 		}
 
+		public void SelectAllOfType(int SearchType)
+		{
+			List<GameObject> ToSelect = new List<GameObject>();
+			for(int i = 0; i < AffectedGameObjects.Length; i++)
+			{
+				if(AffectedGameObjects[i] && AffectedTypes[i] == SearchType)
+				{
+					ToSelect.Add(AffectedGameObjects[i]);
+				}
+			}
+
+			if (IsSelectionAdd())
+			{
+				SelectObjects(ToSelect.ToArray());
+			}
+			else if (IsSelectionRemove())
+			{
+				SelectObjectsRemove(ToSelect.ToArray());
+			}
+			else
+			{
+				CleanSelection();
+				SelectObjects(ToSelect.ToArray());
+			}
+		}
 
 		public void SelectObjects(GameObject[] ToSelect)
 		{
@@ -296,6 +329,25 @@ namespace Selection
 			}
 
 			if(AnyChanged)
+				FinishSelectionChange();
+		}
+
+
+
+		public void SelectObjectsRemove(GameObject[] ToSelect)
+		{
+			bool AnyChanged = false;
+			for (int i = 0; i < ToSelect.Length; i++)
+			{
+				int ObjectId = GetIdOfObject(ToSelect[i]);
+				if (Selection.Ids.Contains(ObjectId))
+				{
+					Selection.Ids.Remove(ObjectId);
+					AnyChanged = true;
+				}
+			}
+
+			if (AnyChanged)
 				FinishSelectionChange();
 		}
 

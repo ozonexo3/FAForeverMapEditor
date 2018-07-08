@@ -207,7 +207,7 @@ public class PlacementManager : MonoBehaviour {
 			UpdateSymmetryObjects();
 
 			// Action
-			if (Input.GetKey(KeyCode.E) || Input.GetKey(KeyCode.R) || Input.GetKey(KeyCode.B) || Input.GetKey(KeyCode.M))
+			if (Input.GetKey(KeyCode.E) || Input.GetKey(KeyCode.R) || KeyboardManager.BrushSizeHold() || KeyboardManager.BrushStrengthHold())
 			{
 			}
 			else if (Input.GetMouseButtonDown(0))

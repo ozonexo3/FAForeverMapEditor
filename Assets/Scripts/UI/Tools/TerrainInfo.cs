@@ -44,6 +44,7 @@ namespace EditMap
 		public Transform BrushListPivot;
 		public Material TerrainMaterial;
 
+		public Toggle[] BrushTypes;
 
 		public LayerMask TerrainMask;
 		public List<Toggle> BrushToggles;
@@ -190,7 +191,7 @@ namespace EditMap
 
 			if (Edit.MauseOnGameplay || ChangingStrength || ChangingSize)
 			{
-				if (!ChangingSize && (Input.GetKey(KeyCode.M) || ChangingStrength))
+				if (!ChangingSize && (KeyboardManager.BrushStrengthHold() || ChangingStrength))
 				{
 					// Change Strength
 					if (Input.GetMouseButtonDown(0))
@@ -212,7 +213,7 @@ namespace EditMap
 
 					}
 				}
-				else if (Input.GetKey(KeyCode.B) || ChangingSize)
+				else if (KeyboardManager.BrushSizeHold() || ChangingSize)
 				{
 					// Change Size
 					if (Input.GetMouseButtonDown(0))
@@ -296,11 +297,61 @@ namespace EditMap
 				}
 			}
 
+			if (Input.GetMouseButton(0))
+			{
+			}
+			else if (KeyboardManager.SwitchTypeNext())
+			{
+				int SelectedBrush = 0;
+				for(int i = 0; i < BrushTypes.Length; i++)
+				{
+					if (BrushTypes[i].isOn)
+					{
+						SelectedBrush = i;
+						//BrushTypes[i].isOn = false;
+					}
+				}
+
+				SelectedBrush++;
+				if (SelectedBrush >= BrushTypes.Length)
+					SelectedBrush = 0;
+
+				BrushTypes[SelectedBrush].isOn = true;
+			}
+			else if(KeyboardManager.SwitchType1())
+			{
+				BrushTypes[0].isOn = true;
+			}
+			else if (KeyboardManager.SwitchType2())
+			{
+				BrushTypes[1].isOn = true;
+			}
+			else if (KeyboardManager.SwitchType3())
+			{
+				BrushTypes[2].isOn = true;
+			}
+			else if (KeyboardManager.SwitchType4())
+			{
+				BrushTypes[3].isOn = true;
+			}
+
+			if (KeyboardManager.IncreaseTarget())
+			{
+				if (BrushTarget.value < 256)
+					BrushTarget.SetValue((int)BrushTarget.value + 1);
+			}
+			else if (KeyboardManager.DecreaseTarget())
+			{
+				if (BrushTarget.value > 0)
+					BrushTarget.SetValue((int)BrushTarget.value - 1);
+			}
+
 			if (TerainChanged && Input.GetMouseButtonUp(0))
 			{
 				Undo.RegisterUndo(new UndoHistory.HistoryTerrainHeight(), new UndoHistory.HistoryTerrainHeight.TerrainHeightHistoryParameter(beginHeights));
 				TerainChanged = false;
 			}
+
 
 
 			BrushGenerator.RegeneratePaintBrushIfNeeded();
