@@ -43,6 +43,12 @@ public partial struct GetGamedataFile
 		public string StrategicIconName;
 		public int StrategicIconSortPriority;
 
+		// Skirt
+		public float SkirtOffsetX;
+		public float SkirtOffsetZ;
+		public Vector3 SkirtSize;
+		public float TurnRate;
+
 		// Intel
 		public float VisionRadius;
 
@@ -258,14 +264,6 @@ public partial struct GetGamedataFile
 			
 		}
 
-		PhisicsLayersTab = BP.GetTable("UnitBlueprint.Physics");
-		if (PhisicsLayersTab != null)
-		{
-			CurrentValue = PhisicsLayersTab.RawGet("Elevation");
-			if (CurrentValue != null)
-				ToReturn.BP.PhysicsElevation = LuaParser.Read.StringToFloat(CurrentValue.ToString());
-		}
-
 		float BiggestLodDistance = 100;
 		//Display
 		if (BP.GetTable("UnitBlueprint.Display") != null)
@@ -334,6 +332,50 @@ public partial struct GetGamedataFile
 			ToReturn.BP.Size.z = LuaParser.Read.StringToFloat(CurrentValue.ToString());
 
 
+		ToReturn.BP.SelectionSize = ToReturn.BP.Size;
+
+		CurrentValue = UnitBlueprintTable.RawGet("SelectionSizeX");
+		if (CurrentValue != null)
+			ToReturn.BP.SelectionSize.x = LuaParser.Read.StringToFloat(CurrentValue.ToString());
+		CurrentValue = UnitBlueprintTable.RawGet("SelectionSizeZ");
+		if (CurrentValue != null)
+			ToReturn.BP.SelectionSize.z = LuaParser.Read.StringToFloat(CurrentValue.ToString());
+		CurrentValue = UnitBlueprintTable.RawGet("SelectionThickness");
+		if (CurrentValue != null)
+			ToReturn.BP.SelectionSize.y = LuaParser.Read.StringToFloat(CurrentValue.ToString());
+
+		ToReturn.BP.SkirtSize = ToReturn.BP.SelectionSize;
+		ToReturn.BP.SkirtSize.y = 1;
+
+		PhisicsLayersTab = BP.GetTable("UnitBlueprint.Physics");
+		if (PhisicsLayersTab != null)
+		{
+			CurrentValue = PhisicsLayersTab.RawGet("Elevation");
+			if (CurrentValue != null)
+				ToReturn.BP.PhysicsElevation = LuaParser.Read.StringToFloat(CurrentValue.ToString());
+
+			CurrentValue = PhisicsLayersTab.RawGet("SkirtOffsetX");
+			if (CurrentValue != null)
+				ToReturn.BP.SkirtOffsetX = LuaParser.Read.StringToFloat(CurrentValue.ToString());
+
+			CurrentValue = PhisicsLayersTab.RawGet("SkirtOffsetZ");
+			if (CurrentValue != null)
+				ToReturn.BP.SkirtOffsetZ = LuaParser.Read.StringToFloat(CurrentValue.ToString());
+
+			CurrentValue = PhisicsLayersTab.RawGet("SkirtSizeX");
+			if (CurrentValue != null)
+				ToReturn.BP.SkirtSize.x = LuaParser.Read.StringToFloat(CurrentValue.ToString());
+
+			CurrentValue = PhisicsLayersTab.RawGet("SkirtSizeZ");
+			if (CurrentValue != null)
+				ToReturn.BP.SkirtSize.z = LuaParser.Read.StringToFloat(CurrentValue.ToString());
+
+			CurrentValue = PhisicsLayersTab.RawGet("TurnRate");
+			if (CurrentValue != null)
+				ToReturn.BP.TurnRate = LuaParser.Read.StringToFloat(CurrentValue.ToString());
+		}
+
+		ToReturn.BP.SkirtSize *= 0.1f;
 
 		LuaTable FootprintTab = BP.GetTable("UnitBlueprint.Footprint");
 		if (FootprintTab != null)

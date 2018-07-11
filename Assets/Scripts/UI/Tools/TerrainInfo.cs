@@ -282,13 +282,7 @@ namespace EditMap
 					}
 					else if (Input.GetMouseButtonUp(0))
 					{
-						PaintStarted = false;
-						ScmapEditor.Current.Teren.heightmapPixelError = 4;
-						if (Painting)
-						{
-							Painting = false;
-							RegenerateMaps();
-						}
+
 					}
 					else
 					{
@@ -350,6 +344,14 @@ namespace EditMap
 			{
 				Undo.RegisterUndo(new UndoHistory.HistoryTerrainHeight(), new UndoHistory.HistoryTerrainHeight.TerrainHeightHistoryParameter(beginHeights));
 				TerainChanged = false;
+
+				PaintStarted = false;
+				ScmapEditor.Current.Teren.heightmapPixelError = 4;
+				if (Painting)
+				{
+					Painting = false;
+					RegenerateMaps();
+				}
 			}
 
 

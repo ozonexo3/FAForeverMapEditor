@@ -186,8 +186,8 @@ public class UnitSource : MonoBehaviour
 		UInst.SetMatrix(UInst.GetSnapPosition(position), rotation);
 		UInst.ArmyColor = Group.Owner.ArmyColor;
 
-		if (BP.Footprint.x > 0 && BP.Footprint.y > 0)
-			UInst.Col.size = new Vector3(BP.Footprint.x * 0.1f, BP.Size.y * 0.1f, BP.Footprint.y * 0.1f);
+		if (BP.SelectionSize.x > 0 && BP.SelectionSize.y > 0)
+			UInst.Col.size = BP.SelectionSize * 0.1f;
 		else
 			UInst.Col.size = BP.Size * 0.1f;
 		UInst.Col.center = Vector3.up * (BP.Size.y * 0.05f);

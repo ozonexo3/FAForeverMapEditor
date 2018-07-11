@@ -151,16 +151,23 @@ public class GenerateControlTex : MonoBehaviour
 	{
 		if (GeneratingNormalTex)
 		{
+			//Debug.Log("Buffor Generate Normals");
+
 			BufforNormalTex = true;
 		}
 		else
+		{
+			//Debug.Log("Start Generate Normals");
 			NormalCoroutine = Current.StartCoroutine(Current.GeneratingNormal());
+		}
 	}
 
 	public static void StopGenerateNormal()
 	{
 		if (GeneratingNormalTex)
 		{
+			//Debug.Log("Stop Generate Normals");
+			BufforNormalTex = false;
 			Current.StopCoroutine(NormalCoroutine);
 			ScmapEditor.Current.TerrainMaterial.SetFloat("_GeneratingNormal", 0);
 
@@ -179,6 +186,7 @@ public class GenerateControlTex : MonoBehaviour
 
 	public IEnumerator GeneratingNormal()
 	{
+		//Debug.Log("Begin Generate Normals");
 		ScmapEditor.Current.TerrainMaterial.SetFloat("_GeneratingNormal", 1);
 		Color[] AllColors = ScmapEditor.Current.map.UncompressedNormalmapTex.GetPixels();
 
@@ -217,18 +225,21 @@ public class GenerateControlTex : MonoBehaviour
 			}
 		}
 
+		//Debug.Log("Success Generate Normals");
 		ScmapEditor.Current.map.UncompressedNormalmapTex.SetPixels(AllColors);
 		ScmapEditor.Current.map.UncompressedNormalmapTex.Apply(false);
 		ScmapEditor.Current.TerrainMaterial.SetFloat("_GeneratingNormal", 0);
 		ScmapEditor.Current.TerrainMaterial.SetTexture("_TerrainNormal", ScmapEditor.Current.map.UncompressedNormalmapTex);
 
 		yield return null;
+		//Debug.Log("Finalize Generate Normals");
 		NormalCoroutine = null;
 
 
 
 		if (BufforNormalTex)
 		{
+			//Debug.Log("Start buffor Generate Normals");
 			BufforNormalTex = false;
 			GenerateNormal();
 		}
@@ -291,24 +302,29 @@ public class GenerateControlTex : MonoBehaviour
 		}
 	}
 
-	const float FlatHeight = 0.000045f;
-	const float NonFlatHeight = 0.0022f;
-	const float AlmostUnpassableHeight = 0.0055f;
-	const float UnpassableHeight = 0.01f;
+	const float FlatHeight = 0.995f;
+	const float NonFlatHeight = 0.88f;
+	const float AlmostUnpassableHeight = 0.74f;
+	const float UnpassableHeight = 0.541f;
+
+	public Color Flat;
+	public Color LowAngle;
+	public Color HighAngle;
+	public Color AlmostUnpassable;
+	public Color Unpassable;
+
 
 	IEnumerator GeneratingSlopeTask()
 	{
-		const float Saturation = 0.8f;
-		Color Flat = new Color(0.1f * Saturation, 0.78f * Saturation, 0.1f * Saturation, 1);
-		Color LowAngle = new Color(0.3f * Saturation, 0.89f * Saturation, 0.1f * Saturation, 1);
-		Color HighAngle = new Color(0.6f * Saturation, 0.9f * Saturation, 0.1f * Saturation, 1);
-		Color Unpassable = new Color(0.8f * Saturation, 0.05f * Saturation, 0.05f * Saturation, 1);
-		Color AlmostUnpassable = new Color(0.7f * Saturation, 0.4f * Saturation, 0.05f * Saturation, 1);
-
 		Color[] Pixels = new Color[ScmapEditor.Current.map.Width * ScmapEditor.Current.map.Height];
 		int x = 0;
 		int y = 0;
 		int i = 0;
+
+		Vector3 Vert0 = Vector3.zero;
+		Vector3 Vert1 = Vector3.zero;
+		Vector3 Vert2 = Vector3.zero;
+		Vector3 Vert3 = Vector3.zero;
 
 
 		for (x = 0; x < ScmapEditor.Current.map.Width; x++)
@@ -317,11 +333,43 @@ public class GenerateControlTex : MonoBehaviour
 			{
 				i = y + x * ScmapEditor.Current.map.Height;
 
-				float Slope0 = SlopeHeightmapPixels[x, y];
-				float Slope1 = SlopeHeightmapPixels[x + 1, y];
-				float Slope2 = SlopeHeightmapPixels[x, y + 1];
-				float Slope3 = SlopeHeightmapPixels[x + 1, y + 1];
+				Vert0.x = x;
+				Vert1.x = x + 1;
+				Vert2.x = x;
+				Vert3.x = x + 1;
 
+				Vert0.z = y;
+				Vert1.z = y;
+				Vert2.z = y + 1;
+				Vert3.z = y + 1;
+
+				Vert0.y = SlopeHeightmapPixels[x, y] * 512f;
+				Vert1.y = SlopeHeightmapPixels[x + 1, y] * 512f;
+				Vert2.y = SlopeHeightmapPixels[x, y + 1] * 512f;
+				Vert3.y = SlopeHeightmapPixels[x + 1, y + 1] * 512f;
+
+				// Triangle 1: 0, 2, 1
+				// 0, 3, 1
+				float Dot = Vector3.Dot(GetTriangleVector(Vert0, Vert2, Vert1), Vector3.up);
+
+				// Triangle 2: 3, 1, 2
+				// 3, 0, 2
+				//if (Dot > 0.5f)
+				Dot = Mathf.Min(Dot, Vector3.Dot(GetTriangleVector(Vert3, Vert1, Vert2), Vector3.up));
+
+
+				if(Dot > FlatHeight)
+					Pixels[i] = Flat;
+				else if(Dot > NonFlatHeight)
+					Pixels[i] = LowAngle;
+				else if (Dot > AlmostUnpassableHeight)
+					Pixels[i] = HighAngle;
+				else if (Dot > UnpassableHeight)
+					Pixels[i] = AlmostUnpassable;
+				else
+					Pixels[i] = Unpassable;
+
+				/*
 				float Min = Mathf.Min(Slope0, Slope1, Slope2, Slope3);
 				float Max = Mathf.Max(Slope0, Slope1, Slope2, Slope3);
 
@@ -337,6 +385,7 @@ public class GenerateControlTex : MonoBehaviour
 					Pixels[i] = AlmostUnpassable;
 				else
 					Pixels[i] = Unpassable;
+					*/
 			}
 		}
 
@@ -348,6 +397,11 @@ public class GenerateControlTex : MonoBehaviour
 		ScmapEditor.Current.TerrainMaterial.SetTexture("_SlopeTex", SlopeData);
 		ScmapEditor.Current.TerrainMaterial.SetFloat("_UseSlopeTex", 1);
 		//yield return null;
+	}
+
+	static Vector3 GetTriangleVector(Vector3 Vert0, Vector3 Vert1, Vector3 Vert2)
+	{
+		return Vector3.Cross(Vert1 - Vert0, Vert2 - Vert0).normalized;
 	}
 
 }

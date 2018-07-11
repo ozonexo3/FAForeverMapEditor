@@ -268,6 +268,9 @@ public partial class MapLuaParser : MonoBehaviour
 			if (ScenarioLuaFile.Load(FolderName, ScenarioFileName, FolderParentPath))
 			{
 				//Map Loaded
+				MapCenterPoint = Vector3.zero;
+				MapCenterPoint.x = (GetMapSizeX() / 20f);
+				MapCenterPoint.z = -1 * (GetMapSizeY() / 20f);
 			}
 
 
@@ -411,11 +414,6 @@ public partial class MapLuaParser : MonoBehaviour
 		UpdateArea();
 
 		//MapElements.SetActive(false);
-
-		MapCenterPoint = Vector3.zero;
-		MapCenterPoint.x = (GetMapSizeX() / 20f);
-		MapCenterPoint.z = -1 * (GetMapSizeY() / 20f);
-
 		//SortArmys();
 	}
 	#endregion

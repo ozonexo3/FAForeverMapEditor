@@ -207,7 +207,7 @@ public partial class CameraControler : MonoBehaviour {
 			GameplayCursorPos = hit.point;
 			 GameplayCursorPosScm = ScmapEditor.WorldPosToScmap(GameplayCursorPos);
 			GameplayCursorPosScm.y = hit.point.y * 10;
-			GameplayCursorPosScm.z = ScmapEditor.Current.map.Height - GameplayCursorPosScm.z;
+			//GameplayCursorPosScm.z = ScmapEditor.Current.map.Height - GameplayCursorPosScm.z;
 			string X = GameplayCursorPosScm.x.ToString("N2");
 			string Y = GameplayCursorPosScm.y.ToString("N2");
 			string Z = GameplayCursorPosScm.z.ToString("N2");

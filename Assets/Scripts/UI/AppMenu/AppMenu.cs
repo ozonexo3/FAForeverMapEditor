@@ -176,7 +176,9 @@ public partial class AppMenu : MonoBehaviour
 					Arguments += " /faction " + (FafEditorSettings.GetFaction() + 1).ToString();
 					Arguments += " /victory sandbox";
 					Arguments += " /gamespeed adjustable";
-					Arguments += " /predeployed /enablediskwatch";
+					Arguments += " /civilians";
+					Arguments += " /enablediskwatch";
+					//Arguments += " / predeployed/";
 
 					if (!FafEditorSettings.GetFogOfWar())
 						Arguments += " /nofog";

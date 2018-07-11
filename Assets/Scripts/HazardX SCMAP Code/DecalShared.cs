@@ -27,7 +27,8 @@ public partial class Decal {
 			if (_Shared != null)
 				_Shared.OnVisibilityChanged -= UpdateVisibility;
 			_Shared = value;
-			_Shared.OnVisibilityChanged += UpdateVisibility;
+			if(_Shared != null)
+				_Shared.OnVisibilityChanged += UpdateVisibility;
 			UpdateVisibility();
 		}
 	}
@@ -93,7 +94,7 @@ public partial class Decal {
 			set
 			{
 				_Hidden = value;
-				OnVisibilityChanged();
+				OnVisibilityChanged?.Invoke();
 			}
 
 		}

@@ -115,20 +115,14 @@ public partial class ScmapEditor : MonoBehaviour
 
 	public IEnumerator LoadScmapFile()
 	{
-		//UnloadMap();
-
 		map = new Map();
 
 		//string MapPath = EnvPaths.GetMapsPath();
 		string path = MapLuaParser.MapRelativePath(MapLuaParser.Current.ScenarioLuaFile.Data.map);
 
-		//Debug.Log("Load SCMAP file: " + path);
-
-
 		if (map.Load(path))
 		{
 			UpdateLighting();
-			Skybox.LoadSkybox();
 		}
 		else
 		{
@@ -139,6 +133,7 @@ public partial class ScmapEditor : MonoBehaviour
 
 		if (map.VersionMinor >= 60)
 		{
+			map.AdditionalSkyboxData.Data.UpdateSize();
 		}
 		else
 		{
@@ -182,17 +177,6 @@ public partial class ScmapEditor : MonoBehaviour
 		WaterMaterial.SetFloat("_GridScale", HalfxRes);
 
 
-
-
-		/*
-		 * // Cubemap
-		Texture2D Cubemap = GetGamedataFile.LoadTexture2DFromGamedata(GetGamedataFile.TexturesScd, map.Water.TexPathCubemap);
-		Debug.Log(Cubemap.width);
-		Cubemap cb = new Cubemap(Cubemap.width, TextureFormat.RGB24, Cubemap.mipmapCount > 1);
-		cb.SetPixels(Cubemap.GetPixels(), CubemapFace.PositiveX);
-		WaterMaterial.SetTexture("_Reflection", cb);
-		*/
-
 		for (int i = 0; i < map.EnvCubemapsFile.Length; i++)
 		{
 			if (map.EnvCubemapsName[i] == "<default>")
@@ -215,9 +199,6 @@ public partial class ScmapEditor : MonoBehaviour
 
 		SetWater();
 
-
-
-
 		Teren.gameObject.layer = 8;
 
 		SetTextures();
@@ -228,9 +209,6 @@ public partial class ScmapEditor : MonoBehaviour
 		}
 
 		yield return null;
-		//Debug.Log("Scmap load complited");
-
-		//GetGamedataFile.UnitObject NewUnit = new GetGamedataFile.UnitObject();
 	}
 
 	public void LoadHeights()
@@ -658,11 +636,12 @@ public partial class ScmapEditor : MonoBehaviour
 		LowestElevation = (LowestElevation * TerrainHeight) / 0.1f;
 		HighestElevation = (HighestElevation * TerrainHeight) / 0.1f;
 
-		Debug.Log("Lowest point: " + LowestElevation);
-		Debug.Log("Highest point: " + HighestElevation);
 
 		if (HighestElevation - LowestElevation > 49.9)
 		{
+			Debug.Log("Lowest point: " + LowestElevation);
+			Debug.Log("Highest point: " + HighestElevation);
+
 			Debug.LogWarning("Height difference is too high! it might couse rendering issues! Height difference is: " + (HighestElevation - LowestElevation));
 			GenericInfoPopup.ShowInfo("Height difference " + (HighestElevation - LowestElevation) + " is too high!\nIt might couse rendering issues!");
 		}
@@ -671,14 +650,14 @@ public partial class ScmapEditor : MonoBehaviour
 		if (MapLuaParser.Current.EditMenu.MapInfoMenu.SaveAsFa.isOn)
 		{
 			if(map.AdditionalSkyboxData == null || map.AdditionalSkyboxData.Data == null || map.AdditionalSkyboxData.Data.Position.x == 0)
-			{
+			{ // Convert to v60
 				LoadDefaultSkybox();
 			}
 
 			map.VersionMinor = 60;
 			map.AdditionalSkyboxData.Data.UpdateSize();
 		}
-		else if(map.VersionMinor >= 60)
+		else if(map.VersionMinor >= 60) // Convert to v56
 		{
 			LoadDefaultSkybox();
 			map.AdditionalSkyboxData.Data.UpdateSize();
@@ -785,8 +764,6 @@ public partial class ScmapEditor : MonoBehaviour
 	{
 		map.AdditionalSkyboxData = UnityEngine.JsonUtility.FromJson<SkyboxData>(DefaultSkybox.text);
 		map.AdditionalSkyboxData.Data.UpdateSize();
-
-		Skybox.LoadSkybox();
 	}
 
 	public void UnloadMap()

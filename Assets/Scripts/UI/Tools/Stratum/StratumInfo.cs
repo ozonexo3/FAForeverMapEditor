@@ -917,7 +917,7 @@ namespace EditMap
 				return;
 			if (ResourceBrowser.SelectedCategory == 0 || ResourceBrowser.SelectedCategory == 1)
 			{
-				if (ResourceBrowser.Current.LoadedPaths[ResourceBrowser.DragedObject.InstanceId].ToLower().Contains("normal"))
+				if (IsTextureNormalMap(ResourceBrowser.Current.LoadedPaths[ResourceBrowser.DragedObject.InstanceId]))
 				{
 					GenericInfoPopup.ShowInfo("Can't assign normal map as albedo!");
 					return;
@@ -938,6 +938,13 @@ namespace EditMap
 			}
 		}
 
+		bool IsTextureNormalMap(string LoadPath)
+		{
+			LoadPath = LoadPath.ToLower();
+
+			return LoadPath.Contains("normal") || LoadPath.Contains("nornal");
+		}
+
 		public void SelectNormal()
 		{
 			if (ResourceBrowser.DragedObject == null || ResourceBrowser.DragedObject.ContentType != ResourceObject.ContentTypes.Texture)
@@ -947,7 +954,7 @@ namespace EditMap
 				return;
 			if (ResourceBrowser.SelectedCategory == 0 || ResourceBrowser.SelectedCategory == 1)
 			{
-				if (!ResourceBrowser.Current.LoadedPaths[ResourceBrowser.DragedObject.InstanceId].ToLower().Contains("normal"))
+				if (!IsTextureNormalMap(ResourceBrowser.Current.LoadedPaths[ResourceBrowser.DragedObject.InstanceId]))
 				{
 					GenericInfoPopup.ShowInfo("Can't assign albedo as normal map!");
 					return;

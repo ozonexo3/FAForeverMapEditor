@@ -87,7 +87,11 @@ public partial class AppMenu : MonoBehaviour
 				return;
 			}
 
-			if(SaveAsNewFolder(NewFolderName, NonVersionControlledName(NewFolderName)))
+			System.IO.DirectoryInfo Dir = new DirectoryInfo(ChosenPath);
+			MapLuaParser.Current.FolderParentPath = Dir.Parent.FullName.Replace("\\", "/") + "/";
+			Debug.Log(MapLuaParser.Current.FolderParentPath);
+
+			if (SaveAsNewFolder(NewFolderName, NonVersionControlledName(NewFolderName)))
 			{
 				// Inform user, that map was saved into different folder than he chose
 				if (ChosenFolderName != NewFolderName)
@@ -119,8 +123,14 @@ public partial class AppMenu : MonoBehaviour
 			Directory.Delete(path, true);
 		}
 
+		System.IO.DirectoryInfo Dir = new DirectoryInfo(OverwritePath);
+		string FileName = Dir.Name;
+
+		MapLuaParser.Current.FolderParentPath = Dir.Parent.FullName.Replace("\\", "/") + "\\";
+		Debug.Log(MapLuaParser.Current.FolderParentPath);
+
 		// Now we can save to clean folder
-		SaveAsNewFolder(OverwritePath, NonVersionControlledName(OverwritePath));
+		SaveAsNewFolder(FileName, NonVersionControlledName(FileName));
 	}
 
 
@@ -153,6 +163,7 @@ public partial class AppMenu : MonoBehaviour
 
 	bool SaveAsNewFolder(string NewFolderName, string FileBeginName = "")
 	{
+		Debug.Log(NewFolderName + ", " + FileBeginName);
 		string SystemPath = MapLuaParser.Current.FolderParentPath + NewFolderName;
 
 		if (!System.IO.Directory.Exists(SystemPath))

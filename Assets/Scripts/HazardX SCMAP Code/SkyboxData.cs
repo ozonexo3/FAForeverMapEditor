@@ -118,6 +118,8 @@ public class SkyboxData
 		{
 			Position = ScmapEditor.WorldPosToScmap( MapLuaParser.Current.MapCenterPoint);
 			Scale = Mathf.Max(ScmapEditor.Current.map.Width, ScmapEditor.Current.map.Height) * 2.288245f;
+
+			ScmapEditor.Current.Skybox.LoadSkybox();
 		}
 	}
 	#endregion

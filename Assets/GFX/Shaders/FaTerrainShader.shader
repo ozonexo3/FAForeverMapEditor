@@ -343,8 +343,8 @@ Properties {
 						else SlopeColor = half3(1, 0, 0);
 
 					}
-					Emit = SlopeColor * 0.5;
-					col.rgb = lerp(col.rgb, SlopeColor, 0.5);
+					Emit = SlopeColor * 0.8;
+					col.rgb = lerp(col.rgb, 0, 0.8);
 				}
 				else if (_Water > 0) col.rgb = ApplyWaterColor(WaterDepth, col.rgb);
 
@@ -437,5 +437,5 @@ Properties {
 }
 
 
-FallBack "Diffuse"
+//FallBack "Diffuse"
 }

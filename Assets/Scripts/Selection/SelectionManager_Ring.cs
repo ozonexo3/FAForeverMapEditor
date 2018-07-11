@@ -75,7 +75,7 @@ namespace Selection
 					}
 					else if(LastControlType == SelectionControlTypes.Units)
 					{
-						Selection.SelectionRings[i].transform.localScale = AffectedGameObjects[ID].GetComponent<BoxCollider>().size;
+						Selection.SelectionRings[i].transform.localScale = AffectedGameObjects[ID].GetComponent<UnitInstance>().UnitRenderer.BP.SkirtSize;
 						Selection.SelectionRings[i].transform.localRotation = AffectedGameObjects[ID].transform.localRotation;
 					}
 					else
@@ -123,6 +123,11 @@ namespace Selection
 				if (LastControlType == SelectionControlTypes.Decal)
 				{
 					Sel.SelectionRings[i].transform.localScale = AffectedGameObjects[ID].transform.localScale;
+					Sel.SelectionRings[i].transform.localRotation = AffectedGameObjects[ID].transform.localRotation;
+				}
+				else if (LastControlType == SelectionControlTypes.Units)
+				{
+					Sel.SelectionRings[i].transform.localScale = AffectedGameObjects[ID].GetComponent<UnitInstance>().UnitRenderer.BP.SkirtSize;
 					Sel.SelectionRings[i].transform.localRotation = AffectedGameObjects[ID].transform.localRotation;
 				}
 				else
