@@ -184,8 +184,7 @@ public partial class CameraControler : MonoBehaviour {
 		else{
 			if(Input.GetKeyDown(KeyCode.G) && !IsInputFieldFocused())
 			{
-				Menu.GridToggle.isOn = !Menu.GridToggle.isOn;
-				MapLuaParser.Current.HeightmapControler.ToogleGrid(Menu.GridToggle.isOn);
+				Menu.ToogleCurrentGrid();
 			}
 		}
 

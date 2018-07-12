@@ -21,6 +21,8 @@ public partial class AppMenu : MonoBehaviour
 	public GameObject RecentMaps;
 	public Toggle GridToggle;
 	public Toggle BuildGridToggle;
+	public Toggle GeneralGridToggle;
+	public Toggle AIGridToggle;
 	public Toggle SlopeToggle;
 
 	//Local
@@ -146,6 +148,12 @@ public partial class AppMenu : MonoBehaviour
 			case "BuildGrid":
 				ScmapEditor.Current.ToogleBuildGrid(BuildGridToggle.isOn);
 				break;
+			case "GeneralGrid":
+				ScmapEditor.Current.ToogleGeneraldGrid(GeneralGridToggle.isOn);
+				break;
+			case "AIGrid":
+				ScmapEditor.Current.ToogleAIGrid(AIGridToggle.isOn);
+				break;
 			case "Slope":
 				ScmapEditor.Current.ToogleSlope(SlopeToggle.isOn);
 				break;
@@ -205,6 +213,30 @@ public partial class AppMenu : MonoBehaviour
 					System.Diagnostics.Process.Start(GamePath, Arguments);
 				}
 				break;
+		}
+	}
+
+	public void ToogleCurrentGrid()
+	{
+		switch (ScmapEditor.Current.GridType)
+		{
+			case ScmapEditor.GridTypes.Standard:
+				GridToggle.isOn = !GridToggle.isOn;
+				ScmapEditor.Current.ToogleGrid(GridToggle.isOn);
+				break;
+			case ScmapEditor.GridTypes.Build:
+				BuildGridToggle.isOn = !BuildGridToggle.isOn;
+				ScmapEditor.Current.ToogleBuildGrid(BuildGridToggle.isOn);
+				break;
+			case ScmapEditor.GridTypes.General:
+				GeneralGridToggle.isOn = !GeneralGridToggle.isOn;
+				ScmapEditor.Current.ToogleGeneraldGrid(GeneralGridToggle.isOn);
+				break;
+			case ScmapEditor.GridTypes.AI:
+				AIGridToggle.isOn = !AIGridToggle.isOn;
+				ScmapEditor.Current.ToogleAIGrid(AIGridToggle.isOn);
+				break;
+
 		}
 	}
 

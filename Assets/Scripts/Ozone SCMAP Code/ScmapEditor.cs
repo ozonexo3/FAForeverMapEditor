@@ -40,14 +40,6 @@ public partial class ScmapEditor : MonoBehaviour
 	public Cubemap CurrentEnvironmentCubemap;
 
 
-	[HideInInspector]
-	public bool Grid;
-	[HideInInspector]
-	public bool BuildGrid;
-	[HideInInspector]
-	public bool Slope;
-	//string Shader;
-	//public		TerrainMesh		TerrainM;
 
 	public const float MapHeightScale = 2048;
 
@@ -79,7 +71,8 @@ public partial class ScmapEditor : MonoBehaviour
 	{
 		UnBrowser.Instantiate();
 
-		ToogleGrid(false);
+		Grid = false;
+		UpdateGrid();
 		heightsLength = 10;
 		heights = new float[10, 10];
 		RestartTerrainAsset();
@@ -966,16 +959,64 @@ public partial class ScmapEditor : MonoBehaviour
 	#endregion
 
 	#region Rendering
+	[HideInInspector]
+	public bool Grid;
+	[HideInInspector]
+	public GridTypes GridType;
+	[HideInInspector]
+	public bool Slope;
+
+	public Texture[] GridTextures;
+
+	public enum GridTypes
+	{
+		Standard, Build, General, AI
+	}
+
+	public bool ToogleCurrent()
+	{
+		Grid = !Grid;
+		UpdateGrid();
+		return Grid;
+	}
+
 	public void ToogleGrid(bool To)
 	{
+		if(To)
+			GridType = GridTypes.Standard;
 		Grid = To;
-		TerrainMaterial.SetInt("_Grid", Grid ? 1 : 0);
+		UpdateGrid();
 	}
 
 	public void ToogleBuildGrid(bool To)
 	{
-		BuildGrid = To;
-		TerrainMaterial.SetInt("_BuildGrid", BuildGrid ? 1 : 0);
+		if (To)
+			GridType = GridTypes.Build;
+		Grid = To;
+		UpdateGrid();
+	}
+
+	public void ToogleGeneraldGrid(bool To)
+	{
+		if (To)
+			GridType = GridTypes.General;
+		Grid = To;
+		UpdateGrid();
+	}
+
+	public void ToogleAIGrid(bool To)
+	{
+		if (To)
+			GridType = GridTypes.AI;
+		Grid = To;
+		UpdateGrid();
+	}
+
+	void UpdateGrid()
+	{
+		TerrainMaterial.SetTexture("_GridTexture", GridTextures[(int)GridType]);
+		TerrainMaterial.SetInt("_Grid", Grid ? 1 : 0);
+		TerrainMaterial.SetInt("_GridType", (int)GridType);
 	}
 
 	public void ToogleSlope(bool To)

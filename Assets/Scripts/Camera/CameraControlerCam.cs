@@ -16,6 +16,8 @@ public partial class CameraControler : MonoBehaviour {
 	static float MaxDistance = 1100;
 	static float MaxRaycastDistance = 1500;
 
+	public GridCamera GridCam;
+
 	const float SmoothZoom = 14;
 	const float SmoothPan = 16;
 	const float SmoothRot = 14;
@@ -57,25 +59,6 @@ public partial class CameraControler : MonoBehaviour {
 					MouseScrollSteps++;
 				}
 			}
-			/*
-			if (Input.GetAxis("Mouse ScrollWheel") < 0 && transform.localPosition.y < MaxY)
-			{
-				ray = new Ray(Cam.transform.position, Cam.transform.forward);
-				if (Physics.Raycast(ray, out hit, 1000, Mask))
-				{
-					Vector3 Ray = Pivot.InverseTransformDirection(ray.direction);
-					TargetLocalCamPos += Ray  * Input.GetAxis("Mouse ScrollWheel") * CamSpeed();
-				}
-			}
-			else if (Input.GetAxis("Mouse ScrollWheel") > 0 && transform.localPosition.y > 1)
-			{
-				if (Physics.Raycast(ray, out hit, 1000, Mask))
-				{
-					Vector3 Ray = Pivot.InverseTransformDirection(ray.direction);
-					TargetLocalCamPos += Ray * Input.GetAxis("Mouse ScrollWheel") * CamSpeed();
-				}
-			}
-			*/
 		}
 
 		//LastLocalCamPos = Vector3.Lerp(LastLocalCamPos, TargetLocalCamPos, Time.unscaledDeltaTime * SmoothZoom);
@@ -168,6 +151,7 @@ public partial class CameraControler : MonoBehaviour {
 
 		Pivot.localRotation = Quaternion.Lerp(Pivot.localRotation, Quaternion.Euler(Rot), Time.unscaledDeltaTime * SmoothRot);
 
+		GridCam.TryUpdateGrid();
 	}
 
 	void SetNewPivotPos(Vector3 Pos)

@@ -5,7 +5,7 @@ Properties {
 	_SpecColor ("Specular Color", Color) = (0.5, 0.5, 0.5, 1)
 	_Shininess ("Shininess", Range (0.03, 1)) = 0.078125
 	[MaterialToggle] _Grid("Grid", Int) = 0
-	[MaterialToggle] _BuildGrid("Grid", Int) = 0
+	_GridType("Grid type", Int) = 0
 	[MaterialToggle] _Slope("Slope", Int) = 0
 	[MaterialToggle] _UseSlopeTex("Use Slope Data", Int) = 0
 	_SlopeTex ("Slope data", 2D) = "black" {}
@@ -79,8 +79,7 @@ Properties {
 
 	_GridScale ("Grid Scale", Range (0, 2048)) = 512
 	_GridTexture ("Grid Texture", 2D) = "white" {}
-	_GridBuildTexture("Grid build Texture", 2D) = "white" {}
-	
+
 	_TerrainTypeAlbedo ("Terrain Type Albedo", 2D) = "black" {}
 	_TerrainTypeCapacity ("Terrain Type Capacity", Range(0,1)) = 0.228
 }
@@ -143,10 +142,10 @@ Properties {
 			int _Slope, _UseSlopeTex;
 			sampler2D _SlopeTex;
 
-			int _Grid, _BuildGrid;
+			int _Grid, _GridType;
 			half _GridScale;
 			half _GridCamDist;
-			sampler2D _GridTexture, _GridBuildTexture;
+			sampler2D _GridTexture;
 
 			//uniform
 			sampler2D _ControlXP;
@@ -187,8 +186,8 @@ Properties {
 				return lerp( inColor.rgb, wcolor.rgb, wcolor.a );
 			}
 
-			float4 RenderGrid(sampler2D _GridTex, float2 uv_Control) {
-				fixed4 GridColor = tex2D(_GridTex, uv_Control * _GridScale);
+			float4 RenderGrid(sampler2D _GridTex, float2 uv_Control, float Offset, float GridScale) {
+				fixed4 GridColor = tex2D(_GridTex, uv_Control * GridScale + float2(-Offset, Offset));
 				fixed4 GridFinal = fixed4(0, 0, 0, GridColor.a);
 				if (_GridCamDist < 1) {
 					GridFinal.rgb = lerp(GridFinal.rgb, fixed3(1, 1, 1), GridColor.r * lerp(1, 0, _GridCamDist));
@@ -350,10 +349,14 @@ Properties {
 
 
 				if (_Grid > 0) {
-					if(_BuildGrid)
-						Emit += RenderGrid(_GridBuildTexture, IN.uv_Control);
+					if(_GridType == 1)
+						Emit += RenderGrid(_GridTexture, IN.uv_Control, 0, _GridScale);
+					else if (_GridType == 2)
+						Emit += RenderGrid(_GridTexture, IN.uv_Control, 0.0015, _GridScale / 5.12);
+					else if (_GridType == 3)
+						Emit += RenderGrid(_GridTexture, IN.uv_Control, 0.0015, 16);
 					else
-						Emit += RenderGrid(_GridTexture, IN.uv_Control);
+						Emit += RenderGrid(_GridTexture, IN.uv_Control, 0, _GridScale);
 				}
 
 				if (_Brush > 0) {

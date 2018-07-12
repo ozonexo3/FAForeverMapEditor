@@ -28,7 +28,7 @@ public class GridCamera : MonoBehaviour {
 
 	const float UpdateStep = 0.25f;
 	float UpdateTimer = 0;
-	private void LateUpdate()
+	public void TryUpdateGrid(bool Forced = false)
 	{
 		UpdateTimer += Time.unscaledDeltaTime;
 
