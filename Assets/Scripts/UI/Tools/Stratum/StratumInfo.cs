@@ -243,31 +243,34 @@ namespace EditMap
 					}
 				}
 
-				if (Input.GetMouseButton(0))
+				if (!CameraControler.IsInputFieldFocused())// Ignore all unput
 				{
-				}
-				else if (KeyboardManager.SwitchTypeNext())
-				{
-					LinearBrush.isOn = !LinearBrush.isOn;
-				}
-				else if (KeyboardManager.SwitchType1())
-				{
-					LinearBrush.isOn = false;
-				}
-				else if (KeyboardManager.SwitchType2())
-				{
-					LinearBrush.isOn = true;
-				}
+					if (Input.GetMouseButton(0))
+					{
+					}
+					else if (KeyboardManager.SwitchTypeNext())
+					{
+						LinearBrush.isOn = !LinearBrush.isOn;
+					}
+					else if (KeyboardManager.SwitchType1())
+					{
+						LinearBrush.isOn = false;
+					}
+					else if (KeyboardManager.SwitchType2())
+					{
+						LinearBrush.isOn = true;
+					}
 
-				if (KeyboardManager.IncreaseTarget())
-				{
-					if (TargetValue.value < 1)
-						TargetValue.SetValue(TargetValue.value + 0.05f);
-				}
-				else if (KeyboardManager.DecreaseTarget())
-				{
-					if (TargetValue.value > 0)
-						TargetValue.SetValue(TargetValue.value - 0.05f);
+					if (KeyboardManager.IncreaseTarget())
+					{
+						if (TargetValue.value < 1)
+							TargetValue.SetValue(TargetValue.value + 0.05f);
+					}
+					else if (KeyboardManager.DecreaseTarget())
+					{
+						if (TargetValue.value > 0)
+							TargetValue.SetValue(TargetValue.value - 0.05f);
+					}
 				}
 
 				if (Input.GetMouseButtonUp(0))

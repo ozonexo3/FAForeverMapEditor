@@ -96,11 +96,11 @@ namespace EditMap
 				Selection[i].SetActive(false);
 			}
 
-			if(CurrentPage == 0)
+			if (CurrentPage == 0)
 			{
 				SetBrush();
 			}
-			else if(CurrentPage == 2)
+			else if (CurrentPage == 2)
 			{
 				TerrainMaterial.SetInt("_Brush", 1);
 			}
@@ -291,67 +291,75 @@ namespace EditMap
 				}
 			}
 
-			if (Input.GetMouseButton(0))
+			if (!CameraControler.IsInputFieldFocused())// Ignore all unput
 			{
-			}
-			else if (KeyboardManager.SwitchTypeNext())
-			{
-				int SelectedBrush = 0;
-				for(int i = 0; i < BrushTypes.Length; i++)
+				if (Input.GetMouseButton(0))
 				{
-					if (BrushTypes[i].isOn)
+				}
+				else if (KeyboardManager.SwitchTypeNext())
+				{
+					int SelectedBrush = 0;
+					for (int i = 0; i < BrushTypes.Length; i++)
 					{
-						SelectedBrush = i;
-						//BrushTypes[i].isOn = false;
+						if (BrushTypes[i].isOn)
+						{
+							SelectedBrush = i;
+							//BrushTypes[i].isOn = false;
+						}
 					}
+
+					SelectedBrush++;
+					if (SelectedBrush >= BrushTypes.Length)
+						SelectedBrush = 0;
+
+					BrushTypes[SelectedBrush].isOn = true;
+				}
+				else if (KeyboardManager.SwitchType1())
+				{
+					BrushTypes[0].isOn = true;
+				}
+				else if (KeyboardManager.SwitchType2())
+				{
+					BrushTypes[1].isOn = true;
+				}
+				else if (KeyboardManager.SwitchType3())
+				{
+					BrushTypes[2].isOn = true;
+				}
+				else if (KeyboardManager.SwitchType4())
+				{
+					BrushTypes[3].isOn = true;
 				}
 
-				SelectedBrush++;
-				if (SelectedBrush >= BrushTypes.Length)
-					SelectedBrush = 0;
-
-				BrushTypes[SelectedBrush].isOn = true;
-			}
-			else if(KeyboardManager.SwitchType1())
-			{
-				BrushTypes[0].isOn = true;
-			}
-			else if (KeyboardManager.SwitchType2())
-			{
-				BrushTypes[1].isOn = true;
-			}
-			else if (KeyboardManager.SwitchType3())
-			{
-				BrushTypes[2].isOn = true;
-			}
-			else if (KeyboardManager.SwitchType4())
-			{
-				BrushTypes[3].isOn = true;
+				if (KeyboardManager.IncreaseTarget())
+				{
+					if (BrushTarget.value < 256)
+						BrushTarget.SetValue((int)BrushTarget.value + 1);
+				}
+				else if (KeyboardManager.DecreaseTarget())
+				{
+					if (BrushTarget.value > 0)
+						BrushTarget.SetValue((int)BrushTarget.value - 1);
+				}
 			}
 
-			if (KeyboardManager.IncreaseTarget())
-			{
-				if (BrushTarget.value < 256)
-					BrushTarget.SetValue((int)BrushTarget.value + 1);
-			}
-			else if (KeyboardManager.DecreaseTarget())
-			{
-				if (BrushTarget.value > 0)
-					BrushTarget.SetValue((int)BrushTarget.value - 1);
-			}
 
-			if (TerainChanged && Input.GetMouseButtonUp(0))
+			if (Input.GetMouseButtonUp(0))
 			{
-				Undo.RegisterUndo(new UndoHistory.HistoryTerrainHeight(), new UndoHistory.HistoryTerrainHeight.TerrainHeightHistoryParameter(beginHeights));
-				TerainChanged = false;
+				if (TerainChanged)
+				{
+					Undo.RegisterUndo(new UndoHistory.HistoryTerrainHeight(), new UndoHistory.HistoryTerrainHeight.TerrainHeightHistoryParameter(beginHeights));
+					TerainChanged = false;
+				}
 
-				PaintStarted = false;
-				ScmapEditor.Current.Teren.heightmapPixelError = 4;
 				if (Painting)
 				{
 					Painting = false;
 					RegenerateMaps();
 				}
+
+				PaintStarted = false;
+				ScmapEditor.Current.Teren.heightmapPixelError = 4;
 			}
 
 
@@ -473,7 +481,7 @@ namespace EditMap
 
 			if (paths == null || string.IsNullOrEmpty(paths))
 				return;
-			
+
 
 			int h = ScmapEditor.Current.Teren.terrainData.heightmapHeight;
 			int w = ScmapEditor.Current.Teren.terrainData.heightmapWidth;
@@ -545,7 +553,7 @@ namespace EditMap
 
 			ExportAs = new Texture2D((int)w, (int)h, TextureFormat.RGB24, false, true);
 
-			Debug.Log(w + ", " +  h);
+			Debug.Log(w + ", " + h);
 
 			float HeightValue = 1;
 			HeightValue = float.Parse(TerrainScale_HeightValue.text);
@@ -582,7 +590,7 @@ namespace EditMap
 				{
 					for (int x = 0; x < w; x++)
 					{
-						if(differentSize)
+						if (differentSize)
 							pixel = ExportAs.GetPixelBilinear(y / h, x / w);
 						else
 							pixel = ExportAs.GetPixel(y, x);
@@ -680,7 +688,7 @@ namespace EditMap
 		{
 			GenerateControlTex.GenerateWater();
 			GenerateControlTex.GenerateNormal();
-			
+
 		}
 
 		#region Brush Update
@@ -779,7 +787,7 @@ namespace EditMap
 			if (Smooth)
 				BrushPaintType = 2; // Smooth
 
-			
+
 
 			int hmWidth = ScmapEditor.Current.Teren.terrainData.heightmapWidth;
 			int hmHeight = ScmapEditor.Current.Teren.terrainData.heightmapHeight;
@@ -830,7 +838,7 @@ namespace EditMap
 			int SizeLeft = (size - OffsetLeft) - OffsetRight;
 
 			ScmapEditor.GetValues(GetX, GetY, SizeDown, SizeLeft);
-			
+
 
 			float CenterHeight = 0;
 
@@ -840,7 +848,7 @@ namespace EditMap
 			int y = 0;
 			float SampleBrush = 0;
 			float PixelPower = 0;
-			
+
 			if (SelectedBrush == 1)
 			{
 				float Count = 0;
@@ -883,7 +891,7 @@ namespace EditMap
 			}
 
 
-			float TargetHeight = Mathf.Clamp(((Invert?(256):(BrushTarget.value)) / ScmapEditor.Current.Data.size.y) / 10f, Min, Max);
+			float TargetHeight = Mathf.Clamp(((Invert ? (256) : (BrushTarget.value)) / ScmapEditor.Current.Data.size.y) / 10f, Min, Max);
 
 			float BrushStrenghtValue = BrushStrength.value;
 			//float PaintStrength = BrushStrenghtValue * 0.00005f * (Invert ? (-1) : 1);
@@ -950,13 +958,13 @@ namespace EditMap
 
 								//heights[i, j] = Mathf.Lerp(heights[i, j], CenterHeight, BrushStrenghtValue * Mathf.Pow(SampleBrush, 2) * PixelPower);
 								ScmapEditor.ReturnValues[i, j] = Mathf.Lerp(ScmapEditor.ReturnValues[i, j], CenterHeight, PixelPower * StrengthMultiplier * Mathf.Pow(SampleBrush, 2));
-								
+
 								break;
 							case 3: // Sharp
 								PixelPower = Mathf.Pow(Mathf.Abs(ScmapEditor.ReturnValues[i, j] - CenterHeight), 0.454545f) + 1;
 								PixelPower /= 2f;
 								//heights[i, j] += Mathf.Lerp(PixelPower, 0, PixelPower * 10) * BrushStrenghtValue * 0.01f * Mathf.Pow(SampleBrush, 2);
-								ScmapEditor.ReturnValues[i, j] = MoveToValue(ScmapEditor.ReturnValues[i, j], CenterHeight, - StrengthMultiplier * SampleBrush * PixelPower, Min, Max);
+								ScmapEditor.ReturnValues[i, j] = MoveToValue(ScmapEditor.ReturnValues[i, j], CenterHeight, -StrengthMultiplier * SampleBrush * PixelPower, Min, Max);
 								break;
 							default:
 								//heights[i, j] += SampleBrush * StrengthMultiplier;
@@ -972,7 +980,7 @@ namespace EditMap
 			if (!TerainChanged)
 			{
 				ScmapEditor.GetAllHeights(ref beginHeights);
-				
+
 				TerainChanged = true;
 			}
 
@@ -991,7 +999,7 @@ namespace EditMap
 
 			if (current > target)
 			{
-				return Mathf.Clamp(current - speed, target, max) ;
+				return Mathf.Clamp(current - speed, target, max);
 			}
 			else
 			{

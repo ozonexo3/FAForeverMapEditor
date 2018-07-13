@@ -169,6 +169,7 @@ public class GenerateControlTex : MonoBehaviour
 			//Debug.Log("Stop Generate Normals");
 			BufforNormalTex = false;
 			Current.StopCoroutine(NormalCoroutine);
+			NormalCoroutine = null;
 			ScmapEditor.Current.TerrainMaterial.SetFloat("_GeneratingNormal", 0);
 
 		}
