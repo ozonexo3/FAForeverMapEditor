@@ -19,6 +19,9 @@ public class GenerateControlTex : MonoBehaviour
 			Current.StopCoroutine(NormalCoroutine);
 		if (GeneratingWaterTex)
 			Current.StopCoroutine(WaterCoroutine);
+
+		NormalCoroutine = null;
+		WaterCoroutine = null;
 	}
 
 	#region Water

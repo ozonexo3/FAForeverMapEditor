@@ -543,11 +543,15 @@ public class Map
             }
             else
             {
-                EnvCubemapsName = new string[2];
-                EnvCubemapsName[0] = "<default>";
-                EnvCubemapsFile = new string[2];
-                EnvCubemapsFile[0] = _with1.ReadStringNull();
-            }
+				EnvCubemapsName = new string[3];
+				EnvCubemapsFile = new string[3];
+				EnvCubemapsName[0] = "<aeon>";
+				EnvCubemapsName[1] = "<default>";
+				EnvCubemapsName[2] = "<seraphim>";
+				EnvCubemapsFile[0] = "/textures/environment/envcube_aeon_evergreen.dds";
+				EnvCubemapsFile[1] = _with1.ReadStringNull();
+				EnvCubemapsFile[2] = "/textures/environment/envcube_seraphim_evergreen.dds";
+			}
 
             LightingMultiplier = _with1.ReadSingle();
             SunDirection = _with1.ReadVector3();
@@ -822,6 +826,9 @@ public class Map
 
 		UncompressedWatermapTex.Apply ();
 
+		if (VersionMinor < 56)
+			ConvertToV56();
+
 		return true;
     }
 
@@ -917,6 +924,24 @@ public class Map
 
         fs.Close();
     }
+
+	public void ConvertToV56()
+	{
+		EnvCubemapsName = new string[3];
+		EnvCubemapsFile = new string[3];
+		EnvCubemapsName[0] = "<aeon>";
+		EnvCubemapsName[1] = "<default>";
+		EnvCubemapsName[2] = "<seraphim>";
+		EnvCubemapsFile[0] = "/textures/environment/envcube_aeon_evergreen.dds";
+		EnvCubemapsFile[1] = "/textures/environment/envcube_evergreen01a.dds";
+		EnvCubemapsFile[2] = "/textures/environment/envcube_seraphim_evergreen.dds";
+
+
+		Unknown15 = 0;
+
+		VersionMinor = 56;
+	}
+
     public bool Save(string Filename, int MapFileVersion)
     {
         if (!string.IsNullOrEmpty(Filename) & Filename != this.Filename)

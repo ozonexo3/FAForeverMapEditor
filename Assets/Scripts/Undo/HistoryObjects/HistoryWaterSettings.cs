@@ -44,7 +44,7 @@ namespace UndoHistory
 		{
 			if (!RedoGenerated)
 			{
-				Undo.RegisterRedo(new HistoryTerrainHeight());
+				Undo.RegisterRedo(new HistoryWaterSettings());
 			}
 			RedoGenerated = true;
 			DoRedo();

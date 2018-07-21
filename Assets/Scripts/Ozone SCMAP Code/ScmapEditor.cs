@@ -715,6 +715,11 @@ public partial class ScmapEditor : MonoBehaviour
 		map.Props = AllProps;
 
 
+		if(map.VersionMinor < 56)
+		{
+			map.ConvertToV56();
+		}
+
 		map.Save(path,  map.VersionMinor);
 	}
 

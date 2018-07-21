@@ -27,7 +27,7 @@ namespace UndoHistory
 		{
 			if (!RedoGenerated)
 			{
-				Undo.RegisterRedo(new HistoryTerrainHeight());
+				Undo.RegisterRedo(new HistoryWaterElevation());
 			}
 			RedoGenerated = true;
 			DoRedo();
