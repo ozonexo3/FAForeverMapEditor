@@ -34,6 +34,9 @@ public partial class CameraControler : MonoBehaviour {
 	public			Transform			ReflectionCamera;
 	public			Text				CursorInfo;
 
+	public static Vector3 CamForward = Vector3.down;
+	public static Vector3 CamPos = Vector3.zero;
+
 	void Awake(){
 		Current = this;
 	}

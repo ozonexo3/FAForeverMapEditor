@@ -22,8 +22,11 @@ namespace EditMap
 		public Toggle ConnectionsActive;
 
 		public Toggle RallyPointActive;
-		public Toggle NavyRallyPointActive;
 
+		public Toggle CombatActive;
+		public Toggle DefenseActive;
+		public Toggle ProtExpActive;
+		public Toggle ExpandActive;
 		public Toggle OtherActive;
 
 		public void ValuesChanged()
@@ -40,9 +43,11 @@ namespace EditMap
 			MarkersControler.Current.MarkerLayersSettings.ConnectedNodes = ConnectionsActive.isOn;
 
 			MarkersControler.Current.MarkerLayersSettings.RallyPoint = RallyPointActive.isOn;
-			MarkersControler.Current.MarkerLayersSettings.NavyRallyPoint = NavyRallyPointActive.isOn;
 
-
+			MarkersControler.Current.MarkerLayersSettings.Combat = CombatActive.isOn;
+			MarkersControler.Current.MarkerLayersSettings.Defense = DefenseActive.isOn;
+			MarkersControler.Current.MarkerLayersSettings.ProtExp = ProtExpActive.isOn;
+			MarkersControler.Current.MarkerLayersSettings.Expand = ExpandActive.isOn;
 			MarkersControler.Current.MarkerLayersSettings.Other = OtherActive.isOn;
 
 			MarkersControler.UpdateLayers();

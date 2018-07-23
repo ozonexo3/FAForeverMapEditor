@@ -8,15 +8,15 @@ Prefab:
     m_TransformParent: {fileID: 0}
     m_Modifications: []
     m_RemovedComponents: []
-  m_ParentPrefab: {fileID: 0}
+  m_SourcePrefab: {fileID: 0}
   m_RootGameObject: {fileID: 1818693640227786}
-  m_IsPrefabParent: 1
+  m_IsPrefabAsset: 1
 --- !u!1 &1818693640227786
 GameObject:
   m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 5
+  serializedVersion: 6
   m_Component:
   - component: {fileID: 4223404110435310}
   - component: {fileID: 114097082437677626}
@@ -34,7 +34,7 @@ GameObject:
 --- !u!4 &4223404110435310
 Transform:
   m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1818693640227786}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
@@ -47,7 +47,7 @@ Transform:
 --- !u!114 &114097082437677626
 MonoBehaviour:
   m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1818693640227786}
   m_Enabled: 1
@@ -85,27 +85,27 @@ MonoBehaviour:
   - mType: 5
     SharedMesh: {fileID: 4300006, guid: c7f3338c78547cc47b391d6f551aee8d, type: 3}
     SharedMaterial: {fileID: 2100000, guid: a1a7ab3abf551994fba82748c71dae3a, type: 2}
-    Icon: {fileID: 21300000, guid: 0d8c23b78c7dafc4d8049cb049dc6bc6, type: 3}
+    Icon: {fileID: 21300000, guid: 307d42ee0b7aee0418df1decf4a73ada, type: 3}
   - mType: 6
     SharedMesh: {fileID: 4300008, guid: c7f3338c78547cc47b391d6f551aee8d, type: 3}
     SharedMaterial: {fileID: 2100000, guid: db424c8c4acaf614c8dbd67c936c75ef, type: 2}
-    Icon: {fileID: 21300000, guid: 0d8c23b78c7dafc4d8049cb049dc6bc6, type: 3}
+    Icon: {fileID: 21300000, guid: 3fd70f4d4530ebd4b8613a4394b6b30c, type: 3}
   - mType: 7
     SharedMesh: {fileID: 4300008, guid: c7f3338c78547cc47b391d6f551aee8d, type: 3}
     SharedMaterial: {fileID: 2100000, guid: 452c972854c1f694eb6391a285bdece6, type: 2}
-    Icon: {fileID: 21300000, guid: 0d8c23b78c7dafc4d8049cb049dc6bc6, type: 3}
+    Icon: {fileID: 21300000, guid: 3fd70f4d4530ebd4b8613a4394b6b30c, type: 3}
   - mType: 8
     SharedMesh: {fileID: 4300000, guid: 06ad4518eabaec44d9edef230972c9a1, type: 3}
     SharedMaterial: {fileID: 2100000, guid: db424c8c4acaf614c8dbd67c936c75ef, type: 2}
-    Icon: {fileID: 21300000, guid: 0d8c23b78c7dafc4d8049cb049dc6bc6, type: 3}
+    Icon: {fileID: 21300000, guid: 72e132aa0ab48a0428a91d1dac63c598, type: 3}
   - mType: 9
     SharedMesh: {fileID: 4300000, guid: 06ad4518eabaec44d9edef230972c9a1, type: 3}
     SharedMaterial: {fileID: 2100000, guid: a4eafd83f48b39d47af5d313424d22d0, type: 2}
-    Icon: {fileID: 21300000, guid: 0d8c23b78c7dafc4d8049cb049dc6bc6, type: 3}
+    Icon: {fileID: 21300000, guid: 72e132aa0ab48a0428a91d1dac63c598, type: 3}
   - mType: 10
     SharedMesh: {fileID: 4300000, guid: 06ad4518eabaec44d9edef230972c9a1, type: 3}
     SharedMaterial: {fileID: 2100000, guid: a4eafd83f48b39d47af5d313424d22d0, type: 2}
-    Icon: {fileID: 21300000, guid: 0d8c23b78c7dafc4d8049cb049dc6bc6, type: 3}
+    Icon: {fileID: 21300000, guid: 72e132aa0ab48a0428a91d1dac63c598, type: 3}
   - mType: 12
     SharedMesh: {fileID: 4300002, guid: c7f3338c78547cc47b391d6f551aee8d, type: 3}
     SharedMaterial: {fileID: 2100000, guid: db424c8c4acaf614c8dbd67c936c75ef, type: 2}
@@ -151,7 +151,7 @@ MonoBehaviour:
 --- !u!114 &114120159606287282
 MonoBehaviour:
   m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1818693640227786}
   m_Enabled: 1
@@ -181,7 +181,7 @@ MonoBehaviour:
 --- !u!114 &114179064322913632
 MonoBehaviour:
   m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1818693640227786}
   m_Enabled: 1
@@ -259,7 +259,7 @@ MonoBehaviour:
 --- !u!114 &114430749213572640
 MonoBehaviour:
   m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1818693640227786}
   m_Enabled: 1
@@ -292,7 +292,7 @@ MonoBehaviour:
 --- !u!114 &114521566270563858
 MonoBehaviour:
   m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1818693640227786}
   m_Enabled: 1

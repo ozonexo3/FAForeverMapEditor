@@ -760,26 +760,6 @@ namespace MapLua
 		}
 		#endregion
 
-		/*
-		static HashSet<string> AllExistingNames = new HashSet<string>();
-
-		public static void RegisterMarkerName(string MarkerName)
-		{
-			if (!AllExistingNames.Contains(MarkerName))
-				AllExistingNames.Add(MarkerName);
-		}
-
-		public static void RemoveMarkerName(string MarkerName)
-		{
-			AllExistingNames.Remove(MarkerName);
-		}
-
-		public static bool NameExist(string name)
-		{
-			return AllExistingNames.Contains(name);
-		}
-		*/
-
 		static Dictionary<string, SaveLua.Marker> AllMarkersDictionary = new Dictionary<string, SaveLua.Marker>();
 
 		public static void ClearMarkersDictionary()

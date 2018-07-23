@@ -151,6 +151,9 @@ public partial class CameraControler : MonoBehaviour {
 
 		Pivot.localRotation = Quaternion.Lerp(Pivot.localRotation, Quaternion.Euler(Rot), Time.unscaledDeltaTime * SmoothRot);
 
+		CamForward = transform.forward;
+		CamPos = transform.position;
+
 		GridCam.TryUpdateGrid();
 	}
 

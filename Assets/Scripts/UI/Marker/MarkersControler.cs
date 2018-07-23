@@ -34,11 +34,12 @@ namespace Markers
 			public bool AirNodes = true;
 			public bool ConnectedNodes = false;
 
-			[Header("RallyPoints")]
-			public bool RallyPoint = true;
-			public bool NavyRallyPoint = true;
-
 			[Header("SI")]
+			public bool Combat = true;
+			public bool Defense = true;
+			public bool ProtExp = true;
+			public bool RallyPoint = true;
+			public bool Expand = true;
 			public bool Other = true;
 
 
@@ -49,7 +50,6 @@ namespace Markers
 					case SaveLua.Marker.MarkerTypes.BlankMarker:
 						return Blank;
 					case SaveLua.Marker.MarkerTypes.Mass:
-						return Resource;
 					case SaveLua.Marker.MarkerTypes.Hydrocarbon:
 						return Resource;
 					case SaveLua.Marker.MarkerTypes.CameraInfo:
@@ -60,14 +60,22 @@ namespace Markers
 						return AmphibiousNodes;
 					case SaveLua.Marker.MarkerTypes.WaterPathNode:
 						return NavyNodes;
-					case SaveLua.Marker.MarkerTypes.NavalLink:
-						return NavyNodes;
 					case SaveLua.Marker.MarkerTypes.AirPathNode:
 						return AirNodes;
 					case SaveLua.Marker.MarkerTypes.RallyPoint:
-						return RallyPoint;
 					case SaveLua.Marker.MarkerTypes.NavalRallyPoint:
-						return NavyRallyPoint;
+						return RallyPoint;
+					case SaveLua.Marker.MarkerTypes.CombatZone:
+						return Combat;
+					case SaveLua.Marker.MarkerTypes.DefensivePoint:
+					case SaveLua.Marker.MarkerTypes.NavalDefensivePoint:
+						return Defense;
+					case SaveLua.Marker.MarkerTypes.ProtectedExperimentalConstruction:
+						return ProtExp;
+					case SaveLua.Marker.MarkerTypes.ExpansionArea:
+					case SaveLua.Marker.MarkerTypes.LargeExpansionArea:
+					case SaveLua.Marker.MarkerTypes.NavalArea:
+						return Expand;
 				}
 				return Other;
 			}
@@ -227,7 +235,6 @@ namespace Markers
 			NewObj.Tr.localRotation = Quaternion.Euler(Owner.orientation);
 
 			NewMarker.SetActive(Current.MarkerLayersSettings.ActiveByType(Owner.MarkerType));
-
 		}
 
 
@@ -385,10 +392,43 @@ namespace Markers
 		}
 		#endregion
 
+		#region 2D markers
+		public static HashSet<Marker2D> Marker2DComponents = new HashSet<Marker2D>();
+
+		public static void ForceResetMarkers2D()
+		{
+			var ListEnum = Marker2DComponents.GetEnumerator();
+			while (ListEnum.MoveNext())
+			{
+				if (ListEnum.Current != null)
+					ListEnum.Current.transform.localScale = Vector3.one;
+			}
+			ListEnum.Dispose();
+		}
+
+		public static void UpdateMarkers2D()
+		{
+			if (!FafEditorSettings.GetMarkers2D())
+				return;
+
+			var ListEnum = Marker2DComponents.GetEnumerator();
+			while (ListEnum.MoveNext())
+			{
+				if (ListEnum.Current != null)
+					ListEnum.Current.UpdateScale();
+			}
+			ListEnum.Dispose();
+		}
+		#endregion
 
 
 
 		#region Update
+		private void LateUpdate()
+		{
+			UpdateMarkers2D();
+		}
+
 
 		public static bool IsUpdating
 		{
