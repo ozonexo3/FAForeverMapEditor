@@ -117,6 +117,7 @@ namespace MapLua
 				WeatherGenerator, WeatherDefinition,
 				Effect,
 				NavalExclude,
+				Objective,
 				Count
 			}
 
@@ -211,6 +212,11 @@ namespace MapLua
 						prop = "/env/common/props/markers/M_CombatZone_prop.bp";
 						hint = true;
 						color = "ff800000";
+						break;
+					case MarkerTypes.Objective:
+						prop = "/env/common/props/markers/M_CombatZone_prop.bp";
+						hint = true;
+						color = "ff9c0000";
 						break;
 					case MarkerTypes.DefensivePoint:
 						prop = "/env/common/props/markers/M_Defensive_prop.bp";

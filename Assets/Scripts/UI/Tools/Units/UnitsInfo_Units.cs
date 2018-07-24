@@ -75,7 +75,76 @@ namespace EditMap
 
 		public void SelectUnit()
 		{
-			// ToDo Reload Selection UI info
+			if(SelectionManager.Current.Selection.Ids.Count <= 0)
+			{
+				
+			}
+			else
+			{
+				UnitInstance Uinst = SelectionManager.Current.AffectedGameObjects[SelectionManager.Current.Selection.Ids[0]].GetComponent<UnitInstance>();
+
+				if (Uinst != null) {
+					UnitName.SetValue(Uinst.Owner.Name);
+					SelectedUnitsGroup.text = Uinst.Owner.Parent.Name + " (" + Uinst.Owner.Parent.Owner.Name + ")";
+					return;
+				}
+			}
+
+
+			// Default
+			UnitName.SetValue("");
+			SelectedUnitsGroup.text = "";
+		}
+
+		public void OnNameChanged()
+		{
+			if (SelectionManager.Current.Selection.Ids.Count < 0)
+				return;
+
+			string SourceName = UnitName.text;
+
+			if (string.IsNullOrEmpty(SourceName) || string.IsNullOrWhiteSpace(SourceName))
+			{
+				SelectUnit();
+				return; // EmptyName
+			}
+
+			SourceName = SourceName.Replace(" ", "_");
+
+			//TODO Register undo
+
+			for (int i = 0; i < SelectionManager.Current.Selection.Ids.Count; i++)
+			{
+				UnitInstance Uinst = SelectionManager.Current.AffectedGameObjects[SelectionManager.Current.Selection.Ids[i]].GetComponent<UnitInstance>();
+
+				if (Uinst != null)
+				{
+					string NewName = SourceName;
+
+					if (SaveLua.Army.Unit.NameExist(NewName))
+					{
+						string[] Split = NewName.Split('_');
+						int OutInt = 0;
+						if(Split.Length > 1 && int.TryParse(Split[Split.Length - 1], out OutInt)){
+
+							NewName = "";
+							for (int s = 0; s < Split.Length - 1; s++)
+							{
+								if (s > 0)
+									NewName += "_";
+								NewName += Split[s];
+							}
+						}
+
+						NewName = SaveLua.Army.Unit.GetFreeName(NewName + "_");
+					}
+
+					SaveLua.Army.Unit.ReplaceName(Uinst.Owner.Name, NewName);
+					Uinst.Owner.Name = NewName;
+
+					SelectUnit();
+				}
+			}
 		}
 
 		bool UpdateSelectedMatrixes = false;

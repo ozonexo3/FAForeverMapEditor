@@ -377,6 +377,23 @@ namespace MapLua
 					return Tag + Id;
 				}
 
+				public static bool NameExist(string NameToCheck)
+				{
+					return AllNames.Contains(NameToCheck);
+				}
+
+				public static bool ReplaceName(string oldName, string newName)
+				{
+					AllNames.Add(newName);
+
+					if (AllNames.Contains(oldName))
+					{
+						AllNames.Remove(oldName);
+						return true;
+					}
+					return false;
+				}
+
 				public static void SaveUnit(LuaParser.Creator LuaFile, UnitInstance Instance)
 				{
 					LuaFile.OpenTab(LuaParser.Write.PropertieToLua(Instance.gameObject.name) + LuaParser.Write.OpenBracketValue);

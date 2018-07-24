@@ -134,6 +134,10 @@ MonoBehaviour:
     SharedMesh: {fileID: 4300010, guid: c57e88c99e7871f4e8c94e1ee4bb3383, type: 3}
     SharedMaterial: {fileID: 2100000, guid: b380e3f39bd5fcb43963743db90512ce, type: 2}
     Icon: {fileID: 21300000, guid: 8534d949e5bc60940bc9f50a26f4ef85, type: 3}
+  - mType: 26
+    SharedMesh: {fileID: 4300006, guid: c7f3338c78547cc47b391d6f551aee8d, type: 3}
+    SharedMaterial: {fileID: 2100000, guid: b380e3f39bd5fcb43963743db90512ce, type: 2}
+    Icon: {fileID: 21300000, guid: 5f3597ce9dbcb6c41bcbb55907b5fee2, type: 3}
   MarkerLayersSettings:
     Blank: 1
     Spawn: 1
@@ -144,8 +148,11 @@ MonoBehaviour:
     NavyNodes: 1
     AirNodes: 1
     ConnectedNodes: 0
+    Combat: 1
+    Defense: 1
+    ProtExp: 1
     RallyPoint: 1
-    NavyRallyPoint: 1
+    Expand: 1
     Other: 1
   MasterChains: []
 --- !u!114 &114120159606287282

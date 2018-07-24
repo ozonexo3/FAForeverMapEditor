@@ -152,9 +152,13 @@ namespace Ozone.UI
 			ChangingValue = true;
 			HasValue = true;
 			if (InputFieldUi.contentType == InputField.ContentType.IntegerNumber)
-				LastValue = int.Parse(InputFieldUi.text);
+			{
+				LastValue = LuaParser.Read.StringToInt(InputFieldUi.text, (int)LastValue);
+			}
 			else if (InputFieldUi.contentType == InputField.ContentType.DecimalNumber)
-				LastValue = LuaParser.Read.StringToFloat(InputFieldUi.text, BeginValue);
+			{
+				LastValue = LuaParser.Read.StringToFloat(InputFieldUi.text, LastValue);
+			}
 
 			if (SliderUi)
 			{

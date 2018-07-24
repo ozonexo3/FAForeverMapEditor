@@ -90,6 +90,7 @@ namespace EditMap
 		bool AllowCamera = true;
 		bool AllowSize = true;
 		bool AllowAmount = true;
+		bool AllowEffectTemplate = true;
 		void UpdateSelectionOptions()
 		{
 			Loading = true;
@@ -130,7 +131,7 @@ namespace EditMap
 			AllowCamera = true;
 			AllowSize = true;
 			AllowAmount = true;
-
+			AllowEffectTemplate = true;
 
 			bool[] CheckedTypes = new bool[(int)SaveLua.Marker.MarkerTypes.Count];
 
@@ -156,7 +157,10 @@ namespace EditMap
 					if (AllowAmount)
 						AllowAmount = Mr.AllowByType(SaveLua.Marker.KEY_AMOUNT);
 
-					if (!AllowConnect && !AllowCamera && !AllowSize && !AllowAmount)
+					if(AllowEffectTemplate)
+						AllowEffectTemplate = Mr.AllowByType(SaveLua.Marker.KEY_EFFECTTEMPLATE);
+
+					if (!AllowConnect && !AllowCamera && !AllowSize && !AllowAmount && !AllowEffectTemplate)
 						break;
 				}
 			}
@@ -175,6 +179,8 @@ namespace EditMap
 			Size.SetActive(AllowSize);
 
 			Amount.SetActive(AllowAmount);
+
+			EffectTemplate.SetActive(AllowEffectTemplate);
 
 			ReadTypeMarker();
 

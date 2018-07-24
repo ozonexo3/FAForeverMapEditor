@@ -136,6 +136,9 @@ public partial class AppMenu : MonoBehaviour
 
 	public void SaveAsNewVersion()
 	{
+		if (!MapLuaParser.IsMapLoaded)
+			return;
+
 		int NextVersion = (int)MapLuaParser.Current.ScenarioLuaFile.Data.map_version + 1;
 
 		GenericPopup.ShowPopup(GenericPopup.PopupTypes.TwoButton, "Create new version", "Create version " + NextVersion + " of this map?", "Yes", SaveAsNewVersionYes, "No", null);

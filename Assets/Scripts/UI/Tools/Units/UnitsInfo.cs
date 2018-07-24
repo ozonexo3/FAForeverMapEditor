@@ -23,6 +23,8 @@ namespace EditMap
 		public RectTransform RenameField;
 		public UiTextField NameInputField;
 		public UiTextField PrefixInputField;
+		public Text SelectedUnitsGroup;
+		public UiTextField UnitName;
 
 		[Header("Objects")]
 		public GameObject UnitInstancePrefab;
