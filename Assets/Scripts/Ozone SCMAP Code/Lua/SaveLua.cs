@@ -166,7 +166,7 @@ namespace MapLua
 
 			loadedFileSave = loadedFileSave.Replace("GROUP ", "");
 
-			
+
 
 			try
 			{

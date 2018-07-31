@@ -20,6 +20,10 @@ public partial struct GetGamedataFile
 
 		// Display
 		public BluePrintLoD[] LODs = new BluePrintLoD[0];
+		public Termac[] Termacs;
+		public bool HasTermac = false;
+		public Decal Termac_Albedo;
+		public Decal Termac_Normal;
 
 		public bool PhysicsLayerAir;
 		public bool PhysicsLayerLand;
@@ -78,6 +82,7 @@ public partial struct GetGamedataFile
 			LODs[0].LODCutoff = 100;
 		}
 	}
+
 
 	public static bool IsUnitSourceLoaded(string UnitCode)
 	{
@@ -315,6 +320,24 @@ public partial struct GetGamedataFile
 					ToReturn.BP.LODs[i].Scm = LocalPath.Replace("unit.bp", "lod" + i.ToString() + ".scm");
 				}
 			}
+
+			//Termacs
+
+			LuaTable TermacsTable = BP.GetTable("UnitBlueprint.Display.Tarmacs");
+			if (TermacsTable != null)
+			{
+				LuaTable[] AllTermacs = LuaParser.Read.TableArrayFromTable(TermacsTable);
+				ToReturn.BP.Termacs = new Termac[AllTermacs.Length];
+
+				for (int t = 0; t < ToReturn.BP.Termacs.Length; t++)
+				{
+					ToReturn.BP.Termacs[t] = new Termac(AllTermacs[t]);
+				}
+
+				LoadTermacs(ToReturn.BP);
+			}
+			else
+				ToReturn.BP.Termacs = new Termac[0];
 		}
 
 		ToReturn.BP.Size = Vector3.one * 0.1f;

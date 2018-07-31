@@ -150,7 +150,6 @@ public partial class Decal {
 				DrawAlbedo = true;
 				DrawNormal = false;
 			}
-
 		}
 	}
 }

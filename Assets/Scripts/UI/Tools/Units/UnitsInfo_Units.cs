@@ -319,6 +319,7 @@ namespace EditMap
 
 			uinst.Owner.Parent.RemoveUnit(uinst.Owner);
 			FirstSelected.Source.AddUnit(uinst.Owner);
+			uinst.ArmyColor = uinst.Owner.Parent.Owner.ArmyColor;
 		}
 
 		#endregion

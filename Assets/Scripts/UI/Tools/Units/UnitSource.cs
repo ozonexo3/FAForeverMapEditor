@@ -166,7 +166,6 @@ public class UnitSource : MonoBehaviour
 		Vector3 RadianOrientation = Vector3.zero;
 		Quaternion rotation = UnitInstance.RotationFromScmapRotation(Source.Orientation);
 
-
 		GameObject Obj = Instantiate(UnitsInfo.Current.UnitInstancePrefab, transform) as GameObject;
 		return FillGameObjectValues(Obj, Source, Group, position, rotation);
 	}
@@ -191,6 +190,22 @@ public class UnitSource : MonoBehaviour
 		else
 			UInst.Col.size = BP.Size * 0.1f;
 		UInst.Col.center = Vector3.up * (BP.Size.y * 0.05f);
+
+		if (BP.HasTermac)
+		{
+			if (BP.Termac_Albedo != null) {
+				DecalsInfo.CreateGameObjectFromDecal(BP.Termac_Albedo);
+				BP.Termac_Albedo.Obj.tr.parent = UInst.transform;
+				BP.Termac_Albedo.Obj.tr.localPosition = Vector3.zero;
+			}
+
+			if (BP.Termac_Normal != null)
+			{
+				DecalsInfo.CreateGameObjectFromDecal(BP.Termac_Normal);
+				BP.Termac_Normal.Obj.tr.parent = UInst.transform;
+				BP.Termac_Normal.Obj.tr.localPosition = Vector3.zero;
+			}
+		}
 
 		AddInstance(UInst);
 		return UInst;

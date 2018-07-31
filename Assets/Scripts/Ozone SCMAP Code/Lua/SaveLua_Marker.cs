@@ -566,6 +566,13 @@ namespace MapLua
 				{
 					MarkerType = StringToMarkerType(type);
 				}
+
+				if (color.Contains("' ),"))
+				{
+					// Hard fix for wrong syntax
+					color = color.Replace("' ),", "");
+					prop = prop.Replace("' ),", "");
+				}
 			}
 
 			public Marker AutoMarker_Land;

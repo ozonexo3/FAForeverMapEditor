@@ -94,6 +94,8 @@ namespace EditMap
 
 				// Parent all units to selected
 				ReparrentUnits();
+
+				Generate();
 			}
 		}
 		GameObject[] AllObjects;

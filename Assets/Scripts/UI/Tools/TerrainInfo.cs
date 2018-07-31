@@ -614,7 +614,6 @@ namespace EditMap
 			var extensions = new[]
 			{
 				new ExtensionFilter("Heightmap", new string[]{"raw", "r16", "bmp" })
-				//new ExtensionFilter("Stratum mask", "raw, bmp")
 			};
 
 			var paths = StandaloneFileBrowser.OpenFilePanel("Import heightmap", DefaultPath, extensions, false);
@@ -622,7 +621,6 @@ namespace EditMap
 
 			if (paths == null || paths.Length == 0 || string.IsNullOrEmpty(paths[0]))
 				return;
-
 
 			int h = ScmapEditor.Current.Teren.terrainData.heightmapHeight;
 			int w = ScmapEditor.Current.Teren.terrainData.heightmapWidth;
@@ -660,10 +658,20 @@ namespace EditMap
 			}
 			else
 			{
-
 				using (var file = System.IO.File.OpenRead(paths[0]))
 				using (var reader = new System.IO.BinaryReader(file))
 				{
+					ushort CheckValue = 2;
+					CheckValue *= (ushort)w;
+					CheckValue *= (ushort)h;
+					if(file.Length != CheckValue)
+					{
+						reader.Dispose();
+						file.Dispose();
+						GenericPopup.ShowPopup(GenericPopup.PopupTypes.Error, "Error", "Selected heightmap is in wrong size.", "OK", null);
+						return;
+					}
+
 					for (int y = 0; y < h; y++)
 					{
 						for (int x = 0; x < w; x++)

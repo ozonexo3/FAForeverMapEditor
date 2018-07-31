@@ -228,7 +228,7 @@ namespace EditMap
 		}
 
 		#region Import/Export
-		const string ExportPathKey = "TerrainWaterExport";
+		const string ExportPathKey = "WaterExport";
 		static string DefaultPath
 		{
 			get
@@ -243,7 +243,7 @@ namespace EditMap
 				new ExtensionFilter("Water settings", "scmwtr")
 			};
 
-			var path = StandaloneFileBrowser.SaveFilePanel("Export water", ExportPathKey, "", extensions);
+			var path = StandaloneFileBrowser.SaveFilePanel("Export water", DefaultPath, "WaterSettings", extensions);
 
 			if (string.IsNullOrEmpty(path))
 				return;
@@ -262,7 +262,7 @@ namespace EditMap
 				new ExtensionFilter("Water settings", "scmwtr")
 			};
 
-			var paths = StandaloneFileBrowser.OpenFilePanel("Import water", ExportPathKey, extensions, false);
+			var paths = StandaloneFileBrowser.OpenFilePanel("Import water", DefaultPath, extensions, false);
 
 
 			if (paths.Length <= 0 || string.IsNullOrEmpty(paths[0]))
