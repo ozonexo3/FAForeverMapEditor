@@ -18,6 +18,7 @@ namespace OzoneDecals {
 		protected CommandBuffer _bufferDeferred = null;
 		protected Dictionary<Material, HashSet<OzoneDecal>> _Decals;
 		protected HashSet<OzoneDecal> _DecalsAlbedo;
+		protected HashSet<OzoneDecal> _DecalsTarmacs;
 		protected List<OzoneDecal> _decalComponent;
 		//protected List<MeshFilter> _meshFilterComponent;
 		protected const CameraEvent _camEvent = CameraEvent.BeforeReflections;
@@ -58,6 +59,7 @@ namespace OzoneDecals {
 
 			_Decals = new Dictionary<Material, HashSet<OzoneDecal>>();
 			_DecalsAlbedo = new HashSet<OzoneDecal>();
+			_DecalsTarmacs = new HashSet<OzoneDecal>();
 			_decalComponent = new List<OzoneDecal>();
 			//_meshFilterComponent = new List<MeshFilter>();
 
@@ -113,7 +115,10 @@ namespace OzoneDecals {
 		{
 			if (d.Dec.Shared.DrawAlbedo)
 			{
-				_DecalsAlbedo.Add(d);
+				if(d.Dec.Shared.IsTarmac)
+					_DecalsTarmacs.Add(d);
+				else
+					_DecalsAlbedo.Add(d);
 			}
 			else
 			{

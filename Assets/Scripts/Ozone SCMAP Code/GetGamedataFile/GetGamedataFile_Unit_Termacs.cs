@@ -78,6 +78,7 @@ public partial struct GetGamedataFile
 			BP.Termac_Albedo.Scale = new Vector3(BP.Termacs[0].Width, 1, BP.Termacs[0].Length);
 
 			DecalsInfo.MargeShared(BP.Termac_Albedo);
+			BP.Termac_Albedo.Shared.IsTarmac = true;
 		}
 
 		if (!string.IsNullOrEmpty(BP.Termacs[0].Normal))
@@ -93,6 +94,7 @@ public partial struct GetGamedataFile
 			BP.Termac_Normal.Scale = new Vector3(BP.Termacs[0].Width, 1, BP.Termacs[0].Length);
 
 			DecalsInfo.MargeShared(BP.Termac_Normal);
+			BP.Termac_Normal.Shared.IsTarmac = true;
 		}
 	}
 

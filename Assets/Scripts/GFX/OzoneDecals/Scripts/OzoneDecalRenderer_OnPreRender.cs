@@ -32,11 +32,11 @@ namespace OzoneDecals
 
 			if (DecalsInfo.Current)
 			{
-				int ScreenDecalsCount = _DecalsAlbedo.Count + _Decals.Count;
+				int ScreenDecalsCount = _DecalsAlbedo.Count + _Decals.Count + _DecalsTarmacs.Count;
 				DecalsInfo.Current.UpdateScreenCount(ScreenDecalsCount);
 			}
 
-			if (_Decals.Count == 0 && _DecalsAlbedo.Count == 0)
+			if (_Decals.Count == 0 && _DecalsAlbedo.Count == 0 && _DecalsTarmacs.Count == 0)
 				return;
 
 			CreateBuffer(ref _bufferDeferred, cam, _Name, _camEvent);
@@ -46,6 +46,7 @@ namespace OzoneDecals
 
 			_bufferDeferred.Clear();
 			DrawDeferredDecals_Albedo(cam);
+			DrawDeferredDecals_Tarmacs(cam);
 			DrawDeferredDecals_Normal(cam);
 
 
@@ -55,6 +56,7 @@ namespace OzoneDecals
 				decalEnum.Current.Value.Clear();
 
 			_DecalsAlbedo.Clear();
+			_DecalsTarmacs.Clear();
 
 		}
 
@@ -64,6 +66,26 @@ namespace OzoneDecals
 			_bufferDeferred.SetRenderTarget(_albedoRenderTarget, BuiltinRenderTextureType.CameraTarget);
 
 			var decalListEnum = _DecalsAlbedo.GetEnumerator();
+			while (decalListEnum.MoveNext())
+			{
+				OzoneDecal decal = decalListEnum.Current;
+
+				if (decal != null && decal.Dec.Shared.DrawAlbedo)
+				{
+					_directBlock.Clear();
+					_directBlock.SetFloat("_NearCutOffLOD", decal.NearCutOff);
+					_directBlock.SetFloat("_CutOffLOD", decal.CutOff);
+
+					_bufferDeferred.DrawMesh(_cubeMesh, decal.tr.localToWorldMatrix, decal.Material, 0, 0, _directBlock);
+				}
+			}
+		}
+
+		private void DrawDeferredDecals_Tarmacs(Camera cam)
+		{
+			_bufferDeferred.SetRenderTarget(_albedoRenderTarget, BuiltinRenderTextureType.CameraTarget);
+
+			var decalListEnum = _DecalsTarmacs.GetEnumerator();
 			while (decalListEnum.MoveNext())
 			{
 				OzoneDecal decal = decalListEnum.Current;

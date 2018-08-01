@@ -4,7 +4,7 @@
 Material:
   serializedVersion: 6
   m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_Name: FaSkybox
   m_Shader: {fileID: 4800000, guid: 284e4a8023473e04bb9f05b4eba4631a, type: 3}

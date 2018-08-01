@@ -399,7 +399,7 @@ namespace MapLua
 
 
 				position = ScmapEditor.WorldPosToScmap(CopyMarker.MarkerObj.transform.position);
-				orientation = CopyMarker.MarkerObj.Tr.eulerAngles;
+				orientation = UnitInstance.ScmapRotationFromRotation(CopyMarker.MarkerObj.Tr.localRotation);
 				prop = "/env/common/props/markers/M_Blank_prop.bp";
 
 				MarkerType = CopyMarker.MarkerType;
@@ -653,7 +653,7 @@ namespace MapLua
 						position = ScmapEditor.WorldPosToScmap(MarkerObj.transform.position);
 						if (MarkerType != MarkerTypes.CameraInfo)
 							MarkerObj.transform.localRotation = Quaternion.identity;
-						orientation = MarkerObj.transform.eulerAngles;
+						orientation = UnitInstance.ScmapRotationFromRotation(MarkerObj.transform.localRotation);
 					}
 
 					ForceDefaultValues();

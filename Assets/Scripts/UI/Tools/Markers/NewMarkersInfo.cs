@@ -236,7 +236,7 @@ namespace EditMap
 
 					NewMarker.position = ScmapEditor.WorldPosToScmap(Positions[i]);
 					if (CreationId == CREATE_CAM)
-						NewMarker.orientation = Rotations[i].eulerAngles;
+						NewMarker.orientation = UnitInstance.ScmapRotationFromRotation( Rotations[i]);
 					else
 						NewMarker.orientation = Vector3.zero;
 					MarkersControler.CreateMarker(NewMarker, mc);

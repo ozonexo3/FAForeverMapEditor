@@ -69,6 +69,8 @@ public partial class Decal {
 		public bool DrawAlbedo;
 		public bool DrawNormal;
 
+		public bool IsTarmac;
+
 		bool _Hidden;
 
 		public void FixPaths()

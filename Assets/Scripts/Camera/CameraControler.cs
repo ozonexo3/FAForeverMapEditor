@@ -100,6 +100,23 @@ public partial class CameraControler : MonoBehaviour {
 		}
 	}
 
+	public static void FocusCamera(Transform Pivot, float Zoom = 30)
+	{
+		float ZoomValue = Zoom - CameraMinOffset;
+		ZoomValue /= Current.MapSize / 7f;
+		ZoomValue = Mathf.Pow(ZoomValue, 1f / 3f);
+		Current.zoomIn = ZoomValue;
+		Current.transform.localPosition = new Vector3(Current.transform.localPosition.x, Current.ZoomCamPos() * Current.MapSize / 7 + CameraMinOffset, Current.transform.localPosition.z);
+		Current.LastLocalCamPos = Current.transform.localPosition;
+		Current.TargetLocalCamPos = Current.transform.localPosition;
+
+		Current.Rot = Pivot.eulerAngles;
+		Current.Pivot.localRotation = Quaternion.Euler(Current.Rot);
+
+		Current.Pos = Pivot.position;
+		Current.Pivot.localPosition = Current.Pos;
+	}
+
 	public static void FocusCamera(Transform Pivot, float Zoom = 30, float rot = 10)
 	{
 		float ZoomValue = Zoom - CameraMinOffset;
@@ -107,6 +124,8 @@ public partial class CameraControler : MonoBehaviour {
 		ZoomValue = Mathf.Pow(ZoomValue, 1f / 3f);
 		Current.zoomIn = ZoomValue;
 		Current.transform.localPosition = new Vector3(Current.transform.localPosition.x, Zoom, Current.transform.localPosition.z);
+		Current.LastLocalCamPos = Current.transform.localPosition;
+		Current.TargetLocalCamPos = Current.transform.localPosition;
 
 		Current.Rot = Vector3.right * rot;
 		Current.Pivot.localRotation = Quaternion.Euler(Current.Rot);

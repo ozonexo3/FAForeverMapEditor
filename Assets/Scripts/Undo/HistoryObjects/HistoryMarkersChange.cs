@@ -39,6 +39,9 @@ namespace UndoHistory
 			public float scale;
 			public string effectTemplate;
 
+			public Vector3 Position;
+			public Quaternion Orientation;
+
 			public void Load(MapLua.SaveLua.Marker RegisterMarker)
 			{
 				Marker = RegisterMarker;
@@ -52,6 +55,12 @@ namespace UndoHistory
 				scale = Marker.scale;
 				effectTemplate = Marker.EffectTemplate;
 
+
+				if (Marker.MarkerObj && Marker.MarkerType == MapLua.SaveLua.Marker.MarkerTypes.CameraInfo)
+				{
+					Position = Marker.MarkerObj.Tr.position;
+					Orientation = Marker.MarkerObj.Tr.localRotation;
+				}
 			}
 
 			public void Redo()
@@ -79,6 +88,12 @@ namespace UndoHistory
 				Marker.offset = offset;
 				Marker.scale = scale;
 				Marker.EffectTemplate = effectTemplate;
+
+				if (Marker.MarkerObj && Marker.MarkerType == MapLua.SaveLua.Marker.MarkerTypes.CameraInfo)
+				{
+					Marker.MarkerObj.Tr.position = Position;
+					Marker.MarkerObj.Tr.localRotation = Orientation;
+				}
 			}
 		}
 
@@ -125,6 +140,8 @@ namespace UndoHistory
 					SelectionManager.Current.SelectObjectAdd(Markers[i].Marker.MarkerObj.gameObject);
 
 			}
+
+			SelectionManager.Current.FinishSelectionChange();
 
 
 			MarkerSelectionOptions.UpdateOptions();

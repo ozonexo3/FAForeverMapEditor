@@ -126,15 +126,20 @@ public class UnitInstance : MonoBehaviour
 
 	public Vector3 GetScmapRotation()
 	{
-		Vector3 ToReturn = transform.localEulerAngles;
-		ToReturn.y *= -1;
-		return ToReturn * Mathf.Deg2Rad;
+		return ScmapRotationFromRotation(transform.localRotation);
 	}
 
 	public static Quaternion RotationFromScmapRotation(Vector3 Rot)
 	{
 		Rot.y *= -1;
 		return Quaternion.Euler(Rot * Mathf.Rad2Deg);
+	}
+
+	public static Vector3 ScmapRotationFromRotation(Quaternion Rot)
+	{
+		Vector3 ToReturn = Rot.eulerAngles;
+		ToReturn.y *= -1;
+		return ToReturn * Mathf.Deg2Rad;
 	}
 
 	private void OnEnable()

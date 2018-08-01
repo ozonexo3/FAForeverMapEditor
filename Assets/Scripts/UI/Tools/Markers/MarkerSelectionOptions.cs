@@ -22,6 +22,7 @@ namespace EditMap
 		public GameObject SetCamera;
 		public GameObject SyncCamera;
 		public GameObject ViewCamera;
+		public GameObject AlignCamera;
 		public GameObject Size;
 		public GameObject Amount;
 		public GameObject Scale;
@@ -175,6 +176,7 @@ namespace EditMap
 			SetCamera.SetActive(AllowCamera);
 			SyncCamera.SetActive(AllowCamera);
 			ViewCamera.SetActive(AllowCamera);
+			AlignCamera.SetActive(AllowCamera);
 
 			Size.SetActive(AllowSize);
 
@@ -476,8 +478,21 @@ namespace EditMap
 
 		public void FocusCameraMarker()
 		{
-			CameraControler.FocusCamera(SelectedGameObjects[0].transform, SelectedGameObjects[0].GetComponent<MarkerObject>().Owner.zoom * 0.1f, -15);
+			CameraControler.FocusCamera(SelectedGameObjects[0].transform, SelectedGameObjects[0].GetComponent<MarkerObject>().Owner.zoom * 0.1f);
+		}
 
+		public void AlighCameraMarker()
+		{
+			if (Count <= 0)
+				return;
+
+			Undo.RegisterUndo(new UndoHistory.HistoryMarkersChange(), new UndoHistory.HistoryMarkersChange.MarkersChangeHistoryParameter(AllMarkers));
+
+			SelectedGameObjects[0].GetComponent<MarkerObject>().Tr.position = CameraControler.Current.Pivot.localPosition;
+			SelectedGameObjects[0].GetComponent<MarkerObject>().Tr.rotation = CameraControler.Current.Pivot.localRotation;
+			SelectedGameObjects[0].GetComponent<MarkerObject>().Owner.zoom = CameraControler.GetCurrentZoom();
+
+			SelectionManager.Current.FinishSelectionChange();
 		}
 
 

@@ -232,7 +232,7 @@ namespace Markers
 			NewObj.Bc.center = PropGraphic.SharedMesh.bounds.center;
 
 			NewObj.Tr.localPosition = ScmapEditor.ScmapPosToWorld(Owner.position);
-			NewObj.Tr.localRotation = Quaternion.Euler(Owner.orientation);
+			NewObj.Tr.localRotation = UnitInstance.RotationFromScmapRotation(Owner.orientation);
 
 			NewMarker.SetActive(Current.MarkerLayersSettings.ActiveByType(Owner.MarkerType));
 		}
