@@ -100,7 +100,7 @@ public partial class CameraControler : MonoBehaviour {
 		}
 	}
 
-	public static void FocusCamera(Transform Pivot, float Zoom = 30)
+	public static void FocusCamera(Vector3 pos, Quaternion rot, float Zoom = 30)
 	{
 		float ZoomValue = Zoom - CameraMinOffset;
 		ZoomValue /= Current.MapSize / 7f;
@@ -110,10 +110,10 @@ public partial class CameraControler : MonoBehaviour {
 		Current.LastLocalCamPos = Current.transform.localPosition;
 		Current.TargetLocalCamPos = Current.transform.localPosition;
 
-		Current.Rot = Pivot.eulerAngles;
+		Current.Rot = rot.eulerAngles;
 		Current.Pivot.localRotation = Quaternion.Euler(Current.Rot);
 
-		Current.Pos = Pivot.position;
+		Current.Pos = pos;
 		Current.Pivot.localPosition = Current.Pos;
 	}
 

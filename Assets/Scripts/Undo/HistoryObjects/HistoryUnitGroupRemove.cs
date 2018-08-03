@@ -53,6 +53,7 @@ namespace UndoHistory
 			for (int i = 0; i < RemoveOld.Length; i++)
 			{
 				RegisteredGroup.RemoveGroup(AllGroups[i]);
+				AllGroups[i].ClearUnitInstances();
 			}
 
 			RegisteredGroup.UnitGroups.Clear();
@@ -60,6 +61,7 @@ namespace UndoHistory
 			for (int i = 0; i < AllGroups.Length; i++)
 			{
 				RegisteredGroup.AddGroup(AllGroups[i]);
+				AllGroups[i].InstantiateGroup(true);
 			}
 
 

@@ -478,7 +478,10 @@ namespace EditMap
 
 		public void FocusCameraMarker()
 		{
-			CameraControler.FocusCamera(SelectedGameObjects[0].transform, SelectedGameObjects[0].GetComponent<MarkerObject>().Owner.zoom * 0.1f);
+			Vector3 FocusPos = SelectedGameObjects[0].transform.position;
+			Quaternion FocusRot = Quaternion.Euler(Vector3.up * -180) * SelectedGameObjects[0].transform.rotation * Quaternion.Euler(Vector3.right * -90);
+
+			CameraControler.FocusCamera(FocusPos, FocusRot, SelectedGameObjects[0].GetComponent<MarkerObject>().Owner.zoom * 0.1f);
 		}
 
 		public void AlighCameraMarker()
@@ -489,8 +492,11 @@ namespace EditMap
 			Undo.RegisterUndo(new UndoHistory.HistoryMarkersChange(), new UndoHistory.HistoryMarkersChange.MarkersChangeHistoryParameter(AllMarkers));
 
 			SelectedGameObjects[0].GetComponent<MarkerObject>().Tr.position = CameraControler.Current.Pivot.localPosition;
-			SelectedGameObjects[0].GetComponent<MarkerObject>().Tr.rotation = CameraControler.Current.Pivot.localRotation;
 			SelectedGameObjects[0].GetComponent<MarkerObject>().Owner.zoom = CameraControler.GetCurrentZoom();
+
+			Quaternion rot = Quaternion.Euler(Vector3.up * 180) * CameraControler.Current.Pivot.localRotation * Quaternion.Euler(Vector3.right * 90);
+
+			SelectedGameObjects[0].GetComponent<MarkerObject>().Tr.rotation = rot;
 
 			SelectionManager.Current.FinishSelectionChange();
 		}
