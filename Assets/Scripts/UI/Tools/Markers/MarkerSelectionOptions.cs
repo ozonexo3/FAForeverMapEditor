@@ -479,8 +479,8 @@ namespace EditMap
 		public void FocusCameraMarker()
 		{
 			Vector3 FocusPos = SelectedGameObjects[0].transform.position;
-			Quaternion FocusRot = Quaternion.Euler(Vector3.up * -180) * SelectedGameObjects[0].transform.rotation * Quaternion.Euler(Vector3.right * -90);
-
+			//Quaternion FocusRot = Quaternion.Euler(Vector3.up * -180) * SelectedGameObjects[0].transform.rotation * Quaternion.Euler(Vector3.right * -90);
+			Quaternion FocusRot = Quaternion.LookRotation(-SelectedGameObjects[0].transform.forward, SelectedGameObjects[0].transform.up);
 			CameraControler.FocusCamera(FocusPos, FocusRot, SelectedGameObjects[0].GetComponent<MarkerObject>().Owner.zoom * 0.1f);
 		}
 
@@ -494,7 +494,9 @@ namespace EditMap
 			SelectedGameObjects[0].GetComponent<MarkerObject>().Tr.position = CameraControler.Current.Pivot.localPosition;
 			SelectedGameObjects[0].GetComponent<MarkerObject>().Owner.zoom = CameraControler.GetCurrentZoom();
 
-			Quaternion rot = Quaternion.Euler(Vector3.up * 180) * CameraControler.Current.Pivot.localRotation * Quaternion.Euler(Vector3.right * 90);
+
+			Quaternion rot = Quaternion.LookRotation(-CameraControler.Current.Pivot.forward, CameraControler.Current.Pivot.up);
+			//Quaternion rot = Quaternion.Euler(Vector3.up * 180) * CameraControler.Current.Pivot.localRotation * Quaternion.Euler(Vector3.right * 90);
 
 			SelectedGameObjects[0].GetComponent<MarkerObject>().Tr.rotation = rot;
 

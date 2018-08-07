@@ -762,7 +762,11 @@ namespace MapLua
 					}
 
 					//Transform
-					LuaFile.AddLine(LuaParser.Write.Vector3ToLuaFunction(LuaParser.Write.PropertieToLua(KEY_ORIENTATION), orientation));
+					if(MarkerType == MarkerTypes.CameraInfo)
+						LuaFile.AddLine(LuaParser.Write.Vector3ToLuaFunctionPrecision(LuaParser.Write.PropertieToLua(KEY_ORIENTATION), orientation, true, 6));
+					else
+						LuaFile.AddLine(LuaParser.Write.Vector3ToLuaFunction(LuaParser.Write.PropertieToLua(KEY_ORIENTATION), orientation));
+
 					LuaFile.AddLine(LuaParser.Write.Vector3ToLuaFunction(LuaParser.Write.PropertieToLua(KEY_POSITION), position));
 
 					LuaFile.CloseTab(LuaParser.Write.EndBracketNext);

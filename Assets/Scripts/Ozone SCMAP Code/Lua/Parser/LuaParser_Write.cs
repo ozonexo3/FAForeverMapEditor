@@ -141,6 +141,8 @@ namespace LuaParser
 
 		// Functions
 		#region Functions
+		const string FloatToStringFormat = "G";
+
 		public static string RectangleToLua(string key, Rect value, bool NextLine = true)
 		{
 			return key + SetValue + "RECTANGLE( " + value.x.ToString() + ", " + value.y.ToString() + ", " + value.width.ToString() + ", " + value.height.ToString() + " )" + GetNextValue(NextLine);
@@ -150,6 +152,19 @@ namespace LuaParser
 		{
 			return key + SetValue + "VECTOR3( " + value.x.ToString() + ", " + value.y.ToString() + ", " + value.z.ToString() + " )" + GetNextValue(NextLine);
 		}
+
+		public static string Vector3ToLuaFunctionPrecision(string key, Vector3 value, bool NextLine = true, int Precision = 0)
+		{
+			string FormatString = "0";
+			if (Precision > 0)
+				FormatString += ".";
+
+			for (int i = 0; i < Precision; i++)
+				FormatString += "#";
+
+			return key + SetValue + "VECTOR3( " + value.x.ToString(FormatString) + ", " + value.y.ToString(FormatString) + ", " + value.z.ToString(FormatString) + " )" + GetNextValue(NextLine);
+		}
+
 
 		public static string StringToLuaFunction(string key, string value, bool NextLine = true)
 		{
