@@ -661,14 +661,16 @@ namespace EditMap
 				using (var file = System.IO.File.OpenRead(paths[0]))
 				using (var reader = new System.IO.BinaryReader(file))
 				{
-					ushort CheckValue = 2;
-					CheckValue *= (ushort)w;
-					CheckValue *= (ushort)h;
-					if(file.Length != CheckValue)
+					long CheckValue = 2;
+					CheckValue *= (long)(w);
+					CheckValue *= (long)(h);
+					long FileLength = file.Length;
+
+					if (FileLength != CheckValue)
 					{
 						reader.Dispose();
 						file.Dispose();
-						GenericPopup.ShowPopup(GenericPopup.PopupTypes.Error, "Error", "Selected heightmap is in wrong size.", "OK", null);
+						GenericPopup.ShowPopup(GenericPopup.PopupTypes.Error, "Error", "Selected heightmap is in wrong size.\nIs: " + FileLength + "B, should be: " + CheckValue + "B", "OK", null);
 						return;
 					}
 
