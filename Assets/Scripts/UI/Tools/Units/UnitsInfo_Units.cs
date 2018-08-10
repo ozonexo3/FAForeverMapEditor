@@ -252,7 +252,6 @@ namespace EditMap
 			PlacementManager.PlaceAtPosition(MouseWorldPos, CreationPrefab, Place);
 
 			GoToSelection();
-
 		}
 
 		public void Place(Vector3[] Positions, Quaternion[] Rotations, Vector3[] Scales)

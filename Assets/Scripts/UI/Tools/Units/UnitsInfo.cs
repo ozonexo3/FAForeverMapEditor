@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Selection;
-using FAF.MapEditor;
 using Ozone.UI;
 
 namespace EditMap
@@ -98,6 +97,7 @@ namespace EditMap
 				Generate();
 			}
 		}
+
 		GameObject[] AllObjects;
 		public void GoToSelection()
 		{

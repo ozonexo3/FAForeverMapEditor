@@ -532,6 +532,10 @@ namespace Selection
 			{
 				Undo.RegisterUndo(new UndoHistory.HistoryUnitsMove());
 			}
+			else if (LastControlType == SelectionControlTypes.Props)
+			{
+				Debug.Log("TODO: Props Move Undo!");
+			}
 		}
 
 		bool Draged = false;

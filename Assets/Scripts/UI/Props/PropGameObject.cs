@@ -5,6 +5,8 @@ using UnityEngine;
 public class PropGameObject : MonoBehaviour
 {
 
+	public BoxCollider Col;
+
 	public Prop Connected;
 
 	public MeshFilter Mf;

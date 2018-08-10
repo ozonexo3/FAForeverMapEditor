@@ -53,7 +53,7 @@ namespace Selection
 
 		public enum SelectionControlTypes
 		{
-			None, Last, Marker, MarkerChain, Decal, Units
+			None, Last, Marker, MarkerChain, Decal, Units, Props
 		}
 
 		SelectionControlTypes LastControlType;
@@ -109,6 +109,21 @@ namespace Selection
 					AllowSymmetry = true;
 					AllowRemove = true;
 					SelPrefab = 1;
+					MinAngle = 0;
+					break;
+				case SelectionControlTypes.Props:
+					AllowMove = true;
+					AllowUp = false;
+					AllowRotation = true;
+					AllowRotationX = false;
+					AllowLocalRotation = true;
+					AllowScale = false;
+					AllowCustomScale = false;
+					AllowSnapToGrid = true;
+					AllowSelection = true;
+					AllowSymmetry = true;
+					AllowRemove = true;
+					SelPrefab = 0;
 					MinAngle = 0;
 					break;
 				case SelectionControlTypes.Units:

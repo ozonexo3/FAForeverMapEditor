@@ -31,6 +31,7 @@ public partial struct GetGamedataFile
 				{
 					NewProp.Mf.sharedMesh = BP.LODs[0].Mesh;
 					NewProp.Mr.sharedMaterial = BP.LODs[0].Mat;
+					NewProp.Col.size = NewProp.Mf.sharedMesh.bounds.size;
 				}
 				bool Lod1Exist = BP.LODs.Length > 1 && BP.LODs[1].Mesh != null;
 				if (Lod1Exist)
