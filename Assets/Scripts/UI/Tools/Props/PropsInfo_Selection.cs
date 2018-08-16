@@ -42,7 +42,7 @@ namespace EditMap
 		}
 
 
-		public void DestroyUnits(List<GameObject> MarkerObjects, bool RegisterUndo = true)
+		public void DestroyProps(List<GameObject> MarkerObjects, bool RegisterUndo = true)
 		{
 			int Count = MarkerObjects.Count;
 
@@ -53,7 +53,7 @@ namespace EditMap
 			GoToSelection();
 		}
 
-		public void SelectUnit()
+		public void SelectProp()
 		{
 			if (SelectionManager.Current.Selection.Ids.Count <= 0)
 			{

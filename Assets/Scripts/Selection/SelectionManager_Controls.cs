@@ -363,6 +363,36 @@ namespace Selection
 				}
 			}
 		}
+		#endregion
+
+
+		#region Get Selection
+		public GameObject[] GetAllSelectedObjects(bool symmetry = true)
+		{
+			if (AffectedGameObjects.Length == 0)
+				return new GameObject[0];
+
+			HashSet<GameObject> SelectedObjs = new HashSet<GameObject>();
+
+
+			for(int i = 0; i < Selection.Ids.Count; i++)
+			{
+				SelectedObjs.Add(AffectedGameObjects[Selection.Ids[i]]);
+			}
+
+			for(int s = 0; s < SymetrySelection.Length; s++)
+			{
+				for(int i = 0; i < SymetrySelection[s].Ids.Count; i++)
+				{
+					SelectedObjs.Add(AffectedGameObjects[SymetrySelection[s].Ids[i]]);
+				}
+			}
+
+			GameObject[] ToReturn = new GameObject[SelectedObjs.Count];
+			SelectedObjs.CopyTo(ToReturn);
+			return ToReturn;
+		}
+
 
 		#endregion
 
@@ -534,7 +564,7 @@ namespace Selection
 			}
 			else if (LastControlType == SelectionControlTypes.Props)
 			{
-				Debug.Log("TODO: Props Move Undo!");
+				Undo.RegisterUndo(new UndoHistory.HistoryPropsMove(), new UndoHistory.HistoryPropsMove.PropsMoveHistoryParameter(true));
 			}
 		}
 

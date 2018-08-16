@@ -1,13 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FAForeverMapEditor", "Assembly-CSharp.csproj", "{57F15E01-EAF9-CFC8-8123-BA1F7919E9FE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assembly-CSharp", "Assembly-CSharp.csproj", "{57F15E01-EAF9-CFC8-8123-BA1F7919E9FE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FAForeverMapEditor", "Assembly-CSharp-firstpass.csproj", "{D52FA58B-98F0-F8E5-E7A7-D9C289072CFB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assembly-CSharp-firstpass", "Assembly-CSharp-firstpass.csproj", "{D52FA58B-98F0-F8E5-E7A7-D9C289072CFB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FAForeverMapEditor", "Assembly-CSharp-Editor.csproj", "{1E64826D-948B-B1CC-B9BD-A64CB5FC45E6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assembly-CSharp-Editor", "Assembly-CSharp-Editor.csproj", "{1E64826D-948B-B1CC-B9BD-A64CB5FC45E6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FAForeverMapEditor", "Assembly-CSharp-Editor-firstpass.csproj", "{CC221A61-07AD-277E-AC95-9C99FB5BB4FF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assembly-CSharp-Editor-firstpass", "Assembly-CSharp-Editor-firstpass.csproj", "{CC221A61-07AD-277E-AC95-9C99FB5BB4FF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

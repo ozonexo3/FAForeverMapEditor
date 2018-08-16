@@ -298,9 +298,9 @@ public class BrushGenerator : MonoBehaviour
 	// Need to find something to speed it up
 	void GeneratePaintBrushesh()
 	{
-		int SymmetryCode = SymmetryWindow.GetSymmetryType();
-		LastSym = SymmetryCode;
-		switch (SymmetryCode)
+		UpdateSymmetryType();
+
+		switch (LastSym)
 		{
 			case 1:
 				PaintImage = new Texture2D[2];

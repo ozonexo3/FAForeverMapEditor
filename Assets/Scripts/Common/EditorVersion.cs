@@ -7,16 +7,33 @@ public class EditorVersion : MonoBehaviour
 {
 
 	public const string EditorBuildVersion = "v0.605-Alpha";
+
+	//Release
+	//public const string EditorBuildTag = "";
 	//public const float VersionOffset = 0f; // Release
+
+	// Prerelease
+	public const string EditorBuildTag = "WIP1";
 	public const float VersionOffset = -0.001f; // Prerelease
-	//public const float VersionOffset = 0.523f - 0.600f; // Prerelease v0600
+
 	public static string LatestTag = "";
 	public static string FoundUrl;
 	public bool SearchForNew = false;
 
+	string TagString
+	{
+		get
+		{
+			if (EditorBuildTag.Length == 0)
+				return "";
+
+			return " " + EditorBuildTag;
+		}
+	}
+
 	void Start()
 	{
-		GetComponent<Text>().text = EditorBuildVersion;
+		GetComponent<Text>().text = EditorBuildVersion + TagString;
 		if(SearchForNew)
 			StartCoroutine(FindLatest());
 	}
@@ -50,7 +67,7 @@ public class EditorVersion : MonoBehaviour
 				{
 					Debug.Log("New version avaiable: " + Latest);
 					GenericPopup.ShowPopup(GenericPopup.PopupTypes.TwoButton, "New version",
-						"New version of Map Editor is avaiable.\nCurrent: " + EditorBuildVersion.ToLower() + "\t\tNew: " + LatestTag + "\nDo you want to download it now?",
+						"New version of Map Editor is avaiable.\nCurrent: " + EditorBuildVersion.ToLower() + TagString + "\t\tNew: " + LatestTag + "\nDo you want to download it now?",
 						"Download", DownloadLatest,
 						"Cancel", CancelDownload
 						);

@@ -42,7 +42,7 @@ namespace UndoHistory
 			}
 
 			Undo.Current.EditMenu.ChangeCategory(6);
-			PropsInfo.Current.ReloadPropStats();
+			PropsInfo.Current.ShowTab(1);
 		}
 	}
 }

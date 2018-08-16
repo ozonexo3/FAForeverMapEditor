@@ -158,8 +158,8 @@ public partial class MapLuaParser : MonoBehaviour
 		LoadProps = Props;
 		LoadDecals = Decals;
 
-		var LoadFile = StartCoroutine("LoadingFile");
-		yield return LoadFile;
+		LoadingFileCoroutine = StartCoroutine(LoadingFile());
+		yield return LoadingFileCoroutine;
 
 		InfoPopup.Show(false);
 		//PlayerPrefs.SetString("MapsPath", LastMapPatch);
@@ -173,7 +173,7 @@ public partial class MapLuaParser : MonoBehaviour
 		ScmapEditor.Current.UnloadMap();
 		LoadingMapProcess = false;
 
-		StartCoroutine("LoadingFile");
+		LoadingFileCoroutine = StartCoroutine(LoadingFile());
 	}
 
 	bool loadSave = true;
@@ -182,6 +182,7 @@ public partial class MapLuaParser : MonoBehaviour
 
 	public static bool LoadingMapProcess = false;
 	public static Coroutine LoadScmapFile;
+	public static Coroutine LoadingFileCoroutine;
 	IEnumerator LoadingFile()
 	{
 
@@ -284,6 +285,20 @@ public partial class MapLuaParser : MonoBehaviour
 			// SCMAP
 			LoadScmapFile = HeightmapControler.StartCoroutine(ScmapEditor.Current.LoadScmapFile());
 			yield return LoadScmapFile;
+
+			if(ScmapEditor.Current.map.VersionMinor == 0)
+			{
+				Error = "scmap file not loaded!\n" + MapLuaParser.Current.ScenarioLuaFile.Data.map;
+
+				InfoPopup.Show(false);
+				LoadingMapProcess = false;
+				ResetUI();
+				ReturnLoadingWithError(Error);
+
+				yield return null;
+				StopCoroutine(LoadingFileCoroutine);
+			}
+
 			CameraControler.Current.RestartCam();
 
 			EditMenu.MapInfoMenu.SaveAsFa.isOn = HeightmapControler.map.VersionMinor >= 60;

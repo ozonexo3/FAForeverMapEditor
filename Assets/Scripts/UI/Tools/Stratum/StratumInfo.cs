@@ -616,7 +616,6 @@ namespace EditMap
 			BrushGenerator.SetFallof(SelectedFalloff, LastRotation);
 
 			TerrainMaterial.SetTexture("_BrushTex", (Texture)BrushGenerator.Current.RotatedBrush);
-			//BrushGenerator.RegeneratePaintBrushIfNeeded(true);
 		}
 
 

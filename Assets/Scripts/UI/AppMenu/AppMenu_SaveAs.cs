@@ -166,7 +166,6 @@ public partial class AppMenu : MonoBehaviour
 
 	bool SaveAsNewFolder(string NewFolderName, string FileBeginName = "")
 	{
-		Debug.Log(NewFolderName + ", " + FileBeginName);
 		string SystemPath = MapLuaParser.Current.FolderParentPath + NewFolderName;
 
 		if (!System.IO.Directory.Exists(SystemPath))

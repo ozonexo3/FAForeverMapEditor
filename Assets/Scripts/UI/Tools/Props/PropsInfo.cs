@@ -151,8 +151,8 @@ namespace EditMap
 
 			PlacementManager.OnDropOnGameplay += DropAtGameplay;
 			SelectionManager.Current.DisableLayer = 16;
-			SelectionManager.Current.SetRemoveAction(DestroyUnits);
-			SelectionManager.Current.SetSelectionChangeAction(SelectUnit);
+			SelectionManager.Current.SetRemoveAction(DestroyProps);
+			SelectionManager.Current.SetSelectionChangeAction(SelectProp);
 			SelectionManager.Current.SetCustomSnapAction(SnapAction);
 
 			if (Tabs[1].activeSelf)

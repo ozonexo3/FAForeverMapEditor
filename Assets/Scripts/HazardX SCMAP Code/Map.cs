@@ -74,9 +74,9 @@ public class Map
     public List<IntegerGroup> DecalGroups = new List<IntegerGroup>();
 
     public List<Prop> Props = new List<Prop>();
-    public int VersionMinor;
+    public int VersionMinor = 0;
 
-    public int VersionMajor;
+    public int VersionMajor = 0;
     public float HeightScale;
 
     public string TerrainShader;
@@ -166,7 +166,7 @@ public class Map
 
 	public Map()
 	{
-
+		
 	}
 
 	const double HeightResize = 128.0 * 256.0; //512 * 40;

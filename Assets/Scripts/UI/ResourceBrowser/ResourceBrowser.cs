@@ -66,6 +66,7 @@ namespace FAF.MapEditor
 		public List<Texture2D> LoadedTextures = new List<Texture2D>();
 		public List<string> LoadedPaths = new List<string>();
 		public List<GetGamedataFile.PropObject> LoadedProps = new List<GetGamedataFile.PropObject>();
+		public int LastLoadedType;
 
 		//Local
 		List<string> LoadedEnvPaths = new List<string>();
@@ -389,14 +390,16 @@ namespace FAF.MapEditor
 
 		void Clean()
 		{
+			CleanAssetsMemory();
+
 			foreach (Transform child in Pivot)
 			{
 				Destroy(child.gameObject);
 			}
 
-			LoadedTextures = new List<Texture2D>();
-			LoadedPaths = new List<string>();
-			LoadedProps = new List<GetGamedataFile.PropObject>();
+			//LoadedTextures = new List<Texture2D>();
+			//LoadedPaths = new List<string>();
+			//LoadedProps = new List<GetGamedataFile.PropObject>();
 		}
 
 		bool IsGenerating
@@ -425,14 +428,14 @@ namespace FAF.MapEditor
 			Layout.enabled = true;
 			SizeFitter.enabled = true;
 
-
+			LastLoadedType = Category.value;
 
 			if (LoadedEnvPaths[EnvType.value] == CurrentMapFolderPath)
 			{
 				if (MapLuaParser.IsMapLoaded)
 				{
 
-					string LoadPath = MapLuaParser.LoadedMapFolderPath + "env/" + CategoryPaths[Category.value];
+					string LoadPath = MapLuaParser.LoadedMapFolderPath + "env/" + CategoryPaths[LastLoadedType];
 					Debug.Log("Try load assets from: " + LoadPath);
 					if (Directory.Exists(LoadPath))
 					{
@@ -445,7 +448,7 @@ namespace FAF.MapEditor
 							string path = AllFiles[i];
 
 							// Load Texture
-							switch (Category.value)
+							switch (LastLoadedType)
 							{
 								case 0:
 									if (path.ToLower().EndsWith(".dds"))
@@ -481,7 +484,7 @@ namespace FAF.MapEditor
 			}
 			else if (LoadedEnvPaths[EnvType.value] == CurrentMapPath)
 			{
-				if (Category.value == 3)
+				if (LastLoadedType == 3)
 				{
 					int Count = EditMap.PropsInfo.AllPropsTypes.Count;
 					Debug.Log("Found props: " + Count);
@@ -509,7 +512,7 @@ namespace FAF.MapEditor
 			{
 				ZipFile zf = null;
 				ZipFile zf_faf = null;
-				SelectedDirectory = ("env/" + EnvType.options[EnvType.value].text + "/" + CategoryPaths[Category.value]).ToLower();
+				SelectedDirectory = ("env/" + EnvType.options[EnvType.value].text + "/" + CategoryPaths[LastLoadedType]).ToLower();
 				try
 				{
 					zf = GetGamedataFile.GetZipFileInstance(GetGamedataFile.EnvScd);
@@ -805,6 +808,49 @@ namespace FAF.MapEditor
 		}
 		#endregion
 
+		HashSet<Texture2D> UsedTerrainTexturesMemory = new HashSet<Texture2D>();
+		void CleanAssetsMemory()
+		{
+			if (LastLoadedType == 0)
+			{
+				//Textures
+				UsedTerrainTexturesMemory.Clear();
+
+				for (int i = 0; i < ScmapEditor.Current.Textures.Length; i++)
+				{
+					if (ScmapEditor.Current.Textures[i].Albedo != null)
+						UsedTerrainTexturesMemory.Add(ScmapEditor.Current.Textures[i].Albedo);
+					if (ScmapEditor.Current.Textures[i].Normal != null)
+						UsedTerrainTexturesMemory.Add(ScmapEditor.Current.Textures[i].Normal);
+				}
+
+
+				int count = LoadedTextures.Count;
+				for (int i = 0; i < count; i++)
+				{
+					if(LoadedTextures[i] != null && !UsedTerrainTexturesMemory.Contains(LoadedTextures[i]))
+						Destroy(LoadedTextures[i]);
+				}
+				UsedTerrainTexturesMemory.Clear();
+			}
+			else if(LastLoadedType == 1 || LastLoadedType == 2)
+			{
+				// Decals
+			}
+			else if (LastLoadedType == 3)
+			{
+				int count = LoadedProps.Count;
+				for (int i = 0; i < count; i++)
+				{
+					Destroy(LoadedProps[i].BP.LODs[i].Albedo);
+					Destroy(LoadedProps[i].BP.LODs[i].Normal);
+				}
+			}
+
+			LoadedTextures.Clear();
+			LoadedPaths.Clear();
+			LoadedProps.Clear();
+		}
 
 	}
 }
