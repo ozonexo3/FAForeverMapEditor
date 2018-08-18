@@ -60,6 +60,7 @@ public partial class CameraControler : MonoBehaviour {
 				}
 			}
 		}
+		TargetLocalCamPos.y = Mathf.Clamp(TargetLocalCamPos.y, MinDistance, MaxDistance);
 
 		//LastLocalCamPos = Vector3.Lerp(LastLocalCamPos, TargetLocalCamPos, Time.unscaledDeltaTime * SmoothZoom);
 		Vector3 Velocity = Vector3.zero;
