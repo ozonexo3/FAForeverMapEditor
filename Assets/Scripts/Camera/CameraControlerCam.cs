@@ -12,7 +12,7 @@ public partial class CameraControler : MonoBehaviour {
 	Vector3 PanOffsetZ = Vector3.zero;
 
 	const float ScrollStep = 0.033f;
-	const float MinDistance = 0.5f;
+	const float MinDistance = 0.45f;
 	static float MaxDistance = 1100;
 	static float MaxRaycastDistance = 1500;
 
