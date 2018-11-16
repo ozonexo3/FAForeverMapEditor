@@ -239,7 +239,6 @@ public class DecalsControler : MonoBehaviour {
 			Vector3 Pos = AllDecals[d].Obj.GetPivotPoint();
 			Pos.y = ScmapEditor.Current.Teren.SampleHeight(Pos);
 			AllDecals[d].Obj.MovePivotPoint(Pos);
-
 			//AllDecals[d].tr.position = Pos;// + (AllDecals[d].tr.forward * AllDecals[d].tr.localScale.z * 0.5f) - (AllDecals[d].tr.right * AllDecals[d].tr.localScale.x * 0.5f);
 
 

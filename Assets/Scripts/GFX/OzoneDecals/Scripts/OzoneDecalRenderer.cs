@@ -86,10 +86,10 @@ namespace OzoneDecals {
 			}
 		}
 
-		public static void AddDecal(OzoneDecal d, Camera Cam)
+		public static void AddDecal(OzoneDecal d) //, Camera Cam
 		{
-			if (Current == null || Cam == null)
-				return;
+			//if (Current == null || Cam == null)
+			//	return;
 
 #if UNITY_EDITOR
 			/*
@@ -105,10 +105,15 @@ namespace OzoneDecals {
 			else
 			*/
 #endif
-			{
+			//{
 				Current.AddDecalToRenderer(d);
-			}
+			//}
 
+		}
+
+		public static void RemoveDecal(OzoneDecal d)
+		{
+			Current.RemoveDecalFromRenderer(d);
 		}
 
 		void AddDecalToRenderer(OzoneDecal d)
@@ -129,6 +134,30 @@ namespace OzoneDecals {
 				else
 				{
 					_Decals[d.Material].Add(d);
+				}
+			}
+		}
+
+		void RemoveDecalFromRenderer(OzoneDecal d)
+		{
+			if (d.Dec.Shared.DrawAlbedo)
+			{
+				if (d.Dec.Shared.IsTarmac)
+					_DecalsTarmacs.Remove(d);
+				else
+					_DecalsAlbedo.Remove(d);
+			}
+			else
+			{
+				if (!_Decals.ContainsKey(d.Material))
+				{
+					//_Decals.Remove(d.Material, new HashSet<OzoneDecal>() { d });
+				}
+				else
+				{
+					_Decals[d.Material].Remove(d);
+					if (_Decals[d.Material].Count == 0)
+						_Decals.Remove(d.Material);
 				}
 			}
 		}

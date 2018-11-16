@@ -196,7 +196,7 @@ namespace EditMap
 			CreateSelected.SetActive(Creating);
 			if (Creating)
 			{
-				Selection.SelectionManager.Current.ClearAffectedGameObjects(false);
+				SelectionManager.Current.ClearAffectedGameObjects(false);
 				PlacementManager.InstantiateAction = CreatePrefabAction;
 				PlacementManager.MinRotAngle = FreeRotation.isOn ? (0) : (90);
 				PlacementManager.SnapToWater = false;

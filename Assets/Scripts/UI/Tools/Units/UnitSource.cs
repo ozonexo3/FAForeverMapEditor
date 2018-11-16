@@ -172,6 +172,14 @@ public class UnitSource : MonoBehaviour
 
 	public UnitInstance FillGameObjectValues(GameObject Obj, MapLua.SaveLua.Army.Unit Source, MapLua.SaveLua.Army.UnitsGroup Group, Vector3 position, Quaternion rotation)
 	{
+		if(Obj.transform.childCount > 0)
+		{
+			foreach (Transform child in Obj.transform)
+			{
+				Destroy(child.gameObject);
+			}
+		}
+
 		Obj.name = Source.Name;
 
 		UnitInstance UInst = Obj.GetComponent<UnitInstance>();

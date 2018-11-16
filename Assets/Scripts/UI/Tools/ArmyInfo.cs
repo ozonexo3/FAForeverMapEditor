@@ -359,7 +359,7 @@ public class ArmyInfo : MonoBehaviour {
 			CreatedArmy = new ScenarioLua.Army();
 			CreatedArmy.Name = "NewExtraArmy" + (MapLuaParser.Current.ScenarioLuaFile.Data.Configurations[c].ExtraArmys.Count + 1);
 			CreatedArmy.NoRush = new ScenarioLua.NoRusnOffset();
-			CreatedArmy.Data = new SaveLua.Army();
+			CreatedArmy.Data = new SaveLua.Army(true);
 			MapLuaParser.Current.ScenarioLuaFile.Data.Configurations[c].ExtraArmys.Add(CreatedArmy);
 
 
@@ -382,12 +382,10 @@ public class ArmyInfo : MonoBehaviour {
 				}
 			}
 
-
-
 			CreatedArmy = new ScenarioLua.Army();
 			CreatedArmy.Name = NewArmyName;
 			CreatedArmy.NoRush = new ScenarioLua.NoRusnOffset();
-			CreatedArmy.Data = new SaveLua.Army();
+			CreatedArmy.Data = new SaveLua.Army(true);
 			MapLuaParser.Current.ScenarioLuaFile.Data.Configurations[c].Teams[TeamObject.InstanceId].Armys.Add(CreatedArmy);
 		}
 

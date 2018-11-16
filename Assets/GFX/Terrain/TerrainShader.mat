@@ -5,7 +5,8 @@ Material:
   serializedVersion: 6
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
   m_Name: TerrainShader
   m_Shader: {fileID: 4800000, guid: 07332981e20e66d40a9ee102d13a9be8, type: 3}
   m_ShaderKeywords: _AREA_ON _BRUSH_ON _USESLOPETEX_ON
@@ -252,8 +253,8 @@ Material:
     - _Brush: 0
     - _BrushPainting: 0
     - _BrushSize: 0
-    - _BrushUvX: 0.039633997
-    - _BrushUvY: 0.5122462
+    - _BrushUvX: 0.2552806
+    - _BrushUvY: 0.37661758
     - _BuildGrid: 0
     - _DeepLevel: 1.675625
     - _DepthLevel: 1.5
@@ -273,26 +274,26 @@ Material:
     - _HideSplat8: 0
     - _HideTerrainType: 1
     - _LightingMultiplier: 1.27
-    - _LowerScale: 256
-    - _LowerScaleNormal: 256
+    - _LowerScale: 409.6
+    - _LowerScaleNormal: Infinity
     - _Shininess: 0.03
     - _Slope: 0
-    - _Splat0Scale: 128
-    - _Splat0ScaleNormal: 117.02857
-    - _Splat1Scale: 256
-    - _Splat1ScaleNormal: 256
+    - _Splat0Scale: 256
+    - _Splat0ScaleNormal: 256
+    - _Splat1Scale: 53.333332
+    - _Splat1ScaleNormal: 1950.8965
     - _Splat2Scale: 256
     - _Splat2ScaleNormal: 256
-    - _Splat3Scale: 128
-    - _Splat3ScaleNormal: 128
-    - _Splat4Scale: 128
-    - _Splat4ScaleNormal: 128
-    - _Splat5Scale: 65.01588
-    - _Splat5ScaleNormal: 64.81013
-    - _Splat6Scale: 65.01588
-    - _Splat6ScaleNormal: 65.01588
-    - _Splat7Scale: 78.76923
-    - _Splat7ScaleNormal: 78.76923
+    - _Splat3Scale: 256
+    - _Splat3ScaleNormal: 256
+    - _Splat4Scale: 256
+    - _Splat4ScaleNormal: 256
+    - _Splat5Scale: 256
+    - _Splat5ScaleNormal: 256
+    - _Splat6Scale: 256
+    - _Splat6ScaleNormal: 256
+    - _Splat7Scale: 256
+    - _Splat7ScaleNormal: 256
     - _TTerrainXP: 0
     - _TerrainTypeCapacity: 0.228
     - _TerrainTypeCoof: 0.228

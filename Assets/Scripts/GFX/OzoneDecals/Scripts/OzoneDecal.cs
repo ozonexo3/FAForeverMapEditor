@@ -71,12 +71,19 @@ namespace OzoneDecals
 
 		[HideInInspector]
 		public Transform tr;
+		public Matrix4x4 localToWorldMatrix;
 
 		void OnEnable()
 		{
 			tr = transform;
-			if(!CreationObject && Dec != null)
+			UpdateMatrix();
+			if (!CreationObject && Dec != null)
 			DecalsControler.AddDecal(Dec);
+		}
+
+		public void UpdateMatrix()
+		{
+			localToWorldMatrix = tr.localToWorldMatrix;
 		}
 
 		private void OnDisable()
@@ -89,6 +96,7 @@ namespace OzoneDecals
 		{
 			//if(CreationObject)
 			DecalsControler.RemoveDecal(Dec);
+			OnBecameInvisible();
 		}
 
 		MeshFilter mf;
@@ -107,6 +115,7 @@ namespace OzoneDecals
 		public void MovePivotPoint(Vector3 Pos)
 		{
 			tr.localPosition = tr.TransformPoint(tr.InverseTransformPoint(Pos) - PivotPointLocal);
+			UpdateMatrix();
 		}
 
 		public static void SnapToGround(Transform tr, GameObject Connected)
@@ -114,6 +123,15 @@ namespace OzoneDecals
 			Vector3 Pos = tr.TransformPoint(PivotPointLocal);
 			Pos.y = ScmapEditor.Current.Teren.SampleHeight(Pos);
 			tr.localPosition = tr.TransformPoint(tr.InverseTransformPoint(Pos) - PivotPointLocal);
+			if (Connected != null)
+			{
+				OzoneDecal OD = Connected.GetComponent<OzoneDecal>();
+				if (OD != null)
+				{
+					OD.tr.localPosition = tr.localPosition;
+					OD.UpdateMatrix();
+				}
+			}
 		}
 
 
@@ -154,14 +172,26 @@ namespace OzoneDecals
 
 		public bool IsVisible;
 
-		void OnWillRenderObject()
+		/*void OnWillRenderObject()
 		{
-			OzoneDecalRenderer.AddDecal(this, Camera.current);
+			if(_Dec != null && _Dec.Shared != null)
+			OzoneDecalRenderer.AddDecal(this); //, Camera.current
+		}*/
+
+		private void OnBecameVisible()
+		{
+			if (_Dec != null && _Dec.Shared != null)
+				OzoneDecalRenderer.AddDecal(this); //, Camera.current
+		}
+
+		private void OnBecameInvisible()
+		{
+			if (_Dec != null && _Dec.Shared != null)
+				OzoneDecalRenderer.RemoveDecal(this); //, Camera.current	
 		}
 
 
-
-#region Editor
+		#region Editor
 		static Color colorSelected = new Color(1, 0.8f, 0.0f, 0.7f);
 		static Color colorUnselected = new Color(0.7f, 0.7f, 0.7f, 0.6f);
 		static Color colorUnselectedFill = new Color(0, 0, 0, 0.0f);

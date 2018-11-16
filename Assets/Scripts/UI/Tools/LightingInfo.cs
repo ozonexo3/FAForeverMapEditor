@@ -188,6 +188,12 @@ namespace EditMap
 			Scmap.map.FogStart = FogStart.value;
 			Scmap.map.FogEnd = FogEnd.value;
 
+			if (Scmap.map.FogStart >= Scmap.map.FogEnd && Scmap.map.FogEnd > 1)
+			{
+				Scmap.map.FogStart = Scmap.map.FogEnd - 1;
+				FogStart.SetValue(Scmap.map.FogStart, false);
+			}
+
 			Scmap.UpdateLighting();
 			Scmap.Skybox.LoadSkybox();
 

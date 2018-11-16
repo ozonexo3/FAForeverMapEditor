@@ -196,10 +196,10 @@ namespace MapLua
 					}
 				}
 
-				public UnitsGroup(Army Owner)
+				public UnitsGroup(Army Owner, string Name = "Units")
 				{
 					this.Owner = Owner;
-					Name = "Units";
+					this.Name = Name;
 					orders = "";
 					platoon = "";
 
@@ -531,7 +531,7 @@ namespace MapLua
 
 			#endregion
 
-			public Army()
+			public Army(bool Initial = false)
 			{
 				Name = "";
 				personality = "";
@@ -548,6 +548,11 @@ namespace MapLua
 				Units = new UnitsGroup(this);
 				nextPlatoonBuilderId = "1";
 				PlatoonBuilders = new PlatoonBuilder[0];
+
+				if (Initial)
+				{
+					Units.AddGroup(new UnitsGroup(this, "INITIAL"));
+				}
 			}
 
 			public Army(string name, LuaTable Table)

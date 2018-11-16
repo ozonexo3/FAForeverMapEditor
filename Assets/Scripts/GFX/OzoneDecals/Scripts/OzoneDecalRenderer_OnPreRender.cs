@@ -9,6 +9,10 @@ namespace OzoneDecals
 	public partial class OzoneDecalRenderer : MonoBehaviour
 	{
 
+		static int _NearCutOffLOD = Shader.PropertyToID("_NearCutOffLOD");
+		static int _CutOffLOD = Shader.PropertyToID("_CutOffLOD");
+		static int copy2id = Shader.PropertyToID("_CameraGBufferTexture2Copy");
+
 		public bool UseInstancing = false;
 
 		void OnPreRender()
@@ -51,13 +55,14 @@ namespace OzoneDecals
 
 
 			// Clear 
+			/*
 			var decalEnum = _Decals.GetEnumerator();
 			while (decalEnum.MoveNext())
 				decalEnum.Current.Value.Clear();
 
 			_DecalsAlbedo.Clear();
 			_DecalsTarmacs.Clear();
-
+			*/
 		}
 
 		const bool AllowAlbedoInstancing = false;
@@ -70,13 +75,13 @@ namespace OzoneDecals
 			{
 				OzoneDecal decal = decalListEnum.Current;
 
-				if (decal != null && decal.Dec.Shared.DrawAlbedo)
+				if (decal.Dec.Shared.DrawAlbedo)
 				{
 					_directBlock.Clear();
-					_directBlock.SetFloat("_NearCutOffLOD", decal.NearCutOff);
-					_directBlock.SetFloat("_CutOffLOD", decal.CutOff);
+					_directBlock.SetFloat(_NearCutOffLOD, decal.NearCutOff);
+					_directBlock.SetFloat(_CutOffLOD, decal.CutOff);
 
-					_bufferDeferred.DrawMesh(_cubeMesh, decal.tr.localToWorldMatrix, decal.Material, 0, 0, _directBlock);
+					_bufferDeferred.DrawMesh(_cubeMesh, decal.localToWorldMatrix, decal.Material, 0, 0, _directBlock);
 				}
 			}
 		}
@@ -90,13 +95,13 @@ namespace OzoneDecals
 			{
 				OzoneDecal decal = decalListEnum.Current;
 
-				if (decal != null && decal.Dec.Shared.DrawAlbedo)
+				if (decal.Dec.Shared.DrawAlbedo)
 				{
 					_directBlock.Clear();
-					_directBlock.SetFloat("_NearCutOffLOD", decal.NearCutOff);
-					_directBlock.SetFloat("_CutOffLOD", decal.CutOff);
+					_directBlock.SetFloat(_NearCutOffLOD, decal.NearCutOff);
+					_directBlock.SetFloat(_CutOffLOD, decal.CutOff);
 
-					_bufferDeferred.DrawMesh(_cubeMesh, decal.tr.localToWorldMatrix, decal.Material, 0, 0, _directBlock);
+					_bufferDeferred.DrawMesh(_cubeMesh, decal.localToWorldMatrix, decal.Material, 0, 0, _directBlock);
 				}
 			}
 		}
@@ -131,7 +136,7 @@ namespace OzoneDecals
 					{
 						if (UseInstancing && AllowAlbedoInstancing)
 						{
-							_matrices[n] = decal.tr.localToWorldMatrix;
+							_matrices[n] = decal.localToWorldMatrix;
 							_NearCutOffLODValues[n] = decal.NearCutOff;
 							_CutOffLODValues[n] = decal.CutOff * CutoffMultiplier;
 							++n;
@@ -143,8 +148,8 @@ namespace OzoneDecals
 								//_bufferDeferred.SetRenderTarget(_albedoRenderTarget, BuiltinRenderTextureType.CameraTarget);
 
 								_instancedBlock.Clear();
-								_instancedBlock.SetFloatArray("_NearCutOffLOD", _NearCutOffLODValues);
-								_instancedBlock.SetFloatArray("_CutOffLOD", _CutOffLODValues);
+								_instancedBlock.SetFloatArray(_NearCutOffLOD, _NearCutOffLODValues);
+								_instancedBlock.SetFloatArray(_CutOffLOD, _CutOffLODValues);
 								_bufferDeferred.DrawMeshInstanced(_cubeMesh, 0, material, 0, _matrices, n, _instancedBlock);
 								n = 0;
 							}
@@ -155,10 +160,10 @@ namespace OzoneDecals
 								//_bufferDeferred.Blit(BuiltinRenderTextureType.CameraTarget, copy2id);
 
 							_directBlock.Clear();
-							_directBlock.SetFloat("_NearCutOffLOD", decal.NearCutOff);
-							_directBlock.SetFloat("_CutOffLOD", decal.CutOff);
+							_directBlock.SetFloat(_NearCutOffLOD, decal.NearCutOff);
+							_directBlock.SetFloat(_CutOffLOD, decal.CutOff);
 
-							_bufferDeferred.DrawMesh(_cubeMesh, decal.tr.localToWorldMatrix, material, 0, 0, _directBlock);
+							_bufferDeferred.DrawMesh(_cubeMesh, decal.localToWorldMatrix, material, 0, 0, _directBlock);
 						}
 					}
 				}
@@ -169,8 +174,8 @@ namespace OzoneDecals
 					//_bufferDeferred.SetRenderTarget(_albedoRenderTarget, BuiltinRenderTextureType.CameraTarget);
 
 					_instancedBlock.Clear();
-					_instancedBlock.SetFloatArray("_NearCutOffLOD", _NearCutOffLODValues);
-					_instancedBlock.SetFloatArray("_CutOffLOD", _CutOffLODValues);
+					_instancedBlock.SetFloatArray(_NearCutOffLOD, _NearCutOffLODValues);
+					_instancedBlock.SetFloatArray(_CutOffLOD, _CutOffLODValues);
 					_bufferDeferred.DrawMeshInstanced(_cubeMesh, 0, material, 0, _matrices, n, _instancedBlock);
 				}
 			}
@@ -190,7 +195,7 @@ namespace OzoneDecals
 			//_bufferDeferred.GetTemporaryRT(copy1id, -1, -1, 0, FilterMode.Bilinear, RenderTextureFormat.ARGB32);
 
 			// Normal
-			var copy2id = Shader.PropertyToID("_CameraGBufferTexture2Copy");
+			//var copy2id = Shader.PropertyToID("_CameraGBufferTexture2Copy");
 			_bufferDeferred.GetTemporaryRT(copy2id, -1, -1, 0, FilterMode.Bilinear, RenderTextureFormat.ARGB32);
 
 			_bufferDeferred.Blit(BuiltinRenderTextureType.GBuffer2, copy2id);
@@ -207,7 +212,7 @@ namespace OzoneDecals
 				{
 					OzoneDecal decal = decalListEnum.Current;
 
-					if (decal != null && decal.Dec.Shared.DrawNormal)
+					if (decal.Dec.Shared.DrawNormal)
 					{
 						if (hqCount < HightQualityMaxCount)
 						{
@@ -217,9 +222,9 @@ namespace OzoneDecals
 
 							_bufferDeferred.SetRenderTarget(_normalRenderTarget, BuiltinRenderTextureType.CameraTarget);
 							_directBlock.Clear();
-							_directBlock.SetFloat("_NearCutOffLOD", decal.NearCutOff);
-							_directBlock.SetFloat("_CutOffLOD", decal.CutOff);
-							_bufferDeferred.DrawMesh(_cubeMesh, decal.tr.localToWorldMatrix, material, 0, 1, _directBlock);
+							_directBlock.SetFloat(_NearCutOffLOD, decal.NearCutOff);
+							_directBlock.SetFloat(_CutOffLOD, decal.CutOff);
+							_bufferDeferred.DrawMesh(_cubeMesh, decal.localToWorldMatrix, material, 0, 1, _directBlock);
 							hqCount++;
 						}
 						else
@@ -227,7 +232,7 @@ namespace OzoneDecals
 							if (UseInstancing)
 							{
 								// Instanced drawing
-								_matrices[n] = decal.tr.localToWorldMatrix;
+								_matrices[n] = decal.localToWorldMatrix;
 								_CutOffLODValues[n] = decal.CutOff * CutoffMultiplier;
 								_NearCutOffLODValues[n] = decal.NearCutOff;
 								++n;
@@ -239,8 +244,8 @@ namespace OzoneDecals
 
 									_bufferDeferred.SetRenderTarget(_normalRenderTarget, BuiltinRenderTextureType.CameraTarget);
 									_instancedBlock.Clear();
-									_instancedBlock.SetFloatArray("_NearCutOffLOD", _NearCutOffLODValues);
-									_instancedBlock.SetFloatArray("_CutOffLOD", _CutOffLODValues);
+									_instancedBlock.SetFloatArray(_NearCutOffLOD, _NearCutOffLODValues);
+									_instancedBlock.SetFloatArray(_CutOffLOD, _CutOffLODValues);
 									_bufferDeferred.DrawMeshInstanced(_cubeMesh, 0, material, 1, _matrices, n, _instancedBlock);
 									n = 0;
 								}
@@ -256,10 +261,10 @@ namespace OzoneDecals
 
 								_bufferDeferred.SetRenderTarget(_normalRenderTarget, BuiltinRenderTextureType.CameraTarget);
 								_directBlock.Clear();
-								_directBlock.SetFloat("_NearCutOffLOD", decal.NearCutOff * CutoffMultiplier);
-								_directBlock.SetFloat("_CutOffLOD", decal.CutOff);
+								_directBlock.SetFloat(_NearCutOffLOD, decal.NearCutOff * CutoffMultiplier);
+								_directBlock.SetFloat(_CutOffLOD, decal.CutOff);
 
-								_bufferDeferred.DrawMesh(_cubeMesh, decal.tr.localToWorldMatrix, material, 0, 1, _directBlock);
+								_bufferDeferred.DrawMesh(_cubeMesh, decal.localToWorldMatrix, material, 0, 1, _directBlock);
 								++n;
 							}
 						}
@@ -276,8 +281,8 @@ namespace OzoneDecals
 					_bufferDeferred.SetRenderTarget(_normalRenderTarget, BuiltinRenderTextureType.CameraTarget);
 
 					_instancedBlock.Clear();
-					_instancedBlock.SetFloatArray("_NearCutOffLOD", _NearCutOffLODValues);
-					_instancedBlock.SetFloatArray("_CutOffLOD", _CutOffLODValues);
+					_instancedBlock.SetFloatArray(_NearCutOffLOD, _NearCutOffLODValues);
+					_instancedBlock.SetFloatArray(_CutOffLOD, _CutOffLODValues);
 					_bufferDeferred.DrawMeshInstanced(_cubeMesh, 0, material, 1, _matrices, n, _instancedBlock);
 				}
 #endif

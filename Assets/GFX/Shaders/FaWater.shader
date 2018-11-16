@@ -21,13 +21,14 @@
 	     "_WaterGrabTexture"
 	     } 
 
-		Blend SrcAlpha OneMinusSrcAlpha
-		Offset 0, -20000
+		//Blend SrcAlpha OneMinusSrcAlpha
+		//Offset 0, -20000
 
 
 		CGPROGRAM
-		#pragma surface surf Empty vertex:vert alpha noambient 
-			#pragma target 4.0
+		#pragma target 3.5
+
+		#pragma surface surf Lambert vertex:vert alpha noambient 
 			#pragma exclude_renderers gles
 			#pragma multi_compile ___ UNITY_HDR_ON
 
@@ -71,26 +72,26 @@
 		sampler2D _WaterGrabTexture;
 
 
-			half4 LightingEmpty (SurfaceOutput s, half3 lightDir, half atten) {
-						half4 c;
-			              c.rgb = s.Albedo;
-			              c.a = s.Alpha;
-			              return c;
-			          }
+		half4 LightingEmpty (SurfaceOutput s, half3 lightDir, half atten) {
+					half4 c;
+			            c.rgb = s.Albedo;
+			            c.a = s.Alpha;
+			            return c;
+			        }
 
 		struct Input {
 	        //float4 position 	: 	SV_POSITION;
 			float2 uv_UtilitySamplerC : TEXCOORD0;
-			float2 mLayer0      : 	TEXCOORD1;
-			float2 mLayer1      : 	TEXCOORD2;
-			float2 mLayer2      : 	TEXCOORD3;
-		    float2 mLayer3      : 	TEXCOORD4;	
-			float3 mViewVec     : 	TEXCOORD5;
-			float4 mScreenPos	: 	TEXCOORD6;
-			float4 AddVar		: 	TEXCOORD7;
+			float4 mLayer01      : 	TEXCOORD1;
+			float4 mLayer23      : 	TEXCOORD2;
+			//float2 mLayer2      : 	TEXCOORD3;
+		    //float2 mLayer3      : 	TEXCOORD4;	
+			float3 mViewVec     : 	TEXCOORD3;
+			float4 mScreenPos	: 	TEXCOORD4;
+			float4 AddVar		: 	TEXCOORD5;
 			float4 grabUV;
 			float3 worldPos;
-			float3 viewDir;
+			//float3 viewDir;
 		};
 
 		void vert (inout appdata_full v, out Input o){
@@ -108,10 +109,10 @@
 	        //o.mLayer3 = (WaterLayerUv * _WaterScale + (float2(0.0005, 0.0009) * _Time.y)) * 0.5;
 
 			float timer = _Time.y * 10;
-			 o.mLayer0 = (WaterLayerUv + (normal1Movement * timer)) * normalRepeatRate.x;
-	        o.mLayer1 = (WaterLayerUv + (normal2Movement * timer)) * normalRepeatRate.y;
-	        o.mLayer2 = (WaterLayerUv + (normal3Movement * timer)) * normalRepeatRate.z;
-	        o.mLayer3 = (WaterLayerUv + (normal4Movement * timer)) * normalRepeatRate.w;
+			o.mLayer01.xy = (WaterLayerUv + (normal1Movement * timer)) * normalRepeatRate.x;
+	        o.mLayer01.zw = (WaterLayerUv + (normal2Movement * timer)) * normalRepeatRate.y;
+	        o.mLayer23.xy = (WaterLayerUv + (normal3Movement * timer)) * normalRepeatRate.z;
+	        o.mLayer23.zw = (WaterLayerUv + (normal4Movement * timer)) * normalRepeatRate.w;
 
 	        //o.mScreenPos = mul (UNITY_MATRIX_MVP, float4(0,0,0,1));
 	        //o.mScreenPos.xy /= o.mScreenPos.w;
@@ -164,10 +165,10 @@
 			float mask = saturate(backGroundPixels.a * 255);
 	    
 	        // calculate the normal we will be using for the water surface
-		    float4 W0 = tex2D( NormalSampler0, IN.mLayer0 );
-			float4 W1 = tex2D( NormalSampler1, IN.mLayer1 );
-			float4 W2 = tex2D( NormalSampler2, IN.mLayer2 );
-			float4 W3 = tex2D( NormalSampler3, IN.mLayer3 );
+		    float4 W0 = tex2D( NormalSampler0, IN.mLayer01.xy );
+			float4 W1 = tex2D( NormalSampler1, IN.mLayer01.zw );
+			float4 W2 = tex2D( NormalSampler2, IN.mLayer23.xy );
+			float4 W3 = tex2D( NormalSampler3, IN.mLayer23.zw );
 
 		    float4 sum = W0 + W1 + W2 + W3;
 			waveCrestThreshold = 1.2;
@@ -249,7 +250,7 @@
     		float4 returnPixels = refractedPixels;
 
 			returnPixels.a = waterDepth;
-			clip(waterDepth - 0.01);
+			//clip(waterDepth - 0.01);
 
 
 			if(_Area > 0){
@@ -274,8 +275,9 @@
 			//color.rgb = exp2(-color.rgb);
 			o.Emission = returnPixels.rgb;
 			//o.Emission = tex2Dproj(_WaterGrabTexture, UNITY_PROJ_COORD(GrabUvPos));
-			//o.Emission = 0;
+			//o.Emission = 1;
 			o.Alpha = returnPixels.a;
+			//o.Alpha = 1;
 	    }
     ENDCG  
     }
