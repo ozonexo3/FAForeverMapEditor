@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-using System;
 using NLua;
 using EditMap;
 
@@ -336,7 +335,7 @@ public partial struct GetGamedataFile
 				ToReturn.BP.LODs[i].AlbedoName = OffsetRelativePath(LocalPath, ToReturn.BP.LODs[i].AlbedoName, true);
 			}
 
-			ToReturn.BP.LODs[i].Albedo = LoadTexture2DFromGamedata(scd, ToReturn.BP.LODs[i].AlbedoName, false);
+			ToReturn.BP.LODs[i].Albedo = LoadTexture2DFromGamedata(scd, ToReturn.BP.LODs[i].AlbedoName, false, true, true);
 			ToReturn.BP.LODs[i].Albedo.anisoLevel = 2;
 			ToReturn.BP.LODs[i].Mat.SetTexture("_MainTex", ToReturn.BP.LODs[i].Albedo);
 
@@ -361,7 +360,7 @@ public partial struct GetGamedataFile
 
 			if (!string.IsNullOrEmpty(ToReturn.BP.LODs[i].NormalsName))
 			{
-				ToReturn.BP.LODs[i].Normal = LoadTexture2DFromGamedata(scd, ToReturn.BP.LODs[i].NormalsName, true);
+				ToReturn.BP.LODs[i].Normal = LoadTexture2DFromGamedata(scd, ToReturn.BP.LODs[i].NormalsName, true, true, true);
 				ToReturn.BP.LODs[i].Normal.anisoLevel = 2;
 				ToReturn.BP.LODs[i].Mat.SetTexture("_BumpMap", ToReturn.BP.LODs[i].Normal);
 			}

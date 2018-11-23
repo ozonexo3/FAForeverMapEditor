@@ -836,6 +836,28 @@ namespace FAF.MapEditor
 			else if(LastLoadedType == 1 || LastLoadedType == 2)
 			{
 				// Decals
+				UsedTerrainTexturesMemory.Clear();
+
+				HashSet<Decal.DecalSharedSettings>.Enumerator ListEnum = Decal.AllDecalsShared.GetEnumerator();
+				while (ListEnum.MoveNext())
+				{
+					Decal.DecalSharedSettings Current = ListEnum.Current;
+					if (Current != null)
+					{
+						if(Current.Texture1)
+						UsedTerrainTexturesMemory.Add(Current.Texture1);
+						if (Current.Texture2)
+							UsedTerrainTexturesMemory.Add(Current.Texture2);
+					}
+				}
+
+				int count = LoadedTextures.Count;
+				for (int i = 0; i < count; i++)
+				{
+					if (LoadedTextures[i] != null && !UsedTerrainTexturesMemory.Contains(LoadedTextures[i]))
+						Destroy(LoadedTextures[i]);
+				}
+				UsedTerrainTexturesMemory.Clear();
 			}
 			else if (LastLoadedType == 3)
 			{

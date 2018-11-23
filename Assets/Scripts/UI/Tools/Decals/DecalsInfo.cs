@@ -124,7 +124,7 @@ namespace EditMap
 
 		public static Texture2D AssignTextureFromPath(ref Material mat, string property, string path)
 		{
-			Texture2D Tex = GetGamedataFile.LoadTexture2DFromGamedata(GetGamedataFile.EnvScd, path);
+			Texture2D Tex = GetGamedataFile.LoadTexture2DFromGamedata(GetGamedataFile.EnvScd, path, false, true, true);
 			Tex.wrapMode = TextureWrapMode.Clamp;
 			mat.SetTexture(property, Tex);
 			return Tex;

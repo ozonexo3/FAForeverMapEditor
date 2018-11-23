@@ -109,10 +109,10 @@ namespace FAF.MapEditor
 				return;
 			}
 
-			IconBackgrounds.Add("land", GetGamedataFile.LoadTexture2DFromGamedata(GetGamedataFile.TexturesScd, "/textures/ui/common/icons/units/land_up.dds"));
-			IconBackgrounds.Add("amph", GetGamedataFile.LoadTexture2DFromGamedata(GetGamedataFile.TexturesScd, "/textures/ui/common/icons/units/amph_up.dds"));
-			IconBackgrounds.Add("sea", GetGamedataFile.LoadTexture2DFromGamedata(GetGamedataFile.TexturesScd, "/textures/ui/common/icons/units/sea_up.dds"));
-			IconBackgrounds.Add("air", GetGamedataFile.LoadTexture2DFromGamedata(GetGamedataFile.TexturesScd, "/textures/ui/common/icons/units/air_up.dds"));
+			IconBackgrounds.Add("land", GetGamedataFile.LoadTexture2DFromGamedata(GetGamedataFile.TexturesScd, "/textures/ui/common/icons/units/land_up.dds", false, true, true));
+			IconBackgrounds.Add("amph", GetGamedataFile.LoadTexture2DFromGamedata(GetGamedataFile.TexturesScd, "/textures/ui/common/icons/units/amph_up.dds", false, true, true));
+			IconBackgrounds.Add("sea", GetGamedataFile.LoadTexture2DFromGamedata(GetGamedataFile.TexturesScd, "/textures/ui/common/icons/units/sea_up.dds", false, true, true));
+			IconBackgrounds.Add("air", GetGamedataFile.LoadTexture2DFromGamedata(GetGamedataFile.TexturesScd, "/textures/ui/common/icons/units/air_up.dds", false, true, true));
 
 			foreach (ZipEntry zipEntry in zf)
 			{
@@ -193,7 +193,7 @@ namespace FAF.MapEditor
 				NewButton.transform.SetParent(Pivot, false);
 				ResourceObject NewResObject = NewButton.GetComponent<ResourceObject>();
 				NewResObject.RawImages[0].texture = IconBackgrounds[UnitDB.Icon];
-				NewResObject.RawImages[1].texture = GetGamedataFile.LoadTexture2DFromGamedata(GetGamedataFile.TexturesScd, "/textures/ui/common/icons/units/" + UnitDB.CodeName + "_icon.dds");
+				NewResObject.RawImages[1].texture = GetGamedataFile.LoadTexture2DFromGamedata(GetGamedataFile.TexturesScd, "/textures/ui/common/icons/units/" + UnitDB.CodeName + "_icon.dds", false, true, true);
 				if (NewResObject.RawImages[1].texture == Texture2D.whiteTexture)
 					NewResObject.RawImages[1].enabled = false;
 				NewResObject.InstanceId = i;

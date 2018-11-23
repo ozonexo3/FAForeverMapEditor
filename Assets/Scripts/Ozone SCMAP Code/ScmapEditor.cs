@@ -7,7 +7,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using UnityStandardAssets.ImageEffects;
-using UnityEngine.PostProcessing;
+//using UnityEngine.PostProcessing;
 using FAF.MapEditor;
 
 public partial class ScmapEditor : MonoBehaviour
@@ -27,7 +27,7 @@ public partial class ScmapEditor : MonoBehaviour
 	public Material TerrainMaterial;
 	public Material WaterMaterial;
 	public Cubemap DefaultWaterSky;
-	public PostProcessingProfile PostProcessing;
+	//public PostProcessingProfile PostProcessing;
 	public BloomOptimized BloomOpt;
 	public BloomOptimized BloomOptPreview;
 	public PreviewTex PreviewRenderer;
@@ -86,9 +86,9 @@ public partial class ScmapEditor : MonoBehaviour
 		Sun.intensity = map.LightingMultiplier * EditMap.LightingInfo.SunMultipiler;
 		RenderSettings.ambientLight = new Color(map.ShadowFillColor.x, map.ShadowFillColor.y, map.ShadowFillColor.z, 1);
 
-		BloomModel.Settings Bs = PostProcessing.bloom.settings;
+		/*BloomModel.Settings Bs = PostProcessing.bloom.settings;
 		Bs.bloom.intensity = map.Bloom * 10;
-		PostProcessing.bloom.settings = Bs;
+		PostProcessing.bloom.settings = Bs;*/
 
 		BloomOpt.intensity = map.Bloom * 4;
 		BloomOptPreview.intensity = map.Bloom * 4;
@@ -378,7 +378,7 @@ public partial class ScmapEditor : MonoBehaviour
 
 	public void SetWaterTextures()
 	{
-		Texture2D WaterRamp = GetGamedataFile.LoadTexture2DFromGamedata(GetGamedataFile.TexturesScd, map.Water.TexPathWaterRamp);
+		Texture2D WaterRamp = GetGamedataFile.LoadTexture2DFromGamedata(GetGamedataFile.TexturesScd, map.Water.TexPathWaterRamp, false, true, true);
 		WaterRamp.wrapMode = TextureWrapMode.Clamp;
 		Shader.SetGlobalTexture("_WaterRam", WaterRamp);
 
@@ -394,16 +394,16 @@ public partial class ScmapEditor : MonoBehaviour
 
 		const int WaterAnisoLevel = 4;
 
-		Texture2D WaterNormal = GetGamedataFile.LoadTexture2DFromGamedata(GetGamedataFile.TexturesScd, map.Water.WaveTextures[0].TexPath);
+		Texture2D WaterNormal = GetGamedataFile.LoadTexture2DFromGamedata(GetGamedataFile.TexturesScd, map.Water.WaveTextures[0].TexPath, false, true, true);
 		WaterNormal.anisoLevel = WaterAnisoLevel;
 		WaterMaterial.SetTexture("NormalSampler0", WaterNormal);
-		WaterNormal = GetGamedataFile.LoadTexture2DFromGamedata(GetGamedataFile.TexturesScd, map.Water.WaveTextures[1].TexPath);
+		WaterNormal = GetGamedataFile.LoadTexture2DFromGamedata(GetGamedataFile.TexturesScd, map.Water.WaveTextures[1].TexPath, false, true, true);
 		WaterNormal.anisoLevel = WaterAnisoLevel;
 		WaterMaterial.SetTexture("NormalSampler1", WaterNormal);
-		WaterNormal = GetGamedataFile.LoadTexture2DFromGamedata(GetGamedataFile.TexturesScd, map.Water.WaveTextures[2].TexPath);
+		WaterNormal = GetGamedataFile.LoadTexture2DFromGamedata(GetGamedataFile.TexturesScd, map.Water.WaveTextures[2].TexPath, false, true, true);
 		WaterNormal.anisoLevel = WaterAnisoLevel;
 		WaterMaterial.SetTexture("NormalSampler2", WaterNormal);
-		WaterNormal = GetGamedataFile.LoadTexture2DFromGamedata(GetGamedataFile.TexturesScd, map.Water.WaveTextures[3].TexPath);
+		WaterNormal = GetGamedataFile.LoadTexture2DFromGamedata(GetGamedataFile.TexturesScd, map.Water.WaveTextures[3].TexPath, false, true, true);
 		WaterNormal.anisoLevel = WaterAnisoLevel;
 		WaterMaterial.SetTexture("NormalSampler3", WaterNormal);
 

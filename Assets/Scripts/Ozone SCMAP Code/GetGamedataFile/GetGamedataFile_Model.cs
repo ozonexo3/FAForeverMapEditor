@@ -282,7 +282,7 @@ public partial struct GetGamedataFile
 		LoadedMeshes = new Dictionary<string, Mesh>();
 	}
 
-	public static Mesh LoadModel(string scd, string LocalPath)
+	public static Mesh LoadModel(string scd, string LocalPath, bool SetUnreadable = true)
 	{
 		string ModelKey = scd + "_" + LocalPath;
 		if (LoadedMeshes.ContainsKey(ModelKey))
@@ -316,7 +316,14 @@ public partial struct GetGamedataFile
 		ToReturn.RecalculateBounds();
 		ToReturn.RecalculateNormals();
 
+		if (SetUnreadable)
+		{
+			ToReturn.UploadMeshData(true);
+		}
+
 		LoadedMeshes.Add(ModelKey, ToReturn);
+
+		NewScmModel = null;
 
 		return ToReturn;
 	}

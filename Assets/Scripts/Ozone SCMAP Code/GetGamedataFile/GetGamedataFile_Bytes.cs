@@ -1,13 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
-using System.Collections;
-using System;
 
 using System.IO;
-//using System.IO.Compression;
-using ICSharpCode.SharpZipLib.Core;
 using ICSharpCode.SharpZipLib.Zip;
-using ICSharpCode.SharpZipLib.BZip2;
 
 
 public partial struct GetGamedataFile
@@ -166,15 +161,13 @@ public partial struct GetGamedataFile
 
 	static byte[] ReadZipEntryBytes(ref ZipEntry ze, ref ZipFile File)
 	{
-		byte[] FinalBytes = new byte[4096]; // 4K is optimum
-
+		//byte[] FinalBytes = new byte[4096]; // 4K is optimum
 		Stream s = File.GetInputStream(ze);
-		FinalBytes = new byte[ze.Size];
+		byte[] FinalBytes = new byte[ze.Size];
 		s.Read(FinalBytes, 0, FinalBytes.Length);
 		s.Close();
 
 		return FinalBytes;
-
 	}
 
 
@@ -190,13 +183,13 @@ public partial struct GetGamedataFile
 
 		string FilePath = MapAssetSystemPath(mapPath);
 
-		if (!System.IO.File.Exists(FilePath))
+		if (!File.Exists(FilePath))
 		{
 
 			mapPath = TryRecoverMapAsset(mapPath);
 			FilePath = MapAssetSystemPath(mapPath);
 
-			if (!System.IO.File.Exists(FilePath))
+			if (!File.Exists(FilePath))
 			{
 				Debug.LogWarning("File does not exist! " + FilePath);
 				return null;
@@ -207,7 +200,7 @@ public partial struct GetGamedataFile
 			}
 		}
 
-		return System.IO.File.ReadAllBytes(FilePath);
+		return File.ReadAllBytes(FilePath);
 	}
 
 	#region Map folder path
@@ -263,14 +256,14 @@ public partial struct GetGamedataFile
 
 	public static string FixMapsPath(string BlueprintPath)
 	{
-		if (GetGamedataFile.IsMapPath(BlueprintPath))
+		if (IsMapPath(BlueprintPath))
 		{
 			//Debug.Log(MapLuaParser.Current.FolderName);
 			if (!BlueprintPath.StartsWith("/maps/" + MapLuaParser.Current.FolderName) && !BlueprintPath.StartsWith("maps/" + MapLuaParser.Current.FolderName))
 			{ 
 			//if (!System.IO.File.Exists(GetGamedataFile.MapAssetSystemPath(BlueprintPath)))
 			//{
-				string NewBlueprintPath = GetGamedataFile.TryRecoverMapAsset(BlueprintPath);
+				string NewBlueprintPath = TryRecoverMapAsset(BlueprintPath);
 				Debug.Log("Before: " + BlueprintPath + ", after: " + NewBlueprintPath);
 
 				if (!string.IsNullOrEmpty(NewBlueprintPath))

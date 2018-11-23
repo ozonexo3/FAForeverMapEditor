@@ -10,7 +10,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System;
 using System.IO;
 
 public partial struct GetGamedataFile
@@ -45,7 +44,7 @@ public partial struct GetGamedataFile
 
 		int DDS_HEADER_SIZE = 128;
 		byte[] dxtBytes = new byte[FinalTextureData2.Length - DDS_HEADER_SIZE];
-		Buffer.BlockCopy(FinalTextureData2, DDS_HEADER_SIZE, dxtBytes, 0, FinalTextureData2.Length - DDS_HEADER_SIZE);
+		System.Buffer.BlockCopy(FinalTextureData2, DDS_HEADER_SIZE, dxtBytes, 0, FinalTextureData2.Length - DDS_HEADER_SIZE);
 
 		Cubemap NewTes = new Cubemap(texture.width, TextureFormat.RGBA32, false);
 
@@ -53,7 +52,7 @@ public partial struct GetGamedataFile
 		for (int side = 0; side < 6; side++)
 		{
 			byte[] sideBytes = new byte[dxtBytes.Length / 6];
-			Buffer.BlockCopy(dxtBytes, SideBytesLength * side, sideBytes, 0, SideBytesLength);
+			System.Buffer.BlockCopy(dxtBytes, SideBytesLength * side, sideBytes, 0, SideBytesLength);
 
 			try
 			{
@@ -71,7 +70,10 @@ public partial struct GetGamedataFile
 
 		}
 
-		NewTes.Apply(true);
+		FinalTextureData2 = null;
+		dxtBytes = null;
+
+		NewTes.Apply(true, true);
 
 		return NewTes;
 	}

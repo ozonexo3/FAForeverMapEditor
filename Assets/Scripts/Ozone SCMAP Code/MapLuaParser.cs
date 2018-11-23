@@ -284,6 +284,8 @@ public partial class MapLuaParser : MonoBehaviour
 
 			// SCMAP
 			LoadScmapFile = HeightmapControler.StartCoroutine(ScmapEditor.Current.LoadScmapFile());
+			System.GC.Collect();
+			
 			yield return LoadScmapFile;
 
 			if(ScmapEditor.Current.map.VersionMinor == 0)
@@ -312,6 +314,7 @@ public partial class MapLuaParser : MonoBehaviour
 				// Save LUA
 				SaveLuaFile.Load();
 				SetSaveLua();
+				System.GC.Collect();
 				//LoadSaveLua();
 				yield return null;
 
@@ -332,7 +335,7 @@ public partial class MapLuaParser : MonoBehaviour
 					InfoPopup.Show(true, "Loading map...\n( Loading props " + PropsMenu.LoadedCount + "/" + ScmapEditor.Current.map.Props.Count + ")");
 					yield return null;
 				}
-
+				System.GC.Collect();
 				PropsMenu.gameObject.SetActive(false);
 			}
 
@@ -347,7 +350,7 @@ public partial class MapLuaParser : MonoBehaviour
 					InfoPopup.Show(true, "Loading map...\n( Loading decals " + DecalsMenu.LoadedCount + "/" + ScmapEditor.Current.map.Decals.Count + ")");
 					yield return null;
 				}
-
+				System.GC.Collect();
 				DecalsMenu.gameObject.SetActive(false);
 			}
 

@@ -7,7 +7,6 @@
 // ******************************************************************************
 
 using UnityEngine;
-using System.Collections;
 using System.Collections.Generic;
 using System;
 using System.IO;
@@ -39,7 +38,7 @@ public partial struct GetGamedataFile
 				for (int i = 0; i < Colors.Length; i++)
 				Colors[i] = NormalPixelColor;
 				_EmptyNormal.SetPixels(Colors);
-				_EmptyNormal.Apply(_EmptyNormal.mipmapCount > 0);
+				_EmptyNormal.Apply(_EmptyNormal.mipmapCount > 0, true);
 			}
 
 			return _EmptyNormal;
@@ -47,7 +46,7 @@ public partial struct GetGamedataFile
 	}
 
 
-	public static Texture2D LoadTexture2DFromGamedata(string scd, string LocalPath, bool NormalMap = false, bool StoreInMemory = true)
+	public static Texture2D LoadTexture2DFromGamedata(string scd, string LocalPath, bool NormalMap = false, bool StoreInMemory = true, bool SetUnreadable = false)
 	{
 		if (string.IsNullOrEmpty(LocalPath))
 		{
@@ -70,6 +69,8 @@ public partial struct GetGamedataFile
 
 		if (FinalTextureData2 == null || FinalTextureData2.Length == 0)
 		{
+			FinalTextureData2 = null;
+
 			//Debug.LogWarning("File bytes are empty!");
 			if (NormalMap)
 				return emptyNormalTexture;
@@ -108,12 +109,15 @@ public partial struct GetGamedataFile
 
 		}
 
+		FinalTextureData2 = null;
+		dxtBytes = null;
+
 		texture.mipMapBias = MipmapBias;
 		texture.filterMode = FilterMode.Bilinear;
 		texture.anisoLevel = AnisoLevel;
-		texture.Apply(false);
+		texture.Apply(false, SetUnreadable);
 
-		if(StoreInMemory)
+		if (StoreInMemory)
 			LoadedTextures.Add(TextureKey, texture);
 
 		return texture;
@@ -124,16 +128,18 @@ public partial struct GetGamedataFile
 	{
 		int MipMapCount = Source.mipmapCount;
 		Texture2D ChannelFlip = new Texture2D(Source.width, Source.height, Source.format, Source.mipmapCount > 0, false);
+		Color[] Pixels;
 		for (int m = 0; m < MipMapCount; m++)
 		{
-			Color[] Pixels = Source.GetPixels(m);
+			Pixels = Source.GetPixels(m);
 
 			for(int p = 0; p < Pixels.Length; p++)
 			{
 				Pixels[p] = new Color(Pixels[p].b, Pixels[p].g, Pixels[p].r);
 			}
-			ChannelFlip.SetPixels(Pixels, m);
+			ChannelFlip.SetPixels(Pixels, m);		
 		}
+		Pixels = null;
 		ChannelFlip.Apply(false);
 		return ChannelFlip;
 	}

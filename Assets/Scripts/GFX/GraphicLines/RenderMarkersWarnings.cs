@@ -83,6 +83,8 @@ public class RenderMarkersWarnings : MonoBehaviour {
 	static bool RenderEnabled;
 	public void OnGUI()
 	{
+		RenderAdaptiveMarkers.DrawGUIStatic();
+
 		if (!RenderEnabled || WarningPosition.Count <= 0)
 			return;
 

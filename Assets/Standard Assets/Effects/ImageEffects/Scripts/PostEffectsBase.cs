@@ -106,8 +106,12 @@ namespace UnityStandardAssets.ImageEffects
             CheckResources ();
         }
 
+		static bool InitialisedTrue = false;
         protected bool CheckSupport (bool needDepth)
 		{
+			if (InitialisedTrue)
+				return true;
+
             isSupported = true;
             supportHDRTextures = SystemInfo.SupportsRenderTextureFormat(RenderTextureFormat.ARGBHalf);
             supportDX11 = SystemInfo.graphicsShaderLevel >= 50 && SystemInfo.supportsComputeShaders;
@@ -127,7 +131,9 @@ namespace UnityStandardAssets.ImageEffects
             if (needDepth)
                 GetComponent<Camera>().depthTextureMode |= DepthTextureMode.Depth;
 
-            return true;
+			InitialisedTrue = true;
+
+			return true;
         }
 
         protected bool CheckSupport (bool needDepth,  bool needHdr)

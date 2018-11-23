@@ -153,7 +153,13 @@ public class RenderAdaptiveMarkers : MonoBehaviour {
 
 	}
 
-	void OnGUI()
+	public static void DrawGUIStatic()
+	{
+		if (Instance)
+			Instance.DrawGUI();
+	}
+
+	public void DrawGUI()
 	{
 		if (!RenderEnabled || AdaptiveCustoms.Count <= 0)
 			return;

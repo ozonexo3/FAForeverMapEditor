@@ -185,6 +185,8 @@ public partial class CameraControler : MonoBehaviour {
 		return Mathf.Clamp( GameplayCursorPosScm.y, 0, 256);
 	}
 
+	Vector3 LastCursorPos = Vector3.zero;
+	bool SetToEmptyPos = false;
 	void CursorUiPos()
 	{
 
@@ -194,7 +196,12 @@ public partial class CameraControler : MonoBehaviour {
 		{
 			GameplayCursorPos = hit.point;
 			 GameplayCursorPosScm = ScmapEditor.WorldPosToScmap(GameplayCursorPos);
+
+			if (GameplayCursorPosScm.x == LastCursorPos.x && GameplayCursorPosScm.z == LastCursorPos.z)
+				return;
+
 			GameplayCursorPosScm.y = hit.point.y * 10;
+
 			//GameplayCursorPosScm.z = ScmapEditor.Current.map.Height - GameplayCursorPosScm.z;
 			string X = GameplayCursorPosScm.x.ToString("N2");
 			string Y = GameplayCursorPosScm.y.ToString("N2");
@@ -205,9 +212,12 @@ public partial class CameraControler : MonoBehaviour {
 			Z = Z.PadRight(8);
 
 			CursorInfo.text = "x: " + X + "\ty: " + Y + "\tz: " + Z;
+			SetToEmptyPos = false;
 		}
-		else
+		else if(!SetToEmptyPos)
 		{
+
+			SetToEmptyPos = true;
 			CursorInfo.text = "x: --------  \ty: --------  \tz: --------  ";
 		}
 	}
