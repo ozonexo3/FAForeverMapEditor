@@ -548,8 +548,6 @@ namespace FAF.MapEditor
 							}
 						}
 
-
-
 						if (LoadZipEntry(ref Current, out Breaked))
 						{
 							continue;
@@ -574,9 +572,11 @@ namespace FAF.MapEditor
 					{
 						string[] NewFiles = GetGamedataFile.GetNewFafFiles(GetGamedataFile.EnvScd);
 
-
 						for(int i = 0; i < NewFiles.Length; i++)
 						{
+							if (!IsProperFile(NewFiles[i]))
+								continue;
+
 							Current = zf_faf.GetEntry(NewFiles[i]);
 							if (LoadZipEntry(ref Current, out Breaked))
 							{
@@ -586,7 +586,6 @@ namespace FAF.MapEditor
 
 							if (Breaked)
 								break;
-
 
 							GeneratedId++;
 							Counter++;
@@ -758,10 +757,10 @@ namespace FAF.MapEditor
 			if (localpath.ToLower().StartsWith("maps"))
 			{
 				localpath = "/" + localpath;
-				LoadedProp = GetGamedataFile.LoadProp(GetGamedataFile.MapScd, localpath);
+				LoadedProp = GetGamedataFile.LoadProp(GetGamedataFile.MapScd, localpath, true);
 			}
 			else
-				LoadedProp = GetGamedataFile.LoadProp(GetGamedataFile.EnvScd, localpath);
+				LoadedProp = GetGamedataFile.LoadProp(GetGamedataFile.EnvScd, localpath, true);
 
 			GameObject NewButton = Instantiate(Prefab) as GameObject;
 			NewButton.transform.SetParent(Pivot, false);
@@ -864,8 +863,13 @@ namespace FAF.MapEditor
 				int count = LoadedProps.Count;
 				for (int i = 0; i < count; i++)
 				{
-					Destroy(LoadedProps[i].BP.LODs[i].Albedo);
-					Destroy(LoadedProps[i].BP.LODs[i].Normal);
+					for (int l = 0; l < LoadedProps[i].BP.LODs.Length; l++)
+					{
+						if(!GetGamedataFile.IsStoredInMemory(LoadedProps[i].BP.LODs[l].Albedo))
+							Destroy(LoadedProps[i].BP.LODs[l].Albedo);
+						if (!GetGamedataFile.IsStoredInMemory(LoadedProps[i].BP.LODs[l].Normal))
+							Destroy(LoadedProps[i].BP.LODs[l].Normal);
+					}
 				}
 			}
 

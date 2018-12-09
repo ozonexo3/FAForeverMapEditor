@@ -65,7 +65,7 @@ namespace FAF.MapEditor
 			else if (RelativePath.EndsWith(".BP"))
 				PropPath = RelativePath.Replace(".BP", "");
 
-			GetGamedataFile.PropObject LoadedProp = GetGamedataFile.LoadProp(GetGamedataFile.MapScd, RelativePath);
+			GetGamedataFile.PropObject LoadedProp = GetGamedataFile.LoadProp(GetGamedataFile.MapScd, RelativePath, true);
 
 			GameObject NewButton = Instantiate(Prefab) as GameObject;
 			NewButton.transform.SetParent(Pivot, false);

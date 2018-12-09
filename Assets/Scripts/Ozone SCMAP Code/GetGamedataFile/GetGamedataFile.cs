@@ -26,6 +26,30 @@ public partial struct GetGamedataFile
 		LoadedTextures = new Dictionary<string, Texture2D>();
 	}
 
+	public static bool IsStoredInMemory(Texture2D Tex)
+	{
+		return LoadedTextures.ContainsValue(Tex);
+	}
+
+	public static void AddToMemory(string TextureKey, Texture2D texture)
+	{
+		LoadedTextures.Add(TextureKey, texture);
+	}
+
+	public static void RemoveFromMemory(Texture2D Tex)
+	{
+		if (LoadedTextures.ContainsValue(Tex))
+		{
+			foreach(KeyValuePair<string, Texture2D> mem in LoadedTextures)
+			{
+				if(mem.Value == Tex)
+				{
+
+				}
+			}
+		}
+	}
+
 	static Texture2D _EmptyNormal;
 	static Color NormalPixelColor = new Color(0.5f, 0.5f, 1, 0.5f);
 	static Texture2D emptyNormalTexture
@@ -33,12 +57,12 @@ public partial struct GetGamedataFile
 		get
 		{
 			if (_EmptyNormal == null) {
-				_EmptyNormal = new Texture2D(4, 4, TextureFormat.ARGB32, false);
+				_EmptyNormal = new Texture2D(4, 4, TextureFormat.ARGB32, true);
 				Color[] Colors = _EmptyNormal.GetPixels();
 				for (int i = 0; i < Colors.Length; i++)
 				Colors[i] = NormalPixelColor;
 				_EmptyNormal.SetPixels(Colors);
-				_EmptyNormal.Apply(_EmptyNormal.mipmapCount > 0, true);
+				_EmptyNormal.Apply(true);
 			}
 
 			return _EmptyNormal;
@@ -118,7 +142,7 @@ public partial struct GetGamedataFile
 		texture.Apply(false, SetUnreadable);
 
 		if (StoreInMemory)
-			LoadedTextures.Add(TextureKey, texture);
+			AddToMemory(TextureKey, texture);
 
 		return texture;
 	}
@@ -148,7 +172,7 @@ public partial struct GetGamedataFile
 	{
 		if (NormalMap)
 		{
-			ScmapEditor.Current.Textures[Id].Normal = LoadTexture2DFromGamedata(scd, LocalPath, NormalMap);
+			ScmapEditor.Current.Textures[Id].Normal = LoadTexture2DFromGamedata(scd, LocalPath, NormalMap, true, false);
 
 			if (ScmapEditor.Current.Textures[Id].Normal.width > 4 && ScmapEditor.Current.Textures[Id].Normal.height > 4 && ScmapEditor.Current.Textures[Id].Normal.mipmapCount <= 1)
 			{
@@ -158,7 +182,7 @@ public partial struct GetGamedataFile
 		}
 		else
 		{
-			ScmapEditor.Current.Textures[Id].Albedo = LoadTexture2DFromGamedata(scd, LocalPath, NormalMap);
+			ScmapEditor.Current.Textures[Id].Albedo = LoadTexture2DFromGamedata(scd, LocalPath, NormalMap, true, false);
 			if (ScmapEditor.Current.Textures[Id].Albedo.width > 4 && ScmapEditor.Current.Textures[Id].Albedo.height > 4 && ScmapEditor.Current.Textures[Id].Albedo.mipmapCount <= 1)
 			{
 				//Debug.Log("Force mipmaps: " + LocalPath + " has " + ScmapEditor.Current.Textures[Id].Albedo.mipmapCount + " mipmaps");

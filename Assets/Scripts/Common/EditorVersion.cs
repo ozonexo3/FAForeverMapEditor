@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.Networking;
 using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
@@ -13,7 +14,7 @@ public class EditorVersion : MonoBehaviour
 	//public const float VersionOffset = 0f; // Release
 
 	// Prerelease
-	public const string EditorBuildTag = "WIP1";
+	public const string EditorBuildTag = "WIP3";
 	public const float VersionOffset = -0.001f; // Prerelease
 
 	public static string LatestTag = "";
@@ -41,18 +42,20 @@ public class EditorVersion : MonoBehaviour
 	public string url = "https://github.com/ozonexo3/FAForeverMapEditor/releases/latest";
 	IEnumerator FindLatest()
 	{
-		using (WWW www = new WWW(url))
+		
+		//using (WWW www = new WWW(url))
+		using (UnityWebRequest www = new UnityWebRequest(url))
 		{
-			yield return www;
-			if (www.responseHeaders.Count > 0)
+			yield return www.SendWebRequest();
+
+			//yield return www;
+			/*if (www.responseHeaders.Count > 0)
 			{
-				/*
 				foreach (KeyValuePair<string, string> entry in www.responseHeaders)
 				{
 					Debug.Log(entry.Key + " = " + entry.Value);
 				}
-				*/
-			}
+			}*/
 			string[] Tags = www.url.Replace("\\", "/").Split("/".ToCharArray());
 
 			if (Tags.Length > 0)
@@ -60,10 +63,9 @@ public class EditorVersion : MonoBehaviour
 				LatestTag = Tags[Tags.Length - 1];
 				FoundUrl = www.url;
 
-
 				float Latest = BuildFloat(LatestTag);
-				float Current = BuildFloat(EditorBuildVersion) + VersionOffset;
-				if (Current < Latest)
+				float Current = BuildFloat(EditorBuildVersion);
+				if (Current + VersionOffset < Latest)
 				{
 					Debug.Log("New version avaiable: " + Latest);
 					GenericPopup.ShowPopup(GenericPopup.PopupTypes.TwoButton, "New version",
@@ -74,7 +76,7 @@ public class EditorVersion : MonoBehaviour
 				}
 				else
 				{
-					Debug.Log("Latest version: " + Mathf.Max(Latest, Current));
+					Debug.Log("Latest version: " + Mathf.Max(Latest, Current) + " " + EditorBuildTag);
 				}
 
 			}

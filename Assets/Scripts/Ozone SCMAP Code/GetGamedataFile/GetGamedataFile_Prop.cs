@@ -15,9 +15,37 @@ public partial struct GetGamedataFile
 	{
 		public PropBluePrint BP;
 
+		public bool IsTemp = false;
 
 		public PropGameObject CreatePropGameObject(Vector3 position, Quaternion rotation, Vector3 scale, bool AllowFarLod = true)
 		{
+
+			if (IsTemp)
+			{
+				IsTemp = false;
+				for(int i = 0; i < BP.LODs.Length; i++)
+				{
+					if (BP.LODs[i].Albedo != null)
+						AddToMemory(BP.LODs[i].AlbedoName, BP.LODs[i].Albedo);
+					else if (BP.LODs[i].AlbedoLoaded)
+					{
+						BP.LODs[i].Albedo = LoadTexture2DFromGamedata(GetGamedataFile.EnvScd, BP.LODs[i].AlbedoName, false, !IsTemp, true);
+						BP.LODs[i].Albedo.anisoLevel = 2;
+						BP.LODs[i].Mat.SetTexture("_MainTex", BP.LODs[i].Albedo);
+					}
+
+					if (BP.LODs[i].Normal != null)
+						AddToMemory(BP.LODs[i].NormalsName, BP.LODs[i].Normal);
+					else if (BP.LODs[i].NormalLoaded)
+					{
+						BP.LODs[i].Normal = LoadTexture2DFromGamedata(GetGamedataFile.EnvScd, BP.LODs[i].NormalsName, true, !IsTemp, true);
+						BP.LODs[i].NormalLoaded = BP.LODs[i].Normal != null;
+						BP.LODs[i].Normal.anisoLevel = 2;
+						BP.LODs[i].Mat.SetTexture("_BumpMap", BP.LODs[i].Normal);
+					}
+				}
+			}
+
 			//Reset scale, because it's not supported anyway
 			scale = Vector3.one;
 
@@ -129,6 +157,9 @@ public partial struct GetGamedataFile
 
 	public class BluePrintLoD
 	{
+		public bool AlbedoLoaded = false;
+		public bool NormalLoaded = false;
+
 		public string AlbedoName = "";
 		public string NormalsName = "";
 		public string SpecularName = "";
@@ -151,27 +182,29 @@ public partial struct GetGamedataFile
 		return path;
 	}
 
-	public static PropObject LoadProp(string scdPath)
+	public static PropObject LoadProp(string scdPath, bool IsTemp = false)
 	{
 		if (scdPath.StartsWith("maps"))
 			scdPath = "/" + scdPath;
 
 		if (scdPath.StartsWith("/maps")) { 
-			return LoadProp(GetGamedataFile.MapScd, scdPath);
+			return LoadProp(GetGamedataFile.MapScd, scdPath, IsTemp);
 		}
 		else
-			return LoadProp(GetGamedataFile.EnvScd, LocalBlueprintPath(scdPath));
+			return LoadProp(GetGamedataFile.EnvScd, LocalBlueprintPath(scdPath), IsTemp);
 	}
 
 	static Dictionary<string, PropObject> LoadedPropObjects = new Dictionary<string, PropObject>();
 
-	public static PropObject LoadProp(string scd, string LocalPath)
+	public static PropObject LoadProp(string scd, string LocalPath, bool IsTemp = false)
 	{
 		if (LoadedPropObjects.ContainsKey(LocalPath))
 			return LoadedPropObjects[LocalPath];
 
 
 		PropObject ToReturn = new PropObject();
+
+		ToReturn.IsTemp = IsTemp;
 
 		byte[] Bytes = LoadBytes(scd, LocalPath);
 		if (Bytes.Length == 0)
@@ -335,9 +368,11 @@ public partial struct GetGamedataFile
 				ToReturn.BP.LODs[i].AlbedoName = OffsetRelativePath(LocalPath, ToReturn.BP.LODs[i].AlbedoName, true);
 			}
 
-			ToReturn.BP.LODs[i].Albedo = LoadTexture2DFromGamedata(scd, ToReturn.BP.LODs[i].AlbedoName, false, true, true);
-			ToReturn.BP.LODs[i].Albedo.anisoLevel = 2;
-			ToReturn.BP.LODs[i].Mat.SetTexture("_MainTex", ToReturn.BP.LODs[i].Albedo);
+			ToReturn.BP.LODs[i].Albedo = LoadTexture2DFromGamedata(scd, ToReturn.BP.LODs[i].AlbedoName, false, !IsTemp, true);
+			ToReturn.BP.LODs[i].AlbedoLoaded = ToReturn.BP.LODs[i].Albedo != null;
+			if(ToReturn.BP.LODs[i].AlbedoLoaded)
+				ToReturn.BP.LODs[i].Albedo.anisoLevel = 2;
+				ToReturn.BP.LODs[i].Mat.SetTexture("_MainTex", ToReturn.BP.LODs[i].Albedo);
 
 
 			if (ToReturn.BP.LODs[i].ShaderName == "VertexNormal")
@@ -360,9 +395,13 @@ public partial struct GetGamedataFile
 
 			if (!string.IsNullOrEmpty(ToReturn.BP.LODs[i].NormalsName))
 			{
-				ToReturn.BP.LODs[i].Normal = LoadTexture2DFromGamedata(scd, ToReturn.BP.LODs[i].NormalsName, true, true, true);
-				ToReturn.BP.LODs[i].Normal.anisoLevel = 2;
-				ToReturn.BP.LODs[i].Mat.SetTexture("_BumpMap", ToReturn.BP.LODs[i].Normal);
+				ToReturn.BP.LODs[i].Normal = LoadTexture2DFromGamedata(scd, ToReturn.BP.LODs[i].NormalsName, true, !IsTemp, true);
+				ToReturn.BP.LODs[i].NormalLoaded = ToReturn.BP.LODs[i].Normal != null;
+				if (ToReturn.BP.LODs[i].NormalLoaded)
+				{
+					ToReturn.BP.LODs[i].Normal.anisoLevel = 2;
+					ToReturn.BP.LODs[i].Mat.SetTexture("_BumpMap", ToReturn.BP.LODs[i].Normal);
+				}
 			}
 		}
 		if(ToReturn.BP.LODs.Length <= 0){

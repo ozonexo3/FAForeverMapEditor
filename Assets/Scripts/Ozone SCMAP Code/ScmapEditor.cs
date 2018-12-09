@@ -502,6 +502,12 @@ public partial class ScmapEditor : MonoBehaviour
 
 		for (int i = 0; i < 8; i++)
 		{
+			if(!Textures[i + 1].Albedo.isReadable)
+			{
+				Debug.LogWarning("Assigned albedo texture is not readable! " + Textures[i + 1].AlbedoPath);
+				continue;
+			}
+
 			if (Textures[i + 1].Albedo.width <= 4 && Textures[i + 1].Albedo.height <= 4)
 				continue;
 
@@ -551,6 +557,12 @@ public partial class ScmapEditor : MonoBehaviour
 
 		for (int i = 0; i < 8; i++)
 		{
+			if (!Textures[i + 1].Normal.isReadable)
+			{
+				Debug.LogWarning("Assigned normal texture is not readable! " + Textures[i + 1].NormalPath);
+				continue;
+			}
+
 			if (Textures[i + 1].Normal == null)
 				continue;
 

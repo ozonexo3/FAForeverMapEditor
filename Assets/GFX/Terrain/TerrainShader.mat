@@ -251,10 +251,10 @@ Material:
     - _AreaX: 0
     - _AreaY: 76.8
     - _Brush: 0
-    - _BrushPainting: 0
+    - _BrushPainting: 1
     - _BrushSize: 0
-    - _BrushUvX: 0.2552806
-    - _BrushUvY: 0.37661758
+    - _BrushUvX: 0.36191007
+    - _BrushUvY: 0.47348782
     - _BuildGrid: 0
     - _DeepLevel: 1.675625
     - _DepthLevel: 1.5
@@ -274,25 +274,25 @@ Material:
     - _HideSplat8: 0
     - _HideTerrainType: 1
     - _LightingMultiplier: 1.27
-    - _LowerScale: 117.02857
-    - _LowerScaleNormal: 170.66667
+    - _LowerScale: 256
+    - _LowerScaleNormal: 117.02857
     - _Shininess: 0.03
     - _Slope: 0
-    - _Splat0Scale: 73.14286
-    - _Splat0ScaleNormal: 128
-    - _Splat1Scale: 102.4
-    - _Splat1ScaleNormal: 85.333336
-    - _Splat2Scale: 128
-    - _Splat2ScaleNormal: 128
-    - _Splat3Scale: 186.18182
-    - _Splat3ScaleNormal: 193.20753
-    - _Splat4Scale: 30.567163
-    - _Splat4ScaleNormal: 128
-    - _Splat5Scale: 102.4
-    - _Splat5ScaleNormal: 341.33334
-    - _Splat6Scale: 128
+    - _Splat0Scale: 256
+    - _Splat0ScaleNormal: 256
+    - _Splat1Scale: 292.57144
+    - _Splat1ScaleNormal: 89.04348
+    - _Splat2Scale: 60.952385
+    - _Splat2ScaleNormal: 512
+    - _Splat3Scale: 170.66667
+    - _Splat3ScaleNormal: 256
+    - _Splat4Scale: 256
+    - _Splat4ScaleNormal: 256
+    - _Splat5Scale: 256
+    - _Splat5ScaleNormal: 256
+    - _Splat6Scale: 256
     - _Splat6ScaleNormal: 256
-    - _Splat7Scale: 102.4
+    - _Splat7Scale: 256
     - _Splat7ScaleNormal: 256
     - _TTerrainXP: 0
     - _TerrainTypeCapacity: 0.228
