@@ -47,6 +47,8 @@ public class RenderMap : MonoBehaviour {
 				if (!path.EndsWith("/"))
 					path += "/";
 
+				path += MapLuaParser.Current.ScenarioFileName.Replace(".lua", "") + "_preview." + ((Png.isOn) ? ("png") : ("jpg"));
+
 				int width = Screen.width;
 				int height = Screen.height;
 
@@ -57,8 +59,18 @@ public class RenderMap : MonoBehaviour {
 				//Screen.SetResolution(Size, Size, false);
 				yield return null;
 				//Application.CaptureScreenshot(path + MapLuaParser.Current.ScenarioFileName.Replace(".lua", "") + "_preview." + ((Png.isOn) ? ("png") : ("jpg")), Scale);
-				CameraControler.Current.RenderCamera(Res, Res, path + MapLuaParser.Current.ScenarioFileName.Replace(".lua", "") + "_preview." + ((Png.isOn)?("png"):("jpg")));
-				yield return null;
+				//CameraControler.Current.RenderCamera(Res, Res, path);
+				//yield return null;
+
+				float Elevation = 0;
+				if (ScmapEditor.Current.map.Water.HasWater)
+				{
+					Elevation = ScmapEditor.Current.WaterLevel.position.y;
+				}
+
+				Texture2D screenShot = ScmapEditor.Current.PreviewRenderer.RenderPreview(Elevation, Res, Res, false, true);
+				CameraControler.SaveTexture(screenShot, path);
+
 				//Screen.SetResolution(width, height, false);
 				yield return null;
 

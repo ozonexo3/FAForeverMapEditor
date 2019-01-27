@@ -9,14 +9,14 @@ namespace EditMap.TerrainTypes
 {
     public class LayerSettingsItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
-        [SerializeField] private Text nameText;
-        [SerializeField] private Text styleText;
-        [SerializeField] private Image colorImage;
-        [SerializeField] private Image selectImage;
-        [SerializeField] private GameObject blockingImageGO;
+		public Text nameText;
+		public Text styleText;
+		public Image colorImage;
+		public Image selectImage;
+		public GameObject blockingImageGO;
 
-        [SerializeField] private RectTransform moreInfoRectTransform;
-        [SerializeField] private Toggle toggle;
+		public RectTransform moreInfoRectTransform;
+		public Toggle toggle;
 
         public Action<byte, bool> onActive;
         private Action<Rect, string, string> showMoreInfo;

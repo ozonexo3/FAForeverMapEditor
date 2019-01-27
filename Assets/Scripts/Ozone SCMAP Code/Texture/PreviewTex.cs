@@ -1,12 +1,16 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Experimental.Rendering;
 
 public class PreviewTex : MonoBehaviour {
 
 	public Camera Cam;
-	public RenderTexture RT;
 	public Color Empty;
+	public LayerMask Layers;
+	public LayerMask FullLayers;
+
+	public RenderTexture DefaultRenderTex;
 
 	static bool RenderingPreview = false;
 	public static bool IsPreview
@@ -22,7 +26,7 @@ public class PreviewTex : MonoBehaviour {
 		RenderingPreview = on;
 	}
 	
-	public Texture2D RenderPreview(float HeightOffset = 0, int Width = 256, int Height = 256, bool Flip = true) {
+	public Texture2D RenderPreview(float HeightOffset = 0, int Width = 256, int Height = 256, bool Flip = true, bool RenderEverything = false) {
 		RenderingPreview = true;
 
 		//Sbool Slope = ScmapEditor.Current.Slope;
@@ -32,6 +36,11 @@ public class PreviewTex : MonoBehaviour {
 		//ScmapEditor.Current.ToogleSlope(false);
 		//if(Grid)
 		//ScmapEditor.Current.ToogleGrid(false);
+
+		if(RenderEverything)
+			Cam.cullingMask = FullLayers;
+		else
+			Cam.cullingMask = Layers;
 
 		ScmapEditor.Current.TerrainMaterial.EnableKeyword("PREVIEW_ON");
 
@@ -44,7 +53,14 @@ public class PreviewTex : MonoBehaviour {
 		CamPos.y = distance + HeightOffset;
 		transform.position = CamPos;
 
-		
+		//Cam.targetTexture.width = Width;
+		//Cam.targetTexture.height = Height;
+
+		if(DefaultRenderTex.width != Width || DefaultRenderTex.height != Height)
+		{
+			Cam.targetTexture = new RenderTexture(Width, Height, DefaultRenderTex.depth, DefaultRenderTex.format);
+
+		}
 
 		RenderTexture currentActiveRT = RenderTexture.active;
 		RenderTexture.active = Cam.targetTexture;
@@ -66,11 +82,14 @@ public class PreviewTex : MonoBehaviour {
 			Colors[i] = Empty;
 		}
 		PreviewRender.SetPixels(Colors);
-		PreviewRender.Apply();
+		PreviewRender.Apply(false);
 		PreviewRender.ReadPixels(new Rect(0, 0, PreviewRender.width, PreviewRender.height), 0, 0, false);
-		PreviewRender.Apply();
+		PreviewRender.Apply(false);
 
 		RenderTexture.active = currentActiveRT;
+
+		Destroy(Cam.targetTexture);
+		Cam.targetTexture = DefaultRenderTex;
 
 		//if(Slope)
 		//ScmapEditor.Current.ToogleSlope(Slope);

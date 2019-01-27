@@ -327,6 +327,8 @@ namespace EditMap
 				MarkerSelectionOptions.UpdateOptions();
 
 				RenderMarkersConnections.Current.UpdateConnections();
+
+				
 			}
 		}
 

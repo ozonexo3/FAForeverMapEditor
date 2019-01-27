@@ -8,6 +8,7 @@ namespace EditMap
 {
 	public class MarkerLayersInfo : MonoBehaviour
 	{
+		public Toggle AllActive;
 
 		public Toggle BlankActive;
 		public Toggle SpawnActive;
@@ -29,8 +30,42 @@ namespace EditMap
 		public Toggle ExpandActive;
 		public Toggle OtherActive;
 
+		bool IgnoreEvent = false;
+		public void AllChanged()
+		{
+			if (IgnoreEvent)
+				return;
+			IgnoreEvent = true;
+
+			BlankActive.isOn = AllActive.isOn;
+			SpawnActive.isOn = AllActive.isOn;
+			ResourcesActive.isOn = AllActive.isOn;
+			CameraActive.isOn = AllActive.isOn;
+
+			LandNodesActive.isOn = AllActive.isOn;
+			AmphibiousNodesActive.isOn = AllActive.isOn;
+			NavalNodesActive.isOn = AllActive.isOn;
+			AirNodesActive.isOn = AllActive.isOn;
+			ConnectionsActive.isOn = AllActive.isOn;
+
+			RallyPointActive.isOn = AllActive.isOn;
+
+			CombatActive.isOn = AllActive.isOn;
+			DefenseActive.isOn = AllActive.isOn;
+			ProtExpActive.isOn = AllActive.isOn;
+			ExpandActive.isOn = AllActive.isOn;
+			OtherActive.isOn = AllActive.isOn;
+
+			IgnoreEvent = false;
+
+			ValuesChanged();
+		}
+
 		public void ValuesChanged()
 		{
+			if (IgnoreEvent)
+				return;
+
 			MarkersControler.Current.MarkerLayersSettings.Blank = BlankActive.isOn;
 			MarkersControler.Current.MarkerLayersSettings.Spawn = SpawnActive.isOn;
 			MarkersControler.Current.MarkerLayersSettings.Resource = ResourcesActive.isOn;
@@ -50,9 +85,38 @@ namespace EditMap
 			MarkersControler.Current.MarkerLayersSettings.Expand = ExpandActive.isOn;
 			MarkersControler.Current.MarkerLayersSettings.Other = OtherActive.isOn;
 
+			UpdateAllToggle();
+
 			MarkersControler.UpdateLayers();
 
-			MarkersInfo.Current.MarkerList.UpdateSelection();
+			//MarkersInfo.Current.MarkerList.UpdateSelection();
+		}
+
+		void UpdateAllToggle()
+		{
+			IgnoreEvent = true;
+			bool AllSet = BlankActive.isOn;
+			AllSet &= SpawnActive.isOn;
+			AllSet &= ResourcesActive.isOn;
+			AllSet &= CameraActive.isOn;
+
+			AllSet &= LandNodesActive.isOn;
+			AllSet &= AmphibiousNodesActive.isOn;
+			AllSet &= NavalNodesActive.isOn;
+			AllSet &= AirNodesActive.isOn;
+			AllSet &= ConnectionsActive.isOn;
+
+			AllSet &= RallyPointActive.isOn;
+
+			AllSet &= CombatActive.isOn;
+			AllSet &= DefenseActive.isOn;
+			AllSet &= ProtExpActive.isOn;
+			AllSet &= ExpandActive.isOn;
+			AllSet &= OtherActive.isOn;
+
+			AllActive.isOn = AllSet;
+
+			IgnoreEvent = false;
 		}
 	}
 }

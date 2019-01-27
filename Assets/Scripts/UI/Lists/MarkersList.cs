@@ -59,6 +59,8 @@ public class MarkersList : MonoBehaviour
 		{
 			int i = AllFields[g].InstanceId;
 
+			if (AllFields[g].ConnectedGameObject == null)
+				continue;
 
 			if (AllFields[g].gameObject.activeSelf != AllFields[g].ConnectedGameObject.activeSelf)
 				AllFields[g].gameObject.SetActive(AllFields[g].ConnectedGameObject.activeSelf);

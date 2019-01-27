@@ -198,6 +198,8 @@ namespace EditMap
 			SelectionManager.Current.SetAffectedGameObjects(AllObjects, SelectionManager.SelectionControlTypes.Props);
 			SelectionManager.Current.SetAffectedTypes(AllTypes);
 
+			AllowBrushUpdate = false;
+
 			//OnChangeFreeRotation();
 
 			if (ChangeControlerType.Current)
@@ -206,6 +208,10 @@ namespace EditMap
 
 		void GoToPainting()
 		{
+			PlacementManager.Clear();
+			SelectionManager.Current.CleanSelection();
+			SelectionManager.Current.SetAffectedGameObjects(new GameObject[0], SelectionManager.SelectionControlTypes.None);
+
 			BrushGenerator.Current.LoadBrushes();
 			TerrainMaterial.SetInt("_Brush", 1);
 
@@ -220,7 +226,7 @@ namespace EditMap
 
 		void Update()
 		{
-			if (Tabs[0].activeSelf && AllowBrushUpdate)
+			if (Tabs[1].activeSelf && AllowBrushUpdate)
 			{
 				BrushUpdate();
 			}

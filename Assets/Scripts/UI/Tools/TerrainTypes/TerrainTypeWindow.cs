@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 using Ozone.UI;
 using UnityEngine;
 using UnityEngine.UI;
 using ZkovCode.Utils;
-using Array = UnityScript.Lang.Array;
 
 namespace EditMap.TerrainTypes
 {
@@ -14,18 +12,21 @@ namespace EditMap.TerrainTypes
 	{
 		private static TerrainTypeWindow instance;
 
+		#pragma warning disable 0649
+		// https://issuetracker.unity3d.com/issues/serializedfield-fields-produce-field-is-never-assigned-to-dot-dot-dot-warning
+
 		//[SerializeField] private Editing editingTool;
 		//[SerializeField] private Material terrainMaterial;
 		//[SerializeField] private Camera camera;
 
 		[Header("Editor Settings")]
-		[SerializeField]
-		private LayerMask RayCastTerrainLayer;
+		[SerializeField] private LayerMask RayCastTerrainLayer;
 
 		[SerializeField] private LayersSettings layersSettings;
 		[SerializeField] private GameObject layerSettingsItemGO;
 
-		[Header("Settings")] [SerializeField] private UiTextField sizeField;
+		[Header("Settings")]
+		[SerializeField] private UiTextField sizeField;
 		[SerializeField] private UiTextField layerCapacityField;
 		[SerializeField] private Transform layersPivot;
 		[SerializeField] private ToggleGroup layersToggleGroup;
@@ -37,6 +38,7 @@ namespace EditMap.TerrainTypes
 		[SerializeField] private RectTransform moreInfoRectTransform;
 		[SerializeField] private Text indexMoreInfoText;
 		[SerializeField] private Text descriptionMoreInfoText;
+		#pragma warning restore 0649
 
 		private static TerrainTypeLayerSettings savedLayer;
 

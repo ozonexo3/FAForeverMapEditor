@@ -14,7 +14,7 @@ public class EditorVersion : MonoBehaviour
 	//public const float VersionOffset = 0f; // Release
 
 	// Prerelease
-	public const string EditorBuildTag = "WIP3";
+	public const string EditorBuildTag = "WIP4";
 	public const float VersionOffset = -0.001f; // Prerelease
 
 	public static string LatestTag = "";
@@ -42,9 +42,10 @@ public class EditorVersion : MonoBehaviour
 	public string url = "https://github.com/ozonexo3/FAForeverMapEditor/releases/latest";
 	IEnumerator FindLatest()
 	{
-		
+
 		//using (WWW www = new WWW(url))
-		using (UnityWebRequest www = new UnityWebRequest(url))
+		DownloadHandler dh = new DownloadHandlerBuffer();
+		using (UnityWebRequest www = new UnityWebRequest(url,"GET", dh, null))
 		{
 			yield return www.SendWebRequest();
 

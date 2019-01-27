@@ -12,7 +12,7 @@ namespace Ozone.UI
 		[Header("Config")]
 		public FieldTypes FieldType;
 		public float BeginValue;
-		[SerializeField] private string FiltredChars;
+		public string FiltredChars;
 		//public string Format = "N2";
 
 		[Header("UI")]

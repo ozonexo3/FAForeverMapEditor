@@ -140,19 +140,20 @@ public partial class CameraControler : MonoBehaviour {
 		return Current.transform.localPosition.y * 10;
 	}
 
-	public void RenderCamera(int resWidth, int resHeight, string path){
+	public IEnumerator RenderCamera(int resWidth, int resHeight, string path){
 		// Set Camera
 		Cam.orthographic = true;
 		Cam.orthographicSize = MapSize * 0.05f;
 		Pivot.localPosition = new Vector3(MapSize * 0.05f, 0, -MapSize * 0.05f);
 		Pivot.rotation = Quaternion.identity;
-
+		yield return null;
 		// Take Screenshoot
 		RenderTexture rt = new RenderTexture(resWidth, resHeight, 24);
 		Cam.targetTexture = rt;
 		Texture2D screenShot = new Texture2D(resWidth, resHeight, TextureFormat.RGB24, false);
 
 		PreviewTex.ForcePreviewMode(true);
+		Cam.rect = new Rect(0, 0, 1, 1);
 		Cam.Render();
 		PreviewTex.ForcePreviewMode(false);
 
@@ -161,14 +162,22 @@ public partial class CameraControler : MonoBehaviour {
 		Cam.targetTexture = null;
 		RenderTexture.active = null; // JC: added to avoid errors
 		Destroy(rt);
-		byte[] bytes;
-		if(path.Contains(".png")) bytes = screenShot.EncodeToPNG();
-		else bytes = screenShot.EncodeToJPG();
-		System.IO.File.WriteAllBytes(path, bytes);
+
+		yield return null;
+
+		SaveTexture(screenShot, path);
 
 		// Restart Camera
 		Cam.orthographic = false;
 		RestartCam();
+	}
+
+	public static void SaveTexture(Texture2D screenShot, string path)
+	{
+		byte[] bytes;
+		if (path.Contains(".png")) bytes = screenShot.EncodeToPNG();
+		else bytes = screenShot.EncodeToJPG();
+		System.IO.File.WriteAllBytes(path, bytes);
 	}
 
 	void Update () {
