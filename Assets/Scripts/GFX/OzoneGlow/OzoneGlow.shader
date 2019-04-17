@@ -57,12 +57,14 @@ Shader "Ozone/Glow PostProcess"
 			struct appdata
 			{
 				float4 vertex : POSITION;
+				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
 
 			struct v2f
 			{
 				float4 pos : SV_POSITION;
 				float4 uv : TEXCOORD1;
+				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
 
 			v2f vert(appdata v){

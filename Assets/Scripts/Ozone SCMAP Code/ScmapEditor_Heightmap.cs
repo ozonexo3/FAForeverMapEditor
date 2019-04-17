@@ -177,4 +177,12 @@ public partial class ScmapEditor : MonoBehaviour
 
 		return ReturnValues;
 	}
+
+	public static void SyncHeightmap(bool Flush = false)
+	{
+		//Teren.ApplyDelayedHeightmapModification();
+		Current.Data.SyncHeightmap();
+		if(Flush)
+			Current.Teren.Flush();
+	}
 }

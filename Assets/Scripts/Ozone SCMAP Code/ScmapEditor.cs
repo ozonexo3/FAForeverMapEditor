@@ -18,6 +18,7 @@ public partial class ScmapEditor : MonoBehaviour
 	[Header("Connections")]
 	public Camera Cam;
 	public Terrain Teren;
+	[System.NonSerialized]
 	public TerrainData Data;
 	public Transform WaterLevel;
 	public ResourceBrowser ResBrowser;
@@ -63,6 +64,7 @@ public partial class ScmapEditor : MonoBehaviour
 	{
 		Current = this;
 		ResBrowser.Instantiate();
+		Data = Teren.terrainData;
 		EnvPaths.CurrentGamedataPath = EnvPaths.GamedataPath;
 	}
 
@@ -215,7 +217,7 @@ public partial class ScmapEditor : MonoBehaviour
 		Teren.materialTemplate = TerrainMaterial;
 		Teren.heightmapPixelError = 4f;
 		Teren.basemapDistance = 10000;
-		Teren.castShadows = false;
+		Teren.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
 		Teren.drawTreesAndFoliage = false;
 		Teren.reflectionProbeUsage = UnityEngine.Rendering.ReflectionProbeUsage.Off;
 
@@ -240,7 +242,7 @@ public partial class ScmapEditor : MonoBehaviour
 		Data.RefreshPrototypes();
 		Teren.Flush();
 		Teren.UpdateGIMaterials();
-		Teren.ApplyDelayedHeightmapModification();
+		SyncHeightmap();
 
 		Teren.transform.localPosition = new Vector3(0, 0, -HalfzRes);
 

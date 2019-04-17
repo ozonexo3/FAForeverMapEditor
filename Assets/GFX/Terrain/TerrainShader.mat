@@ -251,10 +251,10 @@ Material:
     - _AreaX: 0
     - _AreaY: 76.8
     - _Brush: 0
-    - _BrushPainting: 1
+    - _BrushPainting: 0
     - _BrushSize: 0
-    - _BrushUvX: 0.31900424
-    - _BrushUvY: 0.36790445
+    - _BrushUvX: 0.056553967
+    - _BrushUvY: 0.24645151
     - _BuildGrid: 0
     - _DeepLevel: 1.675625
     - _DepthLevel: 1.5

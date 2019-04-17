@@ -88,8 +88,11 @@ public class PreviewTex : MonoBehaviour {
 
 		RenderTexture.active = currentActiveRT;
 
-		Destroy(Cam.targetTexture);
-		Cam.targetTexture = DefaultRenderTex;
+		if (Cam.targetTexture != DefaultRenderTex)
+		{
+			Destroy(Cam.targetTexture);
+			Cam.targetTexture = DefaultRenderTex;
+		}
 
 		//if(Slope)
 		//ScmapEditor.Current.ToogleSlope(Slope);

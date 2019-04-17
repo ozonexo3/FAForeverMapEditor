@@ -185,8 +185,8 @@ namespace EditMap
 
 			if (PaintStarted && Input.GetMouseButtonUp(0))
 			{
-				ScmapEditor.Current.Teren.ApplyDelayedHeightmapModification();
-				ScmapEditor.Current.Teren.Flush();
+				ScmapEditor.SyncHeightmap(true);
+				
 			}
 
 			if (Edit.MauseOnGameplay || ChangingStrength || ChangingSize)

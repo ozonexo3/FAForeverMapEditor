@@ -123,8 +123,10 @@ public class RenderMarkersWarnings : MonoBehaviour {
 		if (Pivot == null)
 			return;
 
-		var position = Cam.WorldToScreenPoint(Pivot.position);
-		var textSize = GUI.skin.label.CalcSize(new GUIContent(text));
+		Vector3 position = Cam.WorldToScreenPoint(Pivot.localPosition);
+		if (position.z < 0)
+			return;
+		Vector2 textSize = GUI.skin.label.CalcSize(new GUIContent(text));
 		GUI.Label(new Rect(position.x - CamRect.x, (Screen.height - position.y), textSize.x, textSize.y), text, Style);
 	}
 }
