@@ -656,7 +656,7 @@ PlayerSettings:
   scriptingBackend:
     Android: 0
     PS4: 0
-    Standalone: 1
+    Standalone: 0
     WP8: 2
     WebGL: 1
     Windows Store Apps: 1

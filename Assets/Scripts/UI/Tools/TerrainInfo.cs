@@ -122,10 +122,8 @@ namespace EditMap
 		{
 			Clean();
 
-			StructurePath = Application.dataPath + "/Structure/"; ;
-#if UNITY_EDITOR
-			StructurePath = StructurePath.Replace("Assets", "");
-#endif
+			StructurePath = MapLuaParser.GetDataPath() + "/Structure/"; ;
+
 			StructurePath += "brush";
 
 			if (!Directory.Exists(StructurePath))

@@ -23,14 +23,20 @@ public class BuildWithResources : MonoBehaviour
 		//proc.Start();
 	}
 
+	const string BUILDPATH_PP = "BILDPATH";
+
 	[MenuItem("Build/Windows with resources (64bit)")]
 	public static void BuildSettings64()
 	{
 		// Get filename
-		string path = EditorUtility.SaveFolderPanel("Choose Location of Built Game", "", "");
+		string path = PlayerPrefs.GetString(BUILDPATH_PP, "");
+
+		path = EditorUtility.SaveFolderPanel("Choose Location of Built Game", path, "");
 
 		if (string.IsNullOrEmpty(path))
 			return;
+
+		PlayerPrefs.SetString(BUILDPATH_PP, path);
 
 		string[] levels = new string[] { "Assets/Preload.unity", "Assets/MapEditor.unity" };
 

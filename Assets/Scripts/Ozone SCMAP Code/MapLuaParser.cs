@@ -97,10 +97,7 @@ public partial class MapLuaParser : MonoBehaviour
 			EnvPaths.SetInstalationPath(EnvPaths.DefaultGamedataPath);
 		}
 
-		StructurePath = Application.dataPath + "/Structure/"; ;
-#if UNITY_EDITOR
-		StructurePath = StructurePath.Replace("Assets", "");
-#endif
+		StructurePath = GetDataPath() + "/Structure/"; ;
 	}
 
 	public static bool IsMapLoaded
@@ -514,22 +511,32 @@ public partial class MapLuaParser : MonoBehaviour
 
 	void GenerateBackupPath()
 	{
-		string BackupId = System.DateTime.Now.Month.ToString() + System.DateTime.Now.Day.ToString() + System.DateTime.Now.Hour.ToString() + System.DateTime.Now.Minute.ToString() + System.DateTime.Now.Second.ToString();
+		string BackupId = 
 
 		BackupPath = EnvPaths.GetBackupPath();
 		if (string.IsNullOrEmpty(BackupPath))
 		{
-			BackupPath = Application.dataPath + "/MapsBackup/";
-#if UNITY_EDITOR
-			BackupPath = BackupPath.Replace("Assets/", "");
-#endif
-			//BackupPath = FolderParentPath;
+			BackupPath = GetDataPath() + "/MapsBackup/";
 		}
 
 		BackupPath += FolderName + "/Backup_" + BackupId;
 
 		if (BackupFiles && !System.IO.Directory.Exists(BackupPath))
 			System.IO.Directory.CreateDirectory(BackupPath);
+	}
+
+	public static string GetUniqueId()
+	{
+		return System.DateTime.Now.Month.ToString() + System.DateTime.Now.Day.ToString() + System.DateTime.Now.Hour.ToString() + System.DateTime.Now.Minute.ToString() + System.DateTime.Now.Second.ToString();
+	}
+
+	public static string GetDataPath()
+	{
+		string Path = Application.dataPath;
+#if UNITY_EDITOR
+		Path = Path.Replace("/Assets", "");
+#endif
+		return Path;
 	}
 
 	public void SaveScmap()

@@ -9,17 +9,83 @@ using SFB;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
+using Ozone.UI;
 
 namespace UI.Windows
 {
 	public class UploadMapPopUp : MonoBehaviour
 	{
-		public InputField BaseUrlInputField;
-		public InputField MapFolderPathInputField;
+		//public InputField BaseUrlInputField;
+		public UiTextField MapFolderPathInputField;
 		public Toggle RankedToggle;
 		public Text ErrorText;
-		public InputField UsernameInputField;
-		public InputField PasswordInputField;
+		public UiTextField UsernameInputField;
+		public UiTextField PasswordInputField;
+
+		public UploadConfigData Config = new UploadConfigData();
+
+		public class UploadConfigData
+		{
+			public string ClientIdentifier = "";
+			public string ClientCredentialApplicator = "";
+			public string ApiUrl = "";
+
+			static string filePath {
+				get {
+					return MapLuaParser.GetDataPath() + "/Structure/MapUpload/config.txt";
+				}
+			}
+
+			public void TryLoad()
+			{
+				string PathToSave = filePath;
+				if (File.Exists(PathToSave))
+				{
+					string data = File.ReadAllText(PathToSave);
+
+					UploadConfigData ucd = JsonUtility.FromJson<UploadConfigData>(data);
+					ClientIdentifier = ucd.ClientIdentifier;
+					ClientCredentialApplicator = ucd.ClientCredentialApplicator;
+					ApiUrl = ucd.ApiUrl;
+				}
+				else
+				{
+					Debug.LogError("Map Upload Config file not found: " + PathToSave);
+					SetDefaults();
+				}
+			}
+
+			public void Save()
+			{
+				string PathToSave = filePath;
+				string data = JsonUtility.ToJson(this);
+				if (!Directory.Exists(Path.GetDirectoryName(PathToSave)))
+				{
+					Directory.CreateDirectory(Path.GetDirectoryName(PathToSave));
+				}
+				File.WriteAllText(PathToSave, data);
+				Debug.Log("Config saved: " + PathToSave);
+			}
+
+			public void SetDefaults()
+			{
+				ClientIdentifier = "0db32c56-c43f-41f3-b875-322846a46dff";
+				ClientCredentialApplicator = "d020a6d7-d518-4509-b43e-b2f577b5d45e";
+				ApiUrl = "https://api.faforever.com";
+			}
+
+		}
+
+		void Awake()
+		{
+			//Create default file
+			//Config.SetDefaults();
+			//Config.Save();
+
+			if (Config == null)
+				Config = new UploadConfigData();
+			Config.TryLoad();
+		}
 
 		public void SetMapFolderClicked()
 		{
@@ -32,7 +98,7 @@ namespace UI.Windows
 
 			if (paths.Length != 0 && paths[0] != null)
 			{
-				MapFolderPathInputField.text = Path.GetDirectoryName(paths[0]);
+				MapFolderPathInputField.SetValue(Path.GetDirectoryName(paths[0]));
 			}
 		}
 
@@ -43,7 +109,7 @@ namespace UI.Windows
 			if (!CheckUserInput()) return;
 			string uniqueTempPathInProject = GetUniqueTempPath() + ".zip";
 			string tempPathForWrapperFolder = GetUniqueTempPath();
-			DirectoryCopyWithSourceFolder(MapFolderPathInputField.text, tempPathForWrapperFolder, true);
+			FileDirectory.DirectoryCopyWithSourceFolder(MapFolderPathInputField.text, tempPathForWrapperFolder, true);
 
 			//Move Map Folder into a wrapper folder so map folder lies within the zip
 			try
@@ -79,7 +145,7 @@ namespace UI.Windows
 			httpClient.DefaultRequestHeaders.Add("Accept", "application/json");
 			try
 			{
-				HttpResponseMessage res = httpClient.PostAsync(BaseUrlInputField.text + "/maps/upload", form).Result;
+				HttpResponseMessage res = httpClient.PostAsync(Config.ApiUrl + "/maps/upload", form).Result;
 				try
 				{
 					res.EnsureSuccessStatusCode();
@@ -107,7 +173,7 @@ namespace UI.Windows
 				OnError("Please select a map to upload");
 				return false;
 			}
-			if (string.IsNullOrEmpty(BaseUrlInputField.text))
+			if (string.IsNullOrEmpty(Config.ApiUrl))
 			{
 				OnError("Please enter an upload target e.g. https://api.faforever.com");
 				return false;
@@ -137,15 +203,15 @@ namespace UI.Windows
 		{
 			var server = new AuthorizationServerDescription
 			{
-				TokenEndpoint = new Uri(BaseUrlInputField.text + "/oauth/token"),
+				TokenEndpoint = new Uri(Config.ApiUrl + "/oauth/token"),
 				ProtocolVersion = ProtocolVersion.V20
 			};
 
 			var client = new UserAgentClient(server)
 			{
 				//Those are the credentials for Downlords-FAF-Client
-				ClientIdentifier = "0db32c56-c43f-41f3-b875-322846a46dff",
-				ClientCredentialApplicator = ClientCredentialApplicator.PostParameter("d020a6d7-d518-4509-b43e-b2f577b5d45e")
+				ClientIdentifier = Config.ClientIdentifier,
+				ClientCredentialApplicator = ClientCredentialApplicator.PostParameter(Config.ClientCredentialApplicator)
 			};
 
 			var token = client.ExchangeUserCredentialForToken(
@@ -154,58 +220,14 @@ namespace UI.Windows
 			return token;
 		}
 
-		//Copied from StackOverFlow
-		private static void DirectoryCopyWithSourceFolder(string sourceDirName, string destDirName, bool copySubDirs)
+		private static string GetUniqueTempPath()
 		{
-			var newDest = Path.Combine(destDirName, Path.GetFileName(sourceDirName));
-			Directory.CreateDirectory(newDest);
-			DirectoryCopy(sourceDirName, newDest, copySubDirs);
-		}
-
-		private static void DirectoryCopy(string sourceDirName, string destDirName, bool copySubDirs)
-		{
-			// Get the subdirectories for the specified directory.
-			DirectoryInfo dir = new DirectoryInfo(sourceDirName);
-
-			if (!dir.Exists)
-			{
-				throw new DirectoryNotFoundException(
-					"Source directory does not exist or could not be found: "
-					+ sourceDirName);
-			}
-
-			DirectoryInfo[] dirs = dir.GetDirectories();
-			// If the destination directory doesn't exist, create it.
-			if (!Directory.Exists(destDirName))
-			{
-				Directory.CreateDirectory(destDirName);
-			}
-
-			// Get the files in the directory and copy them to the new location.
-			FileInfo[] files = dir.GetFiles();
-			foreach (FileInfo file in files)
-			{
-				string tempPath = Path.Combine(destDirName, file.Name);
-				file.CopyTo(tempPath, false);
-			}
-
-			// If copying subdirectories, copy them and their contents to new location.
-			if (copySubDirs)
-			{
-				foreach (DirectoryInfo subdir in dirs)
-				{
-					string temppath = Path.Combine(destDirName, subdir.Name);
-					DirectoryCopy(subdir.FullName, temppath, copySubDirs);
-				}
-			}
-		}
-		static string GetUniqueTempPath()
-		{
+			string BackupPath = Application.dataPath;
 #if UNITY_EDITOR
-			return FileUtil.GetUniqueTempPathInProject();
-#else
-			return Application.dataPath + "/Structure/MapUpload/Temp/TempFile";
+			BackupPath = BackupPath.Replace("Assets/", "TempMapUpload/");
 #endif
+			return BackupPath + "/Structure/MapUpload/Temp/TempFile_" + MapLuaParser.GetUniqueId();
+
 		}
 
 	}

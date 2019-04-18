@@ -1,0 +1,1 @@
+{"ClientIdentifier":"0db32c56-c43f-41f3-b875-322846a46dff","ClientCredentialApplicator":"d020a6d7-d518-4509-b43e-b2f577b5d45e","ApiUrl":"https://api.faforever.com"}
