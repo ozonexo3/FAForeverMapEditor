@@ -49,9 +49,9 @@ namespace EditMap
 		public Mesh NoPropMesh;
 		public Material NoPropMaterial;
 
-		float TotalMassCount = 0;
-		float TotalEnergyCount = 0;
-		float TotalReclaimTime = 0;
+		public static float TotalMassCount { get; private set; } = 0;
+		public static float TotalEnergyCount { get; private set; } = 0;
+		public static float TotalReclaimTime { get; private set; } = 0;
 
 		const int SelectedFalloff = 0;
 
@@ -220,8 +220,6 @@ namespace EditMap
 			TerrainMaterial.SetTexture("_BrushTex", (Texture)BrushGenerator.Current.Brushes[SelectedFalloff]);
 			AllowBrushUpdate = true;
 			UndoRegistered = false;
-
-
 		}
 
 		void Update()
@@ -249,9 +247,9 @@ namespace EditMap
 			AllPropsTypes = new List<PropTypeGroup>();
 			if (Current)
 			{
-				Current.TotalMassCount = 0;
-				Current.TotalEnergyCount = 0;
-				Current.TotalReclaimTime = 0;
+				TotalMassCount = 0;
+				TotalEnergyCount = 0;
+				TotalReclaimTime = 0;
 			}
 		}
 

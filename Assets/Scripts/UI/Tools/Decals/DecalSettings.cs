@@ -331,9 +331,11 @@ namespace EditMap
 
 		public void DropTex1()
 		{
-
+			if (ResourceBrowser.DragedObject == null)
+				return;
 			if (Loaded == null || !ResourceBrowser.Current.gameObject.activeSelf && ResourceBrowser.DragedObject || ResourceBrowser.DragedObject.ContentType != ResourceObject.ContentTypes.Decal)
 				return;
+
 			if (ResourceBrowser.SelectedCategory == 2)
 			{
 
@@ -351,6 +353,8 @@ namespace EditMap
 		
 		public void DropTex2()
 		{
+			if (ResourceBrowser.DragedObject == null)
+				return;
 			if (Loaded == null || !ResourceBrowser.Current.gameObject.activeSelf && ResourceBrowser.DragedObject || ResourceBrowser.DragedObject.ContentType != ResourceObject.ContentTypes.Decal)
 				return;
 			if (ResourceBrowser.SelectedCategory == 2)

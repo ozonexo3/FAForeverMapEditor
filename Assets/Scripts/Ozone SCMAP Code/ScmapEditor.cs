@@ -261,7 +261,8 @@ public partial class ScmapEditor : MonoBehaviour
 			{
 				localY = (int)(((heightsLength - 1) - y) * HeightWidthMultiply);
 
-				heights[y, x] = (float)((((double)map.GetHeight(x, localY)) / HeightResize));
+				//heights[y, x] = (float)((((double)map.GetHeight(x, localY)) / HeightResize));
+				heights[y, x] = (float)(map.GetHeight(x, localY) / HeightResize); // 65536.0 / 2.0 // 32768.0
 
 				if (HeightWidthMultiply == 0.5f && y > 0 && y % 2f == 0)
 				{
@@ -610,8 +611,9 @@ public partial class ScmapEditor : MonoBehaviour
 
 	#region Saving
 	public static float TerrainHeight = 12.5f;
-	const double HeightResize = 128.0 * 256.0; //512 * 40;
-	public const double RoundingError = 0.5;
+	//const double HeightResize = 128.0 * 256.0; //512 * 40;
+	public const double HeightResize = 32768.0; //512 * 40;
+	//public const double RoundingError = 0.5;
 	public const float MaxElevation = 256;
 
 	public void SaveScmapFile()
@@ -635,8 +637,9 @@ public partial class ScmapEditor : MonoBehaviour
 					LowestElevation = Mathf.Min(LowestElevation, Height);
 					HighestElevation = Mathf.Max(HighestElevation, Height);
 
-					double HeightValue = ((double)Height) * HeightResize;
-					map.SetHeight(y, map.Height - x, (short)(HeightValue + RoundingError));
+					//double HeightValue = ((double)Height) * HeightResize;
+					//map.SetHeight(y, map.Height - x, (short)(HeightValue + RoundingError));
+					map.SetHeight(y, map.Height - x, (ushort)(Height * HeightResize));
 				}
 			}
 		}

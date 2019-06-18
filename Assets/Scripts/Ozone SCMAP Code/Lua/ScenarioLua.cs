@@ -35,6 +35,7 @@ namespace MapLua
 			public string map;
 			public string script;
 			public int[] Size = new int[0];
+			public float[] Reclaim = new float[0];
 			public float MaxHeight = 128;
 			public float norushradius = 40;
 			//public NoRusnOffset[] NoRushOffsets = new NoRusnOffset[0];
@@ -51,6 +52,7 @@ namespace MapLua
 			public const string KEY_MAP = "map";
 			public const string KEY_SCRIPT = "script";
 			public const string KEY_SIZE = "size";
+			public const string KEY_RECLAIM = "reclaim";
 			public const string KEY_CONFIGURATIONS = "Configurations";
 			public const string KEY_EXTRAARMIES = "ExtraArmies";
 		}
@@ -406,6 +408,12 @@ namespace MapLua
 			Data.script = LuaParser.Read.StringFromTable(ScenarioInfoTab, ScenarioInfo.KEY_SCRIPT, "");
 			Data.Size = LuaParser.Read.IntArrayFromTable((LuaTable)ScenarioInfoTab.RawGet(ScenarioInfo.KEY_SIZE), 512);
 
+			object ReclaimTable = ScenarioInfoTab.RawGet(ScenarioInfo.KEY_RECLAIM);
+			if (ReclaimTable != null)
+				Data.Reclaim = LuaParser.Read.FloatArrayFromTable((LuaTable)ReclaimTable, 0);
+			else
+				Data.Reclaim = new float[2];
+
 			Data.MaxHeight = 128;
 			//CamControll.MapSize = Mathf.Max(ScenarioData.Size.x, ScenarioData.Size.y);
 			//CamControll.RestartCam();
@@ -520,6 +528,8 @@ namespace MapLua
 				LuaFile.AddLine(LuaParser.Write.BoolToLua(ScenarioInfo.KEY_STARTS, Data.starts));
 
 				LuaFile.AddLine(LuaParser.Write.IntArrayToLua(ScenarioInfo.KEY_SIZE, Data.Size));
+
+				LuaFile.AddLine(LuaParser.Write.FloatArrayToLua(ScenarioInfo.KEY_RECLAIM, Data.Reclaim));
 
 				LuaFile.AddLine(LuaParser.Write.StringToLua(ScenarioInfo.KEY_MAP, Data.map));
 				LuaFile.AddLine(LuaParser.Write.StringToLua(ScenarioInfo.KEY_SAVE, Data.save));

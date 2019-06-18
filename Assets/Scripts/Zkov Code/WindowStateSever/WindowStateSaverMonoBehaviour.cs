@@ -4,19 +4,22 @@ namespace WindowStateSever
 {
     public class WindowStateSaverMonoBehaviour : MonoBehaviour
     {
-        private void Start()
+        public void Init()
         {
 			DontDestroyOnLoad(gameObject);
-			Screen.SetResolution(1280, 768, false);
-			Screen.fullScreenMode = FullScreenMode.Windowed;
+			//Screen.SetResolution(1280, 768, false);
+			//Screen.fullScreenMode = FullScreenMode.Windowed;
+			if (Screen.fullScreen)
+				Screen.fullScreen = false;
 			
-
-			WindowStateSaver.Restore();
+			if(!Screen.fullScreen)
+				WindowStateSaver.Restore();
         }
 
         private void OnApplicationQuit()
         {
-            WindowStateSaver.Save();
+			if (!Screen.fullScreen)
+				WindowStateSaver.Save();
         }
     }
 }

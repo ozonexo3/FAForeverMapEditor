@@ -35,7 +35,7 @@ public class Map
 
 	public Texture2D PreviewTex;
 	[HideInInspector]
-	public short[] HeightmapData = new short[0];
+	public ushort[] HeightmapData = new ushort[0];
     public short HeightMin;
     public short HeightMax;
 
@@ -126,7 +126,7 @@ public class Map
 
 		TerrainTypeData = new byte[Height * Width];
 //		TerrainTypeData = new List<byte>();
-        HeightmapData = new short[(Height + 1) * (Width + 1)];
+        HeightmapData = new ushort[(Height + 1) * (Width + 1)];
         WaterDepthBiasMask = new byte[(Height * Width) / 4];
         WaterFlatnessMask = new byte[(Height * Width) / 4];
         WaterFoamMask = new byte[(Height * Width) / 4];
@@ -212,7 +212,7 @@ public class Map
 
 		TerrainTypeData = new byte[Height * Width];
 //		TerrainTypeData = new List<byte>();
-		HeightmapData = new short[(Height + 1) * (Width + 1)];
+		HeightmapData = new ushort[(Height + 1) * (Width + 1)];
 		WaterDepthBiasMask = new byte[(Height * Width) / 4];
 		WaterFlatnessMask = new byte[(Height * Width) / 4];
 		WaterFoamMask = new byte[(Height * Width) / 4];
@@ -228,7 +228,7 @@ public class Map
 		HeightConversion /= 10f;
 
 
-		short InitialHeightValue = (short)((HeightConversion * HeightResize) + 0.5f);
+		ushort InitialHeightValue = (ushort)((HeightConversion * HeightResize) + 0.5f);
 		Debug.Log(InitialHeightValue);
 
 		for (int i = 0; i < HeightmapData.Length; i++)
@@ -398,11 +398,11 @@ public class Map
 		return (x + y * (Width + 1));
 	}
 
-    public short GetHeight(int x, int y)
+    public ushort GetHeight(int x, int y)
     {
         return HeightmapData[HeightmapId(x, y)];
     }
-    public void SetHeight(int x, int y, short value)
+    public void SetHeight(int x, int y, ushort value)
     {
 		//Debug.Log("change value " + value);
     	HeightmapData[HeightmapId(x, y)] = value;
@@ -426,7 +426,7 @@ public class Map
         if (TexturemapTex2 != null) { TexturemapTex2 = null; }
         if (NormalmapTex != null) { NormalmapTex = null; }
 
-        HeightmapData = new short[0];
+        HeightmapData = new ushort[0];
 
         Width = 0;
         Height = 0;
@@ -513,8 +513,14 @@ public class Map
             Height = _with1.ReadInt32();
 
             HeightScale = _with1.ReadSingle();
-            //Height Scale, usually 1/128
-            HeightmapData = _with1.ReadInt16Array((Height + 1) * (Width + 1));//TODO: Current saving method gets a memory overload on trying to reload the map here.
+			//Height Scale, usually 1/128
+
+			HeightmapData = new ushort[(Height + 1) * (Width + 1)];
+			for(int i = 0; i < HeightmapData.Length; i++)
+			{
+				HeightmapData[i] = _with1.ReadUInt16();
+			}
+			//HeightmapData = _with1.ReadInt16Array((Height + 1) * (Width + 1));//TODO: Current saving method gets a memory overload on trying to reload the map here.
 																			  //heightmap dimension is always 1 more than texture dimension!
 
 			if (VersionMinor >= 56)
@@ -999,7 +1005,12 @@ public class Map
         _with2.Write(Height);
         _with2.Write(HeightScale);
         //Height Scale, usually 1/128
-        _with2.Write(HeightmapData);
+        //_with2.Write(HeightmapData);
+
+		for(int i = 0; i < HeightmapData.Length; i++)
+		{
+			_with2.Write(HeightmapData[i]);
+		}
 
 		if (MapFileVersion >= 56)
 		{

@@ -101,7 +101,6 @@ namespace EditMap
 		GameObject[] AllObjects;
 		public void GoToSelection()
 		{
-
 			PlacementManager.Clear();
 			SelectionManager.Current.CleanSelection();
 
@@ -140,6 +139,19 @@ namespace EditMap
 			Page[CurrentPage].SetActive(true);
 			PageSelected[CurrentPage].SetActive(true);
 			TerrainPageChange = false;
+		}
+
+		public static void GetTotalUnitsReclaim(out float Mass, out float Energy)
+		{
+			Mass = 0;
+			Energy = 0;
+
+			foreach(GameObject obj in UnitInstance.AllUnitInstances)
+			{
+				UnitInstance UI = obj.GetComponent<UnitInstance>();
+				Mass += UI.UnitRenderer.BP.BuildCostMass * UI.UnitRenderer.BP.Wreckage_MassMult;
+				Energy += UI.UnitRenderer.BP.BuildCostEnergy * UI.UnitRenderer.BP.Wreckage_EnergyMult;
+			}
 		}
 
 	}

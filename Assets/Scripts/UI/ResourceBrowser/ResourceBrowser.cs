@@ -136,11 +136,8 @@ namespace FAF.MapEditor
 				return;
 			}
 
-
-
-
+			HashSet<string> LoadedDirectorys = new HashSet<string>();
 			ZipFile zf = GetGamedataFile.GetZipFileInstance(GetGamedataFile.EnvScd);
-
 			foreach (ZipEntry zipEntry in zf)
 			{
 				if (!zipEntry.IsDirectory)
@@ -150,8 +147,10 @@ namespace FAF.MapEditor
 
 				string LocalName = zipEntry.Name.Replace("env/", "");
 
-				if (LocalName.Length == 0)
+				if (string.IsNullOrEmpty(LocalName))
 					continue;
+
+				LoadedDirectorys.Add(LocalName);
 
 				int ContSeparators = 0;
 				char Separator = ("/")[0];
@@ -173,6 +172,47 @@ namespace FAF.MapEditor
 				Dropdown.OptionData NewOptionInstance = new Dropdown.OptionData(LocalName);
 				NewOptions.Add(NewOptionInstance);
 			}
+
+			// FAF
+			zf = GetGamedataFile.GetFAFZipFileInstance(GetGamedataFile.EnvScd);
+			foreach (ZipEntry zipEntry in zf)
+			{
+				if (!zipEntry.IsDirectory)
+				{
+					continue;
+				}
+
+				string LocalName = zipEntry.Name.Replace("env/", "");
+
+				if (string.IsNullOrEmpty(LocalName))
+					continue;
+
+				if (LoadedDirectorys.Contains(LocalName))
+					continue;
+
+				LoadedDirectorys.Add(LocalName);
+
+				int ContSeparators = 0;
+				char Separator = ("/")[0];
+				for (int i = 0; i < LocalName.Length; i++)
+				{
+					if (LocalName[i] == Separator)
+					{
+						ContSeparators++;
+						if (ContSeparators > 1)
+							break;
+					}
+				}
+				if (ContSeparators > 1)
+					continue;
+
+				LocalName = LocalName.Replace("/", "");
+
+				LoadedEnvPaths.Add(LocalName);
+				Dropdown.OptionData NewOptionInstance = new Dropdown.OptionData(LocalName);
+				NewOptions.Add(NewOptionInstance);
+			}
+
 
 			LoadedEnvPaths.Add(CurrentMapFolderPath);
 			Dropdown.OptionData NewOptionInstance2 = new Dropdown.OptionData("Map folder");
@@ -582,7 +622,7 @@ namespace FAF.MapEditor
 							{
 								continue;
 							}
-							Debug.Log("New faf file: " + Current.Name);
+							//Debug.Log("New faf file: " + Current.Name);
 
 							if (Breaked)
 								break;

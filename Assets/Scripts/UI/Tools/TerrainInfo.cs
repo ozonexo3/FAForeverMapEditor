@@ -458,9 +458,6 @@ namespace EditMap
 			OnTerrainChanged();
 		}
 
-		//public const uint HeightConversion = 256 * (256 + 64); //0xFFFF
-		public const uint HeightConversion = 256 * (512 + 0); //0xFFFF
-
 		public void ExportHeightmap()
 		{
 			//string Filename = EnvPaths.GetMapsPath() + MapLuaParser.Current.FolderName + "/heightmap.raw";
@@ -494,8 +491,8 @@ namespace EditMap
 					{
 						// float v = (float)(((double)reader.ReadUInt16() - 0.5) / (double)HeightConversion); << Import
 
-						uint ThisPixel = (uint)((double)data[h - (y + 1), x] * (double)HeightConversion + 0.5);
-						writer.Write(System.BitConverter.GetBytes(System.BitConverter.ToUInt16(System.BitConverter.GetBytes(ThisPixel), 0)));
+						ushort ThisPixel = (ushort)(data[h - (y + 1), x] * ScmapEditor.HeightResize);
+						writer.Write(System.BitConverter.GetBytes(ThisPixel));
 					}
 				}
 				writer.Close();
@@ -595,8 +592,8 @@ namespace EditMap
 						//float value = (pixel.r + pixel.g * (1f / 255f));
 						float value = pixel.r;
 						//uint ThisPixel = (uint)(value * HeightConversion);
-						uint ThisPixel = (uint)((double)value * (double)HeightConversion + 0.5);
-						writer.Write(System.BitConverter.GetBytes(System.BitConverter.ToUInt16(System.BitConverter.GetBytes(ThisPixel), 0)));
+						ushort ThisPixel = (ushort)(value * ScmapEditor.HeightResize);
+						writer.Write(System.BitConverter.GetBytes(ThisPixel));
 					}
 				}
 				writer.Close();
@@ -676,7 +673,7 @@ namespace EditMap
 					{
 						for (int x = 0; x < w; x++)
 						{
-							float v = (float)(((double)reader.ReadUInt16() - 0.5) / (double)HeightConversion);
+							float v = (float)(reader.ReadUInt16() / ScmapEditor.HeightResize);
 							data[h - (y + 1), x] = v;
 						}
 					}

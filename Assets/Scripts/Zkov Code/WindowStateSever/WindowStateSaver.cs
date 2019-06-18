@@ -4,7 +4,8 @@ using UnityEngine;
 
 namespace WindowStateSever
 {
-    public static class WindowStateSaver
+#pragma warning disable 0162
+	public static class WindowStateSaver
     {
         [DllImport("user32.dll", SetLastError = true)]
         private static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
@@ -32,17 +33,17 @@ namespace WindowStateSever
             get { return Application.productName; }
         }
 
-#if !UNITY_EDITOR
+//#if !UNITY_EDITOR
 		//Store window
 		static IntPtr windowPtr;
-#endif
+//#endif
 
 		public static bool Save()
         {
 #if UNITY_EDITOR
-
-#else
-            WindowModel wm = new WindowModel();
+			return false;
+#endif
+			WindowModel wm = new WindowModel();
 
 			if(windowPtr == IntPtr.Zero)
 				windowPtr = FindWindow(null, WindowName);
@@ -66,17 +67,16 @@ namespace WindowStateSever
             string jsonStr = JsonUtility.ToJson(wm);
             Debug.LogFormat("Saving values: {0}", jsonStr);
             PlayerPrefs.SetString(playerPrefsKey, jsonStr);
-#endif
             return true;
         }
 
         public static bool Restore()
         {
 #if UNITY_EDITOR
+			return false;
+#endif
 
-#else
-
-            if (!PlayerPrefs.HasKey(playerPrefsKey))
+			if (!PlayerPrefs.HasKey(playerPrefsKey))
             {
                 Debug.LogFormat("Restore window is fail: {0}", "");
                 return false;
@@ -107,7 +107,6 @@ namespace WindowStateSever
                 Debug.LogFormat("Restore window is fail: {0}", "Can`t set window position");
                 return false;
             }
-#endif
             return true;
         }
 

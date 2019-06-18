@@ -473,12 +473,15 @@ public partial class MapLuaParser : MonoBehaviour
 
 		GenerateBackupPath();
 		PreviewTex.ForcePreviewMode(true);
+
 		yield return null;
 
 		// Scenario.lua
 		string ScenarioFilePath = LoadedMapFolderPath + ScenarioFileName + ".lua";
 		if (BackupFiles && System.IO.File.Exists(ScenarioFilePath))
 			System.IO.File.Move(ScenarioFilePath, BackupPath + "/" + ScenarioFileName + ".lua");
+
+		SaveReclaim();
 		ScenarioLuaFile.Save(ScenarioFilePath);
 		yield return null;
 
@@ -509,9 +512,21 @@ public partial class MapLuaParser : MonoBehaviour
 		GenericInfoPopup.ShowInfo("Map saved!\n" + FolderName + "/" + ScenarioFileName + ".lua" );
 	}
 
+	void SaveReclaim()
+	{
+		if (ScenarioLuaFile.Data.Reclaim == null || ScenarioLuaFile.Data.Reclaim.Length != 2)
+			ScenarioLuaFile.Data.Reclaim = new float[2];
+
+		UnitsInfo.GetTotalUnitsReclaim(out float Mass, out float Energy);
+
+		ScenarioLuaFile.Data.Reclaim[0] = PropsInfo.TotalMassCount + Mass;
+		ScenarioLuaFile.Data.Reclaim[1] = PropsInfo.TotalEnergyCount + Energy;
+
+	}
+
 	void GenerateBackupPath()
 	{
-		string BackupId = 
+		string BackupId = System.DateTime.Now.Month.ToString() + System.DateTime.Now.Day.ToString() + System.DateTime.Now.Hour.ToString() + System.DateTime.Now.Minute.ToString() + System.DateTime.Now.Second.ToString();
 
 		BackupPath = EnvPaths.GetBackupPath();
 		if (string.IsNullOrEmpty(BackupPath))
