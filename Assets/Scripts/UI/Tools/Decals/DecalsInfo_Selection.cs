@@ -110,7 +110,8 @@ namespace EditMap
 				Obj.NearCutOffLOD = DecalSettingsUi.NearCutOff.value;
 
 				Obj.Material = component.Shared.SharedMaterial;
-
+				Obj.CreationObject = false;
+				Obj.UpdateMatrix();
 				Obj.Bake();
 
 				DecalsControler.AddDecal(Obj.Dec);

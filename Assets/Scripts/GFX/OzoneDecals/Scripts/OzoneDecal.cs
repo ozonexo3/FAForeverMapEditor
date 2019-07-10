@@ -71,7 +71,20 @@ namespace OzoneDecals
 
 		[HideInInspector]
 		public Transform tr;
-		public Matrix4x4 localToWorldMatrix;
+		private Matrix4x4 _localToWorldMatrix;
+		public Matrix4x4 localToWorldMatrix
+		{
+			get
+			{
+				if (CreationObject)
+					return tr.localToWorldMatrix;
+				return _localToWorldMatrix;
+			}
+			set
+			{
+				_localToWorldMatrix = value;
+			}
+		}
 
 		void OnEnable()
 		{

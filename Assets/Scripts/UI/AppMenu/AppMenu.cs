@@ -24,6 +24,7 @@ public partial class AppMenu : MonoBehaviour
 	public Toggle GeneralGridToggle;
 	public Toggle AIGridToggle;
 	public Toggle SlopeToggle;
+	public Toggle RulerToggle;
 
 	//Local
 	bool MenuOpen = false;
@@ -156,6 +157,9 @@ public partial class AppMenu : MonoBehaviour
 				break;
 			case "Slope":
 				ScmapEditor.Current.ToogleSlope(SlopeToggle.isOn);
+				break;
+			case "Ruler":
+				Ruler.Toggle(RulerToggle.isOn);
 				break;
 			case "Forum":
 				Application.OpenURL("http://forums.faforever.com/viewtopic.php?f=45&t=10647");

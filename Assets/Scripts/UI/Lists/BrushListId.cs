@@ -20,6 +20,9 @@ public class BrushListId : MonoBehaviour {
 	}
 
 	public void PressToggle(){
+		if (!gameObject.activeSelf || !ThisToggle.isOn)
+			return;
+
 		if (Controler)
 			Controler.ChangeFalloff (Id);
 		else if (Controler2)

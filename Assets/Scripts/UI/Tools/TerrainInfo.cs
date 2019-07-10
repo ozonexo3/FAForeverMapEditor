@@ -63,7 +63,13 @@ namespace EditMap
 
 			if (!BrusheshLoaded) LoadBrushes();
 			UpdateMenu();
+			ResetBrushes();
 			SetBrush();
+		}
+
+		void ResetBrushes()
+		{
+			LastRotation = BrushRotation.intValue;
 		}
 
 		void SetBrush()
@@ -71,6 +77,12 @@ namespace EditMap
 			TerrainMaterial.SetInt("_Brush", 1);
 			BrushGenerator.SetFallof(SelectedFalloff, LastRotation);
 			TerrainMaterial.SetTexture("_BrushTex", (Texture)BrushGenerator.Current.Brushes[SelectedFalloff]);
+
+			for (int i = 0; i < BrushTypes.Length; i++)
+				if (BrushTypes[i].isOn) {
+					ChangeBrush(i);
+					break;
+				}
 		}
 
 		void OnDisable()
@@ -147,7 +159,7 @@ namespace EditMap
 			foreach (Toggle tog in BrushToggles)
 			{
 				tog.isOn = false;
-				tog.group = ToogleGroup;
+				//tog.group = ToogleGroup;
 			}
 			BrushToggles[0].isOn = true;
 			SelectedFalloff = 0;
@@ -700,13 +712,26 @@ namespace EditMap
 		int SelectedBrush = 0;
 		public void ChangeBrush(int id)
 		{
-			SelectedBrush = id;
+			if (gameObject.activeSelf && BrushTypes[id].isOn)
+			{
+				SelectedBrush = id;
+			}
 		}
 
 		int SelectedFalloff = 0;
 		public void ChangeFalloff(int id)
 		{
+			if (!gameObject.activeSelf)
+				return;
+
 			SelectedFalloff = id;
+
+			for (int i = 0; i < BrushToggles.Count; i++)
+			{
+				if (i == SelectedFalloff)
+					continue;
+				BrushToggles[i].isOn = false;
+			}
 			LastRotation = BrushRotation.intValue;
 
 			BrushGenerator.SetFallof(SelectedFalloff, LastRotation);

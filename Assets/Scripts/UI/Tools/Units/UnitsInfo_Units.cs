@@ -5,6 +5,9 @@ using UnityEngine.UI;
 using Selection;
 using FAF.MapEditor;
 using MapLua;
+using System.IO;
+using System.Runtime.InteropServices;
+using SFB;
 
 namespace EditMap
 {
@@ -319,6 +322,8 @@ namespace EditMap
 			uinst.Owner.Parent.RemoveUnit(uinst.Owner);
 			FirstSelected.Source.AddUnit(uinst.Owner);
 			uinst.ArmyColor = uinst.Owner.Parent.Owner.ArmyColor;
+			uinst.IsWreckage = FirstSelected.Source.IsWreckage ? 1 : 0;
+			uinst.UpdateMatrix();
 		}
 
 		#endregion
@@ -437,13 +442,131 @@ namespace EditMap
 		#endregion
 
 		#region Import/Export
+		const string ExportPathKey = "UnitsExport";
+		static string DefaultPath
+		{
+			get
+			{
+				return EnvPaths.GetLastPath(ExportPathKey, EnvPaths.GetMapsPath() + MapLuaParser.Current.FolderName);
+			}
+		}
+
+		[System.Serializable]
+		public class UnitsStorage
+		{
+			public Unit[] Units;
+			public Vector3 Center;
+
+			[System.Serializable]
+			public class Unit
+			{
+				public string ID;
+				public Vector3 pos;
+				public Quaternion rot;
+				public string orders;
+				public string platoon;
+			}
+		}
+
+		static ExtensionFilter[] extensions = new[]
+		{
+			new ExtensionFilter("SC Units", "scunits")
+		};
+
 		public void ExportUnits()
 		{
+			GameObject[] Objs = SelectionManager.Current.GetAllSelectedObjects(false);
 
+			if (Objs.Length == 0)
+			{
+				GenericInfoPopup.ShowInfo("No units selected");
+				return;
+			}
+
+			var path = StandaloneFileBrowser.SaveFilePanel("Export Units", DefaultPath, "", extensions);
+
+			if (string.IsNullOrEmpty(path))
+				return;
+
+			UnitsStorage Data = new UnitsStorage();
+			Data.Units = new UnitsStorage.Unit[Objs.Length];
+
+			for(int i = 0; i < Objs.Length; i++)
+			{
+				UnitInstance UnitI = Objs[i].GetComponent<UnitInstance>();
+
+				UnitsStorage.Unit UnitToSave = new UnitsStorage.Unit();
+				UnitToSave.ID = UnitI.Owner.type;
+				UnitToSave.pos = UnitI.transform.position;
+				UnitToSave.rot = UnitI.transform.rotation;
+				UnitToSave.orders = UnitI.Owner.orders;
+				UnitToSave.platoon = UnitI.Owner.platoon;
+				Data.Units[i] = UnitToSave;
+				Data.Center += UnitToSave.pos;
+			}
+
+			Data.Center /= Data.Units.Length;
+
+			string DataString = JsonUtility.ToJson(Data);
+			File.WriteAllText(path, DataString);
+			EnvPaths.SetLastPath(ExportPathKey, Path.GetDirectoryName(path));
 		}
 		public void ImportUnits()
 		{
+			if (FirstSelected == null)
+			{
+				ShowGroupError();
+				return;
+			}
 
+			var paths = StandaloneFileBrowser.OpenFilePanel("Import Units", DefaultPath, extensions, false);
+
+
+			if (paths.Length == 0 || string.IsNullOrEmpty(paths[0]))
+				return;
+
+			string data = File.ReadAllText(paths[0]);
+			UnitsStorage Data = JsonUtility.FromJson<UnitsStorage>(data);
+
+			if (Data == null || Data.Units == null || Data.Units.Length == 0)
+				return;
+
+			Undo.RegisterUndo(new UndoHistory.HistoryUnitsRemove(), new UndoHistory.HistoryUnitsRemove.UnitsRemoveParam(new SaveLua.Army.UnitsGroup[] { FirstSelected.Source }));
+
+
+			List<GameObject> CreatedUnits = new List<GameObject>();
+			for (int i = 0; i < Data.Units.Length; i++)
+			{
+				SaveLua.Army.Unit NewUnit = new SaveLua.Army.Unit();
+				NewUnit.Name = SaveLua.Army.Unit.GetFreeName("UNIT_");
+				NewUnit.type = Data.Units[i].ID;
+				NewUnit.orders = Data.Units[i].orders;
+				NewUnit.platoon = Data.Units[i].platoon;
+
+				if (!ScmapEditor.Current.Teren.terrainData.bounds.Contains(ScmapEditor.Current.Teren.transform.InverseTransformPoint(Data.Units[i].pos)))
+				{
+					Vector3 Offset = ScmapEditor.Current.Teren.transform.TransformPoint(ScmapEditor.Current.Teren.terrainData.bounds.center) - Data.Center;
+					Offset.y = 0;
+					Data.Units[i].pos += Offset;
+				}
+
+				NewUnit.Position = ScmapEditor.WorldPosToScmap(Data.Units[i].pos);
+				NewUnit.Orientation = Data.Units[i].rot.eulerAngles * Mathf.Deg2Rad;
+
+				FirstSelected.Source.AddUnit(NewUnit);
+				NewUnit.Instantiate();
+
+				SnapAction(NewUnit.Instance.transform, NewUnit.Instance.gameObject);
+				CreatedUnits.Add(NewUnit.Instance.gameObject);
+			}
+
+			FirstSelected.Refresh();
+
+			GoToSelection();
+
+			SelectionManager.Current.SelectObjects(CreatedUnits.ToArray());
+
+			GenericInfoPopup.ShowInfo("Imported " + CreatedUnits.Count + " units.");
 		}
 		#endregion
 	}

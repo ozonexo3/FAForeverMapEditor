@@ -54,11 +54,7 @@ namespace UndoHistory
 
 		public override void DoRedo()
 		{
-			if (Undo.Current.EditMenu.State != Editing.EditStates.TerrainStat)
-			{
-				Undo.Current.EditMenu.State = Editing.EditStates.TerrainStat;
-				Undo.Current.EditMenu.ChangeCategory(1);
-			}
+			Undo.Current.EditMenu.SetState(Editing.EditStates.TerrainStat);
 
 			Undo.Current.EditMenu.EditTerrain.ChangePage(0);
 

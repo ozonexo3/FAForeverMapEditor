@@ -22,8 +22,8 @@ public class SymmetryWindow : MonoBehaviour {
 		/*foreach(Toggle tog in Toggles){
 			tog.isOn = false;
 		}*/
-		Toggles[ PlayerPrefs.GetInt("Symmetry", 0) ].isOn = true;
-		AngleSlider.SetValue(SymmetryWindow.GetRotationSym());
+		UpdateToggles();
+		AngleSlider.SetValue(GetRotationSym());
 		ToleranceInput.SetValue(GetTolerance());
 		Enabling = false;
 	}
@@ -40,7 +40,7 @@ public class SymmetryWindow : MonoBehaviour {
 
 	public void SliderChange(){
 
-		if(AngleSlider.intValue != SymmetryWindow.GetRotationSym())
+		if(AngleSlider.intValue != GetRotationSym())
 		{
 			int value = AngleSlider.intValue;
 			if (value < 2)
@@ -60,6 +60,8 @@ public class SymmetryWindow : MonoBehaviour {
 	}
 
 	public void Button(string func){
+		if (!gameObject.activeSelf)
+			return;
 		if(Enabling) return;
 		//Debug.Log("Change symmetry: " + func);
 		switch(func){
@@ -100,12 +102,22 @@ public class SymmetryWindow : MonoBehaviour {
 	{
 		if (GetSymmetryType() == id)
 			return;
-
 		PlayerPrefs.SetInt("Symmetry", id);
 		PlayerPrefs.Save();
+		UpdateToggles();
+
 		InvokeChange();
 	}
 
+	void UpdateToggles()
+	{
+		Enabling = true;
+		for (int i = 0; i < Toggles.Length; i++)
+		{
+			Toggles[i].isOn = i == GetSymmetryType();
+		}
+		Enabling = false;
+	}
 
 	public static float GetTolerance()
 	{

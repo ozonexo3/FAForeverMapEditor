@@ -100,6 +100,7 @@ public partial class Undo : MonoBehaviour {
 		}
 			
 		History [UndoTo].DoUndo ();
+		Debug.Log("Undo to " + UndoTo);
 
 		CurrentStage = UndoTo;
 	}

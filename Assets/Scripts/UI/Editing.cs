@@ -86,6 +86,15 @@ namespace EditMap
 			return CurrentCategory;
 		}
 
+		public void SetState(EditStates es)
+		{
+			if (State == es)
+				return;
+
+			State = es;
+			ChangeCategory((int)State);
+		}
+
 		int CurrentCategory = 0;
 		public void ChangeCategory(int id = 0)
 		{

@@ -379,9 +379,6 @@ namespace EditMap
 			OldOwner.RemoveGroup(Source);
 			NewOwner.AddGroup(Source);
 		}
-
-
-
 		#region Selection
 		static UnitListObject FirstSelected
 		{

@@ -579,7 +579,7 @@ namespace EditMap
 			foreach (Toggle tog in BrushToggles)
 			{
 				tog.isOn = false;
-				tog.group = ToogleGroup;
+				//tog.group = ToogleGroup;
 			}
 			BrushToggles[0].isOn = true;
 			SelectedFalloff = 0;
@@ -607,6 +607,13 @@ namespace EditMap
 		public void ChangeFalloff(int id)
 		{
 			SelectedFalloff = id;
+
+			for (int i = 0; i < BrushToggles.Count; i++)
+			{
+				if (i == SelectedFalloff)
+					continue;
+				BrushToggles[i].isOn = false;
+			}
 
 			LastRotation = BrushRotation.intValue;
 

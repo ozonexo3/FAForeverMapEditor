@@ -65,8 +65,7 @@ public class PlacementManager : MonoBehaviour {
 
 		Current.PlacementObject = Instantiate(Prefab) as GameObject;
 		Current.PlacementObject.SetActive(true);
-		if (InstantiateAction != null)
-			InstantiateAction(Current.PlacementObject);
+		InstantiateAction?.Invoke(Current.PlacementObject);
 
 		Current.PlacementObject.transform.rotation = OldRot;
 		Current.PlacementObject.transform.localScale = OldScale;

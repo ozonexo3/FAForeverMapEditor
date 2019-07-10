@@ -54,6 +54,8 @@ namespace Selection
 				for (i = 0; i < count; i++)
 				{
 					ID = Current.Selection.Ids[i];
+					if (Current.AffectedGameObjects[ID] == null)
+						continue;
 					SearchPos = SymmetryMatrix.MultiplyPoint(Current.AffectedGameObjects[ID].transform.localPosition - MapLuaParser.Current.MapCenterPoint) + MapLuaParser.Current.MapCenterPoint;
 					ClosestO = -1;
 					ClosestDist = 1000000;

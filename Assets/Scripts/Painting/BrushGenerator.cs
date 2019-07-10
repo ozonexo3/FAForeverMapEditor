@@ -263,8 +263,8 @@ public class BrushGenerator : MonoBehaviour
 		}
 	}
 
-	static int LastFallofId = 0;
-	static float LastRotation = 0;
+	static int LastFallofId = -1;
+	static float LastRotation = -1;
 	public static void SetFallof(int FallofId, float Rotation)
 	{
 		if(LastFallofId == FallofId && LastRotation == Rotation)
