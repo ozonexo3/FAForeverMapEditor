@@ -48,6 +48,16 @@ namespace Selection
 				DestroySelectedObjects();
 			}
 
+			if (Input.GetKeyDown(KeyCode.C) && Input.GetKey(KeyCode.LeftControl))
+			{
+				//Copy
+				CopyAction?.Invoke();
+			}
+			else if (Input.GetKeyDown(KeyCode.V) && Input.GetKey(KeyCode.LeftControl))
+			{
+				//Paste
+				PasteAction?.Invoke();
+			}
 		}
 
 
@@ -354,6 +364,18 @@ namespace Selection
 		public void SetCustomSnapAction(System.Action<Transform, GameObject> Action)
 		{
 			CustomSnapAction = Action;
+		}
+
+		static System.Action CopyAction;
+		public void SetCopyActionAction(System.Action Action)
+		{
+			CopyAction = Action;
+		}
+
+		static System.Action PasteAction;
+		public void SetPasteActionAction(System.Action Action)
+		{
+			PasteAction = Action;
 		}
 
 		#endregion

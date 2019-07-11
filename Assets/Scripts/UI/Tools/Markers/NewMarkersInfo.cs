@@ -27,6 +27,8 @@ namespace EditMap
 			SelectionManager.Current.SetRemoveAction(DestroyMarkers);
 			SelectionManager.Current.SetSelectionChangeAction(SelectMarkers);
 			SelectionManager.Current.SetCustomSnapAction(SnapAction);
+			SelectionManager.Current.SetCopyActionAction(CopyAction);
+			SelectionManager.Current.SetPasteActionAction(PasteAction);
 
 			if (CreationId >= 0)
 				SelectCreateNew(CreationId);
@@ -341,6 +343,16 @@ namespace EditMap
 		{
 			//if (LastCreationType != MapLua.SaveLua.Marker.MarkerTypes.CameraInfo)
 			//	marker.localRotation = Quaternion.identity;
+		}
+
+		public void CopyAction()
+		{
+			Debug.Log("Copy");
+		}
+
+		public void PasteAction()
+		{
+			Debug.Log("Paste");
 		}
 
 		MapLua.SaveLua.Marker.MarkerTypes GetCreationType()

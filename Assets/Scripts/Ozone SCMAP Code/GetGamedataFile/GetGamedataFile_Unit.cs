@@ -73,6 +73,17 @@ public partial struct GetGamedataFile
 		public bool Wreckage_Layer_Sub;
 		public bool Wreckage_Layer_Water;
 
+		public Weapon[] Weapons;
+		public float MinRange;
+		public float MaxRange;
+
+		public class Weapon
+		{
+			public float MinRadius;
+			public float MaxRadius;
+			public string WeaponCategory = "";
+		}
+
 		public void GenerateEmptyLod()
 		{
 			LODs = new BluePrintLoD[1];
@@ -332,6 +343,7 @@ public partial struct GetGamedataFile
 				for (int t = 0; t < ToReturn.BP.Termacs.Length; t++)
 				{
 					ToReturn.BP.Termacs[t] = new Termac(AllTermacs[t]);
+
 				}
 
 				LoadTermacs(ToReturn.BP);
@@ -341,6 +353,82 @@ public partial struct GetGamedataFile
 		}
 
 		ToReturn.BP.Size = Vector3.one * 0.1f;
+
+		ToReturn.BP.MinRange = 0;
+		ToReturn.BP.MaxRange = 0;
+		LuaTable WeaponsTable = BP.GetTable("UnitBlueprint.Weapon");
+		if(WeaponsTable != null)
+		{
+			LuaTable[] AllWeapons = LuaParser.Read.TableArrayFromTable(WeaponsTable);
+			ToReturn.BP.Weapons = new UnitBluePrint.Weapon[AllWeapons.Length];
+			for(int i = 0; i < ToReturn.BP.Weapons.Length; i++)
+			{
+				ToReturn.BP.Weapons[i] = new UnitBluePrint.Weapon();
+
+				if (AllWeapons[i] == null)
+					continue;
+
+				CurrentValue = AllWeapons[i].RawGet("WeaponCategory");
+				if (CurrentValue != null)
+					ToReturn.BP.Weapons[i].WeaponCategory = CurrentValue.ToString();
+				else
+					ToReturn.BP.Weapons[i].WeaponCategory = "";
+
+				CurrentValue = AllWeapons[i].RawGet("MinRadius");
+				if (CurrentValue != null)
+					ToReturn.BP.Weapons[i].MinRadius = LuaParser.Read.StringToFloat(CurrentValue.ToString());
+				else
+					ToReturn.BP.Weapons[i].MinRadius = 0;
+
+				CurrentValue = AllWeapons[i].RawGet("MaxRadius");
+				if (CurrentValue != null)
+					ToReturn.BP.Weapons[i].MaxRadius = LuaParser.Read.StringToFloat(CurrentValue.ToString());
+				else
+					ToReturn.BP.Weapons[i].MaxRadius = 0;
+
+				ToReturn.BP.MinRange = Mathf.Max(ToReturn.BP.MinRange, ToReturn.BP.Weapons[i].MinRadius);
+				ToReturn.BP.MaxRange = Mathf.Max(ToReturn.BP.MaxRange, ToReturn.BP.Weapons[i].MaxRadius);
+			}
+		}
+
+		LuaTable WreckageTable = BP.GetTable("UnitBlueprint.Wreckage");
+		if (WreckageTable != null)
+		{
+			CurrentValue = WreckageTable.RawGet("MassMult");
+			if (CurrentValue != null)
+				ToReturn.BP.Wreckage_MassMult = LuaParser.Read.StringToFloat(CurrentValue.ToString());
+			else
+				ToReturn.BP.Wreckage_MassMult = 1;
+
+			CurrentValue = WreckageTable.RawGet("EnergyMult");
+			if (CurrentValue != null)
+				ToReturn.BP.Wreckage_EnergyMult = LuaParser.Read.StringToFloat(CurrentValue.ToString());
+			else
+				ToReturn.BP.Wreckage_EnergyMult = 1;
+
+			CurrentValue = WreckageTable.RawGet("HealthMult");
+			if (CurrentValue != null)
+				ToReturn.BP.Wreckage_HealthMult = LuaParser.Read.StringToFloat(CurrentValue.ToString());
+			else
+				ToReturn.BP.Wreckage_HealthMult = 1;
+
+			CurrentValue = WreckageTable.RawGet("ReclaimTimeMultiplier");
+			if (CurrentValue != null)
+				ToReturn.BP.Wreckage_ReclaimTimeMultiplier = LuaParser.Read.StringToFloat(CurrentValue.ToString());
+			else
+				ToReturn.BP.Wreckage_ReclaimTimeMultiplier = 1;
+
+		}
+
+		LuaTable IntelTable = BP.GetTable("UnitBlueprint.Intel");
+		if (IntelTable != null)
+		{
+			CurrentValue = IntelTable.RawGet("VisionRadius");
+			if (CurrentValue != null)
+				ToReturn.BP.VisionRadius = LuaParser.Read.StringToFloat(CurrentValue.ToString());
+			else
+				ToReturn.BP.VisionRadius = 1;
+		}
 
 		CurrentValue = UnitBlueprintTable.RawGet("SizeX");
 		if (CurrentValue != null)
@@ -491,6 +579,8 @@ public partial struct GetGamedataFile
 		//Debug.Log("BuildTime: " + ToReturn.BP.BuildTime);
 		//Debug.Log("BuildCostEnergy: " + ToReturn.BP.BuildCostEnergy + "\nBuildCostMass: " + ToReturn.BP.BuildCostMass);
 		LoadedUnitObjects.Add(LocalPath, ToReturn);
+
+		BP.Dispose();
 
 		return ToReturn;
 	}

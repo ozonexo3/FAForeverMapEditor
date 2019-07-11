@@ -373,7 +373,7 @@ namespace MapLua
 			//string MapPath = EnvPaths.GetMapsPath();
 
 			string loadedFile = "";
-			Debug.Log("Load file:" + FolderParentPath + FolderName + "/" + ScenarioFileName + ".lua");
+			Debug.Log("Load file: " + FolderParentPath + FolderName + "/" + ScenarioFileName + ".lua");
 			string loc = FolderParentPath + FolderName + "/" + ScenarioFileName + ".lua";
 			loadedFile = System.IO.File.ReadAllText(loc, encodeType);
 

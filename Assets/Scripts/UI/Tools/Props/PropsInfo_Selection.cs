@@ -69,5 +69,15 @@ namespace EditMap
 		{
 			//TODO Snap To Terrain
 		}
+
+		public void CopyAction()
+		{
+			Debug.Log("Copy");
+		}
+
+		public void PasteAction()
+		{
+			Debug.Log("Paste");
+		}
 	}
 }

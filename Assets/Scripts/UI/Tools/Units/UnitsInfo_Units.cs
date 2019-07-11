@@ -68,7 +68,7 @@ namespace EditMap
 				//DestroyImmediate(MarkerObjects[i]);
 				SaveLua.Army.Unit u = MarkerObjects[i].GetComponent<UnitInstance>().Owner;
 				u.ClearInstance();
-				if(u.Parent != null)
+				if (u.Parent != null)
 					u.Parent.RemoveUnit(u);
 			}
 
@@ -78,17 +78,27 @@ namespace EditMap
 
 		public void SelectUnit()
 		{
-			if(SelectionManager.Current.Selection.Ids.Count <= 0)
+			RenderUnitRanges.CreateRanges();
+
+
+			if (SelectionManager.Current.Selection.Ids.Count <= 0)
 			{
-				
+
 			}
 			else
 			{
 				UnitInstance Uinst = SelectionManager.Current.AffectedGameObjects[SelectionManager.Current.Selection.Ids[0]].GetComponent<UnitInstance>();
 
-				if (Uinst != null) {
+				if (Uinst != null)
+				{
 					UnitName.SetValue(Uinst.Owner.Name);
 					SelectedUnitsGroup.text = Uinst.Owner.Parent.Name + " (" + Uinst.Owner.Parent.Owner.Name + ")";
+
+					UnitStats.text = Uinst.UnitRenderer.BP.CodeName + "\n"
+						+ "Reclaim: Mass: " + (Uinst.UnitRenderer.BP.BuildCostMass * Uinst.UnitRenderer.BP.Wreckage_MassMult)
+						+ ", Energy: " + (Uinst.UnitRenderer.BP.BuildCostEnergy * Uinst.UnitRenderer.BP.Wreckage_EnergyMult)
+						+ "\nVision radius: " + Uinst.UnitRenderer.BP.VisionRadius
+						+ ((Uinst.UnitRenderer.BP.MaxRange > 0) ? ("\nWeapon range: " + Uinst.UnitRenderer.BP.MaxRange) : "");
 					return;
 				}
 			}
@@ -97,6 +107,7 @@ namespace EditMap
 			// Default
 			UnitName.SetValue("");
 			SelectedUnitsGroup.text = "";
+			UnitStats.text = "";
 		}
 
 		public void OnNameChanged()
@@ -128,7 +139,8 @@ namespace EditMap
 					{
 						string[] Split = NewName.Split('_');
 						int OutInt = 0;
-						if(Split.Length > 1 && int.TryParse(Split[Split.Length - 1], out OutInt)){
+						if (Split.Length > 1 && int.TryParse(Split[Split.Length - 1], out OutInt))
+						{
 
 							NewName = "";
 							for (int s = 0; s < Split.Length - 1; s++)
@@ -290,7 +302,7 @@ namespace EditMap
 				NewUnit.orders = "";
 				NewUnit.platoon = "";
 				NewUnit.Position = ScmapEditor.WorldPosToScmap(Positions[i]);
-				NewUnit.Orientation = Rotations[i].eulerAngles * Mathf.Deg2Rad;
+				NewUnit.Orientation = UnitInstance.ScmapRotationFromRotation(Rotations[i]);
 
 				FirstSelected.Source.AddUnit(NewUnit);
 				NewUnit.Instantiate();
@@ -375,7 +387,7 @@ namespace EditMap
 			SelectionManager.Current.CleanSelection();
 
 			List<GameObject> NewSelection = new List<GameObject>();
-			for(int i = 0; i < SelectionManager.Current.AffectedGameObjects.Length; i++)
+			for (int i = 0; i < SelectionManager.Current.AffectedGameObjects.Length; i++)
 			{
 				if (GatheredUnitTypes.Contains(SelectionManager.Current.AffectedGameObjects[i].GetComponent<UnitInstance>().UnitRenderer))
 					NewSelection.Add(SelectionManager.Current.AffectedGameObjects[i]);
@@ -388,7 +400,7 @@ namespace EditMap
 
 		public void ReplaceSelected()
 		{
-			if(FirstSelected == null)
+			if (FirstSelected == null)
 			{
 				ShowGroupError();
 
@@ -441,16 +453,7 @@ namespace EditMap
 		}
 		#endregion
 
-		#region Import/Export
-		const string ExportPathKey = "UnitsExport";
-		static string DefaultPath
-		{
-			get
-			{
-				return EnvPaths.GetLastPath(ExportPathKey, EnvPaths.GetMapsPath() + MapLuaParser.Current.FolderName);
-			}
-		}
-
+		#region Storage
 		[System.Serializable]
 		public class UnitsStorage
 		{
@@ -468,30 +471,14 @@ namespace EditMap
 			}
 		}
 
-		static ExtensionFilter[] extensions = new[]
-		{
-			new ExtensionFilter("SC Units", "scunits")
-		};
-
-		public void ExportUnits()
+		static UnitsStorage GetUnitsStorage()
 		{
 			GameObject[] Objs = SelectionManager.Current.GetAllSelectedObjects(false);
-
-			if (Objs.Length == 0)
-			{
-				GenericInfoPopup.ShowInfo("No units selected");
-				return;
-			}
-
-			var path = StandaloneFileBrowser.SaveFilePanel("Export Units", DefaultPath, "", extensions);
-
-			if (string.IsNullOrEmpty(path))
-				return;
 
 			UnitsStorage Data = new UnitsStorage();
 			Data.Units = new UnitsStorage.Unit[Objs.Length];
 
-			for(int i = 0; i < Objs.Length; i++)
+			for (int i = 0; i < Objs.Length; i++)
 			{
 				UnitInstance UnitI = Objs[i].GetComponent<UnitInstance>();
 
@@ -506,11 +493,78 @@ namespace EditMap
 			}
 
 			Data.Center /= Data.Units.Length;
+			return Data;
+		}
+
+		GameObject[] ReadUnitsStorage(UnitsStorage Data)
+		{
+			List<GameObject> CreatedUnits = new List<GameObject>();
+			for (int i = 0; i < Data.Units.Length; i++)
+			{
+				SaveLua.Army.Unit NewUnit = new SaveLua.Army.Unit();
+				NewUnit.Name = SaveLua.Army.Unit.GetFreeName("UNIT_");
+				NewUnit.type = Data.Units[i].ID;
+				NewUnit.orders = Data.Units[i].orders;
+				NewUnit.platoon = Data.Units[i].platoon;
+
+				if (!ScmapEditor.Current.Teren.terrainData.bounds.Contains(ScmapEditor.Current.Teren.transform.InverseTransformPoint(Data.Units[i].pos)))
+				{
+					Vector3 Offset = ScmapEditor.Current.Teren.transform.TransformPoint(ScmapEditor.Current.Teren.terrainData.bounds.center) - Data.Center;
+					Offset.y = 0;
+					Data.Units[i].pos += Offset;
+				}
+
+				NewUnit.Position = ScmapEditor.WorldPosToScmap(Data.Units[i].pos);
+				NewUnit.Orientation = UnitInstance.ScmapRotationFromRotation(Data.Units[i].rot);
+
+				FirstSelected.Source.AddUnit(NewUnit);
+				NewUnit.Instantiate();
+
+				SnapAction(NewUnit.Instance.transform, NewUnit.Instance.gameObject);
+				CreatedUnits.Add(NewUnit.Instance.gameObject);
+			}
+
+			return CreatedUnits.ToArray();
+		}
+		#endregion
+
+		#region Import/Export
+		const string ExportPathKey = "UnitsExport";
+		static string DefaultPath
+		{
+			get
+			{
+				return EnvPaths.GetLastPath(ExportPathKey, EnvPaths.GetMapsPath() + MapLuaParser.Current.FolderName);
+			}
+		}
+		static ExtensionFilter[] extensions = new[]
+		{
+			new ExtensionFilter("SC Units", "scunits")
+		};
+
+		public void ExportUnits()
+		{
+			GameObject[] Objs = SelectionManager.Current.GetAllSelectedObjects(false);
+
+			if (SelectionManager.Current.Selection.Ids.Count <= 0)
+			{
+				GenericInfoPopup.ShowInfo("No units selected");
+				return;
+			}
+
+			var path = StandaloneFileBrowser.SaveFilePanel("Export Units", DefaultPath, "", extensions);
+
+			if (string.IsNullOrEmpty(path))
+				return;
+
+			UnitsStorage Data = GetUnitsStorage();
 
 			string DataString = JsonUtility.ToJson(Data);
 			File.WriteAllText(path, DataString);
 			EnvPaths.SetLastPath(ExportPathKey, Path.GetDirectoryName(path));
 		}
+
+
 		public void ImportUnits()
 		{
 			if (FirstSelected == null)
@@ -533,41 +587,58 @@ namespace EditMap
 
 			Undo.RegisterUndo(new UndoHistory.HistoryUnitsRemove(), new UndoHistory.HistoryUnitsRemove.UnitsRemoveParam(new SaveLua.Army.UnitsGroup[] { FirstSelected.Source }));
 
+			GameObject[] CreatedUnits = ReadUnitsStorage(Data);
 
-			List<GameObject> CreatedUnits = new List<GameObject>();
-			for (int i = 0; i < Data.Units.Length; i++)
+			if (CreatedUnits.Length > 0)
 			{
-				SaveLua.Army.Unit NewUnit = new SaveLua.Army.Unit();
-				NewUnit.Name = SaveLua.Army.Unit.GetFreeName("UNIT_");
-				NewUnit.type = Data.Units[i].ID;
-				NewUnit.orders = Data.Units[i].orders;
-				NewUnit.platoon = Data.Units[i].platoon;
+				FirstSelected.Refresh();
 
-				if (!ScmapEditor.Current.Teren.terrainData.bounds.Contains(ScmapEditor.Current.Teren.transform.InverseTransformPoint(Data.Units[i].pos)))
-				{
-					Vector3 Offset = ScmapEditor.Current.Teren.transform.TransformPoint(ScmapEditor.Current.Teren.terrainData.bounds.center) - Data.Center;
-					Offset.y = 0;
-					Data.Units[i].pos += Offset;
-				}
+				GoToSelection();
 
-				NewUnit.Position = ScmapEditor.WorldPosToScmap(Data.Units[i].pos);
-				NewUnit.Orientation = Data.Units[i].rot.eulerAngles * Mathf.Deg2Rad;
+				SelectionManager.Current.SelectObjects(CreatedUnits);
 
-				FirstSelected.Source.AddUnit(NewUnit);
-				NewUnit.Instantiate();
-
-				SnapAction(NewUnit.Instance.transform, NewUnit.Instance.gameObject);
-				CreatedUnits.Add(NewUnit.Instance.gameObject);
+				GenericInfoPopup.ShowInfo("Imported " + CreatedUnits.Length + " units.");
 			}
-
-			FirstSelected.Refresh();
-
-			GoToSelection();
-
-			SelectionManager.Current.SelectObjects(CreatedUnits.ToArray());
-
-			GenericInfoPopup.ShowInfo("Imported " + CreatedUnits.Count + " units.");
 		}
+		#endregion
+
+		#region Copy/Paste
+
+		UnitsStorage CopyData = new UnitsStorage();
+
+		void CopyAction()
+		{
+			Debug.Log("Copy");
+			if (gameObject.activeSelf)
+			{
+				CopyData = GetUnitsStorage();
+			}
+		}
+
+		void PasteAction()
+		{
+			Debug.Log("Paste");
+			if (gameObject.activeSelf && CopyData != null)
+			{
+				if (FirstSelected == null)
+				{
+					ShowGroupError();
+					return;
+				}
+				Undo.RegisterUndo(new UndoHistory.HistoryUnitsRemove(), new UndoHistory.HistoryUnitsRemove.UnitsRemoveParam(new SaveLua.Army.UnitsGroup[] { FirstSelected.Source }));
+
+				GameObject[] CreatedUnits = ReadUnitsStorage(CopyData);
+
+				if (CreatedUnits.Length > 0)
+				{
+					FirstSelected.Refresh();
+					GoToSelection();
+					SelectionManager.Current.SelectObjects(CreatedUnits);
+					GenericInfoPopup.ShowInfo("Pasted " + CreatedUnits.Length + " units.");
+				}
+			}
+		}
+
 		#endregion
 	}
 }

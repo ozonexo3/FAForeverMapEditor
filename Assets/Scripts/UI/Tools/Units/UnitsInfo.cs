@@ -23,6 +23,7 @@ namespace EditMap
 		public UiTextField NameInputField;
 		public UiTextField PrefixInputField;
 		public Text SelectedUnitsGroup;
+		public Text UnitStats;
 		public UiTextField UnitName;
 
 		[Header("Objects")]
@@ -39,6 +40,8 @@ namespace EditMap
 			SelectionManager.Current.SetRemoveAction(DestroyUnits);
 			SelectionManager.Current.SetSelectionChangeAction(SelectUnit);
 			SelectionManager.Current.SetCustomSnapAction(SnapAction);
+			SelectionManager.Current.SetCopyActionAction(CopyAction);
+			SelectionManager.Current.SetPasteActionAction(PasteAction);
 
 			GoToSelection();
 
@@ -50,7 +53,8 @@ namespace EditMap
 			ClearRename();
 			ForceExitCreate();
 			PlacementManager.OnDropOnGameplay -= DropAtGameplay;
-			Selection.SelectionManager.Current.ClearAffectedGameObjects();
+			SelectionManager.Current.ClearAffectedGameObjects();
+			RenderUnitRanges.Clear();
 		}
 
 		public static void UnloadUnits()

@@ -864,6 +864,11 @@ public partial class ScmapEditor : MonoBehaviour
 		return ToReturn;
 	}
 
+	public static float ScmapPosToWorld(float val)
+	{
+		return val / 10f;
+	}
+
 	/// <summary>
 	/// Convert Editor world position to Scmap position
 	/// </summary>

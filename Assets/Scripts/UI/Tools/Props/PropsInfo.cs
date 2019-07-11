@@ -154,6 +154,8 @@ namespace EditMap
 			SelectionManager.Current.SetRemoveAction(DestroyProps);
 			SelectionManager.Current.SetSelectionChangeAction(SelectProp);
 			SelectionManager.Current.SetCustomSnapAction(SnapAction);
+			SelectionManager.Current.SetCopyActionAction(CopyAction);
+			SelectionManager.Current.SetPasteActionAction(PasteAction);
 
 			if (Tabs[1].activeSelf)
 			{
