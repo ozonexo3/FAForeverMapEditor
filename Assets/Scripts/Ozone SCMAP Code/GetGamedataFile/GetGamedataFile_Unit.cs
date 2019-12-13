@@ -532,7 +532,7 @@ public partial struct GetGamedataFile
 
 				ToReturn.BP.LODs[i].Albedo = LoadTexture2DFromGamedata(scd, ToReturn.BP.LODs[i].AlbedoName, false, true, true);
 				ToReturn.BP.LODs[i].Albedo.anisoLevel = 2;
-				ToReturn.BP.LODs[i].Mat.SetTexture("_MainTex", ToReturn.BP.LODs[i].Albedo);
+				ToReturn.BP.LODs[i].Mat.SetTexture(SHADER_MainTex, ToReturn.BP.LODs[i].Albedo);
 
 
 				if (ToReturn.BP.LODs[i].NormalsName.Length == 0)
@@ -548,7 +548,7 @@ public partial struct GetGamedataFile
 				{
 					ToReturn.BP.LODs[i].Normal = LoadTexture2DFromGamedata(scd, ToReturn.BP.LODs[i].NormalsName, true, true, true);
 					ToReturn.BP.LODs[i].Normal.anisoLevel = 2;
-					ToReturn.BP.LODs[i].Mat.SetTexture("_BumpMap", ToReturn.BP.LODs[i].Normal);
+					ToReturn.BP.LODs[i].Mat.SetTexture(SHADER_BumpMap, ToReturn.BP.LODs[i].Normal);
 				}
 
 
@@ -565,7 +565,7 @@ public partial struct GetGamedataFile
 				{
 					ToReturn.BP.LODs[i].Specular = LoadTexture2DFromGamedata(scd, ToReturn.BP.LODs[i].SpecularName, false, true, true);
 					ToReturn.BP.LODs[i].Specular.anisoLevel = 2;
-					ToReturn.BP.LODs[i].Mat.SetTexture("_SpecTeam", ToReturn.BP.LODs[i].Specular);
+					ToReturn.BP.LODs[i].Mat.SetTexture(SHADER_SpecTeam, ToReturn.BP.LODs[i].Specular);
 				}
 			}
 		}

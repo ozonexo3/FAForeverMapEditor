@@ -8,6 +8,7 @@ public class LoadRecentMaps : MonoBehaviour {
 	public AppMenu Menu;
 	public GameObject ListPrefab;
 	public Transform Pivot;
+	public Transform HorLine;
 
 	private void OnEnable()
 	{
@@ -21,9 +22,13 @@ public class LoadRecentMaps : MonoBehaviour {
 
 	void Clean()
 	{
-		foreach (Transform child in Pivot)
-			Destroy(child.gameObject);
+		foreach (GameObject child in GeneratedChilds)
+			Destroy(child);
+
+		GeneratedChilds.Clear();
 	}
+
+	HashSet<GameObject> GeneratedChilds = new HashSet<GameObject>();
 
 	void Generate()
 	{
@@ -42,8 +47,11 @@ public class LoadRecentMaps : MonoBehaviour {
 				Component.ClickActionId = ClickRecentMap;
 				Component.ObjectName.text = PlayerPrefs.GetString(FolderPath + i, "");
 				Component.InstanceId = i;
+				GeneratedChilds.Add(NewListObj);
 			}
 		}
+		if(HorLine)
+			HorLine.SetAsLastSibling();
 	}
 
 	public static int RecentMapSelected = 0;

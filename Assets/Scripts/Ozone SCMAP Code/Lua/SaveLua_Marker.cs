@@ -777,7 +777,7 @@ namespace MapLua
 		}
 		#endregion
 
-		static Dictionary<string, SaveLua.Marker> AllMarkersDictionary = new Dictionary<string, SaveLua.Marker>();
+		static Dictionary<string, Marker> AllMarkersDictionary = new Dictionary<string, Marker>();
 
 		public static void ClearMarkersDictionary()
 		{
@@ -818,32 +818,40 @@ namespace MapLua
 			return AllMarkersDictionary.ContainsKey(Name);
 		}
 
+		public static string GetPrefixByType(Marker.MarkerTypes Type)
+		{
+			switch (Type)
+			{
+				case Marker.MarkerTypes.BlankMarker:
+				case Marker.MarkerTypes.Mass:
+				case Marker.MarkerTypes.Hydrocarbon:
+					return Marker.MarkerTypeToString(Type) + " ";
+				case Marker.MarkerTypes.LandPathNode:
+					return "LandPN";
+				case Marker.MarkerTypes.WaterPathNode:
+					return "WaterPN";
+				case Marker.MarkerTypes.AmphibiousPathNode:
+					return "AmphPN";
+				case Marker.MarkerTypes.AirPathNode:
+					return "AirPN";
+				case Marker.MarkerTypes.NavalArea:
+					return "Naval Area ";
+				case Marker.MarkerTypes.ExpansionArea:
+					return "Expansion Area ";
+				case Marker.MarkerTypes.LargeExpansionArea:
+					return "Large Expansion ";
+				case Marker.MarkerTypes.CombatZone:
+					return "Combat Zone ";
+				case Marker.MarkerTypes.DefensivePoint:
+					return "Defensive Point ";
+				default:
+					return Type.ToString() + "_";
+			}
+		}
 
 		public static string GetLowestName(Marker.MarkerTypes Type)
 		{
-			string prefix = "";
-			if (Type == Marker.MarkerTypes.BlankMarker || Type == Marker.MarkerTypes.Mass || Type == Marker.MarkerTypes.Hydrocarbon)
-				prefix = Marker.MarkerTypeToString(Type) + " ";
-			else if (Type == Marker.MarkerTypes.LandPathNode)
-			{
-				prefix = "LandPN";
-			}
-			else if (Type == Marker.MarkerTypes.WaterPathNode)
-			{
-				prefix = "WaterPN";
-			}
-			else if (Type == Marker.MarkerTypes.AmphibiousPathNode)
-			{
-				prefix = "AmphPN";
-			}
-			else if (Type == Marker.MarkerTypes.AirPathNode)
-			{
-				prefix = "AirPN";
-			}
-			else
-			{
-				prefix = Type.ToString() + "_";
-			}
+			string prefix = GetPrefixByType(Type);
 
 			int ID = 0;
 			while (MarkerExist(prefix + ID.ToString("00")))
@@ -851,8 +859,6 @@ namespace MapLua
 
 			return prefix + ID.ToString("00");
 		}
-
-
 
 		private void ConnectAdjacentMarkers()
 		{

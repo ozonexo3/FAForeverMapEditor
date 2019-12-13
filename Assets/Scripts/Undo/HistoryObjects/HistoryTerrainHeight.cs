@@ -22,6 +22,7 @@ namespace UndoHistory
 
 		public override void Register(HistoryParameter Param)
 		{
+			UndoCommandName = "Terrain Heightmap";
 			parameter = Param as TerrainHeightHistoryParameter;
 
 			int x = parameter.newheights.GetLength(0);

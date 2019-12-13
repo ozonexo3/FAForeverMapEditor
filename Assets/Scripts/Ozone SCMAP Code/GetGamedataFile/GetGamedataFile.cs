@@ -31,9 +31,21 @@ public partial struct GetGamedataFile
 		return LoadedTextures.ContainsValue(Tex);
 	}
 
-	public static void AddToMemory(string TextureKey, Texture2D texture)
+	public static Texture2D AddToMemory(string TextureKey, ref Texture2D texture)
 	{
+		if (LoadedTextures.ContainsKey(TextureKey))
+		{
+			if (LoadedTextures[TextureKey] == texture)
+				return texture;
+			else
+			{
+				UnityEngine.Object.Destroy(texture);
+				//Debug.LogWarning("Different texture with same asset key! " + TextureKey);
+				return LoadedTextures[TextureKey];
+			}
+		}
 		LoadedTextures.Add(TextureKey, texture);
+		return texture;
 	}
 
 	public static void RemoveFromMemory(Texture2D Tex)
@@ -52,7 +64,7 @@ public partial struct GetGamedataFile
 
 	static Texture2D _EmptyNormal;
 	static Color NormalPixelColor = new Color(0.5f, 0.5f, 1, 0.5f);
-	static Texture2D emptyNormalTexture
+	public static Texture2D emptyNormalTexture
 	{
 		get
 		{
@@ -142,7 +154,7 @@ public partial struct GetGamedataFile
 		texture.Apply(false, SetUnreadable);
 
 		if (StoreInMemory)
-			AddToMemory(TextureKey, texture);
+			texture = AddToMemory(TextureKey, ref texture);
 
 		return texture;
 	}

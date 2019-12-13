@@ -16,7 +16,6 @@ namespace EditMap
 		public StratumInfo EditStratum;
 		public GameObject[] Categorys;
 		public GameObject[] CategorysSelected;
-		public MarkersList AllMarkersList;
 		public Transform HudElements;
 		public MapInfo MapInfoMenu;
 		public StratumInfo TexturesMenu;

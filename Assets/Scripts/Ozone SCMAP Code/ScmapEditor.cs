@@ -213,7 +213,11 @@ public partial class ScmapEditor : MonoBehaviour
 
 		Teren = Terrain.CreateTerrainGameObject(Data).GetComponent<Terrain>();
 		Teren.gameObject.name = "TERRAIN";
+#if UNITY_2019_2_OR_NEWER
+
+#else
 		Teren.materialType = Terrain.MaterialType.Custom;
+#endif
 		Teren.materialTemplate = TerrainMaterial;
 		Teren.heightmapPixelError = 4f;
 		Teren.basemapDistance = 10000;
@@ -343,7 +347,7 @@ public partial class ScmapEditor : MonoBehaviour
 
 	}
 
-	#region Water
+#region Water
 	public void SetWater()
 	{
 		WaterLevel.gameObject.SetActive(map.Water.HasWater);
@@ -417,9 +421,9 @@ public partial class ScmapEditor : MonoBehaviour
 		Shader.SetGlobalVector("normalRepeatRate", new Vector4(map.Water.WaveTextures[0].NormalRepeat, map.Water.WaveTextures[1].NormalRepeat, map.Water.WaveTextures[2].NormalRepeat, map.Water.WaveTextures[3].NormalRepeat));
 	}
 
-	#endregion
+#endregion
 
-	#region Textures
+#region Textures
 	public void SetTextures(int OnlyOne = -1)
 	{
 
@@ -607,9 +611,9 @@ public partial class ScmapEditor : MonoBehaviour
 			TerrainMaterial.SetFloat("_Splat" + IdStrig + "ScaleNormal", map.Width / Textures[id].NormalScale);
 		}
 	}
-	#endregion
+#endregion
 
-	#region Saving
+#region Saving
 	public static float TerrainHeight = 12.5f;
 	//const double HeightResize = 128.0 * 256.0; //512 * 40;
 	public const double HeightResize = 32768.0; //512 * 40;
@@ -741,9 +745,9 @@ public partial class ScmapEditor : MonoBehaviour
 		map.Save(path,  map.VersionMinor);
 	}
 
-	#endregion
+#endregion
 
-	#region Clean
+#region Clean
 	public void RestartTerrainAsset()
 	{
 		int xRes = (int)(256 + 1);
@@ -842,9 +846,9 @@ public partial class ScmapEditor : MonoBehaviour
 		GenerateControlTex.StopAllTasks();
 
 	}
-	#endregion
+#endregion
 
-	#region Converters
+#region Converters
 	/// <summary>
 	/// Convert Scmap position to editor world position
 	/// </summary>
@@ -984,9 +988,9 @@ public partial class ScmapEditor : MonoBehaviour
 		return Current.WaterLevel.localPosition.y;
 	}
 
-	#endregion
+#endregion
 
-	#region Rendering
+#region Rendering
 	[HideInInspector]
 	public bool Grid;
 	[HideInInspector]
@@ -1063,5 +1067,5 @@ public partial class ScmapEditor : MonoBehaviour
 	{
 		Shader.SetGlobalInt("_TTerrainXP", (MapLuaParser.Current.EditMenu.TexturesMenu.TTerrainXP.isOn) ? 1 : 0);
 	}
-	#endregion
+#endregion
 }

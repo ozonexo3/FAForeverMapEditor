@@ -6,6 +6,10 @@ using EditMap;
 
 public partial struct GetGamedataFile
 {
+	static readonly int SHADER_MainTex = Shader.PropertyToID("_MainTex");
+	static readonly int SHADER_BumpMap = Shader.PropertyToID("_BumpMap");
+	static readonly int SHADER_SpecTeam = Shader.PropertyToID("_SpecTeam");
+	static readonly int SHADER_GlowAlpha = Shader.PropertyToID("_GlowAlpha");
 
 	const float PropTexturesMipMapBias = 0.0f;
 
@@ -26,23 +30,27 @@ public partial struct GetGamedataFile
 				for(int i = 0; i < BP.LODs.Length; i++)
 				{
 					if (BP.LODs[i].Albedo != null)
-						AddToMemory(BP.LODs[i].AlbedoName, BP.LODs[i].Albedo);
+					{
+						BP.LODs[i].Albedo = AddToMemory(BP.LODs[i].AlbedoName, ref BP.LODs[i].Albedo);
+					}
 					else if (BP.LODs[i].AlbedoLoaded)
 					{
 						BP.LODs[i].Albedo = LoadTexture2DFromGamedata(GetGamedataFile.EnvScd, BP.LODs[i].AlbedoName, false, !IsTemp, true);
 						BP.LODs[i].Albedo.anisoLevel = 2;
-						BP.LODs[i].Mat.SetTexture("_MainTex", BP.LODs[i].Albedo);
 					}
 
+
 					if (BP.LODs[i].Normal != null)
-						AddToMemory(BP.LODs[i].NormalsName, BP.LODs[i].Normal);
+						BP.LODs[i].Normal = AddToMemory(BP.LODs[i].NormalsName, ref BP.LODs[i].Normal);
 					else if (BP.LODs[i].NormalLoaded)
 					{
 						BP.LODs[i].Normal = LoadTexture2DFromGamedata(GetGamedataFile.EnvScd, BP.LODs[i].NormalsName, true, !IsTemp, true);
 						BP.LODs[i].NormalLoaded = BP.LODs[i].Normal != null;
 						BP.LODs[i].Normal.anisoLevel = 2;
-						BP.LODs[i].Mat.SetTexture("_BumpMap", BP.LODs[i].Normal);
 					}
+
+					BP.LODs[i].Mat.SetTexture(SHADER_MainTex, BP.LODs[i].Albedo);
+					BP.LODs[i].Mat.SetTexture(SHADER_BumpMap, BP.LODs[i].Normal);
 				}
 			}
 
@@ -372,7 +380,7 @@ public partial struct GetGamedataFile
 			ToReturn.BP.LODs[i].AlbedoLoaded = ToReturn.BP.LODs[i].Albedo != null;
 			if(ToReturn.BP.LODs[i].AlbedoLoaded)
 				ToReturn.BP.LODs[i].Albedo.anisoLevel = 2;
-				ToReturn.BP.LODs[i].Mat.SetTexture("_MainTex", ToReturn.BP.LODs[i].Albedo);
+				ToReturn.BP.LODs[i].Mat.SetTexture(SHADER_MainTex, ToReturn.BP.LODs[i].Albedo);
 
 
 			if (ToReturn.BP.LODs[i].ShaderName == "VertexNormal")
@@ -390,7 +398,7 @@ public partial struct GetGamedataFile
 
 			if(ToReturn.BP.LODs[i].ShaderName == "NormalMappedTerrain")
 			{
-				ToReturn.BP.LODs[i].Mat.SetInt("_GlowAlpha", 1);
+				ToReturn.BP.LODs[i].Mat.SetInt(SHADER_GlowAlpha, 1);
 			}
 
 			if (!string.IsNullOrEmpty(ToReturn.BP.LODs[i].NormalsName))
@@ -400,7 +408,7 @@ public partial struct GetGamedataFile
 				if (ToReturn.BP.LODs[i].NormalLoaded)
 				{
 					ToReturn.BP.LODs[i].Normal.anisoLevel = 2;
-					ToReturn.BP.LODs[i].Mat.SetTexture("_BumpMap", ToReturn.BP.LODs[i].Normal);
+					ToReturn.BP.LODs[i].Mat.SetTexture(SHADER_BumpMap, ToReturn.BP.LODs[i].Normal);
 				}
 			}
 		}

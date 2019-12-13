@@ -250,11 +250,11 @@ Material:
     - _AreaWidht: 204.8
     - _AreaX: 0
     - _AreaY: 76.8
-    - _Brush: 0
+    - _Brush: 1
     - _BrushPainting: 0
     - _BrushSize: 0
-    - _BrushUvX: 0.024849312
-    - _BrushUvY: 0.63024664
+    - _BrushUvX: -0.49154297
+    - _BrushUvY: 0.010525398
     - _BuildGrid: 0
     - _DeepLevel: 1.675625
     - _DepthLevel: 1.5

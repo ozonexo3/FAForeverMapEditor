@@ -905,9 +905,9 @@ namespace FAF.MapEditor
 				{
 					for (int l = 0; l < LoadedProps[i].BP.LODs.Length; l++)
 					{
-						if(!GetGamedataFile.IsStoredInMemory(LoadedProps[i].BP.LODs[l].Albedo))
+						if(!GetGamedataFile.IsStoredInMemory(LoadedProps[i].BP.LODs[l].Albedo) && LoadedProps[i].BP.LODs[l].Albedo != Texture2D.whiteTexture)
 							Destroy(LoadedProps[i].BP.LODs[l].Albedo);
-						if (!GetGamedataFile.IsStoredInMemory(LoadedProps[i].BP.LODs[l].Normal))
+						if (!GetGamedataFile.IsStoredInMemory(LoadedProps[i].BP.LODs[l].Normal) && LoadedProps[i].BP.LODs[l].Normal != GetGamedataFile.emptyNormalTexture)
 							Destroy(LoadedProps[i].BP.LODs[l].Normal);
 					}
 				}

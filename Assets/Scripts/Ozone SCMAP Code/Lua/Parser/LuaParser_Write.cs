@@ -191,10 +191,6 @@ namespace LuaParser
 
 		// Structure
 		#region Structure
-		public static void AddLine(string line, int tabs, ref string fileString)
-		{
-			fileString += ((fileString.Length > 0)?("\n"):("")) + GetTabs(tabs) + line;
-		}
 
 		static string GetNextValue(bool NextValueCheck)
 		{

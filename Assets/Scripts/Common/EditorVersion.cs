@@ -10,12 +10,12 @@ public class EditorVersion : MonoBehaviour
 	public const string EditorBuildVersion = "v0.605-Alpha";
 
 	//Release
-	//public const string EditorBuildTag = "";
-	//public const float VersionOffset = 0f; // Release
+	public const string EditorBuildTag = "";
+	public const float VersionOffset = 0f; // Release
 
 	// Prerelease
-	public const string EditorBuildTag = "WIP8";
-	public const float VersionOffset = -0.001f; // Prerelease
+	//public const string EditorBuildTag = "WIP8";
+	//public const float VersionOffset = -0.001f; // Prerelease
 
 	public static string LatestTag = "";
 	public static string FoundUrl;

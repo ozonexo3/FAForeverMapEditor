@@ -24,9 +24,9 @@ public partial class Undo : MonoBehaviour {
 	public		int				MaxHistoryLength;
 
 	//[Header("History")]
-				List<HistoryObject>		History;
-				List<HistoryObject>		RedoHistory;
-				int				CurrentStage;
+	List<HistoryObject> History = new List<HistoryObject>(50);
+	List<HistoryObject> RedoHistory = new List<HistoryObject>(50);
+	int				CurrentStage;
 
 	void Awake(){
 		Current = this;
@@ -44,8 +44,16 @@ public partial class Undo : MonoBehaviour {
 			//Destroy(History[History.Count - 1]);
 			History.RemoveAt(History.Count - 1);
 			//Destroy(RedoHistory[0]);
-			RedoHistory.RemoveAt(0);
+			//RedoHistory.RemoveAt(0);
 		}
+
+		int hc = History.Count;
+		for (int i = 0; i < hc; i++)
+		{
+			History[i].RedoGenerated = false;
+		}
+
+		RedoHistory.Clear();
 	}
 
 	public void Clear()
@@ -100,7 +108,7 @@ public partial class Undo : MonoBehaviour {
 		}
 			
 		History [UndoTo].DoUndo ();
-		Debug.Log("Undo to " + UndoTo);
+		//Debug.Log("Undo to " + UndoTo);
 
 		CurrentStage = UndoTo;
 	}
@@ -113,7 +121,7 @@ public partial class Undo : MonoBehaviour {
 		}
 		int RedoTo = (History.Count - 1) - CurrentStage;
 
-		Debug.Log("Redo to " + RedoTo);
+		//Debug.Log("Redo to " + RedoTo);
 
 		RedoHistory [RedoTo].DoRedo ();
 		CurrentStage++;
@@ -144,14 +152,14 @@ public partial class Undo : MonoBehaviour {
 	{
 		Current.AddUndoCleanup();
 		Current.AddToHistory(UndoStep);
-		Current.CurrentStage = Undo.Current.History.Count;
+		Current.CurrentStage = Current.History.Count;
 		UndoStep.Register(Params);
 	}
 
 	public static void RegisterRedo(HistoryObject RedoStep, HistoryObject.HistoryParameter Params = null)
 	{
-		Undo.Current.AddToRedoHistory(RedoStep);
-		Undo.Current.CurrentStage = Undo.Current.History.Count;
+		Current.AddToRedoHistory(RedoStep);
+		Current.CurrentStage = Current.History.Count;
 		RedoStep.Register(Params);
 	}
 

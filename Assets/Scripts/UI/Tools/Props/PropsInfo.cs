@@ -168,8 +168,6 @@ namespace EditMap
 
 			ReloadPropStats();
 
-			ReloadPropStats();
-
 			MapLuaParser.Current.UpdateArea();
 		}
 
@@ -347,9 +345,9 @@ namespace EditMap
 
 		void UpdatePropStats()
 		{
-			TotalMass.text = TotalMassCount.ToString();
-			TotalEnergy.text = TotalEnergyCount.ToString();
-			TotalTime.text = TotalReclaimTime.ToString();
+			TotalMass.text = TotalMassCount.ToString("N");
+			TotalEnergy.text = TotalEnergyCount.ToString("N");
+			TotalTime.text = TotalReclaimTime.ToString("N");
 		}
 
 		#endregion
@@ -732,6 +730,7 @@ namespace EditMap
 					if (i == 0)
 					{
 						RegisterUndo();
+
 
 						TotalMassCount -= ClosestInstance.Connected.Group.PropObject.BP.ReclaimMassMax;
 						TotalEnergyCount -= ClosestInstance.Connected.Group.PropObject.BP.ReclaimEnergyMax;

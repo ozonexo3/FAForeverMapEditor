@@ -5,8 +5,6 @@ using UnityEngine.UI;
 using Markers;
 using Selection;
 //using System.Windows.Forms;
-using System.Text;
-using System.Runtime.InteropServices;
 using SFB;
 
 namespace EditMap
@@ -44,7 +42,7 @@ namespace EditMap
 			}
 			else
 			{
-				Selection.SelectionManager.Current.ClearAffectedGameObjects();
+				SelectionManager.Current.ClearAffectedGameObjects();
 			}
 			PlacementManager.Clear();
 		}
@@ -64,7 +62,7 @@ namespace EditMap
 
 
 			PlacementManager.Clear();
-			if(ChangeControlerType.Current)
+			if (ChangeControlerType.Current)
 				ChangeControlerType.Current.UpdateButtons();
 
 			MarkerSelectionOptions.UpdateOptions();
@@ -73,7 +71,7 @@ namespace EditMap
 
 		void GoToCreation()
 		{
-			Selection.SelectionManager.Current.ClearAffectedGameObjects(false);
+			SelectionManager.Current.ClearAffectedGameObjects(false);
 			PlacementManager.InstantiateAction = null;
 			PlacementManager.MinRotAngle = 90;
 			PlacementManager.BeginPlacement(GetCreationObject(), Place);
@@ -189,7 +187,7 @@ namespace EditMap
 				{
 					for (int m = 0; m < Mpreset.Markers.Length; m++)
 					{
-						if(!AnyCreated)
+						if (!AnyCreated)
 							Undo.RegisterUndo(new UndoHistory.HistoryMarkersRemove());
 						AnyCreated = true;
 
@@ -229,7 +227,7 @@ namespace EditMap
 					if (LastCreationType == MapLua.SaveLua.Marker.MarkerTypes.Mass || LastCreationType == MapLua.SaveLua.Marker.MarkerTypes.Hydrocarbon)
 						snapToWater = false;
 
-					if (SelectionManager.Current.SnapToGrid) 
+					if (SelectionManager.Current.SnapToGrid)
 						Positions[i] = ScmapEditor.SnapToGridCenter(Positions[i], true, snapToWater);
 
 					//Positions[i].y = ScmapEditor.Current.Teren.SampleHeight(Positions[i]);
@@ -238,7 +236,7 @@ namespace EditMap
 
 					NewMarker.position = ScmapEditor.WorldPosToScmap(Positions[i]);
 					if (CreationId == CREATE_CAM)
-						NewMarker.orientation = MarkerObject.MarkerRotToScmapRot( Rotations[i], MapLua.SaveLua.Marker.MarkerTypes.CameraInfo);
+						NewMarker.orientation = MarkerObject.MarkerRotToScmapRot(Rotations[i], MapLua.SaveLua.Marker.MarkerTypes.CameraInfo);
 					else
 						NewMarker.orientation = Vector3.zero;
 					MarkersControler.CreateMarker(NewMarker, mc);
@@ -299,9 +297,9 @@ namespace EditMap
 					continue;
 
 				//bool Removed = false;
-				for(int m = 0; m < MarkerObjects.Count; m++)
+				for (int m = 0; m < MarkerObjects.Count; m++)
 				{
-					if(MarkerObjects[m] == MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers[i].MarkerObj.gameObject)
+					if (MarkerObjects[m] == MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers[i].MarkerObj.gameObject)
 					{
 						MapLua.SaveLua.RemoveMarker(MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers[i].Name);
 						Destroy(MarkerObjects[m]);
@@ -330,7 +328,7 @@ namespace EditMap
 
 				RenderMarkersConnections.Current.UpdateConnections();
 
-				
+
 			}
 		}
 
@@ -391,7 +389,7 @@ namespace EditMap
 		MapLua.SaveLua.Marker.MarkerTypes LastCreationType = MapLua.SaveLua.Marker.MarkerTypes.BlankMarker;
 		GameObject GetCreationObject()
 		{
-			if(CreationId == CREATE_PRESET)
+			if (CreationId == CREATE_PRESET)
 			{
 				PlacementManager.SnapToWater = false;
 				return MarkerPresets[SpawnPressetDropdown.value];
@@ -454,7 +452,8 @@ namespace EditMap
 			}
 		}
 
-		public void ExportSelectedMarkers() {
+		public void ExportSelectedMarkers()
+		{
 
 			var extensions = new[] {
 				new ExtensionFilter("Faf Markers", "fafmapmarkers")
@@ -469,12 +468,12 @@ namespace EditMap
 				ExpMarkers.MapHeight = ScmapEditor.Current.map.Height;
 
 				List<MapLua.SaveLua.Marker> SelectedObjects = new List<MapLua.SaveLua.Marker>();
-				for(int i = 0; i < SelectionManager.Current.Selection.Ids.Count; i++)
+				for (int i = 0; i < SelectionManager.Current.Selection.Ids.Count; i++)
 				{
 					SelectedObjects.Add(SelectionManager.Current.AffectedGameObjects[SelectionManager.Current.Selection.Ids[i]].GetComponent<MarkerObject>().Owner);
 				}
 				ExpMarkers.Markers = new ExportMarkers.ExportMarker[SelectedObjects.Count];
-				for(int i = 0; i < ExpMarkers.Markers.Length; i++)
+				for (int i = 0; i < ExpMarkers.Markers.Length; i++)
 				{
 					ExpMarkers.Markers[i] = new ExportMarkers.ExportMarker();
 					ExpMarkers.Markers[i].MarkerType = SelectedObjects[i].MarkerType;
@@ -482,7 +481,7 @@ namespace EditMap
 					ExpMarkers.Markers[i].Rot = SelectedObjects[i].MarkerObj.Tr.localRotation;
 
 					List<int> Connected = new List<int>();
-					for(int c = 0; c < SelectedObjects[i].AdjacentToMarker.Count; c++)
+					for (int c = 0; c < SelectedObjects[i].AdjacentToMarker.Count; c++)
 					{
 						if (SelectedObjects.Contains(SelectedObjects[i].AdjacentToMarker[c]))
 						{
@@ -557,6 +556,70 @@ namespace EditMap
 			}
 		}
 
+		public void FixAiMarkersNames()
+		{
 
+			GenericPopup.ShowPopup(GenericPopup.PopupTypes.TwoButton, "Fix AI Marker names", "Do you want to fix names of all AI markers?", "Yes", FixAiMarkersNamesExecute, "Cancel");
+
+		}
+
+		/// <summary>
+		/// Search for all markers of defined types that name prefix is not correct
+		/// </summary>
+		void FixAiMarkersNamesExecute()
+		{
+			HashSet<MapLua.SaveLua.Marker> ToChange = new HashSet<MapLua.SaveLua.Marker>();
+
+			for (int mc = 0; mc < MapLuaParser.Current.SaveLuaFile.Data.MasterChains.Length; mc++)
+			{
+				int Mcount = MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers.Count;
+				for (int m = 0; m < Mcount; m++)
+				{
+					switch (MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers[m].MarkerType)
+					{
+						case MapLua.SaveLua.Marker.MarkerTypes.NavalArea:
+						case MapLua.SaveLua.Marker.MarkerTypes.ExpansionArea:
+						case MapLua.SaveLua.Marker.MarkerTypes.LargeExpansionArea:
+							string RequiredPrefix = MapLua.SaveLua.GetPrefixByType(MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers[m].MarkerType);
+							if (!MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers[m].Name.StartsWith(RequiredPrefix))
+							{
+								ToChange.Add(MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers[m]);
+							}
+							break;
+					}
+				}
+			}
+
+			if (ToChange.Count <= 0)
+			{
+				GenericPopup.ShowPopup(GenericPopup.PopupTypes.OneButton, "Fix AI Marker names", "There are no AI markers that need name fix.", "OK", null);
+				return;
+			}
+
+			MapLua.SaveLua.Marker[] UndoMarkersArray = new MapLua.SaveLua.Marker[ToChange.Count];
+			ToChange.CopyTo(UndoMarkersArray);
+
+			Undo.RegisterUndo(new UndoHistory.HistoryMarkersChange(), new UndoHistory.HistoryMarkersChange.MarkersChangeHistoryParameter(UndoMarkersArray));
+
+			int ChangedMarkersCount = 0;
+
+			for (int i = 0; i < UndoMarkersArray.Length; i++)
+			{
+				//string RequiredPrefix = MapLua.SaveLua.GetPrefixByType(UndoMarkersArray[i].MarkerType);
+				//if (!RequiredPrefix.StartsWith(RequiredPrefix))
+				//{
+				MapLua.SaveLua.RemoveMarker(UndoMarkersArray[i].Name);
+				UndoMarkersArray[i].Name = MapLua.SaveLua.GetLowestName(UndoMarkersArray[i].MarkerType);
+				if (UndoMarkersArray[i].MarkerObj)
+					UndoMarkersArray[i].MarkerObj.gameObject.name = UndoMarkersArray[i].Name;
+				MapLua.SaveLua.AddNewMarker(UndoMarkersArray[i]);
+				ChangedMarkersCount++;
+				//}
+			}
+
+			GenericPopup.ShowPopup(GenericPopup.PopupTypes.OneButton, "Fix AI Marker names", "Changed names of " + ChangedMarkersCount + " markers.", "OK", null);
+
+			MarkerSelectionOptions.UpdateOptions();
+		}
 	}
 }
