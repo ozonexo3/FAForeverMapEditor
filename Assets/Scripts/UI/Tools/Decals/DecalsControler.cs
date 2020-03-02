@@ -8,7 +8,7 @@ public class DecalsControler : MonoBehaviour {
 	public static DecalsControler Current;
 
 
-	public List<Decal> AllDecals = new List<Decal>();
+	public static List<Decal> AllDecals = new List<Decal>();
 
 	private void Awake()
 	{
@@ -19,32 +19,32 @@ public class DecalsControler : MonoBehaviour {
 	{
 		get
 		{
-			return Current.AllDecals.Count;
+			return AllDecals.Count;
 		}
 	}
 
 	public static List<Decal> GetAllDecals()
 	{
-		int Count = Current.AllDecals.Count;
+		int Count = AllDecals.Count;
 		for (int i = 0; i < Count; i++)
 		{
-			Current.AllDecals[i].Obj.Bake();
+			AllDecals[i].Obj.Bake();
 		}
 
-		return Current.AllDecals;
+		return AllDecals;
 	}
 
 	public static GameObject[] GetAllDecalsGo(out int[] AllTypes)
 	{
-		int Count = Current.AllDecals.Count;
+		int Count = AllDecals.Count;
 		List<GameObject> ToReturn = new List<GameObject>();
 		List<int> AllTypesList = new List<int>();
 		for (int i = 0; i < Count; i++)
 		{
-			if(Current.AllDecals[i].Obj != null)
+			if(AllDecals[i].Obj != null)
 			{
-				ToReturn.Add(Current.AllDecals[i].Obj.gameObject);
-				AllTypesList.Add(Current.AllDecals[i].Shared.GetHashCode());
+				ToReturn.Add(AllDecals[i].Obj.gameObject);
+				AllTypesList.Add(AllDecals[i].Shared.GetHashCode());
 			}
 
 			//ToReturn[i] = Current.AllDecals[i].Obj.gameObject;
@@ -59,14 +59,14 @@ public class DecalsControler : MonoBehaviour {
 	{
 		HashSet<OzoneDecal> ToDestroy = new HashSet<OzoneDecal>();
 
-		int count = Current.AllDecals.Count;
+		int count = AllDecals.Count;
 		for(int i = 0; i < count; i++)
 		{
-			if (!NewDecalsList.Contains(Current.AllDecals[i]) && Current.AllDecals[i].Obj)
+			if (!NewDecalsList.Contains(AllDecals[i]) && AllDecals[i].Obj)
 			{
-				Current.AllDecals[i].Obj.Bake();
+				AllDecals[i].Obj.Bake();
 				//DestroyImmediate(Current.AllDecals[i].Obj.gameObject);
-				ToDestroy.Add(Current.AllDecals[i].Obj);
+				ToDestroy.Add(AllDecals[i].Obj);
 			}
 		}
 
@@ -74,14 +74,14 @@ public class DecalsControler : MonoBehaviour {
 
 		for (int i = 0; i < count; i++)
 		{
-			if (!Current.AllDecals.Contains(NewDecalsList[i]))
+			if (!AllDecals.Contains(NewDecalsList[i]))
 			{
 				// Empty, create gameObject
 				EditMap.DecalsInfo.CreateGameObjectFromDecal(NewDecalsList[i]);
 			}
 		}
 
-		Current.AllDecals = NewDecalsList;
+		AllDecals = NewDecalsList;
 
 		Sort();
 
@@ -97,97 +97,104 @@ public class DecalsControler : MonoBehaviour {
 			return;
 		}
 
-		if (!Current.AllDecals.Contains(dc))
+		if (!AllDecals.Contains(dc))
 		{
 			if (!dc.Obj.CreationObject)
 			{
 				if (ForceOrder >= 0)
-					Current.AllDecals.Insert(ForceOrder, dc);
+					AllDecals.Insert(ForceOrder, dc);
 				else
-					Current.AllDecals.Add(dc);
+					AllDecals.Add(dc);
 			}
 		}
 	}
 
 	public static void RemoveDecal(Decal dc)
 	{
-		if (Current.AllDecals.Contains(dc))
+		if (AllDecals.Contains(dc))
 		{
-			Current.AllDecals.Remove(dc);
+			AllDecals.Remove(dc);
 		}
 	}
 
 	public static void MoveUp(Decal dc)
 	{
-		if (!Current.AllDecals.Contains(dc))
+		if (!AllDecals.Contains(dc))
 			Debug.LogError("Decal not exist in all decals list");
-		int id = Current.AllDecals.IndexOf(dc);
+		int id = AllDecals.IndexOf(dc);
 
-		if (id < Current.AllDecals.Count - 1)
+		if (id < AllDecals.Count - 1)
 		{
-			Current.AllDecals.RemoveAt(id);
-			Current.AllDecals.Insert(id + 1, dc);
-			Debug.Log("Move Up from: " + id +", to " + Current.AllDecals.IndexOf(dc));
-
+			AllDecals.RemoveAt(id);
+			AllDecals.Insert(id + 1, dc);
 		}
+		Sort();
+
 	}
 
 	public static void MoveDown(Decal dc)
 	{
-		if (!Current.AllDecals.Contains(dc))
+		if (!AllDecals.Contains(dc))
 			Debug.LogError("Decal not exist in all decals list");
-		int id = Current.AllDecals.IndexOf(dc);
+		int id = AllDecals.IndexOf(dc);
 
 		if (id > 0)
 		{
-			Debug.Log("Move Down");
-			Current.AllDecals.RemoveAt(id);
-			Current.AllDecals.Insert(id - 1, dc);
+			AllDecals.RemoveAt(id);
+			AllDecals.Insert(id - 1, dc);
 		}
+		Sort();
+
 	}
 
 	public static void MoveBottom(Decal dc)
 	{
-		if (!Current.AllDecals.Contains(dc))
+		if (!AllDecals.Contains(dc))
 			Debug.LogError("Decal not exist in all decals list");
-		int id = Current.AllDecals.IndexOf(dc);
+		int id = AllDecals.IndexOf(dc);
 
 
 		if (id > 0)
 		{
-			Debug.Log("MoveBottom");
-
-			Current.AllDecals.RemoveAt(id);
-			Current.AllDecals.Insert(0, dc);
+			AllDecals.RemoveAt(id);
+			AllDecals.Insert(0, dc);
 		}
+		Sort();
+
 	}
 
 	public static void MoveTop(Decal dc)
 	{
-		if (!Current.AllDecals.Contains(dc))
+		if (!AllDecals.Contains(dc))
 			Debug.LogError("Decal not exist in all decals list");
 
-		int id = Current.AllDecals.IndexOf(dc);
+		int id = AllDecals.IndexOf(dc);
 
-		if (id < Current.AllDecals.Count - 1)
+		if (id < AllDecals.Count - 1)
 		{
-			Debug.Log("MoveTop");
-
-			Current.AllDecals.RemoveAt(id);
-			Current.AllDecals.Insert(Current.AllDecals.Count - 1, dc);
+			AllDecals.RemoveAt(id);
+			AllDecals.Insert(AllDecals.Count, dc);
 		}
+		Sort();
 	}
 
 	public static void Sort()
 	{
-		int count = Current.AllDecals.Count;
+		int count = AllDecals.Count;
+
+		//Current.gameObject.SetActive(false);
 
 		for (int i = 0; i < count; i++)
 		{
-			Current.AllDecals[i].Obj.tr.SetSiblingIndex(i);
+			//AllDecals[i].Obj.tr.SetSiblingIndex(i);
+			AllDecals[i].Obj.RefreshSortingArray(i);
 		}
-		Current.gameObject.SetActive(false);
-		Current.gameObject.SetActive(true);
+
+		/*for (int i = 0; i < count; i++)
+		{
+			AllDecals[i].Obj.gameObject.SetActive(true);
+		}*/
+		//Current.gameObject.SetActive(true);
 	}
 
 

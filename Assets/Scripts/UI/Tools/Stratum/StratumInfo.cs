@@ -107,7 +107,7 @@ namespace EditMap
 			public RawImage Stratum1_Mask;
 			public RawImage Stratum0_Mask;
 
-			[Header("Mask")]
+			[Header("Visibility")]
 			public Text Stratum9_Visible;
 			public Text Stratum8_Visible;
 			public Text Stratum7_Visible;
@@ -117,6 +117,8 @@ namespace EditMap
 			public Text Stratum3_Visible;
 			public Text Stratum2_Visible;
 			public Text Stratum1_Visible;
+
+			public Image[] XpShaderLayers;
 		}
 		#endregion
 
@@ -364,6 +366,9 @@ namespace EditMap
 			StratumSettings.Stratum6_Mask.texture = ScmapEditor.Current.map.TexturemapTex2;
 			StratumSettings.Stratum7_Mask.texture = ScmapEditor.Current.map.TexturemapTex2;
 			StratumSettings.Stratum8_Mask.texture = ScmapEditor.Current.map.TexturemapTex2;
+
+			RefreshLayerUI();
+
 		}
 
 		bool LoadingStratum = false;
@@ -436,8 +441,6 @@ namespace EditMap
 			TerrainMaterial.SetInt("_Brush", 1);
 			BrushGenerator.SetFallof(SelectedFalloff, LastRotation);
 			TerrainMaterial.SetTexture("_BrushTex", (Texture)BrushGenerator.Current.Brushes[SelectedFalloff]);
-
-			
 		}
 
 		public void ChangePageToSettings()
@@ -451,6 +454,20 @@ namespace EditMap
 			TerrainMaterial.SetFloat("_BrushSize", 0);
 		}
 
+		static readonly Color DisabledLayerColor = new Color(1f, 1f, 1f, 0.5f);
+
+		public void RefreshLayerUI()
+		{
+			for(int i = 0; i < StratumSettings.XpShaderLayers.Length; i++)
+			{
+				StratumSettings.XpShaderLayers[i].color = TTerrainXP.isOn ? Color.white : DisabledLayerColor;
+			}
+
+			StratumSettings.Stratum8_Mask.gameObject.SetActive(TTerrainXP.isOn);
+			StratumSettings.Stratum7_Mask.gameObject.SetActive(TTerrainXP.isOn);
+			StratumSettings.Stratum6_Mask.gameObject.SetActive(TTerrainXP.isOn);
+			StratumSettings.Stratum5_Mask.gameObject.SetActive(TTerrainXP.isOn);
+		}
 
 		public float Min = 0;
 		public float Max = 512;

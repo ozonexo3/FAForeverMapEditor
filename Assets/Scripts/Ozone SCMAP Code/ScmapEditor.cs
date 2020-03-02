@@ -627,7 +627,7 @@ public partial class ScmapEditor : MonoBehaviour
 
 		if (Teren)
 		{
-			heights = Teren.terrainData.GetHeights(0, 0, Teren.terrainData.heightmapWidth, Teren.terrainData.heightmapHeight);
+			heights = Teren.terrainData.GetHeights(0, 0, Teren.terrainData.heightmapResolution, Teren.terrainData.heightmapResolution);
 			heightsLength = heights.GetLength(0);
 
 			int y = 0;

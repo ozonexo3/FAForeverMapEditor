@@ -21,6 +21,12 @@ public partial class CameraControler : MonoBehaviour {
 	const float SmoothZoom = 14;
 	const float SmoothPan = 16;
 	const float SmoothRot = 14;
+
+	float GetMouseScrollDelta()
+	{
+		return Input.mouseScrollDelta.y * 0.1f;
+	}
+
 	void UberCameraMovement()
 	{
 		if (Edit.MauseOnGameplay)
@@ -28,7 +34,8 @@ public partial class CameraControler : MonoBehaviour {
 			Ray ray = Cam.ScreenPointToRay(Input.mousePosition);
 			RaycastHit hit;
 
-			int MouseScrollSteps = (int)(Input.GetAxis("Mouse ScrollWheel") / ScrollStep);
+
+			int MouseScrollSteps = (int)(GetMouseScrollDelta() / ScrollStep);
 
 			while (MouseScrollSteps != 0)
 			{

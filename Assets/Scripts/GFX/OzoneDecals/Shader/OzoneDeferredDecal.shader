@@ -185,7 +185,7 @@ Shader "Ozone/Deferred Decal"
 				//float AlphaNormal = clamp(dot(normal, half3(0,0,1)) * 10, 0, 1);
 				//clip(0.999 -  AlphaNormal);
 				//clip(0.5 - normal.y);
-				clip(AlphaNormal - 0.003);
+				clip(AlphaNormal - 0.004);
 
 				normal = mul(normal, half3x3(i.decalTangent, decalBitangent, i.decalNormal));
 

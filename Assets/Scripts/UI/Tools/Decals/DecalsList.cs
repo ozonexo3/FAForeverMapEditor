@@ -142,16 +142,13 @@ namespace EditMap
 				{
 					Current.SetHidden(Current.Setting.Hidden);
 
-					if (DecalSettings.GetLoaded == Current.Setting)
+					if (DecalSettings.Loaded == Current.Setting)
 						Current.SetSelection(2);
 					else if (SelectedShared.Contains(Current.Setting))
 						Current.Select();
 					else
 						Current.Unselect();
-
 				}
-
-
 			}
 		}
 

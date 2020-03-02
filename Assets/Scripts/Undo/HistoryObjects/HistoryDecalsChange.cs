@@ -15,9 +15,9 @@ namespace UndoHistory
 
 		public override void Register(HistoryParameter Param)
 		{
-			int count = DecalsControler.Current.AllDecals.Count;
+			int count = DecalsControler.AllDecals.Count;
 			Decals = new Decal[count];
-			DecalsControler.Current.AllDecals.CopyTo(Decals);
+			DecalsControler.AllDecals.CopyTo(Decals);
 		}
 
 
@@ -31,7 +31,7 @@ namespace UndoHistory
 
 		public override void DoRedo()
 		{
-			bool CleanSelection = DecalsControler.Current.AllDecals.Count != Decals.Length || DecalsInfo.Current.DecalSettingsUi.IsCreating || !DecalsInfo.Current.gameObject.activeInHierarchy;
+			bool CleanSelection = DecalsControler.AllDecals.Count != Decals.Length || DecalsInfo.Current.DecalSettingsUi.IsCreating || !DecalsInfo.Current.gameObject.activeInHierarchy;
 
 			if (CleanSelection)
 				Selection.SelectionManager.Current.CleanSelection();

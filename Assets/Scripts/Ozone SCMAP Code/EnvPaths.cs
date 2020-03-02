@@ -31,6 +31,11 @@ public class EnvPaths : MonoBehaviour {
 		}
 
 		PlayerPrefs.SetString(InstalationPath, value);
+
+		if (!System.IO.Directory.Exists(value))
+		{
+			GenericInfoPopup.ShowInfo("Wrong game installation path!\nCheck preferences.");
+		}
 	}
 
 	public static string GamedataPath{
@@ -56,6 +61,11 @@ public class EnvPaths : MonoBehaviour {
 		if (value[0].ToString() == "/") value = value.Remove(0, 1);
 
 		PlayerPrefs.SetString(MapsPath, value);
+
+		if (!System.IO.Directory.Exists(value))
+		{
+			GenericInfoPopup.ShowInfo("Wrong maps path!\nCheck preferences.");
+		}
 	}
 
 	public static string GetMapsPath() {

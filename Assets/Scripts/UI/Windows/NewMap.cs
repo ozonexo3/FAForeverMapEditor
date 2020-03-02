@@ -89,7 +89,7 @@ namespace EditMap
 
 			MapPath = EnvPaths.GetMapsPath();
 			string Error = "";
-			if (!System.IO.Directory.Exists(MapPath))
+			if (!Directory.Exists(MapPath))
 			{
 				Error = "Maps folder not exist: " + MapPath;
 				Debug.LogError(Error);

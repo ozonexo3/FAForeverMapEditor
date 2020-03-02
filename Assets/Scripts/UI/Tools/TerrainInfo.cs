@@ -418,18 +418,18 @@ namespace EditMap
 
 		public void SetTerrainHeight()
 		{
-			int h = ScmapEditor.Current.Teren.terrainData.heightmapHeight;
-			int w = ScmapEditor.Current.Teren.terrainData.heightmapWidth;
+			int h = ScmapEditor.Current.Teren.terrainData.heightmapResolution;
+			int w = ScmapEditor.Current.Teren.terrainData.heightmapResolution;
 			ScmapEditor.GetAllHeights(ref beginHeights);
 
 			float Value = float.Parse(TerrainSet.text) * 0.1f;
 			Value /= ScmapEditor.TerrainHeight;
 
-			float[,] heights = ScmapEditor.Current.Teren.terrainData.GetHeights(0, 0, ScmapEditor.Current.Teren.terrainData.heightmapWidth, ScmapEditor.Current.Teren.terrainData.heightmapHeight);
+			float[,] heights = ScmapEditor.Current.Teren.terrainData.GetHeights(0, 0, ScmapEditor.Current.Teren.terrainData.heightmapResolution, ScmapEditor.Current.Teren.terrainData.heightmapResolution);
 
-			for (int i = 0; i < ScmapEditor.Current.Teren.terrainData.heightmapWidth; i++)
+			for (int i = 0; i < ScmapEditor.Current.Teren.terrainData.heightmapResolution; i++)
 			{
-				for (int j = 0; j < ScmapEditor.Current.Teren.terrainData.heightmapWidth; j++)
+				for (int j = 0; j < ScmapEditor.Current.Teren.terrainData.heightmapResolution; j++)
 				{
 					heights[i, j] = Value;
 				}
@@ -447,19 +447,19 @@ namespace EditMap
 
 		public void AddTerrainHeight()
 		{
-			int h = ScmapEditor.Current.Teren.terrainData.heightmapHeight;
-			int w = ScmapEditor.Current.Teren.terrainData.heightmapWidth;
+			int h = ScmapEditor.Current.Teren.terrainData.heightmapResolution;
+			int w = ScmapEditor.Current.Teren.terrainData.heightmapResolution;
 			ScmapEditor.GetAllHeights(ref beginHeights);
 			Undo.RegisterUndo(new UndoHistory.HistoryTerrainHeight(), new UndoHistory.HistoryTerrainHeight.TerrainHeightHistoryParameter(beginHeights));
 
 			float Value = float.Parse(TerrainAdd.text) * 0.1f;
 			Value /= ScmapEditor.TerrainHeight;
 
-			float[,] heights = ScmapEditor.Current.Teren.terrainData.GetHeights(0, 0, ScmapEditor.Current.Teren.terrainData.heightmapWidth, ScmapEditor.Current.Teren.terrainData.heightmapHeight);
+			float[,] heights = ScmapEditor.Current.Teren.terrainData.GetHeights(0, 0, ScmapEditor.Current.Teren.terrainData.heightmapResolution, ScmapEditor.Current.Teren.terrainData.heightmapResolution);
 
-			for (int i = 0; i < ScmapEditor.Current.Teren.terrainData.heightmapWidth; i++)
+			for (int i = 0; i < ScmapEditor.Current.Teren.terrainData.heightmapResolution; i++)
 			{
-				for (int j = 0; j < ScmapEditor.Current.Teren.terrainData.heightmapWidth; j++)
+				for (int j = 0; j < ScmapEditor.Current.Teren.terrainData.heightmapResolution; j++)
 				{
 					heights[i, j] += Value;
 				}
@@ -490,8 +490,8 @@ namespace EditMap
 				return;
 
 
-			int h = ScmapEditor.Current.Teren.terrainData.heightmapHeight;
-			int w = ScmapEditor.Current.Teren.terrainData.heightmapWidth;
+			int h = ScmapEditor.Current.Teren.terrainData.heightmapResolution;
+			int w = ScmapEditor.Current.Teren.terrainData.heightmapResolution;
 
 			float[,] data = ScmapEditor.Current.Teren.terrainData.GetHeights(0, 0, w, h);
 
@@ -553,8 +553,8 @@ namespace EditMap
 			if (paths == null || string.IsNullOrEmpty(paths))
 				return;
 
-			float h = ScmapEditor.Current.Teren.terrainData.heightmapHeight;
-			float w = ScmapEditor.Current.Teren.terrainData.heightmapWidth;
+			float h = ScmapEditor.Current.Teren.terrainData.heightmapResolution;
+			float w = ScmapEditor.Current.Teren.terrainData.heightmapResolution;
 
 			float[,] data = ScmapEditor.Current.Teren.terrainData.GetHeights(0, 0, (int)w, (int)h);
 
@@ -629,8 +629,8 @@ namespace EditMap
 			if (paths == null || paths.Length == 0 || string.IsNullOrEmpty(paths[0]))
 				return;
 
-			int h = ScmapEditor.Current.Teren.terrainData.heightmapHeight;
-			int w = ScmapEditor.Current.Teren.terrainData.heightmapWidth;
+			int h = ScmapEditor.Current.Teren.terrainData.heightmapResolution;
+			int w = ScmapEditor.Current.Teren.terrainData.heightmapResolution;
 			ScmapEditor.GetAllHeights(ref beginHeights);
 			Undo.RegisterUndo(new UndoHistory.HistoryTerrainHeight(), new UndoHistory.HistoryTerrainHeight.TerrainHeightHistoryParameter(beginHeights));
 
@@ -819,8 +819,8 @@ namespace EditMap
 
 
 
-			int hmWidth = ScmapEditor.Current.Teren.terrainData.heightmapWidth;
-			int hmHeight = ScmapEditor.Current.Teren.terrainData.heightmapHeight;
+			int hmWidth = ScmapEditor.Current.Teren.terrainData.heightmapResolution;
+			int hmHeight = ScmapEditor.Current.Teren.terrainData.heightmapResolution;
 
 			Vector3 tempCoord = ScmapEditor.Current.Teren.gameObject.transform.InverseTransformPoint(AtPosition);
 			Vector3 coord = Vector3.zero;
@@ -850,13 +850,13 @@ namespace EditMap
 			int OffsetLeft = 0;
 			if (posXInTerrain - offset < 0) OffsetLeft = Mathf.Abs(posXInTerrain - offset);
 			int OffsetRight = 0;
-			if (posXInTerrain - offset + size > ScmapEditor.Current.Teren.terrainData.heightmapWidth) OffsetRight = posXInTerrain - offset + size - ScmapEditor.Current.Teren.terrainData.heightmapWidth;
+			if (posXInTerrain - offset + size > ScmapEditor.Current.Teren.terrainData.heightmapResolution) OffsetRight = posXInTerrain - offset + size - ScmapEditor.Current.Teren.terrainData.heightmapResolution;
 
 			// Vertical Brush Offsets
 			int OffsetDown = 0;
 			if (posYInTerrain - offset < 0) OffsetDown = Mathf.Abs(posYInTerrain - offset);
 			int OffsetTop = 0;
-			if (posYInTerrain - offset + size > ScmapEditor.Current.Teren.terrainData.heightmapWidth) OffsetTop = posYInTerrain - offset + size - ScmapEditor.Current.Teren.terrainData.heightmapWidth;
+			if (posYInTerrain - offset + size > ScmapEditor.Current.Teren.terrainData.heightmapResolution) OffsetTop = posYInTerrain - offset + size - ScmapEditor.Current.Teren.terrainData.heightmapResolution;
 
 			//float[,] heights = ScmapEditor.Current.Teren.terrainData.GetHeights(posXInTerrain - offset + OffsetLeft, posYInTerrain - offset + OffsetDown, (size - OffsetLeft) - OffsetRight, (size - OffsetDown) - OffsetTop);
 

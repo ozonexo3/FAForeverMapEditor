@@ -7,15 +7,15 @@ using System.Collections.Generic;
 public class EditorVersion : MonoBehaviour
 {
 
-	public const string EditorBuildVersion = "v0.605-Alpha";
+	public const string EditorBuildVersion = "v0.606-Alpha";
 
 	//Release
-	public const string EditorBuildTag = "";
-	public const float VersionOffset = 0f; // Release
+	//public const string EditorBuildTag = "HF1";
+	//public const float VersionOffset = 0f; // Release
 
 	// Prerelease
-	//public const string EditorBuildTag = "WIP8";
-	//public const float VersionOffset = -0.001f; // Prerelease
+	public const string EditorBuildTag = "WIP1";
+	public const double VersionOffset = -0.001f; // Prerelease
 
 	public static string LatestTag = "";
 	public static string FoundUrl;
@@ -64,11 +64,12 @@ public class EditorVersion : MonoBehaviour
 				LatestTag = Tags[Tags.Length - 1];
 				FoundUrl = www.url;
 
-				float Latest = BuildFloat(LatestTag);
-				float Current = BuildFloat(EditorBuildVersion);
-				if (Current + VersionOffset < Latest)
+				double Latest = System.Math.Round(BuildFloat(LatestTag), 3);
+				double Current = System.Math.Round(BuildFloat(EditorBuildVersion), 3);
+				double CurrentWithOffset = System.Math.Round(Current + VersionOffset, 3);
+				if (CurrentWithOffset < Latest)
 				{
-					Debug.Log("New version avaiable: " + Latest);
+					Debug.Log("New version avaiable: " + Latest + "\n" + (Current + VersionOffset));
 					GenericPopup.ShowPopup(GenericPopup.PopupTypes.TwoButton, "New version",
 						"New version of Map Editor is avaiable.\nCurrent: " + EditorBuildVersion.ToLower() + TagString + "\t\tNew: " + LatestTag + "\nDo you want to download it now?",
 						"Download", DownloadLatest,
@@ -77,7 +78,7 @@ public class EditorVersion : MonoBehaviour
 				}
 				else
 				{
-					Debug.Log("Latest version: " + Mathf.Max(Latest, Current) + " " + EditorBuildTag);
+					Debug.Log("Latest version: " + System.Math.Max(Latest, Current) + " " + EditorBuildTag);
 				}
 
 			}

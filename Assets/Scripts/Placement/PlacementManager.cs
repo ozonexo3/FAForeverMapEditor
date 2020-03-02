@@ -285,6 +285,20 @@ public class PlacementManager : MonoBehaviour {
 		Clear();
 	}
 
+	public static void PlaceAtPosition(Vector3 Position, Quaternion Rotation, Vector3 Scale, GameObject Prefab, System.Action<Vector3[], Quaternion[], Vector3[]> PlaceAction, bool ResetTransform = true)
+	{
+		BeginPlacement(Prefab, PlaceAction, ResetTransform);
+
+		Current.PlacementObject.transform.localPosition = Position;
+		Current.PlacementObject.transform.localRotation = Rotation;
+		Current.PlacementObject.transform.localScale = Scale;
+
+		Current.UpdateSymmetryObjects();
+
+		Current.Place();
+		Clear();
+	}
+
 
 	public void UpdateSymmetry()
 	{

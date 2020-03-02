@@ -17,9 +17,10 @@ namespace OzoneDecals {
 
 		protected CommandBuffer _bufferDeferred = null;
 		protected Dictionary<Material, HashSet<OzoneDecal>> _Decals;
-		protected HashSet<OzoneDecal> _DecalsAlbedo;
+		protected List<OzoneDecal> _DecalsNormal;
+		protected List<OzoneDecal> _DecalsAlbedo;
 		protected HashSet<OzoneDecal> _DecalsTarmacs;
-		protected List<OzoneDecal> _decalComponent;
+		//protected List<OzoneDecal> _decalComponent;
 		//protected List<MeshFilter> _meshFilterComponent;
 		protected const CameraEvent _camEvent = CameraEvent.BeforeReflections;
 
@@ -58,9 +59,10 @@ namespace OzoneDecals {
 			}
 
 			_Decals = new Dictionary<Material, HashSet<OzoneDecal>>();
-			_DecalsAlbedo = new HashSet<OzoneDecal>();
+			_DecalsAlbedo = new List<OzoneDecal>(4096);
 			_DecalsTarmacs = new HashSet<OzoneDecal>();
-			_decalComponent = new List<OzoneDecal>();
+			//_decalComponent = new List<OzoneDecal>();
+			_DecalsNormal = new List<OzoneDecal>(4096);
 			//_meshFilterComponent = new List<MeshFilter>();
 
 			_matrices = new Matrix4x4[1023];
@@ -120,21 +122,25 @@ namespace OzoneDecals {
 		{
 			if (d.Dec.Shared.DrawAlbedo)
 			{
-				if(d.Dec.Shared.IsTarmac)
+				if (d.Dec.Shared.IsTarmac)
 					_DecalsTarmacs.Add(d);
 				else
+				{
 					_DecalsAlbedo.Add(d);
+				}
 			}
 			else
 			{
-				if (!_Decals.ContainsKey(d.Material))
+				_DecalsNormal.Add(d);
+
+				/*if (!_Decals.ContainsKey(d.Material))
 				{
 					_Decals.Add(d.Material, new HashSet<OzoneDecal>() { d });
 				}
 				else
 				{
 					_Decals[d.Material].Add(d);
-				}
+				}*/
 			}
 		}
 
@@ -149,7 +155,8 @@ namespace OzoneDecals {
 			}
 			else
 			{
-				if (!_Decals.ContainsKey(d.Material))
+				_DecalsNormal.Remove(d);
+				/*if (!_Decals.ContainsKey(d.Material))
 				{
 					//_Decals.Remove(d.Material, new HashSet<OzoneDecal>() { d });
 				}
@@ -158,19 +165,8 @@ namespace OzoneDecals {
 					_Decals[d.Material].Remove(d);
 					if (_Decals[d.Material].Count == 0)
 						_Decals.Remove(d.Material);
-				}
+				}*/
 			}
-		}
-
-
-		public static void AddAlbedoDecal(OzoneDecal d)
-		{
-			//Current._DecalsAlbedo.Add(d);
-		}
-
-		public static void RemoveAlbedoDecal(OzoneDecal d)
-		{
-			//Current._DecalsAlbedo.Remove(d);
 		}
 	}
 }

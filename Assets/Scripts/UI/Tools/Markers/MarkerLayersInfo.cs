@@ -30,6 +30,33 @@ namespace EditMap
 		public Toggle ExpandActive;
 		public Toggle OtherActive;
 
+		private void OnEnable()
+		{
+			IgnoreEvent = true;
+
+			BlankActive.isOn = MarkersControler.Current.MarkerLayersSettings.Blank;
+			SpawnActive.isOn = MarkersControler.Current.MarkerLayersSettings.Spawn;
+			ResourcesActive.isOn = MarkersControler.Current.MarkerLayersSettings.Resource;
+			CameraActive.isOn = MarkersControler.Current.MarkerLayersSettings.Camera;
+
+			LandNodesActive.isOn = MarkersControler.Current.MarkerLayersSettings.LandNodes;
+			AmphibiousNodesActive.isOn = MarkersControler.Current.MarkerLayersSettings.AmphibiousNodes;
+			NavalNodesActive.isOn = MarkersControler.Current.MarkerLayersSettings.NavyNodes;
+			AirNodesActive.isOn = MarkersControler.Current.MarkerLayersSettings.AirNodes;
+			ConnectionsActive.isOn = MarkersControler.Current.MarkerLayersSettings.ConnectedNodes;
+
+			CombatActive.isOn = MarkersControler.Current.MarkerLayersSettings.Combat;
+			DefenseActive.isOn = MarkersControler.Current.MarkerLayersSettings.Defense;
+			ProtExpActive.isOn = MarkersControler.Current.MarkerLayersSettings.ProtExp;
+			RallyPointActive.isOn = MarkersControler.Current.MarkerLayersSettings.RallyPoint;
+			ExpandActive.isOn = MarkersControler.Current.MarkerLayersSettings.Expand;
+			OtherActive.isOn = MarkersControler.Current.MarkerLayersSettings.Other;
+
+			UpdateAllToggle();
+
+			IgnoreEvent = false;
+		}
+
 		bool IgnoreEvent = false;
 		public void AllChanged()
 		{
@@ -84,6 +111,8 @@ namespace EditMap
 			MarkersControler.Current.MarkerLayersSettings.ProtExp = ProtExpActive.isOn;
 			MarkersControler.Current.MarkerLayersSettings.Expand = ExpandActive.isOn;
 			MarkersControler.Current.MarkerLayersSettings.Other = OtherActive.isOn;
+
+			MarkersControler.Current.MarkerLayersSettings.SavePrefs();
 
 			UpdateAllToggle();
 

@@ -17,6 +17,7 @@ public class FafEditorSettings : MonoBehaviour
 	public Dropdown PlayAs;
 	public Toggle FogOfWar;
 	public Toggle Markers2D;
+	public Toggle HeightmapClamp;
 
 	public const int DefaultUndoHistory = 50;
 	public const string UndoHistory = "UndoHistrySteps";
@@ -30,6 +31,7 @@ public class FafEditorSettings : MonoBehaviour
 		PlayAs.value = GetFaction();
 		FogOfWar.isOn = GetFogOfWar();
 		Markers2D.isOn = GetMarkers2D();
+		HeightmapClamp.isOn = GetMarkers2D();
 	}
 
 
@@ -46,9 +48,23 @@ public class FafEditorSettings : MonoBehaviour
 
 	public void Save()
 	{
-		EnvPaths.SetInstalationPath(PathField.text);
+		if (string.IsNullOrEmpty(PathField.text))
+		{
+			GenericInfoPopup.ShowInfo("Game installation path can't be empty!");
+		}
+		else
+		{
+			EnvPaths.SetInstalationPath(PathField.text);
+		}
 
-		EnvPaths.SetMapsPath(MapsPathField.text);
+		if (string.IsNullOrEmpty(MapsPathField.text))
+		{
+			GenericInfoPopup.ShowInfo("Maps folder path can't be empty!");
+		}
+		else
+		{
+			EnvPaths.SetMapsPath(MapsPathField.text);
+		}
 
 		EnvPaths.SetBackupPath(BackupPathField.text);
 
@@ -69,6 +85,12 @@ public class FafEditorSettings : MonoBehaviour
 				Markers.MarkersControler.ForceResetMarkers2D();
 			}
 			PlayerPrefs.SetInt("Markers_2D", Markers2D.isOn ? 1 : 0);
+		}
+
+		if (GetHeightmapClamp() != HeightmapClamp.isOn)
+		{
+
+			PlayerPrefs.SetInt("Heightmap_Clamp", HeightmapClamp.isOn ? 1 : 0);
 		}
 
 		PlayerPrefs.Save();
@@ -143,5 +165,20 @@ public class FafEditorSettings : MonoBehaviour
 	public static bool GetMarkers2D()
 	{
 		return PlayerPrefs.GetInt("Markers_2D", 0) == 1;
+	}
+
+	static bool _heightmapClamp;
+	public static bool IsHeightmapClamp
+	{
+		get
+		{
+			return _heightmapClamp;
+		}
+	}
+
+	public static bool GetHeightmapClamp()
+	{
+		_heightmapClamp = PlayerPrefs.GetInt("Heightmap_Clamp", 0) == 1;
+		return IsHeightmapClamp;
 	}
 }

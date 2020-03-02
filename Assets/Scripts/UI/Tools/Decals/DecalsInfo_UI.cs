@@ -69,7 +69,7 @@ namespace EditMap
 				return;
 
 			DropAtDecals();
-			Decal.DecalSharedSettings Shared = DecalSettings.GetLoaded;
+			Decal.DecalSharedSettings Shared = DecalSettings.Loaded;
 			if (Shared == null)
 			{
 				Debug.Log("No deca setting loaded");
@@ -214,7 +214,7 @@ namespace EditMap
 						Obj.Dec.Shared.Hidden = false;
 					}
 
-					DecalSettings.GetLoaded.Hidden = false;
+					DecalSettings.Loaded.Hidden = false;
 
 				}
 				else
@@ -225,7 +225,7 @@ namespace EditMap
 						Obj.Dec.Shared.Hidden = true;
 					}
 
-					DecalSettings.GetLoaded.Hidden = true;
+					DecalSettings.Loaded.Hidden = true;
 				}
 
 				DecalsList.UpdateSelection();
@@ -241,6 +241,7 @@ namespace EditMap
 					continue;
 				Shared.Hidden = !Shared.Hidden;
 			}
+			DecalsControler.Sort();
 			DecalsList.UpdateSelection();
 		}
 
@@ -250,6 +251,7 @@ namespace EditMap
 			{
 				Shared.Hidden = true;
 			}
+			//DecalsControler.Sort();
 			DecalsList.UpdateSelection();
 		}
 
@@ -259,6 +261,7 @@ namespace EditMap
 			{
 				Shared.Hidden = false;
 			}
+			DecalsControler.Sort();
 			DecalsList.UpdateSelection();
 		}
 

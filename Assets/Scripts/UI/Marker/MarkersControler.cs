@@ -42,6 +42,59 @@ namespace Markers
 			public bool Expand = true;
 			public bool Other = true;
 
+			static bool GetPrefs(string key, bool value)
+			{
+				return PlayerPrefs.GetInt(key, value ? 1 : 0) > 0;
+			}
+
+			static void SetPrefs(string key, bool value)
+			{
+				PlayerPrefs.SetInt(key, value ? 1 : 0);
+			}
+
+			public void LoadPrefs()
+			{
+				Blank = GetPrefs("Layers_BlankActive", Blank);
+				Spawn = GetPrefs("Layers_SpawnActive", Spawn);
+				Resource = GetPrefs("Layers_ResourcesActive", Resource);
+				Camera = GetPrefs("Layers_CameraActive", Camera);
+
+				LandNodes = GetPrefs("Layers_LandNodesActive", LandNodes);
+				AmphibiousNodes = GetPrefs("Layers_AmphibiousNodesActive", AmphibiousNodes);
+				NavyNodes = GetPrefs("Layers_NavalNodesActive", NavyNodes);
+				AirNodes = GetPrefs("Layers_AirNodesActive", AirNodes);
+				ConnectedNodes = GetPrefs("Layers_ConnectionsActive", ConnectedNodes);
+
+				Combat = GetPrefs("Layers_CombatActive", Combat);
+				Defense = GetPrefs("Layers_DefenseActive", Defense);
+				ProtExp = GetPrefs("Layers_ProtExpActive", ProtExp);
+				RallyPoint = GetPrefs("Layers_RallyPointActive", RallyPoint);
+				Expand = GetPrefs("Layers_ExpandActive", Expand);
+				Other = GetPrefs("Layers_OtherActive", Other);
+			}
+
+			public void SavePrefs()
+			{
+				SetPrefs("Layers_BlankActive", Blank);
+				SetPrefs("Layers_SpawnActive", Spawn);
+				SetPrefs("Layers_ResourcesActive", Resource);
+				SetPrefs("Layers_CameraActive", Camera);
+
+				SetPrefs("Layers_LandNodesActive", LandNodes);
+				SetPrefs("Layers_AmphibiousNodesActive", AmphibiousNodes);
+				SetPrefs("Layers_NavalNodesActive", NavyNodes);
+				SetPrefs("Layers_AirNodesActive", AirNodes);
+				SetPrefs("Layers_ConnectionsActive", ConnectedNodes);
+
+				SetPrefs("Layers_CombatActive", Combat);
+				SetPrefs("Layers_DefenseActive", Defense);
+				SetPrefs("Layers_ProtExpActive", ProtExp);
+				SetPrefs("Layers_RallyPointActive", RallyPoint);
+				SetPrefs("Layers_ExpandActive", Expand);
+				SetPrefs("Layers_OtherActive", Other);
+
+				PlayerPrefs.Save();
+			}
 
 			public bool ActiveByType(SaveLua.Marker.MarkerTypes type)
 			{
@@ -95,6 +148,7 @@ namespace Markers
 		void Awake()
 		{
 			Current = this;
+			MarkerLayersSettings.LoadPrefs();
 		}
 
 

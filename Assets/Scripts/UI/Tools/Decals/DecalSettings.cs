@@ -33,13 +33,18 @@ namespace EditMap
 
 
 
-		static Decal.DecalSharedSettings Loaded;
+		static Decal.DecalSharedSettings _loaded;
 
-		public static Decal.DecalSharedSettings GetLoaded
+		public static Decal.DecalSharedSettings Loaded
 		{
 			get
 			{
-				return Loaded;
+				return _loaded;
+			}
+			set
+			{
+				_loaded = value;
+				DecalsInfo.PlaceSharedSettings = _loaded;
 			}
 		}
 
@@ -304,7 +309,7 @@ namespace EditMap
 			if (Loaded.Type == TypeByDropdown())
 				return;
 
-			Undo.RegisterUndo(new UndoHistory.HistoryDecalsSharedValues(), new UndoHistory.HistoryDecalsSharedValues.DecalsSharedValuesHistoryParameter(DecalSettings.GetLoaded));
+			Undo.RegisterUndo(new UndoHistory.HistoryDecalsSharedValues(), new UndoHistory.HistoryDecalsSharedValues.DecalsSharedValuesHistoryParameter(Loaded));
 
 			Loaded.Type = TypeByDropdown();
 			UpdateTextureNames();
@@ -342,7 +347,7 @@ namespace EditMap
 				if (Loaded.Tex1Path == ResourceBrowser.Current.LoadedPaths[ResourceBrowser.DragedObject.InstanceId])
 					return;
 
-				Undo.RegisterUndo(new UndoHistory.HistoryDecalsSharedValues(), new UndoHistory.HistoryDecalsSharedValues.DecalsSharedValuesHistoryParameter(DecalSettings.GetLoaded));
+				Undo.RegisterUndo(new UndoHistory.HistoryDecalsSharedValues(), new UndoHistory.HistoryDecalsSharedValues.DecalsSharedValuesHistoryParameter(Loaded));
 				Loaded.Tex1Path = ResourceBrowser.Current.LoadedPaths[ResourceBrowser.DragedObject.InstanceId];
 				Loaded.UpdateMaterial();
 				Load(Loaded);
@@ -362,7 +367,7 @@ namespace EditMap
 				if (Loaded.Tex2Path == ResourceBrowser.Current.LoadedPaths[ResourceBrowser.DragedObject.InstanceId])
 					return;
 
-				Undo.RegisterUndo(new UndoHistory.HistoryDecalsSharedValues(), new UndoHistory.HistoryDecalsSharedValues.DecalsSharedValuesHistoryParameter(DecalSettings.GetLoaded));
+				Undo.RegisterUndo(new UndoHistory.HistoryDecalsSharedValues(), new UndoHistory.HistoryDecalsSharedValues.DecalsSharedValuesHistoryParameter(Loaded));
 				Loaded.Tex2Path = ResourceBrowser.Current.LoadedPaths[ResourceBrowser.DragedObject.InstanceId];
 				Loaded.UpdateMaterial();
 				Load(Loaded);

@@ -72,14 +72,96 @@ namespace EditMap
 			DecalsList.UpdateSelection();
 		}
 
+		struct CopyDecalData
+		{
+			public Decal.DecalSharedSettings Shared;
+			public Vector3 Position;
+			public Quaternion Rotation;
+			public Vector3 Scale;
+			public CopyDecalData(Decal.DecalSharedSettings Shared, Vector3 Position, Quaternion Rotation, Vector3 Scale)
+				=> (this.Shared, this.Position, this.Rotation, this.Scale) = (Shared, Position, Rotation, Scale);
+		}
+
+		Vector3 CopyCenterPoint;
+		List<CopyDecalData> CopyData;
+
 		public void CopyAction()
 		{
 			Debug.Log("Copy");
+
+			CopyData = new List<CopyDecalData>();
+
+			int count = DecalsControler.AllDecals.Count;
+			List<GameObject> Objs = SelectionManager.GetAllSelectedGameobjects(false);
+			int selectionCount = Objs.Count;
+			for (int i = 0; i < count; i++)
+			{
+				for(int s = 0; s < selectionCount; s++)
+				{
+					if(Objs[s] == DecalsControler.AllDecals[i].Obj.gameObject)
+					{
+						CopyData.Add(
+							new CopyDecalData(DecalsControler.AllDecals[i].Shared,
+							DecalsControler.AllDecals[i].Obj.tr.localPosition,
+							DecalsControler.AllDecals[i].Obj.tr.localRotation,
+							DecalsControler.AllDecals[i].Obj.tr.localScale)
+							);
+						CopyCenterPoint += DecalsControler.AllDecals[i].Obj.tr.localPosition;
+						break;
+					}
+				}
+			}
+
+			if(CopyData.Count > 0)
+			{
+				CopyCenterPoint /= CopyData.Count;
+			}
+
+			DecalsControler.Sort();
 		}
+		bool isPasteAction = false;
+		List<GameObject> PastedObjects;
 
 		public void PasteAction()
 		{
-			Debug.Log("Paste");
+			int PasteCount = CopyData.Count;
+			isPasteAction = true;
+			if (PasteCount > 0)
+				Undo.RegisterUndo(new UndoHistory.HistoryDecalsChange());
+
+			PastedObjects = new List<GameObject>();
+
+			//GoToSelection();
+
+			Vector3 PlaceOffset = new Vector3(0.5f, 0f, -0.5f);
+
+			Decal.DecalSharedSettings storePrevousSettings = PlaceSharedSettings;
+
+			for (int i = 0; i < PasteCount; i++)
+			{
+				if (CopyData[i].Shared == null)
+					continue;
+
+				PlaceSharedSettings = CopyData[i].Shared;
+				PlacementManager.PlaceAtPosition(CopyData[i].Position + PlaceOffset, CopyData[i].Rotation, CopyData[i].Scale, DecalSettingsUi.CreationPrefab, Place);
+			}
+
+			PlaceSharedSettings = storePrevousSettings;
+			DecalsControler.Sort();
+			GoToSelection();
+			SelectionManager.Current.CleanSelection();
+			for (int i = 0; i < PastedObjects.Count; i++)
+			{
+				SelectionManager.Current.SelectObjectAdd(PastedObjects[i]);
+				DecalsControler.MoveTop(PastedObjects[i].GetComponent<OzoneDecal>().Dec);
+			}
+
+			Debug.Log("Pasted " + PastedObjects.Count + " decals");
+
+			UpdateTotalCount();
+
+			//DecalsControler.Sort();
+			isPasteAction = false;
 		}
 
 		public void DestroyDetails(List<GameObject> MarkerObjects, bool RegisterUndo = true)
@@ -98,9 +180,10 @@ namespace EditMap
 			UpdateTotalCount();
 		}
 
+		public static Decal.DecalSharedSettings PlaceSharedSettings;
 		public void Place(Vector3[] Positions, Quaternion[] Rotations, Vector3[] Scales)
 		{
-			if (Positions.Length > 0)
+			if (Positions.Length > 0 && !isPasteAction)
 				Undo.RegisterUndo(new UndoHistory.HistoryDecalsChange());
 
 			for (int i = 0; i < Positions.Length; i++)
@@ -111,7 +194,7 @@ namespace EditMap
 				Decal component = new Decal();
 				component.Obj = Obj;
 				Obj.Dec = component;
-				Obj.Dec.Shared = DecalSettings.GetLoaded;
+				Obj.Dec.Shared = PlaceSharedSettings;
 				Obj.tr = NewDecalObject.transform;
 
 				Obj.tr.localPosition = Positions[i];
@@ -125,6 +208,11 @@ namespace EditMap
 				Obj.CreationObject = false;
 				Obj.UpdateMatrix();
 				Obj.Bake();
+
+				if (isPasteAction)
+				{
+					PastedObjects.Add(NewDecalObject);
+				}
 
 				DecalsControler.AddDecal(Obj.Dec);
 			}

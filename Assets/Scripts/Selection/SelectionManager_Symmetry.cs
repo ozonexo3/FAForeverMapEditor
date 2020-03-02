@@ -297,8 +297,7 @@ namespace Selection
 				GenerateSymmetry();
 			EditMap.MarkerSelectionOptions.UpdateOptions();
 
-			if(SelectionChangeAction != null)
-				SelectionChangeAction();
+			SelectionChangeAction?.Invoke();
 		}
 
 		int LastSym = 0;

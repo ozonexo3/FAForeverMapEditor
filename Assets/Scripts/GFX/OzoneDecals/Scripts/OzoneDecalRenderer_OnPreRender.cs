@@ -15,6 +15,10 @@ namespace OzoneDecals
 
 		public bool UseInstancing = false;
 
+		public bool DrawAlbedo = false;
+		public bool DrawTermacs = false;
+		public bool DrawDetails = false;
+
 		void OnPreRender()
 		{
 			if (DecalsInfo.LoadingDecals)
@@ -33,25 +37,31 @@ namespace OzoneDecals
 				return;
 #endif
 
+			int DecalsAlbedoCount = _DecalsAlbedo.Count;
+			int DecalsCount = _Decals.Count;
+			int DecalsTarmacs = _DecalsTarmacs.Count;
 
 			if (DecalsInfo.Current)
 			{
-				int ScreenDecalsCount = _DecalsAlbedo.Count + _Decals.Count + _DecalsTarmacs.Count;
+				int ScreenDecalsCount = DecalsAlbedoCount + DecalsCount + DecalsTarmacs;
 				DecalsInfo.Current.UpdateScreenCount(ScreenDecalsCount);
 			}
 
-			if (_Decals.Count == 0 && _DecalsAlbedo.Count == 0 && _DecalsTarmacs.Count == 0)
-				return;
+			//if (DecalsCount == 0 && DecalsAlbedoCount == 0 && DecalsTarmacs == 0)
+			//	return;
 
 			CreateBuffer(ref _bufferDeferred, cam, _Name, _camEvent);
 
 			//UseInstancing = false;
 
-
 			_bufferDeferred.Clear();
+			//if(DecalsAlbedoCount > 0 && DrawAlbedo)
 			DrawDeferredDecals_Albedo(cam);
+			//if(DecalsTarmacs > 0 && DrawTermacs)
 			DrawDeferredDecals_Tarmacs(cam);
-			DrawDeferredDecals_Normal(cam);
+			//if(DecalsCount > 0 && DrawDetails)
+			//DrawDeferredDecals_Normal(cam);
+			DrawDeferredDecals_Normals_Sorted(cam);
 
 
 			// Clear 
@@ -84,6 +94,7 @@ namespace OzoneDecals
 					_bufferDeferred.DrawMesh(_cubeMesh, decal.localToWorldMatrix, decal.Material, 0, 0, _directBlock);
 				}
 			}
+			decalListEnum.Dispose();
 		}
 
 		private void DrawDeferredDecals_Tarmacs(Camera cam)
@@ -104,6 +115,7 @@ namespace OzoneDecals
 					_bufferDeferred.DrawMesh(_cubeMesh, decal.localToWorldMatrix, decal.Material, 0, 0, _directBlock);
 				}
 			}
+			decalListEnum.Dispose();
 		}
 
 		public static int CutoffMultiplier = 1;
@@ -270,6 +282,7 @@ namespace OzoneDecals
 						}
 					}
 				}
+				decalListEnum.Dispose();
 
 #if UNITY_5_5_OR_NEWER
 				if (UseInstancing && n > 0)
@@ -287,8 +300,29 @@ namespace OzoneDecals
 				}
 #endif
 			}
+			allDecalEnum.Dispose();
 		}
 
+
+		private void DrawDeferredDecals_Normals_Sorted(Camera cam)
+		{
+			_bufferDeferred.GetTemporaryRT(copy2id, -1, -1, 0, FilterMode.Bilinear, RenderTextureFormat.ARGB32);
+			_bufferDeferred.Blit(BuiltinRenderTextureType.GBuffer2, copy2id);
+
+			_bufferDeferred.SetRenderTarget(_normalRenderTarget, BuiltinRenderTextureType.CameraTarget);
+
+			var decalListEnum = _DecalsNormal.GetEnumerator();
+			while (decalListEnum.MoveNext())
+			{
+				OzoneDecal decal = decalListEnum.Current;
+
+				_directBlock.Clear();
+				_directBlock.SetFloat(_NearCutOffLOD, decal.NearCutOff);
+				_directBlock.SetFloat(_CutOffLOD, decal.CutOff);
+				_bufferDeferred.DrawMesh(_cubeMesh, decal.localToWorldMatrix, decal.Material, 0, 1, _directBlock);
+			}
+			decalListEnum.Dispose();
+		}
 
 		public static float DecalDist(Transform tr)
 		{

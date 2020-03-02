@@ -31,13 +31,13 @@ namespace UndoHistory
 			parameter = (Param as DecalsMoveHistoryParameter);
 			UndoToDecalsMenu = parameter.UndoMenu;
 
-			Pos = new Vector3[DecalsControler.Current.AllDecals.Count];
+			Pos = new Vector3[DecalsControler.AllDecals.Count];
 			Rot = new Quaternion[Pos.Length];
 			Scale = new Vector3[Pos.Length];
 
 			for (int i = 0; i < Pos.Length; i++)
 			{
-				Transform tr = DecalsControler.Current.AllDecals[i].Obj.tr;
+				Transform tr = DecalsControler.AllDecals[i].Obj.tr;
 				Pos[i] = tr.localPosition;
 				Rot[i] = tr.localRotation;
 				Scale[i] = tr.localScale;
@@ -56,10 +56,12 @@ namespace UndoHistory
 		{
 			for (int i = 0; i < Pos.Length; i++)
 			{
-				Transform tr = DecalsControler.Current.AllDecals[i].Obj.tr;
+				Transform tr = DecalsControler.AllDecals[i].Obj.tr;
 				tr.localPosition = Pos[i];
 				tr.localRotation = Rot[i];
 				tr.localScale = Scale[i];
+
+				DecalsControler.AllDecals[i].Obj.UpdateMatrix();
 			}
 
 			if (UndoToDecalsMenu)
@@ -68,7 +70,6 @@ namespace UndoHistory
 
 				DecalsInfo.Current.GoToSelection();
 				Selection.SelectionManager.Current.FinishSelectionChange();
-
 			}
 		}
 	}

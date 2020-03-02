@@ -20,13 +20,13 @@ namespace UndoHistory
 		{
 			UndoToDecalsMenu = UndoMenu;
 
-			CutOffLOD = new float[DecalsControler.Current.AllDecals.Count];
+			CutOffLOD = new float[DecalsControler.AllDecals.Count];
 			NearCutOffLOD = new float[CutOffLOD.Length];
 
 			for (int i = 0; i < CutOffLOD.Length; i++)
 			{
-				CutOffLOD[i] = DecalsControler.Current.AllDecals[i].Obj.CutOffLOD;
-				NearCutOffLOD[i] = DecalsControler.Current.AllDecals[i].Obj.NearCutOffLOD;
+				CutOffLOD[i] = DecalsControler.AllDecals[i].Obj.CutOffLOD;
+				NearCutOffLOD[i] = DecalsControler.AllDecals[i].Obj.NearCutOffLOD;
 			}
 		}
 
@@ -44,14 +44,14 @@ namespace UndoHistory
 		{
 			for (int i = 0; i < CutOffLOD.Length; i++)
 			{
-				DecalsControler.Current.AllDecals[i].Obj.CutOffLOD = CutOffLOD[i];
-				DecalsControler.Current.AllDecals[i].Obj.NearCutOffLOD = NearCutOffLOD[i];
+				DecalsControler.AllDecals[i].Obj.CutOffLOD = CutOffLOD[i];
+				DecalsControler.AllDecals[i].Obj.NearCutOffLOD = NearCutOffLOD[i];
 			}
 
 			Undo.Current.EditMenu.ChangeCategory(5);
 
 			DecalsInfo.Current.GoToSelection();
-			DecalsInfo.Current.DecalSettingsUi.Load(DecalSettings.GetLoaded);
+			DecalsInfo.Current.DecalSettingsUi.Load(DecalSettings.Loaded);
 			Selection.SelectionManager.Current.FinishSelectionChange();
 		}
 	}

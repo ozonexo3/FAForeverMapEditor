@@ -30,7 +30,12 @@ namespace OzoneDecals
 			}
 			set
 			{
+				if(_Dec != null)
+					DecalsControler.RemoveDecal(_Dec);
+
 				_Dec = value;
+				if (!CreationObject && _Dec != null)
+					DecalsControler.AddDecal(_Dec);
 			}
 
 		}
@@ -91,7 +96,7 @@ namespace OzoneDecals
 			tr = transform;
 			UpdateMatrix();
 			if (!CreationObject && Dec != null)
-			DecalsControler.AddDecal(Dec);
+				DecalsControler.AddDecal(Dec);
 		}
 
 		public void UpdateMatrix()
@@ -103,6 +108,9 @@ namespace OzoneDecals
 		{
 			//if (!CreationObject && Dec != null)
 			//	DecalsControler.RemoveDecal(Dec);
+
+
+			OnBecameInvisible();
 		}
 
 		private void OnDestroy()
@@ -191,16 +199,33 @@ namespace OzoneDecals
 			OzoneDecalRenderer.AddDecal(this); //, Camera.current
 		}*/
 
+		bool IsRendered = false;
+
+		public int Index { get; private set; } = 0;
+		public void RefreshSortingArray(int index)
+		{
+			Index = index;
+			tr.SetSiblingIndex(index);
+			OnBecameInvisible();
+			OnBecameVisible();
+		}
+
 		private void OnBecameVisible()
 		{
-			if (_Dec != null && _Dec.Shared != null)
+			if (!IsRendered && _Dec != null && _Dec.Shared != null)
+			{
 				OzoneDecalRenderer.AddDecal(this); //, Camera.current
+				IsRendered = true;
+			}
 		}
 
 		private void OnBecameInvisible()
 		{
-			if (_Dec != null && _Dec.Shared != null)
+			if (IsRendered && _Dec != null && _Dec.Shared != null)
+			{
 				OzoneDecalRenderer.RemoveDecal(this); //, Camera.current	
+				IsRendered = false;
+			}
 		}
 
 

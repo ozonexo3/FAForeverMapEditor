@@ -86,9 +86,9 @@ public class GenerateControlTex : MonoBehaviour
 		int Width = ScmapEditor.Current.map.UncompressedWatermapTex.width;
 		int Height = ScmapEditor.Current.map.UncompressedWatermapTex.height;
 		Color[] AllColors = ScmapEditor.Current.map.UncompressedWatermapTex.GetPixels();
-		float[,] HeightmapPixels = ScmapEditor.Current.Teren.terrainData.GetHeights(0, 0, ScmapEditor.Current.Teren.terrainData.heightmapWidth, ScmapEditor.Current.Teren.terrainData.heightmapHeight);
-		int HeightmapWidth = ScmapEditor.Current.Teren.terrainData.heightmapWidth - 1;
-		int HeightmapHeight = ScmapEditor.Current.Teren.terrainData.heightmapHeight - 1;
+		float[,] HeightmapPixels = ScmapEditor.Current.Teren.terrainData.GetHeights(0, 0, ScmapEditor.Current.Teren.terrainData.heightmapResolution, ScmapEditor.Current.Teren.terrainData.heightmapResolution);
+		int HeightmapWidth = ScmapEditor.Current.Teren.terrainData.heightmapResolution - 1;
+		int HeightmapHeight = ScmapEditor.Current.Teren.terrainData.heightmapResolution - 1;
 
 		//yield return Ninja.JumpBack;
 
@@ -292,7 +292,7 @@ public class GenerateControlTex : MonoBehaviour
 	IEnumerator GeneratingSlope()
 	{
 		//ScmapEditor.Current.TerrainMaterial.SetFloat("_UseSlopeTex", 0);
-		SlopeHeightmapPixels = ScmapEditor.Current.Teren.terrainData.GetHeights(0, 0, ScmapEditor.Current.Teren.terrainData.heightmapWidth, ScmapEditor.Current.Teren.terrainData.heightmapHeight);
+		SlopeHeightmapPixels = ScmapEditor.Current.Teren.terrainData.GetHeights(0, 0, ScmapEditor.Current.Teren.terrainData.heightmapResolution, ScmapEditor.Current.Teren.terrainData.heightmapResolution);
 		Task task;
 		this.StartCoroutineAsync(GeneratingSlopeTask(), out task);
 		yield return StartCoroutine(task.Wait());
