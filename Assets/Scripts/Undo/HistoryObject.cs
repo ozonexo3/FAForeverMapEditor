@@ -2,6 +2,7 @@
 using System.Collections;
 
 namespace UndoHistory{
+	[System.Serializable]
 	public class HistoryObject {
 
 		public		string		UndoCommandName;

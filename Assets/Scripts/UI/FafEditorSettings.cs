@@ -31,7 +31,7 @@ public class FafEditorSettings : MonoBehaviour
 		PlayAs.value = GetFaction();
 		FogOfWar.isOn = GetFogOfWar();
 		Markers2D.isOn = GetMarkers2D();
-		HeightmapClamp.isOn = GetMarkers2D();
+		HeightmapClamp.isOn = GetHeightmapClamp();
 	}
 
 
@@ -178,7 +178,7 @@ public class FafEditorSettings : MonoBehaviour
 
 	public static bool GetHeightmapClamp()
 	{
-		_heightmapClamp = PlayerPrefs.GetInt("Heightmap_Clamp", 0) == 1;
-		return IsHeightmapClamp;
+		_heightmapClamp = PlayerPrefs.GetInt("Heightmap_Clamp", 1) > 0;
+		return _heightmapClamp;
 	}
 }

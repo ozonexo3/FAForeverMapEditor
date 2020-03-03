@@ -80,7 +80,25 @@ namespace OzoneDecals
 		{
 			_bufferDeferred.SetRenderTarget(_albedoRenderTarget, BuiltinRenderTextureType.CameraTarget);
 
-			var decalListEnum = _DecalsAlbedo.GetEnumerator();
+			OzoneDecal decal = null;
+			for (int i = 0; i < MAX_DECAL_INSTANCES; i++)
+			{
+				if (AlbedoArray[i] == null)
+					continue;
+
+				decal = AlbedoArray[i];
+
+				if (decal.Dec.Shared.DrawAlbedo && decal.IsVisible)
+				{
+					_directBlock.Clear();
+					_directBlock.SetFloat(_NearCutOffLOD, decal.NearCutOff);
+					_directBlock.SetFloat(_CutOffLOD, decal.CutOff);
+
+					_bufferDeferred.DrawMesh(_cubeMesh, decal.localToWorldMatrix, decal.Material, 0, 0, _directBlock);
+				}
+			}
+
+			/*var decalListEnum = _DecalsAlbedo.GetEnumerator();
 			while (decalListEnum.MoveNext())
 			{
 				OzoneDecal decal = decalListEnum.Current;
@@ -94,7 +112,7 @@ namespace OzoneDecals
 					_bufferDeferred.DrawMesh(_cubeMesh, decal.localToWorldMatrix, decal.Material, 0, 0, _directBlock);
 				}
 			}
-			decalListEnum.Dispose();
+			decalListEnum.Dispose();*/
 		}
 
 		private void DrawDeferredDecals_Tarmacs(Camera cam)
@@ -311,7 +329,27 @@ namespace OzoneDecals
 
 			_bufferDeferred.SetRenderTarget(_normalRenderTarget, BuiltinRenderTextureType.CameraTarget);
 
-			var decalListEnum = _DecalsNormal.GetEnumerator();
+
+			OzoneDecal decal = null;
+			for (int i = 0; i < MAX_DECAL_INSTANCES; i++)
+			{
+				if (NormalArray[i] == null)
+					continue;
+
+				decal = NormalArray[i];
+
+				if (decal.Dec.Shared.DrawNormal && decal.IsVisible)
+				{
+					_directBlock.Clear();
+					_directBlock.SetFloat(_NearCutOffLOD, decal.NearCutOff);
+					_directBlock.SetFloat(_CutOffLOD, decal.CutOff);
+
+					_bufferDeferred.DrawMesh(_cubeMesh, decal.localToWorldMatrix, decal.Material, 0, 1, _directBlock);
+				}
+			}
+
+
+			/*var decalListEnum = _DecalsNormal.GetEnumerator();
 			while (decalListEnum.MoveNext())
 			{
 				OzoneDecal decal = decalListEnum.Current;
@@ -321,7 +359,7 @@ namespace OzoneDecals
 				_directBlock.SetFloat(_CutOffLOD, decal.CutOff);
 				_bufferDeferred.DrawMesh(_cubeMesh, decal.localToWorldMatrix, decal.Material, 0, 1, _directBlock);
 			}
-			decalListEnum.Dispose();
+			decalListEnum.Dispose();*/
 		}
 
 		public static float DecalDist(Transform tr)

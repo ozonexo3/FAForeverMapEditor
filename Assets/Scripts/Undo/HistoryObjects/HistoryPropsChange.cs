@@ -6,6 +6,7 @@ using EditMap;
 
 namespace UndoHistory
 {
+	[System.Serializable]
 	public class HistoryPropsChange : HistoryObject
 	{
 

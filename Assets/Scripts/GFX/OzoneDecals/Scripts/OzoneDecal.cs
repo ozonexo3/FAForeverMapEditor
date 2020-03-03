@@ -191,7 +191,7 @@ namespace OzoneDecals
 			mr.reflectionProbeUsage = ReflectionProbeUsage.Off;
 		}
 
-		public bool IsVisible;
+		public bool IsVisible { get; private set; }
 
 		/*void OnWillRenderObject()
 		{
@@ -200,18 +200,31 @@ namespace OzoneDecals
 		}*/
 
 		bool IsRendered = false;
-
-		public int Index { get; private set; } = 0;
-		public void RefreshSortingArray(int index)
+		int _index = 0;
+		public int Index {
+			get
+			{
+				return _index;
+			}
+			set
+			{
+				_index = value;
+				tr.SetSiblingIndex(_index);
+				OnBecameInvisible();
+				OnBecameVisible();
+			}
+		}
+		/*public void RefreshSortingArray(int index)
 		{
 			Index = index;
 			tr.SetSiblingIndex(index);
 			OnBecameInvisible();
 			OnBecameVisible();
-		}
+		}*/
 
 		private void OnBecameVisible()
 		{
+			IsVisible = true;
 			if (!IsRendered && _Dec != null && _Dec.Shared != null)
 			{
 				OzoneDecalRenderer.AddDecal(this); //, Camera.current
@@ -221,6 +234,7 @@ namespace OzoneDecals
 
 		private void OnBecameInvisible()
 		{
+			IsVisible = false;
 			if (IsRendered && _Dec != null && _Dec.Shared != null)
 			{
 				OzoneDecalRenderer.RemoveDecal(this); //, Camera.current	

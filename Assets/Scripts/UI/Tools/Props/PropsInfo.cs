@@ -104,7 +104,7 @@ namespace EditMap
 				}
 
 				PropsInstances.Clear();
-				PropsInstances = NewProps;
+				PropsInstances = new HashSet<Prop>(NewProps);
 			}
 
 			public PropTypeGroup()

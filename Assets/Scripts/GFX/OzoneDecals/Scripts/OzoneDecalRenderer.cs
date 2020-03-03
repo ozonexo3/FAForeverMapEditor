@@ -6,6 +6,8 @@ namespace OzoneDecals {
 	[ExecuteInEditMode]
 	public partial class OzoneDecalRenderer : MonoBehaviour {
 
+		const int MAX_DECAL_INSTANCES = 2048;
+
 		public static OzoneDecalRenderer Current;
 		void Awake()
 		{
@@ -20,6 +22,11 @@ namespace OzoneDecals {
 		protected List<OzoneDecal> _DecalsNormal;
 		protected List<OzoneDecal> _DecalsAlbedo;
 		protected HashSet<OzoneDecal> _DecalsTarmacs;
+
+		protected OzoneDecal[] AlbedoArray = new OzoneDecal[MAX_DECAL_INSTANCES];
+		protected OzoneDecal[] NormalArray = new OzoneDecal[MAX_DECAL_INSTANCES];
+
+
 		//protected List<OzoneDecal> _decalComponent;
 		//protected List<MeshFilter> _meshFilterComponent;
 		protected const CameraEvent _camEvent = CameraEvent.BeforeReflections;
@@ -126,11 +133,20 @@ namespace OzoneDecals {
 					_DecalsTarmacs.Add(d);
 				else
 				{
-					_DecalsAlbedo.Add(d);
+					if (d.Index >= 0 && d.Index < MAX_DECAL_INSTANCES)
+						AlbedoArray[d.Index] = d;
+					else
+						Debug.LogWarning("Wrong decal index! " + d.Index);
+					//_DecalsAlbedo.Add(d);
 				}
 			}
 			else
 			{
+				if (d.Index >= 0 && d.Index < MAX_DECAL_INSTANCES)
+					NormalArray[d.Index] = d;
+				else
+					Debug.LogWarning("Wrong decal index! " + d.Index);
+
 				_DecalsNormal.Add(d);
 
 				/*if (!_Decals.ContainsKey(d.Material))

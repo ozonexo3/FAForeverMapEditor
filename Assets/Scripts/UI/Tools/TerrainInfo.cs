@@ -277,6 +277,7 @@ namespace EditMap
 							GenerateControlTex.StopGenerateNormal();
 							ScmapEditor.Current.TerrainMaterial.SetFloat("_GeneratingNormal", 1);
 							PaintStarted = true;
+							RecalcTerrainClamp();
 							SymmetryPaint();
 						}
 					}
@@ -378,6 +379,11 @@ namespace EditMap
 		}
 		public float Min = 0;
 		public float Max = 512;
+
+		public float HeightmapMin = 0;
+		public float HeightmapMax = 512;
+		public float HeightmapDistance = 50;
+
 		int LastRotation = 0;
 		public void UpdateMenu(bool Slider = false)
 		{
@@ -390,11 +396,15 @@ namespace EditMap
 
 			}
 
+
+
 			Min = BrushMini.value / ScmapEditor.Current.Data.size.y;
 			Max = BrushMax.value / ScmapEditor.Current.Data.size.y;
 
 			Min /= 10f;
 			Max /= 10f;
+
+			RecalcTerrainClamp();
 
 			if (LastRotation != BrushRotation.intValue)
 			{
@@ -797,6 +807,19 @@ namespace EditMap
 				return _Painting;
 			}
 		}
+
+		void RecalcTerrainClamp()
+		{
+			if (FafEditorSettings.GetHeightmapClamp())
+			{
+				HeightmapMin = (ScmapEditor.Current.Data.bounds.min.y) / ScmapEditor.Current.Data.size.y;
+				HeightmapMax = (ScmapEditor.Current.Data.bounds.min.y + 5) / ScmapEditor.Current.Data.size.y;
+
+				//Debug.Log(ScmapEditor.Current.Data.bounds.min.y * 10 +" "+ ScmapEditor.Current.Data.bounds.max.y * 10);
+				Debug.Log(Min + " > " + Max + "\n" + HeightmapMin + " > " + HeightmapMax);
+			}
+		}
+
 		void SymmetryPaint()
 		{
 			Painting = true;
@@ -832,6 +855,7 @@ namespace EditMap
 			if (coord.x < 0) return;
 			if (coord.z > 1) return;
 			if (coord.z < 0) return;
+
 
 			// get the position of the terrain heightmap where this game object is
 			int posXInTerrain = (int)(coord.x * hmWidth);
@@ -945,7 +969,6 @@ namespace EditMap
 
 			//float SizeSmooth = Mathf.Clamp01(size / 10f) * 15;
 
-
 			for (i = 0; i < ScmapEditor.LastGetWidth; i++)
 			{
 				for (j = 0; j < ScmapEditor.LastGetHeight; j++)
@@ -1000,6 +1023,15 @@ namespace EditMap
 								//heights[i, j] += SampleBrush * StrengthMultiplier;
 								ScmapEditor.ReturnValues[i, j] = MoveToValue(ScmapEditor.ReturnValues[i, j], TargetHeight, SampleBrush * StrengthMultiplier, Min, Max);
 								break;
+						}
+
+						if (FafEditorSettings.IsHeightmapClamp)
+						{
+
+							if (ScmapEditor.ReturnValues[i, j] > HeightmapMax)
+								ScmapEditor.ReturnValues[i, j] = HeightmapMax;
+							else if (ScmapEditor.ReturnValues[i, j] < HeightmapMin)
+								ScmapEditor.ReturnValues[i, j] = HeightmapMin;
 						}
 
 					}

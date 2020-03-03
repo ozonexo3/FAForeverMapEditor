@@ -89,7 +89,7 @@ public class DecalsControler : MonoBehaviour {
 			DestroyImmediate(Obj.gameObject);
 	}
 
-	public static void AddDecal(Decal dc, int ForceOrder = -1)
+	public static void AddDecal(Decal dc)
 	{
 		if(dc == null)
 		{
@@ -101,10 +101,9 @@ public class DecalsControler : MonoBehaviour {
 		{
 			if (!dc.Obj.CreationObject)
 			{
-				if (ForceOrder >= 0)
-					AllDecals.Insert(ForceOrder, dc);
-				else
-					AllDecals.Add(dc);
+				AllDecals.Add(dc);
+
+				DecalsControler.Sort();
 			}
 		}
 	}
@@ -187,7 +186,8 @@ public class DecalsControler : MonoBehaviour {
 		for (int i = 0; i < count; i++)
 		{
 			//AllDecals[i].Obj.tr.SetSiblingIndex(i);
-			AllDecals[i].Obj.RefreshSortingArray(i);
+			//AllDecals[i].Obj.RefreshSortingArray(i);
+			AllDecals[i].Obj.Index = i;
 		}
 
 		/*for (int i = 0; i < count; i++)

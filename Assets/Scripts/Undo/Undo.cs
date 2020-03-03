@@ -24,8 +24,8 @@ public partial class Undo : MonoBehaviour {
 	public		int				MaxHistoryLength;
 
 	//[Header("History")]
-	List<HistoryObject> History = new List<HistoryObject>(50);
-	List<HistoryObject> RedoHistory = new List<HistoryObject>(50);
+	public List<HistoryObject> History = new List<HistoryObject>(50);
+	public List<HistoryObject> RedoHistory = new List<HistoryObject>(50);
 	int				CurrentStage;
 
 	void Awake(){

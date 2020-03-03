@@ -87,12 +87,15 @@ namespace EditMap
 
 		public void CopyAction()
 		{
-			Debug.Log("Copy");
 
 			CopyData = new List<CopyDecalData>();
 
 			int count = DecalsControler.AllDecals.Count;
 			List<GameObject> Objs = SelectionManager.GetAllSelectedGameobjects(false);
+
+			Debug.Log("Copy " + Objs.Count);
+
+
 			int selectionCount = Objs.Count;
 			for (int i = 0; i < count; i++)
 			{
@@ -193,8 +196,8 @@ namespace EditMap
 				OzoneDecal Obj = NewDecalObject.GetComponent<OzoneDecal>();
 				Decal component = new Decal();
 				component.Obj = Obj;
+				component.Shared = PlaceSharedSettings;
 				Obj.Dec = component;
-				Obj.Dec.Shared = PlaceSharedSettings;
 				Obj.tr = NewDecalObject.transform;
 
 				Obj.tr.localPosition = Positions[i];
@@ -209,12 +212,12 @@ namespace EditMap
 				Obj.UpdateMatrix();
 				Obj.Bake();
 
-				if (isPasteAction)
+				if (isPasteAction && i == 0)
 				{
 					PastedObjects.Add(NewDecalObject);
 				}
 
-				DecalsControler.AddDecal(Obj.Dec);
+				//DecalsControler.AddDecal(Obj.Dec);
 			}
 			UpdateTotalCount();
 		}

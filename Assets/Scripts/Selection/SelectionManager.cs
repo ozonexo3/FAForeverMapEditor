@@ -304,12 +304,15 @@ namespace Selection
 				ToReturn.Add(Current.AffectedGameObjects[ID]);
 			}
 
-			for (int s = 0; s < SelectionManager.Current.SymetrySelection.Length; s++)
+			if (Symmetry)
 			{
-				for (int i = 0; i < SelectionManager.Current.SymetrySelection[s].Ids.Count; i++)
+				for (int s = 0; s < SelectionManager.Current.SymetrySelection.Length; s++)
 				{
-					ID = Current.SymetrySelection[s].Ids[i];
-					ToReturn.Add(Current.AffectedGameObjects[ID]);
+					for (int i = 0; i < SelectionManager.Current.SymetrySelection[s].Ids.Count; i++)
+					{
+						ID = Current.SymetrySelection[s].Ids[i];
+						ToReturn.Add(Current.AffectedGameObjects[ID]);
+					}
 				}
 			}
 			return ToReturn;

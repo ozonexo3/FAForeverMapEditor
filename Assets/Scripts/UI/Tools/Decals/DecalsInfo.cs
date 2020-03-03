@@ -81,7 +81,7 @@ namespace EditMap
 					yield return null;
 				}
 			}
-			DecalsControler.Sort();
+			//DecalsControler.Sort();
 
 			yield return null;
 			LoadingDecals = false;
@@ -107,6 +107,7 @@ namespace EditMap
 			Obj.Material = Component.Shared.SharedMaterial;
 
 			Component.Shared.OnVisibilityChanged += Component.UpdateVisibility;
+			//DecalsControler.Sort();
 		}
 
 		public static float FrustumHeightAtDistance(float distance)
