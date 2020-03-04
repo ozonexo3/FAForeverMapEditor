@@ -29,7 +29,7 @@ namespace EditMap
 				DecalSettingsUi.OnClickCreate(false);
 
 			PlacementManager.OnDropOnGameplay -= DropAtGameplay;
-			Selection.SelectionManager.Current.ClearAffectedGameObjects();
+			SelectionManager.Current.ClearAffectedGameObjects();
 		}
 
 		private void Update()
@@ -93,7 +93,7 @@ namespace EditMap
 			int count = DecalsControler.AllDecals.Count;
 			List<GameObject> Objs = SelectionManager.GetAllSelectedGameobjects(false);
 
-			Debug.Log("Copy " + Objs.Count);
+			Debug.Log("Copied " + Objs.Count + " decal");
 
 
 			int selectionCount = Objs.Count;
@@ -123,7 +123,7 @@ namespace EditMap
 			DecalsControler.Sort();
 		}
 		bool isPasteAction = false;
-		List<GameObject> PastedObjects;
+		List<GameObject> PastedObjects = new List<GameObject>(128);
 
 		public void PasteAction()
 		{
@@ -132,7 +132,7 @@ namespace EditMap
 			if (PasteCount > 0)
 				Undo.RegisterUndo(new UndoHistory.HistoryDecalsChange());
 
-			PastedObjects = new List<GameObject>();
+			PastedObjects.Clear();
 
 			//GoToSelection();
 
@@ -140,14 +140,16 @@ namespace EditMap
 
 			Decal.DecalSharedSettings storePrevousSettings = PlaceSharedSettings;
 
+			PlacementManager.BeginPlacement(DecalSettingsUi.CreationPrefab, Place);
 			for (int i = 0; i < PasteCount; i++)
 			{
 				if (CopyData[i].Shared == null)
 					continue;
 
 				PlaceSharedSettings = CopyData[i].Shared;
-				PlacementManager.PlaceAtPosition(CopyData[i].Position + PlaceOffset, CopyData[i].Rotation, CopyData[i].Scale, DecalSettingsUi.CreationPrefab, Place);
+				PlacementManager.PlaceAtPosition(CopyData[i].Position + PlaceOffset, CopyData[i].Rotation, CopyData[i].Scale);
 			}
+			PlacementManager.Clear();
 
 			PlaceSharedSettings = storePrevousSettings;
 			DecalsControler.Sort();

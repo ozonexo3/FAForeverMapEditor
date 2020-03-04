@@ -142,13 +142,12 @@ namespace EditMap
 		void Awake()
 		{
 			Current = this;
-			ShowTab(0);
+			ShowTab(CurrentTab);
 		}
 
 
 		void OnEnable()
 		{
-
 			PlacementManager.OnDropOnGameplay += DropAtGameplay;
 			SelectionManager.Current.DisableLayer = 16;
 			SelectionManager.Current.SetRemoveAction(DestroyProps);
@@ -157,14 +156,7 @@ namespace EditMap
 			SelectionManager.Current.SetCopyActionAction(CopyAction);
 			SelectionManager.Current.SetPasteActionAction(PasteAction);
 
-			if (Tabs[1].activeSelf)
-			{
-				GoToPainting();
-			}
-			else
-			{
-				GoToSelection();
-			}
+			ShowTab(CurrentTab);
 
 			ReloadPropStats();
 
@@ -173,6 +165,8 @@ namespace EditMap
 
 		void OnDisable()
 		{
+			SelectionManager.Current.ClearAffectedGameObjects();
+			PlacementManager.Clear();
 			DisableBrush();
 			CleanSettingsList();
 
@@ -253,6 +247,30 @@ namespace EditMap
 			}
 		}
 
+		int GetPropType(string blueprint)
+		{
+			int AllPropsTypesCount = AllPropsTypes.Count;
+			if (AllPropsTypesCount == 0)
+			{
+
+			}
+			else
+			{
+				for (int g = 0; g < AllPropsTypesCount; g++)
+				{
+					if (blueprint == AllPropsTypes[g].Blueprint)
+					{
+						return g;
+					}
+				}
+			}
+
+			AllPropsTypes.Add(new PropTypeGroup());
+			AllPropsTypes[AllPropsTypesCount].Blueprint = blueprint;
+			AllPropsTypes[AllPropsTypesCount].PropObject = GetGamedataFile.LoadProp(blueprint);
+			return AllPropsTypesCount;
+		}
+
 		public bool LoadingProps;
 		public int LoadedCount = 0;
 		public IEnumerator LoadProps()
@@ -273,33 +291,7 @@ namespace EditMap
 
 			for (int i = 0; i < Count; i++)
 			{
-				bool NewProp = false;
-				int GroupId = 0;
-				if (AllPropsTypes.Count == 0) NewProp = true;
-				else
-				{
-					NewProp = true;
-					for (int g = 0; g < AllPropsTypes.Count; g++)
-					{
-						if (Props[i].BlueprintPath == AllPropsTypes[g].Blueprint)
-						{
-							NewProp = false;
-							GroupId = g;
-							break;
-						}
-					}
-				}
-
-				if (NewProp)
-				{
-					GroupId = AllPropsTypes.Count;
-					AllPropsTypes.Add(new PropTypeGroup());
-					AllPropsTypes[GroupId].Blueprint = Props[i].BlueprintPath;
-
-					AllPropsTypes[GroupId].PropObject = GetGamedataFile.LoadProp(AllPropsTypes[GroupId].Blueprint);
-					LoadCounter = YieldStep;
-					yield return null;
-				}
+				int GroupId = GetPropType(Props[i].BlueprintPath);
 
 				Props[i].GroupId = GroupId;
 				Props[i].CreateObject(AllowFarLod);
@@ -470,6 +462,8 @@ namespace EditMap
 			Preview.Show(PaintPropObjects[ID].BP.LODs[0].Albedo, Parent, 35f);
 		}
 
+		public int CurrentTab { get; private set; } = 0;
+
 		public void ShowTab(int id)
 		{
 			for (int i = 0; i < Tabs.Length; i++)
@@ -477,6 +471,8 @@ namespace EditMap
 				Tabs[i].SetActive(i == id);
 				TabSelected[i].SetActive(i == id);
 			}
+
+			CurrentTab = id;
 
 			if (id == 2)
 				ShowReclaimGroups();
@@ -685,10 +681,6 @@ namespace EditMap
 			int Count = PaintPropObjects.Count;
 			if (Count <= 0 && !Invert)
 			{
-#if UNITY_EDITOR
-				Debug.Log("No props selected");
-
-#endif
 				return;
 			}
 			size = BrushSize.value * 0.05f;
@@ -848,10 +840,10 @@ namespace EditMap
 			Undo.RegisterUndo(new UndoHistory.HistoryPropsChange());
 		}
 
-		void Paint(Vector3 AtPosition, Quaternion Rotation)
+		PropGameObject Paint(Vector3 AtPosition, Quaternion Rotation)
 		{
 			if (!MapLuaParser.IsInArea(AtPosition))
-				return;
+				return null;
 
 			RegisterUndo();
 
@@ -867,9 +859,8 @@ namespace EditMap
 			TotalEnergyCount += AllPropsTypes[RandomPropGroup].PropObject.BP.ReclaimEnergyMax;
 			TotalReclaimTime += AllPropsTypes[RandomPropGroup].PropObject.BP.ReclaimTime;
 
+			return NewProp.Obj;
 		}
-
-
 
 		PropGameObject SearchClosestProp(Vector3 Pos, float tolerance) //, out int ClosestP
 		{

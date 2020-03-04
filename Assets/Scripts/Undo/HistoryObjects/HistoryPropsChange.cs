@@ -9,13 +9,13 @@ namespace UndoHistory
 	[System.Serializable]
 	public class HistoryPropsChange : HistoryObject
 	{
-
+		int Page = 0;
 		Dictionary<PropsInfo.PropTypeGroup, HashSet<Prop>> Groups;
 
 		public override void Register(HistoryParameter Param)
 		{
 			Groups = new Dictionary<PropsInfo.PropTypeGroup, HashSet<Prop>>();
-
+			Page = PropsInfo.Current.CurrentTab;
 			foreach (PropsInfo.PropTypeGroup Grp in PropsInfo.AllPropsTypes)
 			{
 				HashSet<Prop> OldProps = new HashSet<Prop>(Grp.PropsInstances);
@@ -43,7 +43,7 @@ namespace UndoHistory
 			}
 
 			Undo.Current.EditMenu.ChangeCategory(6);
-			PropsInfo.Current.ShowTab(1);
+			PropsInfo.Current.ShowTab(Page);
 		}
 	}
 }

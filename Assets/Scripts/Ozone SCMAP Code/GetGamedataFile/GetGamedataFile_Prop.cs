@@ -21,6 +21,8 @@ public partial struct GetGamedataFile
 
 		public bool IsTemp = false;
 
+		public PropGameObject StoredPrefab = null;
+
 		public PropGameObject CreatePropGameObject(Vector3 position, Quaternion rotation, Vector3 scale, bool AllowFarLod = true)
 		{
 
@@ -57,83 +59,98 @@ public partial struct GetGamedataFile
 			//Reset scale, because it's not supported anyway
 			scale = Vector3.one;
 
-			PropGameObject NewProp = GameObject.Instantiate(PropsInfo.Current.PropObjectPrefab, PropsInfo.Current.PropsParent).GetComponent<PropGameObject>();
-			NewProp.gameObject.name = BP.Name;
-
-			if (BP.LODs.Length > 0)
+			if (StoredPrefab != null)
 			{
-				if (BP.LODs[0].Mesh)
-				{
-					NewProp.Mf.sharedMesh = BP.LODs[0].Mesh;
-					NewProp.Mr.sharedMaterial = BP.LODs[0].Mat;
-					NewProp.Col.size = NewProp.Mf.sharedMesh.bounds.size;
-				}
-				bool Lod1Exist = BP.LODs.Length > 1 && BP.LODs[1].Mesh != null;
-				if (Lod1Exist)
-				{
-					NewProp.Mf1.sharedMesh = BP.LODs[1].Mesh;
-					NewProp.Mr1.sharedMaterial = BP.LODs[1].Mat;
-				}
-				else
-				{
-					NewProp.Mf1.gameObject.SetActive(false);
-				}
-				bool Lod2Exist = Lod1Exist && AllowFarLod && BP.LODs.Length > 2 && BP.LODs[2].Mesh != null;
-				if (Lod2Exist)
-				{
-					NewProp.Mf2.sharedMesh = BP.LODs[2].Mesh;
-					NewProp.Mr2.sharedMaterial = BP.LODs[2].Mat;
-				}
-				else
-				{
-					NewProp.Mf2.gameObject.SetActive(false);
-				}
-
-				
-
-				scale.x *= BP.LocalScale.x;
-				scale.y *= BP.LocalScale.y;
-				scale.z *= BP.LocalScale.z;
-				NewProp.Tr.localScale = scale;
-				Lods = NewProp.Lodg.GetLODs();
-
-				float DeltaSize = 0.01f;
-				if (BP.LODs[0].Mesh != null)
-				{
-					Vector3 bs = BP.LODs[0].Mesh.bounds.size;
-					DeltaSize = Mathf.Max(scale.x * bs.x, scale.y * bs.y, scale.z * bs.z);
-					Lods[0].screenRelativeTransitionHeight = DeltaSize / DecalsInfo.FrustumHeightAtDistance(BP.LODs[0].LODCutoff * 0.1f);
-				}
-				if (Lod1Exist)
-				{
-					Vector3 bs = BP.LODs[1].Mesh.bounds.size;
-					DeltaSize = Mathf.Max(scale.x * bs.x, scale.y * bs.y, scale.z * bs.z);
-					Lods[1].screenRelativeTransitionHeight = DeltaSize / DecalsInfo.FrustumHeightAtDistance(BP.LODs[1].LODCutoff * 0.1f);
-				}
-				if (Lod2Exist)
-				{
-					Vector3 bs = BP.LODs[2].Mesh.bounds.size;
-					DeltaSize = Mathf.Max(scale.x * bs.x, scale.y * bs.y, scale.z * bs.z);
-					Lods[2].screenRelativeTransitionHeight = DeltaSize / DecalsInfo.FrustumHeightAtDistance(BP.LODs[2].LODCutoff * 0.1f);
-				}
-
-
-				if(!Lod1Exist && !Lod2Exist)
-					Lods = new LOD[] { Lods[0] };
-				else if(!Lod2Exist)
-					Lods = new LOD[] { Lods[0], Lods[1] };
-
-				NewProp.Lodg.SetLODs(Lods);
-
+				PropGameObject NewProp = GameObject.Instantiate(StoredPrefab.gameObject, PropsInfo.Current.PropsParent).GetComponent<PropGameObject>();
+				NewProp.gameObject.SetActive(true);
+				NewProp.gameObject.name = BP.Name;
 				NewProp.Tr.localPosition = position;
 				NewProp.Tr.localRotation = rotation;
+
+				return NewProp;
 			}
 			else
 			{
-				Debug.LogWarning("Prop is empty! " + BP.Path);
-			}
+				PropGameObject NewProp = GameObject.Instantiate(PropsInfo.Current.PropObjectPrefab, PropsInfo.Current.PropsParent).GetComponent<PropGameObject>();
+				NewProp.gameObject.name = BP.Name;
 
-			return NewProp;
+				StoredPrefab = NewProp;
+
+				if (BP.LODs.Length > 0)
+				{
+					if (BP.LODs[0].Mesh)
+					{
+						NewProp.Mf.sharedMesh = BP.LODs[0].Mesh;
+						NewProp.Mr.sharedMaterial = BP.LODs[0].Mat;
+						NewProp.Col.size = NewProp.Mf.sharedMesh.bounds.size;
+					}
+					bool Lod1Exist = BP.LODs.Length > 1 && BP.LODs[1].Mesh != null;
+					if (Lod1Exist)
+					{
+						NewProp.Mf1.sharedMesh = BP.LODs[1].Mesh;
+						NewProp.Mr1.sharedMaterial = BP.LODs[1].Mat;
+					}
+					else
+					{
+						NewProp.Mf1.gameObject.SetActive(false);
+					}
+					bool Lod2Exist = Lod1Exist && AllowFarLod && BP.LODs.Length > 2 && BP.LODs[2].Mesh != null;
+					if (Lod2Exist)
+					{
+						NewProp.Mf2.sharedMesh = BP.LODs[2].Mesh;
+						NewProp.Mr2.sharedMaterial = BP.LODs[2].Mat;
+					}
+					else
+					{
+						NewProp.Mf2.gameObject.SetActive(false);
+					}
+
+
+
+					scale.x *= BP.LocalScale.x;
+					scale.y *= BP.LocalScale.y;
+					scale.z *= BP.LocalScale.z;
+					NewProp.Tr.localScale = scale;
+					Lods = NewProp.Lodg.GetLODs();
+
+					float DeltaSize = 0.01f;
+					if (BP.LODs[0].Mesh != null)
+					{
+						Vector3 bs = BP.LODs[0].Mesh.bounds.size;
+						DeltaSize = Mathf.Max(scale.x * bs.x, scale.y * bs.y, scale.z * bs.z);
+						Lods[0].screenRelativeTransitionHeight = DeltaSize / DecalsInfo.FrustumHeightAtDistance(BP.LODs[0].LODCutoff * 0.1f);
+					}
+					if (Lod1Exist)
+					{
+						Vector3 bs = BP.LODs[1].Mesh.bounds.size;
+						DeltaSize = Mathf.Max(scale.x * bs.x, scale.y * bs.y, scale.z * bs.z);
+						Lods[1].screenRelativeTransitionHeight = DeltaSize / DecalsInfo.FrustumHeightAtDistance(BP.LODs[1].LODCutoff * 0.1f);
+					}
+					if (Lod2Exist)
+					{
+						Vector3 bs = BP.LODs[2].Mesh.bounds.size;
+						DeltaSize = Mathf.Max(scale.x * bs.x, scale.y * bs.y, scale.z * bs.z);
+						Lods[2].screenRelativeTransitionHeight = DeltaSize / DecalsInfo.FrustumHeightAtDistance(BP.LODs[2].LODCutoff * 0.1f);
+					}
+
+
+					if (!Lod1Exist && !Lod2Exist)
+						Lods = new LOD[] { Lods[0] };
+					else if (!Lod2Exist)
+						Lods = new LOD[] { Lods[0], Lods[1] };
+
+					NewProp.Lodg.SetLODs(Lods);
+
+					NewProp.Tr.localPosition = position;
+					NewProp.Tr.localRotation = rotation;
+				}
+				else
+				{
+					Debug.LogWarning("Prop is empty! " + BP.Path);
+				}
+
+				return NewProp;
+			}
 		}
 
 	}

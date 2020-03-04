@@ -299,6 +299,19 @@ public class PlacementManager : MonoBehaviour {
 		Clear();
 	}
 
+	/// <summary>
+	/// Faster placement for multiple objects. Use BegingPlacement() before use and Clear() after done
+	/// </summary>
+	public static void PlaceAtPosition(Vector3 Position, Quaternion Rotation, Vector3 Scale)
+	{
+		Current.PlacementObject.transform.localPosition = Position;
+		Current.PlacementObject.transform.localRotation = Rotation;
+		Current.PlacementObject.transform.localScale = Scale;
+
+		Current.UpdateSymmetryObjects();
+
+		Current.Place();
+	}
 
 	public void UpdateSymmetry()
 	{
@@ -398,8 +411,7 @@ public class PlacementManager : MonoBehaviour {
 		for(int i = 0; i < PlacementSymmetry.Length; i++)
 		{
 			PlacementSymmetry[i] = Instantiate(PlacementObject) as GameObject;
-			if(InstantiateAction != null)
-				InstantiateAction(PlacementSymmetry[i]);
+			InstantiateAction?.Invoke(PlacementSymmetry[i]);
 		}
 
 
