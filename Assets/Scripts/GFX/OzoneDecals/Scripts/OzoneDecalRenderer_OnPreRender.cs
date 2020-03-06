@@ -81,7 +81,7 @@ namespace OzoneDecals
 			_bufferDeferred.SetRenderTarget(_albedoRenderTarget, BuiltinRenderTextureType.CameraTarget);
 
 			OzoneDecal decal = null;
-			for (int i = 0; i < MAX_DECAL_INSTANCES; i++)
+			for (int i = 0; i < AlbedoCount; i++)
 			{
 				if (AlbedoArray[i] == null)
 					continue;
@@ -98,10 +98,10 @@ namespace OzoneDecals
 				}
 			}
 
-			/*var decalListEnum = _DecalsAlbedo.GetEnumerator();
+			var decalListEnum = _DecalsAlbedo.GetEnumerator();
 			while (decalListEnum.MoveNext())
 			{
-				OzoneDecal decal = decalListEnum.Current;
+				decal = decalListEnum.Current;
 
 				if (decal.Dec.Shared.DrawAlbedo)
 				{
@@ -112,7 +112,7 @@ namespace OzoneDecals
 					_bufferDeferred.DrawMesh(_cubeMesh, decal.localToWorldMatrix, decal.Material, 0, 0, _directBlock);
 				}
 			}
-			decalListEnum.Dispose();*/
+			decalListEnum.Dispose();
 		}
 
 		private void DrawDeferredDecals_Tarmacs(Camera cam)
@@ -331,7 +331,7 @@ namespace OzoneDecals
 
 
 			OzoneDecal decal = null;
-			for (int i = 0; i < MAX_DECAL_INSTANCES; i++)
+			for (int i = 0; i < NormalCount; i++)
 			{
 				if (NormalArray[i] == null)
 					continue;
@@ -348,18 +348,18 @@ namespace OzoneDecals
 				}
 			}
 
-
-			/*var decalListEnum = _DecalsNormal.GetEnumerator();
+			//Creation
+			var decalListEnum = _DecalsNormal.GetEnumerator();
 			while (decalListEnum.MoveNext())
 			{
-				OzoneDecal decal = decalListEnum.Current;
+				decal = decalListEnum.Current;
 
 				_directBlock.Clear();
 				_directBlock.SetFloat(_NearCutOffLOD, decal.NearCutOff);
 				_directBlock.SetFloat(_CutOffLOD, decal.CutOff);
 				_bufferDeferred.DrawMesh(_cubeMesh, decal.localToWorldMatrix, decal.Material, 0, 1, _directBlock);
 			}
-			decalListEnum.Dispose();*/
+			decalListEnum.Dispose();
 		}
 
 		public static float DecalDist(Transform tr)

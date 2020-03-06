@@ -23,6 +23,9 @@ namespace OzoneDecals {
 		protected List<OzoneDecal> _DecalsAlbedo;
 		protected HashSet<OzoneDecal> _DecalsTarmacs;
 
+
+		protected int AlbedoCount = 0;
+		protected int NormalCount = 0;
 		protected OzoneDecal[] AlbedoArray = new OzoneDecal[MAX_DECAL_INSTANCES];
 		protected OzoneDecal[] NormalArray = new OzoneDecal[MAX_DECAL_INSTANCES];
 
@@ -133,21 +136,43 @@ namespace OzoneDecals {
 					_DecalsTarmacs.Add(d);
 				else
 				{
-					if (d.Index >= 0 && d.Index < MAX_DECAL_INSTANCES)
-						AlbedoArray[d.Index] = d;
+					if (d.CreationObject)
+					{
+						_DecalsAlbedo.Add(d);
+					}
 					else
-						Debug.LogWarning("Wrong decal index! " + d.Index);
-					//_DecalsAlbedo.Add(d);
+					{
+						if (d.Index >= 0 && d.Index < MAX_DECAL_INSTANCES)
+						{
+							if (d.Index + 1 > AlbedoCount)
+								AlbedoCount = d.Index + 1;
+
+							AlbedoArray[d.Index] = d;
+						}
+						else
+							Debug.LogWarning("Wrong decal index! " + d.Index);
+					}
 				}
 			}
 			else
 			{
-				if (d.Index >= 0 && d.Index < MAX_DECAL_INSTANCES)
-					NormalArray[d.Index] = d;
-				else
-					Debug.LogWarning("Wrong decal index! " + d.Index);
+				if (d.CreationObject)
+				{
+					_DecalsNormal.Add(d);
 
-				_DecalsNormal.Add(d);
+				}
+				else
+				{
+					if (d.Index >= 0 && d.Index < MAX_DECAL_INSTANCES)
+					{
+						if (d.Index + 1 > NormalCount)
+							NormalCount = d.Index + 1;
+						NormalArray[d.Index] = d;
+					}
+					else
+						Debug.LogWarning("Wrong decal index! " + d.Index);
+				}
+
 
 				/*if (!_Decals.ContainsKey(d.Material))
 				{
@@ -167,11 +192,42 @@ namespace OzoneDecals {
 				if (d.Dec.Shared.IsTarmac)
 					_DecalsTarmacs.Remove(d);
 				else
-					_DecalsAlbedo.Remove(d);
+				{
+					if (d.CreationObject)
+					{
+						_DecalsAlbedo.Remove(d);
+
+					}
+					else
+					{
+						if(d == AlbedoArray[d.Index])
+						{
+							if (d.Index + 1 == AlbedoCount)
+								AlbedoCount--;
+
+							AlbedoArray[d.Index] = null;
+						}
+					}
+				}
 			}
 			else
 			{
-				_DecalsNormal.Remove(d);
+				if (d.CreationObject)
+				{
+					_DecalsNormal.Remove(d);
+				}
+				else
+				{
+					if (d == NormalArray[d.Index])
+					{
+						if (d.Index + 1 == NormalCount)
+							NormalCount--;
+
+						NormalArray[d.Index] = null;
+					}
+				}
+
+				
 				/*if (!_Decals.ContainsKey(d.Material))
 				{
 					//_Decals.Remove(d.Material, new HashSet<OzoneDecal>() { d });

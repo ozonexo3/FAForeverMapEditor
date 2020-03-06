@@ -213,6 +213,7 @@ namespace EditMap
 				Obj.CreationObject = false;
 				Obj.UpdateMatrix();
 				Obj.Bake();
+				Obj.Index = Obj.tr.GetSiblingIndex();
 
 				if (isPasteAction && i == 0)
 				{

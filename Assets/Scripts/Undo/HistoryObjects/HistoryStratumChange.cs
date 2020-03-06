@@ -71,6 +71,16 @@ namespace UndoHistory
 
 			ScmapEditor.Current.Textures[i].Tilling = Textures.Tilling;
 
+			if(ScmapEditor.Current.Textures[i].Albedo == null)
+			{
+				GetGamedataFile.LoadTextureFromGamedata(GetGamedataFile.EnvScd, Textures.AlbedoPath, i, false);
+			}
+
+			if (ScmapEditor.Current.Textures[i].Normal == null)
+			{
+				GetGamedataFile.LoadTextureFromGamedata(GetGamedataFile.EnvScd, Textures.NormalPath, i, true);
+			}
+
 			ScmapEditor.Current.SetTextures(i);
 
 			Undo.Current.EditMenu.EditStratum.ReloadStratums();

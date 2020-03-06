@@ -41,12 +41,44 @@ public partial class ScmapEditor : MonoBehaviour
 				destArray[x, y] = heights[x, y];
 			}
 		}
+		ApplyHeightmap(false);
+	}
+
+	public static void ClampTop(float MaxHeight)
+	{
+		int width = heights.GetLength(0);
+		int height = heights.GetLength(1);
+
+		for (int x = 0; x < width; x++)
+		{
+			for (int y = 0; y < height; y++)
+			{
+				if (heights[x, y] > MaxHeight)
+					heights[x, y] = MaxHeight;
+			}
+		}
+		ApplyHeightmap(false);
+	}
+
+	public static void ClampBottom(float MinHeight)
+	{
+		int width = heights.GetLength(0);
+		int height = heights.GetLength(1);
+
+		for (int x = 0; x < width; x++)
+		{
+			for (int y = 0; y < height; y++)
+			{
+				if (heights[x, y] < MinHeight)
+					heights[x, y] = MinHeight;
+			}
+		}
+		ApplyHeightmap(false);
 	}
 
 	public static void SetAllHeights(float[,] newHeights)
 	{
 		SetHeights(0, 0, newHeights, false);
-
 	}
 
 	public static void SetHeights(int X, int Y, float[,] values, bool delayed = true)
@@ -184,5 +216,12 @@ public partial class ScmapEditor : MonoBehaviour
 		Current.Data.SyncHeightmap();
 		if(Flush)
 			Current.Teren.Flush();
+	}
+
+	public static bool IsOverMinMaxDistance()
+	{
+		float dist = Current.Teren.terrainData.bounds.max.y - Current.Teren.terrainData.bounds.min.y;
+		return dist > 5f;
+
 	}
 }

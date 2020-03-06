@@ -288,6 +288,9 @@ public partial class ScmapEditor : MonoBehaviour
 	{
 		// Load Stratum Textures Paths
 
+
+		bool NormalMapFix = false;
+
 		for (int i = 0; i < Textures.Length; i++)
 		{
 			if (Loading)
@@ -298,22 +301,49 @@ public partial class ScmapEditor : MonoBehaviour
 					map.Layers.Add(new Layer());
 
 				Textures[i].AlbedoPath = GetGamedataFile.FixMapsPath(map.Layers[i].PathTexture);
-				Textures[i].NormalPath = GetGamedataFile.FixMapsPath(map.Layers[i].PathNormalmap);
 				if (Textures[i].AlbedoPath.StartsWith("/"))
 				{
 					Textures[i].AlbedoPath = Textures[i].AlbedoPath.Remove(0, 1);
-				}
-				if (Textures[i].NormalPath.StartsWith("/"))
-				{
-					Textures[i].NormalPath = Textures[i].NormalPath.Remove(0, 1);
-				}
-			
+				}		
 				Textures[i].AlbedoScale = map.Layers[i].ScaleTexture;
+
+
+				if (string.IsNullOrEmpty(map.Layers[i].PathNormalmap))
+				{
+					if (i == 9)
+					{
+						// Upper stratum normal should be empty!
+						Textures[i].NormalPath = "";
+					}
+					else
+					{
+						Textures[i].NormalPath = "env/tundra/layers/tund_sandlight_normal.dds";
+						NormalMapFix = true;
+					}
+				}
+				else
+				{
+					if (i == 9)
+					{
+						// Upper stratum normal should be empty!
+						Textures[i].NormalPath = "";
+						NormalMapFix = true;
+					}
+					else
+					{
+						Textures[i].NormalPath = GetGamedataFile.FixMapsPath(map.Layers[i].PathNormalmap);
+						if (Textures[i].NormalPath.StartsWith("/"))
+						{
+							Textures[i].NormalPath = Textures[i].NormalPath.Remove(0, 1);
+						}
+					}
+				}
 				Textures[i].NormalScale = map.Layers[i].ScaleNormalmap;
 			}
 
+
 			string Env = GetGamedataFile.EnvScd;
-			if (Textures[i].AlbedoPath.ToLower().StartsWith("maps"))
+			if (GetGamedataFile.IsMapPath(Textures[i].AlbedoPath))
 				Env = GetGamedataFile.MapScd;
 
 			try
@@ -327,9 +357,8 @@ public partial class ScmapEditor : MonoBehaviour
 				Debug.LogError(i + ", Albedo tex: " + Textures[i].AlbedoPath);
 				Debug.LogError(e);
 			}
-
 			Env = GetGamedataFile.EnvScd;
-			if (Textures[i].NormalPath.ToLower().StartsWith("maps"))
+			if (GetGamedataFile.IsMapPath(Textures[i].NormalPath))
 				Env = GetGamedataFile.MapScd;
 
 			try
@@ -345,7 +374,11 @@ public partial class ScmapEditor : MonoBehaviour
 			}
 		}
 
+
+		if (NormalMapFix)
+			GenericInfoPopup.ShowInfo("Fixed wrong or missing normalmap textures on stratum layers");
 	}
+
 
 #region Water
 	public void SetWater()

@@ -947,7 +947,7 @@ namespace EditMap
 				}
 
 				Undo.RegisterUndo(new UndoHistory.HistoryStratumChange(), new UndoHistory.HistoryStratumChange.StratumChangeHistoryParameter(Selected));
-				Debug.Log(ResourceBrowser.Current.LoadedPaths[ResourceBrowser.DragedObject.InstanceId]);
+				//Debug.Log(ResourceBrowser.Current.LoadedPaths[ResourceBrowser.DragedObject.InstanceId]);
 
 				ScmapEditor.Current.Textures[Selected].Albedo = ResourceBrowser.Current.LoadedTextures[ResourceBrowser.DragedObject.InstanceId];
 				ScmapEditor.Current.Textures[Selected].AlbedoPath = ResourceBrowser.Current.LoadedPaths[ResourceBrowser.DragedObject.InstanceId];

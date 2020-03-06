@@ -96,7 +96,12 @@ public partial struct GetGamedataFile
 		string TextureKey = scd + "_" + LocalPath;
 
 		if (LoadedTextures.ContainsKey(TextureKey))
-			return LoadedTextures[TextureKey];
+		{
+			if (LoadedTextures[TextureKey] != null)
+				return LoadedTextures[TextureKey];
+			else
+				LoadedTextures.Remove(TextureKey);
+		}
 
 		if (DebugTextureLoad)
 			Debug.Log(LocalPath);
@@ -186,7 +191,12 @@ public partial struct GetGamedataFile
 		{
 			ScmapEditor.Current.Textures[Id].Normal = LoadTexture2DFromGamedata(scd, LocalPath, NormalMap, true, false);
 
-			if (ScmapEditor.Current.Textures[Id].Normal.width > 4 && ScmapEditor.Current.Textures[Id].Normal.height > 4 && ScmapEditor.Current.Textures[Id].Normal.mipmapCount <= 1)
+			if (ScmapEditor.Current.Textures[Id].Normal == null)
+			{
+				Debug.LogError("Loaded normal texture is empty, this should not happen!");
+				ScmapEditor.Current.Textures[Id].Normal = emptyNormalTexture;
+			}
+			else if (ScmapEditor.Current.Textures[Id].Normal.width > 4 && ScmapEditor.Current.Textures[Id].Normal.height > 4 && ScmapEditor.Current.Textures[Id].Normal.mipmapCount <= 1)
 			{
 				//Debug.Log("Force mipmaps: " + LocalPath + " has " + ScmapEditor.Current.Textures[Id].Normal.mipmapCount + " mipmaps");
 				ScmapEditor.Current.Textures[Id].Normal = ConvertWithMipmaps(ScmapEditor.Current.Textures[Id].Normal);
@@ -195,7 +205,13 @@ public partial struct GetGamedataFile
 		else
 		{
 			ScmapEditor.Current.Textures[Id].Albedo = LoadTexture2DFromGamedata(scd, LocalPath, NormalMap, true, false);
-			if (ScmapEditor.Current.Textures[Id].Albedo.width > 4 && ScmapEditor.Current.Textures[Id].Albedo.height > 4 && ScmapEditor.Current.Textures[Id].Albedo.mipmapCount <= 1)
+
+			if(ScmapEditor.Current.Textures[Id].Albedo == null)
+			{
+				Debug.LogError("Loaded albedo texture is empty, this should not happen!");
+				ScmapEditor.Current.Textures[Id].Albedo = Texture2D.whiteTexture;
+			}
+			else if (ScmapEditor.Current.Textures[Id].Albedo.width > 4 && ScmapEditor.Current.Textures[Id].Albedo.height > 4 && ScmapEditor.Current.Textures[Id].Albedo.mipmapCount <= 1)
 			{
 				//Debug.Log("Force mipmaps: " + LocalPath + " has " + ScmapEditor.Current.Textures[Id].Albedo.mipmapCount + " mipmaps");
 				ScmapEditor.Current.Textures[Id].Albedo = ConvertWithMipmaps(ScmapEditor.Current.Textures[Id].Albedo);

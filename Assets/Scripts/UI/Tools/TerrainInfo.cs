@@ -706,10 +706,37 @@ namespace EditMap
 			ScmapEditor.SetAllHeights(data);
 			RegenerateMaps();
 			OnTerrainChanged();
-			EnvPaths.SetLastPath(ExportPathKey, System.IO.Path.GetDirectoryName(paths[0]));
-			GenericInfoPopup.ShowInfo("Heightmap import success!\n" + System.IO.Path.GetFileName(paths[0]));
+			EnvPaths.SetLastPath(ExportPathKey, Path.GetDirectoryName(paths[0]));
+			GenericInfoPopup.ShowInfo("Heightmap import success!\n" + Path.GetFileName(paths[0]));
+
+
+			if (ScmapEditor.IsOverMinMaxDistance())
+			{
+				GenericPopup.ShowPopup(GenericPopup.PopupTypes.TriButton, "Importing heightmap", "Distance between lowest and highest point is higher than 50.\nClamp it?", "Clamp Top", ClampTop, "Clamp Bottom", ClampBottom, "Ignore", null);
+			}
+
 		}
 		#endregion
+
+		void ClampTop()
+		{
+			//RecalcTerrainClamp();
+
+			ScmapEditor.ClampTop((ScmapEditor.Current.Data.bounds.min.y + 5) / ScmapEditor.Current.Data.size.y);
+
+			RegenerateMaps();
+			OnTerrainChanged();
+		}
+
+		void ClampBottom()
+		{
+			//RecalcTerrainClamp();
+
+			ScmapEditor.ClampBottom((ScmapEditor.Current.Data.bounds.max.y - 5) / ScmapEditor.Current.Data.size.y);
+
+			RegenerateMaps();
+			OnTerrainChanged();
+		}
 
 		public void RegenerateMaps()
 		{
@@ -810,14 +837,12 @@ namespace EditMap
 
 		void RecalcTerrainClamp()
 		{
-			if (FafEditorSettings.GetHeightmapClamp())
-			{
-				HeightmapMin = (ScmapEditor.Current.Data.bounds.min.y) / ScmapEditor.Current.Data.size.y;
-				HeightmapMax = (ScmapEditor.Current.Data.bounds.min.y + 5) / ScmapEditor.Current.Data.size.y;
+			FafEditorSettings.GetHeightmapClamp();
+			HeightmapMin = (ScmapEditor.Current.Data.bounds.min.y) / ScmapEditor.Current.Data.size.y;
+			HeightmapMax = (ScmapEditor.Current.Data.bounds.min.y + 5) / ScmapEditor.Current.Data.size.y;
 
-				//Debug.Log(ScmapEditor.Current.Data.bounds.min.y * 10 +" "+ ScmapEditor.Current.Data.bounds.max.y * 10);
-				Debug.Log(Min + " > " + Max + "\n" + HeightmapMin + " > " + HeightmapMax);
-			}
+			//Debug.Log(ScmapEditor.Current.Data.bounds.min.y * 10 +" "+ ScmapEditor.Current.Data.bounds.max.y * 10);
+			//Debug.Log(Min + " > " + Max + "\n" + HeightmapMin + " > " + HeightmapMax);
 		}
 
 		void SymmetryPaint()

@@ -471,6 +471,9 @@ function ScenarioUtils.CreateResources()
             else
                 spawnresource(tblData.position,tblData.type, true)
             end
+		elseif tblData.resource then
+            --LOG('* AI-Debug: Deleting resource marker: '..name..' - '..repr(Scenario.MasterChain._MASTERCHAIN_.Markers[name]))
+            Scenario.MasterChain._MASTERCHAIN_.Markers[name] = nil
         end
     end
 end
@@ -738,6 +741,8 @@ function Crazyrush_CreateResources(markers)
     for i, tblData in pairs(markers) do
         if tblData.resource then
             spawnresource(tblData.position, tblData.type, true)
+            --LOG('* AI-Debug: creating resource Marker: '..i..' - '..repr(tblData))
+            Scenario.MasterChain._MASTERCHAIN_.Markers[i] = tblData
         end
     end
 end
