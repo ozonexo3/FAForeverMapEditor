@@ -200,7 +200,7 @@ namespace OzoneDecals
 		}*/
 
 		bool IsRendered = false;
-		int _index = 0;
+		int _index = -1;
 		public int Index {
 			get
 			{
@@ -208,9 +208,9 @@ namespace OzoneDecals
 			}
 			set
 			{
+				OnBecameInvisible();
 				_index = value;
 				tr.SetSiblingIndex(_index);
-				OnBecameInvisible();
 				OnBecameVisible();
 			}
 		}

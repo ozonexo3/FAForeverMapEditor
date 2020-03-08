@@ -72,7 +72,7 @@ public partial class AppMenu : MonoBehaviour
 		LogPath += "Low";
 		LogPath += "\\" + Application.companyName;
 		LogPath += "\\" + Application.productName;
-		LogPath += "\\" + "output_log.txt";
+		LogPath += "\\" + "Player.log";
 
 		Debug.Log(LogPath);
 

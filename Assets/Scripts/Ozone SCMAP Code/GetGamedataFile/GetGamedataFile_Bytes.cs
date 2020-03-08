@@ -18,19 +18,14 @@ public partial struct GetGamedataFile
 
 	public static ZipFile GetZipFileInstance(string scd)
 	{
-		if (!Init)
-		{
-			FafNotInstalled = !System.IO.Directory.Exists(EnvPaths.FAFGamedataPath);
-			ZipConstants.DefaultCodePage = 0;
-			Init = true;
-		}
+		Initialize();
 
 		if (!ScdFiles.ContainsKey(scd))
 		{
 			string ScdPath = EnvPaths.GamedataPath + scd;
-			if (!System.IO.Directory.Exists(System.IO.Path.GetDirectoryName(ScdPath)) || !System.IO.File.Exists(ScdPath))
+			if (!Directory.Exists(Path.GetDirectoryName(ScdPath)) || !File.Exists(ScdPath))
 			{
-
+				Debug.LogWarning("Gamedata scd file could not be found!\n" + ScdPath);
 				return null;
 			}
 		
@@ -43,6 +38,16 @@ public partial struct GetGamedataFile
 	}
 
 	static bool Init = false;
+
+	static void Initialize()
+	{
+		if (!Init)
+		{
+			FafNotInstalled = !Directory.Exists(EnvPaths.FAFGamedataPath);
+			ZipConstants.DefaultCodePage = 0;
+			Init = true;
+		}
+	}
 
 	/// <summary>
 	/// Find and return real path from SCD

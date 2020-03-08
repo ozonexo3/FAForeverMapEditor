@@ -138,9 +138,15 @@ namespace FAF.MapEditor
 
 			HashSet<string> LoadedDirectorys = new HashSet<string>();
 			ZipFile zf = GetGamedataFile.GetZipFileInstance(GetGamedataFile.EnvScd);
+
+			if (zf == null)
+			{
+				Debug.LogError("Unable to load ZipFile!");
+				return;
+			}
 			foreach (ZipEntry zipEntry in zf)
 			{
-				if (!zipEntry.IsDirectory)
+				if (zipEntry == null || !zipEntry.IsDirectory)
 				{
 					continue;
 				}
@@ -175,6 +181,7 @@ namespace FAF.MapEditor
 
 			// FAF
 			zf = GetGamedataFile.GetFAFZipFileInstance(GetGamedataFile.EnvScd);
+			if(zf != null)
 			foreach (ZipEntry zipEntry in zf)
 			{
 				if (!zipEntry.IsDirectory)

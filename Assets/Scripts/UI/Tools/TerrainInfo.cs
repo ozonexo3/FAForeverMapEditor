@@ -288,6 +288,7 @@ namespace EditMap
 							if (UpdateBrushPosition(false))
 							{
 							}
+							RecalcTerrainClamp();
 							SymmetryPaint();
 						}
 					}
@@ -838,11 +839,19 @@ namespace EditMap
 		void RecalcTerrainClamp()
 		{
 			FafEditorSettings.GetHeightmapClamp();
-			HeightmapMin = (ScmapEditor.Current.Data.bounds.min.y) / ScmapEditor.Current.Data.size.y;
-			HeightmapMax = (ScmapEditor.Current.Data.bounds.min.y + 5) / ScmapEditor.Current.Data.size.y;
 
-			//Debug.Log(ScmapEditor.Current.Data.bounds.min.y * 10 +" "+ ScmapEditor.Current.Data.bounds.max.y * 10);
-			//Debug.Log(Min + " > " + Max + "\n" + HeightmapMin + " > " + HeightmapMax);
+			float bmin = ScmapEditor.Current.Data.bounds.min.y;
+			float bmax = ScmapEditor.Current.Data.bounds.max.y;
+
+			HeightmapMin = (bmax - 5f) / ScmapEditor.Current.Data.size.y;
+			HeightmapMax = (bmin + 5f) / ScmapEditor.Current.Data.size.y;
+
+			if (HeightmapMin < 0f)
+				HeightmapMin = 0f;
+			if (HeightmapMax > 1f)
+				HeightmapMax = 1f;
+
+			//Debug.Log(bmin + " > " + bmax);
 		}
 
 		void SymmetryPaint()
@@ -1017,47 +1026,31 @@ namespace EditMap
 							case 1: // Flatten
 								PixelPower = Mathf.Pow(Mathf.Abs(ScmapEditor.ReturnValues[i, j] - CenterHeight), 0.454545f) + 1;
 								PixelPower /= 2f;
-
-								//if (PixelPower < 0.001f)
-								//	heights[i, j] = CenterHeight;
-								//else { 
-								//float FlattenStrenght = PixelPower * StrengthMultiplier * Mathf.Pow(SampleBrush, 2);
-								//heights[i, j] += FlattenStrenght;
 								ScmapEditor.ReturnValues[i, j] = MoveToValue(ScmapEditor.ReturnValues[i, j], CenterHeight, StrengthMultiplier * SampleBrush * PixelPower, 0, ScmapEditor.MaxElevation);
-								//}
-
 								break;
 							case 2: // Smooth
 								CenterHeight = GetNearValues(ref ScmapEditor.ReturnValues, i, j);
-
 								PixelPower = Mathf.Pow(Mathf.Abs(ScmapEditor.ReturnValues[i, j] - CenterHeight), 0.454545f) + 1;
 								PixelPower /= 2f;
-								//PixelPower = 10;
-
-								//heights[i, j] = Mathf.Lerp(heights[i, j], CenterHeight, BrushStrenghtValue * Mathf.Pow(SampleBrush, 2) * PixelPower);
 								ScmapEditor.ReturnValues[i, j] = Mathf.Lerp(ScmapEditor.ReturnValues[i, j], CenterHeight, PixelPower * StrengthMultiplier * Mathf.Pow(SampleBrush, 2));
-
 								break;
 							case 3: // Sharp
 								PixelPower = Mathf.Pow(Mathf.Abs(ScmapEditor.ReturnValues[i, j] - CenterHeight), 0.454545f) + 1;
 								PixelPower /= 2f;
-								//heights[i, j] += Mathf.Lerp(PixelPower, 0, PixelPower * 10) * BrushStrenghtValue * 0.01f * Mathf.Pow(SampleBrush, 2);
 								ScmapEditor.ReturnValues[i, j] = MoveToValue(ScmapEditor.ReturnValues[i, j], CenterHeight, -StrengthMultiplier * SampleBrush * PixelPower, Min, Max);
 								break;
 							default:
-								//heights[i, j] += SampleBrush * StrengthMultiplier;
 								ScmapEditor.ReturnValues[i, j] = MoveToValue(ScmapEditor.ReturnValues[i, j], TargetHeight, SampleBrush * StrengthMultiplier, Min, Max);
 								break;
 						}
 
-						if (FafEditorSettings.IsHeightmapClamp)
+						/*if (FafEditorSettings.IsHeightmapClamp)
 						{
-
 							if (ScmapEditor.ReturnValues[i, j] > HeightmapMax)
 								ScmapEditor.ReturnValues[i, j] = HeightmapMax;
 							else if (ScmapEditor.ReturnValues[i, j] < HeightmapMin)
 								ScmapEditor.ReturnValues[i, j] = HeightmapMin;
-						}
+						}*/
 
 					}
 				}
@@ -1086,10 +1079,34 @@ namespace EditMap
 
 			if (current > target)
 			{
+				if (FafEditorSettings.IsHeightmapClamp)
+				{
+					if (speed > 0)
+					{
+						target = Mathf.Max(target, HeightmapMin);
+					}
+					else
+					{
+						max = Mathf.Min(max, HeightmapMax);
+					}
+				}
+
 				return Mathf.Clamp(current - speed, target, max);
 			}
 			else
 			{
+				if (FafEditorSettings.IsHeightmapClamp)
+				{
+					if (speed > 0)
+					{
+						target = Mathf.Min(target, HeightmapMax);
+					}
+					else
+					{
+						min = Mathf.Max(min, HeightmapMin);
+					}
+				}
+
 				return Mathf.Clamp(current + speed, min, target);
 			}
 		}

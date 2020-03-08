@@ -20,12 +20,7 @@ public partial struct GetGamedataFile
 
 	public static ZipFile GetFAFZipFileInstance(string scd)
 	{
-		if (!Init)
-		{
-			FafNotInstalled = !System.IO.Directory.Exists(EnvPaths.FAFGamedataPath);
-			ZipConstants.DefaultCodePage = 0;
-			Init = true;
-		}
+		Initialize();
 
 		if (FafNotInstalled)
 			return null;
@@ -33,13 +28,14 @@ public partial struct GetGamedataFile
 		if (!ScdFiles.ContainsKey(scd))
 		{
 			// Original files not loaded, return
+			Debug.LogWarning("Original files were not loaded before loading FAF, return");
 			return null;
 		}
 
 		if (!FAFScdFiles.ContainsKey(scd))
 		{
 			string ScdPath = EnvPaths.FAFGamedataPath + scd.Replace("scd", "nx2");
-			if (!System.IO.Directory.Exists(System.IO.Path.GetDirectoryName(ScdPath)) || !System.IO.File.Exists(ScdPath))
+			if (!Directory.Exists(Path.GetDirectoryName(ScdPath)) || !File.Exists(ScdPath))
 			{
 				FAFScdFiles.Add(scd, null);
 				return null;

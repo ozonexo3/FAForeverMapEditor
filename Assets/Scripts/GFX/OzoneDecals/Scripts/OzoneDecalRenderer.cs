@@ -6,7 +6,7 @@ namespace OzoneDecals {
 	[ExecuteInEditMode]
 	public partial class OzoneDecalRenderer : MonoBehaviour {
 
-		const int MAX_DECAL_INSTANCES = 2048;
+		const int MAX_DECAL_INSTANCES = 4096;
 
 		public static OzoneDecalRenderer Current;
 		void Awake()
@@ -69,10 +69,10 @@ namespace OzoneDecals {
 			}
 
 			_Decals = new Dictionary<Material, HashSet<OzoneDecal>>();
-			_DecalsAlbedo = new List<OzoneDecal>(4096);
+			_DecalsAlbedo = new List<OzoneDecal>(64);
 			_DecalsTarmacs = new HashSet<OzoneDecal>();
 			//_decalComponent = new List<OzoneDecal>();
-			_DecalsNormal = new List<OzoneDecal>(4096);
+			_DecalsNormal = new List<OzoneDecal>(64);
 			//_meshFilterComponent = new List<MeshFilter>();
 
 			_matrices = new Matrix4x4[1023];
@@ -196,11 +196,18 @@ namespace OzoneDecals {
 					if (d.CreationObject)
 					{
 						_DecalsAlbedo.Remove(d);
-
 					}
 					else
 					{
-						if(d == AlbedoArray[d.Index])
+						if(d.Index >= MAX_DECAL_INSTANCES)
+						{
+							Debug.LogWarning("Wrong decal index: " + d.Index, d);
+						}
+						else if (d.Index < 0)
+						{
+
+						}
+						else if(d == AlbedoArray[d.Index])
 						{
 							if (d.Index + 1 == AlbedoCount)
 								AlbedoCount--;
@@ -218,7 +225,15 @@ namespace OzoneDecals {
 				}
 				else
 				{
-					if (d == NormalArray[d.Index])
+					if (d.Index >= MAX_DECAL_INSTANCES)
+					{
+						Debug.LogWarning("Wrong decal index: " + d.Index, d);
+					}
+					else if(d.Index < 0)
+					{
+
+					}
+					else if (d == NormalArray[d.Index])
 					{
 						if (d.Index + 1 == NormalCount)
 							NormalCount--;

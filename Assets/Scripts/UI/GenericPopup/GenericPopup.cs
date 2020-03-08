@@ -140,22 +140,19 @@ public class GenericPopup : MonoBehaviour {
 
 	public void PressYes()
 	{
-		if(PopupBufor[0].YesAction != null)
-		PopupBufor[0].YesAction();
+		PopupBufor[0].YesAction?.Invoke();
 		HidePopup();
 	}
 
 	public void PressNo()
 	{
-		if (PopupBufor[0].NoAction != null)
-			PopupBufor[0].NoAction();
+		PopupBufor[0].NoAction?.Invoke();
 		HidePopup();
 	}
 
 	public void PressCancel()
 	{
-		if (PopupBufor[0].CancelAction != null)
-			PopupBufor[0].CancelAction();
+		PopupBufor[0].CancelAction?.Invoke();
 		HidePopup();
 	}
 
