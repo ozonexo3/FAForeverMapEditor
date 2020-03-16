@@ -232,7 +232,7 @@ public partial struct GetGamedataFile
 		ToReturn.IsTemp = IsTemp;
 
 		byte[] Bytes = LoadBytes(scd, LocalPath);
-		if (Bytes.Length == 0)
+		if (Bytes == null || Bytes.Length == 0)
 		{
 			Debug.LogError("Prop does not exits: " + LocalPath);
 			return ToReturn;

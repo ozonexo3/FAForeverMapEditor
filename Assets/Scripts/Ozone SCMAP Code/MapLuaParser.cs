@@ -97,7 +97,7 @@ public partial class MapLuaParser : MonoBehaviour
 			EnvPaths.SetInstalationPath(EnvPaths.DefaultGamedataPath);
 		}
 
-		StructurePath = GetDataPath() + "/Structure/"; ;
+		StructurePath = GetDataPath() + "/Structure/";
 	}
 
 	public static bool IsMapLoaded

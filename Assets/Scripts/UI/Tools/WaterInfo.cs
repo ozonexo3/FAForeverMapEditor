@@ -288,5 +288,13 @@ namespace EditMap
 
 		}
 		#endregion
+
+
+		public void ClearWaves()
+		{
+			Debug.Log("Clear waves count: " + ScmapEditor.Current.map.WaveGenerators.Count);
+			ScmapEditor.Current.map.WaveGenerators.Clear();
+
+		}
 	}
 }
