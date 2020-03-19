@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using EditMap;
 
 public class UnitInstance : MonoBehaviour
 {
@@ -51,10 +52,16 @@ public class UnitInstance : MonoBehaviour
 		LocalToWorldMatrix = Matrix4x4.TRS(Position, transform.localRotation, UnitRenderer.BP.UniformScale * 0.1f);
 	}
 
+	public OzoneDecals.OzoneDecal[] Tarmacs;
 	public void UpdateMatrix()
 	{
 		Position = transform.localPosition;
 		LocalToWorldMatrix = Matrix4x4.TRS(Position, transform.localRotation, UnitRenderer.BP.UniformScale * 0.1f);
+
+		for(int i = 0; i < Tarmacs.Length; i++)
+		{
+			Tarmacs[i].UpdateMatrix();
+		}
 	}
 
 	public bool SphereModified = false;

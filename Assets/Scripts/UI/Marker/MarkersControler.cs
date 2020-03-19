@@ -506,11 +506,12 @@ namespace Markers
 				BufforUpdate = true;
 		}
 
-
+		const float MaxAllowedOverhead = 0.001f;
 		public IEnumerator UpdatingMarkersHeights()
 		{
-			const int BreakEvery = 50;
-			int UpdateCount = 0;
+			//const int BreakEvery = 50;
+			//int UpdateCount = 0;
+			float Realtime = Time.realtimeSinceStartup;
 			for (int mc = 0; mc < MapLuaParser.Current.SaveLuaFile.Data.MasterChains.Length; mc++)
 			{
 				int Mcount = MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers.Count;
@@ -526,11 +527,16 @@ namespace Markers
 					MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers[m].position = ScmapEditor.WorldPosToScmap(CurrPos);
 
 
-					UpdateCount++;
+					/*UpdateCount++;
 					if (UpdateCount > BreakEvery)
 					{
 						UpdateCount = 0;
 						yield return null;
+					}*/
+					if (Time.realtimeSinceStartup - Realtime > MaxAllowedOverhead)
+					{
+						yield return null;
+						Realtime = Time.realtimeSinceStartup;
 					}
 				}
 			}

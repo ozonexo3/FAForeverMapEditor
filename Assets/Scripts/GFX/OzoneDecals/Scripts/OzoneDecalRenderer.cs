@@ -22,6 +22,7 @@ namespace OzoneDecals {
 		protected List<OzoneDecal> _DecalsNormal;
 		protected List<OzoneDecal> _DecalsAlbedo;
 		protected HashSet<OzoneDecal> _DecalsTarmacs;
+		protected HashSet<OzoneDecal> _DecalsTarmacsNormals;
 
 
 		protected int AlbedoCount = 0;
@@ -71,6 +72,7 @@ namespace OzoneDecals {
 			_Decals = new Dictionary<Material, HashSet<OzoneDecal>>();
 			_DecalsAlbedo = new List<OzoneDecal>(64);
 			_DecalsTarmacs = new HashSet<OzoneDecal>();
+			_DecalsTarmacsNormals = new HashSet<OzoneDecal>();
 			//_decalComponent = new List<OzoneDecal>();
 			_DecalsNormal = new List<OzoneDecal>(64);
 			//_meshFilterComponent = new List<MeshFilter>();
@@ -133,7 +135,9 @@ namespace OzoneDecals {
 			if (d.Dec.Shared.DrawAlbedo)
 			{
 				if (d.Dec.Shared.IsTarmac)
+				{
 					_DecalsTarmacs.Add(d);
+				}
 				else
 				{
 					if (d.CreationObject)
@@ -156,21 +160,28 @@ namespace OzoneDecals {
 			}
 			else
 			{
-				if (d.CreationObject)
+				if (d.Dec.Shared.IsTarmac)
 				{
-					_DecalsNormal.Add(d);
-
+					_DecalsTarmacsNormals.Add(d);
 				}
 				else
 				{
-					if (d.Index >= 0 && d.Index < MAX_DECAL_INSTANCES)
+					if (d.CreationObject)
 					{
-						if (d.Index + 1 > NormalCount)
-							NormalCount = d.Index + 1;
-						NormalArray[d.Index] = d;
+						_DecalsNormal.Add(d);
+
 					}
 					else
-						Debug.LogWarning("Wrong decal index! " + d.Index);
+					{
+						if (d.Index >= 0 && d.Index < MAX_DECAL_INSTANCES)
+						{
+							if (d.Index + 1 > NormalCount)
+								NormalCount = d.Index + 1;
+							NormalArray[d.Index] = d;
+						}
+						else
+							Debug.LogWarning("Wrong decal index! " + d.Index);
+					}
 				}
 
 
@@ -199,7 +210,7 @@ namespace OzoneDecals {
 					}
 					else
 					{
-						if(d.Index >= MAX_DECAL_INSTANCES)
+						if (d.Index >= MAX_DECAL_INSTANCES)
 						{
 							Debug.LogWarning("Wrong decal index: " + d.Index, d);
 						}
@@ -207,7 +218,7 @@ namespace OzoneDecals {
 						{
 
 						}
-						else if(d == AlbedoArray[d.Index])
+						else if (d == AlbedoArray[d.Index])
 						{
 							if (d.Index + 1 == AlbedoCount)
 								AlbedoCount--;
@@ -219,7 +230,11 @@ namespace OzoneDecals {
 			}
 			else
 			{
-				if (d.CreationObject)
+				if (d.Dec.Shared.IsTarmac)
+				{
+					_DecalsTarmacsNormals.Remove(d);
+				}
+				else if (d.CreationObject)
 				{
 					_DecalsNormal.Remove(d);
 				}

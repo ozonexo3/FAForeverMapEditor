@@ -88,6 +88,8 @@ public partial struct GetGamedataFile
 					if (Lod1Exist)
 					{
 						NewProp.Mf1.sharedMesh = BP.LODs[1].Mesh;
+						if (NewProp.Mf1.sharedMesh == null)
+							NewProp.Mf1.sharedMesh = PropsInfo.Current.NoPropMesh;
 						NewProp.Mr1.sharedMaterial = BP.LODs[1].Mat;
 					}
 					else
@@ -369,8 +371,11 @@ public partial struct GetGamedataFile
 		{
 			ToReturn.BP.LODs[i].Mesh = LoadModel(scd, ToReturn.BP.LODs[i].Scm);
 
+			if (ToReturn.BP.LODs[i].Mesh == null)
+				ToReturn.BP.LODs[i].Mesh = PropsInfo.Current.NoPropMesh;
+
 			//ToReturn.BP.LODs[i].Mat = new Material(Shader.Find("Standard (Specular setup)"));
-			ToReturn.BP.LODs[i].Mat = new Material(EditMap.PropsInfo.Current.PropMaterial);
+			ToReturn.BP.LODs[i].Mat = new Material(PropsInfo.Current.PropMaterial);
 
 			ToReturn.BP.LODs[i].Mat.name = ToReturn.BP.Name + " mat";
 

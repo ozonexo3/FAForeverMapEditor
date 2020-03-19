@@ -42,33 +42,42 @@ public class PropsRenderer : MonoBehaviour {
 	}
 
 
-	const int PauseEvery = 1200;
+	//const int PauseEvery = 1200;
+	const float MaxAllowedOverhead = 0.001f;
 	IEnumerator PropsUpdater()
 	{
 		yield return null;
-		int step = 0;
+		//int step = 0;
 		int count = PropsInfo.AllPropsTypes.Count;
 		int i = 0;
 		PropsInfo.PropTypeGroup Ptg = null;
 		Vector3 LocalPos = Vector3.zero;
-
+		float Realtime = Time.realtimeSinceStartup;
 		for (i = 0; i < count; i++)
 		{
 			Ptg = PropsInfo.AllPropsTypes[i];
-			foreach(Prop PropInstance in Ptg.PropsInstances)
+			var listEnum = Ptg.PropsInstances.GetEnumerator();
+			while (listEnum.MoveNext())
 			{
 
-				LocalPos = PropInstance.Obj.Tr.localPosition;
+				LocalPos = listEnum.Current.Obj.Tr.localPosition;
 				LocalPos.y = ScmapEditor.Current.Teren.SampleHeight(LocalPos);
-				PropInstance.Obj.Tr.localPosition = LocalPos;
+				listEnum.Current.Obj.Tr.localPosition = LocalPos;
 
-				step++;
+				if (Time.realtimeSinceStartup - Realtime > MaxAllowedOverhead)
+				{
+					yield return null;
+					Realtime = Time.realtimeSinceStartup;
+				}
+
+				/*step++;
 				if (step > PauseEvery)
 				{
 					step = 0;
 					yield return null;
-				}
+				}*/
 			}
+			listEnum.Dispose();
 		}
 
 		yield return null;

@@ -13,6 +13,7 @@ namespace EditMap
 
 		public Transform DecalPivot;
 		public GameObject DecalPrefab;
+		public GameObject TermacPrefab;
 
 		public Material AlbedoMaterial;
 		public Material NormalMaterial;
@@ -90,7 +91,7 @@ namespace EditMap
 
 		public static void CreateGameObjectFromDecal(Decal Component)
 		{
-			GameObject NewDecalObject = Instantiate(Current.DecalPrefab, Current.DecalPivot);
+			GameObject NewDecalObject = Instantiate(Component.Shared.IsTarmac ? Current.TermacPrefab : Current.DecalPrefab, Current.DecalPivot);
 			OzoneDecal Obj = NewDecalObject.GetComponent<OzoneDecal>();
 			Component.Obj = Obj;
 			Obj.Dec = Component;

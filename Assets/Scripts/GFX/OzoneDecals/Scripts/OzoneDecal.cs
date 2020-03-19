@@ -17,6 +17,7 @@ namespace OzoneDecals
 		public float CutOff;
 		public float NearCutOff;
 		public float OwnerArmy;
+		public bool IsTarmac;
 
 		float _CutOffLOD = 50.0f;
 		float _NearCutOffLOD = 0.0f;
@@ -30,14 +31,18 @@ namespace OzoneDecals
 			}
 			set
 			{
-				if(_Dec != null)
+				if(_Dec != null && !IsTarmac)
 					DecalsControler.RemoveDecal(_Dec);
 
 				_Dec = value;
 				if (!CreationObject && _Dec != null)
-					DecalsControler.AddDecal(_Dec);
+				{
+					if (!IsTarmac)
+					{
+						DecalsControler.AddDecal(_Dec);
+					}
+				}
 			}
-
 		}
 
 		public float CutOffLOD

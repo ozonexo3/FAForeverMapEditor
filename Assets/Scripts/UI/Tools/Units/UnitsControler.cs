@@ -42,11 +42,17 @@ public class UnitsControler : MonoBehaviour {
 		if (UpdateProcess != null)
 			Current.StopCoroutine(UpdateProcess);
 	}
+
+	const float MaxAllowedOverhead = 0.001f;
+
 	UnitInstance[] Instances = new UnitInstance[4096];
 	public IEnumerator UpdatingUnitsHeights()
 	{
 		var ListEnum = GetGamedataFile.LoadedUnitObjects.GetEnumerator();
-		int Counter = 0;
+		//int Counter = 0;
+
+		float Realtime = Time.realtimeSinceStartup;
+
 		while (ListEnum.MoveNext())
 		{
 			UnitSource us = ListEnum.Current.Value;
@@ -56,17 +62,27 @@ public class UnitsControler : MonoBehaviour {
 
 			for(int i = 0; i < Count; i++)
 			{
-				if (Instances[i].UpdateAfterTerrainChange())
+				Instances[i].UpdateAfterTerrainChange();
+				/*if (Instances[i].UpdateAfterTerrainChange())
 				{
-					Counter+=10;
+					//Counter += 10;
 				}
 				else
 				{
-					Counter++;
+					//Counter++;
+				}*/
+
+				if (Time.realtimeSinceStartup - Realtime > MaxAllowedOverhead)
+				{
+					yield return null;
+					Realtime = Time.realtimeSinceStartup;
 				}
 
-				if (Counter > 1024)
+				/*if (Counter > 1024)
+				{
+					Counter = 0;
 					yield return null;
+				}*/
 			}
 		}
 

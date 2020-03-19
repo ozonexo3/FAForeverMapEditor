@@ -142,9 +142,12 @@ namespace FAF.MapEditor
 					if (LocalName.ToLower().EndsWith("mesh.bp"))
 						continue;
 
-					if (LocalName.ToLower().EndsWith(".bp") && LocalName.Split('/').Length <= 3)
+					if (LocalName.ToLower().EndsWith(".bp"))
 					{
-						FoundUnits.Add(LocalName);
+						if (LocalName.Split('/').Length <= 3) // Only from main folder
+						{
+							FoundUnits.Add(LocalName);
+						}
 					}
 				}
 			}
@@ -222,6 +225,7 @@ namespace FAF.MapEditor
 			Layout.enabled = false;
 			SizeFitter.enabled = false;
 			GeneratingList = null;
+			SortUnits();
 		}
 
 
@@ -248,6 +252,8 @@ namespace FAF.MapEditor
 		string[] SearchTags = new string[0];
 		public void OnSearchChanged()
 		{
+			//if (!IsGenerated)
+			//	return;
 			SearchTags = Search.text.Split(' ');
 			SortUnits();
 		}

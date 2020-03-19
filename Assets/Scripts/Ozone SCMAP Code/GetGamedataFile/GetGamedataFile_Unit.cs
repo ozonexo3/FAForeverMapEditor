@@ -90,7 +90,7 @@ public partial struct GetGamedataFile
 			LODs[0] = new BluePrintLoD();
 			LODs[0].Mesh = UnitsInfo.Current.NoUnitMesh;
 			LODs[0].Mat = UnitsInfo.Current.NoUnitMaterial;
-			LODs[0].LODCutoff = 100;
+			LODs[0].LODCutoff = 300;
 		}
 	}
 

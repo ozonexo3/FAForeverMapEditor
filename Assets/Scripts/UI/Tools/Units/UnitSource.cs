@@ -114,9 +114,25 @@ public class UnitSource : MonoBehaviour
 	const UnityEngine.Rendering.ShadowCastingMode ShadowCasting = UnityEngine.Rendering.ShadowCastingMode.On;
 	public void Draw()
 	{
+		if (Lod.Count == 0)
+			return;
+
+		if (BP.LODs[0].Mesh == null)
+		{
+			//Missing mesh or material, skip rendering
+			Debug.LogWarning("Missing mesh for blueprint " + BP.CodeName, gameObject);
+			return;
+		}
+		else if (BP.LODs[0].Mat == null)
+		{
+			Debug.LogWarning("Missing material for blueprint " + BP.CodeName, gameObject);
+			return;
+		}
+
 		var ListEnum = Lod.GetEnumerator();
 		int n = 0;
 		Mpb.Clear();
+
 
 		while (ListEnum.MoveNext())
 		{
@@ -201,10 +217,13 @@ public class UnitSource : MonoBehaviour
 
 		if (BP.HasTermac)
 		{
+			List<OzoneDecals.OzoneDecal> TarmacInstances = new List<OzoneDecals.OzoneDecal>();
+
 			if (BP.Termac_Albedo != null) {
 				DecalsInfo.CreateGameObjectFromDecal(BP.Termac_Albedo);
 				BP.Termac_Albedo.Obj.tr.parent = UInst.transform;
 				BP.Termac_Albedo.Obj.tr.localPosition = Vector3.zero;
+				TarmacInstances.Add(BP.Termac_Albedo.Obj);
 			}
 
 			if (BP.Termac_Normal != null)
@@ -212,8 +231,13 @@ public class UnitSource : MonoBehaviour
 				DecalsInfo.CreateGameObjectFromDecal(BP.Termac_Normal);
 				BP.Termac_Normal.Obj.tr.parent = UInst.transform;
 				BP.Termac_Normal.Obj.tr.localPosition = Vector3.zero;
+				TarmacInstances.Add(BP.Termac_Normal.Obj);
 			}
+
+			UInst.Tarmacs = TarmacInstances.ToArray();
 		}
+
+		UInst.UpdateMatrix();
 
 		AddInstance(UInst);
 		return UInst;

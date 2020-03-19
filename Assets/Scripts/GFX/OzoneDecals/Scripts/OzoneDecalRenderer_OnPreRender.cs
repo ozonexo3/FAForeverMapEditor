@@ -63,6 +63,7 @@ namespace OzoneDecals
 			//DrawDeferredDecals_Normal(cam);
 			DrawDeferredDecals_Normals_Sorted(cam);
 
+			DrawDeferredDecals_Tarmacs_Normals(cam);
 
 			// Clear 
 			/*
@@ -124,13 +125,37 @@ namespace OzoneDecals
 			{
 				OzoneDecal decal = decalListEnum.Current;
 
-				if (decal.Dec.Shared.DrawAlbedo)
+				//if (decal.Dec.Shared.DrawAlbedo)
 				{
 					_directBlock.Clear();
 					_directBlock.SetFloat(_NearCutOffLOD, decal.NearCutOff);
 					_directBlock.SetFloat(_CutOffLOD, decal.CutOff);
 
 					_bufferDeferred.DrawMesh(_cubeMesh, decal.localToWorldMatrix, decal.Material, 0, 0, _directBlock);
+				}
+			}
+			decalListEnum.Dispose();
+		}
+
+		private void DrawDeferredDecals_Tarmacs_Normals(Camera cam)
+		{
+			_bufferDeferred.GetTemporaryRT(copy2id, -1, -1, 0, FilterMode.Bilinear, RenderTextureFormat.ARGB32);
+			_bufferDeferred.Blit(BuiltinRenderTextureType.GBuffer2, copy2id);
+
+			_bufferDeferred.SetRenderTarget(_normalRenderTarget, BuiltinRenderTextureType.CameraTarget);
+
+			var decalListEnum = _DecalsTarmacsNormals.GetEnumerator();
+			while (decalListEnum.MoveNext())
+			{
+				OzoneDecal decal = decalListEnum.Current;
+
+				//if (!decal.Dec.Shared.DrawAlbedo)
+				{
+					_directBlock.Clear();
+					_directBlock.SetFloat(_NearCutOffLOD, decal.NearCutOff);
+					_directBlock.SetFloat(_CutOffLOD, decal.CutOff);
+
+					_bufferDeferred.DrawMesh(_cubeMesh, decal.localToWorldMatrix, decal.Material, 0, 1, _directBlock);
 				}
 			}
 			decalListEnum.Dispose();

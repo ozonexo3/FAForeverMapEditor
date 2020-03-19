@@ -236,11 +236,12 @@ public class DecalsControler : MonoBehaviour {
 			BufforUpdate = true;
 	}
 
+	const float MaxAllowedOverhead = 0.001f;
 	IEnumerator UpdatingDecals()
 	{
-		const int BreakEvery = 50;
-		int UpdateCount = 0;
-
+		//const int BreakEvery = 50;
+		//int UpdateCount = 0;
+		float Realtime = Time.realtimeSinceStartup;
 		for (int d = 0; d < AllDecals.Count; d++)
 		{
 			Vector3 Pos = AllDecals[d].Obj.GetPivotPoint();
@@ -249,12 +250,18 @@ public class DecalsControler : MonoBehaviour {
 			//AllDecals[d].tr.position = Pos;// + (AllDecals[d].tr.forward * AllDecals[d].tr.localScale.z * 0.5f) - (AllDecals[d].tr.right * AllDecals[d].tr.localScale.x * 0.5f);
 
 
-			UpdateCount++;
+			if (Time.realtimeSinceStartup - Realtime > MaxAllowedOverhead)
+			{
+				yield return null;
+				Realtime = Time.realtimeSinceStartup;
+			}
+
+			/*UpdateCount++;
 			if (UpdateCount > BreakEvery)
 			{
 				UpdateCount = 0;
 				yield return null;
-			}
+			}*/
 		}
 
 

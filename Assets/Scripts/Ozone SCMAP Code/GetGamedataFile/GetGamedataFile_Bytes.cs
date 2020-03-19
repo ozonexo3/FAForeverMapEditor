@@ -145,6 +145,10 @@ public partial struct GetGamedataFile
 					return FafBytes;
 			}
 		}
+		else
+		{
+			Debug.Log("No FAF path found for " + scd);
+		}
 
 		if (zipEntry2 == null)
 		{

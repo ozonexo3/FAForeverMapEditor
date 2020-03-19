@@ -54,21 +54,25 @@ public partial struct GetGamedataFile
 			// Load Vers
 			Stream.BaseStream.Seek(Header.VertOffset, SeekOrigin.Begin);
 
-			Verts = new Scm_Vert[Header.VertCount];
-			for (i = 0; i < Header.VertCount; i++)
+
+			int VertsCount = Header.VertCount;
+
+			Verts = new Scm_Vert[VertsCount];
+			for (i = 0; i < VertsCount; i++)
 			{
 				Verts[i] = new Scm_Vert();
 				Verts[i].LoadFromStream(Stream);
 				//Verts[i].Position.z *= -1;
 			}
 
+
 			// Load Triangles
 			Stream.BaseStream.Seek(Header.IndexOffset, SeekOrigin.Begin);
 			Tris = new Scm_Tris[Header.IndexCount / 3];
 			for (i = 0; i < Tris.Length; i++)
 			{
-				Tris[i] = new Scm_Tris();
-				Tris[i].LoadFromStream(Stream);
+				Tris[i] = new Scm_Tris(Stream);
+				//Tris[i].LoadFromStream(Stream);
 			}
 		}
 
@@ -221,17 +225,17 @@ public partial struct GetGamedataFile
 		}
 	}
 
-	class Scm_Tris
+	struct Scm_Tris
 	{
-		public short Vert0;
-		public short Vert1;
-		public short Vert2;
+		public ushort Vert0;
+		public ushort Vert1;
+		public ushort Vert2;
 
-		public void LoadFromStream(BinaryReader Stream)
+		public Scm_Tris(BinaryReader Stream)
 		{
-			Vert0 = Stream.ReadInt16();
-			Vert1 = Stream.ReadInt16();
-			Vert2 = Stream.ReadInt16();
+			Vert0 = Stream.ReadUInt16();
+			Vert1 = Stream.ReadUInt16();
+			Vert2 = Stream.ReadUInt16();
 		}
 	}
 
@@ -293,10 +297,11 @@ public partial struct GetGamedataFile
 		if (FinalMeshBytes == null || FinalMeshBytes.Length == 0)
 			return null; // File is empty
 
-		Mesh ToReturn = new Mesh();
+		Mesh ToReturn = new Mesh() { indexFormat = UnityEngine.Rendering.IndexFormat.UInt16 };
 
 		// Create stream from bytes, to read it as binary file
 		BinaryReader Stream = new BinaryReader(new MemoryStream(FinalMeshBytes));
+
 
 		Scm NewScmModel = new Scm();
 		NewScmModel.LoadFromStream(Stream);
