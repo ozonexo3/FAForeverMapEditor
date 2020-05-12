@@ -259,14 +259,17 @@ namespace EditMap
 						if (Input.GetMouseButton(0))
 						{
 							BrushTarget.SetValue(CameraControler.GetLastScmHeight());
+							UpdateMenu(true);
 						}
 						else if (Input.GetMouseButton(1))
 						{
 							BrushMini.SetValue(CameraControler.GetLastScmHeight());
+							UpdateMenu(true);
 						}
 						else if (Input.GetMouseButton(2))
 						{
 							BrushMax.SetValue(CameraControler.GetLastScmHeight());
+							UpdateMenu(true);
 						}
 					}
 					else if (Edit.MauseOnGameplay && Input.GetMouseButtonDown(0))

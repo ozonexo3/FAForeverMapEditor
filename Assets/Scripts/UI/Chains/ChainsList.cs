@@ -59,13 +59,14 @@ namespace EditMap
 			SelectionManager.Current.SetAffectedTypes(Types);
 			//Selection.SelectionManager.Current.SetCustomSettings(true, false, false);
 			//ChainSelected = -1;
-
+			RenderChainLine.DisplayAll = true;
 			UpdateList();
 
 		}
 
 		void OnDisable()
 		{
+			RenderChainLine.DisplayAll = false;
 			//ChainSelected = -1;
 			if (MarkersInfo.MarkerPageChange)
 			{
@@ -81,7 +82,7 @@ namespace EditMap
 		public void CleanMenu()
 		{
 			ChainSelected = -1;
-			RenderChainConnection.RenderChain = null;
+			RenderChainLine.SelectedChain = -1;
 			UpdateList();
 
 		}
@@ -233,7 +234,7 @@ namespace EditMap
 			MapLuaParser.Current.SaveLuaFile.Data.Chains = Chains.ToArray();
 
 			ChainSelected = -1;
-			RenderChainConnection.RenderChain = null;
+			RenderChainLine.SelectedChain = -1;
 
 			//Selection.SelectionManager.Current.SetCustomSettings(true, false, false);
 			Selection.SelectionManager.Current.CleanSelection();
@@ -255,7 +256,7 @@ namespace EditMap
 			MapLuaParser.Current.SaveLuaFile.Data.Chains = Chains.ToArray();
 
 			ChainSelected = -1;
-			RenderChainConnection.RenderChain = null;
+			RenderChainLine.SelectedChain = -1;
 
 			//Selection.SelectionManager.Current.SetCustomSettings(true, false, false);
 			Selection.SelectionManager.Current.CleanSelection();
@@ -443,10 +444,9 @@ namespace EditMap
 		public void ReturnFromChain()
 		{
 			ChainSelected = -1;
-			RenderChainConnection.RenderChain = null;
+			RenderChainLine.SelectedChain = -1;
 			//Selection.SelectionManager.Current.SetCustomSettings(true, false, false);
 			SelectionManager.Current.UpdateControler();
-			RenderChainConnection.RenderChain = null;
 			UpdateList();
 		}
 
@@ -465,7 +465,7 @@ namespace EditMap
 			ChainSelected = i;
 
 			MapLuaParser.Current.SaveLuaFile.Data.Chains[ChainSelected].BakeMarkers();
-			RenderChainConnection.RenderChain = MapLuaParser.Current.SaveLuaFile.Data.Chains[ChainSelected];
+			RenderChainLine.SelectedChain = ChainSelected;
 
 			UpdateList();
 		}

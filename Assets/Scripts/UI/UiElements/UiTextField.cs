@@ -92,6 +92,7 @@ namespace Ozone.UI
 		{
 			if (ChangingValue)
 				return;
+			InvokeStart();
 			UpdateSliderValue(true);
 			OnEndEdit.Invoke();
 			SetTextField();

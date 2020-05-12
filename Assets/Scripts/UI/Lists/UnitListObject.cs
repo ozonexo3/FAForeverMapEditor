@@ -31,7 +31,7 @@ public class UnitListObject : MonoBehaviour {
 	public MapLua.SaveLua.Army.UnitsGroup Parent;
 	public System.Action<UnitListObject> AddAction;
 	public System.Action<UnitListObject> RemoveAction;
-	public System.Action<UnitListObject> SelectAction;
+	public System.Action<UnitListObject, bool> SelectAction;
 	public System.Action<UnitListObject> RenameAction;
 	public System.Action<UnitListObject> ExpandAction;
 
@@ -69,6 +69,7 @@ public class UnitListObject : MonoBehaviour {
 		IsRoot = root;
 
 		IsExpanded = Data.Expanded;
+		Data.Instance = this;
 
 		if (IsRoot)
 		{
@@ -121,7 +122,7 @@ public class UnitListObject : MonoBehaviour {
 
 	public void OnGroupClick()
 	{
-		SelectAction(this);
+		SelectAction(this, false);
 
 	}
 
@@ -132,11 +133,20 @@ public class UnitListObject : MonoBehaviour {
 		ExpandAction(this);
 	}
 
-	const float DoubleClickTime = 0.3f;
+	public void ExpandTo()
+	{
+		Source.Expanded = true;
+		IsExpanded = Source.Expanded;
+		ExpandAction(this);
+
+		Parent?.Instance?.ExpandTo();
+	}
+
+	public const float DoubleClickTime = 0.3f;
 	float LastClickTime = 0;
 	public void OnTitleClick()
 	{
-		OnGroupClick();
+		SelectAction(this, true);
 		if (IsRoot)
 			return;
 

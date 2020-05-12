@@ -229,6 +229,9 @@ public class PlacementManager : MonoBehaviour {
 
 		for (int i = 0; i < PlacementSymmetry.Length; i++)
 		{
+			if (PlacementSymmetry[i] == null)
+				continue;
+
 			Vector3 SymmetryPoint = SymmetryMatrix[i].MultiplyPoint(PlacementObject.transform.position - MapLuaParser.Current.MapCenterPoint) + MapLuaParser.Current.MapCenterPoint;
 
 			PlacementSymmetry[i].transform.localPosition = SymmetryPoint;
@@ -304,9 +307,11 @@ public class PlacementManager : MonoBehaviour {
 	/// </summary>
 	public static void PlaceAtPosition(Vector3 Position, Quaternion Rotation, Vector3 Scale)
 	{
-		Current.PlacementObject.transform.localPosition = Position;
-		Current.PlacementObject.transform.localRotation = Rotation;
-		Current.PlacementObject.transform.localScale = Scale;
+		if (Current.PlacementObject) {
+			Current.PlacementObject.transform.localPosition = Position;
+			Current.PlacementObject.transform.localRotation = Rotation;
+			Current.PlacementObject.transform.localScale = Scale;
+		}
 
 		Current.UpdateSymmetryObjects();
 

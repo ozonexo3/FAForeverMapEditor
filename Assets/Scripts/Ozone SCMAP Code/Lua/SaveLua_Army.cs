@@ -82,6 +82,7 @@ namespace MapLua
 				#region Parents
 				public Army Owner;
 				public UnitsGroup Parent;
+				public UnitListObject Instance;
 				public void AddGroup(UnitsGroup ug)
 				{
 					ug.Owner = Owner;
@@ -349,6 +350,31 @@ namespace MapLua
 					foreach (UnitsGroup ug in UnitGroups)
 						ug.UpdateGroupArmy(SourceOwner);
 				}
+
+
+				public void GetAllUnitInstances(ref List<UnitInstance> AllUnits)
+				{
+					if (Units.Count > 0)
+					{
+						var ListEnum = Units.GetEnumerator();
+						while (ListEnum.MoveNext())
+						{
+							if (ListEnum.Current.Instance != null)
+								AllUnits.Add(ListEnum.Current.Instance);
+						}
+						ListEnum.Dispose();
+					}
+
+					if(UnitGroups.Count > 0)
+					{
+						var ListEnum = UnitGroups.GetEnumerator();
+						while (ListEnum.MoveNext())
+						{
+							ListEnum.Current?.GetAllUnitInstances(ref AllUnits);
+						}
+						ListEnum.Dispose();
+					}
+				}
 			}
 
 			//[System.Serializable]
@@ -398,7 +424,7 @@ namespace MapLua
 				{
 					LuaFile.OpenTab(LuaParser.Write.PropertieToLua(Instance.gameObject.name) + LuaParser.Write.OpenBracketValue);
 
-					LuaFile.AddLine(LuaParser.Write.StringToLua(UnitsGroup.KEY_TYPE, Instance.UnitRenderer.BP.CodeName));
+					LuaFile.AddLine(LuaParser.Write.StringToLua(UnitsGroup.KEY_TYPE, Instance.UnitRenderer.BP.CodeName.ToLower()));
 					LuaFile.AddLine(LuaParser.Write.StringToLua(UnitsGroup.KEY_ORDERS, Instance.orders));
 					LuaFile.AddLine(LuaParser.Write.StringToLua(UnitsGroup.KEY_PLATOON, Instance.platoon));
 					LuaFile.AddLine(LuaParser.Write.Vector3ToLua(UnitsGroup.KEY_POSITION, ScmapEditor.WorldPosToScmap(Instance.transform.localPosition)));

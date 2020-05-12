@@ -178,7 +178,43 @@ namespace EditMap
 			int TotalMarkersCount = MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers.Count;
 			bool AnyCreated = false;
 
-			if (CreationId == CREATE_PRESET)
+			if (isPasteAction)
+			{
+				Vector3 NewPos;
+				int CopyDataCount = CopyData.Count;
+				for (int i = 0; i < Positions.Length; i++)
+				{
+					for (int m = 0; m < CopyDataCount; m++)
+					{
+						if (!AnyCreated)
+							Undo.RegisterUndo(new UndoHistory.HistoryMarkersRemove());
+						AnyCreated = true;
+
+						//Debug.Log(Mpreset.Markers[m].Tr.localPosition);
+						NewPos = Positions[i] + Rotations[i] * CopyData[m].Position;
+
+						if (SelectionManager.Current.SnapToGrid)
+							NewPos = ScmapEditor.SnapToGridCenter(NewPos, true, SelectionManager.Current.SnapToWater);
+
+						//NewPos.y = ScmapEditor.Current.Teren.SampleHeight(NewPos);
+
+						MapLua.SaveLua.Marker NewMarker = new MapLua.SaveLua.Marker(CopyData[m].MarkerType);
+						NewMarker.position = ScmapEditor.WorldPosToScmap(NewPos);
+						//NewMarker.orientation = 
+						MarkersControler.CreateMarker(NewMarker, mc);
+						ChainsList.AddToCurrentChain(NewMarker);
+
+
+						LastAddedMarkers.Add(TotalMarkersCount);
+						TotalMarkersCount++;
+						MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers.Add(NewMarker);
+
+						if(i == 0)
+							PastedObjects.Add(NewMarker.MarkerObj.gameObject);
+					}
+				}
+			}
+			else if (CreationId == CREATE_PRESET)
 			{
 				Vector3 NewPos;
 				MarkerPreset Mpreset = MarkerPresets[SpawnPressetDropdown.value].GetComponent<MarkerPreset>();
@@ -343,14 +379,70 @@ namespace EditMap
 			//	marker.localRotation = Quaternion.identity;
 		}
 
-		public void CopyAction()
+		struct CopyMarkerData
 		{
-			Debug.Log("Copy");
+			public Vector3 Position;
+			public Quaternion Rotation;
+			public MapLua.SaveLua.Marker.MarkerTypes MarkerType;
+
+			public CopyMarkerData(Vector3 Position, Quaternion Rotation, MapLua.SaveLua.Marker.MarkerTypes MarkerType)
+			=> (this.Position, this.Rotation, this.MarkerType) = (Position, Rotation, MarkerType);
 		}
 
+		static List<CopyMarkerData> CopyData;
+		static Vector3 CopyCenter; 
+
+		public void CopyAction()
+		{
+			List<GameObject> Objs = SelectionManager.GetAllSelectedGameobjects(false);
+			int selectionCount = Objs.Count;
+
+			if (CopyData == null)
+				CopyData = new List<CopyMarkerData>();
+			else
+				CopyData.Clear();
+
+			CopyCenter = SelectionManager.Current.Controls.transform.position;
+			for (int s = 0; s < selectionCount; s++)
+			{
+				MarkerObject mob = Objs[s].GetComponent<MarkerObject>();
+				if (mob == null)
+					continue;
+
+				CopyData.Add(new CopyMarkerData(mob.transform.position - CopyCenter, mob.transform.rotation, mob.Owner.MarkerType));
+			}
+		}
+
+		List<GameObject> PastedObjects = new List<GameObject>(128);
+		bool isPasteAction = false;
 		public void PasteAction()
 		{
-			Debug.Log("Paste");
+			if(CopyData == null || CopyData.Count == 0)
+				return;
+
+			PastedObjects.Clear();
+
+
+
+			Vector3 PlaceOffset = new Vector3(0.5f, 0f, -0.5f);
+			isPasteAction = true;
+			PlacementManager.SnapToWater = false;
+			CreationId = 0;
+			PlacementManager.BeginPlacement(GetCreationObject(), Place);
+			PlacementManager.PlaceAtPosition(CopyCenter + PlaceOffset, Quaternion.identity, Vector3.one);
+			PlacementManager.Clear();
+			isPasteAction = false;
+
+			GoToSelection();
+
+
+			SelectionManager.Current.CleanSelection();
+			for (int i = 0; i < PastedObjects.Count; i++)
+			{
+				SelectionManager.Current.SelectObjectAdd(PastedObjects[i]);
+			}
+
+			Debug.Log("Pasted " + PastedObjects.Count + " markers");
 		}
 
 		MapLua.SaveLua.Marker.MarkerTypes GetCreationType()

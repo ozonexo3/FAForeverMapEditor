@@ -15,6 +15,10 @@ namespace UndoHistory
 		public Vector3 AmbientColor = Vector3.zero;
 		public Vector3 ShadowColor = Vector3.zero;
 		public Vector4 Specular = Vector4.zero;
+		public Vector4 Fog = Vector4.zero;
+		public float FogStart;
+		public float FogEnd;
+		public float Bloom;
 
 		public override void Register(HistoryParameter Param)
 		{
@@ -28,7 +32,10 @@ namespace UndoHistory
 			AmbientColor = LightMenu.AmbienceColor.GetVectorValue();
 			ShadowColor = LightMenu.ShadowColor.GetVectorValue();
 			Specular = LightMenu.Specular.GetVector4Value();
-
+			Fog = LightMenu.FogColor.GetVector4Value();
+			FogStart = LightMenu.FogStart.value;
+			FogEnd = LightMenu.FogEnd.value;
+			Bloom = LightMenu.Bloom.value;
 		}
 
 
@@ -56,6 +63,11 @@ namespace UndoHistory
 			LightMenu.AmbienceColor.SetColorField(AmbientColor.x, AmbientColor.y, AmbientColor.z);
 			LightMenu.ShadowColor.SetColorField(ShadowColor.x, ShadowColor.y, ShadowColor.z);
 			LightMenu.Specular.SetColorField(Specular.x, Specular.y, Specular.z, Specular.w);
+
+			LightMenu.FogColor.SetColorField(Fog.x, Fog.y, Fog.z, Fog.w);
+			LightMenu.FogStart.SetValue(FogStart);
+			LightMenu.FogEnd.SetValue(FogEnd);
+			LightMenu.Bloom.SetValue(Bloom);
 
 			LightMenu.IgnoreUpdate = false;
 

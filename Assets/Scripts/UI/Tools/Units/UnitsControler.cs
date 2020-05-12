@@ -74,8 +74,8 @@ public class UnitsControler : MonoBehaviour {
 
 				if (Time.realtimeSinceStartup - Realtime > MaxAllowedOverhead)
 				{
-					yield return null;
 					Realtime = Time.realtimeSinceStartup;
+					yield return null;
 				}
 
 				/*if (Counter > 1024)

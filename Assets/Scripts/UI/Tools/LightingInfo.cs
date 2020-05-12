@@ -152,14 +152,12 @@ namespace EditMap
 			{
 				//EndSliderDrag();
 				SliderDrag = false;
-				IgnoreUpdate = true;
-
-				Scmap.map.Bloom = Bloom.value;
+				//IgnoreUpdate = true;
 
 				RA_Value = RA.intValue;
 				DA_Value = RA.intValue;
 
-				IgnoreUpdate = false;
+				//IgnoreUpdate = false;
 				UpdateLightingData();
 			}
 		}
@@ -193,6 +191,8 @@ namespace EditMap
 				Scmap.map.FogStart = Scmap.map.FogEnd - 1;
 				FogStart.SetValue(Scmap.map.FogStart, false);
 			}
+
+			Scmap.map.Bloom = Bloom.value;
 
 			Scmap.UpdateLighting();
 			Scmap.Skybox.LoadSkybox();

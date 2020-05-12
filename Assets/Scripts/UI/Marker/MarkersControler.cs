@@ -535,8 +535,8 @@ namespace Markers
 					}*/
 					if (Time.realtimeSinceStartup - Realtime > MaxAllowedOverhead)
 					{
-						yield return null;
 						Realtime = Time.realtimeSinceStartup;
+						yield return null;
 					}
 				}
 			}

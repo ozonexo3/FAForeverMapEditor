@@ -216,7 +216,8 @@ namespace EditMap
 			Generate(false);
 		}
 
-		public void SelectGroup(UnitListObject parent)
+		float LastClickTime = 0;
+		public void SelectGroup(UnitListObject parent, bool onTitle)
 		{
 			ClearRename();
 			if (Input.GetKey(KeyCode.LeftShift))
@@ -232,8 +233,33 @@ namespace EditMap
 			}
 			else
 			{
-				ClearGrpSelection();
-				AddToGrpSelection(parent);
+				if (SelectedGroups.Count == 1 && SelectedGroups[0] == parent)
+				{
+					if (!onTitle && Time.realtimeSinceStartup - LastClickTime < UnitListObject.DoubleClickTime)
+					{
+						SelectionManager.Current.CleanSelection();
+
+						List<UnitInstance> SelectedInstances = new List<UnitInstance>(128);
+
+						parent.Source.GetAllUnitInstances(ref SelectedInstances);
+
+						GameObject[] NewSelection = new GameObject[SelectedInstances.Count];
+						
+						for(int i = 0; i < SelectedInstances.Count; i++)
+						{
+							NewSelection[i] = SelectedInstances[i].gameObject;
+						}
+
+						SelectionManager.Current.SelectObjects(NewSelection);
+					}
+				}
+				else
+				{
+					ClearGrpSelection();
+					AddToGrpSelection(parent);
+				}
+
+				LastClickTime = Time.realtimeSinceStartup;
 			}
 
 			UpdateGroupSelection();
@@ -284,7 +310,7 @@ namespace EditMap
 
 		public void RenameGroup(UnitListObject parent)
 		{
-			string NewValue = NameInputField.text;
+			string NewValue = NameInputField.text.Replace("\n", "");
 
 			if (parent.Source.Name == NewValue)
 				return; // No changes
@@ -309,7 +335,7 @@ namespace EditMap
 		public void PrefixChangeGroup(UnitListObject parent)
 		{
 			string OldPrefix = parent.Source.PrefixName;
-			string NewValue = PrefixInputField.text;
+			string NewValue = PrefixInputField.text.Replace("\n", "");
 
 			if (OldPrefix == NewValue)
 				return; // No changes

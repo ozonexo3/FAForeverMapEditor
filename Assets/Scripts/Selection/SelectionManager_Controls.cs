@@ -332,6 +332,22 @@ namespace Selection
 				FinishSelectionChange();
 		}
 
+		public void SelectObjects(List<GameObject> ToSelect)
+		{
+			bool AnyChanged = false;
+			for (int i = 0; i < ToSelect.Count; i++)
+			{
+				int ObjectId = GetIdOfObject(ToSelect[i]);
+				if (!Selection.Ids.Contains(ObjectId))
+				{
+					Selection.Ids.Add(ObjectId);
+					AnyChanged = true;
+				}
+			}
+
+			if (AnyChanged)
+				FinishSelectionChange();
+		}
 
 
 		public void SelectObjectsRemove(GameObject[] ToSelect)

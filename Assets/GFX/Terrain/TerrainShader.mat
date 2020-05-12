@@ -274,26 +274,26 @@ Material:
     - _HideSplat8: 0
     - _HideTerrainType: 1
     - _LightingMultiplier: 1.27
-    - _LowerScale: 128
-    - _LowerScaleNormal: 68.26667
+    - _LowerScale: 73.14286
+    - _LowerScaleNormal: 73.14286
     - _Shininess: 0.03
     - _Slope: 0
-    - _Splat0Scale: 128
-    - _Splat0ScaleNormal: 128
-    - _Splat1Scale: 170.66667
-    - _Splat1ScaleNormal: 128
-    - _Splat2Scale: 93.09091
-    - _Splat2ScaleNormal: 128
-    - _Splat3Scale: 186.18182
-    - _Splat3ScaleNormal: 256
-    - _Splat4Scale: 256
-    - _Splat4ScaleNormal: 170.66667
-    - _Splat5Scale: 157.53847
-    - _Splat5ScaleNormal: 170.66667
-    - _Splat6Scale: 204.8
-    - _Splat6ScaleNormal: 170.66667
-    - _Splat7Scale: 74.202896
-    - _Splat7ScaleNormal: 256
+    - _Splat0Scale: 73.14286
+    - _Splat0ScaleNormal: 256
+    - _Splat1Scale: 73.14286
+    - _Splat1ScaleNormal: 73.14286
+    - _Splat2Scale: 73.14286
+    - _Splat2ScaleNormal: 73.14286
+    - _Splat3Scale: 73.14286
+    - _Splat3ScaleNormal: 73.14286
+    - _Splat4Scale: 73.14286
+    - _Splat4ScaleNormal: 73.14286
+    - _Splat5Scale: 73.14286
+    - _Splat5ScaleNormal: 73.14286
+    - _Splat6Scale: 73.14286
+    - _Splat6ScaleNormal: 73.14286
+    - _Splat7Scale: 51.2
+    - _Splat7ScaleNormal: 51.2
     - _TTerrainXP: 0
     - _TerrainTypeCapacity: 0.228
     - _TerrainTypeCoof: 0.228

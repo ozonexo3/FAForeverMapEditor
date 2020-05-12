@@ -33,7 +33,7 @@ public class MarkersList : MonoBehaviour
 			Clean();
 		else if (Generating)
 		{
-			StopCoroutine(GeneratingEnum);
+			StopGenerating();
 		}
 	}
 
@@ -105,8 +105,7 @@ public class MarkersList : MonoBehaviour
 			return;
 		}
 
-		if (Generating)
-			StopCoroutine(GeneratingEnum);
+		StopGenerating();
 
 		Clean();
 		GenerateList();
@@ -114,13 +113,8 @@ public class MarkersList : MonoBehaviour
 
 	public void Clean()
 	{
-		if (Generating)
-		{
-			StopCoroutine(GeneratingEnum);
-		}
-
-		AllFields = new List<ListObject>();
-		AllFields.Capacity = 2048;
+		StopGenerating();
+		AllFields = new List<ListObject>(2048);
 
 		foreach (RectTransform child in Pivot)
 		{
@@ -168,12 +162,21 @@ public class MarkersList : MonoBehaviour
 		}
 	}
 
+	void StopGenerating()
+	{
+		if (Generating)
+		{
+			StopCoroutine(GeneratingEnum);
+			GeneratingEnum = null;
+		}
+	}
+
 	IEnumerator GenerateingList()
 	{
 		//Debug.Log("Regenerate");
 		int mc = 0;
-		const int PauseEvery = 3;
-		int GenerateCounter = 0;
+		//const int PauseEvery = 64;
+		//int GenerateCounter = 0;
 
 		int Mcount = MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers.Count;
 		int TypesCount = (int)MapLua.SaveLua.Marker.MarkerTypes.Count;
@@ -184,10 +187,15 @@ public class MarkersList : MonoBehaviour
 		int t = 0;
 		int i = 0;
 
-		List<GameObject> AllObjectsList = new List<GameObject>();
+		float Realtime = Time.realtimeSinceStartup;
+		//const float MaxAllowedOverhead = 0.03334f;
+		const float MaxAllowedOverhead = 0.4f;
+
+
+		List<GameObject> AllObjectsList = new List<GameObject>(1024);
 		for (t = 0; t < TypesCount; t++)
 		{
-			List<GameObject> ObjectToSort = new List<GameObject>();
+			List<GameObject> ObjectToSort = new List<GameObject>(1024);
 
 			for (i = 0; i < Mcount; i++)
 			{
@@ -234,16 +242,18 @@ public class MarkersList : MonoBehaviour
 				else
 					NewListObject.Icon.sprite = Markers.MarkersControler.GetIconByType(CurrentMarker.MarkerType);
 
-				
-			}
+				/*GenerateCounter++;
+				if (GenerateCounter > PauseEvery)
+				{
+					GenerateCounter = 0;
+					yield return null;
 
-
-			GenerateCounter++;
-			if (GenerateCounter > PauseEvery)
-			{
-				GenerateCounter = 0;
-				//yield return null;
-
+				}*/
+				if (Time.realtimeSinceStartup - Realtime > MaxAllowedOverhead)
+				{
+					Realtime = Time.realtimeSinceStartup;
+					yield return null;
+				}
 			}
 
 			AllObjectsList.AddRange(ObjectToSort.OrderBy(go => go.name));
@@ -266,7 +276,6 @@ public class MarkersList : MonoBehaviour
 
 		Layout.enabled = false;
 		SizeFitter.enabled = false;
-
 		GeneratingEnum = null;
 		if (Buffor)
 		{

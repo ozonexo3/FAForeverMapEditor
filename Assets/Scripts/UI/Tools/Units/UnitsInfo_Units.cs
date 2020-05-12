@@ -398,6 +398,30 @@ namespace EditMap
 			GatheredUnitTypes.Clear();
 		}
 
+		public void SelectGroupOfUnit()
+		{
+			if (SelectionManager.Current.Selection.Ids.Count == 0)
+				return;
+
+			GameObject SelectedUnit = SelectionManager.Current.AffectedGameObjects[SelectionManager.Current.Selection.Ids[0]];
+
+			UnitInstance inst = SelectedUnit.GetComponent<UnitInstance>();
+
+			if(inst != null && inst.Owner != null && inst.Owner.Parent != null)
+			{
+				foreach(UnitListObject ulo in UnitGroups)
+				{
+					if(ulo.Source == inst.Owner.Parent)
+					{
+						ClearGrpSelection();
+						//AddToGrpSelection(ulo);
+						SelectGroup(ulo, false);
+						break;
+					}
+				}
+			}
+		}
+
 		public void ReplaceSelected()
 		{
 			if (FirstSelected == null)

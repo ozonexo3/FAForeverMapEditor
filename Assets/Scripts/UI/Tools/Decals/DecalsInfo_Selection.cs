@@ -78,8 +78,12 @@ namespace EditMap
 			public Vector3 Position;
 			public Quaternion Rotation;
 			public Vector3 Scale;
-			public CopyDecalData(Decal.DecalSharedSettings Shared, Vector3 Position, Quaternion Rotation, Vector3 Scale)
-				=> (this.Shared, this.Position, this.Rotation, this.Scale) = (Shared, Position, Rotation, Scale);
+			public float CutOffLOD;
+			public float NearCutOffLOD;
+			public int OwnerArmy;
+
+			public CopyDecalData(Decal.DecalSharedSettings Shared, Vector3 Position, Quaternion Rotation, Vector3 Scale, float CutOffLOD, float NearCutOffLOD, int OwnerArmy)
+				=> (this.Shared, this.Position, this.Rotation, this.Scale, this.CutOffLOD, this.NearCutOffLOD, this.OwnerArmy) = (Shared, Position, Rotation, Scale, CutOffLOD, NearCutOffLOD, OwnerArmy);
 		}
 
 		Vector3 CopyCenterPoint;
@@ -107,7 +111,10 @@ namespace EditMap
 							new CopyDecalData(DecalsControler.AllDecals[i].Shared,
 							DecalsControler.AllDecals[i].Obj.tr.localPosition,
 							DecalsControler.AllDecals[i].Obj.tr.localRotation,
-							DecalsControler.AllDecals[i].Obj.tr.localScale)
+							DecalsControler.AllDecals[i].Obj.tr.localScale,
+							DecalsControler.AllDecals[i].CutOffLOD,
+							DecalsControler.AllDecals[i].NearCutOffLOD,
+							DecalsControler.AllDecals[i].OwnerArmy)
 							);
 						CopyCenterPoint += DecalsControler.AllDecals[i].Obj.tr.localPosition;
 						break;
@@ -123,6 +130,9 @@ namespace EditMap
 			DecalsControler.Sort();
 		}
 		bool isPasteAction = false;
+		float paste_CutOffLOD;
+		float paste_NearCutOffLOD;
+		int paste_OwnerArmy;
 		List<GameObject> PastedObjects = new List<GameObject>(128);
 
 		public void PasteAction()
@@ -147,6 +157,10 @@ namespace EditMap
 					continue;
 
 				PlaceSharedSettings = CopyData[i].Shared;
+				paste_CutOffLOD = CopyData[i].CutOffLOD;
+				paste_NearCutOffLOD = CopyData[i].NearCutOffLOD;
+				paste_OwnerArmy = CopyData[i].OwnerArmy;
+
 				PlacementManager.PlaceAtPosition(CopyData[i].Position + PlaceOffset, CopyData[i].Rotation, CopyData[i].Scale);
 			}
 			PlacementManager.Clear();
@@ -206,8 +220,17 @@ namespace EditMap
 				Obj.tr.localRotation = Rotations[i];
 				Obj.tr.localScale = Scales[i];
 
-				Obj.CutOffLOD = DecalSettingsUi.CutOff.value;
-				Obj.NearCutOffLOD = DecalSettingsUi.NearCutOff.value;
+				if (isPasteAction)
+				{
+					Obj.CutOffLOD = paste_CutOffLOD;
+					Obj.NearCutOffLOD = paste_NearCutOffLOD;
+					Obj.OwnerArmy = paste_OwnerArmy;
+				}
+				else
+				{
+					Obj.CutOffLOD = DecalSettingsUi.CutOff.value;
+					Obj.NearCutOffLOD = DecalSettingsUi.NearCutOff.value;
+				}
 
 				Obj.Material = component.Shared.SharedMaterial;
 				Obj.CreationObject = false;
