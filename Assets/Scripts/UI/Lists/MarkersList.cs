@@ -189,7 +189,7 @@ public class MarkersList : MonoBehaviour
 
 		float Realtime = Time.realtimeSinceStartup;
 		//const float MaxAllowedOverhead = 0.03334f;
-		const float MaxAllowedOverhead = 0.4f;
+		const float MaxAllowedOverhead = 0.3f;
 
 
 		List<GameObject> AllObjectsList = new List<GameObject>(1024);
@@ -251,8 +251,8 @@ public class MarkersList : MonoBehaviour
 				}*/
 				if (Time.realtimeSinceStartup - Realtime > MaxAllowedOverhead)
 				{
-					Realtime = Time.realtimeSinceStartup;
 					yield return null;
+					Realtime = Time.realtimeSinceStartup;
 				}
 			}
 

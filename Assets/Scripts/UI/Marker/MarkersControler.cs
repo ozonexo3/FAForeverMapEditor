@@ -506,7 +506,7 @@ namespace Markers
 				BufforUpdate = true;
 		}
 
-		const float MaxAllowedOverhead = 0.001f;
+		const float MaxAllowedOverhead = 0.0002f;
 		public IEnumerator UpdatingMarkersHeights()
 		{
 			//const int BreakEvery = 50;
@@ -535,8 +535,8 @@ namespace Markers
 					}*/
 					if (Time.realtimeSinceStartup - Realtime > MaxAllowedOverhead)
 					{
-						Realtime = Time.realtimeSinceStartup;
 						yield return null;
+						Realtime = Time.realtimeSinceStartup;
 					}
 				}
 			}

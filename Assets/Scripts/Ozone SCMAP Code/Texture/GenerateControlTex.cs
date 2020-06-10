@@ -215,8 +215,8 @@ public class GenerateControlTex : MonoBehaviour
 
 				if(Time.realtimeSinceStartup - Realtime > MaxAllowedOverhead)
 				{
-					Realtime = Time.realtimeSinceStartup;
 					yield return null;
+					Realtime = Time.realtimeSinceStartup;
 				}
 				/*
 				counter++;

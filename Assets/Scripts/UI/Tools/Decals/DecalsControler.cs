@@ -236,7 +236,7 @@ public class DecalsControler : MonoBehaviour {
 			BufforUpdate = true;
 	}
 
-	const float MaxAllowedOverhead = 0.001f;
+	const float MaxAllowedOverhead = 0.0002f;
 	IEnumerator UpdatingDecals()
 	{
 		//const int BreakEvery = 50;
@@ -252,8 +252,8 @@ public class DecalsControler : MonoBehaviour {
 
 			if (Time.realtimeSinceStartup - Realtime > MaxAllowedOverhead)
 			{
-				Realtime = Time.realtimeSinceStartup;
 				yield return null;
+				Realtime = Time.realtimeSinceStartup;
 			}
 
 			/*UpdateCount++;

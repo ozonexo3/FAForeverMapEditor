@@ -252,16 +252,16 @@ Material:
     - _AreaY: 76.8
     - _Brush: 0
     - _BrushPainting: 0
-    - _BrushSize: 0
-    - _BrushUvX: 0.15161316
-    - _BrushUvY: 0.9026549
+    - _BrushSize: 5
+    - _BrushUvX: 0.26134828
+    - _BrushUvY: 0.43829408
     - _BuildGrid: 0
     - _DeepLevel: 1.675625
     - _DepthLevel: 1.5
     - _GeneratingNormal: 0
     - _Grid: 0
     - _GridCamDist: 0.049673967
-    - _GridScale: 102.4
+    - _GridScale: 204.8
     - _GridType: 0
     - _HideSplat0: 0
     - _HideSplat1: 0
@@ -274,31 +274,31 @@ Material:
     - _HideSplat8: 0
     - _HideTerrainType: 1
     - _LightingMultiplier: 1.27
-    - _LowerScale: 73.14286
-    - _LowerScaleNormal: 73.14286
+    - _LowerScale: 512
+    - _LowerScaleNormal: 234.05714
     - _Shininess: 0.03
     - _Slope: 0
-    - _Splat0Scale: 73.14286
-    - _Splat0ScaleNormal: 256
-    - _Splat1Scale: 73.14286
-    - _Splat1ScaleNormal: 73.14286
-    - _Splat2Scale: 73.14286
-    - _Splat2ScaleNormal: 73.14286
-    - _Splat3Scale: 73.14286
-    - _Splat3ScaleNormal: 73.14286
-    - _Splat4Scale: 73.14286
-    - _Splat4ScaleNormal: 73.14286
-    - _Splat5Scale: 73.14286
-    - _Splat5ScaleNormal: 73.14286
-    - _Splat6Scale: 73.14286
-    - _Splat6ScaleNormal: 73.14286
-    - _Splat7Scale: 51.2
-    - _Splat7ScaleNormal: 51.2
+    - _Splat0Scale: 61.134327
+    - _Splat0ScaleNormal: 512
+    - _Splat1Scale: 121.11177
+    - _Splat1ScaleNormal: 40.61075
+    - _Splat2Scale: 512
+    - _Splat2ScaleNormal: 512
+    - _Splat3Scale: 512
+    - _Splat3ScaleNormal: 512
+    - _Splat4Scale: 512
+    - _Splat4ScaleNormal: 512
+    - _Splat5Scale: 512
+    - _Splat5ScaleNormal: 512
+    - _Splat6Scale: 512
+    - _Splat6ScaleNormal: 512
+    - _Splat7Scale: 512
+    - _Splat7ScaleNormal: 512
     - _TTerrainXP: 0
     - _TerrainTypeCapacity: 0.228
     - _TerrainTypeCoof: 0.228
-    - _UpperScale: 8
-    - _UpperScaleNormal: 256
+    - _UpperScale: 16
+    - _UpperScaleNormal: 512
     - _UseSlopeTex: 1
     - _Water: 0
     - _WaterLevel: 1.75

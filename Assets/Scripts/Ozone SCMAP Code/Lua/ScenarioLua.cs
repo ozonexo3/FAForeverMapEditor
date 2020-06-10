@@ -252,7 +252,7 @@ namespace MapLua
 					{
 						if (Data.Configurations[c].Teams[t].Armys[a].Data == null)
 						{
-							Debug.Log("Fix army: " + Data.Configurations[c].Teams[t].Armys[a].Name);
+							Debug.Log("Fix army: " + Data.Configurations[c].Teams[t].Armys[a].Name + " (" + a + ")");
 							Data.Configurations[c].Teams[t].Armys[a].Data = new SaveLua.Army();
 							Data.Configurations[c].Teams[t].Armys[a].Data.Name = Data.Configurations[c].Teams[t].Armys[a].Name;
 						}
@@ -266,7 +266,7 @@ namespace MapLua
 				{
 					if (Data.Configurations[c].ExtraArmys[a].Data == null)
 					{
-						Debug.Log("Fix army: " + Data.Configurations[c].ExtraArmys[a].Name);
+						Debug.Log("Fix extra army: " + Data.Configurations[c].ExtraArmys[a].Name + " (" + a +")");
 						Data.Configurations[c].ExtraArmys[a].Data = new SaveLua.Army();
 						Data.Configurations[c].ExtraArmys[a].Data.Name = Data.Configurations[c].ExtraArmys[a].Name;
 					}

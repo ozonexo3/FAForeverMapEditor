@@ -462,13 +462,29 @@ public partial class MapLuaParser : MonoBehaviour
 
 		// Wait for all process to finish
 		while (Markers.MarkersControler.IsUpdating)
-			yield return null;
+		{
+			//Debug.Log("Wait for markers to finish...");
+			InfoPopup.Show(true, "Saving map...\nWait for markers upadate task...");
+			yield return new WaitForSeconds(0.5f);
+		}
 		while (PropsRenderer.IsUpdating)
-			yield return null;
+		{
+			//Debug.Log("Wait for props to finish...");
+			InfoPopup.Show(true, "Saving map...\nWait for props upadate task...");
+			yield return new WaitForSeconds(0.5f);
+		}
 		while (UnitsControler.IsUpdating)
-			yield return null;
+		{
+			//Debug.Log("Wait for units to finish...");
+			InfoPopup.Show(true, "Saving map...\nWait for units upadate task...");
+			yield return new WaitForSeconds(0.5f);
+		}
 		while (DecalsControler.IsUpdating)
-			yield return null;
+		{
+			//Debug.Log("Wait for decals to finish...");
+			InfoPopup.Show(true, "Saving map...\nWait for decals upadate task...");
+			yield return new WaitForSeconds(0.5f);
+		}
 
 
 		GenerateBackupPath();

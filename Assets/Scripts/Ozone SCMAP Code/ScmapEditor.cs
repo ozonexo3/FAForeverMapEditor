@@ -314,10 +314,12 @@ public partial class ScmapEditor : MonoBehaviour
 					{
 						// Upper stratum normal should be empty!
 						Textures[i].NormalPath = "";
+						Debug.Log("Clear Upper stratum normal map");
 					}
 					else
 					{
 						Textures[i].NormalPath = "env/tundra/layers/tund_sandlight_normal.dds";
+						Debug.Log("Add missing normalmap on stratum " + i);
 						NormalMapFix = true;
 					}
 				}

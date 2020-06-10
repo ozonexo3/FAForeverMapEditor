@@ -37,13 +37,16 @@ public class PropsRenderer : MonoBehaviour {
 
 	public static void StopPropsUpdate()
 	{
-		if(UpdateProcess != null)
+		if (UpdateProcess != null)
+		{
 			Current.StopCoroutine(UpdateProcess);
+			UpdateProcess = null;
+		}
 	}
 
 
 	//const int PauseEvery = 1200;
-	const float MaxAllowedOverhead = 0.001f;
+	const float MaxAllowedOverhead = 0.0002f;
 	IEnumerator PropsUpdater()
 	{
 		yield return null;
@@ -53,6 +56,8 @@ public class PropsRenderer : MonoBehaviour {
 		PropsInfo.PropTypeGroup Ptg = null;
 		Vector3 LocalPos = Vector3.zero;
 		float Realtime = Time.realtimeSinceStartup;
+		//Debug.LogWarning("Start updating props: " + count);
+
 		for (i = 0; i < count; i++)
 		{
 			Ptg = PropsInfo.AllPropsTypes[i];
@@ -63,15 +68,16 @@ public class PropsRenderer : MonoBehaviour {
 				LocalPos = listEnum.Current.Obj.Tr.localPosition;
 				LocalPos.y = ScmapEditor.Current.Teren.SampleHeight(LocalPos);
 				listEnum.Current.Obj.Tr.localPosition = LocalPos;
+				//step++;
 
 				if (Time.realtimeSinceStartup - Realtime > MaxAllowedOverhead)
 				{
-					Realtime = Time.realtimeSinceStartup;
+					//Debug.Log(step + "\n" + Time.realtimeSinceStartup + " : " + Realtime + "\n" + (Time.realtimeSinceStartup - Realtime).ToString("0.0000"));
 					yield return null;
+					Realtime = Time.realtimeSinceStartup;
 				}
 
-				/*step++;
-				if (step > PauseEvery)
+				/*if (step > PauseEvery)
 				{
 					step = 0;
 					yield return null;
