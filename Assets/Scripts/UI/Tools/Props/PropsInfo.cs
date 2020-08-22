@@ -1055,7 +1055,7 @@ namespace EditMap
 
 
 
-			string data = JsonUtility.ToJson(PaintSet);
+			string data = JsonUtility.ToJson(PaintSet, true);
 
 			File.WriteAllText(path, data);
 			EnvPaths.SetLastPath(ExportPathKey, System.IO.Path.GetDirectoryName(path));

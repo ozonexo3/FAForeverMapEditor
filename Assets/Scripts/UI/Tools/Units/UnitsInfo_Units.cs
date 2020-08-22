@@ -583,7 +583,7 @@ namespace EditMap
 
 			UnitsStorage Data = GetUnitsStorage();
 
-			string DataString = JsonUtility.ToJson(Data);
+			string DataString = JsonUtility.ToJson(Data, true);
 			File.WriteAllText(path, DataString);
 			EnvPaths.SetLastPath(ExportPathKey, Path.GetDirectoryName(path));
 		}

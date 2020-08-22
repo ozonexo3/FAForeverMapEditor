@@ -64,7 +64,7 @@ namespace WindowStateSever
             }
             wm.WindowStyles = styles;
 
-            string jsonStr = JsonUtility.ToJson(wm);
+            string jsonStr = JsonUtility.ToJson(wm, true);
             Debug.LogFormat("Saving values: {0}", jsonStr);
             PlayerPrefs.SetString(playerPrefsKey, jsonStr);
             return true;

@@ -32,7 +32,7 @@ namespace EditMap
 			Wave.AllWaves = new WaveGenerator[ScmapEditor.Current.map.WaveGenerators.Count];
 			ScmapEditor.Current.map.WaveGenerators.CopyTo(Wave.AllWaves);
 
-			string data = JsonUtility.ToJson(Wave);
+			string data = JsonUtility.ToJson(Wave, true);
 
 			data = data.Replace(",", ",\n");
 			data = data.Replace("{", "{\n");

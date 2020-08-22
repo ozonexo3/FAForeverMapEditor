@@ -249,7 +249,7 @@ namespace EditMap
 				return;
 
 
-			string data = JsonUtility.ToJson(ScmapEditor.Current.map.Water);
+			string data = JsonUtility.ToJson(ScmapEditor.Current.map.Water, true);
 
 			File.WriteAllText(path, data);
 			EnvPaths.SetLastPath(ExportPathKey, System.IO.Path.GetDirectoryName(path));

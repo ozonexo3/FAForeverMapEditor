@@ -37,11 +37,17 @@ public class GenericInfoPopup : MonoBehaviour {
 	{
 		if (grp)
 			Current = this;
+
+		if (!Started && InfoStrings.Count > 0)
+			StartNextInfoPopup();
 	}
 
 	public static void ShowInfo(string Text)
 	{
 		InfoStrings.Add(Text);
+
+		if (Current == null)
+			return;
 
 		if (!Current.Started)
 			Current.StartNextInfoPopup();
@@ -49,7 +55,7 @@ public class GenericInfoPopup : MonoBehaviour {
 
 	public static bool HasAnyInfo()
 	{
-		return Current.Started || InfoStrings.Count > 0;
+		return Current != null && (Current.Started || InfoStrings.Count > 0);
 	}
 
 	private void Update()

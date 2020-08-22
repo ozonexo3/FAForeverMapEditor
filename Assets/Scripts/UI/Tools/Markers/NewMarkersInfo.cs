@@ -585,7 +585,7 @@ namespace EditMap
 
 
 
-				System.IO.File.WriteAllText(paths, JsonUtility.ToJson(ExpMarkers));
+				System.IO.File.WriteAllText(paths, JsonUtility.ToJson(ExpMarkers, true));
 				EnvPaths.SetLastPath(ExportPathKey, System.IO.Path.GetDirectoryName(paths));
 				GenericInfoPopup.ShowInfo("Markers exported");
 			}

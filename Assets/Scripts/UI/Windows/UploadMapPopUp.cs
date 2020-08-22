@@ -58,7 +58,7 @@ namespace UI.Windows
 			public void Save()
 			{
 				string PathToSave = filePath;
-				string data = JsonUtility.ToJson(this);
+				string data = JsonUtility.ToJson(this, true);
 				if (!Directory.Exists(Path.GetDirectoryName(PathToSave)))
 				{
 					Directory.CreateDirectory(Path.GetDirectoryName(PathToSave));

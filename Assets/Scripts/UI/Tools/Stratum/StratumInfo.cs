@@ -1363,7 +1363,7 @@ namespace EditMap
 
 			if(!string.IsNullOrEmpty(paths))
 			{
-				string data = UnityEngine.JsonUtility.ToJson(ScmapEditor.Current.Textures[Selected]);
+				string data = UnityEngine.JsonUtility.ToJson(ScmapEditor.Current.Textures[Selected], true);
 
 				File.WriteAllText(paths, data);
 
@@ -1443,7 +1443,7 @@ namespace EditMap
 				NewTemplate.Stratum8 = ScmapEditor.Current.Textures[8];
 				NewTemplate.Stratum9 = ScmapEditor.Current.Textures[9];
 
-				string data = UnityEngine.JsonUtility.ToJson(NewTemplate);
+				string data = UnityEngine.JsonUtility.ToJson(NewTemplate, true);
 
 				File.WriteAllText(paths, data);
 				EnvPaths.SetLastPath(ExportPathKey, System.IO.Path.GetDirectoryName(paths));

@@ -77,7 +77,7 @@ namespace Ozone
 		}
 		#endregion
 
-		const int MaxMemoryAllocation = 4096;
+		const int MaxMemoryAllocation = 4096 * 4;
 		
 		private void Start()
 		{
@@ -89,7 +89,7 @@ namespace Ozone
 				InstancesArray[i] = new RenderInstance(
 					new Vector3(Random.Range(0f, 51f), 2.5f, Random.Range(-51f, -102f)), 
 					Quaternion.Euler(Vector3.up * Random.Range(0, 360) + Vector3.right * Random.Range(-45, 45)), 
-					Vector3.one * Random.Range(0.1f, 0.6f)
+					Vector3.one * Random.Range(0.1f, 0.5f)
 					);
 			}
 			BakeInstances();

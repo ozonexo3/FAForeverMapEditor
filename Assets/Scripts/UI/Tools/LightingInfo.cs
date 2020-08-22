@@ -303,7 +303,7 @@ namespace EditMap
 			Data.FogStart = Scmap.map.FogStart;
 			Data.FogEnd = Scmap.map.FogEnd;
 
-			string DataString = JsonUtility.ToJson(Data);
+			string DataString = JsonUtility.ToJson(Data, true);
 			File.WriteAllText(path, DataString);
 			EnvPaths.SetLastPath(ExportPathKey, System.IO.Path.GetDirectoryName(path));
 		}
@@ -358,7 +358,7 @@ namespace EditMap
 			if (string.IsNullOrEmpty(path))
 				return;
 
-			string DataString = JsonUtility.ToJson(Scmap.map.AdditionalSkyboxData);
+			string DataString = JsonUtility.ToJson(Scmap.map.AdditionalSkyboxData, true);
 			File.WriteAllText(path, DataString);
 			EnvPaths.SetLastPath(ExportPathKey2, System.IO.Path.GetDirectoryName(path));
 		}
