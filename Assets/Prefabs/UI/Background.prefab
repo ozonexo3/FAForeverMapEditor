@@ -175,7 +175,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 17, y: 93}
+  m_AnchoredPosition: {x: 17, y: 109}
   m_SizeDelta: {x: 181, y: 28}
   m_Pivot: {x: 0, y: 0}
 --- !u!222 &222779216518235826
@@ -708,6 +708,8 @@ MonoBehaviour:
     CookieNoob
 
     axel12
+
+    Balthazar
 
 '
 --- !u!1 &1707490231246482

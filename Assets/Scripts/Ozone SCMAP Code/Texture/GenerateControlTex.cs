@@ -213,7 +213,7 @@ public class GenerateControlTex : MonoBehaviour
 				Normal = ScmapEditor.Current.Data.GetInterpolatedNormal((x + 0.5f) / (Width), 1f - (y + 0.5f) / (Height));
 				AllColors[i] = new Color(0, 1f - (Normal.z * 0.5f + 0.5f), 0, Normal.x * 0.5f + 0.5f);
 
-				if(Time.realtimeSinceStartup - Realtime > MaxAllowedOverhead)
+				if (Time.realtimeSinceStartup - Realtime > MaxAllowedOverhead)
 				{
 					yield return null;
 					Realtime = Time.realtimeSinceStartup;
@@ -292,7 +292,9 @@ public class GenerateControlTex : MonoBehaviour
 	IEnumerator GeneratingSlope()
 	{
 		//ScmapEditor.Current.TerrainMaterial.SetFloat("_UseSlopeTex", 0);
-		SlopeHeightmapPixels = ScmapEditor.Current.Teren.terrainData.GetHeights(0, 0, ScmapEditor.Current.Teren.terrainData.heightmapResolution, ScmapEditor.Current.Teren.terrainData.heightmapResolution);
+		
+
+		//SlopeHeightmapPixels = ScmapEditor.Current.Teren.terrainData.GetHeights(0, 0, ScmapEditor.Current.Teren.terrainData.heightmapResolution, ScmapEditor.Current.Teren.terrainData.heightmapResolution);
 		Task task;
 		this.StartCoroutineAsync(GeneratingSlopeTask(), out task);
 		yield return StartCoroutine(task.Wait());
@@ -306,10 +308,19 @@ public class GenerateControlTex : MonoBehaviour
 		}
 	}
 
+	/* Old FAF way
 	const float FlatHeight = 0.995f;
 	const float NonFlatHeight = 0.88f;
 	const float AlmostUnpassableHeight = 0.74f;
 	const float UnpassableHeight = 0.541f;
+	*/
+
+	//SupComSlope
+	const float FlatHeight = 0.002f;
+	const float NonFlatHeight = 0.30f;
+	const float AlmostUnpassableHeight = 0.75f;
+	const float UnpassableHeight = 0.75f;
+	const float ScaleHeight = 256;
 
 	public Color Flat;
 	public Color LowAngle;
@@ -321,6 +332,7 @@ public class GenerateControlTex : MonoBehaviour
 	IEnumerator GeneratingSlopeTask()
 	{
 		Color[] Pixels = new Color[ScmapEditor.Current.map.Width * ScmapEditor.Current.map.Height];
+		
 		int x = 0;
 		int y = 0;
 		int i = 0;
@@ -347,6 +359,7 @@ public class GenerateControlTex : MonoBehaviour
 				Vert2.z = y + 1;
 				Vert3.z = y + 1;
 
+				/* Old FAF way
 				Vert0.y = SlopeHeightmapPixels[x, y] * 512f;
 				Vert1.y = SlopeHeightmapPixels[x + 1, y] * 512f;
 				Vert2.y = SlopeHeightmapPixels[x, y + 1] * 512f;
@@ -361,14 +374,33 @@ public class GenerateControlTex : MonoBehaviour
 				//if (Dot > 0.5f)
 				Dot = Mathf.Min(Dot, Vector3.Dot(GetTriangleVector(Vert3, Vert1, Vert2), Vector3.up));
 
-
-				if(Dot > FlatHeight)
+				if (Dot > FlatHeight)
 					Pixels[i] = Flat;
-				else if(Dot > NonFlatHeight)
+				else if (Dot > NonFlatHeight)
 					Pixels[i] = LowAngle;
 				else if (Dot > AlmostUnpassableHeight)
 					Pixels[i] = HighAngle;
 				else if (Dot > UnpassableHeight)
+					Pixels[i] = AlmostUnpassable;
+				else
+					Pixels[i] = Unpassable;
+				*/
+
+
+				Vert0.y = ScmapEditor.GetHeight(x, y) * ScaleHeight;
+				Vert1.y = ScmapEditor.GetHeight(x + 1, y) * ScaleHeight;
+				Vert2.y = ScmapEditor.GetHeight(x + 1, y + 1) * ScaleHeight;
+				Vert3.y = ScmapEditor.GetHeight(x, y + 1) * ScaleHeight;
+
+				float Dot = getSupComSlope(Vert0.y, Vert1.y, Vert2.y, Vert3.y);
+
+				if (Dot <= FlatHeight)
+					Pixels[i] = Flat;
+				else if (Dot <= NonFlatHeight)
+					Pixels[i] = LowAngle;
+				else if (Dot <= AlmostUnpassableHeight)
+					Pixels[i] = HighAngle;
+				else if (Dot <= UnpassableHeight)
 					Pixels[i] = AlmostUnpassable;
 				else
 					Pixels[i] = Unpassable;
@@ -406,6 +438,11 @@ public class GenerateControlTex : MonoBehaviour
 	static Vector3 GetTriangleVector(Vector3 Vert0, Vector3 Vert1, Vector3 Vert2)
 	{
 		return Vector3.Cross(Vert1 - Vert0, Vert2 - Vert0).normalized;
+	}
+
+	static float getSupComSlope(float a, float b, float c, float d)
+	{
+		return Mathf.Max(Mathf.Abs(a - b), Mathf.Abs(b - c), Mathf.Abs(c - d), Mathf.Abs(d - a));
 	}
 
 }
