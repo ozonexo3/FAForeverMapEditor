@@ -18,17 +18,17 @@ namespace OzoneDecals {
 		protected const string _Name = "Ozone Decals Rendering";
 
 		protected CommandBuffer _bufferDeferred = null;
-		protected Dictionary<Material, HashSet<OzoneDecal>> _Decals;
-		protected List<OzoneDecal> _DecalsNormal;
-		protected List<OzoneDecal> _DecalsAlbedo;
-		protected HashSet<OzoneDecal> _DecalsTarmacs;
-		protected HashSet<OzoneDecal> _DecalsTarmacsNormals;
+		static Dictionary<Material, HashSet<OzoneDecal>> _Decals;
+		static List<OzoneDecal> _DecalsNormal;
+		static List<OzoneDecal> _DecalsAlbedo;
+		static HashSet<OzoneDecal> _DecalsTarmacs;
+		static HashSet<OzoneDecal> _DecalsTarmacsNormals;
 
 
-		protected int AlbedoCount = 0;
-		protected int NormalCount = 0;
-		protected OzoneDecal[] AlbedoArray = new OzoneDecal[MAX_DECAL_INSTANCES];
-		protected OzoneDecal[] NormalArray = new OzoneDecal[MAX_DECAL_INSTANCES];
+		static int AlbedoCount = 0;
+		static int NormalCount = 0;
+		static OzoneDecal[] AlbedoArray = new OzoneDecal[MAX_DECAL_INSTANCES];
+		static OzoneDecal[] NormalArray = new OzoneDecal[MAX_DECAL_INSTANCES];
 
 
 		//protected List<OzoneDecal> _decalComponent;
@@ -65,9 +65,10 @@ namespace OzoneDecals {
 
 				CameraNear = RenderCamera.nearClipPlane;
 				CameraFar = RenderCamera.farClipPlane - CameraNear;
-				_camTr = RenderCamera.transform;
-
 			}
+
+			_camTr = RenderCamera.transform;
+
 
 			_Decals = new Dictionary<Material, HashSet<OzoneDecal>>();
 			_DecalsAlbedo = new List<OzoneDecal>(64);

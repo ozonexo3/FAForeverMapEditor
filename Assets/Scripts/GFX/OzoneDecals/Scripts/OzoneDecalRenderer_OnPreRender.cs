@@ -32,6 +32,8 @@ namespace OzoneDecals
 
 		private void RenderForCamera(Camera cam)
 		{
+
+
 #if UNITY_EDITOR
 			if (_cubeMesh == null)
 				return;

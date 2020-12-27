@@ -522,7 +522,10 @@ namespace EditMap
 
 		GameObject[] ReadUnitsStorage(UnitsStorage Data)
 		{
+
 			List<GameObject> CreatedUnits = new List<GameObject>();
+
+			if(CopyData.Units != null)
 			for (int i = 0; i < Data.Units.Length; i++)
 			{
 				SaveLua.Army.Unit NewUnit = new SaveLua.Army.Unit();
@@ -628,7 +631,7 @@ namespace EditMap
 
 		#region Copy/Paste
 
-		UnitsStorage CopyData = new UnitsStorage();
+		UnitsStorage CopyData = null;
 
 		void CopyAction()
 		{

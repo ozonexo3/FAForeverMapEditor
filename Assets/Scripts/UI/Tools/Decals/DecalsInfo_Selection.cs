@@ -137,6 +137,9 @@ namespace EditMap
 
 		public void PasteAction()
 		{
+			if (CopyData == null)
+				return;
+
 			int PasteCount = CopyData.Count;
 			isPasteAction = true;
 			if (PasteCount > 0)

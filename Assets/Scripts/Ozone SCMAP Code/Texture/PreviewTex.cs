@@ -37,7 +37,7 @@ public class PreviewTex : MonoBehaviour {
 		//if(Grid)
 		//ScmapEditor.Current.ToogleGrid(false);
 
-		if(RenderEverything)
+		if (RenderEverything)
 			Cam.cullingMask = FullLayers;
 		else
 			Cam.cullingMask = Layers;

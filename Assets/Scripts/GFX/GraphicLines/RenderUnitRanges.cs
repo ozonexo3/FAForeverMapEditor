@@ -66,9 +66,8 @@ public class RenderUnitRanges : MonoBehaviour
 
 	public void OnRenderObject()
 	{
-		if (Count <= 0)
+		if (Count <= 0 || PreviewTex.IsPreview)
 			return;
-
 
 		lineMaterial.SetPass(0);
 

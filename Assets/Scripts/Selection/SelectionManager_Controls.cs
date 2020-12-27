@@ -38,7 +38,6 @@ namespace Selection
 			//FinishSelectionChange();
 			ResetControlerPosition();
 		}
-
 		#endregion
 
 
