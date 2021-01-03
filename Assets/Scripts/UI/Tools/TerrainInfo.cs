@@ -499,7 +499,6 @@ namespace EditMap
 			var paths = StandaloneFileBrowser.SaveFilePanel("Export heightmap", DefaultPath, "heightmap", extensions);
 
 
-
 			if (paths == null || string.IsNullOrEmpty(paths))
 				return;
 
@@ -865,7 +864,6 @@ namespace EditMap
 			for (int i = 0; i < BrushGenerator.Current.PaintPositions.Length; i++)
 			{
 				Paint(BrushGenerator.Current.PaintPositions[i], i);
-
 			}
 		}
 

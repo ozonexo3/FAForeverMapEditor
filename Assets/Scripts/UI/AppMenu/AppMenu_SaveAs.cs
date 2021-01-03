@@ -215,10 +215,20 @@ public partial class AppMenu : MonoBehaviour
 
 		MapLuaParser.Current.SaveMap(false);
 
-		string LoadScript = System.IO.File.ReadAllText(OldScript);
+		string[] LoadScript = System.IO.File.ReadAllLines(OldScript);
 		//Replace old folder name to new one
-		LoadScript = LoadScript.Replace(OldFolderName + "/", NewFolderName + "/");
-		System.IO.File.WriteAllText(MapLuaParser.Current.ScenarioLuaFile.Data.script.Replace("/maps/", MapLuaParser.Current.FolderParentPath), LoadScript);
+
+		for(int l = 0; l < LoadScript.Length; l++)
+		{
+			if(LoadScript[l].StartsWith("local Tables = import"))
+			{
+				LoadScript[l] = "local Tables = import('/maps/" + MapLuaParser.Current.FolderName + "/" + FileBeginName + "_tables.lua')";
+			}
+		}
+
+		//LoadScript = LoadScript.Replace(OldFolderName + "/", NewFolderName + "/");
+
+		System.IO.File.WriteAllLines(MapLuaParser.Current.ScenarioLuaFile.Data.script.Replace("/maps/", MapLuaParser.Current.FolderParentPath), LoadScript);
 
 		//System.IO.File.Copy(OldScript, MapLuaParser.Current.ScenarioLuaFile.Data.script.Replace("/maps/", MapLuaParser.Current.FolderParentPath));
 

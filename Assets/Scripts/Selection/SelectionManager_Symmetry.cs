@@ -82,6 +82,33 @@ namespace Selection
 				}
 			}
 
+			public GameObject FindBestSymmetry(GameObject instance)
+			{
+				Vector3 SearchPos = SymmetryMatrix.MultiplyPoint(instance.transform.localPosition - MapLuaParser.Current.MapCenterPoint) + MapLuaParser.Current.MapCenterPoint;
+				float Dist = 0;
+				int ClosestO = -1;
+				float ClosestDist = 1000000;
+
+				float Tolerance = Current.LastTolerance * Current.LastTolerance;
+
+				for (int o = 0; o < Current.AffectedGameObjects.Length; o++)
+				{
+					Dist = (Current.AffectedGameObjects[o].transform.localPosition - SearchPos).sqrMagnitude;
+					if (Dist <= Tolerance && Dist < ClosestDist)
+					{
+						ClosestO = o;
+						ClosestDist = Dist;
+					}
+				}
+
+				if (ClosestO >= 0)
+				{
+					return Current.AffectedGameObjects[ClosestO];
+				}
+				else
+					return null;
+			}
+
 			public void StorePositions()
 			{
 				int count = Ids.Count;

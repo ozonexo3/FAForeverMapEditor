@@ -43,6 +43,8 @@ public class RenderAdaptiveMarkers : MonoBehaviour {
 	{
 		Clear();
 
+		var allArmies = MapLuaParser.Current.ScenarioLuaFile.GetAllArmies(false);
+
 		int mc = 0;
 		int Mcount = MapLuaParser.Current.SaveLuaFile.Data.MasterChains[mc].Markers.Count;
 		MapLua.SaveLua.Marker Current;
@@ -60,7 +62,8 @@ public class RenderAdaptiveMarkers : MonoBehaviour {
 			int ArmyCount = Current.SpawnWithArmy.Count;
 			for(int ai = 0; ai < ArmyCount; ai++)
 			{
-				string ArmyMarkerName = "ARMY_" + (Current.SpawnWithArmy[ai] + 1);
+				string ArmyMarkerName = allArmies[Current.SpawnWithArmy[ai]].Name;
+				//string ArmyMarkerName = "ARMY_" + (Current.SpawnWithArmy[ai] + 1);
 				SaveLua.Marker ArmyMarker = SaveLua.GetMarker(ArmyMarkerName);
 				if (ArmyMarker != null && ArmyMarker.MarkerObj != null)
 				{

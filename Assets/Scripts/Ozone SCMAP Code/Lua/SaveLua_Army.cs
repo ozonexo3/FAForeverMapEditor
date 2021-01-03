@@ -422,7 +422,7 @@ namespace MapLua
 
 				public static void SaveUnit(LuaParser.Creator LuaFile, UnitInstance Instance)
 				{
-					LuaFile.OpenTab(LuaParser.Write.PropertieToLua(Instance.gameObject.name) + LuaParser.Write.OpenBracketValue);
+					LuaFile.OpenTab(LuaParser.Write.PropertieToLua(Instance.Owner.Name) + LuaParser.Write.OpenBracketValue);
 
 					LuaFile.AddLine(LuaParser.Write.StringToLua(UnitsGroup.KEY_TYPE, Instance.UnitRenderer.BP.CodeName.ToLower()));
 					LuaFile.AddLine(LuaParser.Write.StringToLua(UnitsGroup.KEY_ORDERS, Instance.orders));

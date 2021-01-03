@@ -443,6 +443,10 @@ namespace FAF.MapEditor
 						if (!UnitDB.CategoriesHash.Contains("WALL") && !UnitDB.CategoriesHash.Contains("AIRSTAGINGPLATFORM") && !UnitDB.CategoriesHash.Contains("ORBITALSYSTEM"))
 							return false;
 						break;
+					default:
+						if (!UnitDB.CodeName.ToUpper().Contains(SearchValue) && !UnitDB.Name.ToUpper().Contains(SearchValue))
+							return false;
+						break;
 				}
 
 			}

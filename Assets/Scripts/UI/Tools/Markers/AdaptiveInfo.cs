@@ -23,7 +23,9 @@ namespace EditMap
 
 		public HashSet<GameObject> CreatedObjects = new HashSet<GameObject>();
 
+
 		UiToggle[] ArmyToogles = new UiToggle[0];
+		ScenarioLua.Army[] Armies = new ScenarioLua.Army[0];
 		UiToggle[][] CustomToggles = new UiToggle[0][];
 
 
@@ -64,6 +66,7 @@ namespace EditMap
 
 			ScenarioLua.ScenarioInfo ScenarioData = MapLuaParser.Current.ScenarioLuaFile.Data;
 			List<UiToggle> ArmyTogglesList = new List<UiToggle>();
+			List<ScenarioLua.Army> ArmiesList = new List<ScenarioLua.Army>();
 			for (int c = 0; c < ScenarioData.Configurations.Length; c++)
 			{
 				for (int t = 0; t < ScenarioData.Configurations[c].Teams.Length; t++)
@@ -80,11 +83,13 @@ namespace EditMap
 							UiToggle NewToggle = NewToggleObj.GetComponent<UiToggle>();
 							NewToggle.Set(false, ScenarioData.Configurations[c].Teams[t].Armys[a].Data.Name + " (" + ScenarioData.Configurations[c].Teams[t].name + ")", OnArmyToggleChanged, t, a);
 							ArmyTogglesList.Add(NewToggle);
+							ArmiesList.Add(ScenarioData.Configurations[c].Teams[t].Armys[a]);
 						}
 					}
 				}
 			}
 			ArmyToogles = ArmyTogglesList.ToArray();
+			Armies = ArmiesList.ToArray();
 
 			TablesLua.TablesInfo TablesData = MapLuaParser.Current.TablesLuaFile.Data;
 			CustomToggles = new UiToggle[TablesData.AllTables.Count][];
@@ -259,32 +264,49 @@ namespace EditMap
 			if (ArmyToogles[ToggleId].HasOffValue)
 				SetTo = true;
 
+
 			int Count = SelectionManager.Current.Selection.Ids.Count;
 			bool AnyChanged = false;
 			for (int i = 0; i < Count; i++)
 			{
 				GameObject CurrentObj = SelectionManager.Current.AffectedGameObjects[SelectionManager.Current.Selection.Ids[i]];
-				SaveLua.Marker Current = CurrentObj.GetComponent<MarkerObject>().Owner;
+				AnyChanged |= SetMarkerArmyToggle(CurrentObj.GetComponent<MarkerObject>().Owner, SetTo, ToggleId);
+			}
 
-				if (Current.MarkerType != SaveLua.Marker.MarkerTypes.Mass && Current.MarkerType != SaveLua.Marker.MarkerTypes.Hydrocarbon)
+			var symmetryArmies = MapLuaParser.Current.ScenarioLuaFile.GetSymmetryArmies(Armies[ToggleId]);
+
+			Debug.Log(symmetryArmies.Count);
+
+			for (int s = 0; s < SelectionManager.Current.SymetrySelection.Length; s++)
+			{
+				bool AnySymmetryChanged = false;
+				int symmetryToogleId = -1;
+
+				for(int a = 0; a < Armies.Length; a++)
+				{
+					if(Armies[a] == symmetryArmies[s])
+					{
+						symmetryToogleId = a;
+						break;
+					}
+				}
+
+				Debug.Log(s + " : " + symmetryToogleId);
+
+				if (symmetryToogleId < 0)
 					continue;
 
-				if (SetTo)
+				for (int i = 0; i < SelectionManager.Current.SymetrySelection[s].Ids.Count; i++)
 				{
-					if (!Current.SpawnWithArmy.Contains(ToggleId))
-					{
-						Current.SpawnWithArmy.Add(ToggleId);
-						AnyChanged = true;
-					}
+					GameObject CurrentObj = SelectionManager.Current.AffectedGameObjects[SelectionManager.Current.SymetrySelection[s].Ids[i]];
+					AnySymmetryChanged |= SetMarkerArmyToggle(CurrentObj.GetComponent<MarkerObject>().Owner, SetTo, symmetryToogleId);
 				}
-				else
-				{
-					if (Current.SpawnWithArmy.Contains(ToggleId))
-					{
-						Current.SpawnWithArmy.Remove(ToggleId);
-						AnyChanged = true;
-					}
-				}
+
+				//ArmyToogles[symmetryToogleId].HasOnValue = SetTo;
+				//ArmyToogles[symmetryToogleId].HasOffValue = !SetTo;
+				//ArmyToogles[symmetryToogleId].ApplyTesting();
+
+				AnyChanged |= AnySymmetryChanged;
 			}
 
 			ArmyToogles[ToggleId].HasOnValue = SetTo;
@@ -293,6 +315,30 @@ namespace EditMap
 
 			if(AnyChanged)
 				RenderAdaptiveMarkers.UpdateAdaptiveLines();
+		}
+
+		bool SetMarkerArmyToggle(SaveLua.Marker markerInstance, bool SetTo, int ToggleId)
+		{
+			if (markerInstance.MarkerType != SaveLua.Marker.MarkerTypes.Mass && markerInstance.MarkerType != SaveLua.Marker.MarkerTypes.Hydrocarbon)
+				return false;
+
+			if (SetTo)
+			{
+				if (!markerInstance.SpawnWithArmy.Contains(ToggleId))
+				{
+					markerInstance.SpawnWithArmy.Add(ToggleId);
+					return true;
+				}
+			}
+			else
+			{
+				if (markerInstance.SpawnWithArmy.Contains(ToggleId))
+				{
+					markerInstance.SpawnWithArmy.Remove(ToggleId);
+					return true;
+				}
+			}
+			return false;
 		}
 
 
@@ -322,24 +368,17 @@ namespace EditMap
 				GameObject CurrentObj = SelectionManager.Current.AffectedGameObjects[SelectionManager.Current.Selection.Ids[i]];
 				SaveLua.Marker Current = CurrentObj.GetComponent<MarkerObject>().Owner;
 
-				if (Current.MarkerType != SaveLua.Marker.MarkerTypes.Mass && Current.MarkerType != SaveLua.Marker.MarkerTypes.Hydrocarbon)
-					continue;
+				AnyChanged |= SetTableGroupToggle(Current, SetTo, TableKey);
+			}
 
-				if (SetTo)
+			for (int s = 0; s < SelectionManager.Current.SymetrySelection.Length; s++)
+			{
+				for (int i = 0; i < SelectionManager.Current.SymetrySelection[s].Ids.Count; i++)
 				{
-					if (!Current.AdaptiveKeys.Contains(TableKey))
-					{
-						Current.AdaptiveKeys.Add(TableKey);
-						AnyChanged = true;
-					}
-				}
-				else
-				{
-					if (Current.AdaptiveKeys.Contains(TableKey))
-					{
-						Current.AdaptiveKeys.Remove(TableKey);
-						AnyChanged = true;
-					}
+					GameObject CurrentObj = SelectionManager.Current.AffectedGameObjects[SelectionManager.Current.SymetrySelection[s].Ids[i]];
+					SaveLua.Marker Current = CurrentObj.GetComponent<MarkerObject>().Owner;
+
+					AnyChanged |= SetTableGroupToggle(Current, SetTo, TableKey);
 				}
 			}
 
@@ -350,6 +389,30 @@ namespace EditMap
 
 			if(AnyChanged)
 				RenderAdaptiveMarkers.UpdateAdaptiveLines();
+		}
+
+		bool SetTableGroupToggle(SaveLua.Marker markerInstance, bool SetTo, string TableKey)
+		{
+			if (markerInstance.MarkerType != SaveLua.Marker.MarkerTypes.Mass && markerInstance.MarkerType != SaveLua.Marker.MarkerTypes.Hydrocarbon)
+				return false;
+
+			if (SetTo)
+			{
+				if (!markerInstance.AdaptiveKeys.Contains(TableKey))
+				{
+					markerInstance.AdaptiveKeys.Add(TableKey);
+					return true;
+				}
+			}
+			else
+			{
+				if (markerInstance.AdaptiveKeys.Contains(TableKey))
+				{
+					markerInstance.AdaptiveKeys.Remove(TableKey);
+					return true;
+				}
+			}
+			return false;
 		}
 
 		void CreateTitle(string name)

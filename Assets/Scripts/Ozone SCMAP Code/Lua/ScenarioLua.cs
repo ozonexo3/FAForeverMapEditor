@@ -286,7 +286,7 @@ namespace MapLua
 			}
 		}
 
-		public List<SaveLua.Army> GetAllArmies()
+		public List<SaveLua.Army> GetAllArmies(bool extra = true)
 		{
 			List<SaveLua.Army> ToReturn = new List<SaveLua.Army>();
 
@@ -305,14 +305,92 @@ namespace MapLua
 
 				}
 
-				for (int a = 0; a < Data.Configurations[c].ExtraArmys.Count; a++)
+				if (extra)
 				{
-					if (Data.Configurations[c].ExtraArmys[a].Data != null)
+					for (int a = 0; a < Data.Configurations[c].ExtraArmys.Count; a++)
 					{
-						ToReturn.Add(Data.Configurations[c].ExtraArmys[a].Data);
+						if (Data.Configurations[c].ExtraArmys[a].Data != null)
+						{
+							ToReturn.Add(Data.Configurations[c].ExtraArmys[a].Data);
+						}
 					}
 				}
 			}
+
+			return ToReturn;
+		}
+
+		public List<ScenarioLua.Army> GetAllScenarioArmies(bool extra = true)
+		{
+			List<ScenarioLua.Army> ToReturn = new List<ScenarioLua.Army>();
+
+			for (int c = 0; c < Data.Configurations.Length; c++)
+			{
+				for (int t = 0; t < Data.Configurations[c].Teams.Length; t++)
+				{
+					for (int a = 0; a < Data.Configurations[c].Teams[t].Armys.Count; a++)
+					{
+						if (Data.Configurations[c].Teams[t].Armys[a] != null)
+						{
+							ToReturn.Add(Data.Configurations[c].Teams[t].Armys[a]);
+						}
+
+					}
+
+				}
+
+				if (extra)
+				{
+					for (int a = 0; a < Data.Configurations[c].ExtraArmys.Count; a++)
+					{
+						if (Data.Configurations[c].ExtraArmys[a] != null)
+						{
+							ToReturn.Add(Data.Configurations[c].ExtraArmys[a]);
+						}
+					}
+				}
+			}
+
+			return ToReturn;
+		}
+
+		public List<ScenarioLua.Army> GetSymmetryArmies(ScenarioLua.Army army)
+		{
+			var allArmies = GetAllScenarioArmies(false);
+
+			string armyName = army.Name;
+
+			SaveLua.Marker ArmyMarker = SaveLua.GetMarker(armyName);
+
+			List<ScenarioLua.Army> ToReturn = new List<ScenarioLua.Army>();
+
+			if (ArmyMarker == null)
+				return ToReturn;
+
+			for(int i = 0; i < Selection.SelectionManager.Current.SymetrySelection.Length; i++)
+			{
+				GameObject foundMarker = Selection.SelectionManager.Current.SymetrySelection[i].FindBestSymmetry(ArmyMarker.MarkerObj.gameObject);
+				if (foundMarker == null)
+					continue;
+
+				Markers.MarkerObject markerObject = foundMarker.GetComponent<Markers.MarkerObject>();
+				if (markerObject == null)
+					continue;
+
+				if (foundMarker.name == armyName)
+					continue;
+
+				for (int a = 0; a < allArmies.Count; a++)
+				{
+					if(allArmies[a].Name == foundMarker.name)
+					{
+						if (!ToReturn.Contains(allArmies[a]))
+							ToReturn.Add(allArmies[a]);
+						break;
+					}
+				}
+			}
+
 
 			return ToReturn;
 		}

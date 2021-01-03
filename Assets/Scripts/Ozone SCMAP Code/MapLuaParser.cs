@@ -300,8 +300,13 @@ public partial class MapLuaParser : MonoBehaviour
 
 			CameraControler.Current.RestartCam();
 
-			EditMenu.MapInfoMenu.SaveAsFa.isOn = HeightmapControler.map.VersionMinor >= 60;
-			EditMenu.MapInfoMenu.SaveAsSc.isOn = !EditMenu.MapInfoMenu.SaveAsFa.isOn;
+			if (HeightmapControler.map.VersionMinor >= 60)
+				EditMenu.MapInfoMenu.SaveAsFa.isOn = true;
+			else
+				EditMenu.MapInfoMenu.SaveAsSc.isOn = true;
+
+			//EditMenu.MapInfoMenu.SaveAsFa.isOn = HeightmapControler.map.VersionMinor >= 60;
+			//EditMenu.MapInfoMenu.SaveAsSc.isOn = !EditMenu.MapInfoMenu.SaveAsFa.isOn;
 
 			InfoPopup.Show(true, "Loading map...\n(" + ScenarioLuaFile.Data.save + ")");
 			yield return null;

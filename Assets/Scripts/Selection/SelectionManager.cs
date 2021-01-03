@@ -43,20 +43,23 @@ namespace Selection
 			if (!Active)
 				return;
 
-			if (AllowRemove && Input.GetKeyDown(KeyCode.Delete) && !CameraControler.IsInputFieldFocused())
+			if (!CameraControler.IsInputFieldFocused())
 			{
-				DestroySelectedObjects();
-			}
+				if (AllowRemove && Input.GetKeyDown(KeyCode.Delete))
+				{
+					DestroySelectedObjects();
+				}
 
-			if (Input.GetKeyDown(KeyCode.C) && Input.GetKey(KeyCode.LeftControl))
-			{
-				//Copy
-				CopyAction?.Invoke();
-			}
-			else if (Input.GetKeyDown(KeyCode.V) && Input.GetKey(KeyCode.LeftControl))
-			{
-				//Paste
-				PasteAction?.Invoke();
+				if (Input.GetKeyDown(KeyCode.C) && Input.GetKey(KeyCode.LeftControl))
+				{
+					//Copy
+					CopyAction?.Invoke();
+				}
+				else if (Input.GetKeyDown(KeyCode.V) && Input.GetKey(KeyCode.LeftControl))
+				{
+					//Paste
+					PasteAction?.Invoke();
+				}
 			}
 		}
 
@@ -316,6 +319,16 @@ namespace Selection
 				}
 			}
 			return ToReturn;
+		}
+
+		public static List<GameObject> FindSymmetryGameObjects(GameObject[] GameObjects, GameObject instance)
+		{
+			List<GameObject> toReturn = new List<GameObject>();
+
+
+
+
+			return toReturn;
 		}
 
 

@@ -5,6 +5,8 @@ using Ozone.UI;
 using UnityEngine;
 using UnityEngine.UI;
 using ZkovCode.Utils;
+using System.IO;
+using SFB;
 
 namespace EditMap.TerrainTypes
 {
@@ -12,7 +14,7 @@ namespace EditMap.TerrainTypes
 	{
 		private static TerrainTypeWindow instance;
 
-		#pragma warning disable 0649
+#pragma warning disable 0649
 		// https://issuetracker.unity3d.com/issues/serializedfield-fields-produce-field-is-never-assigned-to-dot-dot-dot-warning
 
 		//[SerializeField] private Editing editingTool;
@@ -38,7 +40,7 @@ namespace EditMap.TerrainTypes
 		[SerializeField] private RectTransform moreInfoRectTransform;
 		[SerializeField] private Text indexMoreInfoText;
 		[SerializeField] private Text descriptionMoreInfoText;
-		#pragma warning restore 0649
+#pragma warning restore 0649
 
 		private static TerrainTypeLayerSettings savedLayer;
 
@@ -263,6 +265,11 @@ namespace EditMap.TerrainTypes
 			}
 		}
 
+		private Vector2 GetTypePos(Vector3 worldPos)
+		{
+			return new Vector2(worldPos.x, MapSize.y / 10 + worldPos.z);
+		}
+
 		private Vector3 TerrainPos3
 		{
 			get { return hitPos; }
@@ -333,6 +340,24 @@ namespace EditMap.TerrainTypes
 		{
 			if (MapLuaParser.Current.EditMenu.MauseOnGameplay)
 			{
+				if (currentState != State.Pipette)
+				{
+					if (Input.GetMouseButtonDown(0) && HasHit)
+					{
+						//Debug.LogFormat("TerrainPos2:{0}, TerrainTypeSize:{1}, BrushSize:{2}", TerrainPos2, TerrainTypeSize, BrushSize);
+						Undo.RegisterUndo(new UndoHistory.HistoryTerrainType());
+						//SymmetryPaint(new Vector2(TerrainPos2.x * 10, TerrainTypeSize.y - TerrainPos2.y * 10), BrushSize,
+						SymmetryPaint(TerrainPos3, BrushSize, currentState == State.Normal ? currentLayer : defaultLayer);
+					}
+				}
+				else
+				{
+					if (Input.GetMouseButtonDown(0) && HasHit)
+					{
+						Pipete(new Vector2(TerrainPos2.x * 10, TerrainTypeSize.y - TerrainPos2.y * 10));
+					}
+				}
+
 				if (ChangedMousePos)
 				{
 					UpdateBrushPos(UVPos);
@@ -342,9 +367,9 @@ namespace EditMap.TerrainTypes
 						if (Input.GetMouseButton(0) && HasHit)
 						{
 							//                    Debug.LogFormat("TerrainPos2:{0}, TerrainTypeSize:{1}, BrushSize:{2}", TerrainPos2, TerrainTypeSize, BrushSize);
-							Undo.RegisterUndo(new UndoHistory.HistoryTerrainType());
-							Paint(new Vector2(TerrainPos2.x * 10, TerrainTypeSize.y - TerrainPos2.y * 10), BrushSize,
-								currentState == State.Normal ? currentLayer : defaultLayer);
+							//Undo.RegisterUndo(new UndoHistory.HistoryTerrainType());
+							//SymmetryPaint(new Vector2(TerrainPos2.x * 10, TerrainTypeSize.y - TerrainPos2.y * 10), BrushSize,
+							SymmetryPaint(TerrainPos3, BrushSize, currentState == State.Normal ? currentLayer : defaultLayer);
 						}
 					}
 					else
@@ -359,24 +384,6 @@ namespace EditMap.TerrainTypes
 				if (Input.GetMouseButtonUp(0))
 				{
 					ApplyChanges();
-				}
-
-				if (currentState != State.Pipette)
-				{
-					if (Input.GetMouseButtonDown(0) && HasHit)
-					{
-						//                    Debug.LogFormat("TerrainPos2:{0}, TerrainTypeSize:{1}, BrushSize:{2}", TerrainPos2, TerrainTypeSize, BrushSize);
-						Undo.RegisterUndo(new UndoHistory.HistoryTerrainType());
-						Paint(new Vector2(TerrainPos2.x * 10, TerrainTypeSize.y - TerrainPos2.y * 10), BrushSize,
-							currentState == State.Normal ? currentLayer : defaultLayer);
-					}
-				}
-				else
-				{
-					if (Input.GetMouseButtonDown(0) && HasHit)
-					{
-						Pipete(new Vector2(TerrainPos2.x * 10, TerrainTypeSize.y - TerrainPos2.y * 10));
-					}
 				}
 			}
 
@@ -669,6 +676,25 @@ namespace EditMap.TerrainTypes
 		/// <param name="position">Brush position</param>
 		/// <param name="brushSize"></param>
 		/// <param name="layer">Layer index</param>
+		private void SymmetryPaint(Vector3 paintPosition, float brushSize, TerrainTypeLayerSettings layer)
+		{
+			//Paint(positionCenter, brushSize, layer);
+
+			//TODO Symmetry points
+
+			BrushGenerator.Current.GenerateSymmetry(paintPosition);
+
+			for (int i = 0; i < BrushGenerator.Current.PaintPositions.Length; i++)
+			{
+				Vector2 brushPos2 = GetTypePos(BrushGenerator.Current.PaintPositions[i]);
+				brushPos2 = new Vector2(brushPos2.x * 10, TerrainTypeSize.y - brushPos2.y * 10);
+
+				Paint(brushPos2, brushSize, layer);
+			}
+
+			TerrainTypeTexture.Apply();
+		}
+
 		private void Paint(Vector2 positionCenter, float brushSize, TerrainTypeLayerSettings layer)
 		{
 			Rect rect = Rect.MinMaxRect(
@@ -691,14 +717,14 @@ namespace EditMap.TerrainTypes
 						Mathf.RoundToInt(crossRect.x), Mathf.RoundToInt(crossRect.y),
 						Mathf.RoundToInt(crossRect.width), Mathf.RoundToInt(crossRect.height))
 					.Select((color, i) =>
-						{
-							int x = i % Mathf.RoundToInt(crossRect.width) + Mathf.RoundToInt(crossRect.xMin) -
-									Mathf.RoundToInt(positionCenter.x);
-							int y = i / Mathf.RoundToInt(crossRect.width) + Mathf.RoundToInt(crossRect.yMin) -
-									Mathf.RoundToInt(positionCenter.y);
+					{
+						int x = i % Mathf.RoundToInt(crossRect.width) + Mathf.RoundToInt(crossRect.xMin) -
+								Mathf.RoundToInt(positionCenter.x);
+						int y = i / Mathf.RoundToInt(crossRect.width) + Mathf.RoundToInt(crossRect.yMin) -
+								Mathf.RoundToInt(positionCenter.y);
 
-							return (x * x + y * y > size * size) ? color : layer.color;
-						}
+						return (x * x + y * y > size * size) ? color : layer.color;
+					}
 					)
 					.ToArray()
 			);
@@ -715,8 +741,6 @@ namespace EditMap.TerrainTypes
 					}
 				}
 			}
-
-			TerrainTypeTexture.Apply();
 		}
 
 		private void Pipete(Vector2 positionCenter)
@@ -793,6 +817,96 @@ namespace EditMap.TerrainTypes
 			Normal,
 			Eraser,
 			Pipette
+		}
+
+		const string ExportPathKey = "TerrainTypeExport";
+		static string DefaultPath
+		{
+			get
+			{
+				string ToReturn = EnvPaths.GetLastPath(ExportPathKey, EnvPaths.GetMapsPath() + MapLuaParser.Current.FolderName);
+				Debug.Log("Default path: " + EnvPaths.GetMapsPath() + MapLuaParser.Current.FolderName);
+				Debug.Log("Last path: " + ToReturn);
+
+				if (string.IsNullOrEmpty(ToReturn) || !Directory.Exists(ToReturn))
+				{
+					Debug.Log("Send my documents " + EnvPaths.MyDocuments);
+					return EnvPaths.MyDocuments;
+				}
+
+				return ToReturn;
+			}
+		}
+
+		static ExtensionFilter[] extensions = new[]
+			{
+				new ExtensionFilter("Type PNG", new string[]{"png" }),
+			};
+
+		public void Export()
+		{
+			var paths = StandaloneFileBrowser.SaveFilePanel("Export types", DefaultPath, "types", extensions);
+
+
+			if (paths == null || string.IsNullOrEmpty(paths))
+				return;
+
+			Texture2D exportTexture = new Texture2D(TerrainTypeData2D.GetLength(0), TerrainTypeData2D.GetLength(1), TextureFormat.RGB24, false);
+
+			Color32[] pixels = new Color32[exportTexture.width * exportTexture.height];
+			for (int x = 0; x < exportTexture.width; x++)
+			{
+				for (int y = 0; y < exportTexture.width; y++)
+				{
+					int PixelId = x + y * exportTexture.width;
+
+					pixels[PixelId] = new Color32(TerrainTypeData2D[x, y], 0, 0, 255);
+				}
+			}
+			exportTexture.SetPixels32(pixels);
+			exportTexture.Apply();
+
+			byte[] data = exportTexture.EncodeToPNG();
+			File.WriteAllBytes(paths, data);
+
+			EnvPaths.SetLastPath(ExportPathKey, Path.GetDirectoryName(paths));
+			GenericInfoPopup.ShowInfo("Types export success!\n" + Path.GetFileName(paths));
+		}
+
+		public void Import()
+		{
+			var paths = StandaloneFileBrowser.OpenFilePanel("Import types", DefaultPath, extensions, false);
+
+			if (paths == null || paths.Length == 0 || string.IsNullOrEmpty(paths[0]))
+				return;
+
+			byte[] data = File.ReadAllBytes(paths[0]);
+
+			Texture2D importTexture = new Texture2D(2, 2);
+			importTexture.LoadImage(data, false);
+
+			if(importTexture.width != TerrainTypeData2D.GetLength(0) || importTexture.height != TerrainTypeData2D.GetLength(1))
+			{
+				Debug.LogError("Incorrect dimensions! " + importTexture.width + "x" + importTexture.height + " / " + TerrainTypeData2D.GetLength(0) + "x" + TerrainTypeData2D.GetLength(1));
+			}
+
+			Undo.RegisterUndo(new UndoHistory.HistoryTerrainType());
+
+			Color32[] pixels = importTexture.GetPixels32();
+			for (int x = 0; x < importTexture.width; x++)
+			{
+				for (int y = 0; y < importTexture.width; y++)
+				{
+					int PixelId = x + y * importTexture.width;
+
+					TerrainTypeData2D[x, y] = pixels[PixelId].r;
+					//pixels[PixelId] = new Color32(TerrainTypeData2D[x, y], 0, 0, 255);
+				}
+			}
+
+			TerrainTypeTexture = null;
+			ApplyTerrainTypeChanges();
+			ScmapEditor.Current.TerrainMaterial.SetTexture("_TerrainTypeAlbedo", TerrainTypeTexture);
 		}
 	}
 }
