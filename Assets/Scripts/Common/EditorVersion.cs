@@ -1,4 +1,4 @@
-﻿#define PRERELEASE // << -- Comment out for full release
+﻿//#define PRERELEASE // << -- Comment out for full release
 
 using UnityEngine;
 using UnityEngine.Networking;
@@ -13,12 +13,12 @@ public class EditorVersion : MonoBehaviour
 
 #if PRERELEASE
 	// Prerelease
-	public const string EditorBuildTag = "WIP3";
+	public const string EditorBuildTag = "WIP1";
 	public const double VersionOffset = -0.001f; // Prerelease
 #else
 	//Release
 	public const string EditorBuildTag = "";
-	public const string EditorBuildTag = "HF1"; // Hotfix
+	//public const string EditorBuildTag = "HF1"; // Hotfix
 	public const float VersionOffset = 0f; // Release
 #endif
 
