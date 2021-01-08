@@ -50,7 +50,6 @@ public partial class AppMenu : MonoBehaviour
 	bool ErrorFound = false;
 	void HandleLog(string logString, string stackTrace, LogType type)
 	{
-
 		switch (type)
 		{
 			case LogType.Exception:

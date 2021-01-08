@@ -1,0 +1,11 @@
+Seed: -8559262902834075668
+Biome: Syrtis
+Land Density: 0.8976378
+Plateau Density: 0.96850395
+Mountain Density: 0.87401575
+Ramp Density: 0.7559055
+Reclaim Density: 0.023622047
+Mex Count: 11
+Terrain Symmetry: POINT6
+Team Symmetry: Z
+Spawn Symmetry: POINT2

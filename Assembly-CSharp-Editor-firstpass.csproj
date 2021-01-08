@@ -280,62 +280,83 @@
     <Reference Include="ICSharpCode.SharpZipLib">
       <HintPath>C:/Users/Pawel/Documents/GitHub/FAForeverMapEditor/Assets/Plugins/ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
-    <Reference Include="IKVM.AWT.WinForms">
-      <HintPath>C:/Users/Pawel/Documents/GitHub/FAForeverMapEditor/Assets/Plugins/JKVM/IKVM.AWT.WinForms.dll</HintPath>
-    </Reference>
-    <Reference Include="IKVM.OpenJDK.Beans">
-      <HintPath>C:/Users/Pawel/Documents/GitHub/FAForeverMapEditor/Assets/Plugins/JKVM/IKVM.OpenJDK.Beans.dll</HintPath>
-    </Reference>
-    <Reference Include="IKVM.OpenJDK.Charsets">
-      <HintPath>C:/Users/Pawel/Documents/GitHub/FAForeverMapEditor/Assets/Plugins/JKVM/IKVM.OpenJDK.Charsets.dll</HintPath>
-    </Reference>
-    <Reference Include="IKVM.OpenJDK.Corba">
-      <HintPath>C:/Users/Pawel/Documents/GitHub/FAForeverMapEditor/Assets/Plugins/JKVM/IKVM.OpenJDK.Corba.dll</HintPath>
-    </Reference>
-    <Reference Include="IKVM.OpenJDK.Core">
-      <HintPath>C:/Users/Pawel/Documents/GitHub/FAForeverMapEditor/Assets/Plugins/JKVM/IKVM.OpenJDK.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="IKVM.OpenJDK.Jdbc">
-      <HintPath>C:/Users/Pawel/Documents/GitHub/FAForeverMapEditor/Assets/Plugins/JKVM/IKVM.OpenJDK.Jdbc.dll</HintPath>
-    </Reference>
-    <Reference Include="IKVM.OpenJDK.Management">
-      <HintPath>C:/Users/Pawel/Documents/GitHub/FAForeverMapEditor/Assets/Plugins/JKVM/IKVM.OpenJDK.Management.dll</HintPath>
-    </Reference>
-    <Reference Include="IKVM.OpenJDK.Media">
-      <HintPath>C:/Users/Pawel/Documents/GitHub/FAForeverMapEditor/Assets/Plugins/JKVM/IKVM.OpenJDK.Media.dll</HintPath>
-    </Reference>
-    <Reference Include="IKVM.OpenJDK.Misc">
-      <HintPath>C:/Users/Pawel/Documents/GitHub/FAForeverMapEditor/Assets/Plugins/JKVM/IKVM.OpenJDK.Misc.dll</HintPath>
-    </Reference>
-    <Reference Include="IKVM.OpenJDK.Naming">
-      <HintPath>C:/Users/Pawel/Documents/GitHub/FAForeverMapEditor/Assets/Plugins/JKVM/IKVM.OpenJDK.Naming.dll</HintPath>
-    </Reference>
-    <Reference Include="IKVM.OpenJDK.Remoting">
-      <HintPath>C:/Users/Pawel/Documents/GitHub/FAForeverMapEditor/Assets/Plugins/JKVM/IKVM.OpenJDK.Remoting.dll</HintPath>
-    </Reference>
-    <Reference Include="IKVM.OpenJDK.Security">
-      <HintPath>C:/Users/Pawel/Documents/GitHub/FAForeverMapEditor/Assets/Plugins/JKVM/IKVM.OpenJDK.Security.dll</HintPath>
-    </Reference>
-    <Reference Include="IKVM.OpenJDK.SwingAWT">
-      <HintPath>C:/Users/Pawel/Documents/GitHub/FAForeverMapEditor/Assets/Plugins/JKVM/IKVM.OpenJDK.SwingAWT.dll</HintPath>
-    </Reference>
-    <Reference Include="IKVM.OpenJDK.Text">
-      <HintPath>C:/Users/Pawel/Documents/GitHub/FAForeverMapEditor/Assets/Plugins/JKVM/IKVM.OpenJDK.Text.dll</HintPath>
-    </Reference>
-    <Reference Include="IKVM.OpenJDK.Util">
-      <HintPath>C:/Users/Pawel/Documents/GitHub/FAForeverMapEditor/Assets/Plugins/JKVM/IKVM.OpenJDK.Util.dll</HintPath>
-    </Reference>
-    <Reference Include="IKVM.OpenJDK.XML.API">
-      <HintPath>C:/Users/Pawel/Documents/GitHub/FAForeverMapEditor/Assets/Plugins/JKVM/IKVM.OpenJDK.XML.API.dll</HintPath>
-    </Reference>
-    <Reference Include="IKVM.Runtime">
-      <HintPath>C:/Users/Pawel/Documents/GitHub/FAForeverMapEditor/Assets/Plugins/JKVM/IKVM.Runtime.dll</HintPath>
-    </Reference>
-    <Reference Include="IKVM.Runtime.JNI">
-      <HintPath>C:/Users/Pawel/Documents/GitHub/FAForeverMapEditor/Assets/Plugins/JKVM/IKVM.Runtime.JNI.dll</HintPath>
-    </Reference>
     <Reference Include="log4net">
       <HintPath>C:/Users/Pawel/Documents/GitHub/FAForeverMapEditor/Assets/Plugins/Lib/log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="IKVM.AWT.WinForms">
+      <HintPath>C:/Users/Pawel/Documents/GitHub/FAForeverMapEditor/Assets/Plugins/NeroxisMapGenerator/IKVM.AWT.WinForms.dll</HintPath>
+    </Reference>
+    <Reference Include="IKVM.OpenJDK.Beans">
+      <HintPath>C:/Users/Pawel/Documents/GitHub/FAForeverMapEditor/Assets/Plugins/NeroxisMapGenerator/IKVM.OpenJDK.Beans.dll</HintPath>
+    </Reference>
+    <Reference Include="IKVM.OpenJDK.Charsets">
+      <HintPath>C:/Users/Pawel/Documents/GitHub/FAForeverMapEditor/Assets/Plugins/NeroxisMapGenerator/IKVM.OpenJDK.Charsets.dll</HintPath>
+    </Reference>
+    <Reference Include="IKVM.OpenJDK.Cldrdata">
+      <HintPath>C:/Users/Pawel/Documents/GitHub/FAForeverMapEditor/Assets/Plugins/NeroxisMapGenerator/IKVM.OpenJDK.Cldrdata.dll</HintPath>
+    </Reference>
+    <Reference Include="IKVM.OpenJDK.Corba">
+      <HintPath>C:/Users/Pawel/Documents/GitHub/FAForeverMapEditor/Assets/Plugins/NeroxisMapGenerator/IKVM.OpenJDK.Corba.dll</HintPath>
+    </Reference>
+    <Reference Include="IKVM.OpenJDK.Core">
+      <HintPath>C:/Users/Pawel/Documents/GitHub/FAForeverMapEditor/Assets/Plugins/NeroxisMapGenerator/IKVM.OpenJDK.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="IKVM.OpenJDK.Jdbc">
+      <HintPath>C:/Users/Pawel/Documents/GitHub/FAForeverMapEditor/Assets/Plugins/NeroxisMapGenerator/IKVM.OpenJDK.Jdbc.dll</HintPath>
+    </Reference>
+    <Reference Include="IKVM.OpenJDK.Localedata">
+      <HintPath>C:/Users/Pawel/Documents/GitHub/FAForeverMapEditor/Assets/Plugins/NeroxisMapGenerator/IKVM.OpenJDK.Localedata.dll</HintPath>
+    </Reference>
+    <Reference Include="IKVM.OpenJDK.Management">
+      <HintPath>C:/Users/Pawel/Documents/GitHub/FAForeverMapEditor/Assets/Plugins/NeroxisMapGenerator/IKVM.OpenJDK.Management.dll</HintPath>
+    </Reference>
+    <Reference Include="IKVM.OpenJDK.Media">
+      <HintPath>C:/Users/Pawel/Documents/GitHub/FAForeverMapEditor/Assets/Plugins/NeroxisMapGenerator/IKVM.OpenJDK.Media.dll</HintPath>
+    </Reference>
+    <Reference Include="IKVM.OpenJDK.Misc">
+      <HintPath>C:/Users/Pawel/Documents/GitHub/FAForeverMapEditor/Assets/Plugins/NeroxisMapGenerator/IKVM.OpenJDK.Misc.dll</HintPath>
+    </Reference>
+    <Reference Include="IKVM.OpenJDK.Naming">
+      <HintPath>C:/Users/Pawel/Documents/GitHub/FAForeverMapEditor/Assets/Plugins/NeroxisMapGenerator/IKVM.OpenJDK.Naming.dll</HintPath>
+    </Reference>
+    <Reference Include="IKVM.OpenJDK.Nashorn">
+      <HintPath>C:/Users/Pawel/Documents/GitHub/FAForeverMapEditor/Assets/Plugins/NeroxisMapGenerator/IKVM.OpenJDK.Nashorn.dll</HintPath>
+    </Reference>
+    <Reference Include="IKVM.OpenJDK.Remoting">
+      <HintPath>C:/Users/Pawel/Documents/GitHub/FAForeverMapEditor/Assets/Plugins/NeroxisMapGenerator/IKVM.OpenJDK.Remoting.dll</HintPath>
+    </Reference>
+    <Reference Include="IKVM.OpenJDK.Security">
+      <HintPath>C:/Users/Pawel/Documents/GitHub/FAForeverMapEditor/Assets/Plugins/NeroxisMapGenerator/IKVM.OpenJDK.Security.dll</HintPath>
+    </Reference>
+    <Reference Include="IKVM.OpenJDK.SwingAWT">
+      <HintPath>C:/Users/Pawel/Documents/GitHub/FAForeverMapEditor/Assets/Plugins/NeroxisMapGenerator/IKVM.OpenJDK.SwingAWT.dll</HintPath>
+    </Reference>
+    <Reference Include="IKVM.OpenJDK.Text">
+      <HintPath>C:/Users/Pawel/Documents/GitHub/FAForeverMapEditor/Assets/Plugins/NeroxisMapGenerator/IKVM.OpenJDK.Text.dll</HintPath>
+    </Reference>
+    <Reference Include="IKVM.OpenJDK.Util">
+      <HintPath>C:/Users/Pawel/Documents/GitHub/FAForeverMapEditor/Assets/Plugins/NeroxisMapGenerator/IKVM.OpenJDK.Util.dll</HintPath>
+    </Reference>
+    <Reference Include="IKVM.OpenJDK.XML.API">
+      <HintPath>C:/Users/Pawel/Documents/GitHub/FAForeverMapEditor/Assets/Plugins/NeroxisMapGenerator/IKVM.OpenJDK.XML.API.dll</HintPath>
+    </Reference>
+    <Reference Include="IKVM.OpenJDK.XML.Bind">
+      <HintPath>C:/Users/Pawel/Documents/GitHub/FAForeverMapEditor/Assets/Plugins/NeroxisMapGenerator/IKVM.OpenJDK.XML.Bind.dll</HintPath>
+    </Reference>
+    <Reference Include="IKVM.OpenJDK.XML.Parse">
+      <HintPath>C:/Users/Pawel/Documents/GitHub/FAForeverMapEditor/Assets/Plugins/NeroxisMapGenerator/IKVM.OpenJDK.XML.Parse.dll</HintPath>
+    </Reference>
+    <Reference Include="IKVM.Reflection">
+      <HintPath>C:/Users/Pawel/Documents/GitHub/FAForeverMapEditor/Assets/Plugins/NeroxisMapGenerator/IKVM.Reflection.dll</HintPath>
+    </Reference>
+    <Reference Include="IKVM.Runtime">
+      <HintPath>C:/Users/Pawel/Documents/GitHub/FAForeverMapEditor/Assets/Plugins/NeroxisMapGenerator/IKVM.Runtime.dll</HintPath>
+    </Reference>
+    <Reference Include="IKVM.Runtime.JNI">
+      <HintPath>C:/Users/Pawel/Documents/GitHub/FAForeverMapEditor/Assets/Plugins/NeroxisMapGenerator/IKVM.Runtime.JNI.dll</HintPath>
+    </Reference>
+    <Reference Include="NeroxisGen">
+      <HintPath>C:/Users/Pawel/Documents/GitHub/FAForeverMapEditor/Assets/Plugins/NeroxisMapGenerator/NeroxisGen.dll</HintPath>
     </Reference>
     <Reference Include="Ookii.Dialogs">
       <HintPath>C:/Users/Pawel/Documents/GitHub/FAForeverMapEditor/Assets/StandaloneFileBrowser/Plugins/Ookii.Dialogs.dll</HintPath>
@@ -345,9 +366,6 @@
     </Reference>
     <Reference Include="nunit.framework">
       <HintPath>C:/Users/Pawel/Documents/GitHub/FAForeverMapEditor/Library/PackageCache/com.unity.ext.nunit@1.0.5/net35/unity-custom/nunit.framework.dll</HintPath>
-    </Reference>
-    <Reference Include="NeroxisGen_1_2_9">
-      <HintPath>C:/Users/Pawel/Documents/GitHub/FAForeverMapEditor/Assets/Plugins/NeroxisMapGenerator/NeroxisGen_1_2_9.dll</HintPath>
     </Reference>
     <Reference Include="mscorlib">
       <HintPath>C:/Program Files/Unity/Hub/Editor/2019.4.16f1/Editor/Data/MonoBleedingEdge/lib/mono/4.7.1-api/mscorlib.dll</HintPath>

@@ -694,7 +694,8 @@ PlayerSettings:
     WebGL: 1
     Windows Store Apps: 1
     iPhone: 1
-  il2cppCompilerConfiguration: {}
+  il2cppCompilerConfiguration:
+    Standalone: 2
   managedStrippingLevel: {}
   incrementalIl2cppBuild:
     iPhone: 0

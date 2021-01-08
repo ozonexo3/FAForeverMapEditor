@@ -4,11 +4,15 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using UnityEngine;
 
+using neroxis.biomes;
+using neroxis.brushes;
+using neroxis.generator;
+
 public class TestJava : MonoBehaviour
 {
 	//public Texture2D brushTex;
 
-	void Start()
+	void OnEnable()
     {
 
 		//biomes.Biomes.list.add(new biomes.Biome());
@@ -32,28 +36,50 @@ public class TestJava : MonoBehaviour
 		brushTex.Apply();
 		*/
 
+		/*long seed = 123;
+		java.lang.Long javaSeed = new java.lang.Long(seed);
+		java.util.Random random = new java.util.Random(seed);
 
-		Debug.Log("Good brushes count: " + brushes.Brushes.goodBrushes.size());
-		for(int i = 0; i < brushes.Brushes.goodBrushes.size(); i++)
+
+		string resource = Biomes.BIOMES_LIST.get(random.nextInt(Biomes.BIOMES_LIST.size())).ToString();
+
+		neroxis.map.TerrainMaterials terrainMaterials = new neroxis.map.TerrainMaterials();
+
+		Biome randomBiome = Biomes.loadBiome(resource);
+
+		Debug.Log("Generated random biome: " + randomBiome.getName());
+
+		neroxis.map.TerrainMaterials biomeTerrainMaterials = randomBiome.getTerrainMaterials();
+
+		string[] texturePaths = biomeTerrainMaterials.getTexturePaths();
+		string[] normalPaths = biomeTerrainMaterials.getNormalPaths();
+		float[] textureScales = biomeTerrainMaterials.getTextureScales();
+		float[] normalScales = biomeTerrainMaterials.getNormalScales();
+		Debug.Log("Biome layer cont: " + texturePaths.Length);
+		for (int i = 0; i < texturePaths.Length; i++)
 		{
-			Debug.Log(brushes.Brushes.goodBrushes.get(i).ToString());
-		}
+			if(i < normalPaths.Length)
+				Debug.Log(i + ": " + texturePaths[i] + "(" + textureScales[i] + "), " + normalPaths[i] + "(" + normalScales[i] + ")");
+			else
+				Debug.Log(i + ": " + texturePaths[i] + "(" + textureScales[i] + ")");
+		}*/
 
-
-		Debug.Log("Biomes count: " + biomes.Biomes.list);
-		
-		
 		//Debug.Log((brushes.Brushes.goodBrushes.get(0) as java.lang.String).ToString());
 
-		//generator.MapGenerator.main(new string[] {"--help"});
+		//MapGenerator.main(new string[] {"--no-hash", "--debug" }); //"--debug", 
+
+		MapGenerator generator = new MapGenerator();
+		generator.interpretArguments(new string[] { });
+		neroxis.map.SCMap map = generator.generate();
+
+		Debug.Log(map.getHeightmap().getWidth() + " x " + map.getHeightmap().getHeight());
 
 		//Debug.Log(generator.MapGenerator.LAND_DENSITY_MAX);
 
 
-		map.SymmetrySettings customSymmetrySettings = new map.SymmetrySettings(map.Symmetry.DIAG, map.Symmetry.POINT10, map.Symmetry.X);
-		java.lang.Long seed = new java.lang.Long(123);
-		map.BinaryMask bm = new map.BinaryMask(0, seed, customSymmetrySettings);
-
+		/*map.SymmetrySettings customSymmetrySettings = new map.SymmetrySettings(map.Symmetry.DIAG, map.Symmetry.POINT10, map.Symmetry.X);
+		
+		map.BinaryMask bm = new map.BinaryMask(0, seed, customSymmetrySettings);*/
 
 	}
 }
