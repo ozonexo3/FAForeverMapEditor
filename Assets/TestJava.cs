@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using UnityEngine;
 
+using neroxis;
 using neroxis.biomes;
 using neroxis.brushes;
 using neroxis.generator;
@@ -68,11 +69,13 @@ public class TestJava : MonoBehaviour
 
 		//MapGenerator.main(new string[] {"--no-hash", "--debug" }); //"--debug", 
 
-		MapGenerator generator = new MapGenerator();
+		/*MapGenerator generator = new MapGenerator();
 		generator.interpretArguments(new string[] { });
 		neroxis.map.SCMap map = generator.generate();
 
-		Debug.Log(map.getHeightmap().getWidth() + " x " + map.getHeightmap().getHeight());
+		Debug.Log(map.getHeightmap().getWidth() + " x " + map.getHeightmap().getHeight());*/
+
+		GenerateMapTask.GenerateSCMP(new MapGeneratorSettings() { width = 256, seed = 123, mexCount = 0, reclaimDensity = 0 }, OnFinishSCMPgenerator);
 
 		//Debug.Log(generator.MapGenerator.LAND_DENSITY_MAX);
 
@@ -80,6 +83,11 @@ public class TestJava : MonoBehaviour
 		/*map.SymmetrySettings customSymmetrySettings = new map.SymmetrySettings(map.Symmetry.DIAG, map.Symmetry.POINT10, map.Symmetry.X);
 		
 		map.BinaryMask bm = new map.BinaryMask(0, seed, customSymmetrySettings);*/
+
+	}
+
+	void OnFinishSCMPgenerator()
+	{
 
 	}
 }

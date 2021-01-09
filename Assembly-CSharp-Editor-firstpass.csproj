@@ -268,104 +268,101 @@
     <Reference Include="UnityEditor.WindowsStandalone.Extensions">
       <HintPath>C:/Program Files/Unity/Hub/Editor/2019.4.16f1/Editor/Data/PlaybackEngines/WindowsStandaloneSupport/UnityEditor.WindowsStandalone.Extensions.dll</HintPath>
     </Reference>
-    <Reference Include="UnityEditor.Switch.Extensions">
-      <HintPath>C:/Program Files/Unity/Hub/Editor/2019.4.16f1/Editor/Data/PlaybackEngines/Switch/UnityEditor.Switch.Extensions.dll</HintPath>
-    </Reference>
     <Reference Include="SyntaxTree.VisualStudio.Unity.Bridge">
       <HintPath>C:/Program Files (x86)/Microsoft Visual Studio Tools for Unity/15.0/Editor/SyntaxTree.VisualStudio.Unity.Bridge.dll</HintPath>
     </Reference>
     <Reference Include="DotNetOpenAuth">
-      <HintPath>C:/Users/Pawel/Documents/GitHub/FAForeverMapEditor/Assets/Plugins/DotNetOpenAuth.dll</HintPath>
+      <HintPath>M:/Projekty/GithubDesktop/FAForeverMapEditor/Assets/Plugins/DotNetOpenAuth.dll</HintPath>
     </Reference>
     <Reference Include="ICSharpCode.SharpZipLib">
-      <HintPath>C:/Users/Pawel/Documents/GitHub/FAForeverMapEditor/Assets/Plugins/ICSharpCode.SharpZipLib.dll</HintPath>
+      <HintPath>M:/Projekty/GithubDesktop/FAForeverMapEditor/Assets/Plugins/ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
     <Reference Include="log4net">
-      <HintPath>C:/Users/Pawel/Documents/GitHub/FAForeverMapEditor/Assets/Plugins/Lib/log4net.dll</HintPath>
+      <HintPath>M:/Projekty/GithubDesktop/FAForeverMapEditor/Assets/Plugins/Lib/log4net.dll</HintPath>
     </Reference>
     <Reference Include="IKVM.AWT.WinForms">
-      <HintPath>C:/Users/Pawel/Documents/GitHub/FAForeverMapEditor/Assets/Plugins/NeroxisMapGenerator/IKVM.AWT.WinForms.dll</HintPath>
+      <HintPath>M:/Projekty/GithubDesktop/FAForeverMapEditor/Assets/Plugins/NeroxisMapGenerator/IKVM.AWT.WinForms.dll</HintPath>
     </Reference>
     <Reference Include="IKVM.OpenJDK.Beans">
-      <HintPath>C:/Users/Pawel/Documents/GitHub/FAForeverMapEditor/Assets/Plugins/NeroxisMapGenerator/IKVM.OpenJDK.Beans.dll</HintPath>
+      <HintPath>M:/Projekty/GithubDesktop/FAForeverMapEditor/Assets/Plugins/NeroxisMapGenerator/IKVM.OpenJDK.Beans.dll</HintPath>
     </Reference>
     <Reference Include="IKVM.OpenJDK.Charsets">
-      <HintPath>C:/Users/Pawel/Documents/GitHub/FAForeverMapEditor/Assets/Plugins/NeroxisMapGenerator/IKVM.OpenJDK.Charsets.dll</HintPath>
+      <HintPath>M:/Projekty/GithubDesktop/FAForeverMapEditor/Assets/Plugins/NeroxisMapGenerator/IKVM.OpenJDK.Charsets.dll</HintPath>
     </Reference>
     <Reference Include="IKVM.OpenJDK.Cldrdata">
-      <HintPath>C:/Users/Pawel/Documents/GitHub/FAForeverMapEditor/Assets/Plugins/NeroxisMapGenerator/IKVM.OpenJDK.Cldrdata.dll</HintPath>
+      <HintPath>M:/Projekty/GithubDesktop/FAForeverMapEditor/Assets/Plugins/NeroxisMapGenerator/IKVM.OpenJDK.Cldrdata.dll</HintPath>
     </Reference>
     <Reference Include="IKVM.OpenJDK.Corba">
-      <HintPath>C:/Users/Pawel/Documents/GitHub/FAForeverMapEditor/Assets/Plugins/NeroxisMapGenerator/IKVM.OpenJDK.Corba.dll</HintPath>
+      <HintPath>M:/Projekty/GithubDesktop/FAForeverMapEditor/Assets/Plugins/NeroxisMapGenerator/IKVM.OpenJDK.Corba.dll</HintPath>
     </Reference>
     <Reference Include="IKVM.OpenJDK.Core">
-      <HintPath>C:/Users/Pawel/Documents/GitHub/FAForeverMapEditor/Assets/Plugins/NeroxisMapGenerator/IKVM.OpenJDK.Core.dll</HintPath>
+      <HintPath>M:/Projekty/GithubDesktop/FAForeverMapEditor/Assets/Plugins/NeroxisMapGenerator/IKVM.OpenJDK.Core.dll</HintPath>
     </Reference>
     <Reference Include="IKVM.OpenJDK.Jdbc">
-      <HintPath>C:/Users/Pawel/Documents/GitHub/FAForeverMapEditor/Assets/Plugins/NeroxisMapGenerator/IKVM.OpenJDK.Jdbc.dll</HintPath>
+      <HintPath>M:/Projekty/GithubDesktop/FAForeverMapEditor/Assets/Plugins/NeroxisMapGenerator/IKVM.OpenJDK.Jdbc.dll</HintPath>
     </Reference>
     <Reference Include="IKVM.OpenJDK.Localedata">
-      <HintPath>C:/Users/Pawel/Documents/GitHub/FAForeverMapEditor/Assets/Plugins/NeroxisMapGenerator/IKVM.OpenJDK.Localedata.dll</HintPath>
+      <HintPath>M:/Projekty/GithubDesktop/FAForeverMapEditor/Assets/Plugins/NeroxisMapGenerator/IKVM.OpenJDK.Localedata.dll</HintPath>
     </Reference>
     <Reference Include="IKVM.OpenJDK.Management">
-      <HintPath>C:/Users/Pawel/Documents/GitHub/FAForeverMapEditor/Assets/Plugins/NeroxisMapGenerator/IKVM.OpenJDK.Management.dll</HintPath>
+      <HintPath>M:/Projekty/GithubDesktop/FAForeverMapEditor/Assets/Plugins/NeroxisMapGenerator/IKVM.OpenJDK.Management.dll</HintPath>
     </Reference>
     <Reference Include="IKVM.OpenJDK.Media">
-      <HintPath>C:/Users/Pawel/Documents/GitHub/FAForeverMapEditor/Assets/Plugins/NeroxisMapGenerator/IKVM.OpenJDK.Media.dll</HintPath>
+      <HintPath>M:/Projekty/GithubDesktop/FAForeverMapEditor/Assets/Plugins/NeroxisMapGenerator/IKVM.OpenJDK.Media.dll</HintPath>
     </Reference>
     <Reference Include="IKVM.OpenJDK.Misc">
-      <HintPath>C:/Users/Pawel/Documents/GitHub/FAForeverMapEditor/Assets/Plugins/NeroxisMapGenerator/IKVM.OpenJDK.Misc.dll</HintPath>
+      <HintPath>M:/Projekty/GithubDesktop/FAForeverMapEditor/Assets/Plugins/NeroxisMapGenerator/IKVM.OpenJDK.Misc.dll</HintPath>
     </Reference>
     <Reference Include="IKVM.OpenJDK.Naming">
-      <HintPath>C:/Users/Pawel/Documents/GitHub/FAForeverMapEditor/Assets/Plugins/NeroxisMapGenerator/IKVM.OpenJDK.Naming.dll</HintPath>
+      <HintPath>M:/Projekty/GithubDesktop/FAForeverMapEditor/Assets/Plugins/NeroxisMapGenerator/IKVM.OpenJDK.Naming.dll</HintPath>
     </Reference>
     <Reference Include="IKVM.OpenJDK.Nashorn">
-      <HintPath>C:/Users/Pawel/Documents/GitHub/FAForeverMapEditor/Assets/Plugins/NeroxisMapGenerator/IKVM.OpenJDK.Nashorn.dll</HintPath>
+      <HintPath>M:/Projekty/GithubDesktop/FAForeverMapEditor/Assets/Plugins/NeroxisMapGenerator/IKVM.OpenJDK.Nashorn.dll</HintPath>
     </Reference>
     <Reference Include="IKVM.OpenJDK.Remoting">
-      <HintPath>C:/Users/Pawel/Documents/GitHub/FAForeverMapEditor/Assets/Plugins/NeroxisMapGenerator/IKVM.OpenJDK.Remoting.dll</HintPath>
+      <HintPath>M:/Projekty/GithubDesktop/FAForeverMapEditor/Assets/Plugins/NeroxisMapGenerator/IKVM.OpenJDK.Remoting.dll</HintPath>
     </Reference>
     <Reference Include="IKVM.OpenJDK.Security">
-      <HintPath>C:/Users/Pawel/Documents/GitHub/FAForeverMapEditor/Assets/Plugins/NeroxisMapGenerator/IKVM.OpenJDK.Security.dll</HintPath>
+      <HintPath>M:/Projekty/GithubDesktop/FAForeverMapEditor/Assets/Plugins/NeroxisMapGenerator/IKVM.OpenJDK.Security.dll</HintPath>
     </Reference>
     <Reference Include="IKVM.OpenJDK.SwingAWT">
-      <HintPath>C:/Users/Pawel/Documents/GitHub/FAForeverMapEditor/Assets/Plugins/NeroxisMapGenerator/IKVM.OpenJDK.SwingAWT.dll</HintPath>
+      <HintPath>M:/Projekty/GithubDesktop/FAForeverMapEditor/Assets/Plugins/NeroxisMapGenerator/IKVM.OpenJDK.SwingAWT.dll</HintPath>
     </Reference>
     <Reference Include="IKVM.OpenJDK.Text">
-      <HintPath>C:/Users/Pawel/Documents/GitHub/FAForeverMapEditor/Assets/Plugins/NeroxisMapGenerator/IKVM.OpenJDK.Text.dll</HintPath>
+      <HintPath>M:/Projekty/GithubDesktop/FAForeverMapEditor/Assets/Plugins/NeroxisMapGenerator/IKVM.OpenJDK.Text.dll</HintPath>
     </Reference>
     <Reference Include="IKVM.OpenJDK.Util">
-      <HintPath>C:/Users/Pawel/Documents/GitHub/FAForeverMapEditor/Assets/Plugins/NeroxisMapGenerator/IKVM.OpenJDK.Util.dll</HintPath>
+      <HintPath>M:/Projekty/GithubDesktop/FAForeverMapEditor/Assets/Plugins/NeroxisMapGenerator/IKVM.OpenJDK.Util.dll</HintPath>
     </Reference>
     <Reference Include="IKVM.OpenJDK.XML.API">
-      <HintPath>C:/Users/Pawel/Documents/GitHub/FAForeverMapEditor/Assets/Plugins/NeroxisMapGenerator/IKVM.OpenJDK.XML.API.dll</HintPath>
+      <HintPath>M:/Projekty/GithubDesktop/FAForeverMapEditor/Assets/Plugins/NeroxisMapGenerator/IKVM.OpenJDK.XML.API.dll</HintPath>
     </Reference>
     <Reference Include="IKVM.OpenJDK.XML.Bind">
-      <HintPath>C:/Users/Pawel/Documents/GitHub/FAForeverMapEditor/Assets/Plugins/NeroxisMapGenerator/IKVM.OpenJDK.XML.Bind.dll</HintPath>
+      <HintPath>M:/Projekty/GithubDesktop/FAForeverMapEditor/Assets/Plugins/NeroxisMapGenerator/IKVM.OpenJDK.XML.Bind.dll</HintPath>
     </Reference>
     <Reference Include="IKVM.OpenJDK.XML.Parse">
-      <HintPath>C:/Users/Pawel/Documents/GitHub/FAForeverMapEditor/Assets/Plugins/NeroxisMapGenerator/IKVM.OpenJDK.XML.Parse.dll</HintPath>
+      <HintPath>M:/Projekty/GithubDesktop/FAForeverMapEditor/Assets/Plugins/NeroxisMapGenerator/IKVM.OpenJDK.XML.Parse.dll</HintPath>
     </Reference>
     <Reference Include="IKVM.Reflection">
-      <HintPath>C:/Users/Pawel/Documents/GitHub/FAForeverMapEditor/Assets/Plugins/NeroxisMapGenerator/IKVM.Reflection.dll</HintPath>
+      <HintPath>M:/Projekty/GithubDesktop/FAForeverMapEditor/Assets/Plugins/NeroxisMapGenerator/IKVM.Reflection.dll</HintPath>
     </Reference>
     <Reference Include="IKVM.Runtime">
-      <HintPath>C:/Users/Pawel/Documents/GitHub/FAForeverMapEditor/Assets/Plugins/NeroxisMapGenerator/IKVM.Runtime.dll</HintPath>
+      <HintPath>M:/Projekty/GithubDesktop/FAForeverMapEditor/Assets/Plugins/NeroxisMapGenerator/IKVM.Runtime.dll</HintPath>
     </Reference>
     <Reference Include="IKVM.Runtime.JNI">
-      <HintPath>C:/Users/Pawel/Documents/GitHub/FAForeverMapEditor/Assets/Plugins/NeroxisMapGenerator/IKVM.Runtime.JNI.dll</HintPath>
+      <HintPath>M:/Projekty/GithubDesktop/FAForeverMapEditor/Assets/Plugins/NeroxisMapGenerator/IKVM.Runtime.JNI.dll</HintPath>
     </Reference>
     <Reference Include="NeroxisGen">
-      <HintPath>C:/Users/Pawel/Documents/GitHub/FAForeverMapEditor/Assets/Plugins/NeroxisMapGenerator/NeroxisGen.dll</HintPath>
+      <HintPath>M:/Projekty/GithubDesktop/FAForeverMapEditor/Assets/Plugins/NeroxisMapGenerator/NeroxisGen.dll</HintPath>
     </Reference>
     <Reference Include="Ookii.Dialogs">
-      <HintPath>C:/Users/Pawel/Documents/GitHub/FAForeverMapEditor/Assets/StandaloneFileBrowser/Plugins/Ookii.Dialogs.dll</HintPath>
+      <HintPath>M:/Projekty/GithubDesktop/FAForeverMapEditor/Assets/StandaloneFileBrowser/Plugins/Ookii.Dialogs.dll</HintPath>
     </Reference>
     <Reference Include="System.Windows.Forms">
-      <HintPath>C:/Users/Pawel/Documents/GitHub/FAForeverMapEditor/Assets/StandaloneFileBrowser/Plugins/System.Windows.Forms.dll</HintPath>
+      <HintPath>M:/Projekty/GithubDesktop/FAForeverMapEditor/Assets/StandaloneFileBrowser/Plugins/System.Windows.Forms.dll</HintPath>
     </Reference>
     <Reference Include="nunit.framework">
-      <HintPath>C:/Users/Pawel/Documents/GitHub/FAForeverMapEditor/Library/PackageCache/com.unity.ext.nunit@1.0.5/net35/unity-custom/nunit.framework.dll</HintPath>
+      <HintPath>M:/Projekty/GithubDesktop/FAForeverMapEditor/Library/PackageCache/com.unity.ext.nunit@1.0.5/net35/unity-custom/nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="mscorlib">
       <HintPath>C:/Program Files/Unity/Hub/Editor/2019.4.16f1/Editor/Data/MonoBleedingEdge/lib/mono/4.7.1-api/mscorlib.dll</HintPath>
@@ -722,37 +719,37 @@
       <HintPath>C:/Program Files/Unity/Hub/Editor/2019.4.16f1/Editor/Data/MonoBleedingEdge/lib/mono/unityscript/Boo.Lang.dll</HintPath>
     </Reference>
     <Reference Include="UnityEditor.TestRunner">
-      <HintPath>C:/Users/Pawel/Documents/GitHub/FAForeverMapEditor/Library/ScriptAssemblies/UnityEditor.TestRunner.dll</HintPath>
+      <HintPath>M:/Projekty/GithubDesktop/FAForeverMapEditor/Library/ScriptAssemblies/UnityEditor.TestRunner.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.TestRunner">
-      <HintPath>C:/Users/Pawel/Documents/GitHub/FAForeverMapEditor/Library/ScriptAssemblies/UnityEngine.TestRunner.dll</HintPath>
+      <HintPath>M:/Projekty/GithubDesktop/FAForeverMapEditor/Library/ScriptAssemblies/UnityEngine.TestRunner.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Timeline.Editor">
-      <HintPath>C:/Users/Pawel/Documents/GitHub/FAForeverMapEditor/Library/ScriptAssemblies/Unity.Timeline.Editor.dll</HintPath>
+      <HintPath>M:/Projekty/GithubDesktop/FAForeverMapEditor/Library/ScriptAssemblies/Unity.Timeline.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.VSCode.Editor">
-      <HintPath>C:/Users/Pawel/Documents/GitHub/FAForeverMapEditor/Library/ScriptAssemblies/Unity.VSCode.Editor.dll</HintPath>
+      <HintPath>M:/Projekty/GithubDesktop/FAForeverMapEditor/Library/ScriptAssemblies/Unity.VSCode.Editor.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.UI">
-      <HintPath>C:/Users/Pawel/Documents/GitHub/FAForeverMapEditor/Library/ScriptAssemblies/UnityEngine.UI.dll</HintPath>
+      <HintPath>M:/Projekty/GithubDesktop/FAForeverMapEditor/Library/ScriptAssemblies/UnityEngine.UI.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Timeline">
-      <HintPath>C:/Users/Pawel/Documents/GitHub/FAForeverMapEditor/Library/ScriptAssemblies/Unity.Timeline.dll</HintPath>
+      <HintPath>M:/Projekty/GithubDesktop/FAForeverMapEditor/Library/ScriptAssemblies/Unity.Timeline.dll</HintPath>
     </Reference>
     <Reference Include="Unity.CollabProxy.Editor">
-      <HintPath>C:/Users/Pawel/Documents/GitHub/FAForeverMapEditor/Library/ScriptAssemblies/Unity.CollabProxy.Editor.dll</HintPath>
+      <HintPath>M:/Projekty/GithubDesktop/FAForeverMapEditor/Library/ScriptAssemblies/Unity.CollabProxy.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Rider.Editor">
-      <HintPath>C:/Users/Pawel/Documents/GitHub/FAForeverMapEditor/Library/ScriptAssemblies/Unity.Rider.Editor.dll</HintPath>
+      <HintPath>M:/Projekty/GithubDesktop/FAForeverMapEditor/Library/ScriptAssemblies/Unity.Rider.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.2D.Sprite.Editor">
-      <HintPath>C:/Users/Pawel/Documents/GitHub/FAForeverMapEditor/Library/ScriptAssemblies/Unity.2D.Sprite.Editor.dll</HintPath>
+      <HintPath>M:/Projekty/GithubDesktop/FAForeverMapEditor/Library/ScriptAssemblies/Unity.2D.Sprite.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.2D.Tilemap.Editor">
-      <HintPath>C:/Users/Pawel/Documents/GitHub/FAForeverMapEditor/Library/ScriptAssemblies/Unity.2D.Tilemap.Editor.dll</HintPath>
+      <HintPath>M:/Projekty/GithubDesktop/FAForeverMapEditor/Library/ScriptAssemblies/Unity.2D.Tilemap.Editor.dll</HintPath>
     </Reference>
     <Reference Include="UnityEditor.UI">
-      <HintPath>C:/Users/Pawel/Documents/GitHub/FAForeverMapEditor/Library/ScriptAssemblies/UnityEditor.UI.dll</HintPath>
+      <HintPath>M:/Projekty/GithubDesktop/FAForeverMapEditor/Library/ScriptAssemblies/UnityEditor.UI.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

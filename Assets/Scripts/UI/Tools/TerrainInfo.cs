@@ -721,6 +721,60 @@ namespace EditMap
 		}
 		#endregion
 
+		#region Neroxis
+
+		public void GenerateRandomHeightmap()
+		{
+			var values = new neroxis.MapGeneratorSettings() { width = ScmapEditor.Current.map.Width, mexCount = 0, reclaimDensity = 0 };
+
+			neroxis.GenerateMapTask.GenerateSCMP(values, OnGeneratorHeightmapFinished);
+		}
+
+		public void GenerateRandomHeightmapStratum()
+		{
+			var values = new neroxis.MapGeneratorSettings() { width = ScmapEditor.Current.map.Width, mexCount = 0, reclaimDensity = 0 };
+
+			neroxis.GenerateMapTask.GenerateSCMP(values, OnGeneratorHeightmapStratumFinished);
+		}
+
+		public void OnGeneratorHeightmapFinished()
+		{
+			LoadNeroxisHeightmap();
+
+			RegenerateMaps();
+			OnTerrainChanged();
+		}
+
+		public void OnGeneratorHeightmapStratumFinished()
+		{
+			LoadNeroxisHeightmap();
+
+			RegenerateMaps();
+			OnTerrainChanged();
+		}
+
+		void LoadNeroxisHeightmap()
+		{
+			ScmapEditor.GetAllHeights(ref beginHeights);
+
+			float[,] heights = ScmapEditor.Current.Teren.terrainData.GetHeights(0, 0, ScmapEditor.Current.Teren.terrainData.heightmapResolution, ScmapEditor.Current.Teren.terrainData.heightmapResolution);
+			float[,] generatedHeights = neroxis.GenerateMapTask.GetGeneratedHeightmap();
+
+			for (int i = 0; i < ScmapEditor.Current.Teren.terrainData.heightmapResolution; i++)
+			{
+				for (int j = 0; j < ScmapEditor.Current.Teren.terrainData.heightmapResolution; j++)
+				{
+					heights[i, j] = generatedHeights[i, j];
+				}
+			}
+
+			Undo.RegisterUndo(new UndoHistory.HistoryTerrainHeight(), new UndoHistory.HistoryTerrainHeight.TerrainHeightHistoryParameter(beginHeights));
+
+			ScmapEditor.SetAllHeights(heights);
+		}
+
+		#endregion
+
 		void ClampTop()
 		{
 			//RecalcTerrainClamp();

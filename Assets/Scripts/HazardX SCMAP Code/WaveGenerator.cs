@@ -11,19 +11,22 @@ public class WaveGenerator
 {
 
     public Vector3 Position;
-
     public float Rotation;
+
     public string TextureName;
     public string RampName;
 
     public Vector3 Velocity;
+
     public float LifetimeFirst;
     public float LifetimeSecond;
+
     public float PeriodFirst;
     public float PeriodSecond;
-    public float ScaleFirst;
 
+    public float ScaleFirst;
     public float ScaleSecond;
+
     public float FrameCount;
     public float FrameRateFirst;
     public float FrameRateSecond;
