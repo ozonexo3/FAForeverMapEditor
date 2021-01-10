@@ -13,6 +13,22 @@ public partial class ScmapEditor : MonoBehaviour
 	static int heightsLength;
 	static float[,] heights = new float[1, 1];
 
+	public static int HeightmapWidth
+	{
+		get
+		{
+			return heights.GetLength(0);
+		}
+	}
+
+	public static int HeightmapHeight
+	{
+		get
+		{
+			return heights.GetLength(1);
+		}
+	}
+
 	public static void ApplyHeightmap(bool delayed = true)
 	{
 		if (delayed)
@@ -36,12 +52,20 @@ public partial class ScmapEditor : MonoBehaviour
 
 		for(int x = 0; x < width; x++)
 		{
-			for (int y = 0; y < width; y++)
+			for (int y = 0; y < height; y++)
 			{
 				destArray[x, y] = heights[x, y];
 			}
 		}
 		ApplyHeightmap(false);
+	}
+
+	public static float[,] Heights
+	{
+		get
+		{
+			return heights;
+		}
 	}
 
 	public static void ClampTop(float MaxHeight)

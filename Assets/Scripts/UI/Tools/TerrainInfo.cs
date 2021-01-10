@@ -799,6 +799,7 @@ namespace EditMap
 		{
 			GenerateControlTex.GenerateWater();
 			GenerateControlTex.GenerateNormal();
+			WavesRenderer.ClearShoreLine();
 
 		}
 

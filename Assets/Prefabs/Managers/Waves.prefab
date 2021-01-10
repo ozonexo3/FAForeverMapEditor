@@ -24,7 +24,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4665352902452298593}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
@@ -43,5 +43,36 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e4a9e6f14c471841a9bfa02793a80ec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  edgeColors:
+    serializedVersion: 2
+    key0: {r: 1, g: 0, b: 0, a: 1}
+    key1: {r: 1, g: 1, b: 0, a: 1}
+    key2: {r: 0, g: 1, b: 0, a: 0}
+    key3: {r: 0, g: 1, b: 1, a: 0}
+    key4: {r: 0, g: 0, b: 1, a: 0}
+    key5: {r: 1, g: 0, b: 1, a: 0}
+    key6: {r: 0, g: 0, b: 0, a: 0}
+    key7: {r: 1, g: 1, b: 1, a: 0}
+    ctime0: 0
+    ctime1: 3636
+    ctime2: 8485
+    ctime3: 13980
+    ctime4: 20121
+    ctime5: 26020
+    ctime6: 44283
+    ctime7: 65535
+    atime0: 0
+    atime1: 65535
+    atime2: 0
+    atime3: 0
+    atime4: 0
+    atime5: 0
+    atime6: 0
+    atime7: 0
+    m_Mode: 0
+    m_NumColorKeys: 8
+    m_NumAlphaKeys: 2
+  shoreLineMaterial: {fileID: 2100000, guid: 5b350282bcaaef941b78374e096dbe45, type: 2}
+  DrawShoreLine: 1
+  RenderCamera: {fileID: 0}
   waveMaterial: {fileID: 2100000, guid: 06b08955eb908e942bf83c52e497feb0, type: 2}
-  loadedMaterial: {fileID: 0}

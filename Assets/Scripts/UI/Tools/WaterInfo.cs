@@ -44,6 +44,13 @@ namespace EditMap
 		{
 			Current = this;
 			ReloadValues();
+			WavesRenderer.GenerateShoreline();
+			WavesRenderer.Instance.DrawShoreLine = true;
+		}
+
+		private void OnDisable()
+		{
+			WavesRenderer.Instance.DrawShoreLine = false;
 		}
 
 		public void ReloadValues(bool Undo = false)

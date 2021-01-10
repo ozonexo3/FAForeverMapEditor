@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
 
-public class WavesRenderer : MonoBehaviour
+public partial class WavesRenderer : MonoBehaviour
 {
 	public static WavesRenderer Instance;
 	public Material waveMaterial;
@@ -43,7 +43,7 @@ public class WavesRenderer : MonoBehaviour
 		}
 	}
 
-	public Material loadedMaterial;
+	//public Material loadedMaterial;
 
 	const int MAX_MEMORY_ALLOCATION = 1023 * 4;
 	const int MAX_STORED_ALLOCATION = 1023;
@@ -64,7 +64,7 @@ public class WavesRenderer : MonoBehaviour
 			waveMaterial = new Material(Instance.waveMaterial);
 			waveMaterial.SetTexture(SHADER_ALBEDO, waveTexture);
 
-			Instance.loadedMaterial = waveMaterial;
+			//Instance.loadedMaterial = waveMaterial;
 
 			instancesCount = 0;
 			count = 0;
@@ -74,11 +74,11 @@ public class WavesRenderer : MonoBehaviour
 
 
 		int instancesCount = 0;
-		Matrix4x4[] instances = new Matrix4x4[MAX_MEMORY_ALLOCATION];
+		public Matrix4x4[] instances = new Matrix4x4[MAX_MEMORY_ALLOCATION];
 		BoundingSphere[] spheres = new BoundingSphere[MAX_MEMORY_ALLOCATION];
 
 		int count = 0;
-		Matrix4x4[] stored = new Matrix4x4[MAX_STORED_ALLOCATION];
+		public Matrix4x4[] stored = new Matrix4x4[MAX_STORED_ALLOCATION];
 		MaterialPropertyBlock mpb;
 
 		public void AddInstance(WaveGenerator wave)
@@ -92,7 +92,7 @@ public class WavesRenderer : MonoBehaviour
 			Quaternion rotation = Quaternion.Euler(0f, ScmapEditor.Current.map.WaveGenerators[instancesCount].Rotation * Mathf.Rad2Deg, 0f);
 			Vector3 scale = Vector3.one * Mathf.Max(ScmapEditor.Current.map.WaveGenerators[instancesCount].ScaleFirst, ScmapEditor.Current.map.WaveGenerators[instancesCount].ScaleSecond) * 0.1f;
 
-			instances[instancesCount] = Matrix4x4.TRS(position + rotation * Vector3.back * Random.Range(0.1f, 0.4f), rotation, scale);
+			instances[instancesCount] = Matrix4x4.TRS(position + rotation * Vector3.back * Random.Range(0.1f, 0.4f), rotation, scale); // Offset them for debuging
 
 			instancesCount++;
 		}
@@ -159,7 +159,7 @@ public class WavesRenderer : MonoBehaviour
 			rend.Value.FillMatrixes();
 		}
 
-		Debug.Log(renderers.Count);
+		//Debug.Log(renderers.Count);
 	}
 
 	private void Update()
@@ -170,6 +170,19 @@ public class WavesRenderer : MonoBehaviour
 		{
 			rend.Value.Draw();
 		}
+
+		//DrawGizmos();
 	}
 
+	private void OnDrawGizmos()
+	{
+		foreach (var rend in renderers)
+		{
+			for(int i = 0; i < rend.Value.instances.Length; i++)
+			{
+				Gizmos.matrix = rend.Value.instances[i];
+				Gizmos.DrawWireCube(Vector3.zero, new Vector3(1, 0, 0.25f));
+			}
+		}
+	}
 }
