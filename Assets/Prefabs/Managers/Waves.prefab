@@ -43,6 +43,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e4a9e6f14c471841a9bfa02793a80ec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  WavePatterns:
+  - name: short waves
+    preview: /editor/tools/water/nopreview.bmp
+    parameters:
+    - texture: /env/common/decals/shoreline/wavetest.dds
+      ramp: /env/common/decals/shoreline/waveramptest.dds
+      position: {x: 0, y: 0, z: 0}
+      period: 3.3
+      periodVariance: 0.1
+      speed: 0.015
+      speedVariance: 0.005
+      lifetime: 33
+      lifetimeVariance: 1
+      scale: {x: 0.5, y: 1.2}
+      scaleVariance: 0
+      velocityDelta: {x: 0, y: 0, z: 0}
+      frameCount: 1
+      frameRate: 1
+      frameRateVariance: 0
+      stripCount: 1
   edgeColors:
     serializedVersion: 2
     key0: {r: 1, g: 0, b: 0, a: 1}

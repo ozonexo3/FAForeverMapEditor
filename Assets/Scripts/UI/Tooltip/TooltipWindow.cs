@@ -12,6 +12,7 @@ public class TooltipWindow : MonoBehaviour
 	public Text field;
 	public LayoutGroup layout;
 	public LayoutElement layoutElement;
+	public Animator animator;
 	public int characterWrapLimit = 80;
 
 	private void Awake()
@@ -22,7 +23,8 @@ public class TooltipWindow : MonoBehaviour
 	static Tooltip displayedTip = null;
 
 	static Vector3[] WorldCorners = new Vector3[4];
-
+	static float showTime = 0f;
+	static float hideTime = 0f;
 	public static void Show(Tooltip tip)
 	{
 		displayedTip = tip;
@@ -32,8 +34,17 @@ public class TooltipWindow : MonoBehaviour
 
 		Instance.window.position = WorldCorners[0] + new Vector3(4, -4, 0);
 
-
 		Instance.window.gameObject.SetActive(true);
+		if (Time.realtimeSinceStartup - hideTime < 0.3f)
+		{
+			Instance.animator.Play("TooltipShow", 0, 0.909f);
+		}
+		else
+		{
+			showTime = Time.realtimeSinceStartup;
+			Instance.animator.Play("TooltipShow", 0, 0f);
+		}
+
 		Instance.field.text = tip.text;
 		int textLength = tip.text.Length;
 		Instance.layoutElement.enabled = tip.text.Length > Instance.characterWrapLimit;
@@ -52,6 +63,8 @@ public class TooltipWindow : MonoBehaviour
 		{
 			displayedTip = null;
 			Instance.window.gameObject.SetActive(false);
+			if(Time.realtimeSinceStartup - showTime > 1f)
+				hideTime = Time.realtimeSinceStartup;
 		}
 	}
 

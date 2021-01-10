@@ -113,6 +113,21 @@ namespace LuaParser
 				return new Rect(0, 0, 0, 0);
 		}
 
+		public static Vector2 Vector2FromTable(LuaTable Table, string key)
+		{
+			if (ValueExist(Table, key))
+			{
+				LuaTable RectTable = (LuaTable)Table.RawGet(key);
+				object[] RectValues = GetTableObjects(RectTable);
+				return new Vector2(
+					StringToFloat(RectValues[0].ToString(), 0),
+					StringToFloat(RectValues[1].ToString(), 0)
+					);
+
+			}
+			else
+				return Vector2.zero;
+		}
 
 		public static Vector3 Vector3FromTable(LuaTable Table, string key)
 		{
