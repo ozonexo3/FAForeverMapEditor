@@ -10,6 +10,8 @@ using UnityEngine;
 public class WaveGenerator
 {
 
+	public int propertyID;
+
     public Vector3 Position;
     public float Rotation;
 
@@ -30,8 +32,8 @@ public class WaveGenerator
     public float FrameCount;
     public float FrameRateFirst;
     public float FrameRateSecond;
-
     public float StripCount;
+
     public void Load(BinaryReader Stream)
     {
         TextureName = Stream.ReadStringNull();
@@ -52,9 +54,11 @@ public class WaveGenerator
         FrameRateFirst = Stream.ReadSingle();
         FrameRateSecond = Stream.ReadSingle();
         StripCount = Stream.ReadSingle();
-    }
 
-    public static void Skip(BinaryReader Stream)
+		propertyID = Shader.PropertyToID(TextureName + RampName);
+	}
+
+	public static void Skip(BinaryReader Stream)
     {
         Stream.SeekSkipNull();
         Stream.SeekSkipNull();

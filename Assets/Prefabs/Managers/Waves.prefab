@@ -45,6 +45,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   WavePatterns:
   - name: short waves
+    previewTexture: {fileID: 0}
     preview: /editor/tools/water/nopreview.bmp
     parameters:
     - texture: /env/common/decals/shoreline/wavetest.dds
@@ -93,6 +94,6 @@ MonoBehaviour:
     m_NumColorKeys: 8
     m_NumAlphaKeys: 2
   shoreLineMaterial: {fileID: 2100000, guid: 5b350282bcaaef941b78374e096dbe45, type: 2}
-  DrawShoreLine: 1
+  DrawShoreLine: 0
   RenderCamera: {fileID: 0}
   waveMaterial: {fileID: 2100000, guid: 06b08955eb908e942bf83c52e497feb0, type: 2}

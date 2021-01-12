@@ -44,13 +44,16 @@ namespace EditMap
 		{
 			Current = this;
 			ReloadValues();
-			WavesRenderer.GenerateShoreline();
-			WavesRenderer.Instance.DrawShoreLine = true;
+			//WavesRenderer.GenerateShoreline();
+		}
+
+		private void Start()
+		{
+			LoadWavesUI();
 		}
 
 		private void OnDisable()
 		{
-			WavesRenderer.Instance.DrawShoreLine = false;
 		}
 
 		public void ReloadValues(bool Undo = false)
@@ -296,12 +299,5 @@ namespace EditMap
 		}
 		#endregion
 
-
-		public void ClearWaves()
-		{
-			Debug.Log("Clear waves count: " + ScmapEditor.Current.map.WaveGenerators.Count);
-			ScmapEditor.Current.map.WaveGenerators.Clear();
-
-		}
 	}
 }

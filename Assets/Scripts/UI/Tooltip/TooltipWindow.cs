@@ -27,6 +27,12 @@ public class TooltipWindow : MonoBehaviour
 	static float hideTime = 0f;
 	public static void Show(Tooltip tip)
 	{
+		if (string.IsNullOrEmpty(tip.text))
+		{
+			_Hide();
+			return;
+		}
+
 		displayedTip = tip;
 
 		RectTransform rt = tip.GetComponent<RectTransform>();
@@ -61,11 +67,16 @@ public class TooltipWindow : MonoBehaviour
 	{
 		if(displayedTip == tip)
 		{
-			displayedTip = null;
-			Instance.window.gameObject.SetActive(false);
-			if(Time.realtimeSinceStartup - showTime > 1f)
-				hideTime = Time.realtimeSinceStartup;
+			_Hide();
 		}
+	}
+
+	static void _Hide()
+	{
+		displayedTip = null;
+		Instance.window.gameObject.SetActive(false);
+		if (Time.realtimeSinceStartup - showTime > 1f)
+			hideTime = Time.realtimeSinceStartup;
 	}
 
 }

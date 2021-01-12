@@ -199,6 +199,8 @@ public partial class ScmapEditor : MonoBehaviour
 
 		SetTextures();
 
+		EditMap.WavesRenderer.ReloadWaves();
+
 		if (Slope)
 		{
 			ToogleSlope(Slope);

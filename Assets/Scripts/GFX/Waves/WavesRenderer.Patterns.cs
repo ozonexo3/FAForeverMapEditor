@@ -15,6 +15,7 @@ namespace EditMap
 		public class WavePattern
 		{
 			public string name;
+			public Texture2D previewTexture;
 			public string preview;
 			public Parameters[] parameters;
 

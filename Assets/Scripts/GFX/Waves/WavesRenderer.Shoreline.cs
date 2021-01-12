@@ -355,6 +355,8 @@ namespace EditMap
 			}
 		}
 
+		Vector3[] EdgeArray = new Vector3[2];
+
 		private void OnRenderObject()
 		{
 			if (ShoreLineTask != null || !DrawShoreLine)
@@ -371,6 +373,11 @@ namespace EditMap
 			GL.PushMatrix();
 			GL.MultMatrix(Matrix4x4.identity);
 			shoreLineMaterial.SetPass(0);
+
+			Matrix4x4 boundsMatrix = Matrix4x4.identity;
+
+			var planes = GeometryUtility.CalculateFrustumPlanes(RenderCamera);
+
 			for (int i = 0; i < ShoreLines.Count; i++)
 			{
 				GL.Begin(GL.LINES);
@@ -380,11 +387,21 @@ namespace EditMap
 				//Color shorelineColor = Color.cyan;
 				for (int e = 0; e < edgesCount; e++)
 				{
-					Vector3 center = (ShoreLines[i].Edges[e].point0 + ShoreLines[i].Edges[e].point1) / 2f;
+					//Vector3 center = (ShoreLines[i].Edges[e].point0 + ShoreLines[i].Edges[e].point1) / 2f;
 
-					Vector3 viewportPos = RenderCamera.WorldToViewportPoint(center);
+					Vector3 viewportPos = RenderCamera.WorldToViewportPoint(ShoreLines[i].Edges[e].point0);
 					if (viewportPos.x < -0.01f || viewportPos.x > 1.01f || viewportPos.y < -0.01f || viewportPos.y > 1.01f || viewportPos.z < 0)
 						continue;
+
+					/*EdgeArray[0] = ShoreLines[i].Edges[e].point0;
+					EdgeArray[1] = ShoreLines[i].Edges[e].point1;
+
+					Bounds bounds = GeometryUtility.CalculateBounds(EdgeArray, boundsMatrix);
+					if (!GeometryUtility.TestPlanesAABB(planes, bounds))
+					{
+						continue;
+					}*/
+					
 
 					GL.Vertex(ShoreLines[i].Edges[e].point0);
 					GL.Vertex(ShoreLines[i].Edges[e].point1);
