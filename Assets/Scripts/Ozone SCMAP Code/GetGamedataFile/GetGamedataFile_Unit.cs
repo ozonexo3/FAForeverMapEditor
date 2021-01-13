@@ -46,6 +46,8 @@ public partial struct GetGamedataFile
 		// Strategic
 		public string StrategicIconName;
 		public int StrategicIconSortPriority;
+		public Texture2D strategicIcon;
+		public Material strategicMaterial;
 
 		// Skirt
 		public float SkirtOffsetX;
@@ -245,7 +247,18 @@ public partial struct GetGamedataFile
 
 		CurrentValue = UnitBlueprintTable.RawGet("StrategicIconName");
 		if (CurrentValue != null)
+		{
 			ToReturn.BP.StrategicIconName = CurrentValue.ToString();
+
+			Debug.Log("Strategic:\n" + ToReturn.BP.StrategicIconName);
+			ToReturn.BP.strategicIcon = GetGamedataFile.LoadTexture2DFromGamedata(TexturesScd, "textures/ui/common/game/strategicicons/" +  ToReturn.BP.StrategicIconName + "_rest.dds", false, true, true);
+			if(ToReturn.BP.strategicIcon != null)
+			{
+				ToReturn.BP.strategicIcon.filterMode = FilterMode.Point;
+			}
+			ToReturn.BP.strategicMaterial = new Material(UnitsInfo.Current.StrategicIcon);
+			ToReturn.BP.strategicMaterial.SetTexture(SHADER_MainTex, ToReturn.BP.strategicIcon);
+		}
 
 		CurrentValue = EconomyTab.RawGet("StrategicIconSortPriority");
 		if (CurrentValue != null)

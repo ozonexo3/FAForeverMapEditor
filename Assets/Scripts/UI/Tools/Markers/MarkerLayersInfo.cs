@@ -9,6 +9,9 @@ namespace EditMap
 	public class MarkerLayersInfo : MonoBehaviour
 	{
 		public Toggle AllActive;
+		public Toggle BasicActive;
+		public Toggle PathsActive;
+		public Toggle AIActive;
 
 		public Toggle BlankActive;
 		public Toggle SpawnActive;
@@ -88,6 +91,57 @@ namespace EditMap
 			ValuesChanged();
 		}
 
+		public void BasicChanged()
+		{
+			if (IgnoreEvent)
+				return;
+			IgnoreEvent = true;
+
+			BlankActive.isOn = BasicActive.isOn;
+			SpawnActive.isOn = BasicActive.isOn;
+			ResourcesActive.isOn = BasicActive.isOn;
+			CameraActive.isOn = BasicActive.isOn;
+
+			IgnoreEvent = false;
+
+			ValuesChanged();
+		}
+
+		public void PathsChanged()
+		{
+			if (IgnoreEvent)
+				return;
+			IgnoreEvent = true;
+
+			LandNodesActive.isOn = PathsActive.isOn;
+			AmphibiousNodesActive.isOn = PathsActive.isOn;
+			NavalNodesActive.isOn = PathsActive.isOn;
+			AirNodesActive.isOn = PathsActive.isOn;
+			ConnectionsActive.isOn = PathsActive.isOn;
+
+			IgnoreEvent = false;
+
+			ValuesChanged();
+		}
+
+		public void AiChanged()
+		{
+			if (IgnoreEvent)
+				return;
+			IgnoreEvent = true;
+
+			CombatActive.isOn = AIActive.isOn;
+			DefenseActive.isOn = AIActive.isOn;
+			ProtExpActive.isOn = AIActive.isOn;
+			ExpandActive.isOn = AIActive.isOn;
+			RallyPointActive.isOn = AIActive.isOn;
+			OtherActive.isOn = AIActive.isOn;
+
+			IgnoreEvent = false;
+
+			ValuesChanged();
+		}
+
 		public void ValuesChanged()
 		{
 			if (IgnoreEvent)
@@ -121,29 +175,32 @@ namespace EditMap
 			//MarkersInfo.Current.MarkerList.UpdateSelection();
 		}
 
+
 		void UpdateAllToggle()
 		{
 			IgnoreEvent = true;
-			bool AllSet = BlankActive.isOn;
-			AllSet &= SpawnActive.isOn;
-			AllSet &= ResourcesActive.isOn;
-			AllSet &= CameraActive.isOn;
+			bool Basic = BlankActive.isOn;
+			Basic &= SpawnActive.isOn;
+			Basic &= ResourcesActive.isOn;
+			Basic &= CameraActive.isOn;
+			BasicActive.isOn = Basic;
 
-			AllSet &= LandNodesActive.isOn;
-			AllSet &= AmphibiousNodesActive.isOn;
-			AllSet &= NavalNodesActive.isOn;
-			AllSet &= AirNodesActive.isOn;
-			AllSet &= ConnectionsActive.isOn;
+			bool Paths = LandNodesActive.isOn;
+			Paths &= AmphibiousNodesActive.isOn;
+			Paths &= NavalNodesActive.isOn;
+			Paths &= AirNodesActive.isOn;
+			Paths &= ConnectionsActive.isOn;
+			PathsActive.isOn = Paths;
 
-			AllSet &= RallyPointActive.isOn;
+			bool AIs = CombatActive.isOn;
+			AIs &= DefenseActive.isOn;
+			AIs &= ProtExpActive.isOn;
+			AIs &= ExpandActive.isOn;
+			AIs &= RallyPointActive.isOn;
+			AIs &= OtherActive.isOn;
+			AIActive.isOn = AIs;
 
-			AllSet &= CombatActive.isOn;
-			AllSet &= DefenseActive.isOn;
-			AllSet &= ProtExpActive.isOn;
-			AllSet &= ExpandActive.isOn;
-			AllSet &= OtherActive.isOn;
-
-			AllActive.isOn = AllSet;
+			AllActive.isOn = Basic && Paths && AIs;
 
 			IgnoreEvent = false;
 		}

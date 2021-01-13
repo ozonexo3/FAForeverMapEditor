@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using EditMap;
 
+//[ExecuteInEditMode]
 public class UnitSource : MonoBehaviour
 {
 	public GetGamedataFile.UnitBluePrint BP;
@@ -19,7 +20,9 @@ public class UnitSource : MonoBehaviour
 	UnitInstance[] InstancesArray;
 	BoundingSphere[] SpheresArray;
 	HashSet<UnitInstance> Lod;
-	
+
+	public Material strategicIconMaterial;
+
 	List<int> ForceUpdate = new List<int>();
 	void BakeInstances()
 	{
@@ -94,6 +97,7 @@ public class UnitSource : MonoBehaviour
 		Culling.SetBoundingDistances(RenderDistances);
 		Culling.onStateChanged = UpdateLods;
 		Culling.targetCamera = CameraControler.Current.Cam;
+		Culling.SetDistanceReferencePoint(CameraControler.Current.transform);
 	}
 
 	void UpdateLods(CullingGroupEvent evt)
@@ -114,7 +118,7 @@ public class UnitSource : MonoBehaviour
 	const UnityEngine.Rendering.ShadowCastingMode ShadowCasting = UnityEngine.Rendering.ShadowCastingMode.On;
 	public void Draw()
 	{
-		if (Lod.Count == 0)
+		if (Lod == null || Lod.Count == 0)
 			return;
 
 		if (BP.LODs[0].Mesh == null)
@@ -145,7 +149,8 @@ public class UnitSource : MonoBehaviour
 			{
 				Mpb.SetVectorArray("_Color", _colors);
 				Mpb.SetFloatArray("_Wreckage", _wreckage);
-				Graphics.DrawMeshInstanced(BP.LODs[0].Mesh, 0, BP.LODs[0].Mat, _matrices, n, Mpb, ShadowCasting);
+				Graphics.DrawMeshInstanced(BP.LODs[0].Mesh, 0, BP.LODs[0].Mat, _matrices, n, Mpb, ShadowCasting, true, 0, null, UnityEngine.Rendering.LightProbeUsage.Off, null);
+				//Graphics.DrawMeshInstanced(UnitsInfo.Current.StrategicMesh, 0, BP.strategicMaterial, _matrices, n, Mpb, UnityEngine.Rendering.ShadowCastingMode.Off, false, 0, null, UnityEngine.Rendering.LightProbeUsage.Off, null);
 				//Graphics.DrawMeshInstancedIndirect(SharedMesh, 0, SharedMaterial, , null, 0, null, ShadowCasting);
 				n = 0;
 				Mpb.Clear();
@@ -156,7 +161,8 @@ public class UnitSource : MonoBehaviour
 		{
 			Mpb.SetVectorArray("_Color", _colors);
 			Mpb.SetFloatArray("_Wreckage", _wreckage);
-			Graphics.DrawMeshInstanced(BP.LODs[0].Mesh, 0, BP.LODs[0].Mat, _matrices, n, Mpb, ShadowCasting);
+			Graphics.DrawMeshInstanced(BP.LODs[0].Mesh, 0, BP.LODs[0].Mat, _matrices, n, Mpb, ShadowCasting, true, 0, null, UnityEngine.Rendering.LightProbeUsage.Off, null);
+			//Graphics.DrawMeshInstanced(UnitsInfo.Current.StrategicMesh, 0, BP.strategicMaterial, _matrices, n, Mpb, UnityEngine.Rendering.ShadowCastingMode.Off, false, 0, null, UnityEngine.Rendering.LightProbeUsage.Off, null);
 		}
 	}
 
@@ -166,14 +172,16 @@ public class UnitSource : MonoBehaviour
 		if (IsDirty)
 			BakeInstances();
 
-		Culling.SetDistanceReferencePoint(CameraControler.Current.Cam.transform.position);
-
 		Draw();
+		//DrawIcons();
 	}
 
 	void OnDisable()
 	{
-		Culling.Dispose();
+		if (Culling != null) {
+			Culling.Dispose();
+			Culling = null;
+		}
 	}
 
 	public UnitInstance CreateUnitObject(MapLua.SaveLua.Army.Unit Source, MapLua.SaveLua.Army.UnitsGroup Group)
@@ -269,5 +277,54 @@ public class UnitSource : MonoBehaviour
 		{
 			ListEnum.Current.SnapToTerrain();
 		}
+	}
+
+	static Camera CurrentCamera;
+	public static void DrawAllIcons(Camera current)
+	{
+		if (current == null || GetGamedataFile.LoadedUnitObjects.Count == 0)
+			return;
+
+		CurrentCamera = current;
+		Rect CameraRect = CurrentCamera.pixelRect;
+		//Color gc = GUI.color;
+		//GUI.color = Color.red;
+		GL.PushMatrix();
+		GL.LoadPixelMatrix(Mathf.RoundToInt(CameraRect.x), Mathf.RoundToInt(CameraRect.x + CameraRect.width), Mathf.RoundToInt(CameraRect.y), Mathf.RoundToInt(CameraRect.y + CameraRect.height));
+
+		foreach (var unitSource in GetGamedataFile.LoadedUnitObjects)
+		{
+			unitSource.Value.DrawIcons();
+		}
+		GL.PopMatrix();
+	}
+
+
+	static readonly Color WreckageColor = new Color(0.2f, 0.2f, 0.2f, 0f);
+	public void DrawIcons()
+	{
+		if (Lod == null || Lod.Count < 0 || BP.strategicIcon == null)
+			return;
+
+		Rect drawRect = new Rect(0, 0, BP.strategicIcon.width, BP.strategicIcon.height);
+		Rect texCoord = new Rect(0, 1f, 1f, 1f);
+		Vector3 worldPos;
+		Vector3 worldPoint;
+
+
+		var ListEnum = Instances.GetEnumerator();
+		while (ListEnum.MoveNext())
+		{
+			worldPos = ListEnum.Current.LocalToWorldMatrix.GetColumn(3);
+			worldPoint = CurrentCamera.WorldToScreenPoint(worldPos);
+
+			drawRect.x = Mathf.RoundToInt(worldPoint.x - drawRect.width / 2);
+			drawRect.y = Mathf.RoundToInt(worldPoint.y - drawRect.height / 2); 
+			Graphics.DrawTexture(drawRect, BP.strategicIcon, texCoord, 0, 0, 0, 0, (ListEnum.Current.IsWreckage > 0.5f ? WreckageColor : ListEnum.Current.ArmyColor), BP.strategicMaterial, 0);//
+		}
+		ListEnum.Dispose();
+
+
+		//GUI.color = gc;
 	}
 }

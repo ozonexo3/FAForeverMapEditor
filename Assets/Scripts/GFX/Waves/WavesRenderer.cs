@@ -368,7 +368,7 @@ namespace EditMap
 			Shader.SetGlobalFloat(SHADER_SUPCOMTIME, Time.time);
 		}
 
-		/*private void OnDrawGizmos()
+		private void OnDrawGizmos()
 		{
 			foreach (var rend in renderers)
 			{
@@ -378,6 +378,6 @@ namespace EditMap
 					Gizmos.DrawWireCube(Vector3.zero, new Vector3(0.2f, 0, 0.05f));
 				}
 			}
-		}*/
+		}
 	}
 }

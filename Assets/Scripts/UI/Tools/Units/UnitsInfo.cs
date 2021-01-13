@@ -31,6 +31,8 @@ namespace EditMap
 		public Material UnitMaterial;
 		public Mesh NoUnitMesh;
 		public Material NoUnitMaterial;
+		public Mesh StrategicMesh;
+		public Material StrategicIcon;
 
 		private void OnEnable()
 		{

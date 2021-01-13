@@ -13,7 +13,7 @@ SubShader {
 	LOD 100
 	ZTest Always
 	Blend SrcAlpha OneMinusSrcAlpha
-
+	Cull Off
 	Pass {  
 		CGPROGRAM
 			#pragma vertex vert
