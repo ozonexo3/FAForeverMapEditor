@@ -60,9 +60,35 @@ namespace Selection
 					//Paste
 					PasteAction?.Invoke();
 				}
+				else if(Input.GetKeyDown(KeyCode.D) && Input.GetKey(KeyCode.LeftControl))
+				{
+					//Duplicate
+					DuplicateAction?.Invoke();
+				}
 			}
 		}
 
+		public static void ExecuteCopyAction()
+		{
+			if(Current.Active && !CameraControler.IsInputFieldFocused())
+			{
+				CopyAction?.Invoke();
+			}
+		}
+		public static void ExecutePasteAction()
+		{
+			if (Current.Active && !CameraControler.IsInputFieldFocused())
+			{
+				PasteAction?.Invoke();
+			}
+		}
+		public static void ExecuteDuplicateAction()
+		{
+			if (Current.Active && !CameraControler.IsInputFieldFocused())
+			{
+				DuplicateAction?.Invoke();
+			}
+		}
 
 		public enum SelectionControlTypes
 		{
@@ -392,6 +418,12 @@ namespace Selection
 		public void SetPasteActionAction(System.Action Action)
 		{
 			PasteAction = Action;
+		}
+
+		static System.Action DuplicateAction;
+		public void SetDuplicateActionAction(System.Action Action)
+		{
+			DuplicateAction = Action;
 		}
 
 		#endregion

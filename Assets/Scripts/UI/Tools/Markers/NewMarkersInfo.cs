@@ -27,6 +27,7 @@ namespace EditMap
 			SelectionManager.Current.SetCustomSnapAction(SnapAction);
 			SelectionManager.Current.SetCopyActionAction(CopyAction);
 			SelectionManager.Current.SetPasteActionAction(PasteAction);
+			SelectionManager.Current.SetDuplicateActionAction(DuplicateAction);
 
 			if (CreationId >= 0)
 				SelectCreateNew(CreationId);
@@ -398,7 +399,7 @@ namespace EditMap
 			int selectionCount = Objs.Count;
 
 			if (CopyData == null)
-				CopyData = new List<CopyMarkerData>();
+				CopyData = new List<CopyMarkerData>(64);
 			else
 				CopyData.Clear();
 
@@ -422,8 +423,6 @@ namespace EditMap
 
 			PastedObjects.Clear();
 
-
-
 			Vector3 PlaceOffset = new Vector3(0.5f, 0f, -0.5f);
 			isPasteAction = true;
 			PlacementManager.SnapToWater = false;
@@ -443,6 +442,52 @@ namespace EditMap
 			}
 
 			Debug.Log("Pasted " + PastedObjects.Count + " markers");
+		}
+
+		static List<CopyMarkerData> DuplicateData;
+		static Vector3 DuplicateCenter;
+		void DuplicateAction()
+		{
+			List<GameObject> Objs = SelectionManager.GetAllSelectedGameobjects(false);
+			int selectionCount = Objs.Count;
+
+			if (DuplicateData == null)
+				DuplicateData = new List<CopyMarkerData>(64);
+			else
+				DuplicateData.Clear();
+
+			DuplicateCenter = SelectionManager.Current.Controls.transform.position;
+			for (int s = 0; s < selectionCount; s++)
+			{
+				MarkerObject mob = Objs[s].GetComponent<MarkerObject>();
+				if (mob == null)
+					continue;
+
+				DuplicateData.Add(new CopyMarkerData(mob.transform.position - DuplicateCenter, mob.transform.rotation, mob.Owner.MarkerType));
+			}
+
+			if(DuplicateData.Count > 0)
+			{
+				PastedObjects.Clear();
+
+				Vector3 PlaceOffset = new Vector3(0.5f, 0f, -0.5f);
+				isPasteAction = true;
+				PlacementManager.SnapToWater = false;
+				CreationId = 0;
+				PlacementManager.BeginPlacement(GetCreationObject(), Place);
+				PlacementManager.PlaceAtPosition(DuplicateCenter + PlaceOffset, Quaternion.identity, Vector3.one);
+				PlacementManager.Clear();
+				isPasteAction = false;
+
+				GoToSelection();
+
+
+				SelectionManager.Current.CleanSelection();
+				for (int i = 0; i < PastedObjects.Count; i++)
+				{
+					SelectionManager.Current.SelectObjectAdd(PastedObjects[i]);
+				}
+			}
 		}
 
 		MapLua.SaveLua.Marker.MarkerTypes GetCreationType()

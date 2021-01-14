@@ -282,19 +282,20 @@ public class UnitSource : MonoBehaviour
 	static Camera CurrentCamera;
 	public static void DrawAllIcons(Camera current)
 	{
-		if (current == null || GetGamedataFile.LoadedUnitObjects.Count == 0)
+		if (current == null || GetGamedataFile.LoadedUnitsStrategicDrawOrder.Length == 0 || GetGamedataFile.LoadedUnitObjects.Count == 0)
 			return;
 
 		CurrentCamera = current;
 		Rect CameraRect = CurrentCamera.pixelRect;
-		//Color gc = GUI.color;
-		//GUI.color = Color.red;
 		GL.PushMatrix();
 		GL.LoadPixelMatrix(Mathf.RoundToInt(CameraRect.x), Mathf.RoundToInt(CameraRect.x + CameraRect.width), Mathf.RoundToInt(CameraRect.y), Mathf.RoundToInt(CameraRect.y + CameraRect.height));
 
-		foreach (var unitSource in GetGamedataFile.LoadedUnitObjects)
+		for (int i = 0; i < GetGamedataFile.LoadedUnitsStrategicDrawOrder.Length; i++)
 		{
-			unitSource.Value.DrawIcons();
+			if (GetGamedataFile.LoadedUnitObjects.TryGetValue(GetGamedataFile.LoadedUnitsStrategicDrawOrder[i], out UnitSource value))
+			{
+				value.DrawIcons();
+			}
 		}
 		GL.PopMatrix();
 	}
@@ -318,6 +319,9 @@ public class UnitSource : MonoBehaviour
 			worldPos = ListEnum.Current.LocalToWorldMatrix.GetColumn(3);
 			worldPoint = CurrentCamera.WorldToScreenPoint(worldPos);
 
+			if (worldPoint.z < 0)
+				continue;
+
 			drawRect.x = Mathf.RoundToInt(worldPoint.x - drawRect.width / 2);
 			drawRect.y = Mathf.RoundToInt(worldPoint.y - drawRect.height / 2); 
 			Graphics.DrawTexture(drawRect, BP.strategicIcon, texCoord, 0, 0, 0, 0, (ListEnum.Current.IsWreckage > 0.5f ? WreckageColor : ListEnum.Current.ArmyColor), BP.strategicMaterial, 0);//
@@ -327,4 +331,81 @@ public class UnitSource : MonoBehaviour
 
 		//GUI.color = gc;
 	}
+
+	#region Warnings
+	const string BuildingEdgeWarning = "Too close to the edge!\nPlayer can't build here";
+	const float BorderOffset = 0.25f;
+
+	public void OnGUI()
+	{
+		RenderAdaptiveMarkers.DrawGUIStatic();
+
+		if (BP.Footprint.x == 0 && BP.Footprint.y == 0)
+			return;
+
+		if (PreviewTex.IsPreview)
+			return;
+
+		if (MapLuaParser.LoadingMapProcess || MapLuaParser.SavingMapProcess)
+			return;
+
+		Camera MainCam = CameraControler.Current.Cam;
+		Rect CamRect = MainCam.pixelRect;
+		Rect UiRect = new Rect(CamRect.x, CamRect.y + (Screen.height - CamRect.height), CamRect.width, CamRect.height);
+		GUI.BeginScrollView(UiRect, Vector2.zero, new Rect(0, (Screen.height - CamRect.height), CamRect.width, CamRect.height), false, false);
+
+		Vector3 MapMaxPoint = ScmapEditor.ScmapPosToWorld(
+		new Vector3(MapLuaParser.Current.ScenarioLuaFile.Data.Size[0], 0, MapLuaParser.Current.ScenarioLuaFile.Data.Size[1])
+		);
+
+		Vector2 BorderOffsetFootprint = new Vector2(BorderOffset + BP.Footprint.x * 0.05f, BorderOffset + BP.Footprint.y * 0.05f);
+
+		//GUI.Label(new Rect(500, 500, 100, 50), "Test");
+
+		//Color LastColor = GUI.contentColor;
+		//GUI.contentColor = LabelColor;
+		var ListEnum = Instances.GetEnumerator();
+		while (ListEnum.MoveNext())
+		{
+			Vector3 LocalPos = ListEnum.Current.LocalToWorldMatrix.GetColumn(3);
+
+			if (LocalPos.x < BorderOffsetFootprint.x)
+			{
+				LocalPos.x -= BP.Footprint.x * 0.05f;
+				DrawGuiLabel(MainCam, CamRect, LocalPos, BuildingEdgeWarning, RenderMarkersWarnings.Instance.LabelStyle);
+			}
+			else if (LocalPos.z > -BorderOffsetFootprint.y)
+			{
+				LocalPos.z += BP.Footprint.y * 0.05f;
+				DrawGuiLabel(MainCam, CamRect, LocalPos, BuildingEdgeWarning, RenderMarkersWarnings.Instance.LabelStyle);
+			}
+			else if (LocalPos.x > MapMaxPoint.x - BorderOffsetFootprint.x)
+			{
+				LocalPos.x += BP.Footprint.x * 0.05f;
+				DrawGuiLabel(MainCam, CamRect, LocalPos, BuildingEdgeWarning, RenderMarkersWarnings.Instance.LabelStyle);
+			}
+			else if (LocalPos.z < MapMaxPoint.z + BorderOffsetFootprint.y)
+			{
+				LocalPos.z -= BP.Footprint.y * 0.05f;
+				DrawGuiLabel(MainCam, CamRect, LocalPos, BuildingEdgeWarning, RenderMarkersWarnings.Instance.LabelStyle);
+			}
+		}
+		ListEnum.Dispose();
+
+		GUI.EndScrollView();
+
+	}
+
+	static void DrawGuiLabel(Camera Cam, Rect CamRect, Vector3 Pivot, string text, GUIStyle Style)
+	{
+		if (Pivot == null)
+			return;
+
+		Vector3 position = Cam.WorldToScreenPoint(Pivot);
+		if (position.z < 0)
+			return;
+		Vector2 textSize = GUI.skin.label.CalcSize(new GUIContent(text));
+		GUI.Label(new Rect(position.x - CamRect.x, (Screen.height - position.y), textSize.x, textSize.y), text, Style);
+	}
+	#endregion
 }

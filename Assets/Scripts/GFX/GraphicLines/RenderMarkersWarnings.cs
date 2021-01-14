@@ -4,9 +4,13 @@ using UnityEngine;
 
 public class RenderMarkersWarnings : MonoBehaviour {
 
-	static RenderAdaptiveMarkers Instance;
+	public static RenderMarkersWarnings Instance { get; private set; }
 	public static HashSet<MarkerWarning> WarningPosition = new HashSet<MarkerWarning>();
 
+	private void Awake()
+	{
+		Instance = this;
+	}
 
 	public struct MarkerWarning{
 		public Transform Marker;
@@ -25,7 +29,7 @@ public class RenderMarkersWarnings : MonoBehaviour {
 		RenderEnabled = false;
 	}
 
-	const string AiWarning = "Too close to the edge!";
+	const string AiWarning = "Too close to the edge!\nAI can't use it";
 
 	const float BorderOffset = 0.8f;
 

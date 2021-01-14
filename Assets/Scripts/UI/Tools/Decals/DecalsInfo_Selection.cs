@@ -19,6 +19,7 @@ namespace EditMap
 			SelectionManager.Current.SetCustomSnapAction(OzoneDecal.SnapToGround);
 			SelectionManager.Current.SetCopyActionAction(CopyAction);
 			SelectionManager.Current.SetPasteActionAction(PasteAction);
+			SelectionManager.Current.SetDuplicateActionAction(DuplicateAction);
 
 			GoToSelection();
 		}
@@ -184,6 +185,98 @@ namespace EditMap
 
 			//DecalsControler.Sort();
 			isPasteAction = false;
+		}
+
+
+		Vector3 DuplicateCenterPoint;
+		List<CopyDecalData> DuplicateData;
+		void DuplicateAction()
+		{
+			DuplicateData = new List<CopyDecalData>();
+
+			int count = DecalsControler.AllDecals.Count;
+			List<GameObject> Objs = SelectionManager.GetAllSelectedGameobjects(false);
+
+			Debug.Log("Copied " + Objs.Count + " decal");
+
+			int selectionCount = Objs.Count;
+			for (int i = 0; i < count; i++)
+			{
+				for (int s = 0; s < selectionCount; s++)
+				{
+					if (Objs[s] == DecalsControler.AllDecals[i].Obj.gameObject)
+					{
+						DuplicateData.Add(
+							new CopyDecalData(DecalsControler.AllDecals[i].Shared,
+							DecalsControler.AllDecals[i].Obj.tr.localPosition,
+							DecalsControler.AllDecals[i].Obj.tr.localRotation,
+							DecalsControler.AllDecals[i].Obj.tr.localScale,
+							DecalsControler.AllDecals[i].CutOffLOD,
+							DecalsControler.AllDecals[i].NearCutOffLOD,
+							DecalsControler.AllDecals[i].OwnerArmy)
+							);
+						DuplicateCenterPoint += DecalsControler.AllDecals[i].Obj.tr.localPosition;
+						break;
+					}
+				}
+			}
+
+			if (DuplicateData.Count > 0)
+			{
+				DuplicateCenterPoint /= DuplicateData.Count;
+			}
+
+			DecalsControler.Sort();
+
+
+			if(DuplicateData.Count > 0)
+			{
+				int PasteCount = DuplicateData.Count;
+				isPasteAction = true;
+				if (PasteCount > 0)
+					Undo.RegisterUndo(new UndoHistory.HistoryDecalsChange());
+
+				PastedObjects.Clear();
+
+				//GoToSelection();
+
+				Vector3 PlaceOffset = new Vector3(0.5f, 0f, -0.5f);
+
+				Decal.DecalSharedSettings storePrevousSettings = PlaceSharedSettings;
+
+				PlacementManager.BeginPlacement(DecalSettingsUi.CreationPrefab, Place);
+				for (int i = 0; i < PasteCount; i++)
+				{
+					if (DuplicateData[i].Shared == null)
+						continue;
+
+					PlaceSharedSettings = DuplicateData[i].Shared;
+					paste_CutOffLOD = DuplicateData[i].CutOffLOD;
+					paste_NearCutOffLOD = DuplicateData[i].NearCutOffLOD;
+					paste_OwnerArmy = DuplicateData[i].OwnerArmy;
+
+					PlacementManager.PlaceAtPosition(DuplicateData[i].Position + PlaceOffset, DuplicateData[i].Rotation, DuplicateData[i].Scale);
+				}
+				PlacementManager.Clear();
+
+				PlaceSharedSettings = storePrevousSettings;
+				DecalsControler.Sort();
+				GoToSelection();
+				SelectionManager.Current.CleanSelection();
+				for (int i = 0; i < PastedObjects.Count; i++)
+				{
+					SelectionManager.Current.SelectObjectAdd(PastedObjects[i]);
+					DecalsControler.MoveTop(PastedObjects[i].GetComponent<OzoneDecal>().Dec);
+				}
+
+				Debug.Log("Pasted " + PastedObjects.Count + " decals");
+
+				UpdateTotalCount();
+
+				//DecalsControler.Sort();
+				isPasteAction = false;
+
+			}
 		}
 
 		public void DestroyDetails(List<GameObject> MarkerObjects, bool RegisterUndo = true)

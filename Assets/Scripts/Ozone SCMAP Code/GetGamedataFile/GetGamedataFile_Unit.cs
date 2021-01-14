@@ -116,7 +116,55 @@ public partial struct GetGamedataFile
 
 
 	public static Dictionary<string, UnitSource> LoadedUnitObjects = new Dictionary<string, UnitSource>();
+	public static string[] LoadedUnitsStrategicDrawOrder = new string[0];
 
+	static void SortStrategicIcons()
+	{
+		if(LoadedUnitObjects.Count == 0)
+		{
+			LoadedUnitsStrategicDrawOrder = new string[0];
+			return;
+		}
+
+		List<string> iconsKeys = new List<string>(64);
+		List<int> iconsOrder = new List<int>(64);
+
+		foreach (var unitEntry in LoadedUnitObjects)
+		{
+			int strategicOrder = unitEntry.Value.BP.StrategicIconSortPriority;
+			if (iconsOrder.Count == 0)
+			{
+				iconsOrder.Add(strategicOrder);
+				iconsKeys.Add(unitEntry.Key);
+				continue;
+			}
+
+			bool found = false;
+			for (int i = 0; i < iconsOrder.Count; i++)
+			{
+				if(iconsOrder[i] >= strategicOrder)
+				{
+					iconsOrder.Insert(i, strategicOrder);
+					iconsKeys.Insert(i, unitEntry.Key);
+					found = true;
+					break;
+				}
+			}
+
+			if (!found)
+			{
+				iconsOrder.Add(strategicOrder);
+				iconsKeys.Add(unitEntry.Key);
+			}
+		}
+
+		/*for(int i = 0; i < iconsOrder.Count; i++) // Debug order
+		{
+			Debug.Log(iconsKeys[i] + " : " + iconsOrder[i]);
+		}*/
+
+		LoadedUnitsStrategicDrawOrder = iconsKeys.ToArray();
+	}
 
 	public static UnitSource CreateEmptyUnit(string LocalPath, UnitSource ToReturn = null)
 	{
@@ -144,6 +192,7 @@ public partial struct GetGamedataFile
 		ToReturn.ApplyLods();
 
 		LoadedUnitObjects.Add(LocalPath, ToReturn);
+		SortStrategicIcons();
 
 		return ToReturn;
 	}
@@ -250,7 +299,6 @@ public partial struct GetGamedataFile
 		{
 			ToReturn.BP.StrategicIconName = CurrentValue.ToString();
 
-			Debug.Log("Strategic:\n" + ToReturn.BP.StrategicIconName);
 			ToReturn.BP.strategicIcon = GetGamedataFile.LoadTexture2DFromGamedata(TexturesScd, "textures/ui/common/game/strategicicons/" +  ToReturn.BP.StrategicIconName + "_rest.dds", false, true, true);
 			if(ToReturn.BP.strategicIcon != null)
 			{
@@ -260,7 +308,7 @@ public partial struct GetGamedataFile
 			ToReturn.BP.strategicMaterial.SetTexture(SHADER_MainTex, ToReturn.BP.strategicIcon);
 		}
 
-		CurrentValue = EconomyTab.RawGet("StrategicIconSortPriority");
+		CurrentValue = UnitBlueprintTable.RawGet("StrategicIconSortPriority");
 		if (CurrentValue != null)
 			ToReturn.BP.StrategicIconSortPriority = LuaParser.Read.StringToInt(CurrentValue.ToString());
 
@@ -592,6 +640,7 @@ public partial struct GetGamedataFile
 		//Debug.Log("BuildTime: " + ToReturn.BP.BuildTime);
 		//Debug.Log("BuildCostEnergy: " + ToReturn.BP.BuildCostEnergy + "\nBuildCostMass: " + ToReturn.BP.BuildCostMass);
 		LoadedUnitObjects.Add(LocalPath, ToReturn);
+		SortStrategicIcons();
 
 		BP.Dispose();
 

@@ -44,6 +44,7 @@ namespace EditMap
 			SelectionManager.Current.SetCustomSnapAction(SnapAction);
 			SelectionManager.Current.SetCopyActionAction(CopyAction);
 			SelectionManager.Current.SetPasteActionAction(PasteAction);
+			SelectionManager.Current.SetDuplicateActionAction(DuplicateAction);
 
 			GoToSelection();
 

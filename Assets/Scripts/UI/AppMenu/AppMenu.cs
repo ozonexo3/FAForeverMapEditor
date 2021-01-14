@@ -290,6 +290,20 @@ public partial class AppMenu : MonoBehaviour
 		return MenuOpen;
 	}
 
+	public void Copy()
+	{
+		Selection.SelectionManager.ExecuteCopyAction();
+	}
+	public void Paste()
+	{
+		Selection.SelectionManager.ExecutePasteAction();
+	}
+
+	public void Duplicate()
+	{
+		Selection.SelectionManager.ExecuteDuplicateAction();
+	}
+
 	#region OpenMap
 
 	public void OpenMap()

@@ -44,27 +44,27 @@ namespace MapLua
 			public float scale = 1;
 
 			//WeatherGenerator
-			public float cloudCount = 1;
-			public float cloudEmitterScale = 10;
-			public float cloudEmitterScaleRange = 0.2f;
-			public float cloudCountRange = 7;
-			public float cloudSpread = 250f;
+			public float cloudCount = 10f;
+			public float cloudCountRange = 0f;
+			public float cloudEmitterScale = 1f;
+			public float cloudEmitterScaleRange = 0.0f;
+			public float cloudSpread = 150f;
 			public float cloudHeightRange = 15;
 			public float spawnChance = 1;
 			public string ForceType = "None";
 			public float cloudHeight = 180;
 
 			//WeatherDefinition
-			public Vector3 WeatherDriftDirection = Vector3.zero;
-			public string MapStyle = "";
-			public string WeatherType04 = "None";
+			public Vector3 WeatherDriftDirection = Vector3.right;
+			public string MapStyle = "Tundra";
+			public string WeatherType04 = "WhitePatchyClouds";
 			public string WeatherType03 = "None";
-			public string WeatherType02 = "None";
-			public string WeatherType01 = "None";
-			public float WeatherType04Chance = 0;
-			public float WeatherType03Chance = 0;
-			public float WeatherType02Chance = 0;
-			public float WeatherType01Chance = 0;
+			public string WeatherType02 = "WhiteThickClouds";
+			public string WeatherType01 = "SnowClouds";
+			public float WeatherType04Chance = 0.1f;
+			public float WeatherType03Chance = 0.3f;
+			public float WeatherType02Chance = 0.3f;
+			public float WeatherType01Chance = 0.3f;
 
 			//Adaptive
 			public List<int> SpawnWithArmy = new List<int>();

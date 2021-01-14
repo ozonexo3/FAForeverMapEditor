@@ -525,7 +525,7 @@ namespace EditMap
 
 			List<GameObject> CreatedUnits = new List<GameObject>();
 
-			if(CopyData.Units != null)
+			if(Data != null && Data.Units != null)
 			for (int i = 0; i < Data.Units.Length; i++)
 			{
 				SaveLua.Army.Unit NewUnit = new SaveLua.Army.Unit();
@@ -662,6 +662,35 @@ namespace EditMap
 					GoToSelection();
 					SelectionManager.Current.SelectObjects(CreatedUnits);
 					GenericInfoPopup.ShowInfo("Pasted " + CreatedUnits.Length + " units.");
+				}
+			}
+		}
+
+		UnitsStorage DuplicateData = null;
+		void DuplicateAction()
+		{
+			if (gameObject.activeSelf)
+			{
+				DuplicateData = GetUnitsStorage();
+
+				if(DuplicateData != null && DuplicateData.Units.Length > 0)
+				{
+					if (FirstSelected == null)
+					{
+						ShowGroupError();
+						return;
+					}
+					Undo.RegisterUndo(new UndoHistory.HistoryUnitsRemove(), new UndoHistory.HistoryUnitsRemove.UnitsRemoveParam(new SaveLua.Army.UnitsGroup[] { FirstSelected.Source }));
+
+					GameObject[] CreatedUnits = ReadUnitsStorage(DuplicateData);
+
+					if (CreatedUnits.Length > 0)
+					{
+						FirstSelected.Refresh();
+						GoToSelection();
+						SelectionManager.Current.SelectObjects(CreatedUnits);
+						GenericInfoPopup.ShowInfo("Pasted " + CreatedUnits.Length + " units.");
+					}
 				}
 			}
 		}

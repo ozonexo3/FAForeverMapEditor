@@ -177,5 +177,60 @@ namespace EditMap
 				SelectionManager.Current.SelectObjectAdd(PastedObjects[i]);
 			}
 		}
+
+		List<CopyProp> DuplicatePropData = new List<CopyProp>(512);
+
+		void DuplicateAction()
+		{
+			DuplicatePropData.Clear();
+
+			List<GameObject> Objs = SelectionManager.GetAllSelectedGameobjects(false);
+			for (int i = 0; i < Objs.Count; i++)
+			{
+				PropGameObject TestObj = Objs[i].GetComponent<PropGameObject>();
+
+				DuplicatePropData.Add(new CopyProp(
+					TestObj.Connected.BlueprintPath,
+					Objs[i].transform.localPosition,
+					Objs[i].transform.localRotation,
+					Objs[i].transform.localScale
+					));
+			}
+
+			if (DuplicatePropData.Count > 0)
+			{
+				Undo.RegisterUndo(new UndoHistory.HistoryPropsChange());
+
+				UndoRegistered = true;
+				IsPasteAction = true;
+
+				Vector3 PlaceOffset = new Vector3(0.5f, 0f, -0.5f);
+				PastedObjects.Clear();
+				PlacementManager.BeginPlacement(PropObjectPrefab, Place);
+				for (int p = 0; p < DuplicatePropData.Count; p++)
+				{
+					RandomPropGroup = GetPropType(DuplicatePropData[p].type);
+					//PropGameObject SpawnedProp = Paint(CopyPropData[p].position + PlaceOffset, CopyPropData[p].rotation);
+					PlacementManager.PlaceAtPosition(DuplicatePropData[p].position + PlaceOffset, DuplicatePropData[p].rotation, Vector3.one);
+				}
+				PlacementManager.Clear();
+
+				IsPasteAction = false;
+				UndoRegistered = false;
+			}
+
+			Debug.Log("Pasted " + PastedObjects.Count + " props");
+
+
+			ReloadPropStats();
+
+			GoToSelection();
+
+			SelectionManager.Current.CleanSelection();
+			for (int i = 0; i < PastedObjects.Count; i++)
+			{
+				SelectionManager.Current.SelectObjectAdd(PastedObjects[i]);
+			}
+		}
 	}
 }

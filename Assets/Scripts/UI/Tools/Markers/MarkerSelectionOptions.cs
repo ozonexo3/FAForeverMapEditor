@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using Selection;
 using MapLua;
 using Markers;
+using Ozone.UI;
 
 namespace EditMap
 {
@@ -23,21 +24,47 @@ namespace EditMap
 		public GameObject SyncCamera;
 		public GameObject ViewCamera;
 		public GameObject AlignCamera;
-		public GameObject Size;
-		public GameObject Amount;
-		public GameObject Scale;
-		public GameObject EffectTemplate;
+		//public GameObject Size;
+		//public GameObject Amount;
+		//public GameObject Scale;
+		//public GameObject EffectTemplate;
 
 		public Text MarkerTypeField;
 		public InputField NameField;
 		public InputField Camera_Zoom;
 		public Toggle Camera_Set;
 		public Toggle Camera_Sync;
-		public InputField SizeField;
-		public InputField AmountField;
 
-		public InputField ScaleField;
-		public InputField EffectTemplateField;
+		public UiTextField Size;
+		public UiTextField Amount;
+
+		public UiTextField Scale;
+		public UiTextField EffectTemplate;
+
+
+		[Header("WeatherGenerator")]
+		public UiTextField CloudCount;
+		public UiTextField CloudCountRange;
+		public UiTextField CloudEmitterScale;
+		public UiTextField CloudEmitterScaleRange;
+		public UiTextField CloudHeight;
+		public UiTextField CloudHeightRange;
+		public UiTextField CloudSpread;
+		public UiTextField CloudSpawnChance;
+		public UiTextField CloudForceType;
+
+		[Header("WeatherDefinition")]
+		public UiVector WeatherDriftDirection;
+		public UiTextField MapStyle;
+		public UiTextField WeatherType01;
+		public UiTextField WeatherType02;
+		public UiTextField WeatherType03;
+		public UiTextField WeatherType04;
+		public UiTextField WeatherType01Chance;
+		public UiTextField WeatherType02Chance;
+		public UiTextField WeatherType03Chance;
+		public UiTextField WeatherType04Chance;
+
 
 		public MarkersList MarkerListControler;
 
@@ -71,7 +98,7 @@ namespace EditMap
 
 		private void Update()
 		{
-			if (Connect.activeSelf)
+			if (Connect.activeSelf && !Input.GetKey(KeyCode.LeftControl))
 			{
 				if (Input.GetKeyDown(KeyCode.C) && !CameraControler.IsInputFieldFocused())
 				{
@@ -92,6 +119,9 @@ namespace EditMap
 		bool AllowSize = true;
 		bool AllowAmount = true;
 		bool AllowEffectTemplate = true;
+		bool AllowClouds = true;
+		bool AllowWeather = true;
+
 		void UpdateSelectionOptions()
 		{
 			Loading = true;
@@ -133,6 +163,8 @@ namespace EditMap
 			AllowSize = true;
 			AllowAmount = true;
 			AllowEffectTemplate = true;
+			AllowClouds = true;
+			AllowWeather = true;
 
 			bool[] CheckedTypes = new bool[(int)SaveLua.Marker.MarkerTypes.Count];
 
@@ -146,23 +178,24 @@ namespace EditMap
 				{
 					CheckedTypes[(int)Mr.MarkerType] = true;
 
-					if (AllowConnect)
+					if(AllowConnect)
 						AllowConnect = Mr.AllowByType(SaveLua.Marker.KEY_ADJACENTTO);
-
 					if (AllowCamera)
 						AllowCamera = Mr.AllowByType(SaveLua.Marker.KEY_CANSETCAMERA);
-
 					if (AllowSize)
 						AllowSize = Mr.AllowByType(SaveLua.Marker.KEY_SIZE);
-
 					if (AllowAmount)
 						AllowAmount = Mr.AllowByType(SaveLua.Marker.KEY_AMOUNT);
-
-					if(AllowEffectTemplate)
+					if (AllowEffectTemplate)
 						AllowEffectTemplate = Mr.AllowByType(SaveLua.Marker.KEY_EFFECTTEMPLATE);
+					if (AllowClouds)
+						AllowClouds = Mr.AllowByType(SaveLua.Marker.KEY_CLOUDCOUNT);
+					if (AllowWeather)
+						AllowWeather = Mr.AllowByType(SaveLua.Marker.KEY_WEATHERDRIFTDIRECTION);
 
-					if (!AllowConnect && !AllowCamera && !AllowSize && !AllowAmount && !AllowEffectTemplate)
+					if (!AllowConnect && !AllowCamera && !AllowSize && !AllowAmount && !AllowEffectTemplate && !AllowClouds && !AllowWeather)
 						break;
+
 				}
 			}
 
@@ -178,11 +211,31 @@ namespace EditMap
 			ViewCamera.SetActive(AllowCamera);
 			AlignCamera.SetActive(AllowCamera);
 
-			Size.SetActive(AllowSize);
+			Size.gameObject.SetActive(AllowSize);
+			Amount.gameObject.SetActive(AllowAmount);
+			Scale.gameObject.SetActive(false);
+			EffectTemplate.gameObject.SetActive(AllowEffectTemplate);
 
-			Amount.SetActive(AllowAmount);
+			CloudCount.gameObject.SetActive(AllowClouds);
+			CloudCountRange.gameObject.SetActive(AllowClouds);
+			CloudEmitterScale.gameObject.SetActive(AllowClouds);
+			CloudEmitterScaleRange.gameObject.SetActive(AllowClouds);
+			CloudHeight.gameObject.SetActive(AllowClouds);
+			CloudHeightRange.gameObject.SetActive(AllowClouds);
+			CloudSpread.gameObject.SetActive(AllowClouds);
+			CloudSpawnChance.gameObject.SetActive(AllowClouds);
+			CloudForceType.gameObject.SetActive(AllowClouds);
 
-			EffectTemplate.SetActive(AllowEffectTemplate);
+			WeatherDriftDirection.gameObject.SetActive(AllowWeather);
+			MapStyle.gameObject.SetActive(AllowWeather);
+			WeatherType01.gameObject.SetActive(AllowWeather);
+			WeatherType02.gameObject.SetActive(AllowWeather);
+			WeatherType03.gameObject.SetActive(AllowWeather);
+			WeatherType04.gameObject.SetActive(AllowWeather);
+			WeatherType01Chance.gameObject.SetActive(AllowWeather);
+			WeatherType02Chance.gameObject.SetActive(AllowWeather);
+			WeatherType03Chance.gameObject.SetActive(AllowWeather);
+			WeatherType04Chance.gameObject.SetActive(AllowWeather);
 
 			ReadTypeMarker();
 
@@ -198,6 +251,10 @@ namespace EditMap
 			else
 				Markers.MarkerConnected.Clear();
 
+			if (AllowClouds)
+				ReadClouds();
+			if (AllowWeather)
+				ReadWeather();
 
 			MarkerListControler.UpdateList();
 
@@ -310,13 +367,15 @@ namespace EditMap
 
 			if (SizeDif)
 			{
-				SizeField.contentType = InputField.ContentType.Standard;
-				SizeField.text = ValueDifferent;
+				this.Size.enabled = false;
+				this.Size.InputFieldUi.contentType = InputField.ContentType.Standard;
+				this.Size.InputFieldUi.text = ValueDifferent;
 			}
 			else
 			{
-				SizeField.contentType = InputField.ContentType.DecimalNumber;
-				SizeField.text = Size.ToString();
+				this.Size.enabled = true;
+				this.Size.InputFieldUi.contentType = InputField.ContentType.DecimalNumber;
+				this.Size.SetValue(Size.ToString());
 			}
 		}
 
@@ -338,13 +397,15 @@ namespace EditMap
 
 			if (AmountDif)
 			{
-				AmountField.contentType = InputField.ContentType.Standard;
-				AmountField.text = ValueDifferent;
+				this.Amount.enabled = false;
+				this.Amount.InputFieldUi.contentType = InputField.ContentType.Standard;
+				this.Amount.SetValue(ValueDifferent);
 			}
 			else
 			{
-				AmountField.contentType = InputField.ContentType.DecimalNumber;
-				AmountField.text = Amount.ToString();
+				this.Amount.enabled = true;
+				this.Amount.InputFieldUi.contentType = InputField.ContentType.DecimalNumber;
+				this.Amount.SetValue(Amount.ToString());
 			}
 		}
 
@@ -509,7 +570,7 @@ namespace EditMap
 			if (Loading || Count <= 0)
 				return;
 			Loading = true;
-			float ReadValue = LuaParser.Read.StringToFloat(SizeField.text, -1);
+			float ReadValue = LuaParser.Read.StringToFloat(Size.text, -1);
 
 			Undo.RegisterUndo(new UndoHistory.HistoryMarkersChange(), new UndoHistory.HistoryMarkersChange.MarkersChangeHistoryParameter(AllMarkers));
 
@@ -519,17 +580,17 @@ namespace EditMap
 				{
 					SelectedGameObjects[i].GetComponent<MarkerObject>().Owner.size = ReadValue;
 				}
-				SizeField.text = ReadValue.ToString();
+				Size.SetValue(ReadValue.ToString());
 			}
 			else
 			{
-				if (SizeField.contentType == InputField.ContentType.DecimalNumber)
+				if (Size.InputFieldUi.contentType == InputField.ContentType.DecimalNumber)
 				{
-					SizeField.text = SelectedGameObjects[0].GetComponent<MarkerObject>().Owner.size.ToString();
+					Size.SetValue(SelectedGameObjects[0].GetComponent<MarkerObject>().Owner.size.ToString());
 				}
 				else
 				{
-					SizeField.text = ValueDifferent;
+					Size.SetValue(ValueDifferent);
 				}
 			}
 			Loading = false;
@@ -540,7 +601,7 @@ namespace EditMap
 			if (Loading || Count <= 0)
 				return;
 			Loading = true;
-			float ReadValue = LuaParser.Read.StringToFloat(AmountField.text, -1);
+			float ReadValue = LuaParser.Read.StringToFloat(Amount.text, -1);
 
 			Undo.RegisterUndo(new UndoHistory.HistoryMarkersChange(), new UndoHistory.HistoryMarkersChange.MarkersChangeHistoryParameter(AllMarkers));
 
@@ -550,17 +611,17 @@ namespace EditMap
 				{
 					SelectedGameObjects[i].GetComponent<MarkerObject>().Owner.amount = ReadValue;
 				}
-				AmountField.text = ReadValue.ToString();
+				Amount.SetValue(ReadValue.ToString());
 			}
 			else
 			{
-				if (AmountField.contentType == InputField.ContentType.DecimalNumber)
+				if (Amount.InputFieldUi.contentType == InputField.ContentType.DecimalNumber)
 				{
-					AmountField.text = SelectedGameObjects[0].GetComponent<MarkerObject>().Owner.amount.ToString();
+					Amount.SetValue(SelectedGameObjects[0].GetComponent<MarkerObject>().Owner.amount.ToString());
 				}
 				else
 				{
-					AmountField.text = ValueDifferent;
+					Amount.SetValue(ValueDifferent);
 				}
 			}
 			Loading = false;
@@ -573,7 +634,7 @@ namespace EditMap
 			if (Loading || Count <= 0)
 				return;
 			Loading = true;
-			float ReadValue = LuaParser.Read.StringToFloat(ScaleField.text, -1);
+			float ReadValue = LuaParser.Read.StringToFloat(Scale.text, -1);
 
 			Undo.RegisterUndo(new UndoHistory.HistoryMarkersChange(), new UndoHistory.HistoryMarkersChange.MarkersChangeHistoryParameter(AllMarkers));
 
@@ -583,17 +644,17 @@ namespace EditMap
 				{
 					SelectedGameObjects[i].GetComponent<MarkerObject>().Owner.scale = ReadValue;
 				}
-				ScaleField.text = ReadValue.ToString();
+				Scale.SetValue(ReadValue.ToString());
 			}
 			else
 			{
-				if (ScaleField.contentType == InputField.ContentType.DecimalNumber)
+				if (Scale.InputFieldUi.contentType == InputField.ContentType.DecimalNumber)
 				{
-					ScaleField.text = SelectedGameObjects[0].GetComponent<MarkerObject>().Owner.scale.ToString();
+					Scale.SetValue(SelectedGameObjects[0].GetComponent<MarkerObject>().Owner.scale.ToString());
 				}
 				else
 				{
-					ScaleField.text = ValueDifferent;
+					Scale.SetValue(ValueDifferent);
 				}
 			}
 			Loading = false;
@@ -656,6 +717,48 @@ namespace EditMap
 				}
 
 			}
+		}
+
+		void ReadClouds()
+		{
+			var marker = SelectedGameObjects[0].GetComponent<MarkerObject>().Owner;
+
+			CloudCount.SetValue(marker.cloudCount);
+			CloudCountRange.SetValue(marker.cloudCountRange);
+			CloudEmitterScale.SetValue(marker.cloudEmitterScale);
+			CloudEmitterScaleRange.SetValue(marker.cloudEmitterScaleRange);
+			CloudHeight.SetValue(marker.cloudHeight);
+			CloudHeightRange.SetValue(marker.cloudHeightRange);
+			CloudSpread.SetValue(marker.cloudSpread);
+			CloudSpawnChance.SetValue(marker.spawnChance);
+			CloudForceType.SetValue(marker.ForceType);
+		}
+
+		public void CloudsChanged()
+		{
+
+		}
+
+		void ReadWeather()
+		{
+			var marker = SelectedGameObjects[0].GetComponent<MarkerObject>().Owner;
+
+			WeatherDriftDirection.SetVectorField(marker.WeatherDriftDirection);
+			MapStyle.SetValue(marker.MapStyle);
+			WeatherType01.SetValue(marker.WeatherType01);
+			WeatherType02.SetValue(marker.WeatherType02);
+			WeatherType03.SetValue(marker.WeatherType03);
+			WeatherType04.SetValue(marker.WeatherType04);
+			WeatherType01Chance.SetValue(marker.WeatherType01Chance);
+			WeatherType02Chance.SetValue(marker.WeatherType02Chance);
+			WeatherType03Chance.SetValue(marker.WeatherType03Chance);
+			WeatherType04Chance.SetValue(marker.WeatherType04Chance);
+		}
+
+		public void WeatherChanged()
+		{
+
+
 		}
 
 		#endregion
