@@ -21,8 +21,6 @@ public class UnitSource : MonoBehaviour
 	BoundingSphere[] SpheresArray;
 	HashSet<UnitInstance> Lod;
 
-	public Material strategicIconMaterial;
-
 	List<int> ForceUpdate = new List<int>();
 	void BakeInstances()
 	{
@@ -290,7 +288,7 @@ public class UnitSource : MonoBehaviour
 		GL.PushMatrix();
 		GL.LoadPixelMatrix(Mathf.RoundToInt(CameraRect.x), Mathf.RoundToInt(CameraRect.x + CameraRect.width), Mathf.RoundToInt(CameraRect.y), Mathf.RoundToInt(CameraRect.y + CameraRect.height));
 
-		for (int i = 0; i < GetGamedataFile.LoadedUnitsStrategicDrawOrder.Length; i++)
+		for (int i = GetGamedataFile.LoadedUnitsStrategicDrawOrder.Length - 1; i >= 0; i--)
 		{
 			if (GetGamedataFile.LoadedUnitObjects.TryGetValue(GetGamedataFile.LoadedUnitsStrategicDrawOrder[i], out UnitSource value))
 			{

@@ -348,6 +348,27 @@ namespace Selection
 				FinishSelectionChange();
 		}
 
+		/// <summary>
+		/// Execute selection action depend on the user input. Can add, remove or change selection
+		/// </summary>
+		/// <param name="ToSelect"></param>
+		public void SelectObjectsInput(GameObject[] ToSelect)
+		{
+
+			Undo.Current.RegisterSelectionChange();
+			if (IsSelectionRemove())
+			{
+				SelectObjectsRemove(ToSelect);
+			}
+			else if (IsSelectionAdd())
+			{
+				SelectObjectsAdd(ToSelect);
+			}
+			else
+			{
+				SelectObjects(ToSelect);
+			}
+		}
 
 		public void SelectObjectsRemove(GameObject[] ToSelect)
 		{
@@ -377,6 +398,23 @@ namespace Selection
 					FinishSelectionChange();
 				}
 			}
+		}
+
+		public void SelectObjectsAdd(GameObject[] ToSelect)
+		{
+			bool AnyChanged = false;
+			for (int i = 0; i < ToSelect.Length; i++)
+			{
+				int ObjectId = GetIdOfObject(ToSelect[i]);
+				if (!Selection.Ids.Contains(ObjectId))
+				{
+					Selection.Ids.Add(ObjectId);
+					AnyChanged = true;
+				}
+			}
+
+			if (AnyChanged)
+				FinishSelectionChange();
 		}
 		#endregion
 

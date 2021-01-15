@@ -32,6 +32,7 @@ public class UnitListObject : MonoBehaviour {
 	public System.Action<UnitListObject> AddAction;
 	public System.Action<UnitListObject> RemoveAction;
 	public System.Action<UnitListObject, bool> SelectAction;
+	public System.Action<UnitListObject, bool> DoubleClickAction;
 	public System.Action<UnitListObject> RenameAction;
 	public System.Action<UnitListObject> ExpandAction;
 
@@ -122,8 +123,17 @@ public class UnitListObject : MonoBehaviour {
 
 	public void OnGroupClick()
 	{
-		SelectAction(this, false);
+		if (Time.realtimeSinceStartup - LastClickTime < DoubleClickTime) // Double click
+		{
+			//SelectAction(this, false);
+			DoubleClickAction(this, true);
+		}
+		else // Single click
+		{
+			SelectAction(this, false);
+		}
 
+		LastClickTime = Time.realtimeSinceStartup;
 	}
 
 	public void OnExpandClick()

@@ -98,6 +98,7 @@ namespace EditMap
 			ulo.AddAction = AddNewGroup;
 			ulo.RemoveAction = RemoveGroup;
 			ulo.SelectAction = SelectGroup;
+			ulo.DoubleClickAction = SelectGroupUnits;
 			ulo.RenameAction = RenameStart;
 			ulo.ExpandAction = ExpandAction;
 			ulo.SetGroup(Army, Grp, Parent, Root);
@@ -440,6 +441,29 @@ namespace EditMap
 			}
 
 			return ToReturn;
+		}
+
+		public void SelectGroupUnits(UnitListObject ulo, bool recursive = true)
+		{
+			List<UnitInstance> allUnits = new List<UnitInstance>();
+			ulo.Source.GetAllUnitInstances(ref allUnits);
+
+			int unitsCount = allUnits.Count;
+
+			if(unitsCount == 0)
+			{
+				SelectionManager.Current.CleanSelection();
+				return;
+			}
+
+			GameObject[] allUnitsGameObjects = new GameObject[unitsCount];
+			for (int i = 0; i < unitsCount; i++)
+			{
+				allUnitsGameObjects[i] = allUnits[i].gameObject;
+			}
+
+			SelectionManager.Current.SelectObjectsInput(allUnitsGameObjects);
+
 		}
 		#endregion
 

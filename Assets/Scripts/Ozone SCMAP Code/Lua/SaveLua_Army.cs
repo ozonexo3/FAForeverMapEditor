@@ -352,7 +352,7 @@ namespace MapLua
 				}
 
 
-				public void GetAllUnitInstances(ref List<UnitInstance> AllUnits)
+				public void GetAllUnitInstances(ref List<UnitInstance> AllUnits, bool recursive = true)
 				{
 					if (Units.Count > 0)
 					{
@@ -365,7 +365,7 @@ namespace MapLua
 						ListEnum.Dispose();
 					}
 
-					if(UnitGroups.Count > 0)
+					if(recursive && UnitGroups.Count > 0)
 					{
 						var ListEnum = UnitGroups.GetEnumerator();
 						while (ListEnum.MoveNext())
