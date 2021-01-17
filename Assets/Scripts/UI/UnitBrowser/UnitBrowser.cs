@@ -99,22 +99,37 @@ namespace FAF.MapEditor
 			FoundUnits.Clear();
 			IconBackgrounds.Clear();
 
-			ZipFile zf = GetGamedataFile.GetZipFileInstance(GetGamedataFile.UnitsScd);
-			ZipFile FAF_zf = GetGamedataFile.GetFAFZipFileInstance(GetGamedataFile.UnitsScd);
+			//ZipFile zf = GetGamedataFile.GetZipFileInstance(GetGamedataFile.UnitsScd);
+			//ZipFile FAF_zf = GetGamedataFile.GetFAFZipFileInstance(GetGamedataFile.UnitsScd);
 
-			if (zf == null)
+			if (!EnvPaths.GamedataExist)
 			{
 				Preferences.Open();
 				GenericInfoPopup.ShowInfo("Gamedata path not exist!");
 				return;
 			}
 
-			IconBackgrounds.Add("land", GetGamedataFile.LoadTexture2DFromGamedata(GetGamedataFile.TexturesScd, "/textures/ui/common/icons/units/land_up.dds", false, true, true));
-			IconBackgrounds.Add("amph", GetGamedataFile.LoadTexture2DFromGamedata(GetGamedataFile.TexturesScd, "/textures/ui/common/icons/units/amph_up.dds", false, true, true));
-			IconBackgrounds.Add("sea", GetGamedataFile.LoadTexture2DFromGamedata(GetGamedataFile.TexturesScd, "/textures/ui/common/icons/units/sea_up.dds", false, true, true));
-			IconBackgrounds.Add("air", GetGamedataFile.LoadTexture2DFromGamedata(GetGamedataFile.TexturesScd, "/textures/ui/common/icons/units/air_up.dds", false, true, true));
+			IconBackgrounds.Add("land", GetGamedataFile.LoadTexture2D("/textures/ui/common/icons/units/land_up.dds", false, true, true));
+			IconBackgrounds.Add("amph", GetGamedataFile.LoadTexture2D("/textures/ui/common/icons/units/amph_up.dds", false, true, true));
+			IconBackgrounds.Add("sea", GetGamedataFile.LoadTexture2D("/textures/ui/common/icons/units/sea_up.dds", false, true, true));
+			IconBackgrounds.Add("air", GetGamedataFile.LoadTexture2D("/textures/ui/common/icons/units/air_up.dds", false, true, true));
 
-			foreach (ZipEntry zipEntry in zf)
+			string[] files = GetGamedataFile.GetFilesInPath("units/");
+
+			for (int f = 0; f < files.Length; f++)
+			{
+				string LocalName = files[f];
+				if (LocalName.ToLower().EndsWith("mesh.bp"))
+					continue;
+
+				if (LocalName.ToLower().EndsWith(".bp") && LocalName.Split('/').Length <= 3)
+				{
+					FoundUnits.Add(LocalName);
+				}
+			}
+
+
+			/*foreach (ZipEntry zipEntry in zf)
 			{
 				if (zipEntry.IsDirectory)
 				{
@@ -153,6 +168,9 @@ namespace FAF.MapEditor
 			}
 
 			Debug.Log("Found " + FoundUnits.Count + " units ( FAF: " + (FoundUnits.Count - Count) + ")");
+			*/
+
+			Debug.Log("Found " + FoundUnits.Count + " units");
 
 			FoundUnits.Sort();
 			Initialised = true;
@@ -196,7 +214,7 @@ namespace FAF.MapEditor
 				NewButton.transform.SetParent(Pivot, false);
 				ResourceObject NewResObject = NewButton.GetComponent<ResourceObject>();
 				NewResObject.RawImages[0].texture = IconBackgrounds[UnitDB.Icon];
-				NewResObject.RawImages[1].texture = GetGamedataFile.LoadTexture2DFromGamedata(GetGamedataFile.TexturesScd, "/textures/ui/common/icons/units/" + UnitDB.CodeName + "_icon.dds", false, true, true);
+				NewResObject.RawImages[1].texture = GetGamedataFile.LoadTexture2D("/textures/ui/common/icons/units/" + UnitDB.CodeName + "_icon.dds", false, true, true);
 				if (NewResObject.RawImages[1].texture == Texture2D.whiteTexture)
 					NewResObject.RawImages[1].enabled = false;
 				NewResObject.InstanceId = i;

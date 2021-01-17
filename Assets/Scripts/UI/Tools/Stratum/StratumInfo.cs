@@ -989,7 +989,7 @@ namespace EditMap
 				//Map.Textures [Selected].Normal = ResourceBrowser.Current.LoadedTextures [ResourceBrowser.DragedObject.InstanceId];
 				ScmapEditor.Current.Textures[Selected].NormalPath = ResourceBrowser.Current.LoadedPaths[ResourceBrowser.DragedObject.InstanceId];
 
-				GetGamedataFile.LoadTextureFromGamedata(GetGamedataFile.EnvScd, ScmapEditor.Current.Textures[Selected].NormalPath, Selected, true);
+				GetGamedataFile.LoadTextureFromGamedata(ScmapEditor.Current.Textures[Selected].NormalPath, Selected, true);
 
 				//Map.map.Layers [Selected].PathNormalmap = Map.Textures [Selected].NormalPath;
 
@@ -1390,8 +1390,8 @@ namespace EditMap
 
 				ScmapEditor.Current.Textures[Selected] = NewTexture;
 
-				GetGamedataFile.LoadTextureFromGamedata(GetGamedataFile.EnvScd, ScmapEditor.Current.Textures[Selected].AlbedoPath, Selected, false);
-				GetGamedataFile.LoadTextureFromGamedata(GetGamedataFile.EnvScd, ScmapEditor.Current.Textures[Selected].NormalPath, Selected, true);
+				GetGamedataFile.LoadTextureFromGamedata(ScmapEditor.Current.Textures[Selected].AlbedoPath, Selected, false);
+				GetGamedataFile.LoadTextureFromGamedata(ScmapEditor.Current.Textures[Selected].NormalPath, Selected, true);
 
 				ScmapEditor.Current.SetTextures(Selected);
 

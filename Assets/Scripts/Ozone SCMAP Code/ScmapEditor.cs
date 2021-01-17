@@ -180,7 +180,7 @@ public partial class ScmapEditor : MonoBehaviour
 
 				try
 				{
-					CurrentEnvironmentCubemap = GetGamedataFile.GetGamedataCubemap(GetGamedataFile.TexturesScd, map.EnvCubemapsFile[i]);
+					CurrentEnvironmentCubemap = GetGamedataFile.GetGamedataCubemap(map.EnvCubemapsFile[i]);
 					Shader.SetGlobalTexture("environmentSampler", CurrentEnvironmentCubemap);
 				}
 				catch
@@ -346,30 +346,30 @@ public partial class ScmapEditor : MonoBehaviour
 			}
 
 
-			string Env = GetGamedataFile.EnvScd;
+			/*string Env = GetGamedataFile.EnvScd;
 			if (GetGamedataFile.IsMapPath(Textures[i].AlbedoPath))
-				Env = GetGamedataFile.MapScd;
+				Env = GetGamedataFile.MapScd;*/
 
 			try
 			{
-				Textures[i].AlbedoPath = GetGamedataFile.FindFile(Env, Textures[i].AlbedoPath);
+				Textures[i].AlbedoPath = GetGamedataFile.FindFile(Textures[i].AlbedoPath);
 				//Debug.Log("Found: " + Textures[i].AlbedoPath);
-				GetGamedataFile.LoadTextureFromGamedata(GetGamedataFile.EnvScd, Textures[i].AlbedoPath, i, false);
+				GetGamedataFile.LoadTextureFromGamedata(Textures[i].AlbedoPath, i, false);
 			}
 			catch (System.Exception e)
 			{
 				Debug.LogError(i + ", Albedo tex: " + Textures[i].AlbedoPath);
 				Debug.LogError(e);
 			}
-			Env = GetGamedataFile.EnvScd;
+			/*Env = GetGamedataFile.EnvScd;
 			if (GetGamedataFile.IsMapPath(Textures[i].NormalPath))
-				Env = GetGamedataFile.MapScd;
+				Env = GetGamedataFile.MapScd;*/
 
 			try
 			{
-				Textures[i].NormalPath = GetGamedataFile.FindFile(Env, Textures[i].NormalPath);
+				Textures[i].NormalPath = GetGamedataFile.FindFile(Textures[i].NormalPath);
 				//Debug.Log("Found: " + Textures[i].NormalPath);
-				GetGamedataFile.LoadTextureFromGamedata(GetGamedataFile.EnvScd, Textures[i].NormalPath, i, true);
+				GetGamedataFile.LoadTextureFromGamedata(Textures[i].NormalPath, i, true);
 			}
 			catch (System.Exception e)
 			{
@@ -422,13 +422,13 @@ public partial class ScmapEditor : MonoBehaviour
 
 	public void SetWaterTextures()
 	{
-		Texture2D WaterRamp = GetGamedataFile.LoadTexture2DFromGamedata(GetGamedataFile.TexturesScd, map.Water.TexPathWaterRamp, false, true, true);
+		Texture2D WaterRamp = GetGamedataFile.LoadTexture2D(map.Water.TexPathWaterRamp, false, true, true);
 		WaterRamp.wrapMode = TextureWrapMode.Clamp;
 		Shader.SetGlobalTexture("_WaterRam", WaterRamp);
 
 		try
 		{
-			Cubemap WaterReflection = GetGamedataFile.GetGamedataCubemap(GetGamedataFile.TexturesScd, map.Water.TexPathCubemap);
+			Cubemap WaterReflection = GetGamedataFile.GetGamedataCubemap(map.Water.TexPathCubemap);
 			WaterMaterial.SetTexture("SkySampler", WaterReflection);
 		}
 		catch
@@ -438,16 +438,16 @@ public partial class ScmapEditor : MonoBehaviour
 
 		const int WaterAnisoLevel = 4;
 
-		Texture2D WaterNormal = GetGamedataFile.LoadTexture2DFromGamedata(GetGamedataFile.TexturesScd, map.Water.WaveTextures[0].TexPath, false, true, true);
+		Texture2D WaterNormal = GetGamedataFile.LoadTexture2D(map.Water.WaveTextures[0].TexPath, false, true, true);
 		WaterNormal.anisoLevel = WaterAnisoLevel;
 		WaterMaterial.SetTexture("NormalSampler0", WaterNormal);
-		WaterNormal = GetGamedataFile.LoadTexture2DFromGamedata(GetGamedataFile.TexturesScd, map.Water.WaveTextures[1].TexPath, false, true, true);
+		WaterNormal = GetGamedataFile.LoadTexture2D(map.Water.WaveTextures[1].TexPath, false, true, true);
 		WaterNormal.anisoLevel = WaterAnisoLevel;
 		WaterMaterial.SetTexture("NormalSampler1", WaterNormal);
-		WaterNormal = GetGamedataFile.LoadTexture2DFromGamedata(GetGamedataFile.TexturesScd, map.Water.WaveTextures[2].TexPath, false, true, true);
+		WaterNormal = GetGamedataFile.LoadTexture2D(map.Water.WaveTextures[2].TexPath, false, true, true);
 		WaterNormal.anisoLevel = WaterAnisoLevel;
 		WaterMaterial.SetTexture("NormalSampler2", WaterNormal);
-		WaterNormal = GetGamedataFile.LoadTexture2DFromGamedata(GetGamedataFile.TexturesScd, map.Water.WaveTextures[3].TexPath, false, true, true);
+		WaterNormal = GetGamedataFile.LoadTexture2D(map.Water.WaveTextures[3].TexPath, false, true, true);
 		WaterNormal.anisoLevel = WaterAnisoLevel;
 		WaterMaterial.SetTexture("NormalSampler3", WaterNormal);
 

@@ -16,7 +16,7 @@ namespace FAF.MapEditor
 
 			try
 			{
-				LoadedTex = GetGamedataFile.LoadTexture2DFromGamedata(GetGamedataFile.MapScd, RelativePath, false, false);
+				LoadedTex = GetGamedataFile.LoadTexture2D(RelativePath, false, false);
 			}
 			catch (System.Exception e)
 			{
@@ -65,7 +65,7 @@ namespace FAF.MapEditor
 			else if (RelativePath.EndsWith(".BP"))
 				PropPath = RelativePath.Replace(".BP", "");
 
-			GetGamedataFile.PropObject LoadedProp = GetGamedataFile.LoadProp(GetGamedataFile.MapScd, RelativePath, true);
+			GetGamedataFile.PropObject LoadedProp = GetGamedataFile.LoadProp(RelativePath, true);
 
 			GameObject NewButton = Instantiate(Prefab) as GameObject;
 			NewButton.transform.SetParent(Pivot, false);

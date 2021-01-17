@@ -1,22 +1,124 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using System.Linq;
 
 using System.IO;
 using ICSharpCode.SharpZipLib.Zip;
 
+interface IGamedataEntry
+{
+	string Name();
+	byte[] ReadBytes();
+}
 
 public partial struct GetGamedataFile
 {
 
-	public const string TexturesScd = "textures.scd";
-	public const string EnvScd = "env.scd";
+	//public const string TexturesScd = "textures.scd";
+	//public const string EnvScd = "env.scd";
 	public const string MapScd = "maps";
-	public const string UnitsScd = "units.scd";
+	//public const string UnitsScd = "units.scd";
 
 	// Store ZIP Read Stream in memory for faster load
-	static Dictionary<string, ZipFile> ScdFiles = new Dictionary<string, ZipFile>();
+	//static Dictionary<string, ZipFile> ScdFiles = new Dictionary<string, ZipFile>();
 
-	public static ZipFile GetZipFileInstance(string scd)
+	static bool gamedataLoaded = false;
+	static Dictionary<string, IGamedataEntry> gamedata = new Dictionary<string, IGamedataEntry>(32768);
+
+
+	public struct GamedataZipEntry : IGamedataEntry
+	{
+		ZipFile zipFile;
+		ZipEntry zipEntry;
+
+		public GamedataZipEntry(ZipFile zipFile, ZipEntry zipEntry)
+		{
+			this.zipFile = zipFile;
+			this.zipEntry = zipEntry;
+		}
+
+		public string Name()
+		{
+			return zipEntry.Name;
+		}
+
+		public byte[] ReadBytes()
+		{
+			//byte[] FinalBytes = new byte[4096]; // 4K is optimum
+			byte[] FinalBytes = new byte[zipEntry.Size];
+			using (Stream s = zipFile.GetInputStream(zipEntry))
+			{
+				s.Read(FinalBytes, 0, FinalBytes.Length);
+				s.Close();
+			}
+			return FinalBytes;
+		}
+	}
+
+	public static void LoadGamedata(bool reload = false)
+	{
+		Initialize();
+
+		if (gamedataLoaded && !reload)
+			return;
+
+		gamedata.Clear();
+
+		if (!EnvPaths.GamedataExist)
+			return;
+
+
+		string[] allPaths = EnvPaths.LoadGamedataPaths;
+
+		for(int i = 0; i < allPaths.Length; i++)
+		{
+			string path = allPaths[i];
+			if (!Directory.Exists(path))
+			{
+				//Debug.LogWarning("Gamedata scd file could not be found!\n" + path);
+				continue;
+			}
+
+			var files = Directory.GetFiles(path, "*.*", SearchOption.AllDirectories).Where(s => s.EndsWith(".scd") || s.EndsWith(".nx2"));
+
+			foreach(string filePath in files)
+			{
+				//Debug.Log("Load SCD: " + filePath);
+				FileStream fs = File.OpenRead(filePath);
+				ZipFile zipFile = new ZipFile(fs);
+
+				foreach(ZipEntry ze in zipFile)
+				{
+					if (!ze.IsFile)
+						continue;
+
+					string entryPath = ze.Name.ToLower().Replace("\\", "/");
+
+					if (entryPath.StartsWith("env/") || entryPath.StartsWith("textures/") || entryPath.StartsWith("units/"))
+					{ // Ignore other paths because they will never be used
+
+						if (gamedata.ContainsKey(entryPath))
+						{
+							gamedata[entryPath] = new GamedataZipEntry(zipFile, ze);
+						}
+						else
+						{
+							gamedata.Add(entryPath, new GamedataZipEntry(zipFile, ze));
+							//Debug.Log(ze.Name);
+						}
+					}
+				}
+			}
+		}
+
+		//TODO Mods
+
+		gamedataLoaded = true;
+
+		Debug.Log("Loaded files from gamedata: " + gamedata.Count);
+	}
+
+	/*public static ZipFile GetZipFileInstance(string scd)
 	{
 		Initialize();
 
@@ -35,7 +137,16 @@ public partial struct GetGamedataFile
 		}
 
 		return ScdFiles[scd];
+	}*/
+
+
+	public static string[] GetFilesInPath(string path)
+	{
+		path = path.ToLower();
+		var files = gamedata.Keys.Where(s => s.StartsWith(path));
+		return files.ToArray();
 	}
+
 
 	static bool Init = false;
 
@@ -43,7 +154,6 @@ public partial struct GetGamedataFile
 	{
 		if (!Init)
 		{
-			FafNotInstalled = !Directory.Exists(EnvPaths.FAFGamedataPath);
 			ZipConstants.DefaultCodePage = 0;
 			Init = true;
 		}
@@ -55,33 +165,28 @@ public partial struct GetGamedataFile
 	/// <param name="scd"></param>
 	/// <param name="LocalPath"></param>
 	/// <returns></returns>
-	public static string FindFile(string scd, string LocalPath)
+	public static string FindFile(string localPath)
 	{
-		if (IsMapPath(LocalPath))
+		localPath = localPath.ToLower();
+
+		if (IsMapPath(localPath))
 		{
-			return LocalPath;
+			return localPath;
 		}
 
 
-		if (string.IsNullOrEmpty(LocalPath))
+		if (string.IsNullOrEmpty(localPath))
 		{
-			return LocalPath;
+			return localPath;
 		}
 
-		ZipFile ZipFileInstance = GetZipFileInstance(scd);
-		if (ZipFileInstance == null)
+		if (!gamedata.ContainsKey(localPath))
 		{
 			Debug.LogWarning("Can't load ZipFile");
 			return null;
 		}
 
-		int EntryId = ZipFileInstance.FindEntry(LocalPath, true);
-
-		if(EntryId >= 0 && ZipFileInstance[EntryId] != null)
-		{
-			return ZipFileInstance[EntryId].Name;
-		}
-		return LocalPath;
+		return gamedata[localPath].Name();
 	}
 
 
@@ -91,13 +196,12 @@ public partial struct GetGamedataFile
 	/// <param name="scd"></param>
 	/// <param name="LocalPath"></param>
 	/// <returns></returns>
-	public static byte[] LoadBytes(string scd, string LocalPath)
+	public static byte[] LoadBytes(string LocalPath)
 	{
 		if (IsMapPath(LocalPath))
 		{
-			return LoadBytes(LocalPath); 
+			return LoadMapBytes(LocalPath); 
 		}
-
 
 		if (string.IsNullOrEmpty(LocalPath)) return null;
 
@@ -107,68 +211,16 @@ public partial struct GetGamedataFile
 			return null;
 		}
 
-
-		// Get ZipFile
-		ZipFile ZipFileInstance = GetZipFileInstance(scd);
-		if(ZipFileInstance == null)
-		{
-			Debug.LogWarning("Can't load ZipFile");
-			return null;
-		}
-
-
 		if (LocalPath.StartsWith("/"))
 			LocalPath = LocalPath.Remove(0, 1);
 
+		if (!gamedata.ContainsKey(LocalPath))
+			return null;
 
-		ZipEntry zipEntry2 = ZipFileInstance.GetEntry(LocalPath);
-
-		// FafEntry
-		ZipFile FafZipFileInstance = GetFAFZipFileInstance(scd);
-		if (FafZipFileInstance != null)
-		{
-			// Found nx2 file, try load it instead
-			ZipEntry zipEntryFAF = FafZipFileInstance.GetEntry(LocalPath);
-
-			if (zipEntryFAF == null)
-			{
-				int FoundEntry = FafZipFileInstance.FindEntry(LocalPath, true);
-
-				if (FoundEntry >= 0 && FoundEntry < FafZipFileInstance.Count)
-					zipEntryFAF = FafZipFileInstance[FoundEntry];
-			}
-
-			if (zipEntryFAF != null && zipEntryFAF.IsFile)
-			{
-				byte[] FafBytes = ReadZipEntryBytes(ref zipEntryFAF, ref FafZipFileInstance);
-				if (FafBytes != null && FafBytes.Length > 0)
-					return FafBytes;
-			}
-		}
-		else
-		{
-			Debug.Log("No FAF path found for " + scd);
-		}
-
-		if (zipEntry2 == null)
-		{
-
-			int FoundEntry = ZipFileInstance.FindEntry(LocalPath, true);
-
-			if (FoundEntry >= 0 && FoundEntry < ZipFileInstance.Count)
-				zipEntry2 = ZipFileInstance[FoundEntry];
-
-			if (zipEntry2 == null)
-			{
-				//Debug.LogWarning("Zip Entry is empty for: " + LocalPath);
-				return null;
-			}
-		}
-
-		return ReadZipEntryBytes(ref zipEntry2, ref ZipFileInstance);
+		return gamedata[LocalPath].ReadBytes();
 	}
 
-	static byte[] ReadZipEntryBytes(ref ZipEntry ze, ref ZipFile File)
+	/*static byte[] ReadZipEntryBytes(ZipEntry ze, ZipFile File)
 	{
 		//byte[] FinalBytes = new byte[4096]; // 4K is optimum
 		Stream s = File.GetInputStream(ze);
@@ -177,7 +229,7 @@ public partial struct GetGamedataFile
 		s.Close();
 
 		return FinalBytes;
-	}
+	}*/
 
 
 	/// <summary>
@@ -185,7 +237,7 @@ public partial struct GetGamedataFile
 	/// </summary>
 	/// <param name="mapPath"></param>
 	/// <returns></returns>
-	public static byte[] LoadBytes(string mapPath)
+	public static byte[] LoadMapBytes(string mapPath)
 	{
 		if (!mapPath.StartsWith("/"))
 			mapPath = "/" + mapPath;

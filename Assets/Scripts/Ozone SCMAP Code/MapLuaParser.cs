@@ -83,6 +83,8 @@ public partial class MapLuaParser : MonoBehaviour
 		DecalsInfo.Current = DecalsMenu;
 		PropsInfo.Current = PropsMenu;
 		UnitsInfo.Current = UnitsMenu;
+
+		GetGamedataFile.LoadGamedata();
 	}
 
 	public static void LoadStructurePaths()

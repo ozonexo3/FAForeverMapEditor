@@ -286,13 +286,13 @@ public partial struct GetGamedataFile
 		LoadedMeshes = new Dictionary<string, Mesh>();
 	}
 
-	public static Mesh LoadModel(string scd, string LocalPath, bool SetUnreadable = true)
+	public static Mesh LoadModel(string LocalPath, bool SetUnreadable = true)
 	{
-		string ModelKey = scd + "_" + LocalPath;
+		string ModelKey = LocalPath;
 		if (LoadedMeshes.ContainsKey(ModelKey))
 			return LoadedMeshes[ModelKey];
 
-		byte[] FinalMeshBytes = LoadBytes(scd, LocalPath);
+		byte[] FinalMeshBytes = LoadBytes(LocalPath);
 
 		if (FinalMeshBytes == null || FinalMeshBytes.Length == 0)
 			return null; // File is empty

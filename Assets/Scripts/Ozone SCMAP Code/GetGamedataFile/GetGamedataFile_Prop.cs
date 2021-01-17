@@ -37,7 +37,7 @@ public partial struct GetGamedataFile
 					}
 					else if (BP.LODs[i].AlbedoLoaded)
 					{
-						BP.LODs[i].Albedo = LoadTexture2DFromGamedata(GetGamedataFile.EnvScd, BP.LODs[i].AlbedoName, false, !IsTemp, true);
+						BP.LODs[i].Albedo = LoadTexture2D(BP.LODs[i].AlbedoName, false, !IsTemp, true);
 						BP.LODs[i].Albedo.anisoLevel = 2;
 					}
 
@@ -46,7 +46,7 @@ public partial struct GetGamedataFile
 						BP.LODs[i].Normal = AddToMemory(BP.LODs[i].NormalsName, ref BP.LODs[i].Normal);
 					else if (BP.LODs[i].NormalLoaded)
 					{
-						BP.LODs[i].Normal = LoadTexture2DFromGamedata(GetGamedataFile.EnvScd, BP.LODs[i].NormalsName, true, !IsTemp, true);
+						BP.LODs[i].Normal = LoadTexture2D(BP.LODs[i].NormalsName, true, !IsTemp, true);
 						BP.LODs[i].NormalLoaded = BP.LODs[i].Normal != null;
 						BP.LODs[i].Normal.anisoLevel = 2;
 					}
@@ -215,15 +215,15 @@ public partial struct GetGamedataFile
 			scdPath = "/" + scdPath;
 
 		if (scdPath.StartsWith("/maps")) { 
-			return LoadProp(GetGamedataFile.MapScd, scdPath, IsTemp);
+			return LoadPropObject(scdPath, IsTemp);
 		}
 		else
-			return LoadProp(GetGamedataFile.EnvScd, LocalBlueprintPath(scdPath), IsTemp);
+			return LoadPropObject(LocalBlueprintPath(scdPath), IsTemp);
 	}
 
 	static Dictionary<string, PropObject> LoadedPropObjects = new Dictionary<string, PropObject>();
 
-	public static PropObject LoadProp(string scd, string LocalPath, bool IsTemp = false)
+	public static PropObject LoadPropObject(string LocalPath, bool IsTemp = false)
 	{
 		if (LoadedPropObjects.ContainsKey(LocalPath))
 			return LoadedPropObjects[LocalPath];
@@ -233,7 +233,7 @@ public partial struct GetGamedataFile
 
 		ToReturn.IsTemp = IsTemp;
 
-		byte[] Bytes = LoadBytes(scd, LocalPath);
+		byte[] Bytes = LoadBytes(LocalPath);
 		if (Bytes == null || Bytes.Length == 0)
 		{
 			Debug.LogError("Prop does not exits: " + LocalPath);
@@ -369,7 +369,7 @@ public partial struct GetGamedataFile
 
 		for (int i = 0; i < ToReturn.BP.LODs.Length; i++)
 		{
-			ToReturn.BP.LODs[i].Mesh = LoadModel(scd, ToReturn.BP.LODs[i].Scm);
+			ToReturn.BP.LODs[i].Mesh = LoadModel(ToReturn.BP.LODs[i].Scm);
 
 			if (ToReturn.BP.LODs[i].Mesh == null)
 				ToReturn.BP.LODs[i].Mesh = PropsInfo.Current.NoPropMesh;
@@ -398,7 +398,7 @@ public partial struct GetGamedataFile
 				ToReturn.BP.LODs[i].AlbedoName = OffsetRelativePath(LocalPath, ToReturn.BP.LODs[i].AlbedoName, true);
 			}
 
-			ToReturn.BP.LODs[i].Albedo = LoadTexture2DFromGamedata(scd, ToReturn.BP.LODs[i].AlbedoName, false, !IsTemp, true);
+			ToReturn.BP.LODs[i].Albedo = LoadTexture2D(ToReturn.BP.LODs[i].AlbedoName, false, !IsTemp, true);
 			ToReturn.BP.LODs[i].AlbedoLoaded = ToReturn.BP.LODs[i].Albedo != null;
 			if(ToReturn.BP.LODs[i].AlbedoLoaded)
 				ToReturn.BP.LODs[i].Albedo.anisoLevel = 2;
@@ -425,7 +425,7 @@ public partial struct GetGamedataFile
 
 			if (!string.IsNullOrEmpty(ToReturn.BP.LODs[i].NormalsName))
 			{
-				ToReturn.BP.LODs[i].Normal = LoadTexture2DFromGamedata(scd, ToReturn.BP.LODs[i].NormalsName, true, !IsTemp, true);
+				ToReturn.BP.LODs[i].Normal = LoadTexture2D(ToReturn.BP.LODs[i].NormalsName, true, !IsTemp, true);
 				ToReturn.BP.LODs[i].NormalLoaded = ToReturn.BP.LODs[i].Normal != null;
 				if (ToReturn.BP.LODs[i].NormalLoaded)
 				{

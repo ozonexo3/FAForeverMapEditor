@@ -130,13 +130,13 @@ namespace FAF.MapEditor
 			LoadedEnvPaths = new List<string>();
 			List<Dropdown.OptionData> NewOptions = new List<Dropdown.OptionData>();
 
-			if (!Directory.Exists(EnvPaths.GamedataPath))
+			if (!EnvPaths.GamedataExist)
 			{
 				Debug.LogWarning("Gamedata path not exist!");
 				return;
 			}
 
-			HashSet<string> LoadedDirectorys = new HashSet<string>();
+			/*HashSet<string> LoadedDirectorys = new HashSet<string>();
 			ZipFile zf = GetGamedataFile.GetZipFileInstance(GetGamedataFile.EnvScd);
 
 			if (zf == null)
@@ -198,6 +198,36 @@ namespace FAF.MapEditor
 					continue;
 
 				LoadedDirectorys.Add(LocalName);
+
+				int ContSeparators = 0;
+				char Separator = ("/")[0];
+				for (int i = 0; i < LocalName.Length; i++)
+				{
+					if (LocalName[i] == Separator)
+					{
+						ContSeparators++;
+						if (ContSeparators > 1)
+							break;
+					}
+				}
+				if (ContSeparators > 1)
+					continue;
+
+				LocalName = LocalName.Replace("/", "");
+
+				LoadedEnvPaths.Add(LocalName);
+				Dropdown.OptionData NewOptionInstance = new Dropdown.OptionData(LocalName);
+				NewOptions.Add(NewOptionInstance);
+			}*/
+
+			string[] files = GetGamedataFile.GetFilesInPath("env/");
+
+			for (int f = 0; f < files.Length; f++)
+			{
+				string LocalName = files[f].Replace("env/", "");
+
+				if (string.IsNullOrEmpty(LocalName))
+					continue;
 
 				int ContSeparators = 0;
 				char Separator = ("/")[0];
@@ -557,7 +587,7 @@ namespace FAF.MapEditor
 			}
 			else
 			{
-				ZipFile zf = null;
+				/*ZipFile zf = null;
 				ZipFile zf_faf = null;
 				SelectedDirectory = ("env/" + EnvType.options[EnvType.value].text + "/" + CategoryPaths[LastLoadedType]).ToLower();
 				try
@@ -646,13 +676,43 @@ namespace FAF.MapEditor
 				}
 				finally
 				{
-					/*
-					if (zf != null)
+					
+					//if (zf != null)
+					//{
+					//	zf.IsStreamOwner = true; // Makes close also shut the underlying stream
+					//	zf.Close(); // Ensure we release resources
+					//}
+					
+				}*/
+
+
+				SelectedDirectory = ("env/" + EnvType.options[EnvType.value].text + "/" + CategoryPaths[LastLoadedType]).ToLower();
+
+				string[] files = GetGamedataFile.GetFilesInPath("SelectedDirectory");
+				bool Breaked = false;
+
+				for (int f = 0; f < files.Length; f++)
+				{
+					string LocalName = files[f].Replace("env/", "");
+
+					if (!IsProperFile(LocalName))
+						continue;
+
+					if (LoadZipEntry(files[f], out Breaked))
 					{
-						zf.IsStreamOwner = true; // Makes close also shut the underlying stream
-						zf.Close(); // Ensure we release resources
+						continue;
 					}
-					*/
+
+					if (Breaked)
+						break;
+
+					GeneratedId++;
+					Counter++;
+					if (Counter >= PauseEveryLoadedAsset)
+					{
+						Counter = 0;
+						yield return null;
+					}
 				}
 			}
 
@@ -664,21 +724,13 @@ namespace FAF.MapEditor
 			GeneratingList = null;
 		}
 
-		bool LoadZipEntry(ref ZipEntry zipEntry, out bool Breaked)
+		bool LoadZipEntry(string localPath, out bool Breaked)
 		{
 			Breaked = false;
-			if (!zipEntry.IsFile)
-			{
-				return true;
-			}
-			//string LocalPath = "env/" + EnvType.options[EnvType.value].text + "/" + CategoryPaths[Category.value];
-			//if (!zipEntry.Name.ToLower().StartsWith(SelectedDirectory))
-			//	return true;
-
 
 			if (DontReload)
 			{
-				if (zipEntry.Name.ToLower() == SelectedObject.ToLower())
+				if (localPath == SelectedObject.ToLower())
 				{
 					LastSelection = Pivot.GetChild(GeneratedId).GetComponent<ResourceObject>().Selected;
 					LastSelection.SetActive(true);
@@ -689,10 +741,10 @@ namespace FAF.MapEditor
 			}
 			else
 			{
-				string LocalName = zipEntry.Name.Remove(0, LocalPath.Length);
+				string LocalName = localPath.Remove(0, LocalPath.Length);
 
 
-				LoadAtPath(zipEntry.Name, LocalName);
+				LoadAtPath(localPath, LocalName);
 			}
 			return false;
 		}
@@ -753,7 +805,7 @@ namespace FAF.MapEditor
 
 			try
 			{
-				LoadedTex = GetGamedataFile.LoadTexture2DFromGamedata(GetGamedataFile.EnvScd, localpath, false, false);
+				LoadedTex = GetGamedataFile.LoadTexture2D(localpath, false, false);
 			}
 			catch (System.Exception e)
 			{
@@ -804,10 +856,10 @@ namespace FAF.MapEditor
 			if (localpath.ToLower().StartsWith("maps"))
 			{
 				localpath = "/" + localpath;
-				LoadedProp = GetGamedataFile.LoadProp(GetGamedataFile.MapScd, localpath, true);
+				LoadedProp = GetGamedataFile.LoadProp(localpath, true);
 			}
 			else
-				LoadedProp = GetGamedataFile.LoadProp(GetGamedataFile.EnvScd, localpath, true);
+				LoadedProp = GetGamedataFile.LoadProp(localpath, true);
 
 			GameObject NewButton = Instantiate(Prefab) as GameObject;
 			NewButton.transform.SetParent(Pivot, false);

@@ -150,7 +150,7 @@ public partial struct GetGamedataFile
 			return LoadedUnitBPPreviews[LocalPath];
 
 
-		byte[] Bytes = LoadBytes(UnitsScd, LocalPath);
+		byte[] Bytes = LoadBytes(LocalPath);
 		if (Bytes == null || Bytes.Length == 0)
 		{
 			Debug.LogWarning("Unit does not exits: " + LocalPath);

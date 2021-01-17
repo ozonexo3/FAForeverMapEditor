@@ -13,6 +13,7 @@ public class EnvPaths : MonoBehaviour {
 
 	const string InstalationPath = "InstalationPath";
 	const string InstalationGamedata = "gamedata/";
+	const string InstalationMods = "mods/";
 	const string MapsPath = "MapsPath";
 	const string BackupPath = "BackupPath";
 
@@ -38,10 +39,57 @@ public class EnvPaths : MonoBehaviour {
 		}
 	}
 
+	/// <summary>
+	/// All directorys from where editor will load *.scd and *.nx2 files
+	/// </summary>
+	public static string[] LoadGamedataPaths
+	{
+		get
+		{
+			if(AllowMods)
+				return new string[] { GamedataPath, FAFGamedataPath, GamedataModsPath, UserModsPath };
+
+			return new string[] { GamedataPath, FAFGamedataPath };
+		}
+	}
+
+	public static bool GamedataExist
+	{
+		get
+		{
+			Debug.Log(GamedataPath);
+			return System.IO.Directory.Exists(GamedataPath);
+		}
+	}
+
+	public static bool AllowMods
+	{
+		get
+		{
+			return true;
+		}
+	}
+
 	public static string GamedataPath{
 		get
 		{
 			return GetInstalationPath() + InstalationGamedata;
+		}
+	}
+
+	public static string GamedataModsPath
+	{
+		get
+		{
+			return GetInstalationPath() + InstalationMods;
+		}
+	}
+
+	public static string UserModsPath
+	{
+		get
+		{
+			return MyDocuments.Replace("\\", "/") + "/My Games/Gas Powered Games/Supreme Commander Forged Alliance/Mods/";
 		}
 	}
 

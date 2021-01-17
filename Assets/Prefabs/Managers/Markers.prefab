@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 114120159606287282}
   - component: {fileID: 114179064322913632}
   - component: {fileID: 114430749213572640}
+  - component: {fileID: 394412733}
   m_Layer: 0
   m_Name: Markers
   m_TagString: Untagged
@@ -133,6 +134,7 @@ MonoBehaviour:
   MarkerLayersSettings:
     Blank: 1
     Spawn: 1
+    SpawnRanges: 1
     Resource: 1
     Camera: 1
     LandNodes: 1
@@ -307,3 +309,24 @@ MonoBehaviour:
     AllowedMarkers: 110000000c000000
     Edges: []
     Count: 0
+--- !u!114 &394412733
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1818693640227786}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 14f5cd7cd566dbc4cbd1645e66caa57c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  lineMaterial: {fileID: 2100000, guid: 7781e3239d535304989c5a1b23ebbd67, type: 2}
+  BuildRangeColor: {r: 1, g: 0.47529262, b: 0, a: 1}
+  AttackRangeColor: {r: 1, g: 0, b: 0, a: 1}
+  UtilityRanges:
+  - 1
+  AtackRanges:
+  - 2.6
+  - 5
+  - 7

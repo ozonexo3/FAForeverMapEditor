@@ -90,9 +90,13 @@ namespace EditMap
 
 		public void ClearWaves()
 		{
-			Debug.Log("Clear waves count: " + ScmapEditor.Current.map.WaveGenerators.Count);
-			ScmapEditor.Current.map.WaveGenerators.Clear();
-			WavesRenderer.ReloadWaves();
+			if (ScmapEditor.Current.map.WaveGenerators.Count > 0)
+			{
+				Debug.Log("Clear waves count: " + ScmapEditor.Current.map.WaveGenerators.Count);
+				Undo.RegisterUndo(new UndoHistory.HistoryWaterWaves());
+				ScmapEditor.Current.map.WaveGenerators.Clear();
+				WavesRenderer.ReloadWaves();
+			}
 		}
 
 		public void GenerateWaves()
@@ -100,8 +104,6 @@ namespace EditMap
 			WavesRenderer.WavePattern pattern = WavesRenderer.Instance.WavePatterns[WavesDropdown.value];
 
 			int patternPropertyId = Shader.PropertyToID(pattern.parameters[0].texture + pattern.parameters[0].ramp);
-
-			Debug.Log("Generate waves: " + pattern.name);
 
 			Vector2 angleRange = Vector2.zero;
 			angleRange.x = MinWaveAngle.value;
@@ -176,8 +178,12 @@ namespace EditMap
 			}
 
 
-			Debug.Log("Spawned waves count: " + spawnedCount);
+			if (waveShoreUsedPoints.Count == 0)
+				return;
 
+			Debug.Log("Spawned " + pattern.name + " waves, count: " + spawnedCount);
+
+			Undo.RegisterUndo(new UndoHistory.HistoryWaterWaves());
 
 			for (int i = 0; i < waveShoreUsedPoints.Count; i++)
 			{

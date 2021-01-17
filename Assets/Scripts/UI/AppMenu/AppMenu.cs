@@ -12,7 +12,7 @@ using System.IO;
 
 public partial class AppMenu : MonoBehaviour
 {
-
+	public static AppMenu instance;
 	public GameObject Symmetry;
 	public Editing EditingMenu;
 
@@ -29,6 +29,11 @@ public partial class AppMenu : MonoBehaviour
 	//Local
 	bool MenuOpen = false;
 	bool ButtonClicked;
+
+	private void Awake()
+	{
+		instance = this;
+	}
 
 	// important to keep the instance alive while the hook is active.
 	UnityDragAndDropHook hook;
@@ -539,6 +544,7 @@ public partial class AppMenu : MonoBehaviour
 
 	}
 	#endregion
+
 
 
 }

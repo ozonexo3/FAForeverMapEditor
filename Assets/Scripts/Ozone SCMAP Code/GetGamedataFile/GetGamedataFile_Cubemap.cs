@@ -17,12 +17,12 @@ public partial struct GetGamedataFile
 
 	static Dictionary<string, Cubemap> CubemapMemory = new Dictionary<string, Cubemap>();
 
-	public static Cubemap GetGamedataCubemap(string scd, string LocalPath)
+	public static Cubemap GetGamedataCubemap(string LocalPath)
 	{
 		if (string.IsNullOrEmpty(LocalPath))
 			return null;
 
-		string TextureKey = scd + "_" + LocalPath;
+		string TextureKey = LocalPath;
 
 		if (CubemapMemory.ContainsKey(TextureKey))
 			return CubemapMemory[TextureKey];
@@ -30,7 +30,7 @@ public partial struct GetGamedataFile
 		if (DebugTextureLoad)
 			Debug.Log(LocalPath);
 
-		byte[] FinalTextureData2 = LoadBytes(scd, LocalPath);
+		byte[] FinalTextureData2 = LoadBytes(LocalPath);
 
 		if (FinalTextureData2 == null || FinalTextureData2.Length == 0)
 		{

@@ -77,23 +77,75 @@ public class RenderUnitRanges : MonoBehaviour
 				continue;
 
 			if(UnitRanges[i].Radius > 0)
-				DrawCircle(UnitRanges[i].UnitTr.position, UnitRanges[i].Radius, Color.red);
+				DrawDottedCircle(UnitRanges[i].UnitTr.position, UnitRanges[i].Radius, Color.red);
 			if(UnitRanges[i].MinRadius > 0)
-				DrawCircle(UnitRanges[i].UnitTr.position, UnitRanges[i].MinRadius, Color.blue);
+				DrawDottedCircle(UnitRanges[i].UnitTr.position, UnitRanges[i].MinRadius, Color.blue);
 		}
 	}
 
-	void DrawCircle(Vector3 center, float radius, Color col)
+	static readonly float DoblePI = 2 * Mathf.PI;
+
+	public static void DrawDottedCircle(Vector3 center, float radius, Color col)
 	{
+		if (radius <= 0)
+			return;
+
 		GL.PushMatrix();
 		GL.Begin(GL.LINES);
 		GL.Color(col);
-		//float degRad = Mathf.PI / 180;
-		for (float theta = 0.0f; theta < (2 * Mathf.PI); theta += 0.01f)
+
+		int steps = Mathf.RoundToInt((DoblePI * radius) * 10f);
+		if(steps < 12)
 		{
-			Vector3 ci = (new Vector3(Mathf.Cos(theta) * radius + center.x, center.y, Mathf.Sin(theta) * radius + center.z));
-			GL.Vertex3(ci.x, ci.y, ci.z);
+			steps = 12;
 		}
+		else if (steps % 4 != 0)
+		{
+			steps += 4 - (steps % 4);
+		}
+		float step = Mathf.Clamp((2f * Mathf.PI) / steps, 0.005f, 0.1f);
+
+		//float degRad = Mathf.PI / 180;
+		for (float theta = 0.0f; theta < DoblePI; theta += step)
+		{
+			//Vector3 ci = new Vector3(Mathf.Cos(theta) * radius + center.x, center.y, Mathf.Sin(theta) * radius + center.z);
+			GL.Vertex3(Mathf.Cos(theta) * radius + center.x, center.y, Mathf.Sin(theta) * radius + center.z);
+		}
+		GL.End();
+		GL.PopMatrix();
+	}
+
+	public static void DrawCircle(Vector3 center, float radius, Color col)
+	{
+		if (radius <= 0)
+			return;
+
+		GL.PushMatrix();
+		GL.Begin(GL.LINES);
+		GL.Color(col);
+
+		int steps = Mathf.RoundToInt((DoblePI * radius) * 10f);
+		if (steps < 12)
+		{
+			steps = 12;
+		}
+		else if (steps % 4 != 0)
+		{
+			steps += 4 - (steps % 4);
+		}
+
+		float step = Mathf.Clamp((2f * Mathf.PI) / steps, 0.005f, 0.1f);
+
+		GL.Vertex3(Mathf.Cos(0f) * radius + center.x, center.y, Mathf.Sin(0f) * radius + center.z);
+		//float degRad = Mathf.PI / 180;
+		for (float theta = step; theta < DoblePI - step; theta += step)
+		{
+			//Vector3 ci = new Vector3(Mathf.Cos(theta) * radius + center.x, center.y, Mathf.Sin(theta) * radius + center.z);
+			GL.Vertex3(Mathf.Cos(theta) * radius + center.x, center.y, Mathf.Sin(theta) * radius + center.z);
+			GL.Vertex3(Mathf.Cos(theta) * radius + center.x, center.y, Mathf.Sin(theta) * radius + center.z);
+		}
+		GL.Vertex3(Mathf.Cos(0f) * radius + center.x, center.y, Mathf.Sin(0f) * radius + center.z);
+
 		GL.End();
 		GL.PopMatrix();
 	}

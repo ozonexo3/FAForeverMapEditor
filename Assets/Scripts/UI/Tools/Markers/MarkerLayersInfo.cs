@@ -15,6 +15,7 @@ namespace EditMap
 
 		public Toggle BlankActive;
 		public Toggle SpawnActive;
+		public Toggle SpawnRangesActive;
 		public Toggle ResourcesActive;
 		public Toggle CameraActive;
 
@@ -39,6 +40,7 @@ namespace EditMap
 
 			BlankActive.isOn = MarkersControler.Current.MarkerLayersSettings.Blank;
 			SpawnActive.isOn = MarkersControler.Current.MarkerLayersSettings.Spawn;
+			SpawnRangesActive.isOn = MarkersControler.Current.MarkerLayersSettings.SpawnRanges;
 			ResourcesActive.isOn = MarkersControler.Current.MarkerLayersSettings.Resource;
 			CameraActive.isOn = MarkersControler.Current.MarkerLayersSettings.Camera;
 
@@ -69,6 +71,7 @@ namespace EditMap
 
 			BlankActive.isOn = AllActive.isOn;
 			SpawnActive.isOn = AllActive.isOn;
+			SpawnRangesActive.isOn = AllActive.isOn;
 			ResourcesActive.isOn = AllActive.isOn;
 			CameraActive.isOn = AllActive.isOn;
 
@@ -99,6 +102,7 @@ namespace EditMap
 
 			BlankActive.isOn = BasicActive.isOn;
 			SpawnActive.isOn = BasicActive.isOn;
+			SpawnRangesActive.isOn = BasicActive.isOn;
 			ResourcesActive.isOn = BasicActive.isOn;
 			CameraActive.isOn = BasicActive.isOn;
 
@@ -149,6 +153,7 @@ namespace EditMap
 
 			MarkersControler.Current.MarkerLayersSettings.Blank = BlankActive.isOn;
 			MarkersControler.Current.MarkerLayersSettings.Spawn = SpawnActive.isOn;
+			MarkersControler.Current.MarkerLayersSettings.SpawnRanges = SpawnRangesActive.isOn;
 			MarkersControler.Current.MarkerLayersSettings.Resource = ResourcesActive.isOn;
 			MarkersControler.Current.MarkerLayersSettings.Camera = CameraActive.isOn;
 
@@ -181,6 +186,7 @@ namespace EditMap
 			IgnoreEvent = true;
 			bool Basic = BlankActive.isOn;
 			Basic &= SpawnActive.isOn;
+			Basic &= SpawnRangesActive.isOn;
 			Basic &= ResourcesActive.isOn;
 			Basic &= CameraActive.isOn;
 			BasicActive.isOn = Basic;

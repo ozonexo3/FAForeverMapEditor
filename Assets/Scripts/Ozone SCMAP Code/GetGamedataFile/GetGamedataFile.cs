@@ -82,8 +82,10 @@ public partial struct GetGamedataFile
 	}
 
 
-	public static Texture2D LoadTexture2DFromGamedata(string scd, string LocalPath, bool NormalMap = false, bool StoreInMemory = true, bool SetUnreadable = false)
+	public static Texture2D LoadTexture2D(string LocalPath, bool NormalMap = false, bool StoreInMemory = true, bool SetUnreadable = false)
 	{
+		LocalPath = LocalPath.ToLower();
+
 		if (string.IsNullOrEmpty(LocalPath))
 		{
 			if (NormalMap)
@@ -93,7 +95,8 @@ public partial struct GetGamedataFile
 
 		}
 
-		string TextureKey = scd + "_" + LocalPath;
+		//scd + "_" + 
+		string TextureKey = LocalPath;
 
 		if (LoadedTextures.ContainsKey(TextureKey))
 		{
@@ -106,13 +109,13 @@ public partial struct GetGamedataFile
 		if (DebugTextureLoad)
 			Debug.Log(LocalPath);
 
-		byte[] FinalTextureData2 = LoadBytes(scd, LocalPath);
+		byte[] FinalTextureData2 = LoadBytes(LocalPath);
 
 		if (FinalTextureData2 == null || FinalTextureData2.Length == 0)
 		{
 			FinalTextureData2 = null;
 
-			//Debug.LogWarning("File bytes are empty!");
+			//Debug.LogWarning("File bytes are empty! " + LocalPath);
 			if (NormalMap)
 				return emptyNormalTexture;
 			else
@@ -140,7 +143,16 @@ public partial struct GetGamedataFile
 			catch (System.Exception e)
 			{
 				Debug.Log("Texture load fallback: " + LocalPath + "\n" + e);
-				texture = DDS.DDSReader.LoadDDSTexture(new MemoryStream(FinalTextureData2), false).ToTexture2D();
+
+				try
+				{
+					texture = DDS.DDSReader.LoadDDSTexture(new MemoryStream(FinalTextureData2), false).ToTexture2D();
+				}
+				catch (System.Exception e2)
+				{
+					Debug.Log("Fallback failed!\n" + e2);
+					return Texture2D.whiteTexture;
+				}
 			}
 		}
 
@@ -185,11 +197,11 @@ public partial struct GetGamedataFile
 		return ChannelFlip;
 	}
 
-	public static void LoadTextureFromGamedata(string scd, string LocalPath, int Id, bool NormalMap = false)
+	public static void LoadTextureFromGamedata(string LocalPath, int Id, bool NormalMap = false)
 	{
 		if (NormalMap)
 		{
-			ScmapEditor.Current.Textures[Id].Normal = LoadTexture2DFromGamedata(scd, LocalPath, NormalMap, true, false);
+			ScmapEditor.Current.Textures[Id].Normal = LoadTexture2D(LocalPath, NormalMap, true, false);
 
 			if (ScmapEditor.Current.Textures[Id].Normal == null)
 			{
@@ -204,7 +216,7 @@ public partial struct GetGamedataFile
 		}
 		else
 		{
-			ScmapEditor.Current.Textures[Id].Albedo = LoadTexture2DFromGamedata(scd, LocalPath, NormalMap, true, false);
+			ScmapEditor.Current.Textures[Id].Albedo = LoadTexture2D(LocalPath, NormalMap, true, false);
 
 			if(ScmapEditor.Current.Textures[Id].Albedo == null)
 			{

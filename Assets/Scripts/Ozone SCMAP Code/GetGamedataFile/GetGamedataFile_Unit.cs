@@ -111,7 +111,7 @@ public partial struct GetGamedataFile
 		UnitCode.ToLower();
 		string scdPath = "units/" + UnitCode + "/" + UnitCode + "_unit.bp";
 
-		return LoadUnit(GetGamedataFile.UnitsScd, LocalBlueprintPath(scdPath));
+		return LoadUnitSource(LocalBlueprintPath(scdPath));
 	}
 
 
@@ -158,11 +158,6 @@ public partial struct GetGamedataFile
 			}
 		}
 
-		/*for(int i = 0; i < iconsOrder.Count; i++) // Debug order
-		{
-			Debug.Log(iconsKeys[i] + " : " + iconsOrder[i]);
-		}*/
-
 		LoadedUnitsStrategicDrawOrder = iconsKeys.ToArray();
 	}
 
@@ -198,14 +193,14 @@ public partial struct GetGamedataFile
 	}
 
 
-	public static UnitSource LoadUnit(string scd, string LocalPath)
+	public static UnitSource LoadUnitSource(string LocalPath)
 	{
 		if (LoadedUnitObjects.ContainsKey(LocalPath))
 			return LoadedUnitObjects[LocalPath];
 
 
 		//UnitObject ToReturn = new UnitObject();
-		byte[] Bytes = LoadBytes(scd, LocalPath);
+		byte[] Bytes = LoadBytes(LocalPath);
 		if (Bytes == null || Bytes.Length == 0)
 		{
 			Debug.LogWarning("Unit does not exits: " + LocalPath);
@@ -299,7 +294,7 @@ public partial struct GetGamedataFile
 		{
 			ToReturn.BP.StrategicIconName = CurrentValue.ToString();
 
-			ToReturn.BP.strategicIcon = GetGamedataFile.LoadTexture2DFromGamedata(TexturesScd, "textures/ui/common/game/strategicicons/" +  ToReturn.BP.StrategicIconName + "_rest.dds", false, true, true);
+			ToReturn.BP.strategicIcon = GetGamedataFile.LoadTexture2D("textures/ui/common/game/strategicicons/" +  ToReturn.BP.StrategicIconName + "_rest.dds", false, true, true);
 			if(ToReturn.BP.strategicIcon != null)
 			{
 				ToReturn.BP.strategicIcon.filterMode = FilterMode.Point;
@@ -573,7 +568,7 @@ public partial struct GetGamedataFile
 				if (i > 0)
 					continue;
 
-				ToReturn.BP.LODs[i].Mesh = LoadModel(scd, ToReturn.BP.LODs[i].Scm);
+				ToReturn.BP.LODs[i].Mesh = LoadModel(ToReturn.BP.LODs[i].Scm);
 				if (ToReturn.BP.LODs[i].Mesh == null)
 					ToReturn.BP.LODs[i].Mesh = UnitsInfo.Current.NoUnitMesh;
 
@@ -591,7 +586,7 @@ public partial struct GetGamedataFile
 					ToReturn.BP.LODs[i].AlbedoName = OffsetRelativePath(LocalPath, ToReturn.BP.LODs[i].AlbedoName, true);
 				}
 
-				ToReturn.BP.LODs[i].Albedo = LoadTexture2DFromGamedata(scd, ToReturn.BP.LODs[i].AlbedoName, false, true, true);
+				ToReturn.BP.LODs[i].Albedo = LoadTexture2D(ToReturn.BP.LODs[i].AlbedoName, false, true, true);
 				ToReturn.BP.LODs[i].Albedo.anisoLevel = 2;
 				ToReturn.BP.LODs[i].Mat.SetTexture(SHADER_MainTex, ToReturn.BP.LODs[i].Albedo);
 
@@ -607,7 +602,7 @@ public partial struct GetGamedataFile
 
 				if (!string.IsNullOrEmpty(ToReturn.BP.LODs[i].NormalsName))
 				{
-					ToReturn.BP.LODs[i].Normal = LoadTexture2DFromGamedata(scd, ToReturn.BP.LODs[i].NormalsName, true, true, true);
+					ToReturn.BP.LODs[i].Normal = LoadTexture2D(ToReturn.BP.LODs[i].NormalsName, true, true, true);
 					ToReturn.BP.LODs[i].Normal.anisoLevel = 2;
 					ToReturn.BP.LODs[i].Mat.SetTexture(SHADER_BumpMap, ToReturn.BP.LODs[i].Normal);
 				}
@@ -624,7 +619,7 @@ public partial struct GetGamedataFile
 
 				if (!string.IsNullOrEmpty(ToReturn.BP.LODs[i].SpecularName))
 				{
-					ToReturn.BP.LODs[i].Specular = LoadTexture2DFromGamedata(scd, ToReturn.BP.LODs[i].SpecularName, false, true, true);
+					ToReturn.BP.LODs[i].Specular = LoadTexture2D(ToReturn.BP.LODs[i].SpecularName, false, true, true);
 					ToReturn.BP.LODs[i].Specular.anisoLevel = 2;
 					ToReturn.BP.LODs[i].Mat.SetTexture(SHADER_SpecTeam, ToReturn.BP.LODs[i].Specular);
 				}

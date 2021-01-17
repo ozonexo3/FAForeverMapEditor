@@ -24,6 +24,7 @@ namespace Markers
 			[Header("Basic")]
 			public bool Blank = true;
 			public bool Spawn = true;
+			public bool SpawnRanges = false;
 			public bool Resource = true;
 			public bool Camera = true;
 
@@ -56,6 +57,7 @@ namespace Markers
 			{
 				Blank = GetPrefs("Layers_BlankActive", Blank);
 				Spawn = GetPrefs("Layers_SpawnActive", Spawn);
+				SpawnRanges = GetPrefs("Layers_SpawnRangesActive", SpawnRanges);
 				Resource = GetPrefs("Layers_ResourcesActive", Resource);
 				Camera = GetPrefs("Layers_CameraActive", Camera);
 
@@ -77,6 +79,7 @@ namespace Markers
 			{
 				SetPrefs("Layers_BlankActive", Blank);
 				SetPrefs("Layers_SpawnActive", Spawn);
+				SetPrefs("Layers_SpawnRangesActive", SpawnRanges);
 				SetPrefs("Layers_ResourcesActive", Resource);
 				SetPrefs("Layers_CameraActive", Camera);
 

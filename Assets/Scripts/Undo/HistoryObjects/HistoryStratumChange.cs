@@ -73,12 +73,12 @@ namespace UndoHistory
 
 			if(ScmapEditor.Current.Textures[i].Albedo == null)
 			{
-				GetGamedataFile.LoadTextureFromGamedata(GetGamedataFile.EnvScd, Textures.AlbedoPath, i, false);
+				GetGamedataFile.LoadTextureFromGamedata(Textures.AlbedoPath, i, false);
 			}
 
 			if (ScmapEditor.Current.Textures[i].Normal == null)
 			{
-				GetGamedataFile.LoadTextureFromGamedata(GetGamedataFile.EnvScd, Textures.NormalPath, i, true);
+				GetGamedataFile.LoadTextureFromGamedata(Textures.NormalPath, i, true);
 			}
 
 			ScmapEditor.Current.SetTextures(i);

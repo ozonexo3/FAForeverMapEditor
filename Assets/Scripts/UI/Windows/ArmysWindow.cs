@@ -68,8 +68,8 @@ public class ArmysWindow : MonoBehaviour {
 
 			if(ArmyMarker != null && ArmyMarker.MarkerObj != null && ArmyMarker.MarkerType == MapLua.SaveLua.Marker.MarkerTypes.BlankMarker)
 			{
-				GameObject NewBut = Instantiate(ArmyButtonPrefab) as GameObject;
-				NewBut.transform.SetParent(Pivot);
+				GameObject NewBut = Instantiate(ArmyButtonPrefab, Pivot) as GameObject;
+				//NewBut.transform.SetParent(Pivot);
 				ArmyButtons.Add(NewBut.GetComponent<ArmyMinimapButton>());
 				ArmyButtons[a].Controler = this;
 				ArmyButtons[a].InstanceId = a;

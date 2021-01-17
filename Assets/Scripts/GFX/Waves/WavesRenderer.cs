@@ -75,10 +75,8 @@ namespace EditMap
 
 			public WaveRenderer(WaveGenerator wave)
 			{
-				Debug.Log(wave.TextureName);
-
-				waveTexture = GetGamedataFile.LoadTexture2DFromGamedata(GetGamedataFile.EnvScd, wave.TextureName, false, true, true);
-				rampTexture = GetGamedataFile.LoadTexture2DFromGamedata(GetGamedataFile.EnvScd, wave.RampName, false, true, true);
+				waveTexture = GetGamedataFile.LoadTexture2D(wave.TextureName, false, true, true);
+				rampTexture = GetGamedataFile.LoadTexture2D(wave.RampName, false, true, true);
 
 				waveTexture.wrapMode = TextureWrapMode.Clamp;
 				rampTexture.wrapMode = TextureWrapMode.Clamp;
@@ -309,41 +307,20 @@ namespace EditMap
 				rend.Value.FillMatrixes();
 			}*/
 
-			Vector3 normal0 = Vector3.Cross((TestPoints[3] - TestPoints[0]).normalized, (TestPoints[1] - TestPoints[0]).normalized).normalized;
-			Vector3 normal1 = Vector3.Cross((TestPoints[1] - TestPoints[2]).normalized, (TestPoints[3] - TestPoints[2]).normalized).normalized;
+			//Vector3 normal0 = Vector3.Cross((TestPoints[3] - TestPoints[0]).normalized, (TestPoints[1] - TestPoints[0]).normalized).normalized;
+			//Vector3 normal1 = Vector3.Cross((TestPoints[1] - TestPoints[2]).normalized, (TestPoints[3] - TestPoints[2]).normalized).normalized;
 
-			/*Vector3 normal0 = (TestPoints[0] - TestPoints[1]).normalized;
-			Vector3 normal1 = (TestPoints[1] - TestPoints[2]).normalized;
-			Vector3 normal2 = (TestPoints[2] - TestPoints[3]).normalized;
-			Vector3 normal3 = (TestPoints[3] - TestPoints[0]).normalized;
+			//Vector3 finalNormal = (normal0 + normal1) / 2f;
 
-			if (normal0.y > 0)
-				normal0 *= -1;
-			if (normal1.y > 0)
-				normal1 *= -1;
-			if (normal2.y > 0)
-				normal2 *= -1;
-			if (normal3.y > 0)
-				normal3 *= -1;
-
-			Debug.Log(normal0);
-			Debug.Log(normal1);
-			Debug.Log(normal2);
-			Debug.Log(normal3);*/
-
-			Vector3 finalNormal = (normal0 + normal1) / 2f;
-
-			Debug.Log(finalNormal);
+			//Debug.Log(finalNormal);
 
 			//finalNormal.x = 0;
 			//finalNormal.z = 0;
-			finalNormal.y = 0;
+			//finalNormal.y = 0;
 
-			Debug.Log("Angle0: " + Quaternion.LookRotation(normal0.normalized).eulerAngles.y);
-			Debug.Log("Angle1: " + Quaternion.LookRotation(normal1.normalized).eulerAngles.y);
-			Debug.Log("Angle10: " + Quaternion.LookRotation(finalNormal.normalized).eulerAngles.y);
-
-			//Debug.Log(renderers.Count);
+			//Debug.Log("Angle0: " + Quaternion.LookRotation(normal0.normalized).eulerAngles.y);
+			//Debug.Log("Angle1: " + Quaternion.LookRotation(normal1.normalized).eulerAngles.y);
+			//Debug.Log("Angle10: " + Quaternion.LookRotation(finalNormal.normalized).eulerAngles.y);
 		}
 
 		private void OnDisable()
@@ -356,14 +333,10 @@ namespace EditMap
 
 		private void Update()
 		{
-			//mpb.arra
-
 			foreach (var rend in renderers)
 			{
 				rend.Value.Draw();
 			}
-
-			//DrawGizmos();
 
 			Shader.SetGlobalFloat(SHADER_SUPCOMTIME, Time.time);
 		}

@@ -23,11 +23,13 @@ public class Preload : MonoBehaviour {
 		yield return null;
 
 		//Preload heavy gamedata files
-		GetGamedataFile.GetZipFileInstance(GetGamedataFile.UnitsScd);
-		yield return null;
-		yield return null;
-		GetGamedataFile.GetFAFZipFileInstance(GetGamedataFile.UnitsScd);
-		yield return null;
+		//GetGamedataFile.GetZipFileInstance(GetGamedataFile.UnitsScd);
+		//yield return null;
+		//yield return null;
+		//GetGamedataFile.GetFAFZipFileInstance(GetGamedataFile.UnitsScd);
+
+		GetGamedataFile.LoadGamedata();
+		//yield return null;
 
 		yield return null;
 		yield return null;

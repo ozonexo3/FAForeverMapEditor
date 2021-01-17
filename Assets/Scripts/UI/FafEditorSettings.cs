@@ -4,6 +4,7 @@ using System.Collections;
 using System.Text;
 using System.Runtime.InteropServices;
 using SFB;
+using Ozone.UI;
 
 public class FafEditorSettings : MonoBehaviour
 {
@@ -19,6 +20,8 @@ public class FafEditorSettings : MonoBehaviour
 	public Toggle Markers2D;
 	public Toggle HeightmapClamp;
 
+	public UiTextField UiScale;
+
 	public const int DefaultUndoHistory = 50;
 	public const string UndoHistory = "UndoHistrySteps";
 
@@ -32,6 +35,14 @@ public class FafEditorSettings : MonoBehaviour
 		FogOfWar.isOn = GetFogOfWar();
 		Markers2D.isOn = GetMarkers2D();
 		HeightmapClamp.isOn = GetHeightmapClamp();
+
+		UiScale.SetValue(GetUiScale());
+		UiScaler.UpdateUiScale();
+	}
+
+	private void OnDisable()
+	{
+		UiScaler.UpdateUiScale();
 	}
 
 
@@ -43,6 +54,7 @@ public class FafEditorSettings : MonoBehaviour
 
 	public void Close()
 	{
+		OnUiScaleChanged();
 		gameObject.SetActive(false);
 	}
 
@@ -92,6 +104,8 @@ public class FafEditorSettings : MonoBehaviour
 
 			PlayerPrefs.SetInt("Heightmap_Clamp", HeightmapClamp.isOn ? 1 : 0);
 		}
+
+		PlayerPrefs.SetFloat("UiScale", UiScale.value);
 
 		PlayerPrefs.Save();
 		gameObject.SetActive(false);
@@ -180,5 +194,15 @@ public class FafEditorSettings : MonoBehaviour
 	{
 		_heightmapClamp = PlayerPrefs.GetInt("Heightmap_Clamp", 1) > 0;
 		return _heightmapClamp;
+	}
+
+	public static float GetUiScale()
+	{
+		return PlayerPrefs.GetFloat("UiScale", 1f);
+	}
+
+	public void OnUiScaleChanged()
+	{
+		UiScaler.TempChangeUiScale(UiScale.value);
 	}
 }
