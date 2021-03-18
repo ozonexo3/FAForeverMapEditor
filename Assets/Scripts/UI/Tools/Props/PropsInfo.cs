@@ -307,10 +307,12 @@ namespace EditMap
 					yield return null;
 				}
 
-
-				TotalMassCount += AllPropsTypes[GroupId].PropObject.BP.ReclaimMassMax;
-				TotalEnergyCount += AllPropsTypes[GroupId].PropObject.BP.ReclaimEnergyMax;
-				TotalReclaimTime += AllPropsTypes[GroupId].PropObject.BP.ReclaimTime;
+				if (AllPropsTypes[GroupId].PropObject != null && AllPropsTypes[GroupId].PropObject.BP != null)
+				{
+					TotalMassCount += AllPropsTypes[GroupId].PropObject.BP.ReclaimMassMax;
+					TotalEnergyCount += AllPropsTypes[GroupId].PropObject.BP.ReclaimEnergyMax;
+					TotalReclaimTime += AllPropsTypes[GroupId].PropObject.BP.ReclaimTime;
+				}
 			}
 
 			UpdatePropStats();
@@ -328,10 +330,13 @@ namespace EditMap
 			int AllPropsTypesCount = AllPropsTypes.Count;
 			for (int i = 0; i < AllPropsTypesCount; i++)
 			{
-				int InstancesCount = AllPropsTypes[i].PropsInstances.Count;
-				TotalMassCount += AllPropsTypes[i].PropObject.BP.ReclaimMassMax * InstancesCount;
-				TotalEnergyCount += AllPropsTypes[i].PropObject.BP.ReclaimEnergyMax * InstancesCount;
-				TotalReclaimTime += AllPropsTypes[i].PropObject.BP.ReclaimTime * InstancesCount;
+				if (AllPropsTypes[i].PropObject != null && AllPropsTypes[i].PropObject.BP != null)
+				{
+					int InstancesCount = AllPropsTypes[i].PropsInstances.Count;
+					TotalMassCount += AllPropsTypes[i].PropObject.BP.ReclaimMassMax * InstancesCount;
+					TotalEnergyCount += AllPropsTypes[i].PropObject.BP.ReclaimEnergyMax * InstancesCount;
+					TotalReclaimTime += AllPropsTypes[i].PropObject.BP.ReclaimTime * InstancesCount;
+				}
 			}
 			UpdatePropStats();
 		}

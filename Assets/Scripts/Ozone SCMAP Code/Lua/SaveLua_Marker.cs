@@ -860,6 +860,26 @@ namespace MapLua
 			return prefix + ID.ToString("00");
 		}
 
+		public static string GetLowestName(string oldName)
+		{
+			string prefix = oldName;
+			while(prefix.Length > 0 && char.IsDigit(prefix[prefix.Length - 1]))
+			{
+				prefix = prefix.Remove(prefix.Length - 1);
+			}
+
+			if(prefix.Length <= 0)
+			{
+				prefix = "Marker_";
+			}
+
+			int ID = 0;
+			while (MarkerExist(prefix + ID.ToString("00")))
+				ID++;
+
+			return prefix + ID.ToString("00");
+		}
+
 		private void ConnectAdjacentMarkers()
 		{
 			int mc = 0;

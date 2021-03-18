@@ -3,7 +3,7 @@ using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
-using DotNetOpenAuth.OAuth2;
+//using DotNetOpenAuth.OAuth2;
 using Ozone;
 using SFB;
 using UnityEditor;
@@ -133,8 +133,8 @@ namespace UI.Windows
 			form.Add(streamContent, "file", Path.GetFileName(uniqueTempPathInProject));
 			try
 			{
-				var token = GetAccessTokenFromOwnAuthSvr();
-				httpClient.DefaultRequestHeaders.Add("Authorization", "Bearer " + token.AccessToken);
+				//var token = GetAccessTokenFromOwnAuthSvr();
+				//httpClient.DefaultRequestHeaders.Add("Authorization", "Bearer " + token.AccessToken);
 			}
 			catch (Exception e)
 			{
@@ -199,7 +199,7 @@ namespace UI.Windows
 			Debug.LogError(error);
 		}
 
-		private IAuthorizationState GetAccessTokenFromOwnAuthSvr()
+		/*private IAuthorizationState GetAccessTokenFromOwnAuthSvr()
 		{
 			var server = new AuthorizationServerDescription
 			{
@@ -218,7 +218,7 @@ namespace UI.Windows
 				UsernameInputField.text, PasswordInputField.text);
 
 			return token;
-		}
+		}*/
 
 		private static string GetUniqueTempPath()
 		{

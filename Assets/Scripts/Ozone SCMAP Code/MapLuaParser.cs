@@ -307,9 +307,6 @@ public partial class MapLuaParser : MonoBehaviour
 			else
 				EditMenu.MapInfoMenu.SaveAsSc.isOn = true;
 
-			//EditMenu.MapInfoMenu.SaveAsFa.isOn = HeightmapControler.map.VersionMinor >= 60;
-			//EditMenu.MapInfoMenu.SaveAsSc.isOn = !EditMenu.MapInfoMenu.SaveAsFa.isOn;
-
 			InfoPopup.Show(true, "Loading map...\n(" + ScenarioLuaFile.Data.save + ")");
 			yield return null;
 
@@ -519,10 +516,6 @@ public partial class MapLuaParser : MonoBehaviour
 
 		SaveLuaFile.Save(SaveFilePath);
 		yield return null;
-
-		//SaveScenarioLua();
-		//SaveSaveLua();
-		//SaveScriptLua(ScriptId);
 
 		SaveScmap();
 		yield return null;

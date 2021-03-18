@@ -39,6 +39,29 @@ namespace UndoHistory
 			public float scale;
 			public string effectTemplate;
 
+			//WeatherGenerator
+			public float cloudCount = 10f;
+			public float cloudCountRange = 0f;
+			public float cloudEmitterScale = 1f;
+			public float cloudEmitterScaleRange = 0.0f;
+			public float cloudSpread = 150f;
+			public float cloudHeightRange = 15;
+			public float spawnChance = 1;
+			public string ForceType = "None";
+			public float cloudHeight = 180;
+
+			//WeatherDefinition
+			public Vector3 WeatherDriftDirection = Vector3.right;
+			public string MapStyle = "Tundra";
+			public string WeatherType04 = "WhitePatchyClouds";
+			public string WeatherType03 = "None";
+			public string WeatherType02 = "WhiteThickClouds";
+			public string WeatherType01 = "SnowClouds";
+			public float WeatherType04Chance = 0.1f;
+			public float WeatherType03Chance = 0.3f;
+			public float WeatherType02Chance = 0.3f;
+			public float WeatherType01Chance = 0.3f;
+
 			public Vector3 Position;
 			public Quaternion Orientation;
 
@@ -54,6 +77,27 @@ namespace UndoHistory
 				offset = Marker.offset;
 				scale = Marker.scale;
 				effectTemplate = Marker.EffectTemplate;
+
+				cloudCount = Marker.cloudCount;
+				cloudCountRange = Marker.cloudCountRange;
+				cloudEmitterScale = Marker.cloudEmitterScale;
+				cloudEmitterScaleRange = Marker.cloudEmitterScaleRange;
+				cloudSpread = Marker.cloudSpread;
+				cloudHeightRange = Marker.cloudHeightRange;
+				spawnChance = Marker.spawnChance;
+				ForceType = Marker.ForceType;
+				cloudHeight = Marker.cloudHeight;
+
+				WeatherDriftDirection = Marker.WeatherDriftDirection;
+				MapStyle = Marker.MapStyle;
+				WeatherType04 = Marker.WeatherType04;
+				WeatherType03 = Marker.WeatherType03;
+				WeatherType02 = Marker.WeatherType02;
+				WeatherType01 = Marker.WeatherType01;
+				WeatherType04Chance = Marker.WeatherType04Chance;
+				WeatherType03Chance = Marker.WeatherType03Chance;
+				WeatherType02Chance = Marker.WeatherType02Chance;
+				WeatherType01Chance = Marker.WeatherType01Chance;
 
 
 				if (Marker.MarkerObj && Marker.MarkerType == MapLua.SaveLua.Marker.MarkerTypes.CameraInfo)
@@ -88,6 +132,33 @@ namespace UndoHistory
 				Marker.offset = offset;
 				Marker.scale = scale;
 				Marker.EffectTemplate = effectTemplate;
+
+				if (Marker.MarkerType == MapLua.SaveLua.Marker.MarkerTypes.WeatherGenerator)
+				{
+					Marker.cloudCount = cloudCount;
+					Marker.cloudCountRange = cloudCountRange;
+					Marker.cloudEmitterScale = cloudEmitterScale;
+					Marker.cloudEmitterScaleRange = cloudEmitterScaleRange;
+					Marker.cloudSpread = cloudSpread;
+					Marker.cloudHeightRange = cloudHeightRange;
+					Marker.spawnChance = spawnChance;
+					Marker.ForceType = ForceType;
+					Marker.cloudHeight = cloudHeight;
+				}
+
+				if (Marker.MarkerType == MapLua.SaveLua.Marker.MarkerTypes.WeatherDefinition)
+				{
+					Marker.WeatherDriftDirection = WeatherDriftDirection;
+					Marker.MapStyle = MapStyle;
+					Marker.WeatherType04 = WeatherType04;
+					Marker.WeatherType03 = WeatherType03;
+					Marker.WeatherType02 = WeatherType02;
+					Marker.WeatherType01 = WeatherType01;
+					Marker.WeatherType04Chance = WeatherType04Chance;
+					Marker.WeatherType03Chance = WeatherType03Chance;
+					Marker.WeatherType02Chance = WeatherType02Chance;
+					Marker.WeatherType01Chance = WeatherType01Chance;
+				}
 
 				if (Marker.MarkerObj && Marker.MarkerType == MapLua.SaveLua.Marker.MarkerTypes.CameraInfo)
 				{

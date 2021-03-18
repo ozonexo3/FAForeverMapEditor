@@ -132,7 +132,7 @@ public partial struct GetGamedataFile
 
 		if (IsDxt3)
 		{
-			texture = DDS.DDSReader.LoadDDSTexture(new MemoryStream(FinalTextureData2), false).ToTexture2D();
+			texture = DDS.DDSReader.LoadDDSTexture2D(new MemoryStream(FinalTextureData2));
 		}
 		else
 		{
@@ -143,23 +143,13 @@ public partial struct GetGamedataFile
 			catch (System.Exception e)
 			{
 				Debug.Log("Texture load fallback: " + LocalPath + "\n" + e);
-
-				try
-				{
-					texture = DDS.DDSReader.LoadDDSTexture(new MemoryStream(FinalTextureData2), false).ToTexture2D();
-				}
-				catch (System.Exception e2)
-				{
-					Debug.Log("Fallback failed!\n" + e2);
-					return Texture2D.whiteTexture;
-				}
+				texture = DDS.DDSReader.LoadDDSTexture2D(new MemoryStream(FinalTextureData2));
 			}
 		}
 
-		if (FlipBlueRed)
+		if (FlipBlueRed && texture.isReadable)
 		{
 			texture = CannelFlip(texture);
-
 		}
 
 		FinalTextureData2 = null;
@@ -168,7 +158,8 @@ public partial struct GetGamedataFile
 		texture.mipMapBias = MipmapBias;
 		texture.filterMode = FilterMode.Bilinear;
 		texture.anisoLevel = AnisoLevel;
-		texture.Apply(false, SetUnreadable);
+		if(texture.isReadable)
+			texture.Apply(false, SetUnreadable);
 
 		if (StoreInMemory)
 			texture = AddToMemory(TextureKey, ref texture);

@@ -25,7 +25,7 @@ public class Texture2DInfo
 	/// </summary>
 	public Texture2D ToTexture2D()
 	{
-		var texture = new Texture2D(width, height, format, true, false);
+		var texture = new Texture2D(width, height, format, hasMipmaps, false);
 
 		if(rawData != null)
 		{
@@ -35,4 +35,6 @@ public class Texture2DInfo
 		
 		return texture;
 	}
+
+	public static Texture2DInfo whiteTexture = new Texture2DInfo(Texture2D.whiteTexture.width, Texture2D.whiteTexture.height, Texture2D.whiteTexture.format, Texture2D.whiteTexture.mipmapCount > 0, Texture2D.whiteTexture.GetRawTextureData());
 }

@@ -199,12 +199,11 @@ namespace EditMap
 
 						//NewPos.y = ScmapEditor.Current.Teren.SampleHeight(NewPos);
 
-						MapLua.SaveLua.Marker NewMarker = new MapLua.SaveLua.Marker(CopyData[m].MarkerType);
+						MapLua.SaveLua.Marker NewMarker = new MapLua.SaveLua.Marker(CopyData[m].MarkerType, MapLua.SaveLua.GetLowestName(CopyData[m].Name));
 						NewMarker.position = ScmapEditor.WorldPosToScmap(NewPos);
 						//NewMarker.orientation = 
 						MarkersControler.CreateMarker(NewMarker, mc);
 						ChainsList.AddToCurrentChain(NewMarker);
-
 
 						LastAddedMarkers.Add(TotalMarkersCount);
 						TotalMarkersCount++;
@@ -382,12 +381,13 @@ namespace EditMap
 
 		struct CopyMarkerData
 		{
+			public string Name;
 			public Vector3 Position;
 			public Quaternion Rotation;
 			public MapLua.SaveLua.Marker.MarkerTypes MarkerType;
 
-			public CopyMarkerData(Vector3 Position, Quaternion Rotation, MapLua.SaveLua.Marker.MarkerTypes MarkerType)
-			=> (this.Position, this.Rotation, this.MarkerType) = (Position, Rotation, MarkerType);
+			public CopyMarkerData(string Name, Vector3 Position, Quaternion Rotation, MapLua.SaveLua.Marker.MarkerTypes MarkerType)
+			=> (this.Name, this.Position, this.Rotation, this.MarkerType) = (Name, Position, Rotation, MarkerType);
 		}
 
 		static List<CopyMarkerData> CopyData;
@@ -410,7 +410,7 @@ namespace EditMap
 				if (mob == null)
 					continue;
 
-				CopyData.Add(new CopyMarkerData(mob.transform.position - CopyCenter, mob.transform.rotation, mob.Owner.MarkerType));
+				CopyData.Add(new CopyMarkerData(mob.name, mob.transform.position - CopyCenter, mob.transform.rotation, mob.Owner.MarkerType));
 			}
 		}
 
@@ -463,7 +463,7 @@ namespace EditMap
 				if (mob == null)
 					continue;
 
-				DuplicateData.Add(new CopyMarkerData(mob.transform.position - DuplicateCenter, mob.transform.rotation, mob.Owner.MarkerType));
+				DuplicateData.Add(new CopyMarkerData(mob.name, mob.transform.position - DuplicateCenter, mob.transform.rotation, mob.Owner.MarkerType));
 			}
 
 			if(DuplicateData.Count > 0)

@@ -40,9 +40,12 @@ public partial class Prop
 		MassMath.QuaternionToRotationMatrix(Obj.Tr.localRotation, ref RotationX, ref RotationY, ref RotationZ);
 
 		Scale = Obj.Tr.localScale;
-		Scale.x /= Group.PropObject.BP.LocalScale.x;
-		Scale.y /= Group.PropObject.BP.LocalScale.y;
-		Scale.z /= Group.PropObject.BP.LocalScale.z;
+		if (Group.PropObject.BP != null)
+		{
+			Scale.x /= Group.PropObject.BP.LocalScale.x;
+			Scale.y /= Group.PropObject.BP.LocalScale.y;
+			Scale.z /= Group.PropObject.BP.LocalScale.z;
+		}
 	}
 
 	public void CreateObject(Vector3 WorldPosition, Quaternion WorldRotation, Vector3 WorldScale, bool AllowFarLod = true)

@@ -184,12 +184,11 @@ public partial class AppMenu : MonoBehaviour
 		}
 
 		string OldFolderName = MapLuaParser.Current.FolderName;
+		string OldScript = MapLuaParser.Current.ScenarioLuaFile.Data.script.Replace("/maps/", MapLuaParser.Current.FolderParentPath);
+		string OldOptionsFile = OldScript.Replace("_script.lua", "_options.lua");
 
 		MapLuaParser.Current.FolderName = NewFolderName;
 
-
-		string OldScript = MapLuaParser.Current.ScenarioLuaFile.Data.script.Replace("/maps/", MapLuaParser.Current.FolderParentPath);
-		string OldOptionsFile = OldScript.Replace("_script.lua", "_options.lua");
 
 		if (string.IsNullOrEmpty(FileBeginName))
 		{
@@ -207,35 +206,70 @@ public partial class AppMenu : MonoBehaviour
 
 		LoadRecentMaps.MoveLastMaps(MapLuaParser.Current.ScenarioFileName, MapLuaParser.Current.FolderName, MapLuaParser.Current.FolderParentPath);
 
-		string EnvPath = MapLuaParser.Current.FolderParentPath + OldFolderName + "/env";
-		if (System.IO.Directory.Exists(EnvPath))
-		{
-			DirectoryCopy(EnvPath, MapLuaParser.Current.FolderParentPath + NewFolderName + "/env", true);
-		}
-
 		MapLuaParser.Current.SaveMap(false);
 
 		string[] LoadScript = System.IO.File.ReadAllLines(OldScript);
 		//Replace old folder name to new one
 
-		for(int l = 0; l < LoadScript.Length; l++)
+		string searchFolderString = "/maps/" + OldFolderName;
+		for (int l = 0; l < LoadScript.Length; l++)
 		{
 			if(LoadScript[l].StartsWith("local Tables = import"))
 			{
 				LoadScript[l] = "local Tables = import('/maps/" + MapLuaParser.Current.FolderName + "/" + FileBeginName + "_tables.lua')";
 			}
+			else if (LoadScript[l].Contains(searchFolderString))
+			{
+				LoadScript[l] = LoadScript[l].Replace(searchFolderString, "/maps/" + MapLuaParser.Current.FolderName);
+			}
 		}
 
-		//LoadScript = LoadScript.Replace(OldFolderName + "/", NewFolderName + "/");
-
 		System.IO.File.WriteAllLines(MapLuaParser.Current.ScenarioLuaFile.Data.script.Replace("/maps/", MapLuaParser.Current.FolderParentPath), LoadScript);
-
-		//System.IO.File.Copy(OldScript, MapLuaParser.Current.ScenarioLuaFile.Data.script.Replace("/maps/", MapLuaParser.Current.FolderParentPath));
 
 		if (System.IO.File.Exists(OldOptionsFile))
 		{ // Found options, copy it
 			System.IO.File.Copy(OldOptionsFile, MapLuaParser.Current.ScenarioLuaFile.Data.script.Replace("/maps/", MapLuaParser.Current.FolderParentPath).Replace("_script.lua", "_options.lua"));
 		}
+
+
+
+		//string EnvPath = MapLuaParser.Current.FolderParentPath + OldFolderName + "/env";
+		/*if (System.IO.Directory.Exists(EnvPath))
+		{
+			DirectoryCopy(EnvPath, MapLuaParser.Current.FolderParentPath + NewFolderName + "/env", true);
+		}*/
+
+		string OldDirectoryPath = MapLuaParser.Current.FolderParentPath + OldFolderName;
+		string NewDirectoryPath = MapLuaParser.Current.FolderParentPath + NewFolderName;
+		string[] allSubDirectories = System.IO.Directory.GetDirectories(OldDirectoryPath);
+		for(int i = 0; i < allSubDirectories.Length; i++)
+		{
+			string newPath = allSubDirectories[i].Replace(OldDirectoryPath, SystemPath);
+			DirectoryCopy(allSubDirectories[i], newPath, true);
+		}
+
+		string[] allSubFiles = System.IO.Directory.GetFiles(OldDirectoryPath);
+		for (int i = 0; i < allSubFiles.Length; i++)
+		{
+			string fileName = System.IO.Path.GetFileName(allSubFiles[i]);
+
+			if (fileName == FileBeginName + ".scmap"
+				|| fileName == FileBeginName + "_scenario.lua"
+				|| fileName == FileBeginName + "_save.lua"
+				|| fileName == FileBeginName + "_script.lua"
+				|| fileName == FileBeginName + "_tables.lua"
+				|| fileName == FileBeginName + "_options.lua"
+				)
+				continue;
+			else
+			{
+				string newFilePath = SystemPath + "/" + Path.GetFileNameWithoutExtension(allSubFiles[i]).Replace(OldFolderName, NewFolderName) + Path.GetExtension(allSubFiles[i]);
+				if(!File.Exists(newFilePath))
+					File.Copy(allSubFiles[i], newFilePath);
+			}
+
+		}
+
 
 		EditingMenu.MapInfoMenu.UpdateFields();
 		WindowStateSever.WindowStateSaver.ChangeWindowName(NewFolderName);

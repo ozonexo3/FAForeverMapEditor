@@ -736,7 +736,46 @@ namespace EditMap
 
 		public void CloudsChanged()
 		{
+			Loading = true;
+			float valueCloudCount = CloudCount.value;
+			float valueCloudCountRange = CloudCountRange.value;
+			float valueCloudEmitterScale = CloudEmitterScale.value;
+			float valueCloudEmitterScaleRange = CloudEmitterScaleRange.value;
+			float valueCloudHeight = CloudHeight.value;
+			float valueCloudHeightRange = CloudHeightRange.value;
+			float valueCloudSpread = CloudSpread.value;
+			float valueCloudSpawnChance = CloudSpawnChance.value;
+			string valueCloudForceType = CloudForceType.text;
 
+			Undo.RegisterUndo(new UndoHistory.HistoryMarkersChange(), new UndoHistory.HistoryMarkersChange.MarkersChangeHistoryParameter(AllMarkers));
+
+			for (int i = 0; i < Count; i++)
+			{
+				SaveLua.Marker current = SelectedGameObjects[i].GetComponent<MarkerObject>().Owner;
+				current.cloudCount = valueCloudCount;
+				current.cloudCountRange = valueCloudCountRange;
+				current.cloudEmitterScale = valueCloudEmitterScale;
+				current.cloudEmitterScaleRange = valueCloudEmitterScaleRange;
+				current.cloudHeight = valueCloudHeight;
+				current.cloudHeightRange = valueCloudHeightRange;
+				current.cloudSpread = valueCloudSpread;
+				current.spawnChance = valueCloudSpawnChance;
+				current.ForceType = valueCloudForceType;
+			}
+
+
+			CloudCount.SetValue(valueCloudCount);
+			CloudCountRange.SetValue(valueCloudCountRange);
+			CloudEmitterScale.SetValue(valueCloudEmitterScale);
+			CloudEmitterScaleRange.SetValue(valueCloudEmitterScaleRange);
+			CloudHeight.SetValue(valueCloudHeight);
+			CloudHeightRange.SetValue(valueCloudHeightRange);
+			CloudSpread.SetValue(valueCloudSpread);
+			CloudSpawnChance.SetValue(valueCloudSpawnChance);
+			CloudForceType.SetValue(valueCloudForceType);
+
+
+			Loading = false;
 		}
 
 		void ReadWeather()
@@ -757,7 +796,50 @@ namespace EditMap
 
 		public void WeatherChanged()
 		{
+			Loading = true;
+			Vector3 valueWeatherDriftDirection = WeatherDriftDirection.GetVector3Value();
+			string valueMapStyle = MapStyle.text;
+			string valueWeatherType01 = WeatherType01.text;
+			string valueWeatherType02 = WeatherType02.text;
+			string valueWeatherType03 = WeatherType03.text;
+			string valueWeatherType04 = WeatherType04.text;
+			float valueWeatherType01Chance = WeatherType01Chance.value;
+			float valueWeatherType02Chance = WeatherType02Chance.value;
+			float valueWeatherType03Chance = WeatherType03Chance.value;
+			float valueWeatherType04Chance = WeatherType04Chance.value;
 
+			Undo.RegisterUndo(new UndoHistory.HistoryMarkersChange(), new UndoHistory.HistoryMarkersChange.MarkersChangeHistoryParameter(AllMarkers));
+
+			for (int i = 0; i < Count; i++)
+			{
+				SaveLua.Marker current = SelectedGameObjects[i].GetComponent<MarkerObject>().Owner;
+				current.WeatherDriftDirection = valueWeatherDriftDirection;
+				current.MapStyle = valueMapStyle;
+				current.WeatherType01 = valueWeatherType01;
+				current.WeatherType02 = valueWeatherType02;
+				current.WeatherType03 = valueWeatherType03;
+				current.WeatherType04 = valueWeatherType04;
+				current.WeatherType01Chance = valueWeatherType01Chance;
+				current.WeatherType02Chance = valueWeatherType02Chance;
+				current.WeatherType03Chance = valueWeatherType03Chance;
+				current.WeatherType04Chance = valueWeatherType04Chance;
+
+			}
+
+
+			WeatherDriftDirection.SetVectorField(valueWeatherDriftDirection);
+			MapStyle.SetValue(valueMapStyle);
+			WeatherType01.SetValue(valueWeatherType01);
+			WeatherType02.SetValue(valueWeatherType02);
+			WeatherType03.SetValue(valueWeatherType03);
+			WeatherType04.SetValue(valueWeatherType04);
+			WeatherType01Chance.SetValue(valueWeatherType01Chance);
+			WeatherType02Chance.SetValue(valueWeatherType02Chance);
+			WeatherType03Chance.SetValue(valueWeatherType03Chance);
+			WeatherType04Chance.SetValue(valueWeatherType04Chance);
+
+
+			Loading = false;
 
 		}
 

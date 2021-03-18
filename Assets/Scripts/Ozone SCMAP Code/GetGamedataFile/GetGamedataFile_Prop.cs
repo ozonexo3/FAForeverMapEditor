@@ -25,10 +25,10 @@ public partial struct GetGamedataFile
 
 		public PropGameObject CreatePropGameObject(Vector3 position, Quaternion rotation, Vector3 scale, bool AllowFarLod = true)
 		{
-
 			if (IsTemp)
 			{
 				IsTemp = false;
+				if(BP != null)
 				for(int i = 0; i < BP.LODs.Length; i++)
 				{
 					if (BP.LODs[i].Albedo != null)
@@ -72,6 +72,9 @@ public partial struct GetGamedataFile
 			else
 			{
 				PropGameObject NewProp = GameObject.Instantiate(PropsInfo.Current.PropObjectPrefab, PropsInfo.Current.PropsParent).GetComponent<PropGameObject>();
+				if (BP == null)
+					return NewProp;
+
 				NewProp.gameObject.name = BP.Name;
 
 				StoredPrefab = NewProp;
