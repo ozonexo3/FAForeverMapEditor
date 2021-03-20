@@ -17,8 +17,8 @@ public class EditorVersion : MonoBehaviour
 	public const double VersionOffset = -0.001f; // Prerelease
 #else
 	//Release
-	public const string EditorBuildTag = "";
-	//public const string EditorBuildTag = "HF1"; // Hotfix
+	//public const string EditorBuildTag = "";
+	public const string EditorBuildTag = "HF1"; // Hotfix
 	public const float VersionOffset = 0f; // Release
 #endif
 

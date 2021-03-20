@@ -57,7 +57,6 @@ public class EnvPaths : MonoBehaviour {
 	{
 		get
 		{
-			Debug.Log(GamedataPath);
 			return System.IO.Directory.Exists(GamedataPath);
 		}
 	}

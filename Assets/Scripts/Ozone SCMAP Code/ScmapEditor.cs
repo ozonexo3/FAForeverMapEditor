@@ -548,7 +548,8 @@ public partial class ScmapEditor : MonoBehaviour
 		{
 			if(!Textures[i + 1].Albedo.isReadable)
 			{
-				Debug.LogWarning("Assigned albedo texture is not readable! " + Textures[i + 1].AlbedoPath);
+				if(Textures[i + 1].Albedo != Texture2D.whiteTexture)
+					Debug.LogWarning("Assigned albedo texture is not readable! " + Textures[i + 1].AlbedoPath);
 				continue;
 			}
 

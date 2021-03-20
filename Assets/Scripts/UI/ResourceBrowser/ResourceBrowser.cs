@@ -69,7 +69,7 @@ namespace FAF.MapEditor
 		public int LastLoadedType;
 
 		//Local
-		List<string> LoadedEnvPaths = new List<string>();
+		List<string> LoadedEnvPaths = new List<string>(24);
 		const string LocalPath = "env/";
 		static string[] CategoryPaths = new string[] { "layers/", "splats/", "decals/", "Props/" };
 		string SelectedObject = "";
@@ -127,7 +127,7 @@ namespace FAF.MapEditor
 
 			EnvType.ClearOptions();
 
-			LoadedEnvPaths = new List<string>();
+			LoadedEnvPaths.Clear();
 			List<Dropdown.OptionData> NewOptions = new List<Dropdown.OptionData>();
 
 			if (!EnvPaths.GamedataExist)
@@ -222,6 +222,7 @@ namespace FAF.MapEditor
 
 			string[] files = GetGamedataFile.GetFilesInPath("env/");
 
+			char Separator = '/';
 			for (int f = 0; f < files.Length; f++)
 			{
 				string LocalName = files[f].Replace("env/", "");
@@ -229,21 +230,10 @@ namespace FAF.MapEditor
 				if (string.IsNullOrEmpty(LocalName))
 					continue;
 
-				int ContSeparators = 0;
-				char Separator = ("/")[0];
-				for (int i = 0; i < LocalName.Length; i++)
-				{
-					if (LocalName[i] == Separator)
-					{
-						ContSeparators++;
-						if (ContSeparators > 1)
-							break;
-					}
-				}
-				if (ContSeparators > 1)
-					continue;
+				LocalName = LocalName.Split(Separator)[0];
 
-				LocalName = LocalName.Replace("/", "");
+				if (LoadedEnvPaths.Contains(LocalName))
+					continue;
 
 				LoadedEnvPaths.Add(LocalName);
 				Dropdown.OptionData NewOptionInstance = new Dropdown.OptionData(LocalName);
@@ -291,10 +281,7 @@ namespace FAF.MapEditor
 			int LastEnvType = EnvType.value;
 
 			CustomLoading = true;
-			//Debug.Log ("Load browser for: " + path);
 			string BeginPath = path;
-			//SRect.normalizedPosition = Vector2.zero;
-
 
 			path = path.Replace("env/", "");
 
@@ -506,19 +493,18 @@ namespace FAF.MapEditor
 			SizeFitter.enabled = true;
 
 			LastLoadedType = Category.value;
-
 			if (LoadedEnvPaths[EnvType.value] == CurrentMapFolderPath)
 			{
 				if (MapLuaParser.IsMapLoaded)
 				{
 
 					string LoadPath = MapLuaParser.LoadedMapFolderPath + "env/" + CategoryPaths[LastLoadedType];
-					Debug.Log("Try load assets from: " + LoadPath);
+					//Debug.Log("Try load assets from: " + LoadPath);
 					if (Directory.Exists(LoadPath))
 					{
 
 						string[] AllFiles = Directory.GetFiles(LoadPath, "*", SearchOption.AllDirectories);
-						Debug.Log("Found " + AllFiles.Length + " files in map folder");
+						//Debug.Log("Found " + AllFiles.Length + " files in map folder");
 
 						for (int i = 0; i < AllFiles.Length; i++)
 						{
@@ -564,7 +550,7 @@ namespace FAF.MapEditor
 				if (LastLoadedType == 3)
 				{
 					int Count = EditMap.PropsInfo.AllPropsTypes.Count;
-					Debug.Log("Found props: " + Count);
+					//Debug.Log("Found props: " + Count);
 
 					for (int i = 0; i < Count; i++)
 					{
@@ -688,17 +674,17 @@ namespace FAF.MapEditor
 
 				SelectedDirectory = ("env/" + EnvType.options[EnvType.value].text + "/" + CategoryPaths[LastLoadedType]).ToLower();
 
-				string[] files = GetGamedataFile.GetFilesInPath("SelectedDirectory");
+				string[] files = GetGamedataFile.GetFilesInPath(SelectedDirectory);
 				bool Breaked = false;
 
 				for (int f = 0; f < files.Length; f++)
 				{
-					string LocalName = files[f].Replace("env/", "");
+					string LocalName = files[f];
 
 					if (!IsProperFile(LocalName))
 						continue;
 
-					if (LoadZipEntry(files[f], out Breaked))
+					if (LoadZipEntry(LocalName, out Breaked))
 					{
 						continue;
 					}
@@ -743,7 +729,6 @@ namespace FAF.MapEditor
 			{
 				string LocalName = localPath.Remove(0, LocalPath.Length);
 
-
 				LoadAtPath(localPath, LocalName);
 			}
 			return false;
@@ -752,20 +737,19 @@ namespace FAF.MapEditor
 		bool IsProperFile(string LocalName)
 		{
 			LocalName = LocalName.ToLower();
-
 			if (!LocalName.StartsWith(SelectedDirectory))
 				return false;
 
 			switch (Category.value)
 			{
 				case 0:
-					return LocalName.ToLower().EndsWith(".dds");
+					return LocalName.EndsWith(".dds");
 				case 1:
-					return LocalName.ToLower().EndsWith(".dds");
+					return LocalName.EndsWith(".dds");
 				case 2:
-					return LocalName.ToLower().EndsWith(".dds");
+					return LocalName.EndsWith(".dds");
 				case 3:
-					return LocalName.ToLower().EndsWith(".bp");
+					return LocalName.EndsWith(".bp");
 			}
 			return false;
 		}

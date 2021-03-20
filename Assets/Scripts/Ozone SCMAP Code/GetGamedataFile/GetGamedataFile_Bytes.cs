@@ -147,7 +147,6 @@ public partial struct GetGamedataFile
 		return files.ToArray();
 	}
 
-
 	static bool Init = false;
 
 	static void Initialize()
