@@ -149,6 +149,7 @@ namespace EditMap
 		void OnEnable()
 		{
 			PlacementManager.OnDropOnGameplay += DropAtGameplay;
+			PlacementManager.InstantiateAction = null;
 			SelectionManager.Current.DisableLayer = 16;
 			SelectionManager.Current.SetRemoveAction(DestroyProps);
 			SelectionManager.Current.SetSelectionChangeAction(SelectProp);

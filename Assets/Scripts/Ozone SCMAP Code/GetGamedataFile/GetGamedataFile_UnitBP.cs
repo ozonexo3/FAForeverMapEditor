@@ -153,7 +153,7 @@ public partial struct GetGamedataFile
 		byte[] Bytes = LoadBytes(LocalPath);
 		if (Bytes == null || Bytes.Length == 0)
 		{
-			Debug.LogWarning("Unit does not exits: " + LocalPath);
+			Debug.LogWarning("Unit does not exist: " + LocalPath);
 			return new UnitDB(LocalPath);
 		}
 		string BluePrintString = System.Text.Encoding.UTF8.GetString(Bytes);

@@ -139,6 +139,7 @@ public class UnitInstance : MonoBehaviour
 	public static Quaternion RotationFromScmapRotation(Vector3 Rot)
 	{
 		Rot.y *= -1;
+		//Rot.x *= -1;
 		return Quaternion.Euler(Rot * Mathf.Rad2Deg);
 	}
 
@@ -146,6 +147,7 @@ public class UnitInstance : MonoBehaviour
 	{
 		Vector3 ToReturn = Rot.eulerAngles;
 		ToReturn.y *= -1;
+		//ToReturn.x *= -1;
 		return ToReturn * Mathf.Deg2Rad;
 	}
 

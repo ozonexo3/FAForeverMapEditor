@@ -221,6 +221,7 @@ namespace FAF.MapEditor
 			}*/
 
 			string[] files = GetGamedataFile.GetFilesInPath("env/");
+			//Debug.Log("Total env files: " + files.Length);
 
 			char Separator = '/';
 			for (int f = 0; f < files.Length; f++)

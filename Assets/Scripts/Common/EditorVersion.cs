@@ -1,4 +1,4 @@
-﻿//#define PRERELEASE // << -- Comment out for full release
+﻿#define PRERELEASE // << -- Comment out for full release
 
 using UnityEngine;
 using UnityEngine.Networking;
@@ -9,7 +9,7 @@ using System.Collections.Generic;
 public class EditorVersion : MonoBehaviour
 {
 
-	public const string EditorBuildVersion = "v0.702-Alpha";
+	public const string EditorBuildVersion = "v0.704-Alpha";
 
 #if PRERELEASE
 	// Prerelease
@@ -17,8 +17,8 @@ public class EditorVersion : MonoBehaviour
 	public const double VersionOffset = -0.001f; // Prerelease
 #else
 	//Release
-	//public const string EditorBuildTag = "";
-	public const string EditorBuildTag = "HF1"; // Hotfix
+	public const string EditorBuildTag = "";
+	//public const string EditorBuildTag = "HF1"; // Hotfix
 	public const float VersionOffset = 0f; // Release
 #endif
 

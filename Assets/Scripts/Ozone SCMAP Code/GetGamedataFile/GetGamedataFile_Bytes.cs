@@ -78,20 +78,22 @@ public partial struct GetGamedataFile
 				//Debug.LogWarning("Gamedata scd file could not be found!\n" + path);
 				continue;
 			}
-
 			var files = Directory.GetFiles(path, "*.*", SearchOption.AllDirectories).Where(s => s.EndsWith(".scd") || s.EndsWith(".nx2"));
 
 			foreach(string filePath in files)
 			{
-				//Debug.Log("Load SCD: " + filePath);
+				bool isNx2 = filePath.EndsWith(".nx2");
+
+
 				FileStream fs = File.OpenRead(filePath);
 				ZipFile zipFile = new ZipFile(fs);
-
+				int addedFiles = 0;
 				foreach(ZipEntry ze in zipFile)
 				{
 					if (!ze.IsFile)
 						continue;
 
+					//string entryPath = ze.Name.ToLower().Replace("\\", "/");
 					string entryPath = ze.Name.ToLower().Replace("\\", "/");
 
 					if (entryPath.StartsWith("env/") || entryPath.StartsWith("textures/") || entryPath.StartsWith("units/"))
@@ -100,14 +102,26 @@ public partial struct GetGamedataFile
 						if (gamedata.ContainsKey(entryPath))
 						{
 							gamedata[entryPath] = new GamedataZipEntry(zipFile, ze);
+							addedFiles++;
 						}
 						else
 						{
 							gamedata.Add(entryPath, new GamedataZipEntry(zipFile, ze));
+							addedFiles++;
 							//Debug.Log(ze.Name);
 						}
+
 					}
 				}
+				if (addedFiles > 0)
+				{
+				//	Debug.Log("Load SCD: " + filePath + ", added subfiles: " + addedFiles);
+				}
+				else
+				{
+					zipFile.Close();
+				}
+
 			}
 		}
 
@@ -179,10 +193,15 @@ public partial struct GetGamedataFile
 			return localPath;
 		}
 
+
 		if (!gamedata.ContainsKey(localPath))
 		{
-			Debug.LogWarning("Can't load ZipFile");
-			return null;
+			localPath = localPath.ToLower();
+			if (!gamedata.ContainsKey(localPath))
+			{
+				Debug.LogWarning("Can't load ZipFile");
+				return null;
+			}
 		}
 
 		return gamedata[localPath].Name();
@@ -206,7 +225,7 @@ public partial struct GetGamedataFile
 
 		if (!Directory.Exists(EnvPaths.CurrentGamedataPath))
 		{
-			Debug.LogWarning("Gamedata path not exist!");
+			Debug.LogWarning("Gamedata path dont exist!");
 			return null;
 		}
 
@@ -214,7 +233,13 @@ public partial struct GetGamedataFile
 			LocalPath = LocalPath.Remove(0, 1);
 
 		if (!gamedata.ContainsKey(LocalPath))
-			return null;
+		{
+			LocalPath = LocalPath.ToLower();
+			if (!gamedata.ContainsKey(LocalPath))
+			{
+				return null;
+			}
+		}
 
 		return gamedata[LocalPath].ReadBytes();
 	}

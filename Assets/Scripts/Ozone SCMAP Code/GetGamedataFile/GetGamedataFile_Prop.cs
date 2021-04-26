@@ -236,10 +236,10 @@ public partial struct GetGamedataFile
 
 		ToReturn.IsTemp = IsTemp;
 
-		byte[] Bytes = LoadBytes(LocalPath);
+		byte[] Bytes = LoadBytes(LocalPath.ToLower());
 		if (Bytes == null || Bytes.Length == 0)
 		{
-			Debug.LogError("Prop does not exits: " + LocalPath);
+			Debug.LogError("Prop does not exist: " + LocalPath);
 			return ToReturn;
 		}
 		string BluePrintString = System.Text.Encoding.UTF8.GetString(Bytes);

@@ -80,13 +80,14 @@ namespace Ozone.UI
 			Green.text = GreenSlider.value.ToString();
 			Blue.text = BlueSlider.value.ToString();
 
-			UpdateLastValue();
-
 			if (AlphaSlider)
 			{
 				AlphaSlider.value = FormatFloat(A);
 				Alpha.text = AlphaSlider.value.ToString();
 			}
+
+			UpdateLastValue();
+
 
 			UpdateGfx();
 
@@ -108,13 +109,14 @@ namespace Ozone.UI
 			Green.text = GreenSlider.value.ToString();
 			Blue.text = BlueSlider.value.ToString();
 
-			UpdateLastValue();
-
 			if (AlphaSlider)
 			{
 				AlphaSlider.value = BeginColor.a;
 				Alpha.text = AlphaSlider.value.ToString();
 			}
+
+			UpdateLastValue();
+
 
 			UpdateGfx();
 
@@ -143,13 +145,13 @@ namespace Ozone.UI
 			Green.text = GreenSlider.value.ToString();
 			Blue.text = BlueSlider.value.ToString();
 
-			UpdateLastValue();
-
 			if (AlphaSlider)
 			{
 				AlphaSlider.value = FormatFloat(Mathf.Clamp(LuaParser.Read.StringToFloat(Alpha.text), 0, Clamp));
 				Alpha.text = AlphaSlider.value.ToString();
 			}
+
+			UpdateLastValue();
 
 			Loading = false;
 
@@ -185,13 +187,13 @@ namespace Ozone.UI
 			Green.text = GreenSlider.value.ToString();
 			Blue.text = BlueSlider.value.ToString();
 
-			UpdateLastValue();
-
 			if (AlphaSlider)
 			{
 				AlphaSlider.value = FormatFloat(AlphaSlider.value);
 				Alpha.text = AlphaSlider.value.ToString();
 			}
+
+			UpdateLastValue();
 
 			UpdatingSlider = false;
 
@@ -210,7 +212,9 @@ namespace Ozone.UI
 		{
 			ColorPreview.color = new Color(RedSlider.value / Clamp, GreenSlider.value / Clamp, BlueSlider.value / Clamp, 1);
 			if (AlphaPreview)
+			{
 				AlphaPreview.color = Color.Lerp(Color.black, Color.white, AlphaSlider.value / Clamp);
+			}
 		}
 	}
 }
