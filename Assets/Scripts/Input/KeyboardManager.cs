@@ -19,6 +19,11 @@ public class KeyboardManager {
 		return Input.GetKeyDown(KeyCode.B) || Input.GetKeyDown(KeyCode.W);
 	}
 
+	public static bool BrushRotate()
+	{
+		return Input.GetKey(KeyCode.E);
+	}
+
 	public static bool BrushSizeHold()
 	{
 		return Input.GetKey(KeyCode.B) || Input.GetKey(KeyCode.W);

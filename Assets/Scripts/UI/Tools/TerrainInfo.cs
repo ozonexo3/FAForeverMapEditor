@@ -185,6 +185,7 @@ namespace EditMap
 		bool ChangingStrength;
 		float SizeBeginValue;
 		bool ChangingSize;
+		bool ChangingRotation;
 		void Update()
 		{
 			Invert = Input.GetKey(KeyCode.LeftAlt);
@@ -199,7 +200,7 @@ namespace EditMap
 				
 			}
 
-			if (Edit.MauseOnGameplay || ChangingStrength || ChangingSize)
+			if (Edit.MauseOnGameplay || ChangingStrength || ChangingSize || ChangingRotation)
 			{
 				if (!ChangingSize && (KeyboardManager.BrushStrengthHold() || ChangingStrength))
 				{
@@ -243,6 +244,25 @@ namespace EditMap
 						UpdateMenu(true);
 						UpdateBrushPosition(true);
 
+					}
+				}
+				else if (KeyboardManager.BrushRotate() || ChangingRotation)
+				{
+					if (Input.GetMouseButtonDown(0))
+					{
+						ChangingRotation = true;
+						BeginMousePos = Input.mousePosition;
+						SizeBeginValue = BrushSize.value;
+					}
+					else if (Input.GetMouseButtonUp(0))
+					{
+						ChangingRotation = false;
+					}
+					if (ChangingRotation)
+					{
+						BrushRotation.SetValue((SizeBeginValue - (BeginMousePos.x - Input.mousePosition.x)) % 360);
+						UpdateMenu(true);
+						UpdateBrushPosition(true);
 					}
 				}
 				else
